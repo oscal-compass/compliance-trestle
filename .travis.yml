@@ -1,0 +1,23 @@
+language: python
+python:
+  - "3.7"
+  - "3.8"
+
+before_install: 
+  - make develop
+
+install: 
+  - make install
+
+before_script:
+  - make code-format
+  - make code-lint
+script:
+  - make test
+
+deploy:
+  - provider: script
+    script: make release
+    on:
+      branch: master
+      python: 3.8
