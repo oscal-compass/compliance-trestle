@@ -49,5 +49,6 @@ jobs:
         shell: bash
         env:
           PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+          GH_TOKEN: ${{ secretes.GITHUB_TOKEN }}
         run: |
           make release
