@@ -39,7 +39,7 @@ jobs:
       uses: codecov/codecov-action@v1
       with: 
         token: ${{ secrets.CODECOV_TOKEN }}
-        file:
+        file: ./coverage.xml
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -48,5 +48,3 @@ jobs:
       - name: Create release
         run: |
           make release
-
-  codeco:
