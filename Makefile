@@ -34,8 +34,8 @@ test::
 	python -m pytest --cov trestle test -v
 
 release::
-	git config --global user.name "semantic-release (via TravisCI)"
-	git config --global user.email "semantic-release@travis"
+	git config --global user.name "semantic-release (via Github actions)"
+	git config --global user.email "semantic-release@github-actions"
 	semantic-release publish
 
 gen-oscal::
