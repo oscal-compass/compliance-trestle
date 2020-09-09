@@ -46,5 +46,8 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - name: Create release
+        shell: bash
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
         run: |
           make release
