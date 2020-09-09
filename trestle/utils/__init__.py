@@ -1,4 +1,4 @@
-# -*- mode:makefile; coding:utf-8 -*-
+# -*- mode:python; coding:utf-8 -*-
 
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
@@ -13,30 +13,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
-develop:
-	pip install -e .[dev] --upgrade --upgrade-strategy eager
-	pre-commit install
-	pre-commit autoupdate
-
-install:
-	pip install  --upgrade pip setuptools
-	pip install . --upgrade --upgrade-strategy eager
-
-code-format:
-	pre-commit run yapf --all-files
-
-code-lint:
-	pre-commit run flake8 --all-files
-
-test::
-	python -m pytest --cov trestle test -v
-
-release::
-	git config --global user.name "semantic-release (via TravisCI)"
-	git config --global user.email "semantic-release@travis"
-	semantic-release publish
-
-gen-oscal::
-	./scripts/gen_oscal.sh
+"""Trestle Utils."""

@@ -1,4 +1,4 @@
-# -*- mode:makefile; coding:utf-8 -*-
+# -*- mode:python; coding:utf-8 -*-
 
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
@@ -13,30 +13,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Core settings module."""
+
+from pydantic import BaseSettings
 
 
-develop:
-	pip install -e .[dev] --upgrade --upgrade-strategy eager
-	pre-commit install
-	pre-commit autoupdate
+class Settings(BaseSettings):
+    """Store various settings."""
 
-install:
-	pip install  --upgrade pip setuptools
-	pip install . --upgrade --upgrade-strategy eager
+    # Add more settings as required
+    # See https://pydantic-docs.helpmanual.io/usage/settings/ for various options
 
-code-format:
-	pre-commit run yapf --all-files
+    # Path to a tmp directory
+    tmp_dir: str = './tmp'
 
-code-lint:
-	pre-commit run flake8 --all-files
+    class Config:
+        """Override various config options."""
 
-test::
-	python -m pytest --cov trestle test -v
-
-release::
-	git config --global user.name "semantic-release (via TravisCI)"
-	git config --global user.email "semantic-release@travis"
-	semantic-release publish
-
-gen-oscal::
-	./scripts/gen_oscal.sh
+        env_file = '.env'
+        env_file_encoding = 'utf-8'

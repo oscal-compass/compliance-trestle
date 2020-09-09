@@ -12,8 +12,6 @@ do
   datamodel-codegen --input-file-type jsonschema --input nist-source/json/schema/oscal_${i}_schema.json --base-class trestle.oscal.base_model.OscalBaseModel --output $OUTPUT_DIR/$i:s/-/_/.py
 done
 
-for i in `ls custom-model| sed -e 's/custom_\(.*\)_schema.json/\1/'`
-do
-  echo datamodel-codegen --input-file-type jsonschema --input custom-model/custom_${i}_schema.json --base-class trestle.oscal.base_model.OscalBaseModel --output $OUTPUT_DIR/$i:s/-/_/.py
-  datamodel-codegen --input-file-type jsonschema --input custom-model/custom_${i}_schema.json --base-class trestle.oscal.base_model.OscalBaseModel --output $OUTPUT_DIR/$i:s/-/_/.py
-done
+# 3rd party schemas are explicilty codified rather than inferred.
+echo datamodel-codegen --input-file-type jsonschema --input 3rd-party-schema-documents/IBM_target_schema.json --base-class trestle.oscal.base_model.OscalBaseModel --output $OUTPUT_DIR/target:s/-/_/.py
+datamodel-codegen --input-file-type jsonschema --input 3rd-party-schema-documents/IBM_target_schema.json --base-class trestle.oscal.base_model.OscalBaseModel --output $OUTPUT_DIR/target:s/-/_/.py

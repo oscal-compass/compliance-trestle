@@ -1,4 +1,4 @@
-# -*- mode:makefile; coding:utf-8 -*-
+# -*- mode:python; coding:utf-8 -*-
 
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
@@ -13,30 +13,30 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from trestle.oscal.catalog import Catalog, Metadata
+from datetime import datetime
+from uuid import uuid4
 
+print('> Deliberately fail to make a Catalog properly')
 
-develop:
-	pip install -e .[dev] --upgrade --upgrade-strategy eager
-	pre-commit install
-	pre-commit autoupdate
+try:
+    c = Catalog()
+except Exception as e:
+    print(e)
 
-install:
-	pip install  --upgrade pip setuptools
-	pip install . --upgrade --upgrade-strategy eager
+print()
+print('> Make some Metadata')
+m = Metadata(
+    **{
+        'title': 'my cool catalog',
+        'last-modified': datetime.now(),
+        'version': '0.0.1',
+        'oscal-version': '1.0.0'
+    }
+)
+print(m)
 
-code-format:
-	pre-commit run yapf --all-files
-
-code-lint:
-	pre-commit run flake8 --all-files
-
-test::
-	python -m pytest --cov trestle test -v
-
-release::
-	git config --global user.name "semantic-release (via TravisCI)"
-	git config --global user.email "semantic-release@travis"
-	semantic-release publish
-
-gen-oscal::
-	./scripts/gen_oscal.sh
+print()
+print('> Make a Catalog')
+c = Catalog(metadata=m, uuid=str(uuid4()))
+print(c)

@@ -1,4 +1,4 @@
-# -*- mode:makefile; coding:utf-8 -*-
+# -*- mode:python; coding:utf-8 -*-
 
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
@@ -13,30 +13,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Core constants module containing all constants."""
 
+DIR_TRESTLE = '_trestle'
+DIR_TRESTLE_BACKUP = f'{DIR_TRESTLE}/backup'
+DIR_TRESTLE_DIST = f'{DIR_TRESTLE}/dist'
 
-develop:
-	pip install -e .[dev] --upgrade --upgrade-strategy eager
-	pre-commit install
-	pre-commit autoupdate
+# list key to model name
+# This is usually a map from plural names to singular
+# However, there could be special cases and therefore we are maintaining this mapping here
+LIST_KEY_TO_MODEL_NAME = {
+    'groups': 'group',
+    'controls': 'control',
+}
 
-install:
-	pip install  --upgrade pip setuptools
-	pip install . --upgrade --upgrade-strategy eager
+ALLOWED_MODELS_FOR_SPLIT = LIST_KEY_TO_MODEL_NAME.keys()
 
-code-format:
-	pre-commit run yapf --all-files
-
-code-lint:
-	pre-commit run flake8 --all-files
-
-test::
-	python -m pytest --cov trestle test -v
-
-release::
-	git config --global user.name "semantic-release (via TravisCI)"
-	git config --global user.email "semantic-release@travis"
-	semantic-release publish
-
-gen-oscal::
-	./scripts/gen_oscal.sh
+PACKAGE_OSCAL = 'trestle.oscal'
