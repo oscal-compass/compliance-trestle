@@ -26,7 +26,7 @@ from trestle.utils import log
 
 import yaml
 
-logger = log.new_console_logger(__name__)
+logger = log.get_logger()
 
 
 def parse_dict(data: dict, model_name: str):

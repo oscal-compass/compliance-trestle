@@ -17,8 +17,8 @@
 
 import pathlib
 
-import trestle.core.models.parser as parser
-import trestle.core.models.utils as mutils
+import trestle.core.parser as parser
+import trestle.core.utils as mutils
 import trestle.oscal.catalog as catalog
 
 

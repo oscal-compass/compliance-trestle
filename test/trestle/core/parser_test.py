@@ -20,7 +20,7 @@ from datetime import datetime
 from uuid import uuid4
 
 from trestle.core import const
-from trestle.core.models import parser
+from trestle.core import parser
 from trestle.oscal import catalog
 
 import yaml

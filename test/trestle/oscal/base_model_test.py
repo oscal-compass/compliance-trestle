@@ -19,7 +19,7 @@ from uuid import uuid4
 
 import pytest
 
-import trestle.core.models.parser as p
+import trestle.core.parser as p
 import trestle.oscal.catalog as oscatalog
 import trestle.oscal.base_model as ospydantic
 
