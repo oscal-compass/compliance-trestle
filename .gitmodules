@@ -1,3 +1,0 @@
-[submodule "nist-source"]
-	path = nist-source
-	url = https://github.com/usnistgov/OSCAL.git
