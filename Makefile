@@ -31,7 +31,7 @@ code-lint:
 	pre-commit run flake8 --all-files
 
 test::
-	python -m pytest --cov trestle test -v
+	python -m pytest --cov trestle test -v --cov-report=xml
 
 release::
 	git config --global user.name "semantic-release (via Github actions)"
