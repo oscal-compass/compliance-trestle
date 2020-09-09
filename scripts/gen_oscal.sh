@@ -1,6 +1,6 @@
 #! /usr/bin/env zsh
 git submodule add https://github.com/usnistgov/OSCAL.git nist-source
-git submodule update --init --recursive
+git submodule update --init
 
 OUTPUT_DIR=trestle/oscal
 mkdir -p $OUTPUT_DIR
