@@ -1,0 +1,14 @@
+[style]
+based_on_style = facebook
+align_closing_bracket_with_visual_indent = true
+allow_split_before_dict_value = false
+blank_line_before_nested_class_or_def = true
+column_limit = 120
+indent_dictionary_value = false
+split_all_top_level_comma_separated_values = true
+split_arguments_when_comma_terminated = true
+split_before_arithmetic_operator = true
+split_before_expression_after_opening_paren = true
+split_before_first_argument = true
+split_before_logical_operator = true
+split_complex_comprehension = true
