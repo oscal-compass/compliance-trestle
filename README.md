@@ -61,7 +61,7 @@ Our project welcomes external contributions. Please checkout [CONTRIBUTING.md](C
 
 ## License & Authors
 If you would like to see the detailed LICENSE click [here](LICENSE).
-Check out [MAINTAINERS](MAINTAINDERS.md) for list of authors.
+Check out [MAINTAINERS](MAINTAINERS.md) for list of authors.
 
 ```text
 # Copyright (c) 2020 IBM Corp. All rights reserved.
