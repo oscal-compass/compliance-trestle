@@ -60,6 +60,6 @@ jobs:
       shell: bash
       env:
         PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.ADMIN_PAT }}
       run: |
         make release
