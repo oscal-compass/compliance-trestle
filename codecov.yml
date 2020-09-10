@@ -1,6 +1,6 @@
-codecov:
-  #Following line is excluded to test other functionality until we are confident.
-  #strict_yaml_branch: master  # only use the latest copy on master branch
+# codecov:
+#   #Following line is excluded to test other functionality until we are confident.
+#   #strict_yaml_branch: master  # only use the latest copy on master branch
 
 coverage:
   range: "80...100"
