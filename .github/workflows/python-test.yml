@@ -49,6 +49,10 @@ jobs:
       with:
         submodules: true
         fetch-depth: 0
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
     - name: Install build tools
       run: |
         make develop
