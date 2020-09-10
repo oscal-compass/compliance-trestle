@@ -49,6 +49,7 @@ jobs:
       with:
         submodules: true
         fetch-depth: 0
+        token: ${{ secrets.ADMIN_PAT }} 
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
