@@ -1,13 +1,13 @@
-Christopher Butler - chris.butler@au1.ibm.com
+Christopher Butler - [butler54](https://github.com/butler54)
 
-Bruno Marques - brunomar@au1.ibm.com
+Bruno Marques - [brunomarq](https://github.com/brunomarq)
 
-Lenin Mehedy - lenin.mehedy@au1.ibm.com
+Lenin Mehedy - [leninmehedy](https://github.com/leninmehedy)
 
-Simon Metson - simonmetson@uk.ibm.com
+Simon Metson - [drsm79](https://github.com/drsm79)
 
-Frank Suits - frankst@au1.ibm.com
+Frank Suits - [fsuits](https://github.com/fsuits)
 
-Jeff Tan - jeffetan@au1.ibm.com
+Jeff Tan - [jeffdmgit](https://github.com/jeffdmgit)
 
-Nebula Alam - anebula@au1.ibm.com
+Nebula Alam - [aNebula](https://github.com/aNebula)
