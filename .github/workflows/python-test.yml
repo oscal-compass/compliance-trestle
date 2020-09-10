@@ -45,10 +45,38 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/master'
     steps:
-      - name: Create release
-        shell: bash
-        env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          make release
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install build tools
+      run: |
+        make develop
+    - name: Install dependencies
+      run: |
+        make install
+    - name: Run code formatting (yapf)
+      run: |
+        make code-format
+    - name: Run code linting (flake8)
+      run: |
+        make code-lint
+    - name: Pytest
+      run: |
+        make test
+    - name: Push code-cov
+      uses: codecov/codecov-action@v1
+      with: 
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
+
+    - name: Create release
+      shell: bash
+      env:
+        PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        make release
