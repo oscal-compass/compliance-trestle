@@ -12,6 +12,8 @@ Before embarking on a more ambitious contribution, please quickly [get in touch]
 requires extensive rework (by you or by us), sits in backlog for a long time, or
 cannot be accepted at all!**
 
+We have also adopted [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
+
 ### Proposing new features
 
 If you would like to implement a new feature, please [raise an issue](https://github.com/IBM/compliance-trestle/issues) 
