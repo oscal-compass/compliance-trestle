@@ -45,10 +45,17 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/master'
     steps:
-      - name: Create release
-        shell: bash
-        env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          make release
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+        fetch-depth: 0
+    - name: Install build tools
+      run: |
+        make develop
+    - name: Create release
+      shell: bash
+      env:
+        PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        make release
