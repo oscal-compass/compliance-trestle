@@ -8,7 +8,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from trestle.oscal.base_model import OscalBaseModel
+from trestle.core.base_model import OscalBaseModel
 
 from pydantic import AnyUrl, EmailStr, Field, constr
 

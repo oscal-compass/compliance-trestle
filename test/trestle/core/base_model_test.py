@@ -19,14 +19,14 @@ from uuid import uuid4
 
 import pytest
 
+import trestle.core.base_model as ospydantic
 import trestle.core.parser as p
 import trestle.oscal.catalog as oscatalog
-import trestle.oscal.base_model as ospydantic
 
 
 def test_echo_tmppath(tmp_path):
     """Testing pytest."""
-    print(tmp_path) # noqa T001
+    print(tmp_path)  # noqa T001
     assert 1
 
 
@@ -38,7 +38,8 @@ def simple_catalog() -> oscatalog.Catalog:
             'last-modified': datetime.now(),
             'version': '0.0.0',
             'oscal-version': '1.0.0-Milestone3'
-        })
+        }
+    )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
     return catalog
 
@@ -51,7 +52,8 @@ def simple_catalog_with_tz() -> oscatalog.Catalog:
             'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
             'oscal-version': '1.0.0-Milestone3'
-        })
+        }
+    )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
     return catalog
 
@@ -60,14 +62,14 @@ def test_is_oscal_base():
     """Test that the typing information is as expected."""
     catalog = simple_catalog()
 
-    assert(isinstance(catalog, ospydantic.OscalBaseModel))
+    assert (isinstance(catalog, ospydantic.OscalBaseModel))
 
 
 def test_wrapper_is_oscal_base():
     """Test a wrapped class is still a instance of OscalBaseModel."""
     catalog = simple_catalog()
     wrapped_catalog = p.wrap_for_output(catalog)
-    assert(isinstance(wrapped_catalog, ospydantic.OscalBaseModel))
+    assert (isinstance(wrapped_catalog, ospydantic.OscalBaseModel))
 
 
 def test_no_timezone_exception():
@@ -85,12 +87,13 @@ def test_with_timezone():
 
     popo_json = json.loads(jsoned_catalog)
     time = popo_json['metadata']['last-modified']
-    assert(type(time) == str)
-    assert('Z' in time or '+' in time or '-' in time)
+    assert (type(time) == str)
+    assert ('Z' in time or '+' in time or '-' in time)
 
 
 def test_broken_tz():
     """Deliberately break tz to trigger exception."""
+
     class BrokenTimezone(tzinfo):
         """Broken TZ class which returns null offset."""
 
@@ -108,6 +111,7 @@ def test_broken_tz():
 
         def _isdst(self, dt):
             return True
+
     taz = BrokenTimezone()
 
     m = oscatalog.Metadata(
@@ -116,7 +120,8 @@ def test_broken_tz():
             'last-modified': datetime.now(tz=taz),
             'version': '0.0.0',
             'oscal-version': '1.0.0-Milestone3'
-        })
+        }
+    )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
     with pytest.raises(Exception):
         jsoned_catalog = catalog.json(exclude_none=True, by_alias=True, indent=2)

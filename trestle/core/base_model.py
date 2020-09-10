@@ -16,7 +16,6 @@
 
 import datetime
 
-
 from pydantic import BaseModel
 
 
@@ -37,11 +36,11 @@ def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
 
 class OscalBaseModel(BaseModel):
     """Base model which overrides defaults for all OSCAL classes."""
+
     class Config:
         """Configuration for Oscal Models."""
-        json_encoders = {
-            datetime.datetime: lambda x: robust_datetime_serialization(x)
-        }
+
+        json_encoders = {datetime.datetime: lambda x: robust_datetime_serialization(x)}
         # this is not safe and caused class: nan in yaml output
         # TODO: Explore fix.
         # allow_population_by_field_name = True  noqa: E800

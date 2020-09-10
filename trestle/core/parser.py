@@ -20,8 +20,8 @@ from typing import List
 from pydantic import Field, create_model
 
 from trestle.core import const
+from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.oscal.base_model import OscalBaseModel
 from trestle.utils import log
 
 import yaml
