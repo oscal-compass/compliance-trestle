@@ -1,0 +1,12 @@
+{
+    "roles": [
+        {
+            "id": "creator",
+            "title": "Document creator"
+        },
+        {
+            "id": "contact",
+            "title": "Contact"
+        }
+    ]
+}
