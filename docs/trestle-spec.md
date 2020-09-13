@@ -114,6 +114,8 @@ The user can edit the parts of the generated OSCAL model by modifying the sample
 The initial level of decomposition of each type of model varies according to the model type.
 This default or reference decomposition behaviour can be changed by modifying the rules in a `.trestle/config file`. These rules can be written as a sequence of `trestle split` commands.
 
+#### *Catalog default decomposition*
+
 For `catalog`, the inital sample content is broken down as shown below:
 ~~~
 .
@@ -146,6 +148,8 @@ For `catalog`, the inital sample content is broken down as shown below:
 - `catalog.groups[i].controls` property in each group is broken down into subdirectories called `controls`. The `controls` subdirectory has a `controls.json` file containing a JSON object named `controls` as an empty array.
 - For each control in a `catalog.groups[i].controls` array list, an indexed JSON file is created representing the contents of a control.
 
+#### *Profile default decomposition*
+
 For `profile`, the initial sample content is not broken down by default as shown below.
 ~~~
 .
@@ -160,6 +164,8 @@ For `profile`, the initial sample content is not broken down by default as shown
 ...
 ~~~
 - `profile.json` file has the content of the OSCAL profile.
+
+#### *Target-definition default decomposition*
 
 For `target-definition`, the initial sample content is broken down as shown below:
 ~~~
