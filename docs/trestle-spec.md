@@ -473,7 +473,7 @@ This command allows users to add an OSCAL model to a subcomponent in source dire
   }
 ~~~
 
-Default values for each datatypes will be like below:
+Default values for mandatory datatypes will be like below. All UUID's will be populated by default whether or not they are mandatory.
 
 ~~~
 - DateTime: <Current date-time>
