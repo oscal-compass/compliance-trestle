@@ -1,0 +1,1137 @@
+{
+    "control": {
+        "id": "ac-2",
+        "class": "SP800-53",
+        "title": "Account Management",
+        "parameters": [
+            {
+                "id": "ac-2_prm_1",
+                "label": "organization-defined attributes (as required)"
+            },
+            {
+                "id": "ac-2_prm_2",
+                "label": "organization-defined personnel or roles"
+            },
+            {
+                "id": "ac-2_prm_3",
+                "label": "organization-defined policy, procedures, and conditions"
+            },
+            {
+                "id": "ac-2_prm_4",
+                "label": "organization-defined personnel or roles"
+            },
+            {
+                "id": "ac-2_prm_5",
+                "label": "organization-defined time-period"
+            },
+            {
+                "id": "ac-2_prm_6",
+                "label": "organization-defined time-period"
+            },
+            {
+                "id": "ac-2_prm_7",
+                "label": "organization-defined time-period"
+            },
+            {
+                "id": "ac-2_prm_8",
+                "label": "organization-defined attributes (as required)"
+            },
+            {
+                "id": "ac-2_prm_9",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "properties": [
+            {
+                "name": "label",
+                "value": "AC-2"
+            },
+            {
+                "name": "sort-id",
+                "value": "AC-02"
+            }
+        ],
+        "links": [
+            {
+                "href": "#359f960c-2598-454c-ba3b-a30c553e498f",
+                "rel": "reference",
+                "text": "[SP 800-162]"
+            },
+            {
+                "href": "#223b23a9-baea-4a50-8058-63cf7967b61f",
+                "rel": "reference",
+                "text": "[SP 800-178]"
+            },
+            {
+                "href": "#06d3c11a-4a00-42d9-ad75-e6a777ffae5e",
+                "rel": "reference",
+                "text": "[SP 800-192]"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related",
+                "text": "AC-3"
+            },
+            {
+                "href": "#ac-5",
+                "rel": "related",
+                "text": "AC-5"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related",
+                "text": "AC-6"
+            },
+            {
+                "href": "#ac-17",
+                "rel": "related",
+                "text": "AC-17"
+            },
+            {
+                "href": "#ac-18",
+                "rel": "related",
+                "text": "AC-18"
+            },
+            {
+                "href": "#ac-20",
+                "rel": "related",
+                "text": "AC-20"
+            },
+            {
+                "href": "#ac-24",
+                "rel": "related",
+                "text": "AC-24"
+            },
+            {
+                "href": "#au-2",
+                "rel": "related",
+                "text": "AU-2"
+            },
+            {
+                "href": "#au-12",
+                "rel": "related",
+                "text": "AU-12"
+            },
+            {
+                "href": "#cm-5",
+                "rel": "related",
+                "text": "CM-5"
+            },
+            {
+                "href": "#ia-2",
+                "rel": "related",
+                "text": "IA-2"
+            },
+            {
+                "href": "#ia-4",
+                "rel": "related",
+                "text": "IA-4"
+            },
+            {
+                "href": "#ia-5",
+                "rel": "related",
+                "text": "IA-5"
+            },
+            {
+                "href": "#ia-8",
+                "rel": "related",
+                "text": "IA-8"
+            },
+            {
+                "href": "#ma-3",
+                "rel": "related",
+                "text": "MA-3"
+            },
+            {
+                "href": "#ma-5",
+                "rel": "related",
+                "text": "MA-5"
+            },
+            {
+                "href": "#pe-2",
+                "rel": "related",
+                "text": "PE-2"
+            },
+            {
+                "href": "#pl-4",
+                "rel": "related",
+                "text": "PL-4"
+            },
+            {
+                "href": "#ps-2",
+                "rel": "related",
+                "text": "PS-2"
+            },
+            {
+                "href": "#ps-4",
+                "rel": "related",
+                "text": "PS-4"
+            },
+            {
+                "href": "#ps-5",
+                "rel": "related",
+                "text": "PS-5"
+            },
+            {
+                "href": "#ps-7",
+                "rel": "related",
+                "text": "PS-7"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related",
+                "text": "SC-7"
+            },
+            {
+                "href": "#sc-13",
+                "rel": "related",
+                "text": "SC-13"
+            },
+            {
+                "href": "#sc-37",
+                "rel": "related",
+                "text": "SC-37"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-2_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ac-2_smt.a",
+                        "name": "item",
+                        "properties": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Define and document the types of accounts allowed for use within the system;"
+                    },
+                    {
+                        "id": "ac-2_smt.b",
+                        "name": "item",
+                        "properties": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Assign account managers;"
+                    },
+                    {
+                        "id": "ac-2_smt.c",
+                        "name": "item",
+                        "properties": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Establish conditions for group and role membership;"
+                    },
+                    {
+                        "id": "ac-2_smt.d",
+                        "name": "item",
+                        "properties": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Specify:",
+                        "parts": [
+                            {
+                                "id": "ac-2_smt.d.1",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Authorized users of the system;"
+                            },
+                            {
+                                "id": "ac-2_smt.d.2",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "Group and role membership; and"
+                            },
+                            {
+                                "id": "ac-2_smt.d.3",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": "Access authorizations (i.e., privileges) and {{ ac-2_prm_1 }} for each account;"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ac-2_smt.e",
+                        "name": "item",
+                        "properties": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Require approvals by {{ ac-2_prm_2 }} for requests to create accounts;"
+                    },
+                    {
+                        "id": "ac-2_smt.f",
+                        "name": "item",
+                        "properties": [
+                            {
+                                "name": "label",
+                                "value": "f."
+                            }
+                        ],
+                        "prose": "Create, enable, modify, disable, and remove accounts in accordance with {{ ac-2_prm_3 }};"
+                    },
+                    {
+                        "id": "ac-2_smt.g",
+                        "name": "item",
+                        "properties": [
+                            {
+                                "name": "label",
+                                "value": "g."
+                            }
+                        ],
+                        "prose": "Monitor the use of accounts;"
+                    },
+                    {
+                        "id": "ac-2_smt.h",
+                        "name": "item",
+                        "properties": [
+                            {
+                                "name": "label",
+                                "value": "h."
+                            }
+                        ],
+                        "prose": "Notify account managers and {{ ac-2_prm_4 }} within:",
+                        "parts": [
+                            {
+                                "id": "ac-2_smt.h.1",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "\n                     {{ ac-2_prm_5 }} when accounts are no longer required;"
+                            },
+                            {
+                                "id": "ac-2_smt.h.2",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "\n                     {{ ac-2_prm_6 }} when users are terminated or transferred; and"
+                            },
+                            {
+                                "id": "ac-2_smt.h.3",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": "\n                     {{ ac-2_prm_7 }} when system usage or need-to-know changes for an individual;"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ac-2_smt.i",
+                        "name": "item",
+                        "properties": [
+                            {
+                                "name": "label",
+                                "value": "i."
+                            }
+                        ],
+                        "prose": "Authorize access to the system based on:",
+                        "parts": [
+                            {
+                                "id": "ac-2_smt.i.1",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "A valid access authorization;"
+                            },
+                            {
+                                "id": "ac-2_smt.i.2",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "Intended system usage; and"
+                            },
+                            {
+                                "id": "ac-2_smt.i.3",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": "\n                     {{ ac-2_prm_8 }};"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ac-2_smt.j",
+                        "name": "item",
+                        "properties": [
+                            {
+                                "name": "label",
+                                "value": "j."
+                            }
+                        ],
+                        "prose": "Review accounts for compliance with account management requirements {{ ac-2_prm_9 }};"
+                    },
+                    {
+                        "id": "ac-2_smt.k",
+                        "name": "item",
+                        "properties": [
+                            {
+                                "name": "label",
+                                "value": "k."
+                            }
+                        ],
+                        "prose": "Establish and implement a process for changing shared or group account credentials (if deployed) when individuals are removed from the group; and"
+                    },
+                    {
+                        "id": "ac-2_smt.l",
+                        "name": "item",
+                        "properties": [
+                            {
+                                "name": "label",
+                                "value": "l."
+                            }
+                        ],
+                        "prose": "Align account management processes with personnel termination and transfer processes."
+                    }
+                ]
+            },
+            {
+                "id": "ac-2_gdn",
+                "name": "guidance",
+                "prose": "Examples of system account types include individual, shared, group, system, guest, anonymous, emergency, developer, temporary, and service. Identification of authorized system users and the specification of access privileges reflects the requirements in other controls in the security plan. Users requiring administrative privileges on system accounts receive additional scrutiny by organizational personnel responsible for approving such accounts and privileged access, including system owner, mission or business owner, senior agency information security officer, or senior agency official for privacy. External system accounts are not included in the scope of this control. Organizations address external system accounts through organizational policy.\nWhere access involves personally identifiable information, security programs collaborate with the senior agency official for privacy on establishing the specific conditions for group and role membership; specifying for each account, authorized users, group and role membership, and access authorizations; and creating, adjusting, or removing system accounts in accordance with organizational policies. Policies can include such information as account expiration dates or other factors triggering the disabling of accounts. Organizations may choose to define access privileges or other attributes by account, by type of account, or a combination of the two. Examples of other attributes required for authorizing access include restrictions on time-of-day, day-of-week, and point-of-origin. In defining other system account attributes, organizations consider system-related requirements and mission/business requirements. Failure to consider these factors could affect system availability.\nTemporary and emergency accounts are intended for short-term use. Organizations establish temporary accounts as a part of normal account activation procedures when there is a need for short-term accounts without the demand for immediacy in account activation. Organizations establish emergency accounts in response to crisis situations and with the need for rapid account activation. Therefore, emergency account activation may bypass normal account authorization processes. Emergency and temporary accounts are not to be confused with infrequently used accounts, including local logon accounts used for special tasks or when network resources are unavailable (may also be known as accounts of last resort). Such accounts remain available and are not subject to automatic disabling or removal dates. Conditions for disabling or deactivating accounts include when shared/group, emergency, or temporary accounts are no longer required; and when individuals are transferred or terminated. Changing shared/group account credentials when members leave the group is intended to ensure that former group members do not retain access to the shared or group account. Some types of system accounts may require specialized training."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ac-2.1",
+                "class": "SP800-53-enhancement",
+                "title": "Automated System Account Management",
+                "parameters": [
+                    {
+                        "id": "ac-2.1_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(01)"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-2.1_smt",
+                        "name": "statement",
+                        "prose": "Support the management of system accounts using {{ ac-2.1_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-2.1_gdn",
+                        "name": "guidance",
+                        "prose": "Automated mechanisms include using email or text messaging to automatically notify account managers when users are terminated or transferred; using the system to monitor account usage; and using telephonic notification to report atypical system account usage."
+                    }
+                ]
+            },
+            {
+                "id": "ac-2.2",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Temporary and Emergency Account Management",
+                "parameters": [
+                    {
+                        "id": "ac-2.2_prm_1",
+                        "select": {
+                            "alternatives": [
+                                "remove",
+                                "disable"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "ac-2.2_prm_2",
+                        "label": "organization-defined time-period for each type of account"
+                    }
+                ],
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(02)"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-2.2_smt",
+                        "name": "statement",
+                        "prose": "Automatically {{ ac-2.2_prm_1 }} temporary and emergency accounts after {{ ac-2.2_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-2.2_gdn",
+                        "name": "guidance",
+                        "prose": "Management of temporary and emergency accounts includes the removal or disabling of such accounts automatically after a predefined time-period, rather than at the convenience of the systems administrator. Automatic removal or disabling of accounts provides a more consistent implementation."
+                    }
+                ]
+            },
+            {
+                "id": "ac-2.3",
+                "class": "SP800-53-enhancement",
+                "title": "Disable Accounts",
+                "parameters": [
+                    {
+                        "id": "ac-2.3_prm_1",
+                        "label": "organization-defined time-period"
+                    }
+                ],
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(03)"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-2.3_smt",
+                        "name": "statement",
+                        "prose": "Disable accounts when the accounts:",
+                        "parts": [
+                            {
+                                "id": "ac-2.3_smt.a",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Have expired;"
+                            },
+                            {
+                                "id": "ac-2.3_smt.b",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Are no longer associated with a user or individual;"
+                            },
+                            {
+                                "id": "ac-2.3_smt.c",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Are in violation of organizational policy; or"
+                            },
+                            {
+                                "id": "ac-2.3_smt.d",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "(d)"
+                                    }
+                                ],
+                                "prose": "Have been inactive for {{ ac-2.3_prm_1 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ac-2.3_gdn",
+                        "name": "guidance",
+                        "prose": "Disabling expired, inactive, or otherwise anomalous accounts supports the concept of least privilege and least functionality which reduces the attack surface of the system."
+                    }
+                ]
+            },
+            {
+                "id": "ac-2.4",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Audit Actions",
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(04)"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#au-2",
+                        "rel": "related",
+                        "text": "AU-2"
+                    },
+                    {
+                        "href": "#au-6",
+                        "rel": "related",
+                        "text": "AU-6"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-2.4_smt",
+                        "name": "statement",
+                        "prose": "Automatically audit account creation, modification, enabling, disabling, and removal actions."
+                    },
+                    {
+                        "id": "ac-2.4_gdn",
+                        "name": "guidance",
+                        "prose": "Account management audit records are defined in accordance with AU-2 and reviewed, analyzed, and reported in accordance with AU-6."
+                    }
+                ]
+            },
+            {
+                "id": "ac-2.5",
+                "class": "SP800-53-enhancement",
+                "title": "Inactivity Logout",
+                "parameters": [
+                    {
+                        "id": "ac-2.5_prm_1",
+                        "label": "organization-defined time-period of expected inactivity or description of when to log out"
+                    }
+                ],
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(05)"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-11",
+                        "rel": "related",
+                        "text": "AC-11"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-2.5_smt",
+                        "name": "statement",
+                        "prose": "Require that users log out when {{ ac-2.5_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-2.5_gdn",
+                        "name": "guidance",
+                        "prose": "Inactivity logout is behavior or policy-based and requires users to take physical action to log out when they are expecting inactivity longer than the defined period. Automatic enforcement of this control enhancement is addressed by AC-11."
+                    }
+                ]
+            },
+            {
+                "id": "ac-2.6",
+                "class": "SP800-53-enhancement",
+                "title": "Dynamic Privilege Management",
+                "parameters": [
+                    {
+                        "id": "ac-2.6_prm_1",
+                        "label": "organization-defined dynamic privilege management capabilities"
+                    }
+                ],
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(06)"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-16",
+                        "rel": "related",
+                        "text": "AC-16"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-2.6_smt",
+                        "name": "statement",
+                        "prose": "Implement {{ ac-2.6_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-2.6_gdn",
+                        "name": "guidance",
+                        "prose": "In contrast to access control approaches that employ static accounts and predefined user privileges, dynamic access control approaches rely on run time access control decisions facilitated by dynamic privilege management such as attribute-based access control. While user identities remain relatively constant over time, user privileges typically change more frequently based on ongoing mission or business requirements and operational needs of organizations. An example of dynamic privilege management is the immediate revocation of privileges from users, as opposed to requiring that users terminate and restart their sessions to reflect changes in privileges. Dynamic privilege management can also include mechanisms that change user privileges based on dynamic rules as opposed to editing specific user profiles. Examples include automatic adjustments of user privileges if they are operating out of their normal work times, their job function or assignment changes, or if systems are under duress or in emergency situations. Dynamic privilege management includes the effects of privilege changes, for example, when there are changes to encryption keys used for communications."
+                    }
+                ]
+            },
+            {
+                "id": "ac-2.7",
+                "class": "SP800-53-enhancement",
+                "title": "Privileged User Accounts",
+                "parameters": [
+                    {
+                        "id": "ac-2.7_prm_1",
+                        "select": {
+                            "alternatives": [
+                                "a role-based access scheme",
+                                "an attribute-based access scheme"
+                            ]
+                        }
+                    }
+                ],
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(07)"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-3",
+                        "rel": "related",
+                        "text": "AC-3"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-2.7_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ac-2.7_smt.a",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Establish and administer privileged user accounts in accordance with {{ ac-2.7_prm_1 }};"
+                            },
+                            {
+                                "id": "ac-2.7_smt.b",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Monitor privileged role or attribute assignments;"
+                            },
+                            {
+                                "id": "ac-2.7_smt.c",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Monitor changes to roles or attributes; and"
+                            },
+                            {
+                                "id": "ac-2.7_smt.d",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "(d)"
+                                    }
+                                ],
+                                "prose": "Revoke access when privileged role or attribute assignments are no longer appropriate."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ac-2.7_gdn",
+                        "name": "guidance",
+                        "prose": "Privileged roles are organization-defined roles assigned to individuals that allow those individuals to perform certain security-relevant functions that ordinary users are not authorized to perform. Privileged roles include key management, account management, database administration, system and network administration, and web administration. A role-based access scheme organizes permitted system access and privileges into roles. In contrast, an attribute-based access scheme specifies allowed system access and privileges based on attributes."
+                    }
+                ]
+            },
+            {
+                "id": "ac-2.8",
+                "class": "SP800-53-enhancement",
+                "title": "Dynamic Account Management",
+                "parameters": [
+                    {
+                        "id": "ac-2.8_prm_1",
+                        "label": "organization-defined system accounts"
+                    }
+                ],
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(08)"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-16",
+                        "rel": "related",
+                        "text": "AC-16"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-2.8_smt",
+                        "name": "statement",
+                        "prose": "Create, activate, manage, and deactivate {{ ac-2.8_prm_1 }} dynamically."
+                    },
+                    {
+                        "id": "ac-2.8_gdn",
+                        "name": "guidance",
+                        "prose": "Approaches for dynamically creating, activating, managing, and deactivating system accounts rely on automatically provisioning the accounts at run time for entities that were previously unknown. Organizations plan for the dynamic management, creation, activation, and deactivation of system accounts by establishing trust relationships, business rules, and mechanisms with appropriate authorities to validate related authorizations and privileges."
+                    }
+                ]
+            },
+            {
+                "id": "ac-2.9",
+                "class": "SP800-53-enhancement",
+                "title": "Restrictions on Use of Shared and Group Accounts",
+                "parameters": [
+                    {
+                        "id": "ac-2.9_prm_1",
+                        "label": "organization-defined conditions for establishing shared and group accounts"
+                    }
+                ],
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(09)"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-2.9_smt",
+                        "name": "statement",
+                        "prose": "Only permit the use of shared and group accounts that meet {{ ac-2.9_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-2.9_gdn",
+                        "name": "guidance",
+                        "prose": "Before permitting the use of shared or group accounts, organizations consider the increased risk due to the lack of accountability with such accounts."
+                    }
+                ]
+            },
+            {
+                "id": "ac-2.10",
+                "class": "SP800-53-enhancement",
+                "title": "Shared and Group Account Credential Change",
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(10)"
+                    },
+                    {
+                        "name": "status",
+                        "value": "Withdrawn"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(10)"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-2_smt.k",
+                        "rel": "incorporated-into",
+                        "text": "AC-2k"
+                    }
+                ]
+            },
+            {
+                "id": "ac-2.11",
+                "class": "SP800-53-enhancement",
+                "title": "Usage Conditions",
+                "parameters": [
+                    {
+                        "id": "ac-2.11_prm_1",
+                        "label": "organization-defined circumstances and/or usage conditions"
+                    },
+                    {
+                        "id": "ac-2.11_prm_2",
+                        "label": "organization-defined system accounts"
+                    }
+                ],
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(11)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(11)"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-2.11_smt",
+                        "name": "statement",
+                        "prose": "Enforce {{ ac-2.11_prm_1 }} for  {{ ac-2.11_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-2.11_gdn",
+                        "name": "guidance",
+                        "prose": "Specifying and enforcing usage conditions helps to enforce the principle of least privilege, increase user accountability, and enable effective account monitoring. Account monitoring includes alerts generated if the account is used in violation of organizational parameters. Organizations can describe specific conditions or circumstances under which system accounts can be used, for example, by restricting usage to certain days of the week, time of day, or specific durations of time."
+                    }
+                ]
+            },
+            {
+                "id": "ac-2.12",
+                "class": "SP800-53-enhancement",
+                "title": "Account Monitoring for Atypical Usage",
+                "parameters": [
+                    {
+                        "id": "ac-2.12_prm_1",
+                        "label": "organization-defined atypical usage"
+                    },
+                    {
+                        "id": "ac-2.12_prm_2",
+                        "label": "organization-defined personnel or roles"
+                    }
+                ],
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(12)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(12)"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#au-6",
+                        "rel": "related",
+                        "text": "AU-6"
+                    },
+                    {
+                        "href": "#au-7",
+                        "rel": "related",
+                        "text": "AU-7"
+                    },
+                    {
+                        "href": "#ca-7",
+                        "rel": "related",
+                        "text": "CA-7"
+                    },
+                    {
+                        "href": "#ir-8",
+                        "rel": "related",
+                        "text": "IR-8"
+                    },
+                    {
+                        "href": "#si-4",
+                        "rel": "related",
+                        "text": "SI-4"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-2.12_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ac-2.12_smt.a",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Monitor system accounts for {{ ac-2.12_prm_1 }}; and"
+                            },
+                            {
+                                "id": "ac-2.12_smt.b",
+                                "name": "item",
+                                "properties": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Report atypical usage of system accounts to {{ ac-2.12_prm_2 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ac-2.12_gdn",
+                        "name": "guidance",
+                        "prose": "Atypical usage includes accessing systems at certain times of the day or from locations that are not consistent with the normal usage patterns of individuals working in organizations. Account monitoring may inadvertently create privacy risks. Data collected to identify atypical usage may reveal previously unknown information about the behavior of individuals. Organizations assess and document privacy risks from monitoring accounts for atypical usage in their privacy impact assessment and make determinations that are in alignment with their privacy program plan."
+                    }
+                ]
+            },
+            {
+                "id": "ac-2.13",
+                "class": "SP800-53-enhancement",
+                "title": "Disable Accounts for High-risk Individuals",
+                "parameters": [
+                    {
+                        "id": "ac-2.13_prm_1",
+                        "label": "organization-defined time-period"
+                    },
+                    {
+                        "id": "ac-2.13_prm_2",
+                        "label": "organization-defined significant risks"
+                    }
+                ],
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(13)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(13)"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#au-6",
+                        "rel": "related",
+                        "text": "AU-6"
+                    },
+                    {
+                        "href": "#si-4",
+                        "rel": "related",
+                        "text": "SI-4"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-2.13_smt",
+                        "name": "statement",
+                        "prose": "Disable accounts of users within {{ ac-2.13_prm_1 }} of discovery of {{ ac-2.13_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-2.13_gdn",
+                        "name": "guidance",
+                        "prose": "Users posing a significant security and/or privacy risk include individuals for whom reliable evidence indicates either the intention to use authorized access to systems to cause harm or through whom adversaries will cause harm. Such harm includes the adverse impacts to organizational operations, organizational assets, individuals, other organizations, or the Nation. Close coordination among system administrators, legal staff, human resource managers, and authorizing officials is essential for execution of this control enhancement."
+                    }
+                ]
+            },
+            {
+                "id": "ac-2.14",
+                "class": "SP800-53-enhancement",
+                "title": "Prohibit Specific Account Types",
+                "parameters": [
+                    {
+                        "id": "ac-2.14_prm_1",
+                        "select": {
+                            "how-many": "one or more",
+                            "alternatives": [
+                                "shared",
+                                "guest",
+                                "anonymous",
+                                "temporary",
+                                "emergency"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "ac-2.14_prm_2",
+                        "label": "organization-defined information types"
+                    }
+                ],
+                "properties": [
+                    {
+                        "name": "label",
+                        "value": "AC-2(14)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "AC-02(14)"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ps-4",
+                        "rel": "related",
+                        "text": "PS-4"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-2.14_smt",
+                        "name": "statement",
+                        "prose": "Prohibit the use of {{ ac-2.14_prm_1 }} accounts for access to {{ ac-2.14_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-2.14_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations determine what types of accounts are prohibited based on the security and privacy risk."
+                    }
+                ]
+            }
+        ]
+    }
+}

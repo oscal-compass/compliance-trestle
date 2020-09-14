@@ -1,0 +1,25 @@
+{
+    "parties": [
+        {
+            "uuid": "d2cd65bd-2123-4dd9-afb2-c7564f3251c2",
+            "type": "organization",
+            "party-name": "Joint Task Force, Interagency Working Group",
+            "addresses": [
+                {
+                    "postal-address": [
+                        "National Institute of Standards and Technology",
+                        "Attn: Computer Security Division",
+                        "Information Technology Laboratory",
+                        "100 Bureau Drive (Mail Stop 8930)"
+                    ],
+                    "city": "Gaithersburg",
+                    "state": "MD",
+                    "postal-code": "20899-8930"
+                }
+            ],
+            "email-addresses": [
+                "sec-cert@nist.gov"
+            ]
+        }
+    ]
+}
