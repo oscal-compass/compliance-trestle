@@ -1,10 +1,15 @@
-___
+---
+name: Proposed change
+about: Propose a change to the trestle project
+title: ''
+labels: ''
+assignees: ''
+
+---
 
 ## Instructions: REMOVE before creating issue
 
 - Use this issue template to guide creation of issues. It is not required that all of the fields are filled our or used.
-
-___
 
 ## Issue description / feature objectives
 
