@@ -39,11 +39,10 @@ For the draft phase of compliance engineering, trestle provides the following co
 
 #### `trestle init`
 
-This command will create a trestle project in the current directory with necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create a directory structure like below for different artefacts as well as initiaze `git` in it:
+This command will create a trestle project in the current directory with necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create a directory structure like below for different artefacts:
 
 ~~~
 .
-├── .git
 ├── .trestle
 ├── dist
 │   ├── catalogs
@@ -73,7 +72,6 @@ This command will create an initial directory structure for various OSCAL models
 
 ~~~
 .
-├── .git
 ├── .trestle
 ├── dist 
 │   └── catalogs
@@ -119,7 +117,6 @@ This default or reference decomposition behaviour can be changed by modifying th
 For `catalog`, the inital sample content is broken down as shown below:
 ~~~
 .
-├── .git
 ├── .trestle
 ├── dist 
 │   └── catalogs
@@ -153,7 +150,6 @@ For `catalog`, the inital sample content is broken down as shown below:
 For `profile`, the initial sample content is not broken down by default as shown below.
 ~~~
 .
-├── .git
 ├── .trestle
 ├── dist
 │   └── profiles
@@ -170,7 +166,6 @@ For `profile`, the initial sample content is not broken down by default as shown
 For `target-definition`, the initial sample content is broken down as shown below:
 ~~~
 .
-├── .git
 ├── .trestle
 ├── dist
 │   └── target-definitions
@@ -209,7 +204,6 @@ This command allows users to import existing OSCAL files so that they can be man
 
 ~~~
 .
-├── .git
 ├── .trestle
 ├── dist 
 │   └── catalogs
@@ -262,7 +256,6 @@ To illustrate how this command could be used consider a catalog model named `myc
 
 ~~~
 .
-├── .git
 ├── .trestle
 ├── dist 
 │   └── catalogs
@@ -296,7 +289,6 @@ A user might want to decompose the `metadata` property from `catalog.json`. In o
 
 ~~~
 .
-├── .git
 ├── .trestle
 ├── dist 
 │   └── catalogs
@@ -327,7 +319,6 @@ Suppose now the user wants to further break down the `revision-history` property
 
 ~~~
 .
-├── .git
 ├── .trestle
 ├── dist 
 │   └── catalogs
@@ -360,7 +351,6 @@ Knowing that `revision-history` is an array list, suppose the user wants to edit
 
 ~~~
 .
-├── .git
 ├── .trestle
 ├── dist 
 │   └── catalogs
@@ -416,7 +406,6 @@ Suppose the user wants to split the `responsible-parties` property in order to b
 
 ~~~
 .
-├── .git
 ├── .trestle
 ├── dist 
 │   └── catalogs
