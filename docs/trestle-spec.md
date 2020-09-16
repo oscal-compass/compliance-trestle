@@ -255,6 +255,10 @@ The import subcommand can determine the type of the model that is to be imported
 
 Note that the import command will decompose the file according to the default decomposing rules already mentioned in the `trestle create` section. Similarly to `trestle create`, the user can increase the level of decomposition by using `trestle split` command.
 
+#### `trestle replicate`
+
+This command allows users to replicate a certain OSCAL model (file and directory structure). For example `trestle replicate catalog -i cat1 -o cat11` will replicate the Catalog cat1 into `cat11` directory. It can also regenerate all the UUIDs as required.
+
 #### `trestle split`
 
 This command allows users to further decompose a trestle model into additional subcomponents.
@@ -449,9 +453,9 @@ Suppose the user wants to split the `responsible-parties` property in order to b
 
 The trestle merge command is the reversal of `trestle split`.
 
-#### `trestle build`
+#### `trestle assemble`
 
-This command merges all contents (files and directories) representing a specific model into a single OSCAL file located under `dist` folder. For example, `trestle merge catalog -i mycatalog` will traverse the `catalogs/mycatalog` directory and its children and combine all data into a OSCAL file that will be written to `dist/catalogs/mycatalog.json`. Note that the parts of catalog `mycatalog` can be written in either YAML/JSON/XML (e.g. based on the file extension), however, the output will be generated as YAML/JSON/XML as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle merge will also validate content as it assembles the files and make sure the contents are syntactically correct.
+This command assembles all contents (files and directories) representing a specific model into a single OSCAL file located under `dist` folder. For example, `trestle assemble catalog -i mycatalog` will traverse the `catalogs/mycatalog` directory and its children and combine all data into a OSCAL file that will be written to `dist/catalogs/mycatalog.json`. Note that the parts of catalog `mycatalog` can be written in either YAML/JSON/XML (e.g. based on the file extension), however, the output will be generated as YAML/JSON/XML as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.
 
 #### `trestle add`
 
@@ -481,10 +485,6 @@ Default values for mandatory datatypes will be like below. All UUID's will be po
 This command will validate the content of the specified file by combining all its children. For example, `trestle validate -f cat1yaml` will create the cat1 catalog in the model and make sure it is is a valid Catalog. By default this command do a "shallow validation" where it just checks for syntax error and makes sure the model can be generated from the file content. For extensive validation, `trestle validate` supports "deep validation" like cross-linking ids when additional parameters(e.g. `--mode deep-validation`) are passed. We envision that users will run this command occassionally to make sure the contents are valid.
 
 ## Future work
-
-#### `trestle duplicate`
-
-This command allows users to duplicate a certain OSCAL model (file and directory structure). For example `trestle duplicate -s cat1 -o cat11` will duplicate the Catalog cat1 into `cat11` directory. It can also regenerate all the UUIDs as required.
 
 #### `trestle generate`
 
