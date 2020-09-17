@@ -178,7 +178,7 @@ For `target-definition`, the initial sample content is broken down as shown belo
 └── target-definitions
     └── target-definition-mytargets
         ├── target-definition.json
-        └── components
+        └── targets
             ├── targets.json
             ├── 74ccb93f-07d1-422a-a43d-3c97bae4c514__target
             │   ├── target.json
