@@ -13,11 +13,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for exceptions module."""
+"""Tests for cli module."""
+
+import sys
+from unittest.mock import patch
+
+import pytest
 
 from trestle import cli
 
 
 def test_run():
-    """Fake test."""
-    assert cli.run() is None
+    """Test cli call."""
+    testargs = ['trestle', 'init']
+    with patch.object(sys, 'argv', testargs):
+        with pytest.raises(SystemExit) as pytest_wrapped_e:
+            cli.run()
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code > 0
