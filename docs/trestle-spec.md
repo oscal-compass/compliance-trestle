@@ -36,7 +36,6 @@ The scope of this document is to describe the purpose and expected behaviour of 
 
 For the draft phase of compliance engineering, trestle provides the following commands to facilitate various draft related operations.
 
-
 #### `trestle init`
 
 This command will create a trestle project in the current directory with necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create a directory structure like below for different artefacts:
@@ -67,7 +66,7 @@ This command will create a trestle project in the current directory with necessa
 `dist` directory will contain the merged or assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`, `target-definitions`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`.
 
 #### `trestle create`
-  
+
 This command will create an initial directory structure for various OSCAL models including sample JSON files and subdirectories representing parts of the model. For example, `trestle create catalog -o catalog-cat1` will create a directory structure of a sample catalog like below.
 
 ~~~
@@ -95,6 +94,7 @@ This command will create an initial directory structure for various OSCAL models
 ~~~
 
 The following subcommands are currently supported:
+
 - `trestle create catalog`: creates a directory structure of a sample OSCAL catalog model under the `catalogs` folder. This folder can contain multiple catalogs.
 - `trestle create profile`: creates a directory structure of a sample OSCAL profile model under the `profiles` folder. This folder can contain multiple profiles.
 - `trestle create target-definition`: creates a directory structure of a sample target-definition model under the `target-definitions` folder. This folder can contain multiple target-definitions.
@@ -105,6 +105,7 @@ The following subcommands are currently supported:
 - `trestle create plan-of-action-and-milestone`: creates a directory structure of a sample plan-of-action-and-milestone under the `plan-of-action-and-milestones` folder. This folder can contain multiple plan-of-action-and-milestones.
 
 The following options are supported:
+
 - `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `target-definitions`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
 
 The user can edit the parts of the generated OSCAL model by modifying the sample content in those directories.
@@ -115,6 +116,7 @@ This default or reference decomposition behaviour can be changed by modifying th
 #### *Catalog default decomposition*
 
 For `catalog`, the inital sample content is broken down as shown below:
+
 ~~~
 .
 ├── .trestle
@@ -135,10 +137,10 @@ For `catalog`, the inital sample content is broken down as shown below:
                 ├── group.json
                 └── controls
                     ├── 00000__control.json
-                    ├── 00001__control.json
-                    └── 00002__control.json
+                    └── 00001__control.json
 ...
 ~~~
+
 - a `catalog.json` file containing a catalog JSON object without the `catalog.groups` property.
 - `catalog.groups` property is broken down into a subdirectory called `groups`. The `groups` subdirectory has a `groups.json` file containing a JSON object named `groups` as an empty array.
 - For each group in the `catalog.groups` array list, an indexed subdirectory is created containing a `group.json` with a group object as its contents without the `controls` property.
@@ -148,6 +150,7 @@ For `catalog`, the inital sample content is broken down as shown below:
 #### *Profile default decomposition*
 
 For `profile`, the initial sample content is not broken down by default as shown below.
+
 ~~~
 .
 ├── .trestle
@@ -159,11 +162,13 @@ For `profile`, the initial sample content is not broken down by default as shown
         └── profile.json
 ...
 ~~~
+
 - `profile.json` file has the content of the OSCAL profile.
 
 #### *Target-definition default decomposition*
 
 For `target-definition`, the initial sample content is broken down as shown below:
+
 ~~~
 .
 ├── .trestle
@@ -173,26 +178,28 @@ For `target-definition`, the initial sample content is broken down as shown belo
 └── target-definitions
     └── target-definition-mytargets
         ├── target-definition.json
-        └── components
-            ├── components.json
-            ├── 74ccb93f-07d1-422a-a43d-3c97bae4c514__component
-            │   ├── component.json
-            │   └── control-implementations
-            │       ├── control-implementations.json
-            │       ├── 00000__control-implementation.json
-            │       └── 00001__control-implementation.json
-            └── 953a2878-2a21-4a0f-a9fa-3a37b61b9df8__component
-                ├── component.json
-                └── control-implementations
-                    ├── control-implementations.json
-                    └── 00000__control-implementation.json
+        └── targets
+            ├── targets.json
+            ├── 74ccb93f-07d1-422a-a43d-3c97bae4c514__target
+            │   ├── target.json
+            │   └── target-control-implementations
+            │       ├── target-control-implementations.json
+            │       ├── 00000__target-control-implementation.json
+            │       └── 00001__target-control-implementation.json
+            └── 953a2878-2a21-4a0f-a9fa-3a37b61b9df8__target
+                ├── target.json
+                └── target-control-implementations
+                    ├── target-control-implementations.json
+                    ├── 00000__target-control-implementation.json
+                    └── 00001__target-control-implementation.json
 ...
 ~~~
-- a `target-definition.json` file containing a target definition JSON object except for the `target-definition.components` property.
-- `target-definition.components` property is broken down into a subdirectory named `components`. The `components` subdirectory has a `components.json` file containing a JSON object named `components` as an empty object.
-- For each component in the `target-definition.components` uniquely identified by a property labelled with the component's uuid, a subdirectory named after the `{{uuid}}__component` is created containing a `component.json` file. This file contains a component JSON object without the `control-implementations` property.
-- `target-definition.components.{{uuid}}.control-implementations` property is broken down into subdirectories called `control-implementations`. The `control-implementations` subdirectory has a `control-implementations.json` file containing a JSON object named `control-implementations` as an empty object.
-- For each control implementation in a `target-definition.components.{{uuid}}.control-implementations` array list, an indexed JSON file is created representing the contents of a control implementation.
+
+- a `target-definition.json` file containing a target definition JSON object except for the `target-definition.targets` property.
+- `target-definition.targets` property is broken down into a subdirectory named `targets`. The `targets` subdirectory has a `targets.json` file containing a JSON object named `targets` as an empty object.
+- For each component in the `target-definition.targets` uniquely identified by a property labelled with the target's uuid, a subdirectory named after the `{{uuid}}__target` is created containing a `target.json` file. This file contains a target JSON object without the `target-control-implementations` property.
+- `target-definition.components.{{uuid}}.target-control-implementations` property is broken down into subdirectories called `target-control-implementations`. The `target-control-implementations` subdirectory has a `target-control-implementations.json` file containing a JSON object named `target-control-implementations` as an empty object.
+- For each target control implementation in a `target-definition.components.{{uuid}}.target-control-implementations` array list, an indexed JSON file is created representing the contents of a target control implementation.
 
 At the moment, the initial sample content for the other model types (`component-definition`, `system-security-plan`, `assessment-plan`, `assessment-result` and `plan-of-action-and-milestone`) is TBD.
 
@@ -235,12 +242,12 @@ This command allows users to import existing OSCAL files so that they can be man
                 └── controls
                     ├── controls.json                    
                     ├── 00000__control.json
-                    ├── 00001__control.json
-                    └── 00002__control.json
+                    └── 00001__control.json
 ...
 ~~~
 
 The following options are supported:
+
 - `-f or --file`: specifies the path of an existing OSCAL file.
 - `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `target-definitions`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
 
@@ -248,9 +255,13 @@ The import subcommand can determine the type of the model that is to be imported
 
 Note that the import command will decompose the file according to the default decomposing rules already mentioned in the `trestle create` section. Similarly to `trestle create`, the user can increase the level of decomposition by using `trestle split` command.
 
+#### `trestle replicate`
+
+This command allows users to replicate a certain OSCAL model (file and directory structure). For example `trestle replicate catalog -i cat1 -o cat11` will replicate the Catalog cat1 into `cat11` directory. It can also regenerate all the UUIDs as required.
+
 #### `trestle split`
 
-This command allows users to further decompose a trestle model into additional subcomponents. 
+This command allows users to further decompose a trestle model into additional subcomponents.
 
 To illustrate how this command could be used consider a catalog model named `mycatalog` that was created via `trestle create catalog -o mycatalog` or imported via `trestle import -f mycatalog.json`.
 
@@ -276,15 +287,15 @@ To illustrate how this command could be used consider a catalog model named `myc
                 └── controls
                     ├── controls.json
                     ├── 00000__control.json
-                    ├── 00001__control.json
-                    └── 00002__control.json
+                    └── 00001__control.json
 ...
 ~~~
 
 The following options are supported:
+
 - `-i or --input`: this optional parameter can be used to specify the model instance you want to split. This can be ommitted if the `trestle split` command is executed from within a model instance directory (contextual mode) such as `catalogs/mycatalog`, for example.
-- `-e or --elements`: specifies the model subcomponent element that is going to be split. Multiple elements can be specified at once using a comma-separated value. If the element is of JSON type array list and you want trestle to create a separate subcomponent file per array item, the element needs to be suffixed with `[]`. If the suffix is not specified, split will place all array items in only one separate subcomponent file. If the element is a collection of JSON Schema additionalProperties and you want trestle to create a separate subcomponent file per additionalProperties item, the element needs to be suffixed with `{}`. Similarly, not adding the suffix will place all additionalProperties items in only one separate subcomponent file. The path of a model subcomponent element is contextual if `trestle split` is executed from within a model instance subdirectory. If `trestle split` is executed from the $BASE_FOLDER, the element path needs to be an absolute full path.
-  
+- `-e or --elements`: specifies the model subcomponent element that is going to be split. Multiple elements can be specified at once using a comma-separated value. If the element is of JSON type array list and you want trestle to create a separate subcomponent file per array item, the element needs to be suffixed with `[]`. If the suffix is not specified, split will place all array items in only one separate subcomponent file. If the element is a collection of JSON Schema additionalProperties and you want trestle to create a separate subcomponent file per additionalProperties item, the element needs to be suffixed with `{}`. Similarly, not adding the suffix will place all additionalProperties items in only one separate subcomponent file. The path of a model subcomponent element is contextual if `trestle split` is executed from within a model instance subdirectory. If `trestle split` is executed from the $BASE\_FOLDER, the element path needs to be an absolute full path.
+
 A user might want to decompose the `metadata` property from `catalog.json`. In order to achieve that he/she would run `trestle split -i catalogs/mycatalog -e metadata`. This would create a `metadata.json` file at the same level as `catalog.json` and move the whole `metadata` property/section from `catalog.json` to `metadata.json` as below:
 
 ~~~
@@ -310,8 +321,7 @@ A user might want to decompose the `metadata` property from `catalog.json`. In o
                 └── controls
                     ├── controls.json                
                     ├── 00000__control.json
-                    ├── 00001__control.json
-                    └── 00002__control.json
+                    └── 00001__control.json
 ...
 ~~~
 
@@ -342,8 +352,7 @@ Suppose now the user wants to further break down the `revision-history` property
                 └── controls
                     ├── controls.json                      
                     ├── 00000__control.json
-                    ├── 00001__control.json
-                    └── 00002__control.json
+                    └── 00001__control.json
 ...
 ~~~
 
@@ -378,8 +387,7 @@ Knowing that `revision-history` is an array list, suppose the user wants to edit
                 └── controls
                     ├── controls.json                    
                     ├── 00000__control.json
-                    ├── 00001__control.json
-                    └── 00002__control.json
+                    └── 00001__control.json
 ...
 ~~~
 
@@ -437,8 +445,7 @@ Suppose the user wants to split the `responsible-parties` property in order to b
                 └── controls
                     ├── controls.json                
                     ├── 00000__control.json
-                    ├── 00001__control.json
-                    └── 00002__control.json
+                    └── 00001__control.json
 ...
 ~~~
 
@@ -446,9 +453,9 @@ Suppose the user wants to split the `responsible-parties` property in order to b
 
 The trestle merge command is the reversal of `trestle split`.
 
-#### `trestle build`
+#### `trestle assemble`
 
-This command merges all contents (files and directories) representing a specific model into a single OSCAL file located under `dist` folder. For example, `trestle merge catalog -i mycatalog` will traverse the `catalogs/mycatalog` directory and its children and combine all data into a OSCAL file that will be written to `dist/catalogs/mycatalog.json`. Note that the parts of catalog `mycatalog` can be written in either YAML/JSON/XML (e.g. based on the file extension), however, the output will be generated as YAML/JSON/XML as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle merge will also validate content as it assembles the files and make sure the contents are syntactically correct.
+This command assembles all contents (files and directories) representing a specific model into a single OSCAL file located under `dist` folder. For example, `trestle assemble catalog -i mycatalog` will traverse the `catalogs/mycatalog` directory and its children and combine all data into a OSCAL file that will be written to `dist/catalogs/mycatalog.json`. Note that the parts of catalog `mycatalog` can be written in either YAML/JSON/XML (e.g. based on the file extension), however, the output will be generated as YAML/JSON/XML as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.
 
 #### `trestle add`
 
@@ -478,10 +485,6 @@ Default values for mandatory datatypes will be like below. All UUID's will be po
 This command will validate the content of the specified file by combining all its children. For example, `trestle validate -f cat1yaml` will create the cat1 catalog in the model and make sure it is is a valid Catalog. By default this command do a "shallow validation" where it just checks for syntax error and makes sure the model can be generated from the file content. For extensive validation, `trestle validate` supports "deep validation" like cross-linking ids when additional parameters(e.g. `--mode deep-validation`) are passed. We envision that users will run this command occassionally to make sure the contents are valid.
 
 ## Future work
-
-#### `trestle duplicate`
-
-This command allows users to duplicate a certain OSCAL model (file and directory structure). For example `trestle duplicate -s cat1 -o cat11` will duplicate the Catalog cat1 into `cat11` directory. It can also regenerate all the UUIDs as required. 
 
 #### `trestle generate`
 
