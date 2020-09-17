@@ -121,3 +121,16 @@ def test_broken_tz():
     with pytest.raises(Exception):
         jsoned_catalog = catalog.json(exclude_none=True, by_alias=True, indent=2)
         type(jsoned_catalog)
+
+
+def test_stripped_model():
+    catalog = simple_catalog()
+
+    stripped_catalog = catalog.create_stripped_model_type(['metadata'])
+    
+    # FIXME: Need to check best practice here
+    if 'metadata' in stripped_catalog.__fields__.keys():
+        raise Exception('Test failure')
+
+    if 'controls' not in stripped_catalog.__fields__.keys():
+        raise Exception('Test failure')

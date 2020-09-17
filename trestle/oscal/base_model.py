@@ -15,9 +15,11 @@
 """Pydantic base model and utility functions."""
 
 import datetime
+from typing import List, Optional
 
+from pydantic import BaseModel, Field, create_model
 
-from pydantic import BaseModel
+from trestle.core import parser
 
 
 def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
@@ -45,3 +47,37 @@ class OscalBaseModel(BaseModel):
         # this is not safe and caused class: nan in yaml output
         # TODO: Explore fix.
         # allow_population_by_field_name = True  noqa: E800
+
+
+    def create_stripped_model_type(self, fields: List[str]):
+        """Use introspection to create a model that removes the fields.
+
+        Returns a model class definition that can be used to instanciate a model.
+        """
+        current_fields = self.__fields__
+        new_fields_for_model = {}
+        # Build field list
+        for current_mfield in current_fields.values():
+            if current_mfield.name in fields: 
+                continue
+            # Validate name in the field
+            # Cehcke behaviour with an alias
+            if current_mfield.required:
+                new_fields_for_model[current_mfield.name] = (current_mfield.outer_type_,
+                    Field(...,
+                    title=current_mfield.name,
+                    alias=current_mfield.alias
+
+                ))
+            else:
+                new_fields_for_model[current_mfield.name] = (Optional[current_mfield.outer_type_],
+                    Field(
+                        None,
+                        title=current_mfield.name,
+                        alias=current_mfield.alias
+                    )
+                )
+        new_model = create_model('partial-' + self.__class__.__name__, __base__=OscalBaseModel,
+                                **new_fields_for_model)
+
+        return new_model
