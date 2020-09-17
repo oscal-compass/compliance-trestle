@@ -18,64 +18,69 @@
 from ilcli import Command
 
 
-class Catalog(Command):
+class CatalogCmd(Command):
     """Create a sample catalog."""
 
     name = 'catalog'
 
 
-class Profile(Command):
+class ProfileCmd(Command):
     """Create a sample profile."""
 
     name = 'profile'
 
 
-class TargetDefinition(Command):
+class TargetDefinitionCmd(Command):
     """Create a sample target definition."""
 
     name = 'target-definition'
 
 
-class ComponentDefinition(Command):
+class ComponentDefinitionCmd(Command):
     """Create a sample component definition."""
 
     name = 'component-definition'
 
 
-class SystemSecurityPlan(Command):
+class SystemSecurityPlanCmd(Command):
     """Create a sample system security plan."""
 
     name = 'system-security-plan'
 
 
-class AssessmentPlan(Command):
+class AssessmentPlanCmd(Command):
     """Create a sample assessment plan."""
 
     name = 'assessment-plan'
 
 
-class AssessmentResult(Command):
+class AssessmentResultCmd(Command):
     """Create a sample assessment result."""
 
     name = 'assessment-result'
 
 
-class PlanOfActionAndMilestone(Command):
+class PlanOfActionAndMilestoneCmd(Command):
     """Create a sample plan of action and milestone result."""
 
     name = 'plan-of-action-and-milestone'
 
 
-class Create(Command):
+class CreateCmd(Command):
     """Create a sample trestle model."""
 
+    name = 'create'
+
     subcommands = [
-        Catalog,
-        Profile,
-        TargetDefinition,
-        ComponentDefinition,
-        SystemSecurityPlan,
-        AssessmentPlan,
-        AssessmentResult,
-        PlanOfActionAndMilestone
+        CatalogCmd,
+        ProfileCmd,
+        TargetDefinitionCmd,
+        ComponentDefinitionCmd,
+        SystemSecurityPlanCmd,
+        AssessmentPlanCmd,
+        AssessmentResultCmd,
+        PlanOfActionAndMilestoneCmd
     ]
+
+    def _init_arguments(self):
+        self.add_argument('-o', '--output', help='Name of the model.', required=True)

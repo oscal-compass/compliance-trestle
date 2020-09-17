@@ -13,10 +13,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Trestle Init Command."""
+"""Trestle Replicate Command."""
 
 from ilcli import Command
 
 
-class Init(Command):
-    """Initialize a Trestle working directory."""
+class ReplicateCmd(Command):
+    """Replicate an existing trestle model generating new UUIDs."""
+
+    name = 'replicate'

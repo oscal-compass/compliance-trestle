@@ -13,10 +13,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Trestle Add Command."""
+"""Trestle Split Command."""
 
 from ilcli import Command
 
 
-class Add(Command):
-    """Add a subcomponent to an existing model."""
+class SplitCmd(Command):
+    """Split subcomponents on a trestle model."""
+
+    name = 'split'

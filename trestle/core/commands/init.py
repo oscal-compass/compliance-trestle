@@ -13,10 +13,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Trestle Split Command."""
+"""Trestle Init Command."""
 
 from ilcli import Command
 
 
-class Split(Command):
-    """Split subcomponents on a trestle model."""
+class InitCmd(Command):
+    """Initialize a Trestle working directory."""
+
+    name = 'init'

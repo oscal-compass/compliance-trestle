@@ -13,10 +13,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Trestle Validate Command."""
+"""Trestle Assemble Command."""
 
 from ilcli import Command
 
 
-class Validate(Command):
-    """Validate contents of a trestle model."""
+class AssembleCmd(Command):
+    """Assemble all subcomponents from a trestle model into a single JSON/YAML file under dist."""
+
+    name = 'assemble'

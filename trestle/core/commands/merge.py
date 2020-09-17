@@ -13,10 +13,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Trestle Import Command."""
+"""Trestle Merge Command."""
 
 from ilcli import Command
 
 
-class Import(Command):
-    """Import a model from an existing JSON/YAML file into Trestle."""
+class MergeCmd(Command):
+    """Merge subcomponents on a trestle model."""
+
+    name = 'merge'
