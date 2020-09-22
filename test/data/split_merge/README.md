@@ -1,74 +1,38 @@
-# Example of usage of `trestle split` and `trestle merge`
+# How to navigate through this example
 
-The contents of this folder show the evolution of a catalog model named `mycatalog` as it is split split and merged by trestle.
+The contents of this folder show the evolution of a catalog model named `mycatalog` as it is split and merged by trestle.
 
 It also contains an example of a `config.ini` file under `.trestle` folder specifying the default or reference decomposition behaviour of each model.
 
-We envision two different modes of running `trestle split/merge` subcommands:
+The commands responsible for the changes in contents between subsequent steps can be found in files named `next_step.sh` and/or `previous_step.sh`. The location of those files in a `step*` folder indicates where those commands are run from.
 
-- `Contextual mode`: it takes into account the directory the subcommand is running from to determine the path of the subcomponents that are being split or merged.
-- `Non-contextual mode`: it uses the base folder of the trestle model (catalag, profile, target-definition, etc) as the root for determining the path of the subcomponents that are being split or merged. It requires the `-i` option to be specified in order to identify the model instance that will be affected. For example, `-i catalogs/mycatalog`
+The story told by the steps can be summarised as:
 
-The changes to the `mycatalog` model used in this example can be performed using either of those two modes.
+## Step 0:
 
-## Splitting and Merging `mycatalog` using Contextual mode
+- The catalog model is all in one piece and its contents are all in `catalog.json`.
+- `./next_step.sh` contains the commnad that splits the catalog into `uuid`, `metadata`, `groups` and `back-matter`.
 
-1. `cd $BASE_FOLDER/catalogs/mycatalog`
+## Step 1:
 
-   In this example, the inital state of `mycatalog` in this example can be found in `step0-merged_catalog/catalogs/mycatalog`
+- The catalog model gets split into `uuid`, `metadata`, `groups` and `back-matter`.
+- `./next_step.sh` contains the command that splits the catalog metadata property into each of its properties: `metadata.title`, `metadata.last-modified`, `metadata.version`,`metadata.links`, `metadata.roles`, `metadata.parties`, `metadata.responsible-parties`.
+- `./previous_step.sh` contains the commnad reverses the split executed on step 0.
 
-1. `cd $BASE_FOLDER/catalogs/mycatalog`
+## Step 2:
 
-   `trestle split -e uuid,metadata,groups,back-matter`
+- The catalog metadata subcomponent gets split into `metadata.title`, `metadata.last-modified`, `metadata.version`,`metadata.links`, `metadata.roles`, `metadata.parties`, `metadata.responsible-parties`.
+- `metadata/next_step.sh` contains the command that splits each collection item in the metadata properties of roles and responsible-parties.
+- `./previous_step.sh` contains the commnad reverses the split executed on step 1.
 
-   In this example, the result state of `mycatalog` in this example for this step can be found in `step1-split_root_elements/catalogs/mycatalog`
+## Step 3:
 
-1. `cd $BASE_FOLDER/catalogs/mycatalog`
+- Each collection item in the `metadata.roles` and `metadata.responsible-parties` gets split.
+- `./next_step.sh` contains the command that splits each collection item in catalog groups and, for each group, each collection item in controls.
+- `metadata/previous_step.sh` contains the commnad reverses the split executed on step 2.
 
-   `trestle split -e metadata.title,metadata.last-modified,metadata.version,metadata.links,metadata.roles,metadata.parties,metadata.responsible-parties`
+## Step 4:
 
-   In this example, the result state of `mycatalog` in this example for this step can be found in `step2-split_metadata_elements/catalogs/mycatalog`
-
-1. `cd $BASE_FOLDER/catalogs/mycatalog/metadata`
-
-   `trestle split -e roles[],responsible-parties{}`
-
-   In this example, the result state of `mycatalog` in this example for this step can be found in `step3-split_metadata_array_additionalproperties_elements/catalogs/mycatalog`
-
-1. `cd $BASE_FOLDER/catalogs/mycatalog`
-
-   `trestle split -e groups[].controls[]`
-
-   In this example, the result state of `mycatalog` in this example for this step can be found in `step4_split_groups_array/catalogs/mycatalog`
-
-1. `cd $BASE_FOLDER/catalogs/mycatalog`
-
-   `trestle merge -e uuid,metadata,groups,back-matter`
-
-   In this example, the result state of `mycatalog` in this example for this step can be found in `step0-merged_catalog/catalogs/mycatalog`
-
-## Splitting and Merging `mycatalog` using Non-contextual mode
-
-1. `cd $BASE_FOLDER`
-
-   In this example, the inital state of `mycatalog` in this example can be found in `step0-merged_catalog/catalogs/mycatalog`
-
-1. `trestle split -i catalogs/mycatalog -e uuid,metadata,groups,back-matter`
-
-   In this example, the result state of `mycatalog` in this example for this step can be found in `step1-split_root_elements/catalogs/mycatalog`
-
-1. `trestle split -e metadata.title,metadata.last-modified,metadata.version,metadata.links,metadata.roles,metadata.parties,metadata.responsible-parties`
-
-   In this example, the result state of `mycatalog` in this example for this step can be found in `step2-split_metadata_elements/catalogs/mycatalog`
-
-1. `trestle split -e metadata.roles[],metadata.responsible-parties{}`
-
-   In this example, the result state of `mycatalog` in this example for this step can be found in `step3-split_metadata_array_additionalproperties_elements/catalogs/mycatalog`
-
-1. `trestle split -e groups[].controls[]`
-
-   In this example, the result state of `mycatalog` in this example for this step can be found in `step4_split_groups_array/catalogs/mycatalog`
-
-1. `trestle merge -e uuid,metadata,groups,back-matter`
-
-   In this example, the result state of `mycatalog` in this example for this step can be found in `step0-merged_catalog/catalogs/mycatalog`
+- Each collection item in the `catalog.groups` and `catalog.groups.*.controls` gets split.
+- `./next_step.sh` contains the command that merges everything back to how it looks at step 0.
+- `./previous_step.sh` contains the commnad reverses the split executed on step 3.
