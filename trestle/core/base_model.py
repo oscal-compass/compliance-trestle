@@ -18,7 +18,7 @@
 import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, Field, create_model
+from pydantic import BaseModel, Extra, Field, create_model
 
 
 def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
@@ -46,6 +46,12 @@ class OscalBaseModel(BaseModel):
         # this is not safe and caused class: nan in yaml output
         # TODO: Explore fix.
         # allow_population_by_field_name = True  noqa: E800
+
+        # Enforce strict schema
+        extra = Extra.forbid
+
+        # Validate on assignment of variables to ensure no escapes
+        validate_assignment = True
 
     @classmethod
     def create_stripped_model_type(cls, fields: List[str]):

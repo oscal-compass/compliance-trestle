@@ -129,14 +129,49 @@ def test_broken_tz():
 
 
 def test_stripped_model():
-    """Test whether model is stripped."""
+    """Test whether model is can be stripped when acting as an intstance function."""
     catalog = simple_catalog()
 
-    stripped_catalog = catalog.create_stripped_model_type(['metadata'])
+    stripped_catalog_object = catalog.create_stripped_model_type(['metadata'])
 
-    # FIXME: Need to check best practice here
-    if 'metadata' in stripped_catalog.__fields__.keys():
+    # TODO: Need to check best practice here
+    if 'metadata' in stripped_catalog_object.__fields__.keys():
         raise Exception('Test failure')
 
-    if 'controls' not in stripped_catalog.__fields__.keys():
+    if 'controls' not in stripped_catalog_object.__fields__.keys():
         raise Exception('Test failure')
+
+    # Create instance.
+    sc_instance = stripped_catalog_object(uuid=str(uuid4()))
+    if 'metadata' in sc_instance.__fields__.keys():
+        raise Exception('Test failure')
+
+
+def test_stripping_model_class():
+    """Test as a class variable."""
+    stripped_catalog_object = oscatalog.Catalog.create_stripped_model_type(['metadata'])
+    if 'metadata' in stripped_catalog_object.__fields__.keys():
+        raise Exception('Test failure')
+
+    if 'controls' not in stripped_catalog_object.__fields__.keys():
+        raise Exception('Test failure')
+
+    # Create instance.
+    sc_instance = stripped_catalog_object(uuid=str(uuid4()))
+    if 'metadata' in sc_instance.__fields__.keys():
+        raise Exception('Test failure')
+
+
+def test_multiple_variable_strip():
+    """Test mutliple fields can be stripped and checking strict schema enforcement."""
+    stripped_catalog_object = oscatalog.Catalog.create_stripped_model_type(['metadata', 'uuid'])
+    if 'metadata' in stripped_catalog_object.__fields__.keys():
+        raise Exception('Test failure')
+    if 'uuid' in stripped_catalog_object.__fields__.keys():
+        raise Exception('Test failure')
+
+    if 'controls' not in stripped_catalog_object.__fields__.keys():
+        raise Exception('Test failure')
+
+    with pytest.raises(Exception):
+        stripped_catalog_object(uuid=str(uuid4()))
