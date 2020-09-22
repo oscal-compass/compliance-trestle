@@ -120,7 +120,7 @@
             },
             "89cfe7a7-ce6b-4699-aa7b-2f5739c72001": {
                 "name": "RedHat Enterprise Linux 7.8",
-                "component-type": "Software",
+                "target-type": "Software",
                 "title": "RedHat Enterprise Linux 7.8",
                 "description": "RedHat Enterprise Linux 7.8",
                 "target-control-implementations": [
