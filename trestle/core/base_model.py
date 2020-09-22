@@ -20,8 +20,6 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field, create_model
 
-from trestle.core import parser
-
 
 def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
     """Return a nicely formatted string for time as OSCAL likes it."""
@@ -40,11 +38,11 @@ def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
 
 class OscalBaseModel(BaseModel):
     """Base model which overrides defaults for all OSCAL classes."""
+
     class Config:
         """Configuration for Oscal Models."""
-        json_encoders = {
-            datetime.datetime: lambda x: robust_datetime_serialization(x)
-        }
+
+        json_encoders = {datetime.datetime: lambda x: robust_datetime_serialization(x)}
         # this is not safe and caused class: nan in yaml output
         # TODO: Explore fix.
         # allow_population_by_field_name = True  noqa: E800
@@ -59,26 +57,19 @@ class OscalBaseModel(BaseModel):
         new_fields_for_model = {}
         # Build field list
         for current_mfield in current_fields.values():
-            if current_mfield.name in fields: 
+            if current_mfield.name in fields:
                 continue
             # Validate name in the field
             # Cehcke behaviour with an alias
             if current_mfield.required:
-                new_fields_for_model[current_mfield.name] = (current_mfield.outer_type_,
-                    Field(...,
-                    title=current_mfield.name,
-                    alias=current_mfield.alias
-
-                ))
+                new_fields_for_model[
+                    current_mfield.name
+                ] = (current_mfield.outer_type_, Field(..., title=current_mfield.name, alias=current_mfield.alias))
             else:
-                new_fields_for_model[current_mfield.name] = (Optional[current_mfield.outer_type_],
-                    Field(
-                        None,
-                        title=current_mfield.name,
-                        alias=current_mfield.alias
-                    )
+                new_fields_for_model[current_mfield.name] = (
+                    Optional[current_mfield.outer_type_],
+                    Field(None, title=current_mfield.name, alias=current_mfield.alias)
                 )
-        new_model = create_model('partial-' + cls.__class__.__name__, __base__=OscalBaseModel,
-                                **new_fields_for_model)
+        new_model = create_model('partial-' + cls.__class__.__name__, __base__=OscalBaseModel, **new_fields_for_model)
 
         return new_model

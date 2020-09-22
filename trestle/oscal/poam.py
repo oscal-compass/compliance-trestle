@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import AnyUrl, EmailStr, Field, conint, constr
 
-from trestle.oscal.base_model import OscalBaseModel
+from trestle.core.base_model import OscalBaseModel
 
 
 class Link(OscalBaseModel):
