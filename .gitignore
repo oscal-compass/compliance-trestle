@@ -22,3 +22,7 @@ _*/
 
 #OS X 
 .DS_Store
+
+# Codecov
+.coverage
+coverage.xml

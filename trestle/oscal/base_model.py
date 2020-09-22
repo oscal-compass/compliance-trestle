@@ -48,13 +48,13 @@ class OscalBaseModel(BaseModel):
         # TODO: Explore fix.
         # allow_population_by_field_name = True  noqa: E800
 
-
-    def create_stripped_model_type(self, fields: List[str]):
+    @classmethod
+    def create_stripped_model_type(cls, fields: List[str]):
         """Use introspection to create a model that removes the fields.
 
         Returns a model class definition that can be used to instanciate a model.
         """
-        current_fields = self.__fields__
+        current_fields = cls.__fields__
         new_fields_for_model = {}
         # Build field list
         for current_mfield in current_fields.values():
@@ -77,7 +77,7 @@ class OscalBaseModel(BaseModel):
                         alias=current_mfield.alias
                     )
                 )
-        new_model = create_model('partial-' + self.__class__.__name__, __base__=OscalBaseModel,
+        new_model = create_model('partial-' + cls.__class__.__name__, __base__=OscalBaseModel,
                                 **new_fields_for_model)
 
         return new_model
