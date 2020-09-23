@@ -15,9 +15,19 @@
 # limitations under the License.
 """Core constants module containing all constants."""
 
-DIR_TRESTLE = '_trestle'
-DIR_TRESTLE_BACKUP = f'{DIR_TRESTLE}/backup'
-DIR_TRESTLE_DIST = f'{DIR_TRESTLE}/dist'
+TRESTLE_CONFIG_DIR = '.trestle'
+TRESTLE_DIST_DIR = 'dist'
+TRESTLE_MODEL_DIRS = [
+    'catalogs',
+    'profiles',
+    'target-definitions',
+    'component-definitions',
+    'system-security-plans',
+    'assessment-plans',
+    'assessment-results',
+    'plan-of-action-and-milestones'
+]
+TRESTLE_CONFIG_FILE = 'config.ini'
 
 # list key to model name
 # This is usually a map from plural names to singular
@@ -25,8 +35,8 @@ DIR_TRESTLE_DIST = f'{DIR_TRESTLE}/dist'
 LIST_KEY_TO_MODEL_NAME = {
     'groups': 'group',
     'controls': 'control',
+    'targets': 'target',
+    'target-control-implementations': 'target-control-implementation'
 }
-
-ALLOWED_MODELS_FOR_SPLIT = LIST_KEY_TO_MODEL_NAME.keys()
 
 PACKAGE_OSCAL = 'trestle.oscal'

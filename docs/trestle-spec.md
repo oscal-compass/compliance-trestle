@@ -65,6 +65,8 @@ This command will create a trestle project in the current directory with necessa
 
 `dist` directory will contain the merged or assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`, `target-definitions`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`.
 
+Notice that trestle is a highly opinionated tool and, therefore, the names of the files and directories that are created by any of the `trestle` commands and subcommands MUST NOT be changed manually.
+
 #### `trestle create`
 
 This command will create an initial directory structure for various OSCAL models including sample JSON files and subdirectories representing parts of the model. For example, `trestle create catalog -o catalog-cat1` will create a directory structure of a sample catalog like below.
@@ -263,6 +265,16 @@ This command allows users to replicate a certain OSCAL model (file and directory
 
 This command allows users to further decompose a trestle model into additional subcomponents.
 
+The following options are currently supported:
+
+- `-f or --file`: this option specifies the file path of the json/yaml file containing the elements that will be split.
+- `-e or --elements`: specifies the model subcomponent element(s) (JSON/YAML property path) that is/are going to be split. Multiple elements can be specified at once using a comma-separated value. If the element is of JSON/YAML type array list and you want trestle to create a separate subcomponent file per array item, the element needs to be suffixed with `.*`. If the suffix is not specified, split will place all array items in only one separate subcomponent file. If the element is a collection of JSON Schema additionalProperties and you want trestle to create a separate subcomponent file per additionalProperties item, the element also needs to be suffixed with `.*`. Similarly, not adding the suffix will place all additionalProperties items in only one separate subcomponent file.
+
+In the near future, `trestle split` should be smart enough to figure out which json/yaml files contain the elemenets you want to split. In that case, the `-f` option would be deprecated and only the `-e` option will be required. In order to determine which elements the user can split at the level the command is being executed, the following command can be used:
+`trestle split -l` which would be the same as `trestle split --list-available-elements`
+
+#### Example
+
 To illustrate how this command could be used consider a catalog model named `mycatalog` that was created via `trestle create catalog -o mycatalog` or imported via `trestle import -f mycatalog.json`.
 
 ~~~
@@ -291,12 +303,7 @@ To illustrate how this command could be used consider a catalog model named `myc
 ...
 ~~~
 
-The following options are supported:
-
-- `-i or --input`: this optional parameter can be used to specify the model instance you want to split. This can be ommitted if the `trestle split` command is executed from within a model instance directory (contextual mode) such as `catalogs/mycatalog`, for example.
-- `-e or --elements`: specifies the model subcomponent element that is going to be split. Multiple elements can be specified at once using a comma-separated value. If the element is of JSON type array list and you want trestle to create a separate subcomponent file per array item, the element needs to be suffixed with `[]`. If the suffix is not specified, split will place all array items in only one separate subcomponent file. If the element is a collection of JSON Schema additionalProperties and you want trestle to create a separate subcomponent file per additionalProperties item, the element needs to be suffixed with `{}`. Similarly, not adding the suffix will place all additionalProperties items in only one separate subcomponent file. The path of a model subcomponent element is contextual if `trestle split` is executed from within a model instance subdirectory. If `trestle split` is executed from the $BASE\_FOLDER, the element path needs to be an absolute full path.
-
-A user might want to decompose the `metadata` property from `catalog.json`. In order to achieve that he/she would run `trestle split -i catalogs/mycatalog -e metadata`. This would create a `metadata.json` file at the same level as `catalog.json` and move the whole `metadata` property/section from `catalog.json` to `metadata.json` as below:
+**Step 1**: A user might want to decompose the `metadata` property from `catalog.json`. In order to achieve that he/she would run from `$BASE_FOLDER/catalogs/mycatalog` the command `trestle split -f catalog.json -e 'catalog.metadata'`. This would create a `metadata.json` file at the same level as `catalog.json` and move the whole `metadata` property/section from `catalog.json` to `metadata.json` as below:
 
 ~~~
 .
@@ -325,7 +332,10 @@ A user might want to decompose the `metadata` property from `catalog.json`. In o
 ...
 ~~~
 
-Suppose now the user wants to further break down the `revision-history` property under the `metadata` subcomponent. The command to achieve that would be `trestle split -i catalogs/mycatalog -e metadata.revision-history` which would result in the replacement of the `metadata.json` file by a `metadata` directory containing a `metadata.json` file and a `revision-history.json` file as shown below:
+The future version of this command would be: `trestle split -e 'metadata'`
+Notice that in that case, the root property `catalog.` was ommitted and infered by trestle based on the directory the command was executed from.
+
+**Step 2**: Suppose now the user wants to further break down the `revision-history` property under the `metadata` subcomponent. The command to achieve that would be `trestle split -f metadata.json -e 'metadata.revision-history'` which would result in the replacement of the `metadata.json` file by a `metadata` directory containing a `metadata.json` file and a `revision-history.json` file as shown below:
 
 ~~~
 .
@@ -356,7 +366,11 @@ Suppose now the user wants to further break down the `revision-history` property
 ...
 ~~~
 
-Knowing that `revision-history` is an array list, suppose the user wants to edit each item in that array list as a separate subcomponent or file. That can be achieved by running: `trestle split -i catalogs/mycatalog -e metadata.revision-history[]` (notice the squared brackets at the end) which would replace the `revision-history.json` file by a `revision-history` directory containing multiple files prefixed with a 5 digit number representing the index of the array element followed by an underscore and the string `revision-history.json` as shown below:
+The future version of this command would be:
+
+- `trestle split -e 'metadata.revision-history'` when executed from `$BASE_FOLDER/catalogs/mycatalog`
+
+**Step 3**: Knowing that `revision-history` is an array list, suppose the user wants to edit each item in that array list as a separate subcomponent or file. That can be achieved by running: `trestle split -f metadata/revision-history.json -e 'revision-history.*'` (notice the `.*` referring to each element in the array) which would replace the `revision-history.json` file by a `revision-history` directory containing multiple files prefixed with a 5 digit number representing the index of the array element followed by two underscores and the string `revision-history.json` as shown below:
 
 ~~~
 .
@@ -391,7 +405,12 @@ Knowing that `revision-history` is an array list, suppose the user wants to edit
 ...
 ~~~
 
-OSCAL also makes use of `additionalProperties` supported by JSON Schema. OSCAL normally uses this feature as a way to assign multiple objects to a property without necessarily having to enforce a specific order as is the case with JSON array properties. It is like assigning a map/dict to a property. An example of such property in the catalog schema is the `responsible-parties` under `metadata`. One example of contents for a `responsible-parties` property is:
+The future version of this command would be:
+
+- `trestle split -e 'metadata.revision-history.*'` when executed from `$BASE_FOLDER/catalogs/mycatalog`, or;
+- `trestle split -e 'revision-history.*'` when executed from `$BASE_FOLDER/catalogs/mycatalog/metadata`
+
+OSCAL also makes use of `additionalProperties` supported by JSON Schema which behaves as a map or dict. OSCAL normally uses this feature as a way to assign multiple objects to a property without necessarily having to enforce a specific order as is the case with JSON array properties. It is like assigning a map/dict to a property. An example of such property in the catalog schema is the `responsible-parties` under `metadata`. One example of contents for a `responsible-parties` property is:
 
 ~~~
 "responsible-parties": {
@@ -410,7 +429,7 @@ OSCAL also makes use of `additionalProperties` supported by JSON Schema. OSCAL n
 
 A more evident example of this type of property is in the `components` property under the `target-definition` schema.
 
-Suppose the user wants to split the `responsible-parties` property in order to be able to edit each arbitrary key/value object under it as a separate file. The command to achieve that would be `trestle split -i catalogs/mycatalog -e metadata.responsible-parties{}` (notice the curly braces at the end) which would result in creating a directory called `responsible-parties` and multiple JSON files under it, one for each `additionalProperty` using the key of the `additional property` as the name of the JSON file. The result is shown below:
+**Step 4**: Suppose the user wants to split the `responsible-parties` property in order to be able to edit each arbitrary key/value object under it as a separate file. The command to achieve that would be `trestle split -f metadata/metadata.json -e metadata.responsible-parties.*` (notice the `.*` at the end referring to each key/value pair in the map) which would result in creating a directory called `responsible-parties` and multiple JSON files under it, one for each `additionalProperty` using the key of the `additional property` as the name of the JSON file. The result is shown below:
 
 ~~~
 .
@@ -449,9 +468,30 @@ Suppose the user wants to split the `responsible-parties` property in order to b
 ...
 ~~~
 
+The future version of this command would be:
+
+- `trestle split -e 'metadata.responsible-parties.*'` when executed from `$BASE_FOLDER/catalogs/mycatalog`, or;
+- `trestle split -e 'responsible-parties.*'` when executed from `$BASE_FOLDER/catalogs/mycatalog/metadata`
+
+An example of a sequence of trestle split and merge commands and the corresponding states of the files/directories structures can be found in `test/data/split_merge` folder in this repo.
+
 #### `trestle merge`
 
-The trestle merge command is the reversal of `trestle split`.
+The trestle merge command is the reversal of `trestle split`. This command allows users to reverse the decomposition of a trestle model by aggregating subcomponents scattered across multiple files or directories into the parent JSON/YAML file of a specific directory.
+
+The following options are currently supported:
+
+- `-f or --file`: this option specifies the file/directory paths of the files and/or directories containing the elements that will be merged.
+- `-d or --destination`: specifies the parent JSON/YAML file in which all the properties from the files/directories passed in via the `-f` option will be merge into. Notice that the properties to be merged will be placed into the root property of the destination file as opposed to be placed at the same level as the root property.
+
+In other words, a command such as `trestle merge -f uuid.json,metadata.json,groups.json,back-matter.json -d catalog.json` would merge the properties inside each of the files passed in via the `-f` option to the destination file specified with the `-d` option.
+
+In the near future, trestle merge should be smart enough to figure out which json files contain the elemenets that you want to be merged as well as the destination file that the elements should be placed into (every directory contains just one possible destination/parent file). In that case, both `-f` option and `-d` would be deprecated and the commands would look like: `trestle merge -e uuid,metadata,groups,back-matter`
+The only required option would be:
+
+- `-e or --elements`: specifies the properties (JSON/YAML path) that will be merged. In the command `trestle merge -e uuid,metadata,groups,back-matter`, the properties `uuid` from `uuid.json`, `metadata` from `metadata.json`, `groups` property from `groups.json` or `groups` directory, and `back-matter` property from `back-matter.json` would all be moved/merged into `catalog.json`.
+  In order to determine which elements the user can merge at the level the command is being executed, the following command can be used:
+  `trestle merge -l` which would be the same as `trestle merge --list-available-elements`
 
 #### `trestle assemble`
 
@@ -459,7 +499,7 @@ This command assembles all contents (files and directories) representing a speci
 
 #### `trestle add`
 
-This command allows users to add an OSCAL model to a subcomponent in source directory structure of the model. For example, `trestle add -e metadata.roles -i catalogs/mycatalog` will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/mycatalog` directory:
+This command allows users to add an OSCAL model to a subcomponent in source directory structure of the model. For example, `trestle add -f ./catalog.json -e metadata.roles ` will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/mycatalog` directory:
 
 ~~~
 "roles": [
@@ -479,6 +519,10 @@ Default values for mandatory datatypes will be like below. All UUID's will be po
 - Float/Double: 0.00
 - Id field: Auto generated UUID
 ~~~
+
+#### `trestle remove`
+
+The trestle remove command is the reversal of `trestle add`.
 
 #### `trestle validate`
 

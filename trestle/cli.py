@@ -12,14 +12,44 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Test cli to print a simple test message."""
+"""Starting point for the Trestle CLI."""
 
-import logging
+from ilcli import Command
+
+from trestle.__init__ import __version__
+from trestle.core.commands.add import AddCmd
+from trestle.core.commands.assemble import AssembleCmd
+from trestle.core.commands.create import CreateCmd
+from trestle.core.commands.import_ import ImportCmd
+from trestle.core.commands.init import InitCmd
+from trestle.core.commands.merge import MergeCmd
+from trestle.core.commands.remove import RemoveCmd
+from trestle.core.commands.replicate import ReplicateCmd
+from trestle.core.commands.split import SplitCmd
+from trestle.core.commands.validate import ValidateCmd
+
+
+class Trestle(Command):
+    """Manage OSCAL files in a human friendly manner."""
+
+    subcommands = [
+        InitCmd, CreateCmd, SplitCmd, MergeCmd, ReplicateCmd, AddCmd, RemoveCmd, ValidateCmd, ImportCmd, AssembleCmd
+    ]
+
+    def _init_arguments(self):
+        self.add_argument(
+            '-V',
+            '--version',
+            help='Display the version of trestle.',
+            action='version',
+            version=f'Trestle version v{__version__}'
+        )
+        self.add_argument('-v', '--verbose', help='Display verbose output.', action='count', default=1)
 
 
 def run():
     """Run the test cli."""
-    logging.info('Trestle Test CLI was here.')
+    exit(Trestle().run())
 
 
 if __name__ == '__main__':
