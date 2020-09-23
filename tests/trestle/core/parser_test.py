@@ -25,7 +25,7 @@ from trestle.oscal import catalog
 
 import yaml
 
-yaml_path = 'test/data/yaml/'
+yaml_path = 'tests/data/yaml/'
 encoding = 'utf8'
 
 

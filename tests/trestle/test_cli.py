@@ -25,7 +25,7 @@ from trestle import cli
 
 def test_run():
     """Test cli call."""
-    testargs = ['trestle', 'init']
+    testargs = ['trestle']
     with patch.object(sys, 'argv', testargs):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()
