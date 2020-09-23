@@ -20,11 +20,10 @@ from typing import List
 from pydantic import Field, create_model
 
 from trestle.core import const
+from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.oscal.base_model import OscalBaseModel
+from trestle.utils import fs
 from trestle.utils import log
-
-import yaml
 
 logger = log.get_logger()
 
@@ -122,12 +121,11 @@ def parse_file(file_name: str, model_name: str):
     if file_name is None:
         raise TrestleError('file_name is required')
 
-    with open(file_name) as f:
-        data = yaml.load(f, yaml.FullLoader)
-        rkey = root_key(data)
-        if model_name is None:
-            model_name = to_full_model_name(rkey)
-        return parse_dict(data[rkey], model_name)
+    data = fs.load_file(file_name)
+    rkey = root_key(data)
+    if model_name is None:
+        model_name = to_full_model_name(rkey)
+    return parse_dict(data[rkey], model_name)
 
 
 def wrap_for_output(model: OscalBaseModel) -> OscalBaseModel:
@@ -149,6 +147,7 @@ def wrap_for_output(model: OscalBaseModel) -> OscalBaseModel:
 
 def wrap_for_input(raw_class):
     """In this instance we are wrapping an actual OSCAL class not an instance."""
+    # TODO: Check behaviour is fine when no
     class_name = raw_class.__name__
     dynamic_passer = {}
     dynamic_passer[class_to_oscal(
