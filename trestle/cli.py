@@ -23,6 +23,7 @@ from trestle.core.commands.create import CreateCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.commands.init import InitCmd
 from trestle.core.commands.merge import MergeCmd
+from trestle.core.commands.remove import RemoveCmd
 from trestle.core.commands.replicate import ReplicateCmd
 from trestle.core.commands.split import SplitCmd
 from trestle.core.commands.validate import ValidateCmd
@@ -31,7 +32,9 @@ from trestle.core.commands.validate import ValidateCmd
 class Trestle(Command):
     """Manage OSCAL files in a human friendly manner."""
 
-    subcommands = [InitCmd, CreateCmd, SplitCmd, MergeCmd, ReplicateCmd, AddCmd, ValidateCmd, ImportCmd, AssembleCmd]
+    subcommands = [
+        InitCmd, CreateCmd, SplitCmd, MergeCmd, ReplicateCmd, AddCmd, RemoveCmd, ValidateCmd, ImportCmd, AssembleCmd
+    ]
 
     def _init_arguments(self):
         self.add_argument(
