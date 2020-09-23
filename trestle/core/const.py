@@ -15,9 +15,20 @@
 # limitations under the License.
 """Core constants module containing all constants."""
 
-DIR_TRESTLE = '_trestle'
-DIR_TRESTLE_BACKUP = f'{DIR_TRESTLE}/backup'
-DIR_TRESTLE_DIST = f'{DIR_TRESTLE}/dist'
+TRESTLE_MODEL_DIRS = [
+    'catalogs',
+    'profiles',
+    'target-definitions',
+    'component-definitions',
+    'system-security-plans',
+    'assessment-plans',
+    'assessment-results',
+    'plan-of-action-and-milestones'
+]
+
+TRESTLE_CONFIG_DIR = '.trestle'
+
+TRESTLE_CONFIG_FILE = 'config.ini'
 
 # list key to model name
 # This is usually a map from plural names to singular
