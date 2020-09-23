@@ -22,7 +22,7 @@ from pydantic import Field, create_model
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-
+from trestle.utils import fs
 from trestle.utils import log
 
 logger = log.get_logger()
