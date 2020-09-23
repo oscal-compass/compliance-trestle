@@ -9,7 +9,6 @@
 # This reordering is optimistic and assumes there is nothing circular involved -
 # and that there are no side effect classes that become forwarded.
 
-import os
 import sys
 
 pattern1 = 'ies: Optional[Dict[str, Any]]'
@@ -74,7 +73,6 @@ def get_cap_stem(s, clip):
 
 
 fname = sys.argv[1]
-out_name = 'out_' + fname
 ref_class_names = set()
 all_classes = []
 header = []
@@ -120,11 +118,8 @@ while not no_swaps:
         if did_swap:
             no_swap = False
 
-with open(out_name, 'w') as out_file:
-    out_file.write('# modified by FixAny.py\n')
+with open(fname, 'w') as out_file:
+    out_file.write('# modified by fix_any.py\n')
     out_file.writelines('\n'.join(header) + '\n')
     for c in all_classes:
         out_file.writelines('\n'.join(c.lines) + '\n')
-
-os.remove(fname)
-os.rename(out_name, fname)
