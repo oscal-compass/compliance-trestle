@@ -79,3 +79,20 @@ class OscalBaseModel(BaseModel):
         new_model = create_model('partial-' + cls.__class__.__name__, __base__=OscalBaseModel, **new_fields_for_model)
 
         return new_model
+
+    @classmethod
+    def clone_from(cls, oscal_object):
+        """
+        Clone from a semantically similar pydantic object in a different python module to this module.
+
+        OSCAL has objects that are replicated across schemas. These objects need to be converted into a new type
+
+        e.g.
+        profile_metadata: profile.Metadata = profile.Metadata.clone_from(catalog_metadata)
+
+        where
+        type(catalog_metadata) == catalog.Metadata.
+
+        Presumes 'exact' matching support throughout the tree.
+        """
+        pass

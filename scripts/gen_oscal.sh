@@ -1,5 +1,5 @@
 #! /usr/bin/env zsh -e
-git submodule add https://github.com/usnistgov/OSCAL.git nist-source
+#git submodule add https://github.com/usnistgov/OSCAL.git nist-source
 git submodule update --init
 
 OUTPUT_DIR=trestle/oscal
