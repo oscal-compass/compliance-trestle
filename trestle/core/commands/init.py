@@ -26,7 +26,7 @@ import trestle.core.const as const
 
 
 class InitCmd(Command):
-    """Initialize a Trestle working directory."""
+    """Initialize a trestle working directory."""
 
     name = 'init'
 
@@ -53,7 +53,7 @@ class InitCmd(Command):
         directory_list = [const.TRESTLE_CONFIG_DIR]
         for model_dir in const.TRESTLE_MODEL_DIRS:
             directory_list.append(model_dir)
-            directory_list.append(os.path.join('dist', model_dir))
+            directory_list.append(os.path.join(const.TRESTLE_DIST_DIR, model_dir))
 
         # Create directories
         for directory in directory_list:
