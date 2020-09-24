@@ -26,6 +26,8 @@ _*/
 
 build
 dist
+tmp
 
 .coverage
 coverage.xml
+
