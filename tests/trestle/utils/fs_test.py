@@ -22,11 +22,11 @@ import pytest
 from trestle.utils import fs
 
 
-def test_ensure_directory(tmp_dir):
+def test_ensure_directory(tmpdir):
     """Test ensure_directory function."""
     # Happy path
-    fs.ensure_directory(tmp_dir)
-    os.removedirs(tmp_dir)
+    fs.ensure_directory(tmpdir)
+    os.removedirs(tmpdir)
 
     # Unhappy path
     with pytest.raises(AssertionError):

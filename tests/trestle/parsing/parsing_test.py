@@ -29,8 +29,8 @@ from trestle.utils import fs
 
 import yaml
 
-yaml_path = 'tests/data/yaml/'
-json_path = 'tests/data/json/'
+yaml_path = 'tests' + os.sep + 'data' + os.sep + 'yaml' + os.sep
+json_path = 'tests' + os.sep + 'data' + os.sep + 'json' + os.sep
 encoding = 'utf8'
 loader = yaml.Loader
 
@@ -58,7 +58,7 @@ def test_yaml_load():
             obj = yaml.load(read_file, Loader=loader)
 
 
-def test_yaml_dump(tmp_dir):
+def test_yaml_dump(tmpdir):
     """Test yaml load and dump."""
     target_name = 'good_target.yaml'
 
@@ -67,9 +67,9 @@ def test_yaml_dump(tmp_dir):
         target = yaml.load(read_file, Loader=loader)
     assert target is not None
 
-    fs.ensure_directory(tmp_dir)
+    fs.ensure_directory(tmpdir)
 
-    dump_name = tmp_dir + '/' + target_name
+    dump_name = tmpdir + os.sep + target_name
 
     with open(dump_name, 'w', encoding=encoding) as write_file:
         yaml.dump(target, write_file)
@@ -82,10 +82,10 @@ def test_yaml_dump(tmp_dir):
 
     # clean up
     os.remove(dump_name)
-    os.removedirs(tmp_dir)
+    os.removedirs(tmpdir)
 
 
-def test_oscal_model(tmp_dir):
+def test_oscal_model(tmpdir):
     """Test pydantic oscal model."""
     good_target_name = 'good_target.yaml'
 
@@ -101,8 +101,8 @@ def test_oscal_model(tmp_dir):
 
     yaml_target_def = yaml_target['target-definition']
 
-    fs.ensure_directory(tmp_dir)
-    dump_name = tmp_dir + '/' + good_target_name
+    fs.ensure_directory(tmpdir)
+    dump_name = tmpdir + os.sep + good_target_name
 
     # write the oscal target def out as yaml
     # exclude all None's and rename to original OSCAL form with - instead of _
@@ -115,7 +115,7 @@ def test_oscal_model(tmp_dir):
 
     # clean up
     os.remove(dump_name)
-    os.removedirs(tmp_dir)
+    os.removedirs(tmpdir)
 
     assert oscal_target_def_reload is not None
 
