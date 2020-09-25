@@ -26,10 +26,10 @@ import trestle.core.const as const
 from trestle import cli
 
 
-def test_init(tmp_path):
+def test_init(tmpdir):
     """Test init happy path."""
     owd = os.getcwd()
-    os.chdir(tmp_path)
+    os.chdir(tmpdir)
     testargs = ['trestle', 'init']
     with patch.object(sys, 'argv', testargs):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -44,10 +44,10 @@ def test_init(tmp_path):
     os.chdir(owd)
 
 
-def test_directory_creation_error(tmp_path):
+def test_directory_creation_error(tmpdir):
     """Test error during init when a directory cannot be created."""
     owd = os.getcwd()
-    os.chdir(tmp_path)
+    os.chdir(tmpdir)
     os.mkdir(const.TRESTLE_CONFIG_DIR)
     os.chmod(const.TRESTLE_CONFIG_DIR, stat.S_IREAD)
     testargs = ['trestle', 'init']
@@ -64,10 +64,10 @@ def test_directory_creation_error(tmp_path):
     os.chdir(owd)
 
 
-def test_config_copy_error(tmp_path):
+def test_config_copy_error(tmpdir):
     """Test error during init when a contents of .trestle cannot be created."""
     owd = os.getcwd()
-    os.chdir(tmp_path)
+    os.chdir(tmpdir)
     os.mkdir(const.TRESTLE_CONFIG_DIR)
     open(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE), 'a').close()
     os.chmod(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE), stat.S_IREAD)
