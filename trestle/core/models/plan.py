@@ -27,5 +27,11 @@ class Plan:
         """Add a new action."""
         self._actions.append(action)
 
+    def simulate(self):
+        """Simulate execution of the plan."""
+
     def execute(self):
         """Execute the actions in the plan."""
+
+    def rollback(self):
+        """Rollback the actions in the plan."""
