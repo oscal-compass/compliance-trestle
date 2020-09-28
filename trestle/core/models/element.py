@@ -26,6 +26,10 @@ class Element:
     def validate():
         """Validate the element."""
 
+    def __str__(self):
+        """Return string representation of element."""
+        return f'{self._type}'
+
 
 class ElementPath:
     """Element path wrapper of an element."""
@@ -33,3 +37,7 @@ class ElementPath:
     def __init__(self, element_path: str):
         """Initialize an element wrapper."""
         self._path: str = element_path
+
+    def __str__(self):
+        """Return string representation of element path."""
+        return f'{self._path}'

@@ -31,6 +31,16 @@ class Plan:
     def _action_key(self, action: Action):
         return hash(action)
 
+    def __str__(self):
+        """Print the plan."""
+        list_actions = []
+        index = 0
+        for action_key in self._action_orders:
+            ac: Action = Action(self._actions[action_key])
+            list_actions.append(f'{index}. {ac}')
+            index = index + 1
+        return list_actions
+
     def add_action(self, action: Action):
         """Add a new action."""
         key = self._action_key(action)

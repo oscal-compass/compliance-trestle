@@ -81,6 +81,10 @@ class WriteAction(Action):
         """Rollback the action."""
         raise NotImplementedError('Not implemented')
 
+    def __str__(self):
+        """Return string representation."""
+        return f'{self._type} {self._element}'
+
 
 class ReadAction(Action):
     """Read the element from a destination stream."""
@@ -98,6 +102,10 @@ class ReadAction(Action):
     def rollback(self):
         """Rollback the action."""
         raise NotImplementedError('Not implemented')
+
+    def __str__(self):
+        """Return string representation."""
+        return f'{self._type} {self._element}'
 
 
 class WriteFileAction(Action):
@@ -117,6 +125,10 @@ class WriteFileAction(Action):
         """Rollback the action."""
         raise NotImplementedError('Not implemented')
 
+    def __str__(self):
+        """Return string representation."""
+        return f'{self._type} {self._element} to {self._file_path}'
+
 
 class ReadFileAction(Action):
     """Read the element from a destination file."""
@@ -134,6 +146,10 @@ class ReadFileAction(Action):
     def rollback(self):
         """Rollback the action."""
         raise NotImplementedError('Not implemented')
+
+    def __str__(self):
+        """Return string representation."""
+        return f'{self._type} {self._element} to {self._file_path}'
 
 
 class AddAction(Action):
@@ -154,6 +170,10 @@ class AddAction(Action):
         """Rollback the action."""
         raise NotImplementedError('Not implemented')
 
+    def __str__(self):
+        """Return string representation."""
+        return f'{self._type} {self._src_element} to {self._dest_element} at {self._element_path}'
+
 
 class RemoveAction(Action):
     """Remove element at the element path in the source element and store into the destination."""
@@ -173,6 +193,10 @@ class RemoveAction(Action):
         """Rollback the action."""
         raise NotImplementedError('Not implemented')
 
+    def __str__(self):
+        """Return string representation."""
+        return f'{self._type} {self._src_element} from {self._dest_element} at {self._element_path}'
+
 
 class UpdateAction(Action):
     """Update element at the element path in the destination element from the source element."""
@@ -191,3 +215,7 @@ class UpdateAction(Action):
     def rollback(self):
         """Rollback the action."""
         raise NotImplementedError('Not implemented')
+
+    def __str__(self):
+        """Return string representation."""
+        return f'{self._type} {self._src_element} in {self._dest_element} at {self._element_path}'
