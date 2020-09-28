@@ -17,6 +17,7 @@
 
 import datetime
 import os
+import pathlib
 
 from dateutil.parser import isoparse
 
@@ -48,14 +49,14 @@ def times_equal(t1, t2):
 def test_yaml_load():
     """Test yaml load."""
     # happy path
-    with open(yaml_path + 'good_simple.yaml', 'r', encoding=encoding) as read_file:
-        obj = yaml.load(read_file, Loader=loader)
+    read_file = pathlib.Path(yaml_path + 'good_simple.yaml').open('r', encoding=encoding)
+    obj = yaml.load(read_file, Loader=loader)
     assert obj is not None
 
     # unhappy path
     with pytest.raises(yaml.parser.ParserError):
-        with open(yaml_path + 'bad_simple.yaml', 'r', encoding=encoding) as read_file:
-            obj = yaml.load(read_file, Loader=loader)
+        read_file = pathlib.Path(yaml_path + 'bad_simple.yaml').open('r', encoding=encoding)
+        obj = yaml.load(read_file, Loader=loader)
 
 
 def test_yaml_dump(tmpdir):
@@ -63,19 +64,19 @@ def test_yaml_dump(tmpdir):
     target_name = 'good_target.yaml'
 
     # happy path
-    with open(yaml_path + target_name, 'r', encoding=encoding) as read_file:
-        target = yaml.load(read_file, Loader=loader)
+    read_file = pathlib.Path(yaml_path + target_name).open('r', encoding=encoding)
+    target = yaml.load(read_file, Loader=loader)
     assert target is not None
 
     fs.ensure_directory(tmpdir)
 
-    dump_name = tmpdir + os.sep + target_name
+    dump_name = tmpdir + '/' + target_name
 
-    with open(dump_name, 'w', encoding=encoding) as write_file:
-        yaml.dump(target, write_file)
+    write_file = pathlib.Path(dump_name).open('w', encoding=encoding)
+    yaml.dump(target, write_file)
 
-    with open(dump_name, 'r', encoding=encoding) as read_file:
-        saved_target = yaml.load(read_file, Loader=loader)
+    read_file = pathlib.Path(dump_name).open('r', encoding=encoding)
+    saved_target = yaml.load(read_file, Loader=loader)
     assert saved_target is not None
 
     assert saved_target == target
@@ -90,8 +91,8 @@ def test_oscal_model(tmpdir):
     good_target_name = 'good_target.yaml'
 
     # load good target
-    with open(yaml_path + good_target_name, 'r', encoding=encoding) as read_file:
-        yaml_target = yaml.load(read_file, Loader=loader)
+    read_file = pathlib.Path(yaml_path + good_target_name).open('r', encoding=encoding)
+    yaml_target = yaml.load(read_file, Loader=loader)
     assert yaml_target is not None
 
     # represent it internally as pydantic target definition model
@@ -102,16 +103,16 @@ def test_oscal_model(tmpdir):
     yaml_target_def = yaml_target['target-definition']
 
     fs.ensure_directory(tmpdir)
-    dump_name = tmpdir + os.sep + good_target_name
+    dump_name = tmpdir + '/' + good_target_name
 
     # write the oscal target def out as yaml
     # exclude all None's and rename to original OSCAL form with - instead of _
-    with open(dump_name, 'w', encoding=encoding) as write_file:
-        yaml.dump(yaml.safe_load(oscal_target_def.json(exclude_none=True, by_alias=True)), write_file)
+    write_file = pathlib.Path(dump_name).open('w', encoding=encoding)
+    yaml.dump(yaml.safe_load(oscal_target_def.json(exclude_none=True, by_alias=True)), write_file)
 
     # read it back in
-    with open(dump_name, 'r', encoding=encoding) as read_file:
-        oscal_target_def_reload = yaml.load(read_file, Loader=loader)
+    read_file = pathlib.Path(dump_name).open('r', encoding=encoding)
+    oscal_target_def_reload = yaml.load(read_file, Loader=loader)
 
     # clean up
     os.remove(dump_name)
@@ -129,8 +130,8 @@ def test_oscal_model(tmpdir):
         assert (times_equal(d[2][0], d[2][1]))
 
     # load good target with different timezone
-    with open(yaml_path + 'good_target_diff_tz.yaml', 'r', encoding=encoding) as read_file:
-        yaml_target_diff_tz = yaml.load(read_file, Loader=loader)
+    read_file = pathlib.Path(yaml_path + 'good_target_diff_tz.yaml').open('r', encoding=encoding)
+    yaml_target_diff_tz = yaml.load(read_file, Loader=loader)
     assert yaml_target_diff_tz is not None
 
     # represent it internally as pydantic target definition model
