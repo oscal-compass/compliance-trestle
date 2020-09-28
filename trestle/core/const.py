@@ -40,3 +40,7 @@ LIST_KEY_TO_MODEL_NAME = {
 }
 
 PACKAGE_OSCAL = 'trestle.oscal'
+
+# argument descriptions
+ARG_DESC_FILE = 'Path of the file'
+ARG_DESC_ELEMENT = 'Path of the element in the OSCAL model'

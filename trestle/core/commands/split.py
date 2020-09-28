@@ -17,8 +17,25 @@
 
 from ilcli import Command
 
+from trestle.core import const
+
 
 class SplitCmd(Command):
     """Split subcomponents on a trestle model."""
 
     name = 'split'
+
+    def _init_arguments(self):
+        self.add_argument(
+            '-f',
+            '--file',
+            help=const.ARG_DESC_FILE + ' to split.',
+        )
+        self.add_argument(
+            '-e',
+            '--element',
+            help=const.ARG_DESC_ELEMENT + ' to split.',
+        )
+
+    def _run(self, args):
+        """Split an OSCAL file into elements."""
