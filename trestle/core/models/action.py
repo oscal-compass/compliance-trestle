@@ -54,6 +54,10 @@ class Action(ABC):
     def execute(self):
         """Execute the action."""
 
+    @abstractmethod
+    def rollback(self):
+        """Rollback the action."""
+
 
 class WriteAction(Action):
     """Write the element to a destination stream."""
@@ -67,6 +71,10 @@ class WriteAction(Action):
 
     def execute(self):
         """Execute the action."""
+
+    def rollback(self):
+        """Rollback the action."""
+        raise NotImplementedError('Not implemented')
 
 
 class ReadAction(Action):
@@ -82,6 +90,10 @@ class ReadAction(Action):
     def execute(self):
         """Execute the action."""
 
+    def rollback(self):
+        """Rollback the action."""
+        raise NotImplementedError('Not implemented')
+
 
 class WriteFileAction(Action):
     """Write the element to a destination file."""
@@ -96,6 +108,10 @@ class WriteFileAction(Action):
     def execute(self):
         """Execute the action."""
 
+    def rollback(self):
+        """Rollback the action."""
+        raise NotImplementedError('Not implemented')
+
 
 class ReadFileAction(Action):
     """Read the element from a destination file."""
@@ -109,6 +125,10 @@ class ReadFileAction(Action):
 
     def execute(self):
         """Execute the action."""
+
+    def rollback(self):
+        """Rollback the action."""
+        raise NotImplementedError('Not implemented')
 
 
 class AddAction(Action):
@@ -125,6 +145,10 @@ class AddAction(Action):
     def execute(self):
         """Execute the action."""
 
+    def rollback(self):
+        """Rollback the action."""
+        raise NotImplementedError('Not implemented')
+
 
 class RemoveAction(Action):
     """Remove element at the element path in the source element and store into the destination."""
@@ -140,6 +164,10 @@ class RemoveAction(Action):
     def execute(self):
         """Execute the action."""
 
+    def rollback(self):
+        """Rollback the action."""
+        raise NotImplementedError('Not implemented')
+
 
 class UpdateAction(Action):
     """Update element at the element path in the destination element from the source element."""
@@ -154,3 +182,7 @@ class UpdateAction(Action):
 
     def execute(self):
         """Execute the action."""
+
+    def rollback(self):
+        """Rollback the action."""
+        raise NotImplementedError('Not implemented')
