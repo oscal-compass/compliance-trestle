@@ -14,8 +14,8 @@
 """Action wrapper of a command."""
 
 import enum
-from abc import ABC, abstractmethod
 import io
+from abc import ABC, abstractmethod
 
 from .element import Element, ElementPath
 
@@ -23,10 +23,10 @@ from .element import Element, ElementPath
 class ActionType(enum):
     """Action type enum for different action type."""
 
-    # write bytes to a destination file or stream
+    # write element to a destination file or stream
     WRITE = 1
 
-    # read bytes from a source file or stream
+    # read element from a source file or stream
     READ = 2
 
     # add the element at the path in the destination
