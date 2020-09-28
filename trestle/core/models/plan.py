@@ -13,6 +13,8 @@
 # limitations under the License.
 """Plan of action of a command."""
 
+from io import UnsupportedOperation
+
 from .action import Action
 
 
@@ -21,17 +23,52 @@ class Plan:
 
     def __init__(self, action_list: list(Action)):
         """Initialize a plan."""
-        self._actions: list(Action) = action_list
+        self._action_orders: list = []
+        self._actions: dict = {}
+        for action in action_list:
+            self.add_action(action)
+
+    def _action_key(self, action: Action):
+        return hash(action)
 
     def add_action(self, action: Action):
         """Add a new action."""
-        self._actions.append(action)
+        key = self._action_key(action)
+        if self._actions[key] is not None:
+            self.remove_action(action)
+
+        self._action_orders.append(key)
+        self._actions[key] = action
+
+    def remove_action(self, action: Action):
+        """Add a new action."""
+        key = self._action_key(action)
+        if self._actions[key] is not None:
+            self._actions.pop(key, None)
+            self._action_orders.remove(key)
 
     def simulate(self):
         """Simulate execution of the plan."""
+        # Check if all of the actions support rollback or not
+        for action_key in self._action_orders:
+            ac: Action = Action(self._actions[action_key])
+            if ac.has_rollback() is False:
+                raise UnsupportedOperation(f'{ac.get_type()} does not support rollback')
+
+        self.execute()
+        self.rollback()
 
     def execute(self):
         """Execute the actions in the plan."""
+        for action_key in self._action_orders:
+            ac: Action = Action(self._actions[action_key])
+            ac.execute()
 
     def rollback(self):
         """Rollback the actions in the plan."""
+        for action_key in self._action_orders.reverse():
+            ac: Action = Action(self._actions[action_key])
+            if ac.has_rollback() is False:
+                raise UnsupportedOperation(f'{ac.get_type()} does not support rollback')
+
+            ac.rollback()

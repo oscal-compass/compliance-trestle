@@ -42,13 +42,18 @@ class ActionType(enum):
 class Action(ABC):
     """Action wrapper of a command."""
 
-    def __init__(self, action_type: ActionType):
+    def __init__(self, action_type: ActionType, has_rollback: bool):
         """Initialize an base action."""
         self._type: ActionType = action_type
+        self._has_rollback: bool = has_rollback
 
     def get_type(self) -> ActionType:
         """Return the action type."""
         return self._type
+
+    def has_rollback(self) -> bool:
+        """Return if rollback of the action is possible."""
+        return self._has_rollback
 
     @abstractmethod
     def execute(self):
@@ -64,7 +69,7 @@ class WriteAction(Action):
 
     def __init__(self, writer: io.BufferedWriter, element: Element):
         """Initialize an write file action."""
-        super.__init__(self, ActionType.WRITE)
+        super.__init__(self, ActionType.WRITE, True)
 
         self._writer: str = writer
         self._element: Element = element
@@ -82,7 +87,7 @@ class ReadAction(Action):
 
     def __init__(self, reader: io.BufferedReader, element: Element):
         """Initialize a read file action."""
-        super.__init__(self, ActionType.READ)
+        super.__init__(self, ActionType.READ, True)
 
         self._reader: str = reader
         self._element: Element = element
@@ -100,7 +105,7 @@ class WriteFileAction(Action):
 
     def __init__(self, file_path: str, element: Element):
         """Initialize an write file action."""
-        super.__init__(self, ActionType.WRITE)
+        super.__init__(self, ActionType.WRITE, True)
 
         self._file_path: str = file_path
         self._element: Element = element
@@ -118,7 +123,7 @@ class ReadFileAction(Action):
 
     def __init__(self, file_path: str, element: Element):
         """Initialize a read file action."""
-        super.__init__(self, ActionType.READ)
+        super.__init__(self, ActionType.READ, True)
 
         self._file_path: str = file_path
         self._element: Element = element
@@ -136,7 +141,7 @@ class AddAction(Action):
 
     def __init__(self, src_element: Element, dest_element: Element, element_path: ElementPath):
         """Initialize an add element action."""
-        super.__init__(self, ActionType.ADD)
+        super.__init__(self, ActionType.ADD, True)
 
         self._src_element: Element = src_element
         self._dest_element: Element = dest_element
@@ -155,7 +160,7 @@ class RemoveAction(Action):
 
     def __init__(self, src_element: Element, dest_element: Element, element_path: ElementPath):
         """Initialize a remove element action."""
-        super.__init__(self, ActionType.REMOVE)
+        super.__init__(self, ActionType.REMOVE, True)
 
         self._src_element: Element = src_element
         self._dest_element: Element = dest_element
@@ -174,7 +179,7 @@ class UpdateAction(Action):
 
     def __init__(self, src_element: Element, dest_element: Element, element_path: ElementPath):
         """Initialize an add element action."""
-        super.__init__(self, ActionType.UPDATE)
+        super.__init__(self, ActionType.UPDATE, True)
 
         self._src_element: Element = src_element
         self._dest_element: Element = dest_element
