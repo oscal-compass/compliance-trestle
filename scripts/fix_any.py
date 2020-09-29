@@ -19,19 +19,23 @@ class ClassText():
     """Hold class text as named blocks with references to the added classes."""
 
     def __init__(self, first_line):
+        """Construct with first line of class definition."""
         self.lines = [first_line.rstrip()]
         n = first_line.find('(')
         self.name = first_line[len(class_header):n]
         self.refs = set()
 
     def add_line(self, line):
+        """Add new line to class text."""
         self.lines.append(line)
 
     def add_ref(self, ref_name):
+        """Add one of the Any references."""
         self.refs.add(ref_name)
 
     @staticmethod
     def find_index(class_text_list, name):
+        """Find index of class in list by name."""
         nclasses = len(class_text_list)
         for i in range(nclasses):
             if class_text_list[i].name == name:
@@ -44,9 +48,9 @@ def swap_ref(class_list, ref):
     ref_index = ClassText.find_index(class_list, ref)  # get index of class definition
     nclasses = len(class_list)
     did_swap = False
-    for i in range(nclasses):                          # get index of first ref
+    for i in range(nclasses):  # get index of first ref
         if ref in class_list[i].refs:
-            if i < ref_index:                          # need to swap
+            if i < ref_index:  # need to swap
                 cdef = class_list.pop(ref_index)
                 class_list.insert(i, cdef)
                 did_swap = True
@@ -82,24 +86,24 @@ def fix_file(fname):
 
     with open(fname, 'r') as infile:
         for r in infile.readlines():
-            if r.find(class_header) == 0:             # start of new class
+            if r.find(class_header) == 0:  # start of new class
                 done_header = True
-                if class_text is not None:            # we are done with current class so add it
+                if class_text is not None:  # we are done with current class so add it
                     all_classes.append(class_text)
                 class_text = ClassText(r)
             else:
-                if not done_header:                   # still in header
+                if not done_header:  # still in header
                     header.append(r.rstrip())
-                else:                                 # in body of class looking for Any's
+                else:  # in body of class looking for Any's
                     n1 = r.find(pattern1)
                     n2 = r.find(pattern2)
-                    if n1 != -1:                      # ies plural
+                    if n1 != -1:  # ies plural
                         tail = r[(n1 + len(pattern1)):]
                         cap_singular = get_cap_stem(r, 3) + 'y'
                         ref_class_names.add(cap_singular)
                         class_text.add_ref(cap_singular)
                         r = r[:(n1 + len(pattern1) - 5)] + cap_singular + ']]' + tail
-                    elif n2 != -1:                    # s plural
+                    elif n2 != -1:  # s plural
                         tail = r[(n2 + len(pattern2)):]
                         cap_singular = get_cap_stem(r, 1)
                         ref_class_names.add(cap_singular)
@@ -107,7 +111,7 @@ def fix_file(fname):
                         r = r[:(n2 + len(pattern2) - 5)] + cap_singular + ']]' + tail
                     class_text.add_line(r.rstrip())
 
-    all_classes.append(class_text)                    # don't forget final class
+    all_classes.append(class_text)  # don't forget final class
     ref_class_names = sorted(ref_class_names)
 
     no_swaps = False
