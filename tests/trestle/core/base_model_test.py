@@ -24,9 +24,9 @@ import trestle.core.parser as p
 import trestle.oscal.catalog as oscatalog
 
 
-def test_echo_tmppath(tmp_path):
+def test_echo_tmpdir(tmpdir):
     """Testing pytest."""
-    print(tmp_path)  # noqa T001
+    print(tmpdir)  # noqa T001
     assert 1
 
 
