@@ -13,9 +13,9 @@
 # limitations under the License.
 """Element wrapper of an OSCAL model element."""
 
-import yaml
-
 from trestle.core.base_model import OscalBaseModel
+
+import yaml
 
 
 class Element:

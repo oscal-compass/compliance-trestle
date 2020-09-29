@@ -14,15 +14,12 @@
 """Action wrapper of a command."""
 
 import io
-import json
-import yaml
-import xml
 from abc import ABC, abstractmethod
 from enum import Enum
 
-from .element import Element, ElementPath
-
 from trestle.core.err import TrestleError
+
+from .element import Element, ElementPath
 
 
 class ActionType(Enum):

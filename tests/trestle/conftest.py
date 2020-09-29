@@ -86,7 +86,8 @@ def sample_target():
     key = 'target-yaml'
     if TEST_DATA.get(key, None) is None:
         # load target yaml
-        with open(os.path.join(TEST_CONFIG['yaml_testdata_path'], 'good_target.yaml'), 'r', encoding='utf8') as read_file:
+        with open(os.path.join(TEST_CONFIG['yaml_testdata_path'], 'good_target.yaml'), 'r',
+                  encoding='utf8') as read_file:
             TEST_DATA[key] = yaml.load(read_file, Loader=yaml.Loader)
 
     yaml_data = TEST_DATA[key]
