@@ -16,7 +16,6 @@
 """Tests for json and yaml manipulations of oscal files."""
 
 import datetime
-import os
 import pathlib
 
 from dateutil.parser import isoparse
@@ -74,16 +73,11 @@ def test_yaml_dump(tmpdir):
 
     write_file = pathlib.Path(dump_name).open('w', encoding=encoding)
     yaml.dump(target, write_file)
-
     read_file = pathlib.Path(dump_name).open('r', encoding=encoding)
     saved_target = yaml.load(read_file, Loader=loader)
     assert saved_target is not None
 
     assert saved_target == target
-
-    # clean up
-    os.remove(dump_name)
-    os.removedirs(tmpdir)
 
 
 def test_oscal_model(tmpdir):
@@ -113,10 +107,6 @@ def test_oscal_model(tmpdir):
     # read it back in
     read_file = pathlib.Path(dump_name).open('r', encoding=encoding)
     oscal_target_def_reload = yaml.load(read_file, Loader=loader)
-
-    # clean up
-    os.remove(dump_name)
-    os.removedirs(tmpdir)
 
     assert oscal_target_def_reload is not None
 
