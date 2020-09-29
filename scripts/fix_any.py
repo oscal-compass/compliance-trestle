@@ -117,7 +117,7 @@ def fix_file(fname):
         for ref in ref_class_names:
             all_classes, did_swap = swap_ref(all_classes, ref)
             if did_swap:
-                no_swap = False
+                no_swaps = False
 
     with open(fname, 'w') as out_file:
         out_file.write('# modified by fix_any.py\n')
