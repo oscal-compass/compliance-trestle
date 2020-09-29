@@ -39,4 +39,4 @@ release::
 	semantic-release publish
 
 gen-oscal::
-	./scripts/gen_oscal.sh
+	python ./scripts/gen_oscal.py
