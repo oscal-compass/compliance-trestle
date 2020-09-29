@@ -30,8 +30,8 @@ from trestle.utils import fs
 
 import yaml
 
-yaml_path = 'tests' + os.sep + 'data' + os.sep + 'yaml' + os.sep
-json_path = 'tests' + os.sep + 'data' + os.sep + 'json' + os.sep
+yaml_path = 'tests/data/yaml/'
+json_path = 'tests/data/json/'
 encoding = 'utf8'
 loader = yaml.Loader
 
