@@ -13,14 +13,19 @@
 # limitations under the License.
 """Action wrapper of a command."""
 
-import enum
 import io
+import json
+import yaml
+import xml
 from abc import ABC, abstractmethod
+from enum import Enum
 
 from .element import Element, ElementPath
 
+from trestle.core.err import TrestleError
 
-class ActionType(enum):
+
+class ActionType(Enum):
     """Action type enum for different action type."""
 
     # write element to a destination file or stream
@@ -37,6 +42,16 @@ class ActionType(enum):
 
     # update the element at the path in the destination
     UPDATE = 5
+
+
+class FileContentType(Enum):
+    """File Content type for read/write."""
+
+    # JSON formatted content
+    JSON = 1
+
+    # YAML formatted content
+    YAML = 2
 
 
 class Action(ABC):
@@ -67,19 +82,45 @@ class Action(ABC):
 class WriteAction(Action):
     """Write the element to a destination stream."""
 
-    def __init__(self, writer: io.BufferedWriter, element: Element):
+    def __init__(self, writer: io.BufferedWriter, element: Element, content_type: FileContentType):
         """Initialize an write file action."""
-        super.__init__(self, ActionType.WRITE, True)
+        super().__init__(ActionType.WRITE, True)
 
-        self._writer: str = writer
+        self._writer: io.BufferedWriter = writer
         self._element: Element = element
+        self._content_type: FileContentType = content_type
+        self._lastStreamPos = self._writer.tell()
+
+    def _encode(self) -> str:
+        """Encode the element to appropriate content type."""
+        if self._content_type == FileContentType.YAML:
+            return self._element.to_yaml()
+        elif self._content_type == FileContentType.JSON:
+            return self._element.to_json()
+
+        raise TrestleError(f'Invalid content type {self._content_type}')
 
     def execute(self):
         """Execute the action."""
+        if self._element is None:
+            raise TrestleError('Element is empty and cannot write')
+
+        if self._writer is None or self._writer.closed:
+            raise TrestleError('Writer is not provided or closed')
+
+        self._writer.write(self._encode())
+        self._writer.flush()
 
     def rollback(self):
         """Rollback the action."""
-        raise NotImplementedError('Not implemented')
+        if self._writer is None or self._writer.closed:
+            raise TrestleError('Writer is not provided or closed')
+
+        if self._lastStreamPos is None:
+            raise TrestleError('Last stream position is not available to rollback to')
+
+        self._writer.seek(self._lastStreamPos)
+        self._writer.truncate()
 
     def __str__(self):
         """Return string representation."""
@@ -91,7 +132,7 @@ class ReadAction(Action):
 
     def __init__(self, reader: io.BufferedReader, element: Element):
         """Initialize a read file action."""
-        super.__init__(self, ActionType.READ, True)
+        super().__init__(ActionType.READ, True)
 
         self._reader: str = reader
         self._element: Element = element
@@ -108,22 +149,30 @@ class ReadAction(Action):
         return f'{self._type} {self._element}'
 
 
-class WriteFileAction(Action):
+class WriteFileAction(WriteAction):
     """Write the element to a destination file."""
 
-    def __init__(self, file_path: str, element: Element):
-        """Initialize an write file action."""
-        super.__init__(self, ActionType.WRITE, True)
+    def __init__(self, file_path: str, element: Element, content_type: FileContentType):
+        """Initialize a write file action.
 
-        self._file_path: str = file_path
-        self._element: Element = element
+        If the file exists, it will append otherwise it will create a new file
+        """
+        self._file_path = file_path
+        with open(self._file_path, 'a+') as writer:
+            super().__init__(writer, element, content_type)
 
     def execute(self):
         """Execute the action."""
+        with open(self._file_path, 'a+') as writer:
+            writer.seek(self._lastStreamPos)
+            self._writer = writer
+            super().execute()
 
     def rollback(self):
-        """Rollback the action."""
-        raise NotImplementedError('Not implemented')
+        """Execute the rollback action."""
+        with open(self._file_path, 'a+') as writer:
+            self._writer = writer
+            super().rollback()
 
     def __str__(self):
         """Return string representation."""
@@ -135,7 +184,7 @@ class ReadFileAction(Action):
 
     def __init__(self, file_path: str, element: Element):
         """Initialize a read file action."""
-        super.__init__(self, ActionType.READ, True)
+        super().__init__(self, ActionType.READ, True)
 
         self._file_path: str = file_path
         self._element: Element = element
@@ -157,7 +206,7 @@ class AddAction(Action):
 
     def __init__(self, src_element: Element, dest_element: Element, element_path: ElementPath):
         """Initialize an add element action."""
-        super.__init__(self, ActionType.ADD, True)
+        super().__init__(self, ActionType.ADD, True)
 
         self._src_element: Element = src_element
         self._dest_element: Element = dest_element
@@ -180,7 +229,7 @@ class RemoveAction(Action):
 
     def __init__(self, src_element: Element, dest_element: Element, element_path: ElementPath):
         """Initialize a remove element action."""
-        super.__init__(self, ActionType.REMOVE, True)
+        super().__init__(self, ActionType.REMOVE, True)
 
         self._src_element: Element = src_element
         self._dest_element: Element = dest_element
@@ -203,7 +252,7 @@ class UpdateAction(Action):
 
     def __init__(self, src_element: Element, dest_element: Element, element_path: ElementPath):
         """Initialize an add element action."""
-        super.__init__(self, ActionType.UPDATE, True)
+        super().__init__(self, ActionType.UPDATE, True)
 
         self._src_element: Element = src_element
         self._dest_element: Element = dest_element

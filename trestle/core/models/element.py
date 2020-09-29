@@ -13,22 +13,34 @@
 # limitations under the License.
 """Element wrapper of an OSCAL model element."""
 
+import yaml
+
+from trestle.core.base_model import OscalBaseModel
+
 
 class Element:
     """Element wrapper of an OSCAL model."""
 
-    def __init__(self, element_type: str, element_alias: str, data: dict):
+    def __init__(self, elem: OscalBaseModel):
         """Initialize an element wrapper."""
-        self._type: str = element_type
-        self._alias: str = element_alias
-        self._data: dict = data
+        self._elem: OscalBaseModel = elem
 
-    def validate():
-        """Validate the element."""
+    def get(self):
+        """Get the element."""
+        return self._elem
 
     def __str__(self):
         """Return string representation of element."""
-        return f'{self._type}'
+        return f'{self._elem.__class__}'
+
+    def to_yaml(self):
+        """Convert into YAML string."""
+        return yaml.dump(yaml.safe_load(self._elem.json(exclude_none=True, by_alias=True)))
+
+    def to_json(self):
+        """Convert into JSON string."""
+        json_data = self._elem.json(exclude_none=True, by_alias=True, indent=4)
+        return json_data
 
 
 class ElementPath:
