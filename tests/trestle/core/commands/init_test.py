@@ -16,6 +16,7 @@
 """Tests for trestle init module."""
 
 import os
+import platform
 import stat
 import sys
 from unittest.mock import patch
@@ -46,6 +47,9 @@ def test_init(tmpdir):
 
 def test_directory_creation_error(tmpdir):
     """Test error during init when a directory cannot be created."""
+    # Windows read-only on dir does not prevent file creation in dir
+    if platform.system() == 'Windows':
+        return
     owd = os.getcwd()
     os.chdir(tmpdir)
     os.mkdir(const.TRESTLE_CONFIG_DIR)
