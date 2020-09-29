@@ -145,8 +145,6 @@ def test_oscal_model(tmp_dir):
         assert (d[0] == 'change')
         assert (times_equal(d[2][0], d[2][1]))
 
-
-"""
     # following test can be enabled when the pydantic base class checks for timezone
     # load bad target with missing timezone
     with open(yaml_path + 'bad_target_no_tz.yaml', 'r', encoding=encoding) as read_file:
@@ -163,4 +161,3 @@ def test_oscal_model(tmp_dir):
         failed = True
     assert (failed)
     assert (oscal_target_def_no_tz is None)
-"""
