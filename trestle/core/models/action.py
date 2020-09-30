@@ -14,6 +14,7 @@
 """Action wrapper of a command."""
 
 import io
+import os
 from abc import ABC, abstractmethod
 from enum import Enum
 
@@ -31,14 +32,17 @@ class ActionType(Enum):
     # read element from a source file or stream
     READ = 2
 
+    # append element to a source file or stream
+    APPEND = 3
+
     # add the element at the path in the destination
-    ADD = 3
+    ADD = 4
 
     # remove the element at the path in the destination
-    REMOVE = 4
+    REMOVE = 5
 
     # update the element at the path in the destination
-    UPDATE = 5
+    UPDATE = 6
 
 
 class FileContentType(Enum):
@@ -152,8 +156,13 @@ class WriteFileAction(WriteAction):
     def __init__(self, file_path: str, element: Element, content_type: FileContentType):
         """Initialize a write file action.
 
-        If the file exists, it will append otherwise it will create a new file
+        It will create a new file to write to
         """
+
+        self._created_file = False
+        if os.path.isfile(file_path) is False:
+            self._created_file = True
+
         self._file_path = file_path
         with open(self._file_path, 'a+') as writer:
             super().__init__(writer, element, content_type)
@@ -167,13 +176,31 @@ class WriteFileAction(WriteAction):
 
     def rollback(self):
         """Execute the rollback action."""
-        with open(self._file_path, 'a+') as writer:
-            self._writer = writer
-            super().rollback()
+        if self._created_file and os.path.isfile(self._file_path):
+            # if it was a new file, just delete the file
+            os.remove(self._file_path)
+        else:
+            with open(self._file_path, 'a+') as writer:
+                self._writer = writer
+                super().rollback()
 
     def __str__(self):
         """Return string representation."""
         return f'{self._type} {self._element} to {self._file_path}'
+
+
+class AppendFileAction(WriteFileAction):
+    """Append the element to a destination file."""
+
+    def __init__(self, file_path: str, element: Element, content_type: FileContentType):
+        """Initialize a write file action.
+
+        If the file exists, it will append otherwise it will raise exception
+        """
+        if os.path.isfile(file_path) is False:
+            raise TrestleError(f'The file {file_path} does not exists')
+
+        super().__init__(file_path, element, content_type)
 
 
 class ReadFileAction(Action):

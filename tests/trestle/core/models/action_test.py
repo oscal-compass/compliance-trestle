@@ -17,9 +17,10 @@
 
 import json
 import os
+from trestle.core.err import TrestleError
 
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.models.action import FileContentType, WriteAction, WriteFileAction
+from trestle.core.models.action import AppendFileAction, FileContentType, WriteAction, WriteFileAction
 from trestle.core.models.element import Element
 
 import yaml
@@ -84,9 +85,67 @@ def test_write_file_rollback(tmp_yaml_file, sample_target):
         assert read_file.tell() >= 0
 
     wa.rollback()
+    assert os.path.isfile(tmp_yaml_file) is False
 
-    # verify the file content is empty
-    with open(tmp_yaml_file, 'r', encoding='utf8') as read_file:
-        assert read_file.tell() == 0
+
+def test_write_existing_file_rollback(tmp_yaml_file, sample_target):
+    """Test rollback."""
+    # add some content
+    current_pos = 0
+    with open(tmp_yaml_file, 'w+') as writer:
+        writer.write('....\n')
+        current_pos = writer.tell()
+
+    # write to the file
+    element = Element(sample_target)
+    wa = WriteFileAction(tmp_yaml_file, element, FileContentType.YAML)
+    wa.execute()
+
+    # verify the file content is not empty
+    with open(tmp_yaml_file, 'a+', encoding='utf8') as fp:
+        assert fp.tell() > current_pos
+
+    # rollback to the original
+    wa.rollback()
+    assert os.path.isfile(tmp_yaml_file) is True
+
+    # # verify the file content is empty
+    with open(tmp_yaml_file, 'a+', encoding='utf8') as fp:
+        assert fp.tell() == current_pos
+
+    os.remove(tmp_yaml_file)
+
+
+def test_append_file_rollback(tmp_yaml_file, sample_target):
+    """Test append file and rollback."""
+    element = Element(sample_target)
+
+    # appending to a non-existing file will error
+    try:
+        wa = AppendFileAction(tmp_yaml_file, element, FileContentType.YAML)
+    except TrestleError:
+        pass
+
+    # add some content to a file
+    current_pos = 0
+    with open(tmp_yaml_file, 'w+') as writer:
+        writer.write('....\n')
+        current_pos = writer.tell()
+
+    # write to the file
+    wa = AppendFileAction(tmp_yaml_file, element, FileContentType.YAML)
+    wa.execute()
+
+    # verify the file content is not empty
+    with open(tmp_yaml_file, 'a+', encoding='utf8') as fp:
+        assert fp.tell() > current_pos
+
+    # rollback to the original
+    wa.rollback()
+    assert os.path.isfile(tmp_yaml_file) is True
+
+    # # verify the file content is empty
+    with open(tmp_yaml_file, 'a+', encoding='utf8') as fp:
+        assert fp.tell() == current_pos
 
     os.remove(tmp_yaml_file)
