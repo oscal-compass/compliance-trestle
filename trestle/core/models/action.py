@@ -24,25 +24,32 @@ from .element import Element, ElementPath
 
 
 class ActionType(Enum):
-    """Action type enum for different action type."""
+    """Action type enum for different action type.
+
+    File system related actions starts with 1
+    Modell processing related actions starts with 2 or higher
+    """
 
     # write element to a destination file or stream
-    WRITE = 1
+    WRITE = 10
 
     # read element from a source file or stream
-    READ = 2
+    READ = 11
 
     # append element to a source file or stream
-    APPEND = 3
+    APPEND = 12
+
+    # delete a source file, directory or stream
+    DELETE = 13
 
     # add the element at the path in the destination
-    ADD = 4
+    ADD = 20
 
     # remove the element at the path in the destination
-    REMOVE = 5
+    REMOVE = 21
 
     # update the element at the path in the destination
-    UPDATE = 6
+    UPDATE = 22
 
 
 class FileContentType(Enum):
