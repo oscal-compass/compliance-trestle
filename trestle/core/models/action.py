@@ -29,7 +29,7 @@ class ActionType(Enum):
     """Action type enum for different action type.
 
     File system related actions starts with 1
-    Modell processing related actions starts with 2 or higher
+    Model processing related actions starts with 2 or higher
     """
 
     # write element to a destination file or stream

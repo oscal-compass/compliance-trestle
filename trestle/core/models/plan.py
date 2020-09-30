@@ -64,7 +64,8 @@ class Plan:
 
     def rollback(self):
         """Rollback the actions in the plan."""
-        for action in self._actions:
+        # execute in reverse order
+        for action in reversed(self._actions):
             if action.has_rollback() is False:
                 raise UnsupportedOperation(f'{action.get_type()} does not support rollback')
             action.rollback()
