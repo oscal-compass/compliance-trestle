@@ -17,9 +17,9 @@
 
 import json
 import os
-from trestle.core.err import TrestleError
 
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.err import TrestleError
 from trestle.core.models.action import AppendFileAction, FileContentType, WriteAction, WriteFileAction
 from trestle.core.models.element import Element
 

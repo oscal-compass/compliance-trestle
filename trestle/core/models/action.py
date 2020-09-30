@@ -158,7 +158,6 @@ class WriteFileAction(WriteAction):
 
         It will create a new file to write to
         """
-
         self._created_file = False
         if os.path.isfile(file_path) is False:
             self._created_file = True
