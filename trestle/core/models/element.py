@@ -31,7 +31,7 @@ class Element:
 
     def __str__(self):
         """Return string representation of element."""
-        return f'{self._elem.__class__}'
+        return type(self._elem).__name__
 
     def to_yaml(self):
         """Convert into YAML string."""

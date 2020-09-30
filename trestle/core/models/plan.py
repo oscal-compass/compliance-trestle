@@ -21,12 +21,9 @@ from .action import Action
 class Plan:
     """Plan of action of a command."""
 
-    def __init__(self, action_list: list(Action)):
+    def __init__(self):
         """Initialize a plan."""
-        self._action_orders: list = []
-        self._actions: dict = {}
-        for action in action_list:
-            self.add_action(action)
+        self._actions: list[Action] = []
 
     def _action_key(self, action: Action):
         return hash(action)
@@ -34,51 +31,40 @@ class Plan:
     def __str__(self):
         """Print the plan."""
         list_actions = []
-        index = 0
-        for action_key in self._action_orders:
-            ac: Action = Action(self._actions[action_key])
-            list_actions.append(f'{index}. {ac}')
+        index = 1
+        for action in self._actions:
+            list_actions.append(f'{index}. {action}')
             index = index + 1
-        return list_actions
+
+        list_str = '\n'.join(list_actions)
+        return list_str
 
     def add_action(self, action: Action):
         """Add a new action."""
-        key = self._action_key(action)
-        if self._actions[key] is not None:
-            self.remove_action(action)
+        self._actions.append(action)
 
-        self._action_orders.append(key)
-        self._actions[key] = action
-
-    def remove_action(self, action: Action):
-        """Add a new action."""
-        key = self._action_key(action)
-        if self._actions[key] is not None:
-            self._actions.pop(key, None)
-            self._action_orders.remove(key)
+    def all_actions(self) -> list:
+        """Return full list of actions."""
+        return self._actions
 
     def simulate(self):
         """Simulate execution of the plan."""
         # Check if all of the actions support rollback or not
-        for action_key in self._action_orders:
-            ac: Action = Action(self._actions[action_key])
-            if ac.has_rollback() is False:
-                raise UnsupportedOperation(f'{ac.get_type()} does not support rollback')
+        for action in self._actions.items():
+            if action.has_rollback() is False:
+                raise UnsupportedOperation(f'{action.get_type()} does not support rollback')
 
         self.execute()
         self.rollback()
 
     def execute(self):
         """Execute the actions in the plan."""
-        for action_key in self._action_orders:
-            ac: Action = Action(self._actions[action_key])
-            ac.execute()
+        for action in self._actions:
+            action.execute()
 
     def rollback(self):
         """Rollback the actions in the plan."""
-        for action_key in self._action_orders.reverse():
-            ac: Action = Action(self._actions[action_key])
-            if ac.has_rollback() is False:
-                raise UnsupportedOperation(f'{ac.get_type()} does not support rollback')
-
-            ac.rollback()
+        for action in self._actions:
+            if action.has_rollback() is False:
+                raise UnsupportedOperation(f'{action.get_type()} does not support rollback')
+            action.rollback()

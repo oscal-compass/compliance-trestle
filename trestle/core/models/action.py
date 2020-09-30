@@ -15,10 +15,12 @@
 
 import io
 import os
+import pathlib
 from abc import ABC, abstractmethod
 from enum import Enum
 
 from trestle.core.err import TrestleError
+from trestle.utils import fs
 
 from .element import Element, ElementPath
 
@@ -69,6 +71,10 @@ class Action(ABC):
         """Initialize an base action."""
         self._type: ActionType = action_type
         self._has_rollback: bool = has_rollback
+
+    def to_string(self) -> str:
+        """Return a string representation."""
+        return self.__str__()
 
     def get_type(self) -> ActionType:
         """Return the action type."""
@@ -132,7 +138,7 @@ class WriteAction(Action):
 
     def __str__(self):
         """Return string representation."""
-        return f'{self._type} {self._element}'
+        return f'{self.get_type()} {self._element}'
 
 
 class ReadAction(Action):
@@ -165,13 +171,28 @@ class WriteFileAction(WriteAction):
 
         It will create a new file to write to
         """
-        self._created_file = False
-        if os.path.isfile(file_path) is False:
-            self._created_file = True
+        self._file_path = self._fix_file_extension(file_path, content_type)
 
-        self._file_path = file_path
+        self._created_file = False
+        if os.path.isfile(self._file_path) is False:
+            self._created_file = True
+            fs.ensure_directory(pathlib.Path(self._file_path).parent.absolute())
+
         with open(self._file_path, 'a+') as writer:
             super().__init__(writer, element, content_type)
+
+    def _fix_file_extension(self, file_path: str, content_type: FileContentType) -> str:
+        file_name, file_extension = os.path.splitext(file_path)
+        if content_type == FileContentType.JSON:
+            if file_extension != '.json':
+                file_path = file_name + '.json'
+        elif content_type == FileContentType.YAML:
+            if file_extension != '.yaml':
+                file_path = file_name + '.yaml'
+        else:
+            raise TrestleError(f'Unsupported content type {content_type}')
+
+        return file_path
 
     def execute(self):
         """Execute the action."""
@@ -192,7 +213,7 @@ class WriteFileAction(WriteAction):
 
     def __str__(self):
         """Return string representation."""
-        return f'{self._type} {self._element} to {self._file_path}'
+        return f'{self._type} {self._element} to "{self._file_path}"'
 
 
 class AppendFileAction(WriteFileAction):
