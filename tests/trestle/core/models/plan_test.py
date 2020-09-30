@@ -25,24 +25,23 @@ from trestle.oscal import target
 def test_plan_execution(tmp_dir, sample_target: target.TargetDefinition):
     """Test successful execution of a valid plan."""
     content_type = FileContentType.YAML
+
     base_dir = os.path.join(tmp_dir, 'mytarget')
+    targets_dir = os.path.join(base_dir, 'targets')
 
     # hand craft a split plan
     split_plan = Plan()
     split_plan.add_action(
-        WriteFileAction(os.path.join(base_dir, 'metadata.json'),
-                        Element(sample_target.metadata),
-                        content_type))
+        WriteFileAction(os.path.join(base_dir, 'metadata.json'), Element(sample_target.metadata), content_type)
+    )
 
     for tid, t in sample_target.targets.items():
-        split_plan.add_action(
-            WriteFileAction(os.path.join(base_dir, 'targets', tid),
-                            Element(t),
-                            content_type))
+        split_plan.add_action(WriteFileAction(os.path.join(targets_dir, tid), Element(t), content_type))
 
     # execute the plan
     split_plan.execute()
     split_plan.rollback()
+    os.removedirs(targets_dir)
 
 
 def test_plan_execution_failure():
