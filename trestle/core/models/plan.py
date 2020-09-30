@@ -43,9 +43,9 @@ class Plan:
         """Add a new action."""
         self._actions.append(action)
 
-    def all_actions(self) -> list:
-        """Return full list of actions."""
-        return self._actions
+    def clear_actions(self):
+        """Clear all actions."""
+        self._actions = []
 
     def simulate(self):
         """Simulate execution of the plan."""
