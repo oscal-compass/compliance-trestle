@@ -22,7 +22,7 @@ from enum import Enum
 from trestle.core.err import TrestleError
 from trestle.utils import fs
 
-from .element import Element, ElementPath
+from .elements import Element, ElementPath
 
 
 class ActionType(Enum):

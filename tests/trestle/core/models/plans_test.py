@@ -13,12 +13,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for trestle span module."""
+"""Tests for trestle plans module."""
 import os
 
-from trestle.core.models.action import FileContentType, WriteFileAction
-from trestle.core.models.element import Element
-from trestle.core.models.plan import Plan
+from trestle.core.models.actions import FileContentType, WriteFileAction
+from trestle.core.models.elements import Element
+from trestle.core.models.plans import Plan
 from trestle.oscal import target
 
 

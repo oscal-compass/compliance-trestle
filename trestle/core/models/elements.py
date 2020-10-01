@@ -18,6 +18,24 @@ from trestle.core.base_model import OscalBaseModel
 import yaml
 
 
+class ElementPath:
+    """Element path wrapper of an element."""
+
+    PATH_SEPARATOR: str = '.'
+
+    def __init__(self, element_path: str):
+        """Initialize an element wrapper."""
+        self._path: list[str] = element_path.split(self.PATH_SEPARATOR)
+
+    def get(self) -> list:
+        """Return the path components as a list."""
+        return self._path
+
+    def __str__(self):
+        """Return string representation of element path."""
+        return self.PATH_SEPARATOR.join(self._path)
+
+
 class Element:
     """Element wrapper of an OSCAL model."""
 
@@ -25,9 +43,19 @@ class Element:
         """Initialize an element wrapper."""
         self._elem: OscalBaseModel = elem
 
-    def get(self):
+    def get(self, element_path: ElementPath = None):
         """Get the element."""
-        return self._elem
+        if element_path is None:
+            return self._elem
+
+        # return the sub-element at the specified path
+        elm = self._elem
+        for attr in element_path.get():
+            elm = getattr(elm, attr, None)
+            if elm is None:
+                raise AttributeError(f'Element does not exists at path "{element_path}"')
+
+        return elm
 
     def __str__(self):
         """Return string representation of element."""
@@ -41,15 +69,3 @@ class Element:
         """Convert into JSON string."""
         json_data = self._elem.json(exclude_none=True, by_alias=True, indent=4)
         return json_data
-
-
-class ElementPath:
-    """Element path wrapper of an element."""
-
-    def __init__(self, element_path: str):
-        """Initialize an element wrapper."""
-        self._path: str = element_path
-
-    def __str__(self):
-        """Return string representation of element path."""
-        return f'{self._path}'

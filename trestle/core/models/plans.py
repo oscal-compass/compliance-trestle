@@ -15,7 +15,7 @@
 
 from io import UnsupportedOperation
 
-from .action import Action
+from .actions import Action
 
 
 class Plan:

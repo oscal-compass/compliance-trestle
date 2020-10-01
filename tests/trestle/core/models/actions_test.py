@@ -13,15 +13,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for trestle action module."""
+"""Tests for trestle actions module."""
 
 import json
 import os
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.core.models.action import AppendFileAction, FileContentType, WriteAction, WriteFileAction
-from trestle.core.models.element import Element
+from trestle.core.models.actions import AppendFileAction, FileContentType, WriteAction, WriteFileAction
+from trestle.core.models.elements import Element
 
 import yaml
 
