@@ -162,6 +162,7 @@ class Element:
         # If wildcard is present, check the input type and determine the parent element
         if element_path.get_last() == ElementPath.WILDCARD:
             if isinstance(model_obj, list) or isinstance(model_obj, OscalBaseModel):
+                # since wildcard * is there, we need to go one level up for parent element
                 parent_elm = self.get_parent(element_path.get_parent_path())
             else:
                 raise TrestleError(
