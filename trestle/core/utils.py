@@ -38,3 +38,43 @@ def get_elements_of_model_type(object_of_interest, type_of_interest):
                 continue
             loi.extend(get_elements_of_model_type(getattr(object_of_interest, field), type_of_interest))
     return loi
+
+
+def find_elements_by_name(object_of_interest, key_name):
+    """Traverse entire object and return list of the values in dicts associated with key name."""
+    loe = []
+    # looking for a dict or 2-element tuple containing specified key name
+    if type(object_of_interest) == dict:
+        for key, value in object_of_interest.items():
+            if (key == key_name) and value:
+                # found one so append its value to list
+                loe.append(value)
+            else:
+                new_list = find_elements_by_name(value, key_name)
+                if new_list:
+                    loe.extend(new_list)
+    elif type(object_of_interest) == tuple and len(object_of_interest) == 2 and object_of_interest[0] == key_name:
+        if object_of_interest[1]:
+            loe.append(object_of_interest[1])
+    elif type(object_of_interest) != str:
+        try:
+            # iterate over any iterable and recurse on its items
+            o_iter = iter(object_of_interest)
+        except Exception:
+            # it is not a dict and not iterable
+            pass
+        else:
+            next_item = next(o_iter, None)
+            while next_item is not None:
+                new_list = find_elements_by_name(next_item, key_name)
+                if new_list:
+                    loe.extend(new_list)
+                next_item = next(o_iter, None)
+            return loe
+    return loe
+
+
+def has_no_duplicate_elements(object_of_interest, element_name):
+    """Determine if duplicate instances of element exist in object."""
+    loe = find_elements_by_name(object_of_interest, element_name)
+    return len(loe) == len(set(loe))

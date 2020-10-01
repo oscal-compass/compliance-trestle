@@ -21,6 +21,8 @@ import trestle.core.parser as parser
 import trestle.core.utils as mutils
 import trestle.oscal.catalog as catalog
 
+import yaml
+
 
 def load_good_catalog():
     """Load nist 800-53 as a catalog example."""
@@ -44,3 +46,12 @@ def test_get_elements():
     assert (len(control_list) >= 1)
     group_list = mutils.get_elements_of_model_type(good_sample, catalog.Group)
     assert (len(group_list) >= 2)
+
+
+def test_has_no_duplicate_elements():
+    """Test presence of duplicate element."""
+    cat = load_good_catalog()
+    assert mutils.has_no_duplicate_elements(cat, 'uuid')
+    read_file = pathlib.Path('tests/data/yaml/bad_target.yaml').open('r', encoding='utf8')
+    yaml_cat = yaml.load(read_file, Loader=yaml.Loader)
+    assert not mutils.has_no_duplicate_elements(yaml_cat, 'uuid')
