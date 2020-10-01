@@ -265,10 +265,11 @@ class AddAction(Action):
 
     def execute(self):
         """Execute the action."""
+        self._dest_element.set_at(self._src_element, self._element_path)
 
     def rollback(self):
         """Rollback the action."""
-        raise NotImplementedError('Not implemented')
+        self._dest_element.set_at(None, self._element_path)
 
     def __str__(self):
         """Return string representation."""

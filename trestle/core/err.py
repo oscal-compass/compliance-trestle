@@ -32,3 +32,16 @@ class TrestleError(RuntimeError):
     def __str__(self):
         """Return Trestle error message if asked for a string."""
         return self.msg
+
+
+class TrestleNotFoundError(TrestleError):
+    """
+    General framework (non-application) related errors.
+
+    Args:
+        msg (str): The error message
+    """
+
+    def __init__(self, msg):
+        """Intialization for TresleNotFoundError."""
+        super().__init__(msg)

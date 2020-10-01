@@ -15,6 +15,8 @@
 
 from typing import List
 
+from pydantic.error_wrappers import ValidationError
+
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 
@@ -22,7 +24,10 @@ import yaml
 
 
 class ElementPath:
-    """Element path wrapper of an element."""
+    """Element path wrapper of an element.
+
+    This only allows a single wildcard '*' at the end to denote elements of an array of dict
+    """
 
     PATH_SEPARATOR: str = '.'
 
@@ -30,22 +35,76 @@ class ElementPath:
 
     def __init__(self, element_path: str):
         """Initialize an element wrapper."""
+        self._path: List[str] = self._parse(element_path)
+
+        # Initialize variables for lazy processing and caching
+        # This will be processed and cached
+        self._element_name = None
+        self._parent_element_path = None
+
+    def _parse(self, element_path) -> List[str]:
+        """Parse the element path and validate."""
         parts: List[str] = element_path.split(self.PATH_SEPARATOR)
-        for part in parts:
+
+        for i, part in enumerate(parts):
             if part == '':
                 raise TrestleError(
-                    f'Invalid path "{element_path}" because having empty path parts between "{self.PATH_SEPARATOR}"'
+                    f'Invalid path "{element_path}" because having empty path parts between "{self.PATH_SEPARATOR}" \
+                        or in the beginning'
                 )
+            elif part == self.WILDCARD and i != len(parts) - 1:
+                raise TrestleError(f'Invalid path. Wildcard "{self.WILDCARD}" can only be at the end')
 
-        self._path: List[str] = parts
+        if parts[-1] == self.WILDCARD and len(parts) == 1:
+            raise TrestleError(f'Invalid path {element_path}')
+
+        return parts
 
     def get(self) -> List[str]:
         """Return the path components as a list."""
         return self._path
 
+    def get_first(self) -> str:
+        """Return the first part of the path."""
+        return self._path[0]
+
+    def get_last(self) -> str:
+        """Return the last part of the path."""
+        return self._path[-1]
+
+    def get_element_name(self):
+        """Return the element name from the path."""
+        # if it is available then return otherwise compute
+        if self._element_name is None:
+            element_name = self.get_last()
+            if element_name == self.WILDCARD:
+                element_name = self._path[-2]
+
+            self._element_name = element_name
+
+        return self._element_name
+
+    def get_parent_path(self):
+        """Return the path to the parent element."""
+        # if it is available then return otherwise compute
+        if self._parent_element_path is None:
+            if len(self._path) > 1:
+                parent_path_parts = self._path[:-1]
+                self._parent_element_path = ElementPath(self.PATH_SEPARATOR.join(parent_path_parts))
+
+        return self._parent_element_path
+
     def __str__(self):
         """Return string representation of element path."""
         return self.PATH_SEPARATOR.join(self._path)
+
+    def __eq__(self, other):
+        """Override equality method."""
+        if not isinstance(other, ElementPath):
+            # don't attempt to compare against unrelated types
+            return NotImplemented
+
+        return self._path == other.get()
 
 
 class Element:
@@ -55,8 +114,17 @@ class Element:
         """Initialize an element wrapper."""
         self._elem: OscalBaseModel = elem
 
-    def get(self, element_path: ElementPath = None):
-        """Get the element."""
+    def get(self) -> OscalBaseModel:
+        """Return the model object."""
+        return self._elem
+
+    def get_at(self, element_path: ElementPath = None):
+        """Get the element at the specified element path.
+
+        If empty or wildcard path is passed, it will return the element itself
+        Otherwise, it will return the sub-model object at the path. Sub-model object
+        can be of type OscalBaseModel or List
+        """
         if element_path is None:
             return self._elem
 
@@ -74,10 +142,52 @@ class Element:
             else:
                 elm = getattr(elm, attr, None)
 
-            if elm is None:
-                raise AttributeError(f'Element does not exists at path "{element_path}"')
-
         return elm
+
+    def get_parent(self, element_path: ElementPath):
+        """Get the parent element of the element specified by the path."""
+        # get the parent element
+        parent_path = element_path.get_parent_path()
+        if parent_path is None:
+            parent_elm = self.get()
+        else:
+            parent_elm = self.get_at(parent_path)
+
+        return parent_elm
+
+    def set_at(self, element_path: ElementPath, model_obj: OscalBaseModel):
+        """Set a source model object as sub_element at the path in the current element.
+
+        It returns the element itself so that chaining operation can be done.
+        """
+        # If wildcard is present, check the input type and determine the parent element
+        if element_path.get_last() == ElementPath.WILDCARD:
+            if isinstance(model_obj, list) or isinstance(model_obj, OscalBaseModel):
+                parent_elm = self.get_parent(element_path.get_parent_path())
+            else:
+                raise TrestleError(
+                    f'The model object needs to be a List or OscalBaseModel for path with "{ElementPath.WILDCARD}"'
+                )
+        else:
+            # get the parent element
+            parent_elm = self.get_parent(element_path)
+
+        # check if it can be a valid sub_element of the parent
+        sub_element_name = element_path.get_element_name()
+        if hasattr(parent_elm, sub_element_name) is False:
+            raise TrestleError(f'Element does not have the attribute {sub_element_name} of type {model_obj.__class__}')
+
+        # set the sub-element
+        try:
+            setattr(parent_elm, sub_element_name, model_obj)
+        except ValidationError:
+            sub_element_class = parent_elm.__fields__.get(sub_element_name).outer_type_
+            raise TrestleError(
+                f'Validation error: {sub_element_name} is expected to be "{sub_element_class}", \
+                    but found "{model_obj.__class__}"'
+            )
+
+        return self
 
     def __str__(self):
         """Return string representation of element."""
