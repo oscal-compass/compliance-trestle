@@ -14,6 +14,7 @@
 # limitations under the License.
 """Testing of customization of pydantic base model."""
 import json
+import pathlib
 from datetime import datetime, tzinfo
 from uuid import uuid4
 
@@ -22,6 +23,7 @@ import pytest
 import trestle.core.base_model as ospydantic
 import trestle.core.parser as p
 import trestle.oscal.catalog as oscatalog
+import trestle.oscal.target as ostarget
 
 
 def test_echo_tmpdir(tmpdir):
@@ -175,3 +177,84 @@ def test_multiple_variable_strip():
 
     with pytest.raises(Exception):
         stripped_catalog_object(uuid=str(uuid4()))
+
+
+def test_copy_to():
+    """Test the copy to functionality."""
+    # Root variable copy too
+    catalog_title = oscatalog.Title.parse_obj('my_fun_title')
+
+    target_description = catalog_title.copy_to(ostarget.Description)
+
+    assert (target_description == catalog_title)
+
+    target_title = catalog_title.copy_to(ostarget.Title)
+    assert (target_title == catalog_title)
+
+    # Complex variable
+    c_m = oscatalog.Metadata(
+        **{
+            'title': 'My simple catalog',
+            'last-modified': datetime.now(),
+            'version': '0.0.0',
+            'oscal-version': '1.0.0-Milestone3'
+        }
+    )
+
+    target_metadata = c_m.copy_to(ostarget.Metadata)
+    assert (target_metadata.title == c_m.title)
+    # Non matching object
+    with pytest.raises(Exception):
+        c_m.copy_to(ostarget.Target)
+
+
+def test_copy_from():
+    """Test copy from function."""
+    m = oscatalog.Metadata(
+        **{
+            'title': 'My simple catalog',
+            'last-modified': datetime.now().astimezone(),
+            'version': '0.0.0',
+            'oscal-version': '1.0.0-Milestone3'
+        }
+    )
+    catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
+
+    target_md = ostarget.Metadata(
+        **{
+            'title': 'My simple target_title',
+            'last-modified': datetime.now().astimezone(),
+            'version': '99.0.0',
+            'oscal-version': '1.0.0-Milestone3'
+        }
+    )
+    catalog.metadata.copy_from(target_md)
+
+    assert catalog.metadata.title == target_md.title
+
+
+def test_oscal_read():
+    """Test ability to read and uwrap oscal object."""
+    path_target_definition = pathlib.Path('tests/data/json/sample-target-definition.json')
+    assert (path_target_definition.exists())
+
+    target = ostarget.TargetDefinition.oscal_read(path_target_definition)
+    assert (len(str(target.metadata.title)) > 1)
+
+
+def test_oscal_write(tmpdir):
+    """Test Oscal write by repetitive operations."""
+    path_target_definition = pathlib.Path('tests/data/json/sample-target-definition.json')
+    assert (path_target_definition.exists())
+
+    target = ostarget.TargetDefinition.oscal_read(path_target_definition)
+
+    temp_td_json = pathlib.Path(tmpdir) / 'target_test.json'
+    target.oscal_write(temp_td_json)
+
+    target2 = ostarget.TargetDefinition.oscal_read(temp_td_json)
+
+    temp_td_yaml = pathlib.Path(tmpdir) / 'target_test.yaml'
+    target2.oscal_write(temp_td_yaml)
+
+    ostarget.TargetDefinition.oscal_read(temp_td_yaml)
