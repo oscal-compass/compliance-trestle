@@ -161,13 +161,14 @@ class Element:
         """
         # If wildcard is present, check the input type and determine the parent element
         if element_path.get_last() == ElementPath.WILDCARD:
-            if isinstance(model_obj, list) or isinstance(model_obj, OscalBaseModel):
-                # since wildcard * is there, we need to go one level up for parent element
-                parent_elm = self.get_parent(element_path.get_parent_path())
-            else:
+            # validate the type is either list or OscalBaseModel
+            if not isinstance(model_obj, list) and not isinstance(model_obj, OscalBaseModel):
                 raise TrestleError(
                     f'The model object needs to be a List or OscalBaseModel for path with "{ElementPath.WILDCARD}"'
                 )
+
+            # since wildcard * is there, we need to go one level up for parent element
+            parent_elm = self.get_parent(element_path.get_parent_path())
         else:
             # get the parent element
             parent_elm = self.get_parent(element_path)
@@ -181,13 +182,18 @@ class Element:
         try:
             setattr(parent_elm, sub_element_name, model_obj)
         except ValidationError:
-            sub_element_class = parent_elm.__fields__.get(sub_element_name).outer_type_
+            sub_element_class = self._get_sub_element_class(parent_elm, sub_element_name)
             raise TrestleError(
                 f'Validation error: {sub_element_name} is expected to be "{sub_element_class}", \
                     but found "{model_obj.__class__}"'
             )
 
         return self
+
+    def _get_sub_element_class(self, parent_elm: OscalBaseModel, sub_element_name: str) -> str:
+        """Get the class of the sub-element."""
+        sub_element_class = parent_elm.__fields__.get(sub_element_name).outer_type_
+        return sub_element_class
 
     def __str__(self):
         """Return string representation of element."""
