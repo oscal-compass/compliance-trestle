@@ -13,7 +13,10 @@
 # limitations under the License.
 """Element wrapper of an OSCAL model element."""
 
+from typing import List
+
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.err import TrestleError
 
 import yaml
 
@@ -23,11 +26,20 @@ class ElementPath:
 
     PATH_SEPARATOR: str = '.'
 
+    WILDCARD: str = '*'
+
     def __init__(self, element_path: str):
         """Initialize an element wrapper."""
-        self._path: list[str] = element_path.split(self.PATH_SEPARATOR)
+        parts: List[str] = element_path.split(self.PATH_SEPARATOR)
+        for part in parts:
+            if part == '':
+                raise TrestleError(
+                    f'Invalid path "{element_path}" because having empty path parts between "{self.PATH_SEPARATOR}"'
+                )
 
-    def get(self) -> list:
+        self._path: List[str] = parts
+
+    def get(self) -> List[str]:
         """Return the path components as a list."""
         return self._path
 
@@ -51,7 +63,17 @@ class Element:
         # return the sub-element at the specified path
         elm = self._elem
         for attr in element_path.get():
-            elm = getattr(elm, attr, None)
+            # process for wildcard and array indexes
+            if attr == ElementPath.WILDCARD:
+                break
+            elif attr.isnumeric():
+                if isinstance(elm, list):
+                    elm = elm[int(attr)]
+                else:
+                    raise TrestleError(f'Sub element "{elm.__class__}" is not a list and subscript cannot be applied')
+            else:
+                elm = getattr(elm, attr, None)
+
             if elm is None:
                 raise AttributeError(f'Element does not exists at path "{element_path}"')
 

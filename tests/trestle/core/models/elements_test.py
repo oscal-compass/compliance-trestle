@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle elements module."""
-
+from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
 from trestle.oscal import target
 
@@ -24,6 +24,38 @@ def test_element_get(sample_target: target.TargetDefinition):
     element = Element(sample_target)
 
     assert element.get() == sample_target
+    assert element.get(ElementPath('*')) == sample_target
     assert element.get(ElementPath('metadata')) == sample_target.metadata
     assert element.get(ElementPath('metadata.title')) == sample_target.metadata.title
     assert element.get(ElementPath('targets')) == sample_target.targets
+    assert element.get(ElementPath('targets.*')) == sample_target.targets
+    assert element.get(ElementPath('metadata.parties.*')) == sample_target.metadata.parties
+    assert element.get(ElementPath('metadata.parties.0')) == sample_target.metadata.parties[0]
+    assert element.get(ElementPath('metadata.parties.0.uuid')) == sample_target.metadata.parties[0].uuid
+
+
+def test_element_path_constructor(sample_target: target.TargetDefinition):
+    """Test element path construction."""
+    assert ElementPath('*').get() == ['*']
+    assert ElementPath('metadata.title').get() == ['metadata', 'title']
+    assert ElementPath('targets.*').get() == ['targets', '*']
+    assert ElementPath('targets.0').get() == ['targets', '0']
+    assert ElementPath('metadata.parties.0.uuid').get() == ['metadata', 'parties', '0', 'uuid']
+
+    # expect error
+    try:
+        ElementPath('.')
+    except TrestleError:
+        pass
+
+    # expect error
+    try:
+        ElementPath('.*')
+    except TrestleError:
+        pass
+
+    # expect error
+    try:
+        ElementPath('metadata..title')
+    except TrestleError:
+        pass
