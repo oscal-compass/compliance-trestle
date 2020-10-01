@@ -182,15 +182,17 @@ class Element:
         try:
             setattr(parent_elm, sub_element_name, model_obj)
         except ValidationError:
-            sub_element_class = self._get_sub_element_class(parent_elm, sub_element_name)
+            sub_element_class = self.get_sub_element_class(parent_elm, sub_element_name)
             raise TrestleError(
                 f'Validation error: {sub_element_name} is expected to be "{sub_element_class}", \
                     but found "{model_obj.__class__}"'
             )
 
+        # returning self will allow to do 'chaining' of commands after set
         return self
 
-    def _get_sub_element_class(self, parent_elm: OscalBaseModel, sub_element_name: str) -> str:
+    @classmethod
+    def get_sub_element_class(cls, parent_elm: OscalBaseModel, sub_element_name: str) -> str:
         """Get the class of the sub-element."""
         sub_element_class = parent_elm.__fields__.get(sub_element_name).outer_type_
         return sub_element_class
