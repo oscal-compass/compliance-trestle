@@ -121,8 +121,7 @@ class Element:
     def get_at(self, element_path: ElementPath = None):
         """Get the element at the specified element path.
 
-        If empty or wildcard path is passed, it will return the element itself
-        Otherwise, it will return the sub-model object at the path. Sub-model object
+        it will return the sub-model object at the path. Sub-model object
         can be of type OscalBaseModel or List
         """
         if element_path is None:
