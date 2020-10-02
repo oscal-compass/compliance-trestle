@@ -42,9 +42,6 @@ def test_plan_execution(tmp_dir, sample_target: target.TargetDefinition):
     split_plan.execute()
     split_plan.rollback()
 
-    pathlib.Path.rmdir(targets_dir)
-    pathlib.Path.rmdir(base_dir)
-
 
 def test_plan_execution_failure():
     """Test unsuccessful execution of a valid plan."""

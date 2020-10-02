@@ -26,11 +26,26 @@ import yaml
 BASE_TMP_DIR = pathlib.Path('tests/__tmp_dir')
 
 
+def has_parent_path(cur_path: pathlib.Path, parent_path: pathlib.Path) -> bool:
+    """Check if cur_dir has the specified parent_dir path."""
+    if len(cur_path.parts) < len(parent_path.parts):
+        return False
+
+    for i, part in enumerate(parent_path.parts):
+        if part is not cur_path.parts[i]:
+            return False
+
+    return True
+
+
 def clean_tmp_dir(tmp_dir: pathlib.Path):
     """Clean tmp directory."""
-    if tmp_dir.exists() and tmp_dir.parent == BASE_TMP_DIR:
-        for file in pathlib.Path.iterdir(tmp_dir):
-            pathlib.Path.unlink(file)
+    if tmp_dir.exists() and has_parent_path(tmp_dir.parent, BASE_TMP_DIR):
+        for item in pathlib.Path.iterdir(tmp_dir):
+            if item.is_file():
+                item.unlink()
+            elif item.is_dir():
+                clean_tmp_dir(item)
 
         pathlib.Path.rmdir(tmp_dir)
 
