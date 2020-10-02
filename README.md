@@ -1,4 +1,4 @@
-# Trestle
+# Compliance-trestle aka trestle
 
 Trestle is a tool to which enables the creation and validation of documentation artifacts for compliance requirements. It leverages NIST's [OSCAL](<https://pages.nist.gov/OSCAL/documentation/>) as a standard data format for interchange between tools & people and provides an opinionated approach to OSCAL adoption.
 
@@ -29,6 +29,7 @@ Trestle converts complex schema/data structures into simple files in a directory
 ### Install and Run:
 
 Install from PYPI and run:
+
 ~~~shell
 # Setup virtual environement
 python3 -m venv venv
@@ -42,6 +43,7 @@ trestle -h # For command line help
 ~~~
 
 In order to install Trestle from source, run the following command:
+
 ~~~shell
 # Clone
 git clone https://github.com/IBM/compliance-trestle.git
@@ -56,14 +58,30 @@ pip install -q -e ".[dev]" --upgrade --upgrade-strategy eager
 trestle -h
 ~~~
 
+## Supported OSCAL elements and extensions
+
+`trestle` implciltly supports all OSCAL schemas for use within the object model. As trestle a tentative roadmap includes
+adding workflow around specific elements / objects that is opinionated.
+
+In addition to the core OSCAL objects trestle supports the definition of a `target`. The `target` (and it's container
+`target-definition`) is a generalization of the `component` model which is designed to specifically support configuration.
+
+`catalog` and `profile` object can define parameters. However, by their nature the parameter definitions are at the
+regulatory level. The `trestle` team has seen a need for an object that can define parameters at the `control-implemenation`
+level. E.g. `component` is an implementation `target` is the definition of capabilities of the component.
+
+### Conformance criteria ontop of OSCAL
+
 ## Contributing to Trestle
-Our project welcomes external contributions. Please checkout [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
+
+Our project welcomes external contributions. Please checkout [CONTRIBUTING.md](<CONTRIBUTING.md>) to get started.
 
 ## License & Authors
-If you would like to see the detailed LICENSE click [here](LICENSE).
-Check out [MAINTAINERS](MAINTAINERS.md) for list of authors.
 
-```text
+If you would like to see the detailed LICENSE click [here](<LICENSE>).
+Check out [MAINTAINERS](<MAINTAINERS.md>) for list of authors.
+
+~~~text
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -78,4 +96,4 @@ Check out [MAINTAINERS](MAINTAINERS.md) for list of authors.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-```
+~~~
