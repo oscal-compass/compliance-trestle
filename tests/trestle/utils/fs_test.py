@@ -15,18 +15,15 @@
 # limitations under the License.
 """Tests for fs module."""
 
-import pathlib
-
 import pytest
 
 from trestle.utils import fs
 
 
-def test_ensure_directory(tmp_dir):
+def test_ensure_directory(tmpdir):
     """Test ensure_directory function."""
     # Happy path
-    fs.ensure_directory(tmp_dir)
-    assert pathlib.Path.is_dir(tmp_dir)
+    fs.ensure_directory(tmpdir)
 
     # Unhappy path
     with pytest.raises(AssertionError):
