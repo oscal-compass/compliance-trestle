@@ -101,8 +101,7 @@ class ElementPath:
     def __eq__(self, other):
         """Override equality method."""
         if not isinstance(other, ElementPath):
-            # don't attempt to compare against unrelated types
-            return NotImplemented
+            return False
 
         return self._path == other.get()
 
@@ -137,7 +136,8 @@ class Element:
                 if isinstance(elm, list):
                     elm = elm[int(attr)]
                 else:
-                    raise TrestleError(f'Sub element "{elm.__class__}" is not a list and subscript cannot be applied')
+                    elm = None
+                    break
             else:
                 elm = getattr(elm, attr, None)
 

@@ -96,6 +96,7 @@ def test_element_get_at(sample_target: target.TargetDefinition):
     element = Element(sample_target)
 
     assert element.get() == sample_target
+    assert element.get_at() == element.get()
     assert element.get_at(ElementPath('metadata')) == sample_target.metadata
     assert element.get_at(ElementPath('metadata.title')) == sample_target.metadata.title
     assert element.get_at(ElementPath('targets')) == sample_target.targets
@@ -103,6 +104,9 @@ def test_element_get_at(sample_target: target.TargetDefinition):
     assert element.get_at(ElementPath('metadata.parties.*')) == sample_target.metadata.parties
     assert element.get_at(ElementPath('metadata.parties.0')) == sample_target.metadata.parties[0]
     assert element.get_at(ElementPath('metadata.parties.0.uuid')) == sample_target.metadata.parties[0].uuid
+
+    # invalid indexing
+    assert element.get_at(ElementPath('metadata.title.0')) is None
 
 
 def test_element_set_at(sample_target: target.TargetDefinition):
@@ -145,3 +149,34 @@ def test_element_set_at(sample_target: target.TargetDefinition):
         assert element.set_at(ElementPath('metadata.title'), parties).get_at(ElementPath('metadata.parties')) == parties
     except TrestleError:
         pass
+
+    # wildcard requires it to be an OscalBaseModel or list
+    try:
+        assert element.set_at(ElementPath('metadata.parties.*'), 'INVALID')
+    except TrestleError:
+        pass
+
+    # invalid attribute
+    try:
+        assert element.set_at(ElementPath('metadata.groups.*'), parties)
+    except TrestleError:
+        pass
+
+
+def test_element_str(sample_target):
+    """Test for magic method str."""
+    element = Element(sample_target)
+    assert str(element) == 'TargetDefinition'
+
+
+def test_element_path_str():
+    """Test for magic method str."""
+    element_path = ElementPath('target.metadata')
+    assert str(element_path) == 'target.metadata'
+
+
+def test_element_path_eq(sample_target):
+    """Test for magic method eq."""
+    assert ElementPath('target.metadata') == ElementPath('target.metadata')
+    assert not(ElementPath('target.metadata') == ElementPath('target.title'))
+    assert not(ElementPath('target.metadata') == Element(sample_target))
