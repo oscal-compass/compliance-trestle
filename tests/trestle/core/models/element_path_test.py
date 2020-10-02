@@ -98,5 +98,5 @@ def test_element_path_str():
 def test_element_path_eq(sample_target):
     """Test for magic method eq."""
     assert ElementPath('target.metadata') == ElementPath('target.metadata')
-    assert not(ElementPath('target.metadata') == ElementPath('target.title'))
-    assert not(ElementPath('target.metadata') == Element(sample_target))
+    assert not (ElementPath('target.metadata') == ElementPath('target.title'))
+    assert not (ElementPath('target.metadata') == Element(sample_target))

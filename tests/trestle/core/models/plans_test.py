@@ -32,7 +32,9 @@ def test_plan_execution(tmp_dir, sample_target: target.TargetDefinition):
     # hand craft a split plan
     split_plan = Plan()
     split_plan.add_action(
-        WriteFileAction(pathlib.Path.joinpath(base_dir, 'metadata.json'), Element(sample_target.metadata), content_type)
+        WriteFileAction(
+            pathlib.Path.joinpath(base_dir, 'metadata.json'), Element(sample_target.metadata), content_type
+        )
     )
 
     for tid, t in sample_target.targets.items():

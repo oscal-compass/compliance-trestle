@@ -21,6 +21,7 @@ from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
 from trestle.oscal import target
 
+
 def test_element_get_at(sample_target: target.TargetDefinition):
     """Test element get method."""
     element = Element(sample_target)

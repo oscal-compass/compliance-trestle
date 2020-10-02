@@ -15,13 +15,9 @@
 # limitations under the License.
 """Tests for trestle actions module."""
 
-import json
 import pathlib
 
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.models.actions import FileContentType
-
-import yaml
 
 BASE_TMP_DIR = pathlib.Path('tests/__tmp_dir')
 
@@ -50,15 +46,6 @@ def clean_tmp_dir(tmp_dir: pathlib.Path):
         pathlib.Path.rmdir(tmp_dir)
 
 
-def verify_file_content(file_path, model: OscalBaseModel, content_type: FileContentType):
+def verify_file_content(file_path: pathlib.Path, model: OscalBaseModel):
     """Verify that the file contains the correct model data."""
-    file_data = None
-    with open(file_path, 'r', encoding='utf8') as read_file:
-        if content_type == FileContentType.YAML:
-            file_data = yaml.load(read_file, Loader=yaml.Loader)
-        elif content_type == FileContentType.JSON:
-            file_data = json.load(read_file)
-
-    assert file_data is not None
-
-    model.parse_obj(file_data)
+    model.oscal_read(file_path)
