@@ -111,6 +111,8 @@ class ElementPath:
 class Element:
     """Element wrapper of an OSCAL model."""
 
+    _allowed_sub_element_types = [OscalBaseModel.__class__, list.__class__, None.__class__]
+
     def __init__(self, elem: OscalBaseModel):
         """Initialize an element wrapper."""
         self._elem: OscalBaseModel = elem
@@ -156,11 +158,32 @@ class Element:
 
         return parent_elm
 
-    def set_at(self, element_path: ElementPath, model_obj: OscalBaseModel):
+    def _get_sub_element_obj(self, sub_element):
+        """Convert sub element into allowed model obj."""
+        if not self.is_allowed_sub_element_type(sub_element):
+            raise TrestleError(
+                f'Sub element must be one of "{self.get_allowed_sub_element_types()}", found "{sub_element.__class__}"'
+            )
+
+        model_obj = sub_element
+        if isinstance(sub_element, Element):
+            model_obj = sub_element.get()
+
+        return model_obj
+
+    def set_at(self, element_path, sub_element):
         """Set a source model object as sub_element at the path in the current element.
 
+        Sub element can be Element, OscalBaseModel, list or None type
         It returns the element itself so that chaining operation can be done.
         """
+        # convert the element_path to ElementPath if needed
+        if isinstance(element_path, str):
+            element_path = ElementPath(element_path)
+
+        # convert sub-element to OscalBaseModel if needed
+        model_obj = self._get_sub_element_obj(sub_element)
+
         # If wildcard is present, check the input type and determine the parent element
         if element_path.get_last() == ElementPath.WILDCARD:
             # validate the type is either list or OscalBaseModel
@@ -175,10 +198,16 @@ class Element:
             # get the parent element
             parent_elm = self.get_parent(element_path)
 
+        if parent_elm is None:
+            raise TrestleError(f'Invalid sub element path {element_path} with no parent element')
+
         # check if it can be a valid sub_element of the parent
         sub_element_name = element_path.get_element_name()
         if hasattr(parent_elm, sub_element_name) is False:
-            raise TrestleError(f'Element does not have the attribute {sub_element_name} of type {model_obj.__class__}')
+            raise TrestleError(
+                f'Element "{parent_elm.__class__}" does not have the attribute "{sub_element_name}" \
+                    of type "{model_obj.__class__}"'
+            )
 
         # set the sub-element
         try:
@@ -192,16 +221,6 @@ class Element:
 
         # returning self will allow to do 'chaining' of commands after set
         return self
-
-    @classmethod
-    def get_sub_element_class(cls, parent_elm: OscalBaseModel, sub_element_name: str):
-        """Get the class of the sub-element."""
-        sub_element_class = parent_elm.__fields__.get(sub_element_name).outer_type_
-        return sub_element_class
-
-    def __str__(self):
-        """Return string representation of element."""
-        return type(self._elem).__name__
 
     def to_yaml(self):
         """Convert into YAML string."""
@@ -231,3 +250,35 @@ class Element:
         wrapped_model = wrapper_model(**{utils.class_to_oscal(class_name, 'json'): self._elem})
 
         return wrapped_model
+
+    @classmethod
+    def get_sub_element_class(cls, parent_elm: OscalBaseModel, sub_element_name: str):
+        """Get the class of the sub-element."""
+        sub_element_class = parent_elm.__fields__.get(sub_element_name).outer_type_
+        return sub_element_class
+
+    @classmethod
+    def get_allowed_sub_element_types(cls) -> List[str]:
+        """Get the list of allowed sub element types."""
+        return cls._allowed_sub_element_types.append(Element.__class__)
+
+    @classmethod
+    def is_allowed_sub_element_type(cls, elm) -> bool:
+        """Check if is of allowed sub element type."""
+        if (isinstance(elm, Element) or isinstance(elm, OscalBaseModel) or isinstance(elm, list) or elm is None):
+            return True
+
+        return False
+
+    def __str__(self):
+        """Return string representation of element."""
+        return type(self._elem).__name__
+
+    def __eq__(self, other):
+        """Override equality method."""
+        if not isinstance(other, Element):
+            return False
+
+        self_json = self.to_json()
+        other_json = other.to_json()
+        return self_json == other_json

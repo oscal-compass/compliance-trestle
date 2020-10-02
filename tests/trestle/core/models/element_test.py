@@ -76,6 +76,9 @@ def test_element_set_at(sample_target: target.TargetDefinition):
     # unset
     assert element.set_at(ElementPath('metadata.parties'), None).get_at(ElementPath('metadata.parties')) is None
 
+    # string element path
+    assert element.set_at('metadata.parties', parties).get_at(ElementPath('metadata.parties')) == parties
+
     try:
         assert element.set_at(ElementPath('metadata.title'), parties).get_at(ElementPath('metadata.parties')) == parties
     except TrestleError:
