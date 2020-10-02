@@ -1,4 +1,4 @@
-# Complinace-trestle aka trestle
+# Compliance-trestle aka trestle
 
 Trestle is a tool to which enables the creation and validation of documentation artifacts for compliance requirements. It leverages NIST's [OSCAL](<https://pages.nist.gov/OSCAL/documentation/>) as a standard data format for interchange between tools & people and provides an opinionated approach to OSCAL adoption.
 
