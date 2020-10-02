@@ -13,10 +13,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for trestle actions module."""
+"""Tests for trestle add action class."""
 
-from typing import List
 from datetime import datetime
+from typing import List
 
 from tests import test_utils
 
