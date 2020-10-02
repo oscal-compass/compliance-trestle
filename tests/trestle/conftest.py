@@ -22,17 +22,12 @@ import pytest
 
 from tests import test_utils
 
-from trestle.oscal import target
+from trestle.oscal.target import TargetDefinition
 from trestle.utils import fs
-
-
-import yaml
 
 TEST_CONFIG: dict = {}
 TEST_CONFIG['yaml_testdata_path'] = pathlib.Path('tests/data/yaml/')
 TEST_CONFIG['json_testdata_path'] = pathlib.Path('tests/data/json/')
-
-TEST_DATA: dict = {}
 
 
 @pytest.fixture(scope='function')
@@ -100,15 +95,6 @@ def json_testdata_path():
 @pytest.fixture(scope='function')
 def sample_target():
     """Return a valid target object."""
-    key = 'target-yaml'
-    if TEST_DATA.get(key, None) is None:
-        # load target yaml
-        file_path = pathlib.Path.joinpath(TEST_CONFIG['yaml_testdata_path'], 'good_target.yaml')
-        with open(file_path, 'r', encoding='utf8') as read_file:
-            TEST_DATA[key] = yaml.load(read_file, Loader=yaml.Loader)
-
-    yaml_data = TEST_DATA[key]
-    assert yaml_data is not None
-
-    # represent it internally as pydantic catalog model
-    return target.TargetDefinition.parse_obj(yaml_data['target-definition'])
+    file_path = pathlib.Path.joinpath(TEST_CONFIG['json_testdata_path'], 'sample-target-definition.json')
+    target_obj = TargetDefinition.oscal_read(file_path)
+    return target_obj

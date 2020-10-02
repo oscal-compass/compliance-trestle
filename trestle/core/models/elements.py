@@ -15,8 +15,10 @@
 
 from typing import List
 
+from pydantic import Field, create_model
 from pydantic.error_wrappers import ValidationError
 
+import trestle.core.utils as utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 
@@ -203,9 +205,29 @@ class Element:
 
     def to_yaml(self):
         """Convert into YAML string."""
-        return yaml.dump(yaml.safe_load(self._elem.json(exclude_none=True, by_alias=True)))
+        wrapped_model = self.oscal_wrapper()
+        return yaml.dump(yaml.safe_load(wrapped_model.json(exclude_none=True, by_alias=True)))
 
     def to_json(self):
         """Convert into JSON string."""
-        json_data = self._elem.json(exclude_none=True, by_alias=True, indent=4)
+        wrapped_model = self.oscal_wrapper()
+        json_data = wrapped_model.json(exclude_none=True, by_alias=True, indent=4)
         return json_data
+
+    def oscal_wrapper(self):
+        """Create OSCAL wrapper model for read and write."""
+        class_name = self._elem.__class__.__name__
+        # It would be nice to pass through the description but I can't seem to and
+        # it does not affect the output
+        dynamic_passer = {}
+        dynamic_passer[utils.class_to_oscal(class_name, 'field')] = (
+            self._elem.__class__,
+            Field(
+                self, title=utils.class_to_oscal(class_name, 'field'), alias=utils.class_to_oscal(class_name, 'json')
+            )
+        )
+        wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_passer)
+        # Default behaviour is strange here.
+        wrapped_model = wrapper_model(**{utils.class_to_oscal(class_name, 'json'): self._elem})
+
+        return wrapped_model

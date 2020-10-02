@@ -28,7 +28,7 @@ def test_write_file_action_yaml(tmp_yaml_file, sample_target):
     element = Element(sample_target)
     wa = WriteFileAction(tmp_yaml_file, element, FileContentType.YAML)
     wa.execute()
-    test_utils.verify_file_content(tmp_yaml_file, element.get(), FileContentType.YAML)
+    test_utils.verify_file_content(tmp_yaml_file, element.get())
     os.remove(tmp_yaml_file)
 
 
@@ -37,7 +37,7 @@ def test_write_file_rollback(tmp_yaml_file, sample_target):
     element = Element(sample_target)
     wa = WriteFileAction(tmp_yaml_file, element, FileContentType.YAML)
     wa.execute()
-    test_utils.verify_file_content(tmp_yaml_file, element.get(), FileContentType.YAML)
+    test_utils.verify_file_content(tmp_yaml_file, element.get())
 
     # verify the file content is not empty
     with open(tmp_yaml_file, 'r', encoding='utf8') as read_file:
