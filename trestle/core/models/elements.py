@@ -192,7 +192,7 @@ class Element:
         return self
 
     @classmethod
-    def get_sub_element_class(cls, parent_elm: OscalBaseModel, sub_element_name: str) -> str:
+    def get_sub_element_class(cls, parent_elm: OscalBaseModel, sub_element_name: str):
         """Get the class of the sub-element."""
         sub_element_class = parent_elm.__fields__.get(sub_element_name).outer_type_
         return sub_element_class
