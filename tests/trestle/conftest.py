@@ -13,59 +13,76 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Common fixtures."""
-import os
+import pathlib
+import random
+import string
 from uuid import uuid4
 
 import pytest
 
+from tests import test_utils
+
 from trestle.oscal import target
 from trestle.utils import fs
+
 
 import yaml
 
 TEST_CONFIG: dict = {}
-TEST_CONFIG['yaml_testdata_path'] = 'tests/data/yaml/'
-TEST_CONFIG['json_testdata_path'] = 'tests/data/json/'
+TEST_CONFIG['yaml_testdata_path'] = pathlib.Path('tests/data/yaml/')
+TEST_CONFIG['json_testdata_path'] = pathlib.Path('tests/data/json/')
 
 TEST_DATA: dict = {}
 
 
-@pytest.fixture(scope='session')
-def tmp_dir():
+@pytest.fixture(scope='function')
+def rand_str():
+    """Return a random string."""
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    return rand_str
+
+
+@pytest.fixture(scope='module')
+def tmp_dir() -> pathlib.Path:
     """Return a path for a tmp directory."""
-    tmp_dir = 'tests/__tmp_dir'
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    tmp_dir = pathlib.Path.joinpath(test_utils.BASE_TMP_DIR, rand_str)
+    assert tmp_dir.parent == test_utils.BASE_TMP_DIR
     fs.ensure_directory(tmp_dir)
-    return tmp_dir
+    yield tmp_dir
+
+    # tear down
+    test_utils.clean_tmp_dir(tmp_dir)
 
 
 @pytest.fixture(scope='function')
 def tmp_file(tmp_dir):
     """Return a path for a tmp yaml file."""
-    return os.path.join(tmp_dir, f'{uuid4()}')
+    return pathlib.Path.joinpath(tmp_dir, f'{uuid4()}')
 
 
 @pytest.fixture(scope='session')
 def tmp_fixed_file(tmp_dir):
     """Return a path for a tmp yaml file."""
-    return os.path.join(tmp_dir, 'fixed_file')
+    return pathlib.Path.joinpath(tmp_dir, 'fixed_file')
 
 
 @pytest.fixture(scope='function')
 def tmp_yaml_file(tmp_dir):
     """Return a path for a tmp yaml file."""
-    return os.path.join(tmp_dir, f'{uuid4()}.yaml')
+    return pathlib.Path.joinpath(tmp_dir, f'{uuid4()}.yaml')
 
 
 @pytest.fixture(scope='function')
 def tmp_json_file(tmp_dir):
     """Return a path for a tmp yaml file."""
-    return os.path.join(tmp_dir, f'{uuid4()}.json')
+    return pathlib.Path.joinpath(tmp_dir, f'{uuid4()}.json')
 
 
 @pytest.fixture(scope='function')
 def tmp_xml_file(tmp_dir):
     """Return a path for a tmp yaml file."""
-    return os.path.join(tmp_dir, f'{uuid4()}.xml')
+    return pathlib.Path.joinpath(tmp_dir, f'{uuid4()}.xml')
 
 
 @pytest.fixture(scope='module')
@@ -86,8 +103,8 @@ def sample_target():
     key = 'target-yaml'
     if TEST_DATA.get(key, None) is None:
         # load target yaml
-        with open(os.path.join(TEST_CONFIG['yaml_testdata_path'], 'good_target.yaml'), 'r',
-                  encoding='utf8') as read_file:
+        file_path = pathlib.Path.joinpath(TEST_CONFIG['yaml_testdata_path'], 'good_target.yaml')
+        with open(file_path, 'r', encoding='utf8') as read_file:
             TEST_DATA[key] = yaml.load(read_file, Loader=yaml.Loader)
 
     yaml_data = TEST_DATA[key]

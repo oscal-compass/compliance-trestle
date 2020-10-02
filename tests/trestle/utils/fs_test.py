@@ -15,7 +15,7 @@
 # limitations under the License.
 """Tests for fs module."""
 
-import os
+import pathlib
 
 import pytest
 
@@ -26,7 +26,7 @@ def test_ensure_directory(tmp_dir):
     """Test ensure_directory function."""
     # Happy path
     fs.ensure_directory(tmp_dir)
-    os.removedirs(tmp_dir)
+    assert pathlib.Path.is_dir(tmp_dir)
 
     # Unhappy path
     with pytest.raises(AssertionError):

@@ -15,8 +15,8 @@
 # limitations under the License.
 """Tests for models module."""
 
-import os
 from datetime import datetime
+import pathlib
 from uuid import uuid4
 
 from trestle.core import const
@@ -25,7 +25,7 @@ from trestle.oscal import catalog
 
 import yaml
 
-yaml_path = 'tests/data/yaml/'
+yaml_path = pathlib.Path('tests/data/yaml/')
 encoding = 'utf8'
 
 
@@ -33,7 +33,7 @@ def test_parse_dict():
     """Test parse_dict."""
     file_name = 'good_target.yaml'
 
-    with open(os.path.join(yaml_path, file_name), 'r', encoding=encoding) as f:
+    with open(pathlib.Path.joinpath(yaml_path, file_name), 'r', encoding=encoding) as f:
         data = yaml.load(f, yaml.FullLoader)
         target = parser.parse_dict(data['target-definition'], 'trestle.oscal.target.TargetDefinition')
         assert target is not None
@@ -101,7 +101,7 @@ def test_parse_file():
     ]
 
     for test in tests:
-        target = parser.parse_file(os.path.join(yaml_path, file_name), model_name=test['model_name'])
+        target = parser.parse_file(pathlib.Path.joinpath(yaml_path, file_name), model_name=test['model_name'])
 
         assert type(target).__name__ == test['expected']
 
