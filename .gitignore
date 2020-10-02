@@ -17,6 +17,7 @@
 venv
 *.egg-info
 .vscode/settings.json
+.vscode
 
 _*/
 
