@@ -255,25 +255,35 @@ class ReadFileAction(Action):
 class AddAction(Action):
     """Add element at the element path in the destination element from the source element."""
 
-    def __init__(self, src_element: Element, dest_element: Element, element_path: ElementPath):
-        """Initialize an add element action."""
-        super().__init__(self, ActionType.ADD, True)
+    def __init__(self, sub_element, dest_element: Element, sub_element_path: ElementPath):
+        """Initialize an add element action.
 
-        self._src_element: Element = src_element
+        Sub element can be OscalBaseModel, Element, list or None
+        """
+        super().__init__(ActionType.ADD, True)
+
+        if not Element.is_allowed_sub_element_type(sub_element):
+            allowed_types = Element.get_allowed_sub_element_types()
+            raise TrestleError(
+                f'Sub element "{sub_element.__class__} is not a allowed sub element types in "{allowed_types}"'
+            )
+
+        self._sub_element = sub_element
         self._dest_element: Element = dest_element
-        self._element_path: ElementPath = element_path
+        self._sub_element_path: ElementPath = sub_element_path
+        self._prev_sub_element: Element = Element(self._dest_element.get_at(self._sub_element_path))
 
     def execute(self):
         """Execute the action."""
-        self._dest_element.set_at(self._element_path, self._src_element)
+        self._dest_element.set_at(self._sub_element_path, self._sub_element)
 
     def rollback(self):
         """Rollback the action."""
-        self._dest_element.set_at(self._element_path, None)
+        self._dest_element.set_at(self._sub_element_path, self._prev_sub_element)
 
     def __str__(self):
         """Return string representation."""
-        return f'{self._type} {self._src_element} to {self._dest_element} at {self._element_path}'
+        return f'{self._type} {self._model_obj.__class__} to {self._dest_element} at {self._sub_element_path}'
 
 
 class RemoveAction(Action):
