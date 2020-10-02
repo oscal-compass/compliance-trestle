@@ -13,20 +13,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for trestle add action class."""
+"""Tests for trestle update action class."""
 
 from datetime import datetime
 from typing import List
 
 from tests import test_utils
 
-from trestle.core.models.actions import AddAction
+from trestle.core.models.actions import UpdateAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.oscal import target
 
 
-def test_add_action(sample_target):
-    """Test add action."""
+def test_update_action(sample_target):
+    """Test update action."""
     element = Element(sample_target)
 
     metadata = target.Metadata(
@@ -41,20 +41,20 @@ def test_add_action(sample_target):
     sub_element_path = ElementPath('metadata')
     prev_metadata = element.get_at(sub_element_path)
 
-    ac = AddAction(metadata, element, sub_element_path)
+    uac = UpdateAction(metadata, element, sub_element_path)
 
-    ac.execute()
+    uac.execute()
 
     assert not test_utils.is_equal(element.get_at(sub_element_path), prev_metadata)
     assert test_utils.is_equal(element.get_at(sub_element_path), metadata)
 
-    ac.rollback()
+    uac.rollback()
 
     assert test_utils.is_equal(element.get_at(sub_element_path), prev_metadata)
     assert not test_utils.is_equal(element.get_at(sub_element_path), metadata)
 
 
-def test_add_list_sub_element_action(sample_target):
+def test_update_list_sub_element_action(sample_target):
     """Test setting a list."""
     element = Element(sample_target)
 
@@ -71,7 +71,7 @@ def test_add_list_sub_element_action(sample_target):
     )
 
     sub_element_path = ElementPath('metadata.parties.*')
-    ac = AddAction(parties, element, sub_element_path)
-    ac.execute()
+    uac = UpdateAction(parties, element, sub_element_path)
+    uac.execute()
 
     assert test_utils.is_equal(element.get_at(sub_element_path), parties)

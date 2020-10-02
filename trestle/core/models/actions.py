@@ -35,23 +35,14 @@ class ActionType(Enum):
     # write element to a destination file or stream
     WRITE = 10
 
-    # read element from a source file or stream
-    READ = 11
-
     # append element to a source file or stream
-    APPEND = 12
+    APPEND = 11
 
-    # delete a source file, directory or stream
-    DELETE = 13
+    # update or add the element at the path
+    UPDATE = 20
 
-    # add the element at the path in the destination
-    ADD = 20
-
-    # remove the element at the path in the destination
+    # remove the element at the path
     REMOVE = 21
-
-    # update the element at the path in the destination
-    UPDATE = 22
 
 
 class FileContentType(Enum):
@@ -72,6 +63,9 @@ class Action(ABC):
         self._type: ActionType = action_type
         self._has_rollback: bool = has_rollback
 
+        # child class must set this flag once it executes
+        self._has_executed = False
+
     def to_string(self) -> str:
         """Return a string representation."""
         return self.__str__()
@@ -79,6 +73,18 @@ class Action(ABC):
     def get_type(self) -> ActionType:
         """Return the action type."""
         return self._type
+
+    def _mark_executed(self):
+        """Set flag that the action has been executed."""
+        self._has_executed = True
+
+    def has_executed(self):
+        """Return if the action has been executed."""
+        return self._has_executed
+
+    def _mark_rollback(self):
+        """Set flag that the action has been rollbacked."""
+        self._has_executed = False
 
     def has_rollback(self) -> bool:
         """Return if rollback of the action is possible."""
@@ -139,28 +145,6 @@ class WriteAction(Action):
     def __str__(self):
         """Return string representation."""
         return f'{self.get_type()} {self._element}'
-
-
-class ReadAction(Action):
-    """Read the element from a destination stream."""
-
-    def __init__(self, reader: io.BufferedReader, element: Element):
-        """Initialize a read file action."""
-        super().__init__(ActionType.READ, True)
-
-        self._reader: str = reader
-        self._element: Element = element
-
-    def execute(self):
-        """Execute the action."""
-
-    def rollback(self):
-        """Rollback the action."""
-        raise NotImplementedError('Not implemented')
-
-    def __str__(self):
-        """Return string representation."""
-        return f'{self._type} {self._element}'
 
 
 class WriteFileAction(WriteAction):
@@ -230,37 +214,15 @@ class AppendFileAction(WriteFileAction):
         super().__init__(file_path, element, content_type)
 
 
-class ReadFileAction(Action):
-    """Read the element from a destination file."""
-
-    def __init__(self, file_path: str, element: Element):
-        """Initialize a read file action."""
-        super().__init__(self, ActionType.READ, True)
-
-        self._file_path: str = file_path
-        self._element: Element = element
-
-    def execute(self):
-        """Execute the action."""
-
-    def rollback(self):
-        """Rollback the action."""
-        raise NotImplementedError('Not implemented')
-
-    def __str__(self):
-        """Return string representation."""
-        return f'{self._type} {self._element} to {self._file_path}'
-
-
-class AddAction(Action):
-    """Add element at the element path in the destination element from the source element."""
+class UpdateAction(Action):
+    """Update element at the element path in the destination element with the source element."""
 
     def __init__(self, sub_element, dest_element: Element, sub_element_path: ElementPath):
         """Initialize an add element action.
 
         Sub element can be OscalBaseModel, Element, list or None
         """
-        super().__init__(ActionType.ADD, True)
+        super().__init__(ActionType.UPDATE, True)
 
         if not Element.is_allowed_sub_element_type(sub_element):
             allowed_types = Element.get_allowed_sub_element_types()
@@ -271,15 +233,19 @@ class AddAction(Action):
         self._sub_element = sub_element
         self._dest_element: Element = dest_element
         self._sub_element_path: ElementPath = sub_element_path
-        self._prev_sub_element: Element = Element(self._dest_element.get_at(self._sub_element_path))
+        self._prev_sub_element = None
 
     def execute(self):
         """Execute the action."""
+        self._prev_sub_element = self._dest_element.get_at(self._sub_element_path)
         self._dest_element.set_at(self._sub_element_path, self._sub_element)
+        self._mark_executed()
 
     def rollback(self):
         """Rollback the action."""
-        self._dest_element.set_at(self._sub_element_path, self._prev_sub_element)
+        if self.has_executed():
+            self._dest_element.set_at(self._sub_element_path, self._prev_sub_element)
+        self._mark_rollback()
 
     def __str__(self):
         """Return string representation."""
@@ -287,46 +253,28 @@ class AddAction(Action):
 
 
 class RemoveAction(Action):
-    """Remove element at the element path in the source element and store into the destination."""
+    """Remove sub element at the element path in the source element."""
 
-    def __init__(self, src_element: Element, dest_element: Element, element_path: ElementPath):
+    def __init__(self, src_element: Element, sub_element_path: ElementPath):
         """Initialize a remove element action."""
-        super().__init__(self, ActionType.REMOVE, True)
+        super().__init__(ActionType.REMOVE, True)
 
         self._src_element: Element = src_element
-        self._dest_element: Element = dest_element
-        self._element_path: ElementPath = element_path
+        self._sub_element_path: ElementPath = sub_element_path
+        self._prev_sub_element = None
 
     def execute(self):
         """Execute the action."""
+        self._prev_sub_element = self._src_element.get_at(self._sub_element_path)
+        self._src_element.set_at(self._sub_element_path, None)
+        self._mark_executed()
 
     def rollback(self):
         """Rollback the action."""
-        raise NotImplementedError('Not implemented')
+        if self.has_executed():
+            self._src_element.set_at(self._sub_element_path, self._prev_sub_element)
+        self._mark_rollback()
 
     def __str__(self):
         """Return string representation."""
-        return f'{self._type} {self._src_element} from {self._dest_element} at {self._element_path}'
-
-
-class UpdateAction(Action):
-    """Update element at the element path in the destination element from the source element."""
-
-    def __init__(self, src_element: Element, dest_element: Element, element_path: ElementPath):
-        """Initialize an add element action."""
-        super().__init__(self, ActionType.UPDATE, True)
-
-        self._src_element: Element = src_element
-        self._dest_element: Element = dest_element
-        self._element_path: ElementPath = element_path
-
-    def execute(self):
-        """Execute the action."""
-
-    def rollback(self):
-        """Rollback the action."""
-        raise NotImplementedError('Not implemented')
-
-    def __str__(self):
-        """Return string representation."""
-        return f'{self._type} {self._src_element} in {self._dest_element} at {self._element_path}'
+        return f'{self._type} element at {self._sub_element_path} from {self._src_element}'
