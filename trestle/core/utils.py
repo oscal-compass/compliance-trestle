@@ -14,7 +14,11 @@
 # limitations under the License.
 """Utilities for dealing with models."""
 
+from typing import List
+
 import pydantic
+
+import trestle.core.err as err
 
 
 def get_elements_of_model_type(object_of_interest, type_of_interest):
@@ -78,3 +82,24 @@ def has_no_duplicate_elements(object_of_interest, element_name):
     """Determine if duplicate instances of element exist in object."""
     loe = find_elements_by_name(object_of_interest, element_name)
     return len(loe) == len(set(loe))
+
+    
+def class_to_oscal(class_name: str, mode: str) -> str:
+    """
+    Return oscal json or field element name based on class name.
+
+    This is applicable when asking for a singular element.
+    """
+    parts = pascal_case_split(class_name)
+    if mode == 'json':
+        return '-'.join(map(str.lower, parts))
+    elif mode == 'field':
+        return '_'.join(map(str.lower, parts))
+    else:
+        raise err.TrestleError('Bad option')
+
+
+def pascal_case_split(pascal_str: str) -> List[str]:
+    """Parse a pascal case string (e.g. a ClassName) and return a list of strings."""
+    start_idx = [i for i, e in enumerate(pascal_str) if e.isupper()] + [len(pascal_str)]
+    return [pascal_str[x:y] for x, y in zip(start_idx, start_idx[1:])]
