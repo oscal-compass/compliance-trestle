@@ -27,6 +27,7 @@ from trestle.utils import fs
 
 TEST_CONFIG: dict = {}
 
+
 @pytest.fixture(scope='function')
 def rand_str():
     """Return a random string."""

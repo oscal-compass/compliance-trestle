@@ -20,8 +20,8 @@ import logging
 import os
 import pathlib
 
-from trestle.core.err import TrestleError
 from trestle.core import const
+from trestle.core.err import TrestleError
 
 import yaml
 

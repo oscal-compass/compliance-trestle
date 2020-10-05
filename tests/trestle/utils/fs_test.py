@@ -1,5 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +13,14 @@
 # limitations under the License.
 """Tests for fs module."""
 
-from os import PathLike
-import os
 import pathlib
-from pathlib import Path
-from trestle.core.err import TrestleError
 
 import pytest
 
 from tests import test_utils
 
 from trestle.core import const
+from trestle.core.err import TrestleError
 from trestle.utils import fs
 
 
@@ -81,14 +76,12 @@ def test_get_trestle_project_root(tmp_dir, rand_str):
     assert sub_path.exists() and sub_path.is_dir()
 
     # create a file
-    with open(sub_path.joinpath('readme.md'), 'w+'):
-        pass
+    sub_path.joinpath('readme.md').touch()
 
     # create a data-dir and a file
     sub_data_dir = pathlib.Path.joinpath(sub_path, 'data')
     fs.ensure_directory(sub_data_dir)
-    with open(sub_data_dir.joinpath('readme.md'), 'w+'):
-        pass
+    sub_data_dir.joinpath('readme.md').touch()
 
     assert fs.get_trestle_project_root(sub_data_dir) is None
 
@@ -108,14 +101,14 @@ def test_has_trestle_project_in_path(tmp_dir, rand_str):
     assert sub_path.exists() and sub_path.is_dir()
 
     # create a file
-    with open(sub_path.joinpath('readme.md'), 'w+'):
-        pass
+    sub_path.joinpath('readme.md').touch()
 
     # create a data-dir and a file
     sub_data_dir = pathlib.Path.joinpath(sub_path, 'data')
     fs.ensure_directory(sub_data_dir)
-    with open(sub_data_dir.joinpath('readme.md'), 'w+'):
-        pass
+
+    # create a file
+    sub_data_dir.joinpath('readme.md').touch()
 
     assert fs.has_trestle_project_in_path(sub_data_dir) is False
 
@@ -135,15 +128,15 @@ def test_clean_project_sub_path(tmp_dir, rand_str):
     assert sub_path.exists() and sub_path.is_dir()
 
     # create a file
-    with open(pathlib.Path.joinpath(sub_path, 'readme.md'), 'w+'):
-        pass
+    sub_path.joinpath('readme.md').touch()
 
     # create a data-dir and a file
     sub_data_dir = pathlib.Path.joinpath(sub_path, 'data')
     sub_data_dir_file = sub_data_dir.joinpath('readme.md')
     fs.ensure_directory(sub_data_dir)
-    with open(sub_data_dir_file, 'w+'):
-        pass
+
+    # create a file
+    sub_data_dir_file.touch()
 
     try:
         # not having .trestle directory at the project root or tmp_dir should fail
