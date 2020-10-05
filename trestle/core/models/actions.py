@@ -264,6 +264,7 @@ class CreatePathAction(Action):
                     cur_path.touch()
                 # add in the list for rollback
                 self._created_paths.append(cur_path)
+            cur_index = cur_index + 1
         self._mark_executed()
 
     def rollback(self):
