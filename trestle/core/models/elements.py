@@ -172,10 +172,10 @@ class Element:
         return model_obj
 
     def set_at(self, element_path, sub_element):
-        """Set a source model object as sub_element at the path in the current element.
+        """Set a sub_element at the path in the current element.
 
         Sub element can be Element, OscalBaseModel, list or None type
-        It returns the element itself so that chaining operation can be done.
+        It returns the element itself so that chaining operation can be done such as element.set_at(path, sub-element).get().
         """
         # convert the element_path to ElementPath if needed
         if isinstance(element_path, str):
