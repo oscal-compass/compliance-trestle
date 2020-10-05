@@ -251,11 +251,13 @@ class CreatePathAction(Action):
 
     def execute(self):
         """Execute the action."""
-        # find the start of the sub_path relative to trestle project root
         if len(self._sub_path.parts) <= len(self._trestle_project_root.parts):
             raise TrestleError('Sub path length cannot be shorter than the project root path length')
 
+        # find the start of the sub_path relative to trestle project root
         cur_index = len(self._trestle_project_root.parts)
+
+        # loop through the sub_path parts and create as necessary
         cur_path = self._trestle_project_root
         while cur_index < len(self._sub_path.parts):
             part = self._sub_path.parts[cur_index]
