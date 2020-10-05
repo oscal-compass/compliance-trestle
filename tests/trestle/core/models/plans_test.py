@@ -14,9 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle plans module."""
+from genericpath import exists
 import pathlib
+from typing import List
 
-from trestle.core.models.actions import FileContentType, WriteFileAction
+from tests import test_utils
+
+from trestle.core.models.actions import CreatePathAction, FileContentType, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.plans import Plan
 from trestle.oscal import target
@@ -26,23 +30,40 @@ def test_plan_execution(tmp_dir, sample_target: target.TargetDefinition):
     """Test successful execution of a valid plan."""
     content_type = FileContentType.YAML
 
-    base_dir = pathlib.Path.joinpath(tmp_dir, 'mytarget')
-    targets_dir = pathlib.Path.joinpath(base_dir, 'targets')
+    base_dir: pathlib.Path = pathlib.Path.joinpath(tmp_dir, 'mytarget')
+    targets_dir: pathlib.Path = pathlib.Path.joinpath(base_dir, 'targets')
+    metadata_yaml: pathlib.Path = pathlib.Path.joinpath(base_dir, 'metadata.yaml')
+
+    test_utils.ensure_trestle_config_dir(base_dir)
 
     # hand craft a split plan
     split_plan = Plan()
+    split_plan.add_action(CreatePathAction(metadata_yaml))
     split_plan.add_action(
-        WriteFileAction(
-            pathlib.Path.joinpath(base_dir, 'metadata.json'), Element(sample_target.metadata), content_type
-        )
+        WriteFileAction(metadata_yaml, Element(sample_target.metadata), content_type)
     )
 
+    target_files: List[pathlib.Path] = []
     for tid, t in sample_target.targets.items():
-        split_plan.add_action(WriteFileAction(pathlib.Path.joinpath(targets_dir, tid), Element(t), content_type))
+        target_file: pathlib.Path = pathlib.Path.joinpath(targets_dir, tid + '.yaml')
+        target_files.append(target_file)
+        split_plan.add_action(CreatePathAction(target_file))
+        split_plan.add_action(WriteFileAction(target_file, Element(t), content_type))
 
     # execute the plan
     split_plan.execute()
+    assert base_dir.exists()
+    assert targets_dir.exists()
+    assert metadata_yaml.exists()
+    for target_file in target_files:
+        assert target_file.exists()
+
     split_plan.rollback()
+    assert base_dir.exists() is True
+    assert targets_dir.exists() is False
+    assert metadata_yaml.exists() is False
+    for target_file in target_files:
+        target_file.exists() is False
 
 
 def test_plan_execution_failure():
