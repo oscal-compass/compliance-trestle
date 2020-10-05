@@ -389,7 +389,7 @@ class ByComponent(OscalBaseModel):
     annotations: Optional[List[Annotation]] = None
     links: Optional[List[Link]] = None
     responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(None, alias='responsible-roles')
-    parameter_settings: Optional[Dict[str, ParameterSetting]] = Field(
+    parameter_settings: Optional[Dict[str, SetParameter]] = Field(
         None, alias='parameter-settings'
     )
     remarks: Optional[Remarks] = None
