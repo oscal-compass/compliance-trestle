@@ -14,6 +14,7 @@
 """Action wrapper of a command."""
 
 import io
+from os import write
 import pathlib
 from abc import ABC, abstractmethod
 from enum import Enum
@@ -102,14 +103,25 @@ class Action(ABC):
 class WriteAction(Action):
     """Write the element to a destination stream."""
 
-    def __init__(self, writer: io.BufferedWriter, element: Element, content_type: FileContentType):
+    def __init__(self, writer: io.TextIOWrapper, element: Element, content_type: FileContentType):
         """Initialize an write file action."""
         super().__init__(ActionType.WRITE, True)
 
-        self._writer: io.BufferedWriter = writer
+        if writer is not None and not issubclass(io.TextIOWrapper, writer.__class__):
+            raise TrestleError(f'Writer must be of io.TextIOWrapper, given f{writer.__class__}')
+
+        self._writer: io.TextIOWrapper = writer
         self._element: Element = element
         self._content_type: FileContentType = content_type
-        self._lastStreamPos = self._writer.tell()
+        self._lastStreamPos = -1
+        if self._writer is not None:
+            self._lastStreamPos = self._writer.tell()
+
+    def _is_writer_valid(self) -> bool:
+        if self._writer is not None and isinstance(self._writer, io.TextIOWrapper) and not self._writer.closed:
+            return True
+
+        return False
 
     def _encode(self) -> str:
         """Encode the element to appropriate content type."""
@@ -125,7 +137,7 @@ class WriteAction(Action):
         if self._element is None:
             raise TrestleError('Element is empty and cannot write')
 
-        if self._writer is None or self._writer.closed:
+        if not self._is_writer_valid():
             raise TrestleError('Writer is not provided or closed')
 
         self._writer.write(self._encode())
@@ -134,10 +146,10 @@ class WriteAction(Action):
 
     def rollback(self):
         """Rollback the action."""
-        if self._writer is None or self._writer.closed:
+        if not self._is_writer_valid():
             raise TrestleError('Writer is not provided or closed')
 
-        if self._lastStreamPos is None:
+        if self._lastStreamPos < 0:
             raise TrestleError('Last stream position is not available to rollback to')
 
         if self.has_executed():
@@ -167,11 +179,11 @@ class WriteFileAction(WriteAction):
                 f'Invalid file type extension in path "{file_path}" for content type "{content_type.name}"'
             )
 
-        if not file_path.exists():
-            raise TrestleError(f'File at {file_path} does not exist')
         self._file_path = file_path
-        with open(self._file_path, 'a+') as writer:
-            super().__init__(writer, element, content_type)
+
+        # initialize super without writer for now
+        # Note, execute and rollback sets the writer as appropriate
+        super().__init__(None, element, content_type)
 
     def _valid_file_extension(self, file_path: pathlib.Path, content_type: FileContentType) -> bool:
         if content_type == FileContentType.JSON and file_path.suffix == '.json':
@@ -184,13 +196,23 @@ class WriteFileAction(WriteAction):
 
     def execute(self):
         """Execute the action."""
+        if not self._file_path.exists():
+            raise TrestleError(f'File at {self._file_path} does not exist')
+
         with open(self._file_path, 'a+') as writer:
-            writer.seek(self._lastStreamPos)
+            if self._lastStreamPos < 0:
+                self._lastStreamPos = writer.tell()
+            else:
+                writer.seek(self._lastStreamPos)
+
             self._writer = writer
             super().execute()
 
     def rollback(self):
         """Execute the rollback action."""
+        if not self._file_path.exists():
+            raise TrestleError(f'File at {self._file_path} does not exist')
+
         with open(self._file_path, 'a+') as writer:
             self._writer = writer
             super().rollback()

@@ -35,14 +35,15 @@ def test_write_file_action_yaml(tmp_yaml_file: pathlib.Path, sample_target):
         pass
 
     try:
-        # not existant file should error
-        wa = WriteFileAction(tmp_yaml_file, element, FileContentType.YAML)
+        # invalid file extension should error
+        wa = WriteFileAction(tmp_yaml_file, element, FileContentType.JSON)
     except TrestleError:
         pass
 
     try:
-        # invalid file extension should error
-        wa = WriteFileAction(tmp_yaml_file, element, FileContentType.JSON)
+        # writing to a non-existing file will error
+        wa = WriteFileAction(tmp_yaml_file, element, FileContentType.YAML)
+        wa.execute()
     except TrestleError:
         pass
 
