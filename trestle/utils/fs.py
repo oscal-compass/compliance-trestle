@@ -66,6 +66,20 @@ def is_valid_project_root(project_root: pathlib.Path) -> bool:
     return False
 
 
+def get_trestle_project_root(path: pathlib.Path) -> pathlib.Path:
+    """Get the trestle project root folder in the path."""
+    if path is None or len(path.parts) <= 0:
+        return None
+
+    current = path
+    while len(current.parts) > 0:
+        if is_valid_project_root(current):
+            return current
+        current = current.parent
+
+    return None
+
+
 def has_parent_path(sub_path: pathlib.Path, parent_path: pathlib.Path) -> bool:
     """Check if sub_path has the specified parent_dir path."""
     if parent_path is None or len(parent_path.parts) <= 0:
@@ -86,15 +100,8 @@ def has_parent_path(sub_path: pathlib.Path, parent_path: pathlib.Path) -> bool:
 
 def has_trestle_project_in_path(path: pathlib.Path) -> bool:
     """Check if path has a valid trestle project among the parents."""
-    has_trestle_project = False
-    parent = path
-    while len(parent.parts) > 0:
-        if is_valid_project_root(parent):
-            has_trestle_project = True
-            break
-        parent = parent.parent
-
-    return has_trestle_project
+    trestle_project_root = get_trestle_project_root(path)
+    return trestle_project_root is not None
 
 
 def clean_project_sub_path(sub_path: pathlib.Path):

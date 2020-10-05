@@ -73,6 +73,33 @@ def test_has_parent_path(tmp_dir):
     assert fs.has_parent_path(tmp_dir, test_utils.BASE_TMP_DIR) is True
 
 
+def test_get_trestle_project_root(tmp_dir, rand_str):
+    """Test get_trestle_project_root  method."""
+    project_path: pathlib.Path = pathlib.Path.joinpath(tmp_dir, rand_str)
+    sub_path: pathlib.Path = project_path.joinpath('samples2')
+    fs.ensure_directory(sub_path)
+    assert sub_path.exists() and sub_path.is_dir()
+
+    # create a file
+    with open(sub_path.joinpath('readme.md'), 'w+'):
+        pass
+
+    # create a data-dir and a file
+    sub_data_dir = pathlib.Path.joinpath(sub_path, 'data')
+    fs.ensure_directory(sub_data_dir)
+    with open(sub_data_dir.joinpath('readme.md'), 'w+'):
+        pass
+
+    assert fs.get_trestle_project_root(sub_data_dir) is None
+
+    ensure_trestle_config_dir(project_path)
+    assert fs.get_trestle_project_root(sub_data_dir) == project_path
+    assert fs.get_trestle_project_root(sub_data_dir.joinpath('readme.md')) == project_path
+    assert fs.get_trestle_project_root(sub_path.joinpath('readme.md')) == project_path
+    assert fs.get_trestle_project_root(sub_path) == project_path
+    assert fs.get_trestle_project_root(project_path.parent) is None
+
+
 def test_has_trestle_project_in_path(tmp_dir, rand_str):
     """Test has_trestle_project_in_path method."""
     project_path: pathlib.Path = pathlib.Path.joinpath(tmp_dir, rand_str)
@@ -97,7 +124,7 @@ def test_has_trestle_project_in_path(tmp_dir, rand_str):
     assert fs.has_trestle_project_in_path(sub_data_dir.joinpath('readme.md')) is True
     assert fs.has_trestle_project_in_path(sub_path.joinpath('readme.md')) is True
     assert fs.has_trestle_project_in_path(sub_path) is True
-    assert fs.has_trestle_project_in_path(tmp_dir) is False
+    assert fs.has_trestle_project_in_path(project_path.parent) is False
 
 
 def test_clean_project_sub_path(tmp_dir, rand_str):
