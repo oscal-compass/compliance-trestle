@@ -37,10 +37,9 @@ def rand_str():
     return rand_str
 
 
-@pytest.fixture(scope='module')
-def tmp_dir() -> pathlib.Path:
+@pytest.fixture(scope='function')
+def tmp_dir(rand_str) -> pathlib.Path:
     """Return a path for a tmp directory."""
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     tmp_dir = pathlib.Path.joinpath(test_utils.BASE_TMP_DIR, rand_str)
     assert tmp_dir.parent == test_utils.BASE_TMP_DIR
     fs.ensure_directory(tmp_dir)

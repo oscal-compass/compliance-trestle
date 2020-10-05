@@ -19,32 +19,26 @@ import pathlib
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.elements import Element
+from trestle.utils import fs
 
 BASE_TMP_DIR = pathlib.Path('tests/__tmp_dir')
 
 
-def has_parent_path(cur_path: pathlib.Path, parent_path: pathlib.Path) -> bool:
-    """Check if cur_dir has the specified parent_dir path."""
-    if len(cur_path.parts) < len(parent_path.parts):
-        return False
-
-    for i, part in enumerate(parent_path.parts):
-        if part is not cur_path.parts[i]:
-            return False
-
-    return True
-
-
 def clean_tmp_dir(tmp_dir: pathlib.Path):
     """Clean tmp directory."""
-    if tmp_dir.exists() and has_parent_path(tmp_dir.parent, BASE_TMP_DIR):
+    if tmp_dir.exists() and fs.has_parent_path(tmp_dir, BASE_TMP_DIR):
+        # clean all files/directories under sub_path
         for item in pathlib.Path.iterdir(tmp_dir):
             if item.is_file():
                 item.unlink()
             elif item.is_dir():
                 clean_tmp_dir(item)
 
-        pathlib.Path.rmdir(tmp_dir)
+        # delete the sub_path
+        if tmp_dir.is_file():
+            tmp_dir.unlink()
+        elif tmp_dir.is_dir():
+            tmp_dir.rmdir()
 
 
 def verify_file_content(file_path: pathlib.Path, model: OscalBaseModel):

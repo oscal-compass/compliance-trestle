@@ -18,8 +18,10 @@
 import json
 import logging
 import os
+import pathlib
 
 from trestle.core.err import TrestleError
+from trestle.core import const
 
 import yaml
 
@@ -50,6 +52,72 @@ def ensure_directory(path):
         os.makedirs(path)
     elif not os.path.isdir(path):
         raise AssertionError(f'Path `{path}` exists but is not a directory')
+
+
+def is_valid_project_root(project_root: pathlib.Path) -> bool:
+    """Check if the project root is a valid trestle project root."""
+    if project_root is None or project_root == '' or len(project_root.parts) <= 0:
+        return False
+
+    trestle_dir = pathlib.Path.joinpath(project_root, const.TRESTLE_CONFIG_DIR)
+    if trestle_dir.exists() and trestle_dir.is_dir():
+        return True
+
+    return False
+
+
+def has_parent_path(sub_path: pathlib.Path, parent_path: pathlib.Path) -> bool:
+    """Check if sub_path has the specified parent_dir path."""
+    if parent_path is None or len(parent_path.parts) <= 0:
+        return False
+
+    # sub_path should be longer than parent path
+    if len(sub_path.parts) < len(parent_path.parts):
+        return False
+
+    matched = True
+    for i, part in enumerate(parent_path.parts):
+        if part is not sub_path.parts[i]:
+            matched = False
+            break
+
+    return matched
+
+
+def has_trestle_project_in_path(path: pathlib.Path) -> bool:
+    """Check if path has a valid trestle project among the parents."""
+    has_trestle_project = False
+    parent = path
+    while len(parent.parts) > 0:
+        if is_valid_project_root(parent):
+            has_trestle_project = True
+            break
+        parent = parent.parent
+
+    return has_trestle_project
+
+
+def clean_project_sub_path(sub_path: pathlib.Path):
+    """Clean all directories and files in the project sub sub.
+
+    It ensures the sub_path is a child path in the project root.
+    """
+    if sub_path.exists():
+        project_root = sub_path.parent
+        if not has_trestle_project_in_path(project_root):
+            raise TrestleError('Path to be cleaned is not a under valid Trestle project root')
+
+        # clean all files/directories under sub_path
+        if sub_path.is_dir():
+            for item in pathlib.Path.iterdir(sub_path):
+                if item.is_file():
+                    item.unlink()
+                elif item.is_dir():
+                    clean_project_sub_path(item)
+            sub_path.rmdir()
+        # delete the sub_path
+        elif sub_path.is_file():
+            sub_path.unlink()
 
 
 def load_file(file_name: str):
