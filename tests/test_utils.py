@@ -19,7 +19,6 @@ import pathlib
 
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.models.elements import Element
 from trestle.utils import fs
 
 BASE_TMP_DIR = pathlib.Path('tests/__tmp_dir')
@@ -47,20 +46,6 @@ def clean_tmp_dir(tmp_dir: pathlib.Path):
 def verify_file_content(file_path: pathlib.Path, model: OscalBaseModel):
     """Verify that the file contains the correct model data."""
     model.oscal_read(file_path)
-
-
-def is_equal(item1, item2):
-    """Check if two objects are equal.
-
-    If the items are OscalBaseModel, it wraps into Element to do the equality check
-    """
-    if isinstance(item1, OscalBaseModel):
-        item1 = Element(item1)
-
-    if isinstance(item2, OscalBaseModel):
-        item2 = Element(item2)
-
-    return item1 == item2
 
 
 def ensure_trestle_config_dir(sub_dir: pathlib.Path):

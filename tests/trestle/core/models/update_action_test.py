@@ -18,8 +18,6 @@
 from datetime import datetime
 from typing import List
 
-from tests import test_utils
-
 from trestle.core.models.actions import UpdateAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.oscal import target
@@ -45,13 +43,13 @@ def test_update_action(sample_target):
 
     uac.execute()
 
-    assert not test_utils.is_equal(element.get_at(sub_element_path), prev_metadata)
-    assert test_utils.is_equal(element.get_at(sub_element_path), metadata)
+    assert element.get_at(sub_element_path) is not prev_metadata
+    assert element.get_at(sub_element_path) == metadata
 
     uac.rollback()
 
-    assert test_utils.is_equal(element.get_at(sub_element_path), prev_metadata)
-    assert not test_utils.is_equal(element.get_at(sub_element_path), metadata)
+    assert element.get_at(sub_element_path) == prev_metadata
+    assert element.get_at(sub_element_path) is not metadata
 
 
 def test_update_list_sub_element_action(sample_target):
@@ -74,4 +72,4 @@ def test_update_list_sub_element_action(sample_target):
     uac = UpdateAction(parties, element, sub_element_path)
     uac.execute()
 
-    assert test_utils.is_equal(element.get_at(sub_element_path), parties)
+    assert element.get_at(sub_element_path) == parties

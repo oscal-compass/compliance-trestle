@@ -274,12 +274,3 @@ class Element:
     def __str__(self):
         """Return string representation of element."""
         return type(self._elem).__name__
-
-    def __eq__(self, other):
-        """Override equality method."""
-        if not isinstance(other, Element):
-            return False
-
-        self_json = self.to_json()
-        other_json = other.to_json()
-        return self_json == other_json

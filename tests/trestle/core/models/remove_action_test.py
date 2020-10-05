@@ -17,8 +17,6 @@
 
 from typing import List
 
-from tests import test_utils
-
 from trestle.core.models.actions import RemoveAction, UpdateAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.oscal import target
@@ -44,7 +42,7 @@ def prepare_element(sample_target):
     ac = UpdateAction(parties, element, sub_element_path)
     ac.execute()
 
-    assert test_utils.is_equal(element.get_at(sub_element_path), parties)
+    assert element.get_at(sub_element_path) == parties
 
     return element
 
@@ -63,4 +61,4 @@ def test_remove_action(sample_target):
 
     rac.rollback()
 
-    assert test_utils.is_equal(element.get_at(sub_element_path), prev_sub_element)
+    assert element.get_at(sub_element_path) == prev_sub_element
