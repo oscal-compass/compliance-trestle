@@ -22,6 +22,8 @@ from trestle.core.models.elements import Element
 from trestle.utils import fs
 
 BASE_TMP_DIR = pathlib.Path('tests/__tmp_dir')
+YAML_TEST_DATA_PATH = pathlib.Path('tests/data/yaml/')
+JSON_TEST_DATA_PATH = pathlib.Path('tests/data/json/')
 
 
 def clean_tmp_dir(tmp_dir: pathlib.Path):

@@ -136,3 +136,19 @@ def test_clean_project_sub_path(tmp_dir, rand_str):
     # clean the sub_path in the trestle project
     fs.clean_project_sub_path(sub_path)
     assert not sub_path.exists()
+
+
+def test_load_file(tmp_dir):
+    """Test load file."""
+    json_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'sample-target-definition.json')
+    yaml_file_path = pathlib.Path.joinpath(test_utils.YAML_TEST_DATA_PATH, 'good_target.yaml')
+
+    assert fs.load_file(json_file_path) is not None
+    assert fs.load_file(yaml_file_path) is not None
+
+    try:
+        sample_file_path = tmp_dir.joinpath('sample.txt')
+        with open(sample_file_path, 'w'):
+            fs.load_file(sample_file_path)
+    except TrestleError:
+        pass

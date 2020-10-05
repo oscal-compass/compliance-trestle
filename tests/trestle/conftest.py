@@ -26,9 +26,6 @@ from trestle.oscal.target import TargetDefinition
 from trestle.utils import fs
 
 TEST_CONFIG: dict = {}
-TEST_CONFIG['yaml_testdata_path'] = pathlib.Path('tests/data/yaml/')
-TEST_CONFIG['json_testdata_path'] = pathlib.Path('tests/data/json/')
-
 
 @pytest.fixture(scope='function')
 def rand_str():
@@ -80,20 +77,20 @@ def tmp_xml_file(tmp_dir):
 
 
 @pytest.fixture(scope='module')
-def yaml_testdata_path():
+def yaml_testdata_path() -> pathlib.Path:
     """Return a path for a tmp directory."""
-    return TEST_CONFIG['yaml_testdata_path']
+    return test_utils.YAML_TEST_DATA_PATH
 
 
 @pytest.fixture(scope='module')
-def json_testdata_path():
+def json_testdata_path() -> pathlib.Path:
     """Return a path for a tmp directory."""
-    return TEST_CONFIG['json_testdata_path']
+    return test_utils.JSON_TEST_DATA_PATH
 
 
 @pytest.fixture(scope='function')
 def sample_target():
     """Return a valid target object."""
-    file_path = pathlib.Path.joinpath(TEST_CONFIG['json_testdata_path'], 'sample-target-definition.json')
+    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'sample-target-definition.json')
     target_obj = TargetDefinition.oscal_read(file_path)
     return target_obj

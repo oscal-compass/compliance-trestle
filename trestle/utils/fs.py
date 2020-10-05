@@ -121,7 +121,7 @@ def clean_project_sub_path(sub_path: pathlib.Path):
 
 
 def load_file(file_name: str):
-    """Load file content."""
+    """Load JSON or YAML file content."""
     _, file_extension = os.path.splitext(file_name)
 
     with open(file_name) as f:
