@@ -175,7 +175,8 @@ class Element:
         """Set a sub_element at the path in the current element.
 
         Sub element can be Element, OscalBaseModel, list or None type
-        It returns the element itself so that chaining operation can be done such as element.set_at(path, sub-element).get().
+        It returns the element itself so that chaining operation can be done such as
+            `element.set_at(path, sub-element).get()`.
         """
         # convert the element_path to ElementPath if needed
         if isinstance(element_path, str):
