@@ -18,6 +18,7 @@ import os
 import pathlib
 from abc import ABC, abstractmethod
 from enum import Enum
+from typing import List
 
 from trestle.core.err import TrestleError
 from trestle.utils import fs
@@ -28,8 +29,8 @@ from .elements import Element, ElementPath
 class ActionType(Enum):
     """Action type enum for different action type.
 
-    File system related actions starts with 1
-    Model processing related actions starts with 2 or higher
+    File system related actions have code like 1*
+    Model processing related actions have code like 2*
     """
 
     # write element to a destination file or stream
@@ -37,6 +38,9 @@ class ActionType(Enum):
 
     # append element to a source file or stream
     APPEND = 11
+
+    # create a file or directory path
+    CREATE_PATH = 16
 
     # update or add the element at the path
     UPDATE = 20
@@ -212,6 +216,71 @@ class AppendFileAction(WriteFileAction):
             raise TrestleError(f'The file {file_path} does not exists')
 
         super().__init__(file_path, element, content_type)
+
+
+class CreatePathAction(Action):
+    """Create a file or directory path."""
+
+    def __init__(self, sub_path: pathlib.Path):
+        """Initialize a create path action.
+
+        It creates all the missing directories in the path.
+        If it is a file, then it also creates an empty file with the name provided
+
+        Arguments:
+            sub_path: this is the desired file or directory path that needs to be created under the project root
+        """
+        self._trestle_project_root = fs.get_trestle_project_root(sub_path)
+        if self._trestle_project_root is None:
+            raise TrestleError('Sub path should be child of a valid trestle project')
+
+        if not fs.has_parent_path(sub_path, self._trestle_project_root):
+            raise TrestleError('Sub path should include trestle project root dir')
+
+        self._sub_path = sub_path
+        self._created_paths: List[pathlib.Path] = []
+        super().__init__(ActionType.CREATE_PATH, True)
+
+    def get_trestle_project_root(self):
+        """Return the trestle project root path."""
+        return self._trestle_project_root
+
+    def get_created_paths(self) -> List[pathlib.Path]:
+        """Get the list of paths that were created after being executed."""
+        return self._created_paths
+
+    def execute(self):
+        """Execute the action."""
+        # find the start of the sub_path relative to trestle project root
+        cur_index = len(self._trestle_project_root.parts)
+        cur_path = self._trestle_project_root
+        while self._sub_path.parts[cur_index] is not None:
+            part = self._sub_path.parts[cur_index]
+            cur_path = cur_path.joinpath(part)
+            if not cur_path.exists():
+                if cur_path.is_dir():
+                    cur_path.mkdir()
+                elif cur_path.is_file():
+                    cur_path.touch()
+                # add in the list for rollback
+                self._created_paths.append(cur_path)
+        self._mark_executed()
+
+    def rollback(self):
+        """Rollback the action."""
+        if self.has_executed() and len(self._created_paths) > 0:
+            for cur_path in reversed(self._created_paths):
+                if cur_path.exists():
+                    if cur_path.is_file():
+                        cur_path.unlink()
+                    elif cur_path.is_dir():
+                        cur_path.rmdir()
+            self._created_paths.clear()
+        self._mark_rollback()
+
+    def __str__(self):
+        """Return string representation."""
+        return f'{self._type} {self._path}'
 
 
 class UpdateAction(Action):
