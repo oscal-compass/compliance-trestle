@@ -50,7 +50,7 @@ def verify_file_content(file_path: pathlib.Path, model: OscalBaseModel):
 
 
 def is_equal(item1, item2):
-    """Check if two obects are equal.
+    """Check if two objects are equal.
 
     If the items are OscalBaseModel, it wraps into Element to do the equality check
     """
