@@ -17,6 +17,7 @@
 
 import pathlib
 
+from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.elements import Element
 from trestle.utils import fs
@@ -60,3 +61,9 @@ def is_equal(item1, item2):
         item2 = Element(item2)
 
     return item1 == item2
+
+
+def ensure_trestle_config_dir(sub_dir: pathlib.Path):
+    """Ensure that the sub_dir has trestle config dir."""
+    trestle_dir = pathlib.Path.joinpath(sub_dir, const.TRESTLE_CONFIG_DIR)
+    fs.ensure_directory(trestle_dir)

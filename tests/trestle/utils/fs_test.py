@@ -19,15 +19,8 @@ import pytest
 
 from tests import test_utils
 
-from trestle.core import const
 from trestle.core.err import TrestleError
 from trestle.utils import fs
-
-
-def ensure_trestle_config_dir(sub_dir: pathlib.Path):
-    """Ensure that the sub_dir has trestle config dir."""
-    trestle_dir = pathlib.Path.joinpath(sub_dir, const.TRESTLE_CONFIG_DIR)
-    fs.ensure_directory(trestle_dir)
 
 
 def test_ensure_directory(tmpdir):
@@ -54,7 +47,7 @@ def test_is_valid_project_root(tmp_dir):
     assert fs.is_valid_project_root('') is False
     assert fs.is_valid_project_root(tmp_dir) is False
 
-    ensure_trestle_config_dir(tmp_dir)
+    test_utils.ensure_trestle_config_dir(tmp_dir)
     assert fs.is_valid_project_root(tmp_dir) is True
 
 
@@ -85,7 +78,7 @@ def test_get_trestle_project_root(tmp_dir, rand_str):
 
     assert fs.get_trestle_project_root(sub_data_dir) is None
 
-    ensure_trestle_config_dir(project_path)
+    test_utils.ensure_trestle_config_dir(project_path)
     assert fs.get_trestle_project_root(sub_data_dir) == project_path
     assert fs.get_trestle_project_root(sub_data_dir.joinpath('readme.md')) == project_path
     assert fs.get_trestle_project_root(sub_path.joinpath('readme.md')) == project_path
@@ -112,7 +105,7 @@ def test_has_trestle_project_in_path(tmp_dir, rand_str):
 
     assert fs.has_trestle_project_in_path(sub_data_dir) is False
 
-    ensure_trestle_config_dir(project_path)
+    test_utils.ensure_trestle_config_dir(project_path)
     assert fs.has_trestle_project_in_path(sub_data_dir) is True
     assert fs.has_trestle_project_in_path(sub_data_dir.joinpath('readme.md')) is True
     assert fs.has_trestle_project_in_path(sub_path.joinpath('readme.md')) is True
@@ -144,7 +137,7 @@ def test_clean_project_sub_path(tmp_dir, rand_str):
     except TrestleError:
         pass
 
-    ensure_trestle_config_dir(project_path)
+    test_utils.ensure_trestle_config_dir(project_path)
 
     fs.clean_project_sub_path(sub_data_dir_file)
     assert not sub_data_dir_file.exists()
