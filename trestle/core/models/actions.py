@@ -252,19 +252,32 @@ class CreatePathAction(Action):
     def execute(self):
         """Execute the action."""
         # find the start of the sub_path relative to trestle project root
+        if len(self._sub_path.parts) <= len(self._trestle_project_root.parts):
+            raise TrestleError('Sub path length cannot be shorter than the project root path length')
+
         cur_index = len(self._trestle_project_root.parts)
         cur_path = self._trestle_project_root
-        while self._sub_path.parts[cur_index] is not None:
+        while cur_index < len(self._sub_path.parts):
             part = self._sub_path.parts[cur_index]
+
+            # create a path relative to the current
+            # it starts with the project root, so we shall always create
+            # sub directories or files relative to the project root
             cur_path = cur_path.joinpath(part)
+
+            # create the sub_path if it does not exists already
             if not cur_path.exists():
                 if cur_path.is_dir():
                     cur_path.mkdir()
                 elif cur_path.is_file():
                     cur_path.touch()
+
                 # add in the list for rollback
                 self._created_paths.append(cur_path)
+
+            # move to the next part of the sub_path parts
             cur_index = cur_index + 1
+
         self._mark_executed()
 
     def rollback(self):
