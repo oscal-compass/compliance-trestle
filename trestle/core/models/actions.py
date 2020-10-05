@@ -230,12 +230,12 @@ class CreatePathAction(Action):
         Arguments:
             sub_path: this is the desired file or directory path that needs to be created under the project root
         """
+        if not isinstance(sub_path, pathlib.Path):
+            raise TrestleError('Sub path must be of type pathlib.Path')
+
         self._trestle_project_root = fs.get_trestle_project_root(sub_path)
         if self._trestle_project_root is None:
             raise TrestleError('Sub path should be child of a valid trestle project')
-
-        if not fs.has_parent_path(sub_path, self._trestle_project_root):
-            raise TrestleError('Sub path should include trestle project root dir')
 
         self._sub_path = sub_path
         self._created_paths: List[pathlib.Path] = []
@@ -251,9 +251,6 @@ class CreatePathAction(Action):
 
     def execute(self):
         """Execute the action."""
-        if len(self._sub_path.parts) <= len(self._trestle_project_root.parts):
-            raise TrestleError('Sub path length cannot be shorter than the project root path length')
-
         # find the start of the sub_path relative to trestle project root
         cur_index = len(self._trestle_project_root.parts)
 
@@ -269,10 +266,12 @@ class CreatePathAction(Action):
 
             # create the sub_path if it does not exists already
             if not cur_path.exists():
-                if cur_path.is_dir():
-                    cur_path.mkdir()
-                elif cur_path.is_file():
+                if cur_path.suffix != '':
+                    # create file
                     cur_path.touch()
+                else:
+                    # create directory
+                    cur_path.mkdir()
 
                 # add in the list for rollback
                 self._created_paths.append(cur_path)
@@ -296,7 +295,7 @@ class CreatePathAction(Action):
 
     def __str__(self):
         """Return string representation."""
-        return f'{self._type} {self._path}'
+        return f'{self._type} {self._sub_path}'
 
 
 class UpdateAction(Action):
