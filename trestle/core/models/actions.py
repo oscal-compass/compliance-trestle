@@ -14,7 +14,6 @@
 """Action wrapper of a command."""
 
 import io
-from os import write
 import pathlib
 from abc import ABC, abstractmethod
 from enum import Enum

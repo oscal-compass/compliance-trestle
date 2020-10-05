@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle plans module."""
-from genericpath import exists
 import pathlib
 from typing import List
 
@@ -39,9 +38,7 @@ def test_plan_execution(tmp_dir, sample_target: target.TargetDefinition):
     # hand craft a split plan
     split_plan = Plan()
     split_plan.add_action(CreatePathAction(metadata_yaml))
-    split_plan.add_action(
-        WriteFileAction(metadata_yaml, Element(sample_target.metadata), content_type)
-    )
+    split_plan.add_action(WriteFileAction(metadata_yaml, Element(sample_target.metadata), content_type))
 
     target_files: List[pathlib.Path] = []
     for tid, t in sample_target.targets.items():
