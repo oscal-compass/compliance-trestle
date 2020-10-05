@@ -14,7 +14,6 @@
 """Action wrapper of a command."""
 
 import io
-import os
 import pathlib
 from abc import ABC, abstractmethod
 from enum import Enum
@@ -33,14 +32,11 @@ class ActionType(Enum):
     Model processing related actions have code like 2*
     """
 
-    # write element to a destination file or stream
-    WRITE = 10
-
-    # append element to a source file or stream
-    APPEND = 11
-
     # create a file or directory path
-    CREATE_PATH = 16
+    CREATE_PATH = 10
+
+    # write element to a destination file or stream
+    WRITE = 11
 
     # update or add the element at the path
     UPDATE = 20
@@ -134,6 +130,7 @@ class WriteAction(Action):
 
         self._writer.write(self._encode())
         self._writer.flush()
+        self._mark_executed()
 
     def rollback(self):
         """Rollback the action."""
@@ -143,8 +140,11 @@ class WriteAction(Action):
         if self._lastStreamPos is None:
             raise TrestleError('Last stream position is not available to rollback to')
 
-        self._writer.seek(self._lastStreamPos)
-        self._writer.truncate()
+        if self.has_executed():
+            self._writer.seek(self._lastStreamPos)
+            self._writer.truncate()
+
+        self._mark_rollback()
 
     def __str__(self):
         """Return string representation."""
@@ -154,33 +154,33 @@ class WriteAction(Action):
 class WriteFileAction(WriteAction):
     """Write the element to a destination file."""
 
-    def __init__(self, file_path: str, element: Element, content_type: FileContentType):
+    def __init__(self, file_path: pathlib.Path, element: Element, content_type: FileContentType):
         """Initialize a write file action.
 
-        It will create a new file to write to
+        It opens the file in append mode. Therefore the file needs to exist even if it is a new file.
         """
-        self._file_path = self._fix_file_extension(file_path, content_type)
+        if not isinstance(file_path, pathlib.Path):
+            raise TrestleError('file_path should be of type pathlib.Path')
 
-        self._created_file = False
-        if os.path.isfile(self._file_path) is False:
-            self._created_file = True
-            fs.ensure_directory(pathlib.Path(self._file_path).parent.absolute())
+        if not self._valid_file_extension(file_path, content_type):
+            raise TrestleError(
+                f'Invalid file type extension in path "{file_path}" for content type "{content_type.name}"'
+            )
 
+        if not file_path.exists():
+            raise TrestleError(f'File at {file_path} does not exist')
+        self._file_path = file_path
         with open(self._file_path, 'a+') as writer:
             super().__init__(writer, element, content_type)
 
-    def _fix_file_extension(self, file_path: str, content_type: FileContentType) -> str:
-        file_name, file_extension = os.path.splitext(file_path)
-        if content_type == FileContentType.JSON:
-            if file_extension != '.json':
-                file_path = file_name + '.json'
-        elif content_type == FileContentType.YAML:
-            if file_extension != '.yaml':
-                file_path = file_name + '.yaml'
-        else:
-            raise TrestleError(f'Unsupported content type {content_type}')
+    def _valid_file_extension(self, file_path: pathlib.Path, content_type: FileContentType) -> bool:
+        if content_type == FileContentType.JSON and file_path.suffix == '.json':
+            return True
 
-        return file_path
+        if content_type == FileContentType.YAML and file_path.suffix == '.yaml':
+            return True
+
+        return False
 
     def execute(self):
         """Execute the action."""
@@ -191,31 +191,13 @@ class WriteFileAction(WriteAction):
 
     def rollback(self):
         """Execute the rollback action."""
-        if self._created_file and os.path.isfile(self._file_path):
-            # if it was a new file, just delete the file
-            os.remove(self._file_path)
-        else:
-            with open(self._file_path, 'a+') as writer:
-                self._writer = writer
-                super().rollback()
+        with open(self._file_path, 'a+') as writer:
+            self._writer = writer
+            super().rollback()
 
     def __str__(self):
         """Return string representation."""
         return f'{self._type} {self._element} to "{self._file_path}"'
-
-
-class AppendFileAction(WriteFileAction):
-    """Append the element to a destination file."""
-
-    def __init__(self, file_path: str, element: Element, content_type: FileContentType):
-        """Initialize a write file action.
-
-        If the file exists, it will append otherwise it will raise exception
-        """
-        if os.path.isfile(file_path) is False:
-            raise TrestleError(f'The file {file_path} does not exists')
-
-        super().__init__(file_path, element, content_type)
 
 
 class CreatePathAction(Action):
