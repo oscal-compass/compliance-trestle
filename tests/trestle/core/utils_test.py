@@ -48,10 +48,10 @@ def test_get_elements():
     assert (len(group_list) >= 2)
 
 
-def test_has_no_duplicate_elements():
+def test_has_no_duplicate_values_generic():
     """Test presence of duplicate element."""
     cat = load_good_catalog()
-    assert mutils.has_no_duplicate_elements(cat, 'uuid')
+    assert mutils.has_no_duplicate_values_generic(cat, 'uuid')
     read_file = pathlib.Path('tests/data/yaml/bad_target.yaml').open('r', encoding='utf8')
     yaml_cat = yaml.load(read_file, Loader=yaml.Loader)
-    assert not mutils.has_no_duplicate_elements(yaml_cat, 'uuid')
+    assert not mutils.has_no_duplicate_values_generic(yaml_cat, 'uuid')

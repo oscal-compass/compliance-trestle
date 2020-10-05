@@ -44,20 +44,20 @@ def get_elements_of_model_type(object_of_interest, type_of_interest):
     return loi
 
 
-def find_elements_by_name(object_of_interest, key_name):
-    """Traverse entire object and return list of the values in dicts associated with key name."""
+def find_values_by_name_generic(object_of_interest, var_name):
+    """Traverse object and return list of the values in dicts, tuples associated with variable name."""
     loe = []
-    # looking for a dict or 2-element tuple containing specified key name
+    # looking for a dict or 2-element tuple containing specified variable name
     if type(object_of_interest) == dict:
         for key, value in object_of_interest.items():
-            if (key == key_name) and value:
+            if (key == var_name) and value:
                 # found one so append its value to list
                 loe.append(value)
             else:
-                new_list = find_elements_by_name(value, key_name)
+                new_list = find_values_by_name_generic(value, var_name)
                 if new_list:
                     loe.extend(new_list)
-    elif type(object_of_interest) == tuple and len(object_of_interest) == 2 and object_of_interest[0] == key_name:
+    elif type(object_of_interest) == tuple and len(object_of_interest) == 2 and object_of_interest[0] == var_name:
         if object_of_interest[1]:
             loe.append(object_of_interest[1])
     elif type(object_of_interest) != str:
@@ -70,7 +70,7 @@ def find_elements_by_name(object_of_interest, key_name):
         else:
             next_item = next(o_iter, None)
             while next_item is not None:
-                new_list = find_elements_by_name(next_item, key_name)
+                new_list = find_values_by_name_generic(next_item, var_name)
                 if new_list:
                     loe.extend(new_list)
                 next_item = next(o_iter, None)
@@ -78,12 +78,12 @@ def find_elements_by_name(object_of_interest, key_name):
     return loe
 
 
-def has_no_duplicate_elements(object_of_interest, element_name):
-    """Determine if duplicate instances of element exist in object."""
-    loe = find_elements_by_name(object_of_interest, element_name)
+def has_no_duplicate_values_generic(object_of_interest, var_name):
+    """Determine if duplicate values of variable exist in object."""
+    loe = find_values_by_name_generic(object_of_interest, var_name)
     return len(loe) == len(set(loe))
 
-    
+
 def class_to_oscal(class_name: str, mode: str) -> str:
     """
     Return oscal json or field element name based on class name.
