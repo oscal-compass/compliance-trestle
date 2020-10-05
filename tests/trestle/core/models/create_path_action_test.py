@@ -17,7 +17,7 @@
 
 import pathlib
 
-from tests import test_utils 
+from tests import test_utils
 
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction
