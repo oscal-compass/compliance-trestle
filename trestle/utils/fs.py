@@ -133,24 +133,6 @@ def load_file(file_name: str):
             raise TrestleError(f'Invalid file extension "{file_extension}"')
 
 
-def create_file(path: str, file_name: str, data: dict, root_key: str = None):
-    """Create a file at the given path with the specified content."""
-    _, file_extension = os.path.splitext(file_name)
-    file_path = os.path.join(path, file_name)
-    logger.debug(f'Creating file "{file_path}"')
-    with open(file_path, 'w') as file:
-        # wrap data with model name
-        if root_key is not None:
-            data = {root_key: data}
-
-        if file_extension == '.yaml':
-            yaml.dump(data, file, default_flow_style=False, sort_keys=False)
-        elif file_extension == '.json':
-            json.dump(data, file, indent=2, sort_keys=False)
-        else:
-            raise TrestleError(f'Invalid file extension "{file_extension}"')
-
-
 def find_node(data: dict, key: str, depth: int = 0, max_depth: int = 1, instance_type: type = list):
     """Find a node of an instance_type in the data recursively."""
     if depth > max_depth:
