@@ -12,6 +12,7 @@
 
 pattern1 = 'ies: Optional[Dict[str, Any]]'
 pattern2 = 's: Optional[Dict[str, Any]]'
+special_lut = {'ParameterSetting': 'SetParameter'}
 class_header = 'class '
 
 
@@ -106,6 +107,8 @@ def fix_file(fname):
                     elif n2 != -1:  # s plural
                         tail = r[(n2 + len(pattern2)):]
                         cap_singular = get_cap_stem(r, 1)
+                        if cap_singular in special_lut:
+                            cap_singular = special_lut[cap_singular]
                         ref_class_names.add(cap_singular)
                         class_text.add_ref(cap_singular)
                         r = r[:(n2 + len(pattern2) - 5)] + cap_singular + ']]' + tail
