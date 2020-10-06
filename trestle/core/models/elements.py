@@ -35,7 +35,7 @@ class ElementPath:
 
     WILDCARD: str = '*'
 
-    def __init__(self, element_path: str):
+    def __init__(self, element_path: str, parent_path=None):
         """Initialize an element wrapper."""
         self._path: List[str] = self._parse(element_path)
 
@@ -43,6 +43,10 @@ class ElementPath:
         # This will be processed and cached
         self._element_name = None
         self._parent_element_path = None
+
+        if isinstance(parent_path, str):
+            parent_path = ElementPath(parent_path)
+        self._parent_path = parent_path
 
     def _parse(self, element_path) -> List[str]:
         """Parse the element path and validate."""
@@ -65,6 +69,13 @@ class ElementPath:
     def get(self) -> List[str]:
         """Return the path components as a list."""
         return self._path
+
+    def get_parent(self):
+        """Return the parent path.
+
+        It can be None or ElementPath
+        """
+        return self._parent_path
 
     def get_first(self) -> str:
         """Return the first part of the path."""
@@ -105,7 +116,7 @@ class ElementPath:
         if not isinstance(other, ElementPath):
             return False
 
-        return self._path == other.get()
+        return self.get() == other.get()
 
 
 class Element:
@@ -129,6 +140,8 @@ class Element:
         """
         if element_path is None:
             return self._elem
+
+        # TODO process element_path.get_parent()
 
         # return the sub-element at the specified path
         elm = self._elem
@@ -184,6 +197,8 @@ class Element:
 
         # convert sub-element to OscalBaseModel if needed
         model_obj = self._get_sub_element_obj(sub_element)
+
+        # TODO process element_path.get_parent()
 
         # If wildcard is present, check the input type and determine the parent element
         if element_path.get_last() == ElementPath.WILDCARD:

@@ -20,52 +20,53 @@ from trestle.core.commands import cmd_utils
 from trestle.core.models.elements import ElementPath
 
 
+def prepare_expected_element_paths(element_args: List[str]) -> List[ElementPath]:
+    """Prepare a list of ElementPath from a list of path strings."""
+    element_paths: List[ElementPath] = []
+    for element_arg in element_args:
+        element_paths.append(ElementPath(element_arg))
+
+    return element_paths
+
+
+def test_parse_element_arg():
+    """Unit test parse a single element arg."""
+    element_arg = 'target-definition.targets'
+    expected_paths: List[ElementPath] = prepare_expected_element_paths(['target-definition.targets'])
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg)
+    assert expected_paths == element_paths
+
+    element_arg = 'target-definition.targets.*'
+    expected_paths: List[ElementPath] = prepare_expected_element_paths(['target-definition.targets.*'])
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg)
+    assert expected_paths == element_paths
+
+    element_arg = 'catalog.groups.*.controls.*.controls.*'
+    p1 = ElementPath('catalog.groups.*')
+    p2 = ElementPath('controls.*', parent_path=p1)
+    p3 = ElementPath('controls.*', parent_path=p2)
+    expected_paths: List[ElementPath] = [p1, p2, p3]
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg)
+    assert expected_paths == element_paths
+
+
 def test_parse_element_args():
-    """Unit test parse element args method."""
-#     element_args = ['target-definition.targets']
-#     expected: List[ElementPath] = [ElementPath('target-definition.targets')]
-#     assert cmd_utils.parse_element_args(element_args) == expected
+    """Unit test parse multiple element args."""
+    element_args = ['catalog.metadata', 'catalog.groups', 'catalog.controls']
+    p0 = ElementPath('catalog.metadata')
+    p1 = ElementPath('catalog.groups')
+    p2 = ElementPath('catalog.controls')
+    expected_paths: List[ElementPath] = [p0, p1, p2]
+    element_paths = cmd_utils.parse_element_args(element_args)
+    assert expected_paths == element_paths
 
-#     element_args = ['target-definition.targets.*']
-#     expected: List[ElementPath] = [
-#         ElementPath('target-definition.targets.56666738-0f9a-4e38-9aac-c0fad00a5821'),
-#         ElementPath('target-definition.targets.89cfe7a7-ce6b-4699-aa7b-2f5739c72001'),
-#     ]
-#     assert cmd_utils.parse_element_args(element_args) == expected
-#     assert cmd_utils.parse_element_args(element_args) == expected
-
-#     element_args = ['target-definition.metadata', 'target-definition.targets.*']
-#     expected: List[ElementPath] = [
-#         ElementPath('target-definition.metadata'),
-#         ElementPath('target-definition.targets.*')
-#     ]
-#     assert cmd_utils.parse_element_args(element_args) == expected
-
-#     element_args = ['target-definition.metadata', 'target-definition.targets.*.target-control-implementations.*']
-#     expected: List[ElementPath] = [
-#         ElementPath('target-definition.metadata'),
-#         ElementPath('target-definition.targets.*'),
-#         ElementPath('target.target-control-implementations.*'),
-#     ]
-#     assert cmd_utils.parse_element_args(element_args) == expected
-
-#     # split element args
-#     element_args = ['catalog.metadata', 'catalog.groups.*.controls.*.controls.*', 'catalog.controls.*.controls.*']
-#     expected: List[ElementPath] = []
-#     p0 = ElementPath(None, 'catalog.metadata')
-#     p1 = ElementPath(None, 'catalog.groups.*')
-#     p2 = ElementPath(p1, 'controls.*')
-#     p3 = ElementPath(p2, 'controls.*')
-#     p4 = ElementPath(None, 'catalog.controls.*')
-#     p5 = ElementPath(p4, 'controls.*')
-#     expected.append(p0, p1, p2, p3, p4, p5)
-#     assert cmd_utils.parse_element_args(element_args) == expected
-
-#     # merge
-#     element_args = ['catalog.metadata', 'catalog.groups', 'catalog.controls']
-#     expected: List[ElementPath] = []
-#     p0 = ElementPath(None, 'catalog.metadata')
-#     p1 = ElementPath(None, 'catalog.groups')
-#     p2 = ElementPath(None, 'catalog.controls')
-#     expected.append(p0, p1, p2)
-#     assert cmd_utils.parse_element_args(element_args) == expected
+    # element args with wildcard
+    element_args = ['catalog.metadata', 'catalog.groups.*.controls.*.controls.*', 'catalog.controls.*.controls.*']
+    p0 = ElementPath('catalog.metadata')
+    p1 = ElementPath('catalog.groups.*')
+    p2 = ElementPath('controls.*', parent_path=p1)
+    p3 = ElementPath('controls.*', parent_path=p2)
+    p4 = ElementPath('catalog.controls.*')
+    p5 = ElementPath('controls.*', parent_path=p4)
+    expected: List[ElementPath] = [p0, p1, p2, p3, p4, p5]
+    assert cmd_utils.parse_element_args(element_args) == expected
