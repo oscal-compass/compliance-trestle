@@ -36,7 +36,7 @@ class TrestleError(RuntimeError):
 
 class TrestleNotFoundError(TrestleError):
     """
-    General framework (non-application) related errors.
+    General framwork related not found error.
 
     Args:
         msg (str): The error message
