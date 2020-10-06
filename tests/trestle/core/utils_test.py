@@ -17,7 +17,6 @@
 
 import pathlib
 
-import trestle.core.parser as parser
 import trestle.core.utils as mutils
 import trestle.oscal.catalog as catalog
 
@@ -27,7 +26,7 @@ def load_good_catalog():
     good_sample_path = pathlib.Path('nist-source/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
 
     assert (good_sample_path.exists())
-    return parser.wrap_for_input(catalog.Catalog).parse_file(good_sample_path).catalog
+    return catalog.Catalog.oscal_read(good_sample_path)
 
 
 def test_get_elements():
@@ -44,3 +43,42 @@ def test_get_elements():
     assert (len(control_list) >= 1)
     group_list = mutils.get_elements_of_model_type(good_sample, catalog.Group)
     assert (len(group_list) >= 2)
+
+
+def test_pascal_case_split():
+    """Test whether PascalCase objects are getting split correctly."""
+    one = 'One'
+    two = 'TwoTwo'
+    three = 'ThreeThreeThree'
+    assert (len(mutils.pascal_case_split(one)) == 1)
+    assert (len(mutils.pascal_case_split(two)) == 2)
+    assert (len(mutils.pascal_case_split(three)) == 3)
+    # TODO: Add negative test cases.
+
+
+def test_class_to_oscal_json():
+    """Pydantic makes classes in PascalCase. All Oscal names are in lowercase-hyphenated."""
+    class_name_1 = 'Catalog'
+    oscal_name_1 = 'catalog'
+    class_name_2 = 'ComponentDefinition'
+    oscal_name_2 = 'component-definition'
+    class_name_3 = 'SecurityImpactLevel'
+    oscal_name_3 = 'security-impact-level'
+
+    assert (oscal_name_1 == mutils.class_to_oscal(class_name_1, 'json'))
+    assert (oscal_name_2 == mutils.class_to_oscal(class_name_2, 'json'))
+    assert (oscal_name_3 == mutils.class_to_oscal(class_name_3, 'json'))
+
+
+def test_class_to_oscal_field():
+    """Pydantic makes classes in PascalCase. All Oscal names are in lowercase-hyphenated."""
+    class_name_1 = 'Catalog'
+    oscal_name_1 = 'catalog'
+    class_name_2 = 'ComponentDefinition'
+    oscal_name_2 = 'component_definition'
+    class_name_3 = 'SecurityImpactLevel'
+    oscal_name_3 = 'security_impact_level'
+
+    assert (oscal_name_1 == mutils.class_to_oscal(class_name_1, 'field'))
+    assert (oscal_name_2 == mutils.class_to_oscal(class_name_2, 'field'))
+    assert (oscal_name_3 == mutils.class_to_oscal(class_name_3, 'field'))

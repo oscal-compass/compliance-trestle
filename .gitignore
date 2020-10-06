@@ -17,6 +17,7 @@
 venv
 *.egg-info
 .vscode/settings.json
+.vscode
 
 _*/
 
@@ -26,6 +27,8 @@ _*/
 
 build
 dist
+tmp
 
 .coverage
 coverage.xml
+
