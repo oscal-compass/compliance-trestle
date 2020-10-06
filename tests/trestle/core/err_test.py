@@ -33,4 +33,5 @@ def test_trestle_not_found_error():
     try:
         raise TrestleNotFoundError(msg)
     except TrestleNotFoundError as err:
+        assert str(err) == msg
         assert err.msg == msg
