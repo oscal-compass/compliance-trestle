@@ -46,7 +46,7 @@ def parse_element_args(element_args: List[str]) -> List[ElementPath]:
 
 
 def parse_element_arg(element_arg: str) -> List[ElementPath]:
-    """Parse an element arg stirng into a list of ElementPath."""
+    """Parse an element arg string into a list of ElementPath."""
     element_paths: List[ElementPath] = []
 
     # search for wildcards and create paths with its parent path
