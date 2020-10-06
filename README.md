@@ -60,7 +60,7 @@ trestle -h
 
 ## Supported OSCAL elements and extensions
 
-`trestle` implcitly supports all OSCAL schemas for use within the object model. The development roadmap for `trestle` includes
+`trestle` implicitly supports all OSCAL schemas for use within the object model. The development roadmap for `trestle` includes
 adding workflow around specific elements / objects that is opinionated.
 
 In addition to the core OSCAL objects, trestle supports the definition of a `target`. The `target` (and its container
