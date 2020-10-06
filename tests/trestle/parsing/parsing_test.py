@@ -24,8 +24,8 @@ import trestle.oscal.target as ostarget
 
 import yaml
 
-yaml_path = pathlib.Path('tests/data/yaml')
-json_path = pathlib.Path('tests/data/json')
+yaml_path = pathlib.Path('tests/data/yaml/')
+json_path = pathlib.Path('tests/data/json/')
 encoding = 'utf8'
 loader = yaml.Loader
 
@@ -66,6 +66,7 @@ def test_yaml_dump(tmpdir):
 def test_oscal_model(tmpdir):
     """Test pydantic oscal model."""
     good_target_name = 'good_target.yaml'
+    tmpdir = pathlib.Path(tmpdir)
 
     tmp_path = pathlib.Path(tmpdir)
 

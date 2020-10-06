@@ -18,7 +18,7 @@
 import datetime
 import logging
 import pathlib
-from typing import List, Optional
+from typing import List, Optional, Type
 
 from pydantic import BaseModel, Extra, Field, create_model
 
@@ -63,7 +63,7 @@ class OscalBaseModel(BaseModel):
         validate_assignment = True
 
     @classmethod
-    def create_stripped_model_type(cls, fields: List[str]):
+    def create_stripped_model_type(cls, fields: List[str]) -> 'OscalBaseModel':
         """Use introspection to create a model that removes the fields.
 
         Returns a model class definition that can be used to instanciate a model.
@@ -89,7 +89,7 @@ class OscalBaseModel(BaseModel):
 
         return new_model
 
-    def oscal_write(self, path: pathlib.Path, minimize_json=False):
+    def oscal_write(self, path: pathlib.Path, minimize_json=False) -> None:
         """
         Write oscal objects.
 
@@ -125,7 +125,7 @@ class OscalBaseModel(BaseModel):
             raise err.TrestleError('Unknown file type')
 
     @classmethod
-    def oscal_read(cls, path: pathlib.Path):
+    def oscal_read(cls, path: pathlib.Path) -> 'OscalBaseModel':
         """
         Read OSCAL objects.
 
@@ -151,8 +151,12 @@ class OscalBaseModel(BaseModel):
         else:
             raise err.TrestleError('Unknown file type')
 
-    def copy_to(self, new_oscal_type):
-        """Copy operation that explicilty does type conversion."""
+    def copy_to(self, new_oscal_type: Type['OscalBaseModel']) -> 'OscalBaseModel':
+        """
+        Copy operation that explicilty does type conversion.
+
+        Input parameter is a class of type OscalBaseModel NOT a a class isntance.
+        """
         logger.debug('Copy to started')
 
         if self.__class__.__name__ == new_oscal_type.__name__:
@@ -167,7 +171,7 @@ class OscalBaseModel(BaseModel):
         # bad place here.
         raise err.TrestleError('Provided inconsistent classes.')
 
-    def copy_from(self, existing_oscal_object):
+    def copy_from(self, existing_oscal_object: 'OscalBaseModel') -> 'OscalBaseModel':
         """
         Copy operation that implicitly does type conversion.
 
