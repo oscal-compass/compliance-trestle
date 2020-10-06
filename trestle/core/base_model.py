@@ -96,3 +96,12 @@ class OscalBaseModel(BaseModel):
         Presumes 'exact' matching support throughout the tree.
         """
         pass
+
+    @classmethod
+    def get_fields_by_alias(cls):
+        """Generate a dictionary of fields with the original aliases as keys."""
+        current_fields = cls.__fields__.values()
+        fields_by_alias = {}
+        for field in current_fields:
+            fields_by_alias[field.alias] = field
+        return fields_by_alias
