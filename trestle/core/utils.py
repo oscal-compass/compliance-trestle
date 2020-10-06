@@ -84,6 +84,48 @@ def has_no_duplicate_values_generic(object_of_interest, var_name):
     return len(loe) == len(set(loe))
 
 
+def find_values_by_type(object_of_interest, type_of_interest):
+    """Traverse object and return list of values of specified type."""
+    loe = []
+    # looking for a dict or 2-element tuple containing specified variable name
+    if type(object_of_interest) == type_of_interest:
+        loe.append(object_of_interest)
+        return loe
+    if type(object_of_interest) == dict:
+        for value in object_of_interest.values():
+            new_list = find_values_by_type(value, type_of_interest)
+            if new_list:
+                loe.extend(new_list)
+    elif type(object_of_interest) != str:
+        try:
+            # iterate over any iterable and recurse on its items
+            o_iter = iter(object_of_interest)
+        except Exception:
+            # it is not a dict and not iterable
+            pass
+        else:
+            next_item = next(o_iter, None)
+            while next_item is not None:
+                new_list = find_values_by_type(next_item, type_of_interest)
+                if new_list:
+                    loe.extend(new_list)
+                next_item = next(o_iter, None)
+            return loe
+    return loe
+
+
+def has_no_duplicate_values(object_of_interest, type_of_interest):
+    """Determine if duplicate values of type exist in object."""
+    loe = find_values_by_type(object_of_interest, type_of_interest)
+    n = len(loe)
+    if n > 1:
+        for i in range(n - 1):
+            for j in range(i + 1, n):
+                if loe[i] == loe[j]:
+                    return False
+    return True
+
+
 def class_to_oscal(class_name: str, mode: str) -> str:
     """
     Return oscal json or field element name based on class name.

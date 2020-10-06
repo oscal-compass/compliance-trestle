@@ -57,7 +57,7 @@ def test_has_no_duplicate_values_generic():
 
     yaml_path = pathlib.Path('tests/data/yaml')
 
-    # test with pydantic valid pydantic target
+    # test with valid pydantic target
     good_target_path = yaml_path / 'good_target.yaml'
     good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
     assert mutils.has_no_duplicate_values_generic(good_target, 'uuid')
@@ -71,3 +71,17 @@ def test_has_no_duplicate_values_generic():
     read_file = bad_target_path.open('r', encoding='utf8')
     bad_target_yaml = yaml.load(read_file, Loader=yaml.Loader)
     assert not mutils.has_no_duplicate_values_generic(bad_target_yaml, 'uuid')
+
+
+def test_has_no_duplicate_values_pydantic():
+    """Test presence of duplicate values in pydantic objects."""
+    # test with pydantic catalog - only one instance of Metadata
+    cat = load_good_catalog()
+    assert mutils.has_no_duplicate_values(cat, catalog.Metadata)
+
+    yaml_path = pathlib.Path('tests/data/yaml')
+
+    # test presence of many duplicate properties
+    good_target_path = yaml_path / 'good_target.yaml'
+    good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
+    assert not mutils.has_no_duplicate_values(good_target, ostarget.Prop)
