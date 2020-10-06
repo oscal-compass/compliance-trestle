@@ -20,6 +20,7 @@ import pathlib
 import trestle.core.parser as parser
 import trestle.core.utils as mutils
 import trestle.oscal.catalog as catalog
+import trestle.oscal.target as ostarget
 
 import yaml
 
@@ -49,9 +50,24 @@ def test_get_elements():
 
 
 def test_has_no_duplicate_values_generic():
-    """Test presence of duplicate element."""
+    """Test presence of duplicate uuid."""
+    # test with pydantic catalog
     cat = load_good_catalog()
     assert mutils.has_no_duplicate_values_generic(cat, 'uuid')
-    read_file = pathlib.Path('tests/data/yaml/bad_target.yaml').open('r', encoding='utf8')
-    yaml_cat = yaml.load(read_file, Loader=yaml.Loader)
-    assert not mutils.has_no_duplicate_values_generic(yaml_cat, 'uuid')
+
+    yaml_path = pathlib.Path('tests/data/yaml')
+
+    # test with pydantic valid pydantic target
+    good_target_path = yaml_path / 'good_target.yaml'
+    good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
+    assert mutils.has_no_duplicate_values_generic(good_target, 'uuid')
+
+    # test with pydantic target containing duplicates
+    bad_target_path = yaml_path / 'bad_target.yaml'
+    bad_target = ostarget.TargetDefinition.oscal_read(bad_target_path)
+    assert not mutils.has_no_duplicate_values_generic(bad_target, 'uuid')
+
+    # test duplicates with raw yaml target, non-pydantic
+    read_file = bad_target_path.open('r', encoding='utf8')
+    bad_target_yaml = yaml.load(read_file, Loader=yaml.Loader)
+    assert not mutils.has_no_duplicate_values_generic(bad_target_yaml, 'uuid')
