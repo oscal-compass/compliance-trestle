@@ -190,3 +190,12 @@ class OscalBaseModel(BaseModel):
         assert (self.__class__ == recast_object.__class__)
         for raw_field in self.__dict__.keys():
             self.__dict__[raw_field] = recast_object.__dict__[raw_field]
+
+    @classmethod
+    def get_fields_by_alias(cls):
+        """Generate a dictionary of fields with the original aliases as keys."""
+        current_fields = cls.__fields__.values()
+        fields_by_alias = {}
+        for field in current_fields:
+            fields_by_alias[field.alias] = field
+        return fields_by_alias
