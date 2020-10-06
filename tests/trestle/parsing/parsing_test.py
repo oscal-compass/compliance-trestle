@@ -29,8 +29,8 @@ from trestle.utils import fs
 
 import yaml
 
-yaml_path = 'tests/data/yaml/'
-json_path = 'tests/data/json/'
+yaml_path = pathlib.Path('tests/data/yaml/')
+json_path = pathlib.Path('tests/data/json/')
 encoding = 'utf8'
 loader = yaml.Loader
 
@@ -48,28 +48,29 @@ def times_equal(t1, t2):
 def test_yaml_load():
     """Test yaml load."""
     # happy path
-    read_file = pathlib.Path(yaml_path + 'good_simple.yaml').open('r', encoding=encoding)
+    read_file = pathlib.Path.joinpath(yaml_path, 'good_simple.yaml').open('r', encoding=encoding)
     obj = yaml.load(read_file, Loader=loader)
     assert obj is not None
 
     # unhappy path
     with pytest.raises(yaml.parser.ParserError):
-        read_file = pathlib.Path(yaml_path + 'bad_simple.yaml').open('r', encoding=encoding)
+        read_file = pathlib.Path.joinpath(yaml_path, 'bad_simple.yaml').open('r', encoding=encoding)
         obj = yaml.load(read_file, Loader=loader)
 
 
 def test_yaml_dump(tmpdir):
     """Test yaml load and dump."""
     target_name = 'good_target.yaml'
+    tmpdir = pathlib.Path(tmpdir)
 
     # happy path
-    read_file = pathlib.Path(yaml_path + target_name).open('r', encoding=encoding)
+    read_file = pathlib.Path.joinpath(yaml_path, target_name).open('r', encoding=encoding)
     target = yaml.load(read_file, Loader=loader)
     assert target is not None
 
     fs.ensure_directory(tmpdir)
 
-    dump_name = tmpdir + '/' + target_name
+    dump_name = pathlib.Path.joinpath(tmpdir, target_name)
 
     write_file = pathlib.Path(dump_name).open('w', encoding=encoding)
     yaml.dump(target, write_file)
@@ -83,9 +84,10 @@ def test_yaml_dump(tmpdir):
 def test_oscal_model(tmpdir):
     """Test pydantic oscal model."""
     good_target_name = 'good_target.yaml'
+    tmpdir = pathlib.Path(tmpdir)
 
     # load good target
-    read_file = pathlib.Path(yaml_path + good_target_name).open('r', encoding=encoding)
+    read_file = pathlib.Path.joinpath(yaml_path, good_target_name).open('r', encoding=encoding)
     yaml_target = yaml.load(read_file, Loader=loader)
     assert yaml_target is not None
 
@@ -97,7 +99,7 @@ def test_oscal_model(tmpdir):
     yaml_target_def = yaml_target['target-definition']
 
     fs.ensure_directory(tmpdir)
-    dump_name = tmpdir + '/' + good_target_name
+    dump_name = pathlib.Path.joinpath(tmpdir, good_target_name)
 
     # write the oscal target def out as yaml
     # exclude all None's and rename to original OSCAL form with - instead of _
@@ -120,7 +122,7 @@ def test_oscal_model(tmpdir):
         assert (times_equal(d[2][0], d[2][1]))
 
     # load good target with different timezone
-    read_file = pathlib.Path(yaml_path + 'good_target_diff_tz.yaml').open('r', encoding=encoding)
+    read_file = pathlib.Path.joinpath(yaml_path, 'good_target_diff_tz.yaml').open('r', encoding=encoding)
     yaml_target_diff_tz = yaml.load(read_file, Loader=loader)
     assert yaml_target_diff_tz is not None
 
@@ -138,7 +140,7 @@ def test_oscal_model(tmpdir):
 
     # following test can be enabled when the pydantic base class checks for timezone
     # load bad target with missing timezone
-    with open(yaml_path + 'bad_target_no_tz.yaml', 'r', encoding=encoding) as read_file:
+    with open(pathlib.Path.joinpath(yaml_path, 'bad_target_no_tz.yaml'), 'r', encoding=encoding) as read_file:
         yaml_target_no_tz = yaml.load(read_file, Loader=loader)
     assert yaml_target_no_tz is not None
 
