@@ -81,7 +81,7 @@ target-definition:
       title: RedHat Enterprise Linux 7.8
       description: RedHat Enterprise Linux 7.8
       target-control-implementations:
-      - uuid: daca7f77-a2eb-433c-aec2-999c185671dd
+      - uuid: daca7f77-a2eb-433c-aec2-999c185671de
         source: https://github.com/usnistgov/OSCAL/blob/v1.0.0-milestone3/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
         description: Compliance Operator SCAP guide for RedHat OpenShift Kubernetes
           Service for NIST 800-53. It includes optional configuration to use with
@@ -111,7 +111,7 @@ target-definition:
           rel: whe should be using this field too
           media-type: scap_org.open-scap_collection_from_xccdf_ssg-ocp4-xccdf-1.2.xml
         implemented-requirements: []
-      - uuid: ac861221-fff8-4f99-be3a-60eca076c614
+      - uuid: ac861221-fff8-4f99-be3a-60eca076c615
         source: https://github.com/SOME_URL_TO_CIS.json
         description: Compliance Operator SCAP guide for RedHat OpenShift Kubernetes
           Service for CIS v7.1. It includes optional configuration to use with an
