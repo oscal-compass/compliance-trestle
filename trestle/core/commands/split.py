@@ -14,11 +14,53 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Split Command."""
+from typing import List
 
 from ilcli import Command
+
+from trestle.core import const
+from trestle.core.base_model import OscalBaseModel
+from trestle.core.err import TrestleError
+from trestle.core.models.elements import ElementPath
+from trestle.core.models.plans import Plan
+
+from . import cmd_utils
 
 
 class SplitCmd(Command):
     """Split subcomponents on a trestle model."""
 
     name = 'split'
+
+    def _init_arguments(self):
+        self.add_argument(
+            f'-{const.ARG_FILE_SHORT}',
+            f'--{const.ARG_FILE}',
+            help=const.ARG_DESC_FILE + ' to split.',
+        )
+        self.add_argument(
+            f'-{const.ARG_ELEMENT_SHORT}',
+            f'--{const.ARG_ELEMENT}',
+            help=const.ARG_DESC_ELEMENT + ' to split.',
+        )
+
+    def _run(self, args):
+        """Split an OSCAL file into elements."""
+        # get the Model
+        if args[const.ARG_FILE] is None:
+            raise TrestleError(f'Argument "-{const.ARG_FILE_SHORT}" is required')
+
+        model: OscalBaseModel = cmd_utils.get_model(args[const.ARG_FILE])
+        element_paths: List[ElementPath] = cmd_utils.parse_element_args(args[const.ARG_ELEMENT])
+
+        split_plan = self._split_model(model, element_paths)
+
+        try:
+            split_plan.execute()
+        except Exception as ex:
+            split_plan.rollback()
+            raise TrestleError(f'Could not perform operation: {ex}')
+
+    def _split_model(self, model: OscalBaseModel, element_paths: List[ElementPath]) -> Plan:
+        """Split the model at the provided element paths."""
+        raise NotImplementedError()
