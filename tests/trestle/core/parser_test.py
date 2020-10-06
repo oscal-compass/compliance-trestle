@@ -16,12 +16,14 @@
 """Tests for models module."""
 
 import os
+import pathlib
 from datetime import datetime
 from uuid import uuid4
 
 from trestle.core import const
 from trestle.core import parser
 from trestle.oscal import catalog
+from trestle.oscal import target
 
 import yaml
 
@@ -146,6 +148,26 @@ def test_wrap_for_output():
 
     wrapped = parser.wrap_for_output(c)
     assert (wrapped.catalog.metadata.title == c.metadata.title)
+
+    # Test with target definition
+    t_m = target.Metadata(
+        **{
+            'title': 'my cool target definition',
+            'last-modified': datetime.now(),
+            'version': '0.0.1',
+            'oscal-version': '1.0.0'
+        }
+    )
+
+    t = target.TargetDefinition(metadata=t_m)
+    wrapped = parser.wrap_for_output(t)
+    assert (wrapped.target_definition.metadata.title == t.metadata.title)
+
+
+def test_wrap_for_input():
+    """Test input for object that has a hyphen it it's name."""
+    json_path = pathlib.Path('tests/data/json/sample-target-definition.json')
+    parser.wrap_for_input(target.TargetDefinition).parse_file(json_path).target_definition
 
 
 def test_pascal_case_split():

@@ -141,7 +141,7 @@ def wrap_for_output(model: OscalBaseModel) -> OscalBaseModel:
     )
     wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_passer)
     # Default behaviour is strange here.
-    wrapped_model = wrapper_model(**{class_to_oscal(class_name, 'field'): model})
+    wrapped_model = wrapper_model(**{class_to_oscal(class_name, 'json'): model})
     return wrapped_model
 
 
@@ -152,7 +152,7 @@ def wrap_for_input(raw_class):
     dynamic_passer = {}
     dynamic_passer[class_to_oscal(
         class_name, 'field'
-    )] = (raw_class, Field(..., title=class_to_oscal(class_name, 'field'), alias=class_to_oscal(class_name, 'json')))
+    )] = (raw_class, Field(..., title=class_to_oscal(class_name, 'json'), alias=class_to_oscal(class_name, 'json')))
     wrapper_model = create_model('Wrapped' + class_name, __base__=OscalBaseModel, **dynamic_passer)
     return wrapper_model
 

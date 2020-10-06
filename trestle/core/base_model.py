@@ -16,9 +16,18 @@
 """Pydantic base model and utility functions."""
 
 import datetime
+import logging
+import pathlib
 from typing import List, Optional
 
 from pydantic import BaseModel, Extra, Field, create_model
+
+import trestle.core.err as err
+import trestle.core.utils as utils
+
+import yaml
+
+logger = logging.getLogger(__name__)
 
 
 def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
@@ -80,19 +89,104 @@ class OscalBaseModel(BaseModel):
 
         return new_model
 
+    def oscal_write(self, path: pathlib.Path, minimize_json=False):
+        """
+        Write oscal objects.
+
+        OSCAL schema mandates that top level elements are wrapped in a singular
+        json/yaml field. This function handles both json and yaml output as well
+        as
+        """
+        class_name = self.__class__.__name__
+        # It would be nice to pass through the description but I can't seem to and
+        # it does not affect the output
+        dynamic_passer = {}
+        dynamic_passer[utils.class_to_oscal(class_name, 'field')] = (
+            self.__class__,
+            Field(
+                self, title=utils.class_to_oscal(class_name, 'field'), alias=utils.class_to_oscal(class_name, 'json')
+            )
+        )
+        wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_passer)
+        # Default behaviour is strange here.
+        wrapped_model = wrapper_model(**{utils.class_to_oscal(class_name, 'json'): self})
+
+        yaml_suffix = ['.yaml', '.yml']
+        json_suffix = ['.json']
+        encoding = 'utf8'
+        write_file = pathlib.Path(path).open('w', encoding=encoding)
+        if path.suffix in yaml_suffix:
+            yaml.dump(yaml.safe_load(wrapped_model.json(exclude_none=True, by_alias=True)), write_file)
+            pass
+        elif path.suffix in json_suffix:
+            write_file.write(wrapped_model.json(exclude_none=True, by_alias=True, indent=2))
+
+        else:
+            raise err.TrestleError('Unknown file type')
+
     @classmethod
-    def clone_from(cls, oscal_object):
+    def oscal_read(cls, path: pathlib.Path):
         """
-        Clone from a semantically similar pydantic object in a different python module to this module.
+        Read OSCAL objects.
 
-        OSCAL has objects that are replicated across schemas. These objects need to be converted into a new type
-
-        e.g.
-        profile_metadata: profile.Metadata = profile.Metadata.clone_from(catalog_metadata)
-
-        where
-        type(catalog_metadata) == catalog.Metadata.
-
-        Presumes 'exact' matching support throughout the tree.
+        Handles the fact OSCAL wrap's top level elements and also deals with both yaml and json.
         """
-        pass
+        # Define valid extensions
+        yaml_suffix = ['.yaml', '.yml']
+        json_suffix = ['.json']
+        # Create the wrapper model.
+        class_name = cls.__name__
+        dynamic_passer = {}
+        dynamic_passer[utils.class_to_oscal(class_name, 'field')] = (
+            cls,
+            Field(..., title=utils.class_to_oscal(class_name, 'json'), alias=utils.class_to_oscal(class_name, 'json'))
+        )
+        wrapper_model = create_model('Wrapped' + class_name, __base__=OscalBaseModel, **dynamic_passer)
+
+        if path.suffix in yaml_suffix:
+            return wrapper_model.parse_obj(yaml.safe_load(path.open())
+                                           ).__dict__[utils.class_to_oscal(class_name, 'field')]
+        elif path.suffix in json_suffix:
+            return wrapper_model.parse_file(path).__dict__[utils.class_to_oscal(class_name, 'field')]
+        else:
+            raise err.TrestleError('Unknown file type')
+
+    def copy_to(self, new_oscal_type):
+        """Copy operation that explicilty does type conversion."""
+        logger.debug('Copy to started')
+
+        if self.__class__.__name__ == new_oscal_type.__name__:
+            logger.debug('Dict based copy too ')
+            return new_oscal_type.parse_obj(self.dict(exclude_none=True, by_alias=True))
+
+        if ('__root__' in self.__fields__ and len(self.__fields__) == 1 and '__root__' in new_oscal_type.__fields__
+                and len(new_oscal_type.__fields__) == 1):
+            logger.debug('Root element based copy too')
+            return new_oscal_type.parse_obj(self.__root__)
+
+        # bad place here.
+        raise err.TrestleError('Provided inconsistent classes.')
+
+    def copy_from(self, existing_oscal_object):
+        """
+        Copy operation that implicitly does type conversion.
+
+        Typically would
+        be used to set an attribute, however, does not need to be.
+
+        Deals with two scenarios:
+        1) Casting across oscal models of equivalent type. The purpose if this
+        is to cross class spaces.
+
+        2) The same as above where the item is an array style object which does
+        not correctly serialize to a dict.
+
+        3) if the from and 'to' objects are root schema elements the copy operation
+        will copy the root element to the value.
+
+        """
+        recast_object = existing_oscal_object.copy_to(self.__class__)
+        # This is a sanity check
+        assert (self.__class__ == recast_object.__class__)
+        for raw_field in self.__dict__.keys():
+            self.__dict__[raw_field] = recast_object.__dict__[raw_field]
