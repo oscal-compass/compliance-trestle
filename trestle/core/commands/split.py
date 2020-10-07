@@ -53,7 +53,7 @@ class SplitCmd(Command):
         model: OscalBaseModel = cmd_utils.get_model(args[const.ARG_FILE])
         element_paths: List[ElementPath] = cmd_utils.parse_element_args(args[const.ARG_ELEMENT])
 
-        split_plan = self._split_model(model, element_paths)
+        split_plan = self.split_model(model, element_paths)
 
         try:
             split_plan.execute()
@@ -61,6 +61,8 @@ class SplitCmd(Command):
             split_plan.rollback()
             raise TrestleError(f'Could not perform operation: {ex}')
 
-    def _split_model(self, model: OscalBaseModel, element_paths: List[ElementPath]) -> Plan:
-        """Split the model at the provided element paths."""
-        raise NotImplementedError()
+    def split_model(self, model: OscalBaseModel, element_paths: List[ElementPath]) -> Plan:
+        """Split the model at the provided element paths.
+
+        It returns a plan for the operation
+        """
