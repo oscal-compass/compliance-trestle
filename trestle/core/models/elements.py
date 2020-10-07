@@ -13,6 +13,7 @@
 # limitations under the License.
 """Element wrapper of an OSCAL model element."""
 
+import pathlib
 from typing import List
 
 from pydantic import Field, create_model
@@ -75,7 +76,7 @@ class ElementPath:
         return parts
 
     def get(self) -> List[str]:
-        """Return the path components as a list."""
+        """Return the path parts as a list."""
         return self._path
 
     def get_parent(self):
@@ -105,15 +106,21 @@ class ElementPath:
 
         return self._element_name
 
+    def get_full_path_parts(self) -> List[str]:
+        """Get full path parts to the element including parent path parts as a list."""
+        if self.get_parent() is not None:
+            path_parts = self.get_parent().get()
+            path_parts.extend(self.get())
+        else:
+            path_parts = self.get()
+
+        return path_parts
+
     def get_preceding_path(self):
-        """Return the preceding path to the current element."""
+        """Return the element path to the preceding element in the path."""
         # if it is available then return otherwise compute
         if self._preceding_path is None:
-            if self.get_parent() is not None:
-                path_parts = self.get_parent().get()
-                path_parts.extend(self.get())
-            else:
-                path_parts = self.get()
+            path_parts = self.get_full_path_parts()
 
             if len(path_parts) > 1:
                 prec_path_parts = path_parts[:-1]
@@ -123,6 +130,23 @@ class ElementPath:
                     self._preceding_path = ElementPath(self.PATH_SEPARATOR.join(prec_path_parts))
 
         return self._preceding_path
+
+    def to_file_path(self) -> pathlib.Path:
+        """Convert to a file path for the element path."""
+        path_parts = self.get_full_path_parts()
+
+        # skip wildcard
+        if path_parts[-1] == ElementPath.WILDCARD:
+            path_parts = path_parts[:-1]
+
+        # skip the first root element
+        path_parts = path_parts[1:]
+        path_str = './' + '/'.join(path_parts)
+
+        # prepare the file path
+        file_path: pathlib.Path = pathlib.Path(path_str)
+
+        return file_path
 
     def __str__(self):
         """Return string representation of element path."""

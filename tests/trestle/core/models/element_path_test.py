@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle elements module."""
+import pathlib
+
 import pytest
 
 from trestle.core.err import TrestleError
@@ -93,6 +95,7 @@ def test_element_path_get(sample_target: target.TargetDefinition):
     assert ElementPath('target-definition.metadata.title').get_first() == 'target-definition'
     assert ElementPath('target-definition.metadata.title').get_last() == 'title'
     assert ElementPath('target-definition.metadata').get_last() == 'metadata'
+    assert ElementPath('target-definition.metadata.parties.*').get_last() == '*'
 
 
 def test_element_path_str():
@@ -106,3 +109,10 @@ def test_element_path_eq(sample_target):
     assert ElementPath('target.metadata') == ElementPath('target.metadata')
     assert not (ElementPath('target.metadata') == ElementPath('target.title'))
     assert not (ElementPath('target.metadata') == Element(sample_target))
+
+
+def test_element_path_to_file_path():
+    """Test to file path method."""
+    assert ElementPath('target-definition.metadata.title').to_file_path() == pathlib.Path('./metadata/title')
+    assert ElementPath('target-definition.metadata.parties').to_file_path() == pathlib.Path('./metadata/parties')
+    assert ElementPath('target-definition.metadata.parties.*').to_file_path() == pathlib.Path('./metadata/parties')
