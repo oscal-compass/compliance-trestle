@@ -16,9 +16,51 @@
 """Trestle Add Command."""
 
 from ilcli import Command
-
+import trestle.core.const as const
+from trestle.core.models.elements import Element, ElementPath
+from trestle.core.models.actions import UpdateAction
+from trestle.core.models.plans import Plan
+from trestle.core.commands import cmd_utils
 
 class AddCmd(Command):
     """Add a subcomponent to an existing model."""
 
     name = 'add'
+
+    def _init_arguments(self):
+        self.add_argument(
+            '-f',
+            '--file',
+            help=const.ARG_DESC_FILE + ' to add component/subcomponent to.',
+        )
+        self.add_argument(
+            '-e',
+            '--element',
+            help=const.ARG_DESC_ELEMENT + ' to add.',
+        )
+
+    def _run(self, args):
+        """Add an OSCAL component/subcomponent to the specified component."""
+        element_path = ElementPath()
+
+        # get parent model type from args.file . trestle.core.parser.root_key
+        # then load the data into parent model using trestle.core.parser.to_full_model_name() and create parent element
+        parent_element = Element()
+        # new element path is args.element
+        # check parent element allows the path args.element
+        # 
+        sub_element = Element()
+
+        update_action = UpdateAction(sub_element=sub_element, dest_element=parent_element, sub_element_path= element_path)
+
+        add_plan = Plan()
+        add_plan.add_action(
+            UpdateAction(
+                pathlib.Path.joinpath(base_dir, 'metadata.json'), Element(sample_target.metadata), content_type
+            )
+        )
+
+if __name__ == '__main__':
+    import os
+    os.chdir('tmp/tmp/catalogs')
+    AddCmd()._run(args=None)
