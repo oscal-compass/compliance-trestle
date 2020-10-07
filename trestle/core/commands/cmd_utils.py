@@ -32,6 +32,15 @@ def get_model(file_path: str) -> OscalBaseModel:
     raise NotImplementedError()
 
 
+def copy_values(src: OscalBaseModel, dest: OscalBaseModel) -> OscalBaseModel:
+    """Copy available attribute values from source element to destination."""
+    for raw_field in dest.__dict__.keys():
+        if hasattr(src, raw_field):
+            dest.__dict__[raw_field] = src.__dict__[raw_field]
+
+    return dest
+
+
 def parse_element_args(element_args: List[str]) -> List[ElementPath]:
     """Parse element args into a list of ElementPath."""
     if not isinstance(element_args, list):

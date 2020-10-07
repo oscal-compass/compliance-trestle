@@ -18,6 +18,7 @@ from typing import List
 
 from trestle.core.commands import cmd_utils
 from trestle.core.models.elements import ElementPath
+from trestle.oscal import target
 
 
 def prepare_expected_element_paths(element_args: List[str]) -> List[ElementPath]:
@@ -27,6 +28,17 @@ def prepare_expected_element_paths(element_args: List[str]) -> List[ElementPath]
         element_paths.append(ElementPath(element_arg))
 
     return element_paths
+
+
+def test_copy_values(sample_target: target.TargetDefinition):
+    """Test copy_values function."""
+    metadata_values = sample_target.metadata.__dict__
+    metadata_values['title'] = 'TEST'
+    sample_metadata2: target.Metadata = target.Metadata(**metadata_values)
+    assert sample_metadata2 is not sample_target.metadata
+
+    cmd_utils.copy_values(sample_target.metadata, sample_metadata2)
+    assert sample_metadata2 == sample_target.metadata
 
 
 def test_parse_element_arg():

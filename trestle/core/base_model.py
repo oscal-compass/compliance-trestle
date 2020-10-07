@@ -54,7 +54,7 @@ class OscalBaseModel(BaseModel):
         json_encoders = {datetime.datetime: lambda x: robust_datetime_serialization(x)}
         # this is not safe and caused class: nan in yaml output
         # TODO: Explore fix.
-        # allow_population_by_field_name = True  noqa: E800
+        allow_population_by_field_name = True  # noqa: E800
 
         # Enforce strict schema
         extra = Extra.forbid
