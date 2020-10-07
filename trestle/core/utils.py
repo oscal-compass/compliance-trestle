@@ -114,7 +114,7 @@ def find_values_by_type(object_of_interest, type_of_interest):
     return loe
 
 
-def has_no_duplicate_values(object_of_interest, type_of_interest):
+def has_no_duplicate_values_by_type(object_of_interest, type_of_interest):
     """Determine if duplicate values of type exist in object."""
     loe = find_values_by_type(object_of_interest, type_of_interest)
     n = len(loe)
@@ -124,6 +124,32 @@ def has_no_duplicate_values(object_of_interest, type_of_interest):
                 if loe[i] == loe[j]:
                     return False
     return True
+
+
+def find_values_by_name(object_of_interest, name_of_interest):
+    """Traverse object and return list of values of specified name."""
+    loe = []
+    if isinstance(object_of_interest, pydantic.BaseModel):
+        value = getattr(object_of_interest, name_of_interest, None)
+        if value is not None:
+            loe.append(value)
+        fields = getattr(object_of_interest, '__fields_set__', None)
+        if fields is not None:
+            for field in fields:
+                loe.extend(find_values_by_name(getattr(object_of_interest, field, None), name_of_interest))
+    elif type(object_of_interest) is list:
+        for item in object_of_interest:
+            loe.extend(find_values_by_name(item, name_of_interest))
+    elif type(object_of_interest) is dict:
+        for item in object_of_interest.values():
+            loe.extend(find_values_by_name(item, name_of_interest))
+    return loe
+
+
+def has_no_duplicate_values_by_name(object_of_interest, name_of_interest):
+    """Determine if duplicate values of type exist in object."""
+    loe = find_values_by_name(object_of_interest, name_of_interest)
+    return len(loe) == len(set(loe))
 
 
 def class_to_oscal(class_name: str, mode: str) -> str:
