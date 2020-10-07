@@ -14,7 +14,7 @@
 """Element wrapper of an OSCAL model element."""
 
 import pathlib
-from typing import List
+from typing import List, Optional
 
 from pydantic import Field, create_model
 from pydantic.error_wrappers import ValidationError
@@ -168,7 +168,7 @@ class ElementPath:
 class Element:
     """Element wrapper of an OSCAL model."""
 
-    _allowed_sub_element_types = [OscalBaseModel.__class__, list.__class__, None.__class__]
+    _allowed_sub_element_types: List[str] = ['Element', 'OscalBaseModel', 'list', 'None']
 
     def __init__(self, elem: OscalBaseModel):
         """Initialize an element wrapper."""
@@ -190,7 +190,7 @@ class Element:
 
         return root_model, path_parts
 
-    def get_at(self, element_path: ElementPath = None):
+    def get_at(self, element_path: ElementPath = None) -> Optional[OscalBaseModel]:
         """Get the element at the specified element path.
 
         it will return the sub-model object at the path. Sub-model object
@@ -205,7 +205,7 @@ class Element:
         # TODO validate that self._elem is of same type as root_model
 
         # initialize the starting element for search
-        elm = self._elem
+        elm: Optional[OscalBaseModel] = self._elem
         if element_path.get_parent() is not None:
             elm = self.get_at(element_path.get_parent())
             if elm is None:
@@ -227,14 +227,10 @@ class Element:
 
         return elm
 
-    def get_preceding_element(self, element_path: ElementPath):
+    def get_preceding_element(self, element_path: ElementPath) -> Optional[OscalBaseModel]:
         """Get the preceding element in the path."""
         preceding_path = element_path.get_preceding_path()
-        if preceding_path is None:
-            preceding_elm = self.get()
-        else:
-            preceding_elm = self.get_at(preceding_path)
-
+        preceding_elm: Optional[OscalBaseModel] = self.get_at(preceding_path)
         return preceding_elm
 
     def _get_sub_element_obj(self, sub_element):
@@ -339,13 +335,13 @@ class Element:
     @classmethod
     def get_sub_element_class(cls, parent_elm: OscalBaseModel, sub_element_name: str):
         """Get the class of the sub-element."""
-        sub_element_class = parent_elm.__fields__.get(sub_element_name).outer_type_
+        sub_element_class = parent_elm.__fields__[sub_element_name].outer_type_
         return sub_element_class
 
     @classmethod
     def get_allowed_sub_element_types(cls) -> List[str]:
         """Get the list of allowed sub element types."""
-        return cls._allowed_sub_element_types.append(Element.__class__)
+        return cls._allowed_sub_element_types
 
     @classmethod
     def is_allowed_sub_element_type(cls, elm) -> bool:

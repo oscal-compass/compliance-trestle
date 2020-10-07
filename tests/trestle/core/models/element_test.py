@@ -17,6 +17,8 @@
 from datetime import datetime
 from typing import List
 
+import pytest
+
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
 from trestle.oscal import target
@@ -96,23 +98,17 @@ def test_element_set_at(sample_target: target.TargetDefinition):
     assert element.set_at('target-definition.metadata.parties',
                           parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
 
-    try:
+    with pytest.raises(TrestleError):
         assert element.set_at(ElementPath('target-definition.metadata.title'),
                               parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
-    except TrestleError:
-        pass
 
     # wildcard requires it to be an OscalBaseModel or list
-    try:
+    with pytest.raises(TrestleError):
         assert element.set_at(ElementPath('target-definition.metadata.parties.*'), 'INVALID')
-    except TrestleError:
-        pass
 
     # invalid attribute
-    try:
+    with pytest.raises(TrestleError):
         assert element.set_at(ElementPath('target-definition.metadata.groups.*'), parties)
-    except TrestleError:
-        pass
 
 
 def test_element_str(sample_target):
