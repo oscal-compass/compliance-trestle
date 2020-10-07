@@ -14,7 +14,7 @@
 # limitations under the License.
 """Starting point for the Trestle CLI."""
 
-from ilcli import Command
+from ilcli import Command  # type: ignore
 
 from trestle.__init__ import __version__
 from trestle.core.commands.add import AddCmd

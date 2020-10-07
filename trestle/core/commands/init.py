@@ -18,7 +18,7 @@
 import os
 from shutil import copyfile
 
-from ilcli import Command
+from ilcli import Command  # type: ignore
 
 from pkg_resources import resource_filename
 
