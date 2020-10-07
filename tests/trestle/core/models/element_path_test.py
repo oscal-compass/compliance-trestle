@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle elements module."""
+import pytest
 
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
@@ -22,71 +23,76 @@ from trestle.oscal import target
 
 def test_element_path_init(sample_target: target.TargetDefinition):
     """Test element path construction."""
-    assert ElementPath('metadata.title').get() == ['metadata', 'title']
-    assert ElementPath('targets.*').get() == ['targets', '*']
-    assert ElementPath('targets.0').get() == ['targets', '0']
-    assert ElementPath('metadata.parties.0.uuid').get() == ['metadata', 'parties', '0', 'uuid']
+    assert ElementPath('target-definition.metadata.title').get() == ['target-definition', 'metadata', 'title']
+    assert ElementPath('target-definition.targets.*').get() == ['target-definition', 'targets', '*']
+    assert ElementPath('target-definition.targets.0').get() == ['target-definition', 'targets', '0']
+    assert ElementPath('target-definition.metadata.parties.0.uuid').get() == [
+        'target-definition', 'metadata', 'parties', '0', 'uuid'
+    ]
 
     # expect error
-    try:
+    with pytest.raises(TrestleError):
         ElementPath('*')
-    except TrestleError:
-        pass
 
     # expect error
-    try:
+    with pytest.raises(TrestleError):
         ElementPath('*.*')
-    except TrestleError:
-        pass
 
     # expect error
-    try:
+    with pytest.raises(TrestleError):
         ElementPath('.')
-    except TrestleError:
-        pass
 
     # expect error
-    try:
+    with pytest.raises(TrestleError):
         ElementPath('.*')
-    except TrestleError:
-        pass
 
     # expect error
-    try:
+    with pytest.raises(TrestleError):
         ElementPath('catalog.groups.*.controls.*')
-    except TrestleError:
-        pass
 
     # expect error
-    try:
-        ElementPath('metadata..title')
-    except TrestleError:
-        pass
+    with pytest.raises(TrestleError):
+        ElementPath('catalog.metadata..title')
+
+    # expect error
+    with pytest.raises(TrestleError):
+        ElementPath('catalog')
+
+    # expect error
+    with pytest.raises(TrestleError):
+        ElementPath('groups.*')
 
 
 def test_element_path_get_element_name(sample_target: target.TargetDefinition):
     """Test get element name method."""
-    assert ElementPath('metadata.title').get_element_name() == 'title'
-    assert ElementPath('metadata').get_element_name() == 'metadata'
-    assert ElementPath('metadata.parties.*').get_element_name() == 'parties'
+    assert ElementPath('target-definition.metadata.title').get_element_name() == 'title'
+    assert ElementPath('target-definition.metadata').get_element_name() == 'metadata'
+    assert ElementPath('target-definition.metadata.parties.*').get_element_name() == 'parties'
 
 
-def test_element_path_get_parent(sample_target: target.TargetDefinition):
+def test_element_path_get_preceding_path(sample_target: target.TargetDefinition):
     """Test get parent path method."""
-    assert ElementPath('metadata.title').get_parent_path() == ElementPath('metadata')
-    assert ElementPath('metadata').get_parent_path() is None
-    assert ElementPath('metadata.parties.*').get_parent_path() == ElementPath('metadata.parties')
-    assert ElementPath('metadata.*').get_parent_path() == ElementPath('metadata')
+    assert ElementPath('target-definition.metadata.title'
+                       ).get_preceding_path() == ElementPath('target-definition.metadata')
+    assert ElementPath('target-definition.metadata').get_preceding_path() is None
+    assert ElementPath('target-definition.metadata.parties.*'
+                       ).get_preceding_path() == ElementPath('target-definition.metadata.parties')
+    assert ElementPath('target-definition.metadata.*').get_preceding_path() == ElementPath('target-definition.metadata')
+
+    # element_path with parent path
+    parent_path = ElementPath('target-definition.metadata')
+    element_path = ElementPath('parties.*', parent_path)
+    preceding_path = ElementPath('target-definition.metadata.parties')
+    assert element_path.get_preceding_path() == preceding_path
 
 
 def test_element_path_get(sample_target: target.TargetDefinition):
     """Test get method of element path."""
-    assert ElementPath('metadata').get() == ['metadata']
-    assert ElementPath('metadata.title').get() == ['metadata', 'title']
-
-    assert ElementPath('metadata.title').get_first() == 'metadata'
-    assert ElementPath('metadata.title').get_last() == 'title'
-    assert ElementPath('metadata').get_last() == 'metadata'
+    assert ElementPath('target-definition.metadata').get() == ['target-definition', 'metadata']
+    assert ElementPath('target-definition.metadata.title').get() == ['target-definition', 'metadata', 'title']
+    assert ElementPath('target-definition.metadata.title').get_first() == 'target-definition'
+    assert ElementPath('target-definition.metadata.title').get_last() == 'title'
+    assert ElementPath('target-definition.metadata').get_last() == 'metadata'
 
 
 def test_element_path_str():

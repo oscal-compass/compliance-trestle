@@ -20,7 +20,7 @@ from pydantic.error_wrappers import ValidationError
 
 import trestle.core.utils as utils
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.err import TrestleError
+from trestle.core.err import TrestleError, TrestleNotFoundError
 
 import yaml
 
@@ -37,16 +37,15 @@ class ElementPath:
 
     def __init__(self, element_path: str, parent_path=None):
         """Initialize an element wrapper."""
-        self._path: List[str] = self._parse(element_path)
-
-        # Initialize variables for lazy processing and caching
-        # This will be processed and cached
-        self._element_name = None
-        self._parent_element_path = None
-
         if isinstance(parent_path, str):
             parent_path = ElementPath(parent_path)
         self._parent_path = parent_path
+
+        self._path: List[str] = self._parse(element_path)
+
+        # Initialize private variables for lazy processing and caching
+        self._element_name = None
+        self._preceding_path = None
 
     def _parse(self, element_path) -> List[str]:
         """Parse the element path and validate."""
@@ -61,8 +60,17 @@ class ElementPath:
             elif part == self.WILDCARD and i != len(parts) - 1:
                 raise TrestleError(f'Invalid path. Wildcard "{self.WILDCARD}" can only be at the end')
 
-        if parts[-1] == self.WILDCARD and len(parts) == 1:
-            raise TrestleError(f'Invalid path {element_path}')
+        if parts[-1] == self.WILDCARD:
+            if len(parts) == 1:
+                raise TrestleError(f'Invalid path {element_path} with wildcard.')
+            elif len(parts) == 2 and self._parent_path is None:
+                raise TrestleError(f'Invalid path {element_path} with wildcard. It should have a parent path.')
+
+        if len(parts) <= 1:
+            raise TrestleError(
+                'Element path must have at least two parts with the first part being the model root name \
+                    like "target-definition.metadata"'
+            )
 
         return parts
 
@@ -73,7 +81,7 @@ class ElementPath:
     def get_parent(self):
         """Return the parent path.
 
-        It can be None or ElementPath
+        It can be None or a valid ElementPath
         """
         return self._parent_path
 
@@ -97,15 +105,24 @@ class ElementPath:
 
         return self._element_name
 
-    def get_parent_path(self):
-        """Return the path to the parent element."""
+    def get_preceding_path(self):
+        """Return the preceding path to the current element."""
         # if it is available then return otherwise compute
-        if self._parent_element_path is None:
-            if len(self._path) > 1:
-                parent_path_parts = self._path[:-1]
-                self._parent_element_path = ElementPath(self.PATH_SEPARATOR.join(parent_path_parts))
+        if self._preceding_path is None:
+            if self.get_parent() is not None:
+                path_parts = self.get_parent().get()
+                path_parts.extend(self.get())
+            else:
+                path_parts = self.get()
 
-        return self._parent_element_path
+            if len(path_parts) > 1:
+                prec_path_parts = path_parts[:-1]
+
+                # prec_path_parts must have at least two parts
+                if len(prec_path_parts) > 1:
+                    self._preceding_path = ElementPath(self.PATH_SEPARATOR.join(prec_path_parts))
+
+        return self._preceding_path
 
     def __str__(self):
         """Return string representation of element path."""
@@ -132,6 +149,18 @@ class Element:
         """Return the model object."""
         return self._elem
 
+    def _split_element_path(self, element_path: ElementPath):
+        """Split the element path into root_model and remaing attr names."""
+        if element_path.get_parent() is None:
+            path_parts = element_path.get()
+            root_model = path_parts[0]
+            path_parts = path_parts[1:]
+        else:
+            root_model, _ = self._split_element_path(element_path.get_parent())
+            path_parts = element_path.get()
+
+        return root_model, path_parts
+
     def get_at(self, element_path: ElementPath = None):
         """Get the element at the specified element path.
 
@@ -141,11 +170,20 @@ class Element:
         if element_path is None:
             return self._elem
 
-        # TODO process element_path.get_parent()
+        # find the root-model and element path parts
+        _, path_parts = self._split_element_path(element_path)
+
+        # TODO validate that self._elem is of same type as root_model
+
+        # initialize the starting element for search
+        elm = self._elem
+        if element_path.get_parent() is not None:
+            elm = self.get_at(element_path.get_parent())
+            if elm is None:
+                raise TrestleNotFoundError(f'Invalid parent path {element_path.get_parent()}')
 
         # return the sub-element at the specified path
-        elm = self._elem
-        for attr in element_path.get():
+        for attr in path_parts:
             # process for wildcard and array indexes
             if attr == ElementPath.WILDCARD:
                 break
@@ -160,16 +198,15 @@ class Element:
 
         return elm
 
-    def get_parent(self, element_path: ElementPath):
-        """Get the parent element of the element specified by the path."""
-        # get the parent element
-        parent_path = element_path.get_parent_path()
-        if parent_path is None:
-            parent_elm = self.get()
+    def get_preceding_element(self, element_path: ElementPath):
+        """Get the preceding element in the path."""
+        preceding_path = element_path.get_preceding_path()
+        if preceding_path is None:
+            preceding_elm = self.get()
         else:
-            parent_elm = self.get_at(parent_path)
+            preceding_elm = self.get_at(preceding_path)
 
-        return parent_elm
+        return preceding_elm
 
     def _get_sub_element_obj(self, sub_element):
         """Convert sub element into allowed model obj."""
@@ -198,9 +235,12 @@ class Element:
         # convert sub-element to OscalBaseModel if needed
         model_obj = self._get_sub_element_obj(sub_element)
 
-        # TODO process element_path.get_parent()
+        # find the root-model and element path parts
+        _, path_parts = self._split_element_path(element_path)
 
-        # If wildcard is present, check the input type and determine the parent element
+        # TODO validate that self._elem is of same type as root_model
+
+        # If wildcard is present, check the input type and determine the preceding element
         if element_path.get_last() == ElementPath.WILDCARD:
             # validate the type is either list or OscalBaseModel
             if not isinstance(model_obj, list) and not isinstance(model_obj, OscalBaseModel):
@@ -208,28 +248,28 @@ class Element:
                     f'The model object needs to be a List or OscalBaseModel for path with "{ElementPath.WILDCARD}"'
                 )
 
-            # since wildcard * is there, we need to go one level up for parent element
-            parent_elm = self.get_parent(element_path.get_parent_path())
+            # since wildcard * is there, we need to go one level up for preceding element in the path
+            preceding_elm = self.get_preceding_element(element_path.get_preceding_path())
         else:
-            # get the parent element
-            parent_elm = self.get_parent(element_path)
+            # get the preceding element in the path
+            preceding_elm = self.get_preceding_element(element_path)
 
-        if parent_elm is None:
-            raise TrestleError(f'Invalid sub element path {element_path} with no parent element')
+        if preceding_elm is None:
+            raise TrestleError(f'Invalid sub element path {element_path} with no valid preceding element')
 
         # check if it can be a valid sub_element of the parent
         sub_element_name = element_path.get_element_name()
-        if hasattr(parent_elm, sub_element_name) is False:
+        if hasattr(preceding_elm, sub_element_name) is False:
             raise TrestleError(
-                f'Element "{parent_elm.__class__}" does not have the attribute "{sub_element_name}" \
+                f'Element "{preceding_elm.__class__}" does not have the attribute "{sub_element_name}" \
                     of type "{model_obj.__class__}"'
             )
 
         # set the sub-element
         try:
-            setattr(parent_elm, sub_element_name, model_obj)
+            setattr(preceding_elm, sub_element_name, model_obj)
         except ValidationError:
-            sub_element_class = self.get_sub_element_class(parent_elm, sub_element_name)
+            sub_element_class = self.get_sub_element_class(preceding_elm, sub_element_name)
             raise TrestleError(
                 f'Validation error: {sub_element_name} is expected to be "{sub_element_class}", \
                     but found "{model_obj.__class__}"'
