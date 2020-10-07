@@ -141,11 +141,16 @@ class ElementPath:
 
         # skip the first root element
         path_parts = path_parts[1:]
-        path_str = './' + '/'.join(path_parts)
+        path_str = '/'.join(path_parts)
 
         # prepare the file path
-        file_path: pathlib.Path = pathlib.Path(path_str)
+        file_path: pathlib.Path = pathlib.Path(f'./{path_str}')
 
+        return file_path
+
+    def to_root_path(self) -> pathlib.Path:
+        """Convert to a file path for the element root."""
+        file_path: pathlib.Path = pathlib.Path(f'./{self.get_first()}')
         return file_path
 
     def __str__(self):

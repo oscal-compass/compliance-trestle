@@ -116,3 +116,8 @@ def test_element_path_to_file_path():
     assert ElementPath('target-definition.metadata.title').to_file_path() == pathlib.Path('./metadata/title')
     assert ElementPath('target-definition.metadata.parties').to_file_path() == pathlib.Path('./metadata/parties')
     assert ElementPath('target-definition.metadata.parties.*').to_file_path() == pathlib.Path('./metadata/parties')
+
+
+def test_element_path_to_root_path():
+    """Test to file path method."""
+    assert ElementPath('target-definition.metadata.title').to_root_path() == pathlib.Path('./target-definition')
