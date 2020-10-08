@@ -55,7 +55,7 @@ class Plan:
     def simulate(self):
         """Simulate execution of the plan."""
         # Check if all of the actions support rollback or not
-        for action in self._actions.items():
+        for action in self._actions:
             if action.has_rollback() is False:
                 raise UnsupportedOperation(f'{action.get_type()} does not support rollback')
 
