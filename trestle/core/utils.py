@@ -182,3 +182,18 @@ def get_cwm(contextual_path: list) -> str:
         return model_type_module_name
 
     return ''
+
+def get_target_model(element_path_list: List[str], current_model) -> BaseModel:
+    # TODO: Throw error if sub element can not be found
+    # TODO: assumption here is that element path parts are model aliases
+    try:
+        for element_alias in element_path_list:
+            if is_collection_model(current_model):
+                # Return the model class inside the collection
+                current_model = get_inner_model(current_model)
+            else:
+                current_model = current_model.get_fields_by_alias()[element_alias].outer_type_
+        return current_model
+    except Exception as e:
+        raise err.TrestleError('Bad element path')
+

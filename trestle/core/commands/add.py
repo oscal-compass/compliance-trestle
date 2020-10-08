@@ -16,11 +16,15 @@
 """Trestle Add Command."""
 
 from ilcli import Command
+import json
+
 import trestle.core.const as const
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.actions import UpdateAction
 from trestle.core.models.plans import Plan
 from trestle.core.commands import cmd_utils
+from trestle.core import utils
+import trestle.core.err as err
 
 class AddCmd(Command):
     """Add a subcomponent to an existing model."""
@@ -41,11 +45,29 @@ class AddCmd(Command):
 
     def _run(self, args):
         """Add an OSCAL component/subcomponent to the specified component."""
-        element_path = ElementPath()
+
+        elements = "metadata.titlet"
+        # TODO: what happens during cases like "metadata.responsible-parties.creator"?
+        #       what about "metadata.groups."?
+
+        # Get parent model and then load json into parent model
+        parent_model, parent_alias = utils.get_contextual_model()
+        with open(f'{parent_alias}.json') as f:
+            data = json.load(f)
+        parent_element = parent_model.parse_obj(data[parent_alias])
+
+        # Get child model
+        element_path = ElementPath(elements)
+        element_path_list = element_path.get_full_path_parts()
+        try:
+            child_model = utils.get_target_model(element_path_list, parent_model)
+        except Exception as e:
+            raise err.TrestleError('Bad element path')
 
         # get parent model type from args.file . trestle.core.parser.root_key
         # then load the data into parent model using trestle.core.parser.to_full_model_name() and create parent element
         parent_element = Element()
+
         # new element path is args.element
         # check parent element allows the path args.element
         # 
@@ -62,5 +84,5 @@ class AddCmd(Command):
 
 if __name__ == '__main__':
     import os
-    os.chdir('tmp/tmp/catalogs')
+    os.chdir('tmp/tmp/catalogs/mycatalog')
     AddCmd()._run(args=None)
