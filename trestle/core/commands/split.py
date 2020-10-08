@@ -95,15 +95,17 @@ class SplitCmd(Command):
                 sub_model_dir = base_dir / element_path.get_element_name()
                 if isinstance(sub_models, list):
                     for i, sub_model_item in enumerate(sub_models):
-                        model_type = 'fixme'  # need model name
-                        file_name = f'{i}__{model_type}{file_ext}'  # TODO need a utility function
+                        model_type = ''  # FIXME
+                        file_index = str(i).zfill(4)
+                        file_name = f'{file_index}__{model_type}{file_ext}'
+
                         sub_model_file = sub_model_dir / file_name
                         split_plan.add_action(CreatePathAction(sub_model_file))
                         split_plan.add_action(WriteFileAction(sub_model_file, Element(sub_model_item), content_type))
                 elif isinstance(sub_models, dict):
                     for key in sub_models:
                         sub_model_item = sub_models[key]
-                        file_name = f'{key}{file_ext}'  # TODO need a utility function
+                        file_name = f'{key}{file_ext}'
                         sub_model_file = sub_model_dir / file_name
                         split_plan.add_action(CreatePathAction(sub_model_file))
                         split_plan.add_action(WriteFileAction(sub_model_file, Element(sub_model_item), content_type))
