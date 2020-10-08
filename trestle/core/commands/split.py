@@ -61,11 +61,18 @@ class SplitCmd(Command):
 
         split_plan = self.split_model(model, element_paths, file_path.parent, content_type)
 
-        try:
-            split_plan.execute()
-        except Exception as ex:
-            split_plan.rollback()
-            raise TrestleError(f'Could not perform operation: {ex}')
+        # simulate the plan
+        # if it fails, it would through errors and get out of this command
+        split_plan.simulate()
+
+        # if were here then simulation passed
+        # so remove the original file and execute the plan afterwards
+        # Note: this is irreversible action, however since simulation succeeded,
+        # we are assumit execution will succeed afterwards
+        file_path.unlink()
+
+        # execute the plan
+        split_plan.execute()
 
     @classmethod
     def split_model(
