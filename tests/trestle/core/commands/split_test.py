@@ -64,6 +64,42 @@ def test_split_model(tmp_dir, sample_target: OscalBaseModel):
     assert expected_plan == split_plan
 
 
-def test_split_model_multiple_levels(tmp_dir, sample_target):
+def test_split_multiple_item_dict(tmp_dir, sample_target):
     """Test for split_model method."""
-    # trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*
+    # Assume we are running a command like below
+    # trestle split -f target.yaml -e target-definition.targets.*
+
+    # prepare trestle project dir with the file
+    test_utils.ensure_trestle_config_dir(tmp_dir)
+    target_def_dir = tmp_dir / 'target-definitions' / 'mytarget'
+    target_def_file = target_def_dir / 'target-definition.yaml'
+    fs.ensure_directory(target_def_dir)
+    sample_target.oscal_write(target_def_file)
+
+    content_type = FileContentType.YAML
+    file_ext = FileContentType.to_file_extension(content_type)
+
+    # read the model from file
+    target_def = TargetDefinition.oscal_read(target_def_file)
+    element = Element(target_def)
+    element_args = ['target-definition.targets.*']
+    element_paths = cmd_utils.parse_element_args(element_args)
+
+    expected_plan = Plan()
+
+    # extract values
+    sub_models: dict = element.get_at(element_paths[0])
+    sub_model_dir = target_def_dir / element_paths[0].to_file_path()
+    for key in sub_models:
+        sub_model_item = sub_models[key]
+        file_name = f'{key}{file_ext}'
+        file_path = sub_model_dir / file_name
+        expected_plan.add_action(CreatePathAction(file_path))
+        expected_plan.add_action(WriteFileAction(file_path, Element(sub_model_item), content_type))
+
+    root_file = target_def_dir / element_paths[0].to_root_path(content_type)
+    remaining_root = element.get().stripped_instance(element_paths[0].get_element_name())
+    expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
+
+    split_plan = SplitCmd.split_model(target_def, element_paths, target_def_dir, content_type)
+    assert expected_plan == split_plan
