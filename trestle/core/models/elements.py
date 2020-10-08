@@ -22,6 +22,7 @@ from pydantic.error_wrappers import ValidationError
 import trestle.core.utils as utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError, TrestleNotFoundError
+from trestle.core.models.file_content_type import FileContentType
 
 import yaml
 
@@ -131,7 +132,7 @@ class ElementPath:
 
         return self._preceding_path
 
-    def to_file_path(self) -> pathlib.Path:
+    def to_file_path(self, content_type: FileContentType) -> pathlib.Path:
         """Convert to a file path for the element path."""
         path_parts = self.get_full_path_parts()
 
@@ -142,6 +143,7 @@ class ElementPath:
         # skip the first root element
         path_parts = path_parts[1:]
         path_str = '/'.join(path_parts)
+        path_str = path_str + FileContentType.get_file_extension(content_type)
 
         # prepare the file path
         file_path: pathlib.Path = pathlib.Path(f'./{path_str}')

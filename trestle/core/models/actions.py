@@ -23,6 +23,7 @@ from trestle.core.err import TrestleError
 from trestle.utils import fs
 
 from .elements import Element, ElementPath
+from .file_content_type import FileContentType
 
 
 class ActionType(Enum):
@@ -43,16 +44,6 @@ class ActionType(Enum):
 
     # remove the element at the path
     REMOVE = 21
-
-
-class FileContentType(Enum):
-    """File Content type for read/write."""
-
-    # JSON formatted content
-    JSON = 1
-
-    # YAML formatted content
-    YAML = 2
 
 
 class Action(ABC):

@@ -20,6 +20,7 @@ import pytest
 
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
+from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import target
 
 
@@ -113,9 +114,16 @@ def test_element_path_eq(sample_target):
 
 def test_element_path_to_file_path():
     """Test to file path method."""
-    assert ElementPath('target-definition.metadata.title').to_file_path() == pathlib.Path('./metadata/title')
-    assert ElementPath('target-definition.metadata.parties').to_file_path() == pathlib.Path('./metadata/parties')
-    assert ElementPath('target-definition.metadata.parties.*').to_file_path() == pathlib.Path('./metadata/parties')
+    assert ElementPath('target-definition.metadata.title').to_file_path(FileContentType.YAML
+                                                                        ) == pathlib.Path('./metadata/title.yaml')
+    assert ElementPath('target-definition.metadata.parties').to_file_path(FileContentType.JSON
+                                                                          ) == pathlib.Path('./metadata/parties.json')
+    assert ElementPath('target-definition.metadata.parties.*').to_file_path(
+        FileContentType.YAML
+    ) == pathlib.Path('./metadata/parties.yaml')
+
+    with pytest.raises(TrestleError):
+        assert ElementPath('target-definition.metadata.parties.*').to_file_path('INVALID')
 
 
 def test_element_path_to_root_path():
