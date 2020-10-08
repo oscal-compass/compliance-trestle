@@ -58,6 +58,7 @@ def test_split_model(tmp_dir, sample_target: OscalBaseModel):
     expected_plan = Plan()
     expected_plan.add_action(CreatePathAction(metadata_file))
     expected_plan.add_action(WriteFileAction(metadata_file, Element(metadata), content_type))
+    expected_plan.add_action(CreatePathAction(root_file))
     expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
 
     split_plan = SplitCmd.split_model(target_def, element_paths, target_def_dir, content_type)
@@ -99,6 +100,7 @@ def test_split_multiple_item_dict(tmp_dir, sample_target):
 
     root_file = target_def_dir / element_paths[0].to_root_path(content_type)
     remaining_root = element.get().stripped_instance(element_paths[0].get_element_name())
+    expected_plan.add_action(CreatePathAction(root_file))
     expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
 
     split_plan = SplitCmd.split_model(target_def, element_paths, target_def_dir, content_type)

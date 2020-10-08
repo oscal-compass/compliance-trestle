@@ -26,6 +26,7 @@ from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
+from trestle.oscal.target import TargetDefinition
 
 from . import cmd_utils
 
@@ -50,16 +51,23 @@ class SplitCmd(Command):
     def _run(self, args):
         """Split an OSCAL file into elements."""
         # get the Model
+        args = args.__dict__
         if args[const.ARG_FILE] is None:
             raise TrestleError(f'Argument "-{const.ARG_FILE_SHORT}" is required')
 
         file_path = pathlib.Path(args[const.ARG_FILE])
         content_type = FileContentType.to_content_type(file_path.suffix)
 
-        model: OscalBaseModel = cmd_utils.get_model(args[const.ARG_FILE])
-        element_paths: List[ElementPath] = cmd_utils.parse_element_args(args[const.ARG_ELEMENT])
+        # find the base directory of the file
+        file_absolute_path = pathlib.Path(file_path.absolute())
+        base_dir = file_absolute_path.parent
 
-        split_plan = self.split_model(model, element_paths, file_path.parent, content_type)
+        # FIXME model: OscalBaseModel = cmd_utils.get_model(file_path)
+        model: OscalBaseModel = TargetDefinition.oscal_read(file_path)
+
+        element_paths: List[ElementPath] = cmd_utils.parse_element_args(args[const.ARG_ELEMENT].split(','))
+
+        split_plan = self.split_model(model, element_paths, base_dir, content_type)
 
         # simulate the plan
         # if it fails, it would through errors and get out of this command
@@ -128,6 +136,7 @@ class SplitCmd(Command):
         # WriteAction for the stripped root
         stripped_root = model.stripped_instance(stripped_field_alias)
         root_file = base_dir / element_paths[0].to_root_path(content_type)
+        split_plan.add_action(CreatePathAction(root_file))
         split_plan.add_action(WriteFileAction(root_file, Element(stripped_root), content_type))
 
         return split_plan

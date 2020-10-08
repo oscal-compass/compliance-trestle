@@ -236,7 +236,7 @@ class CreatePathAction(Action):
 
         self._trestle_project_root = fs.get_trestle_project_root(sub_path)
         if self._trestle_project_root is None:
-            raise TrestleError('Sub path should be child of a valid trestle project')
+            raise TrestleError(f'Sub path "{sub_path}" should be child of a valid trestle project')
 
         self._sub_path = sub_path
         self._created_paths: List[pathlib.Path] = []
