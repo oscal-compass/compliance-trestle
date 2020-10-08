@@ -45,8 +45,7 @@ class MergeCmd(Command):
 
     def _list_available_elements(self):
         """List element paths that can be merged from the current context."""
-        contextual_path = []
-        contextual_path = utils.get_contextual_path(Path.cwd(), contextual_path)
+        contextual_path = utils.get_contextual_path(Path.cwd())
         if len(contextual_path) < 3:
             self.err('Error: Not in a source directory of a model type')
             return 1
