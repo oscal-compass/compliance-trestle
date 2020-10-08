@@ -150,9 +150,10 @@ class ElementPath:
 
         return file_path
 
-    def to_root_path(self) -> pathlib.Path:
+    def to_root_path(self, content_type: FileContentType) -> pathlib.Path:
         """Convert to a file path for the element root."""
-        file_path: pathlib.Path = pathlib.Path(f'./{self.get_first()}')
+        file_extension = FileContentType.get_file_extension(content_type)
+        file_path: pathlib.Path = pathlib.Path(f'./{self.get_first()}{file_extension}')
         return file_path
 
     def __str__(self):

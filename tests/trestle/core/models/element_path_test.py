@@ -123,9 +123,15 @@ def test_element_path_to_file_path():
     ) == pathlib.Path('./metadata/parties.yaml')
 
     with pytest.raises(TrestleError):
-        assert ElementPath('target-definition.metadata.parties.*').to_file_path('INVALID')
+        assert ElementPath('target-definition.metadata.parties.*').to_file_path(-1)
 
 
 def test_element_path_to_root_path():
     """Test to file path method."""
-    assert ElementPath('target-definition.metadata.title').to_root_path() == pathlib.Path('./target-definition')
+    assert ElementPath('target-definition.metadata.title').to_root_path(FileContentType.YAML
+                                                                        ) == pathlib.Path('./target-definition.yaml')
+    assert ElementPath('target-definition.metadata.title').to_root_path(FileContentType.JSON
+                                                                        ) == pathlib.Path('./target-definition.json')
+
+    with pytest.raises(TrestleError):
+        assert ElementPath('target-definition.metadata.title').to_root_path(-1)
