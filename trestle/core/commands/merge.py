@@ -20,8 +20,8 @@ from pathlib import Path
 
 from ilcli import Command
 
-import trestle.core.commands.cmd_utils as cmd_utils
 import trestle.core.const as const
+import trestle.core.utils as utils
 
 
 class MergeCmd(Command):
@@ -45,19 +45,18 @@ class MergeCmd(Command):
 
     def _list_available_elements(self):
         """List element paths that can be merged from the current context."""
-        contextual_path = []
-        contextual_path = cmd_utils.get_contextual_path(Path.cwd(), contextual_path)
+        contextual_path = utils.get_contextual_path(Path.cwd())
         if len(contextual_path) < 3:
             self.err('Error: Not in a source directory of a model type')
             return 1
-        current_working_module = cmd_utils.get_cwm(contextual_path)
-        root_model, root_alias = cmd_utils.get_root_model(current_working_module)
+        current_working_module_name = utils.get_cwm(contextual_path)
+        root_model, root_alias = utils.get_root_model(current_working_module_name)
 
         # user is in the base folder of the model type
         current_model = root_model
         current_alias = root_alias
 
-        current_model, current_alias = cmd_utils.get_contextual_model(contextual_path)
+        current_model, current_alias = utils.get_contextual_model(contextual_path)
 
         current_filename = f'{current_alias}.json'
 
@@ -75,7 +74,7 @@ class MergeCmd(Command):
         path_sep = '.' if current_alias else ''
 
         # List options for merge
-        if not cmd_utils.is_collection_model(current_model):
+        if not utils.is_collection_model(current_model):
             # Go through each file or subdirectory in the cwd
             fields_by_alias = current_model.get_fields_by_alias()
             for filename in Path.iterdir(cwdpath):
@@ -113,8 +112,8 @@ class MergeCmd(Command):
                 self.out(f"{visited_element} (merges all files/subdirectories under {cwd} into \'{destination}\')")
 
             # Go through each subdirectory in the collection and look for nested merge options
-            singular_alias = cmd_utils.get_singular_collection_model_alias(current_model)
-            singular_model = cmd_utils.get_inner_model(current_model)
+            singular_alias = utils.get_singular_alias_from_collection_model(current_model)
+            singular_model = utils.get_inner_model(current_model)
             for filename in sorted(cwdpath.glob(f'*{const.IDX_SEP}{singular_alias}')):
                 if Path.is_dir(filename):
                     self._list_options_for_merge(
@@ -133,5 +132,5 @@ class MergeCmd(Command):
 
 
 if __name__ == '__main__':
-    os.chdir('tmp/catalogs/mycatalog')
+    os.chdir('tmp/catalogs/mycatalog/groups')
     MergeCmd()._list_available_elements()
