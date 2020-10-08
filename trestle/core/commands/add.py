@@ -17,6 +17,7 @@
 
 from ilcli import Command
 import json
+import pathlib
 
 import trestle.core.const as const
 from trestle.core.models.elements import Element, ElementPath
@@ -46,15 +47,14 @@ class AddCmd(Command):
     def _run(self, args):
         """Add an OSCAL component/subcomponent to the specified component."""
 
-        elements = "metadata.titlet"
+        elements = "metadata.roles"
         # TODO: what happens during cases like "metadata.responsible-parties.creator"?
         #       what about "metadata.groups."?
 
         # Get parent model and then load json into parent model
         parent_model, parent_alias = utils.get_contextual_model()
-        with open(f'{parent_alias}.json') as f:
-            data = json.load(f)
-        parent_element = parent_model.parse_obj(data[parent_alias])
+        file_path = pathlib.Path(f'{parent_alias}.json')
+        parent_element = parent_model.oscal_read(file_path.absolute())
 
         # Get child model
         element_path = ElementPath(elements)
@@ -64,14 +64,9 @@ class AddCmd(Command):
         except Exception as e:
             raise err.TrestleError('Bad element path')
 
-        # get parent model type from args.file . trestle.core.parser.root_key
-        # then load the data into parent model using trestle.core.parser.to_full_model_name() and create parent element
-        parent_element = Element()
+        # Create child element with sample values
+        child_element = utils.get_sample_model(child_model)
 
-        # new element path is args.element
-        # check parent element allows the path args.element
-        # 
-        sub_element = Element()
 
         update_action = UpdateAction(sub_element=sub_element, dest_element=parent_element, sub_element_path= element_path)
 

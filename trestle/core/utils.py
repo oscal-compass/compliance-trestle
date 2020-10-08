@@ -15,14 +15,14 @@
 """Utilities for dealing with models."""
 import importlib
 from pathlib import Path
-from typing import List, Optional, Tuple, no_type_check
-
+from typing import List, Optional, Tuple, no_type_check, Union
 from datamodel_code_generator.parser.base import camel_to_snake
-
 from pydantic import BaseModel
+from datetime import datetime
 
 import trestle.core.const as const
 import trestle.core.err as err
+from trestle.core.base_model import OscalBaseModel
 
 
 def get_elements_of_model_type(object_of_interest, type_of_interest):
@@ -184,8 +184,10 @@ def get_cwm(contextual_path: list) -> str:
     return ''
 
 def get_target_model(element_path_list: List[str], current_model) -> BaseModel:
-    # TODO: Throw error if sub element can not be found
-    # TODO: assumption here is that element path parts are model aliases
+    """
+    Get the target model from the parts of a Element Path.
+    """
+    # FIXME: assumption here is that element path parts are model aliases
     try:
         for element_alias in element_path_list:
             if is_collection_model(current_model):
@@ -197,3 +199,34 @@ def get_target_model(element_path_list: List[str], current_model) -> BaseModel:
     except Exception as e:
         raise err.TrestleError('Bad element path')
 
+def get_sample_model(model : BaseModel) -> OscalBaseModel:
+    """ Given a model class, generate an object of that class with sample values"""
+    if is_collection_model(model):
+        model_type = model.__origin__
+        model = get_inner_model(model)
+
+    model_dict = {}
+
+    for field in model.__fields__:
+        if model.__fields__[field].required :
+            model_dict[field]= get_sample_value_by_type(model.__fields__[field].type_)
+    
+    return model(** model_dict)
+
+
+def get_sample_value_by_type(type_: type) -> Union[datetime, bool, int, str, float]:
+    """Given a type, return sample value"""
+    # FIXME: uuid type and sample value?
+    if type_ is datetime: 
+        return datetime.now()
+    elif type_ is bool:
+        return False
+    elif type_ is int:
+        return 0
+    elif type_ is str: 
+        return "REPLACE_ME"
+    elif type_ is float: 
+        return 0.00
+    else:
+        # FIXME: handle cases when the field is another OscalBaseModel
+        raise err.TrestleError("Fatal: Bad type in model")
