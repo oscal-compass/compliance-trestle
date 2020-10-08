@@ -15,7 +15,7 @@
 """Utilities for dealing with models."""
 import importlib
 from pathlib import Path
-from typing import List, Tuple, no_type_check
+from typing import List, Optional, Tuple, no_type_check
 
 from datamodel_code_generator.parser.base import camel_to_snake
 
@@ -103,6 +103,7 @@ def camel_to_dash(name: str) -> str:
 def get_root_model(module_name: str) -> Tuple[BaseModel, str]:
     """Get the root model class and alias based on the module."""
     module = importlib.import_module(module_name)
+
     if hasattr(module, 'Model'):
         model_metadata = next(iter(module.Model.__fields__.values()))
         return (model_metadata.type_, model_metadata.alias)
@@ -110,7 +111,7 @@ def get_root_model(module_name: str) -> Tuple[BaseModel, str]:
         raise err.TrestleError('Invalid module')
 
 
-def get_contextual_path(path: str, contextual_path: List[str]) -> List[str]:
+def get_contextual_path(path: str, contextual_path: Optional[List[str]] = None) -> List[str]:
     """
     Return the contextual path relative to where the nearest .trestle directory is.
 
@@ -121,6 +122,9 @@ def get_contextual_path(path: str, contextual_path: List[str]) -> List[str]:
     as well as the type of model (by looking at the value stored in index 1 of the list) the command should be
     referring to.
     """
+    if contextual_path is None:
+        contextual_path = []
+
     p = Path(path)
     if p.name == '':
         return []
