@@ -27,7 +27,7 @@ class FileContentType(Enum):
     YAML = 2
 
     @classmethod
-    def get_file_extension(cls, content_type):
+    def to_file_extension(cls, content_type):
         """Get file extension for the type."""
         if content_type == FileContentType.YAML:
             return '.yaml'
@@ -35,3 +35,13 @@ class FileContentType(Enum):
             return '.json'
 
         raise TrestleError(f'Invalid file content type {content_type}')
+
+    @classmethod
+    def to_content_type(cls, file_extension):
+        """Get content type form file extension."""
+        if file_extension == '.json':
+            return FileContentType.JSON
+        elif file_extension == '.yaml':
+            return FileContentType.YAML
+
+        raise TrestleError(f'Unsupported file extension {file_extension}')

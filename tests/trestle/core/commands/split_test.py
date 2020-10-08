@@ -14,35 +14,53 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle split command."""
+from tests import test_utils
+
+from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands import cmd_utils
 from trestle.core.commands.split import SplitCmd
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
+from trestle.oscal.target import TargetDefinition
+from trestle.utils import fs
 
 
-def test_split_model(tmp_dir, sample_target):
+def test_split_model(tmp_dir, sample_target: OscalBaseModel):
     """Test for split_model method."""
-    # trestle split -f target.yaml -e target-definition.metadata
-    element = Element(sample_target)
+    # Assume we are running a command like below
+    # trestle split -f target-definition.yaml -e target-definition.metadata
+
+    # prepare trestle project dir with the file
+    test_utils.ensure_trestle_config_dir(tmp_dir)
+    target_def_dir = tmp_dir / 'target-definitions' / 'mytarget'
+    target_def_file = target_def_dir / 'target-definition.yaml'
+    fs.ensure_directory(target_def_dir)
+    sample_target.oscal_write(target_def_file)
+
+    content_type = FileContentType.YAML
+
+    # read the model from file
+    target_def = TargetDefinition.oscal_read(target_def_file)
+    element = Element(target_def)
     element_args = ['target-definition.metadata']
     element_paths = cmd_utils.parse_element_args(element_args)
 
     # extract values
-    metadata_file = element_paths[0].to_file_path()
+    metadata_file = target_def_dir / element_paths[0].to_file_path(content_type)
     metadata = element.get_at(element_paths[0])
 
-    root_file = element_paths[0].to_root_path()
-    remaining_root = element.set_at(element_paths[0], None)
+    root_file = target_def_dir / element_paths[0].to_root_path(content_type)
+    remaining_root = element.get().stripped_instance(element_paths[0].get_element_name())
 
     # prepare the plan
     expected_plan = Plan()
     expected_plan.add_action(CreatePathAction(metadata_file))
-    expected_plan.add_action(WriteFileAction(metadata_file, metadata))
-    expected_plan.add_action(WriteFileAction(root_file, remaining_root))
+    expected_plan.add_action(WriteFileAction(metadata_file, Element(metadata), content_type))
+    expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
 
-    cmd = SplitCmd()
-    split_plan = cmd.split_model(sample_target, element_paths)
+    split_plan = SplitCmd.split_model(target_def, element_paths, target_def_dir, content_type)
     assert expected_plan == split_plan
 
 

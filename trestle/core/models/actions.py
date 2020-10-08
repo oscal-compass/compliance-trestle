@@ -81,6 +81,13 @@ class Action(ABC):
         """Return if rollback of the action is possible."""
         return self._has_rollback
 
+    def __eq__(self, other):
+        """Check that two actions are equal."""
+        if self.get_type() is not other.get_type():
+            return False
+
+        return self.__dict__ == other.__dict__
+
     @abstractmethod
     def execute(self):
         """Execute the action."""

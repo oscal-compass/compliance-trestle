@@ -132,7 +132,7 @@ class ElementPath:
 
         return self._preceding_path
 
-    def to_file_path(self, content_type: FileContentType) -> pathlib.Path:
+    def to_file_path(self, content_type: FileContentType = None) -> pathlib.Path:
         """Convert to a file path for the element path."""
         path_parts = self.get_full_path_parts()
 
@@ -143,17 +143,23 @@ class ElementPath:
         # skip the first root element
         path_parts = path_parts[1:]
         path_str = '/'.join(path_parts)
-        path_str = path_str + FileContentType.get_file_extension(content_type)
+        if content_type is not None:
+            file_extension = FileContentType.to_file_extension(content_type)
+            path_str = path_str + file_extension
 
         # prepare the file path
         file_path: pathlib.Path = pathlib.Path(f'./{path_str}')
 
         return file_path
 
-    def to_root_path(self, content_type: FileContentType) -> pathlib.Path:
+    def to_root_path(self, content_type: FileContentType = None) -> pathlib.Path:
         """Convert to a file path for the element root."""
-        file_extension = FileContentType.get_file_extension(content_type)
-        file_path: pathlib.Path = pathlib.Path(f'./{self.get_first()}{file_extension}')
+        path_str = f'./{self.get_first()}'
+        if content_type is not None:
+            file_extension = FileContentType.to_file_extension(content_type)
+            path_str = path_str + file_extension
+
+        file_path: pathlib.Path = pathlib.Path(path_str)
         return file_path
 
     def __str__(self):
@@ -357,3 +363,10 @@ class Element:
     def __str__(self):
         """Return string representation of element."""
         return type(self._elem).__name__
+
+    def __eq__(self, other):
+        """Check that two elements are equal."""
+        if not isinstance(other, Element):
+            return False
+
+        return self.get() == other.get()
