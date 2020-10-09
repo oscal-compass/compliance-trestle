@@ -117,6 +117,8 @@ class ElementPath:
         """Get full path parts to the element including parent path parts as a list."""
         if self.get_parent() is not None:
             path_parts = self.get_parent().get()
+            if path_parts[-1] == ElementPath.WILDCARD:
+                path_parts = path_parts[:-1]
             path_parts.extend(self.get())
         else:
             path_parts = self.get()
@@ -221,7 +223,9 @@ class Element:
 
         # initialize the starting element for search
         elm: OscalBaseModel = self._elem
-        if element_path.get_parent() is not None:
+
+        # if parent exists and does not end with wildcard, use the parent as the starting element for search
+        if element_path.get_parent() is not None and element_path.get_parent().get_last() != ElementPath.WILDCARD:
             elm_at = self.get_at(element_path.get_parent())
             if elm_at is None:
                 raise TrestleNotFoundError(f'Invalid parent path {element_path.get_parent()}')
@@ -241,6 +245,8 @@ class Element:
                 else:
                     # index to a non list type should return None
                     return None
+            elif isinstance(elm, dict):
+                elm = elm.get(attr, None)
             else:
                 elm = elm.get_attribute_by_alias(attr)
 

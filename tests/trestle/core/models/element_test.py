@@ -47,6 +47,10 @@ def test_element_get_at(sample_target: target.TargetDefinition):
     assert element.get_at(ElementPath('target-definition.metadata.parties.0.uuid')
                           ) == sample_target.metadata.parties[0].uuid
 
+    for uuid in sample_target.targets:
+        path_str = f'target-definition.targets.{uuid}'
+        assert element.get_at(ElementPath(path_str)) == sample_target.targets[uuid]
+
     # invalid indexing
     assert element.get_at(ElementPath('target-definition.metadata.title.0')) is None
 
@@ -57,6 +61,15 @@ def test_element_get_at(sample_target: target.TargetDefinition):
     parent_path = ElementPath('target-definition.metadata')
     element_path = ElementPath('parties.*', parent_path)
     assert element.get_at(element_path) == sample_target.metadata.parties
+
+    # element_path with parent path
+    parent_path = ElementPath('target-definition.targets.*')
+    element_path = ElementPath('target-control-implementations.*', parent_path)
+    targets = element.get_at(parent_path)
+    for key in targets:
+        target = targets[key]
+        target_element = Element(target)
+        assert target_element.get_at(element_path) == target.target_control_implementations
 
 
 def test_element_set_at(sample_target: target.TargetDefinition):
