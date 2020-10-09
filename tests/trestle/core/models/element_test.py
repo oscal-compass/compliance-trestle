@@ -28,6 +28,14 @@ def test_element_get_at(sample_target: target.TargetDefinition):
     """Test element get method."""
     element = Element(sample_target)
 
+    # field alias should succeed
+    assert element.get_at(
+        ElementPath('target-definition.metadata.last-modified')
+    ) == sample_target.metadata.last_modified
+
+    # field name should fail
+    assert element.get_at(ElementPath('target-definition.metadata.last_modified')) is None
+
     assert element.get() == sample_target
     assert element.get_at() == element.get()
     assert element.get_at(ElementPath('target-definition.metadata')) == sample_target.metadata
