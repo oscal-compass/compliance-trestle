@@ -25,6 +25,7 @@ import trestle.core.parser as p
 import trestle.oscal.catalog as oscatalog
 import trestle.oscal.target as ostarget
 from trestle.core.base_model import OscalBaseModel
+from trestle.oscal.target import TargetDefinition
 
 
 def test_echo_tmpdir(tmpdir):
@@ -269,3 +270,21 @@ def test_oscal_write(tmpdir):
     target2.oscal_write(temp_td_yaml)
 
     ostarget.TargetDefinition.oscal_read(temp_td_yaml)
+
+
+def test_get_attribute_value(sample_target: TargetDefinition):
+    """Test get attribute value method."""
+    assert sample_target.metadata.get_attribute_value('last-modified') == sample_target.metadata.last_modified
+    assert sample_target.metadata.get_attribute_value('last_modified') == sample_target.metadata.last_modified
+
+
+def test_get_attribute_by_alias(sample_target: TargetDefinition):
+    """Test get attribute by alias method."""
+    assert sample_target.metadata.get_attribute_by_alias('last-modified') == sample_target.metadata.last_modified
+    assert sample_target.metadata.get_attribute_by_alias('last_modified') is None
+
+
+def test_get_field(sample_target: TargetDefinition):
+    """Test get field for field alias."""
+    assert sample_target.metadata.get_field('last-modified').name == 'last_modified'
+    assert sample_target.metadata.get_field('last_modified') is None

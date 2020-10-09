@@ -68,6 +68,7 @@ def test_element_path_init(sample_target: target.TargetDefinition):
 
 def test_element_path_get_element_name(sample_target: target.TargetDefinition):
     """Test get element name method."""
+    assert ElementPath('target-definition.metadata.last-modified').get_element_name() == 'last-modified'
     assert ElementPath('target-definition.metadata.title').get_element_name() == 'title'
     assert ElementPath('target-definition.metadata').get_element_name() == 'metadata'
     assert ElementPath('target-definition.metadata.parties.*').get_element_name() == 'parties'

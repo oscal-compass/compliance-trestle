@@ -14,13 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle split command."""
+import os
+import pathlib
+import sys
+from unittest.mock import patch
+
+import pytest
+
 from tests import test_utils
 
+from trestle.cli import Trestle
 from trestle.core import const
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands import cmd_utils
 from trestle.core.commands.split import SplitCmd
+from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
@@ -108,3 +117,83 @@ def test_split_multiple_item_dict(tmp_dir, sample_target):
 
     split_plan = SplitCmd.split_model(target_def, element_paths, target_def_dir, content_type)
     assert expected_plan == split_plan
+
+
+def test_split_run(tmp_dir, sample_target):
+    """Test split run."""
+    # prepare trestle project dir with the file
+    test_utils.ensure_trestle_config_dir(tmp_dir)
+    target_def_dir: pathlib.Path = tmp_dir / 'target-definitions' / 'mytarget'
+    target_def_file: pathlib.Path = target_def_dir / 'target-definition.yaml'
+    fs.ensure_directory(target_def_dir)
+    sample_target.oscal_write(target_def_file)
+
+    cwd = os.getcwd()
+    os.chdir(target_def_dir)
+    testargs = [
+        'trestle',
+        'split',
+        '-f',
+        'target-definition.yaml',
+        '-e',
+        'target-definition.metadata, target-definition.targets.*'
+    ]
+
+    with patch.object(sys, 'argv', testargs):
+        Trestle().run()
+
+    os.chdir(cwd)
+
+    assert target_def_dir.joinpath('metadata.yaml').exists()
+    assert target_def_dir.joinpath('target-definition.yaml').exists()
+    assert target_def_dir.joinpath('targets').exists()
+    assert target_def_dir.joinpath('targets').is_dir()
+    assert cmd_utils.get_trash_file_path(target_def_file).exists()
+
+
+def test_split_run_failure(tmp_dir, sample_target):
+    """Test split run failure."""
+    # prepare trestle project dir with the file
+    target_def_dir: pathlib.Path = tmp_dir / 'target-definitions' / 'mytarget'
+    target_def_file: pathlib.Path = target_def_dir / 'target-definition.yaml'
+    fs.ensure_directory(target_def_dir)
+    sample_target.oscal_write(target_def_file)
+    invalid_file = target_def_dir / 'invalid.file'
+    invalid_file.touch()
+
+    cwd = os.getcwd()
+    os.chdir(target_def_dir)
+
+    # not a trestle project
+    testargs = [
+        'trestle',
+        'split',
+        '-f',
+        'target-definition.yaml',
+        '-e',
+        'target-definition.metadata, target-definition.targets.*'
+    ]
+    with patch.object(sys, 'argv', testargs):
+        with pytest.raises(TrestleError):
+            Trestle().run()
+
+    # create trestle project
+    test_utils.ensure_trestle_config_dir(tmp_dir)
+
+    # check with missing file
+    testargs = [
+        'trestle', 'split', '-f', 'missing.yaml', '-e', 'target-definition.metadata, target-definition.targets.*'
+    ]
+    with patch.object(sys, 'argv', testargs):
+        with pytest.raises(FileNotFoundError):
+            Trestle().run()
+
+    # check with incorrect file type
+    testargs = [
+        'trestle', 'split', '-f', invalid_file.name, '-e', 'target-definition.metadata, target-definition.targets.*'
+    ]
+    with patch.object(sys, 'argv', testargs):
+        with pytest.raises(TrestleError):
+            Trestle().run()
+
+    os.chdir(cwd)
