@@ -73,12 +73,9 @@ class SplitCmd(Command):
         # if it fails, it would through errors and get out of this command
         split_plan.simulate()
 
-        # If are here then simulation passed
-        # so remove the original file and execute the plan afterwards
-        # Note: this is irreversible action, however since simulation succeeded,
-        # we are assuming execution will succeed afterwards
-        # TODO probably we should move to a trestle trash directory instead of deleting it
-        file_path.unlink()
+        # If we are here then simulation passed
+        # so move the original file to the trash
+        cmd_utils.move_to_trash(file_path)
 
         # execute the plan
         split_plan.execute()

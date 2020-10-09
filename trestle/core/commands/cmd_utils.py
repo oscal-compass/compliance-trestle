@@ -14,11 +14,41 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle command related utilities."""
+import pathlib
+from shutil import copyfile
 from typing import List
 
+from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import ElementPath
+from trestle.utils import fs
+
+
+def get_trash_file_path(file_path: pathlib.Path):
+    """Construct the path to the trashed file."""
+    contextual_path = utils.get_contextual_path(file_path.absolute().as_posix())
+    if len(contextual_path) <= 0:
+        raise TrestleError(f'File path "{file_path}" is not in a valid trestle project')
+
+    trash_dir = pathlib.Path(contextual_path[0]) / const.TRESTLE_TRASH_DIR
+    trash_file_dir: pathlib.Path = trash_dir.joinpath('/'.join(contextual_path[1:-1]))
+    trash_file_path = trash_file_dir / f'{file_path.name}{const.TRESTLE_TRASH_FILE_EXT}'
+
+    return trash_file_path
+
+
+def move_to_trash(file_path: pathlib.Path):
+    """Move the specified file to the trash directory.
+
+    It overwrites the previous file if exists
+    """
+    if not file_path.is_file():
+        raise TrestleError(f'Specified path "{file_path}" is not a file')
+    trash_file_path = get_trash_file_path(file_path)
+    fs.ensure_directory(trash_file_path.parent)
+    copyfile(file_path, trash_file_path)
+    file_path.unlink()
 
 
 def get_model(file_path: str) -> OscalBaseModel:
