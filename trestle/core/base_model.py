@@ -144,15 +144,17 @@ class OscalBaseModel(BaseModel):
         # It would be nice to pass through the description but I can't seem to and
         # it does not affect the output
         dynamic_passer = {}
-        dynamic_passer[utils.class_to_oscal(class_name, 'field')] = (
+        dynamic_passer[utils.classname_to_alias(class_name, 'field')] = (
             self.__class__,
             Field(
-                self, title=utils.class_to_oscal(class_name, 'field'), alias=utils.class_to_oscal(class_name, 'json')
+                self,
+                title=utils.classname_to_alias(class_name, 'field'),
+                alias=utils.classname_to_alias(class_name, 'json')
             )
         )
         wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_passer)
         # Default behaviour is strange here.
-        wrapped_model = wrapper_model(**{utils.class_to_oscal(class_name, 'json'): self})
+        wrapped_model = wrapper_model(**{utils.classname_to_alias(class_name, 'json'): self})
 
         yaml_suffix = ['.yaml', '.yml']
         json_suffix = ['.json']
@@ -180,17 +182,21 @@ class OscalBaseModel(BaseModel):
         # Create the wrapper model.
         class_name = cls.__name__
         dynamic_passer = {}
-        dynamic_passer[utils.class_to_oscal(class_name, 'field')] = (
+        dynamic_passer[utils.classname_to_alias(class_name, 'field')] = (
             cls,
-            Field(..., title=utils.class_to_oscal(class_name, 'json'), alias=utils.class_to_oscal(class_name, 'json'))
+            Field(
+                ...,
+                title=utils.classname_to_alias(class_name, 'json'),
+                alias=utils.classname_to_alias(class_name, 'json')
+            )
         )
         wrapper_model = create_model('Wrapped' + class_name, __base__=OscalBaseModel, **dynamic_passer)
 
         if path.suffix in yaml_suffix:
             return wrapper_model.parse_obj(yaml.safe_load(path.open())
-                                           ).__dict__[utils.class_to_oscal(class_name, 'field')]
+                                           ).__dict__[utils.classname_to_alias(class_name, 'field')]
         elif path.suffix in json_suffix:
-            return wrapper_model.parse_file(path).__dict__[utils.class_to_oscal(class_name, 'field')]
+            return wrapper_model.parse_file(path).__dict__[utils.classname_to_alias(class_name, 'field')]
         else:
             raise err.TrestleError('Unknown file type')
 

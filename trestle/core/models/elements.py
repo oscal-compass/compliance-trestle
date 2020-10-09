@@ -329,15 +329,17 @@ class Element:
         # It would be nice to pass through the description but I can't seem to and
         # it does not affect the output
         dynamic_passer = {}
-        dynamic_passer[utils.class_to_oscal(class_name, 'field')] = (
+        dynamic_passer[utils.classname_to_alias(class_name, 'field')] = (
             self._elem.__class__,
             Field(
-                self, title=utils.class_to_oscal(class_name, 'field'), alias=utils.class_to_oscal(class_name, 'json')
+                self,
+                title=utils.classname_to_alias(class_name, 'field'),
+                alias=utils.classname_to_alias(class_name, 'json')
             )
         )
         wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_passer)
         # Default behaviour is strange here.
-        wrapped_model = wrapper_model(**{utils.class_to_oscal(class_name, 'json'): self._elem})
+        wrapped_model = wrapper_model(**{utils.classname_to_alias(class_name, 'json'): self._elem})
 
         return wrapped_model
 

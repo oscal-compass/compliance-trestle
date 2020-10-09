@@ -14,9 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for models util module."""
-
 import pathlib
 
+import pytest
+
+import trestle.core.err as err
 import trestle.core.parser as parser
 import trestle.core.utils as mutils
 import trestle.oscal.catalog as catalog
@@ -44,3 +46,39 @@ def test_get_elements():
     assert (len(control_list) >= 1)
     group_list = mutils.get_elements_of_model_type(good_sample, catalog.Group)
     assert (len(group_list) >= 2)
+
+
+def test_classname_to_alias():
+    """Test conversion of class name to alias."""
+    module_name = catalog.Catalog.__module__
+
+    with pytest.raises(err.TrestleError):
+        mutils.classname_to_alias('any', 'invalid_mode')
+
+    short_classname = catalog.Catalog.__name__
+    full_classname = f'{module_name}.{short_classname}'
+    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    assert json_alias == 'catalog'
+    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    assert json_alias == 'catalog'
+
+    short_classname = catalog.ResponsibleParty.__name__
+    full_classname = f'{module_name}.{short_classname}'
+    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    assert json_alias == 'responsible-party'
+    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    assert json_alias == 'responsible_party'
+
+    short_classname = catalog.Prop.__name__
+    full_classname = f'{module_name}.{short_classname}'
+    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    assert json_alias == 'prop'
+    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    assert json_alias == 'prop'
+
+    short_classname = catalog.MemberOfOrganization.__name__
+    full_classname = f'{module_name}.{short_classname}'
+    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    assert json_alias == 'member-of-organization'
+    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    assert json_alias == 'member_of_organization'
