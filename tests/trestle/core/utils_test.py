@@ -29,7 +29,6 @@ import trestle.oscal.poam as poam
 import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp
 import trestle.oscal.target as target
-from trestle.core.err import TrestleError
 
 
 def load_good_catalog():
@@ -143,6 +142,7 @@ def test_get_root_model():
         model_type, model_alias = mutils.get_root_model(module_name)
         assert model_type == malias_to_mtype[key]
         assert model_alias == key
+
 
 def test_classname_to_alias():
     """Test conversion of class name to alias."""

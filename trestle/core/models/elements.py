@@ -38,7 +38,10 @@ class ElementPath:
     WILDCARD: str = '*'
 
     def __init__(self, element_path: str, parent_path=None):
-        """Initialize an element wrapper."""
+        """Initialize an element wrapper.
+
+        It assumes the element path contains oscal field alias with hyphens only
+        """
         if isinstance(parent_path, str):
             parent_path = ElementPath(parent_path)
         self._parent_path = parent_path
@@ -96,7 +99,10 @@ class ElementPath:
         return self._path[-1]
 
     def get_element_name(self):
-        """Return the element name from the path."""
+        """Return the element alias name from the path.
+
+        Essentailly this the last part of the element path
+        """
         # if it is available then return otherwise compute
         if self._element_name is None:
             element_name = self.get_last()
@@ -214,14 +220,18 @@ class Element:
         # TODO validate that self._elem is of same type as root_model
 
         # initialize the starting element for search
-        elm: Optional[OscalBaseModel] = self._elem
+        elm: OscalBaseModel = self._elem
         if element_path.get_parent() is not None:
-            elm = self.get_at(element_path.get_parent())
-            if elm is None:
+            elm_at = self.get_at(element_path.get_parent())
+            if elm_at is None:
                 raise TrestleNotFoundError(f'Invalid parent path {element_path.get_parent()}')
+            elm = elm_at
 
         # return the sub-element at the specified path
         for attr in path_parts:
+            if elm is None:
+                break
+
             # process for wildcard and array indexes
             if attr == ElementPath.WILDCARD:
                 break
@@ -229,10 +239,10 @@ class Element:
                 if isinstance(elm, list):
                     elm = elm[int(attr)]
                 else:
-                    elm = None
-                    break
+                    # index to a non list type should return None
+                    return None
             else:
-                elm = getattr(elm, attr, None)
+                elm = elm.get_attribute_by_alias(attr)
 
         return elm
 
