@@ -64,3 +64,5 @@ ARG_DESC_MODE = 'Mode of the operation'
 ARG_ITEM = 'item'
 ARG_ITEM_SHORT = 'i'
 ARG_DESC_ITEM = 'Item used'
+
+# validate -f foo.yaml -mode duplicates -item uuid
