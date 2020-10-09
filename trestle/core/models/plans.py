@@ -14,6 +14,7 @@
 """Plan of action of a command."""
 
 from io import UnsupportedOperation
+from typing import List
 
 from .actions import Action
 
@@ -23,7 +24,7 @@ class Plan:
 
     def __init__(self):
         """Initialize a plan."""
-        self._actions: list[Action] = []
+        self._actions: List[Action] = []
 
     def _action_key(self, action: Action):
         return hash(action)
@@ -39,6 +40,10 @@ class Plan:
         list_str = '\n'.join(list_actions)
         return list_str
 
+    def get_actions(self) -> List[Action]:
+        """Get all actions."""
+        return self._actions
+
     def add_action(self, action: Action):
         """Add a new action."""
         self._actions.append(action)
@@ -50,7 +55,7 @@ class Plan:
     def simulate(self):
         """Simulate execution of the plan."""
         # Check if all of the actions support rollback or not
-        for action in self._actions.items():
+        for action in self._actions:
             if action.has_rollback() is False:
                 raise UnsupportedOperation(f'{action.get_type()} does not support rollback')
 
@@ -69,3 +74,10 @@ class Plan:
             if action.has_rollback() is False:
                 raise UnsupportedOperation(f'{action.get_type()} does not support rollback')
             action.rollback()
+
+    def __eq__(self, other):
+        """Check that two plans are equal."""
+        if not isinstance(other, Plan):
+            return False
+
+        return self.get_actions() == other.get_actions()
