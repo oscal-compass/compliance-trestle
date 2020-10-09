@@ -16,7 +16,7 @@
 import importlib
 import warnings
 from pathlib import Path
-from typing import List, Optional, Tuple, no_type_check
+from typing import Any, List, Optional, Tuple, Type, no_type_check
 
 from datamodel_code_generator.parser.base import camel_to_snake
 
@@ -77,41 +77,46 @@ def pascal_case_split(pascal_str: str) -> List[str]:
     return [pascal_str[x:y] for x, y in zip(start_idx, start_idx[1:])]
 
 
-def is_collection_model(model) -> bool:
-    """Check if model is of generic type for handling List or Dict."""
-    if hasattr(model, '__origin__') and hasattr(model, '__args__'):
-        return True
-    return False
-
-
-def get_inner_model(collection_model) -> BaseModel:
-    """Get the inner model in a generic model such as a List or a Dict."""
-    if is_collection_model(collection_model):
-        return collection_model.__args__[-1]
-    else:
-        raise err.TrestleError('Model type is not a Dict or List')
-
-
-def get_singular_alias_from_collection_model(model) -> str:
-    """Get the alias in the singular form of the collection model."""
-    singular_model_class = get_inner_model(model)
-    if isinstance(singular_model_class, type):
-        singular_model_name = singular_model_class.__name__
-    else:
-        raise err.TrestleError('Cannot retrieve name of inner class')
-    return camel_to_dash(singular_model_name)
-
-
 @no_type_check
-def get_root_model(module_name: str) -> Tuple[BaseModel, str]:
+def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
     """Get the root model class and alias based on the module."""
-    module = importlib.import_module(module_name)
+    try:
+        module = importlib.import_module(module_name)
+    except ModuleNotFoundError as e:
+        raise err.TrestleError(str(e))
 
     if hasattr(module, 'Model'):
         model_metadata = next(iter(module.Model.__fields__.values()))
         return (model_metadata.type_, model_metadata.alias)
     else:
         raise err.TrestleError('Invalid module')
+
+
+def is_collection_field_type(field_type: Type[Any]) -> bool:
+    """Check if model type is a  a generic collection model such as a typed list or a typed dict."""
+    if hasattr(field_type, '__origin__') and hasattr(field_type, '__args__') and (list in field_type.mro()
+                                                                                  or dict in field_type.mro()):
+        return True
+
+    return False
+
+
+def get_inner_type(collection_field_type) -> Type[Any]:
+    """Get the inner model in a generic collection model such as a List or a Dict."""
+    if is_collection_field_type(collection_field_type):
+        return collection_field_type.__args__[-1]
+    else:
+        raise err.TrestleError('Model type is not a Dict or List')
+
+
+def get_singular_alias_from_collection_model(model) -> str:
+    """Get the alias in the singular form of the collection model."""
+    singular_model_class = get_inner_type(model)
+    if isinstance(singular_model_class, type):
+        singular_model_name = singular_model_class.__name__
+    else:
+        raise err.TrestleError('Cannot retrieve name of inner class')
+    return camel_to_dash(singular_model_name)
 
 
 def get_contextual_path(path: str, contextual_path: Optional[List[str]] = None) -> List[str]:
@@ -160,9 +165,9 @@ def get_contextual_model(contextual_path: list = None) -> Tuple[BaseModel, str]:
             current_alias = stripped_alias
 
             # Find property by alias
-            if is_collection_model(current_model):
+            if is_collection_field_type(current_model):
                 # Return the model class inside the collection
-                current_model = get_inner_model(current_model)
+                current_model = get_inner_type(current_model)
 
             else:
                 current_model = current_model.get_fields_by_alias()[current_alias].outer_type_
