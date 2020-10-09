@@ -19,6 +19,9 @@ import pathlib
 
 import trestle.core.utils as mutils
 import trestle.oscal.catalog as catalog
+import trestle.oscal.target as ostarget
+
+import yaml
 
 
 def load_good_catalog():
@@ -45,40 +48,41 @@ def test_get_elements():
     assert (len(group_list) >= 2)
 
 
-def test_pascal_case_split():
-    """Test whether PascalCase objects are getting split correctly."""
-    one = 'One'
-    two = 'TwoTwo'
-    three = 'ThreeThreeThree'
-    assert (len(mutils.pascal_case_split(one)) == 1)
-    assert (len(mutils.pascal_case_split(two)) == 2)
-    assert (len(mutils.pascal_case_split(three)) == 3)
-    # TODO: Add negative test cases.
+def test_has_no_duplicate_values_generic():
+    """Test presence of duplicate uuid."""
+    # test with pydantic catalog
+    cat = load_good_catalog()
+    assert mutils.has_no_duplicate_values_generic(cat, 'uuid')
+
+    yaml_path = pathlib.Path('tests/data/yaml')
+
+    # test with valid pydantic target
+    good_target_path = yaml_path / 'good_target.yaml'
+    good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
+    loe = mutils.find_values_by_name(good_target, 'uuid')
+    assert len(loe) == 5
+    assert mutils.has_no_duplicate_values_by_name(good_target, 'uuid')
+
+    # test with pydantic target containing duplicates
+    bad_target_path = yaml_path / 'bad_target_dup_uuid.yaml'
+    bad_target = ostarget.TargetDefinition.oscal_read(bad_target_path)
+    assert not mutils.has_no_duplicate_values_by_name(bad_target, 'uuid')
+
+    # test duplicates with raw yaml target, non-pydantic
+    read_file = bad_target_path.open('r', encoding='utf8')
+    bad_target_yaml = yaml.load(read_file, Loader=yaml.Loader)
+    assert not mutils.has_no_duplicate_values_generic(bad_target_yaml, 'uuid')
 
 
-def test_class_to_oscal_json():
-    """Pydantic makes classes in PascalCase. All Oscal names are in lowercase-hyphenated."""
-    class_name_1 = 'Catalog'
-    oscal_name_1 = 'catalog'
-    class_name_2 = 'ComponentDefinition'
-    oscal_name_2 = 'component-definition'
-    class_name_3 = 'SecurityImpactLevel'
-    oscal_name_3 = 'security-impact-level'
+def test_has_no_duplicate_values_pydantic():
+    """Test presence of duplicate values in pydantic objects."""
+    # test with pydantic catalog - only one instance of Metadata
+    cat = load_good_catalog()
+    assert mutils.has_no_duplicate_values_by_type(cat, catalog.Metadata)
 
-    assert (oscal_name_1 == mutils.class_to_oscal(class_name_1, 'json'))
-    assert (oscal_name_2 == mutils.class_to_oscal(class_name_2, 'json'))
-    assert (oscal_name_3 == mutils.class_to_oscal(class_name_3, 'json'))
+    yaml_path = pathlib.Path('tests/data/yaml')
 
-
-def test_class_to_oscal_field():
-    """Pydantic makes classes in PascalCase. All Oscal names are in lowercase-hyphenated."""
-    class_name_1 = 'Catalog'
-    oscal_name_1 = 'catalog'
-    class_name_2 = 'ComponentDefinition'
-    oscal_name_2 = 'component_definition'
-    class_name_3 = 'SecurityImpactLevel'
-    oscal_name_3 = 'security_impact_level'
-
-    assert (oscal_name_1 == mutils.class_to_oscal(class_name_1, 'field'))
-    assert (oscal_name_2 == mutils.class_to_oscal(class_name_2, 'field'))
-    assert (oscal_name_3 == mutils.class_to_oscal(class_name_3, 'field'))
+    # test presence of many duplicate properties
+    good_target_path = yaml_path / 'good_target.yaml'
+    good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
+    assert not mutils.has_no_duplicate_values_by_type(good_target, ostarget.Prop)
