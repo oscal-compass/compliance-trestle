@@ -79,7 +79,7 @@ def test_split_model(tmp_dir, sample_target: OscalBaseModel):
 def test_split_multiple_item_dict(tmp_dir, sample_target):
     """Test for split_model method."""
     # Assume we are running a command like below
-    # trestle split -f target.yaml -e target-definition.targets.*
+    # trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*
 
     # prepare trestle project dir with the file
     test_utils.ensure_trestle_config_dir(tmp_dir)
@@ -94,21 +94,24 @@ def test_split_multiple_item_dict(tmp_dir, sample_target):
     # read the model from file
     target_def = TargetDefinition.oscal_read(target_def_file)
     element = Element(target_def)
-    element_args = ['target-definition.targets.*']
+    element_args = ['target-definition.targets.*.target-control-implementations.*']
     element_paths = cmd_utils.parse_element_args(element_args)
 
     expected_plan = Plan()
 
     # extract values
-    sub_models: dict = element.get_at(element_paths[0])
-    sub_model_dir = target_def_dir / element_paths[0].to_file_path()
-    for key in sub_models:
-        sub_model_item = sub_models[key]
-        model_type = utils.classname_to_alias(type(sub_model_item).__name__, 'json')
-        file_name = f'{key}{const.IDX_SEP}{model_type}{file_ext}'
-        file_path = sub_model_dir / file_name
-        expected_plan.add_action(CreatePathAction(file_path))
-        expected_plan.add_action(WriteFileAction(file_path, Element(sub_model_item), content_type))
+    targets: dict = element.get_at(element_paths[0])
+    for key in targets:
+        target_element = Element(targets[key])
+        targets_ctrl_dir = target_def_dir / element_paths[1].to_file_path()
+        target_ctrl_impls: dict = target_element.get_at(element_paths[1])
+        for i, target_ctrl_impl in enumerate(target_ctrl_impls):
+            model_type = utils.classname_to_alias(type(target_ctrl_impl).__name__, 'json')
+            file_prefix = str(i).zfill(4)
+            file_name = f'{file_prefix}{const.IDX_SEP}{model_type}{file_ext}'
+            file_path = targets_ctrl_dir / file_name
+            expected_plan.add_action(CreatePathAction(file_path))
+            expected_plan.add_action(WriteFileAction(file_path, Element(target_ctrl_impl), content_type))
 
     root_file = target_def_dir / element_paths[0].to_root_path(content_type)
     remaining_root = element.get().stripped_instance(element_paths[0].get_element_name())
