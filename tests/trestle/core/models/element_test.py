@@ -71,6 +71,15 @@ def test_element_get_at(sample_target: target.TargetDefinition):
         target_element = Element(target)
         assert target_element.get_at(element_path) == target.target_control_implementations
 
+    # element_path in a list with parent path
+    parent_path = ElementPath('target-definition.targets.*')
+    element_path = ElementPath('target-control-implementations.0', parent_path)
+    targets = element.get_at(parent_path)
+    for key in targets:
+        target = targets[key]
+        target_element = Element(target)
+        assert target_element.get_at(element_path) == target.target_control_implementations[0]
+
 
 def test_element_set_at(sample_target: target.TargetDefinition):
     """Test element get method."""
