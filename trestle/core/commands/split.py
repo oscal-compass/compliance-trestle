@@ -69,14 +69,15 @@ class SplitCmd(Command):
 
         split_plan = self.split_model(model, element_paths, base_dir, content_type)
 
-        # simulate the plan
+        # Simulate the plan
         # if it fails, it would through errors and get out of this command
         split_plan.simulate()
 
-        # if were here then simulation passed
+        # If are here then simulation passed
         # so remove the original file and execute the plan afterwards
         # Note: this is irreversible action, however since simulation succeeded,
-        # we are assumit execution will succeed afterwards
+        # we are assuming execution will succeed afterwards
+        # TODO probably we should move to a trestle trash directory instead of deleting it
         file_path.unlink()
 
         # execute the plan
