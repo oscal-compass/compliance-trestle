@@ -14,11 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for models util module."""
-
 import pathlib
 
 import pytest
 
+import trestle.core.err as err
 import trestle.core.parser as parser
 import trestle.core.utils as mutils
 import trestle.oscal.assessment_plan as assessment_plan
@@ -92,16 +92,16 @@ def test_get_inner_type():
     """Test retrievel of inner type of a model field representing a collection."""
     good_catalog = load_good_catalog()
 
-    with pytest.raises(TrestleError):
+    with pytest.raises(err.TrestleError):
         # Type of catalog is not a collection field type
         mutils.get_inner_type(type(good_catalog))
 
-    with pytest.raises(TrestleError):
+    with pytest.raises(err.TrestleError):
         # Type of field catalog is not a collection field type
         catalog_field = catalog.Model.get_fields_by_alias()['catalog']
         mutils.get_inner_type(catalog_field.outer_type_)
 
-    with pytest.raises(TrestleError):
+    with pytest.raises(err.TrestleError):
         # Type of roles object is not a collection field type
         mutils.get_inner_type(type(good_catalog.metadata.roles))
 
@@ -110,7 +110,7 @@ def test_get_inner_type():
     role_type = mutils.get_inner_type(roles_field.outer_type_)
     assert role_type == catalog.Role
 
-    with pytest.raises(TrestleError):
+    with pytest.raises(err.TrestleError):
         # Type of responsible_parties object is not a collection field type
         mutils.get_inner_type(type(good_catalog.metadata.responsible_parties))
 
@@ -122,10 +122,10 @@ def test_get_inner_type():
 
 def test_get_root_model():
     """Test looking for the root model of a trestle oscal module."""
-    with pytest.raises(TrestleError):
+    with pytest.raises(err.TrestleError):
         mutils.get_root_model('invalid')
 
-    with pytest.raises(TrestleError):
+    with pytest.raises(err.TrestleError):
         mutils.get_root_model('pydantic')
 
     malias_to_mtype = {
@@ -143,3 +143,38 @@ def test_get_root_model():
         model_type, model_alias = mutils.get_root_model(module_name)
         assert model_type == malias_to_mtype[key]
         assert model_alias == key
+
+def test_classname_to_alias():
+    """Test conversion of class name to alias."""
+    module_name = catalog.Catalog.__module__
+
+    with pytest.raises(err.TrestleError):
+        mutils.classname_to_alias('any', 'invalid_mode')
+
+    short_classname = catalog.Catalog.__name__
+    full_classname = f'{module_name}.{short_classname}'
+    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    assert json_alias == 'catalog'
+    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    assert json_alias == 'catalog'
+
+    short_classname = catalog.ResponsibleParty.__name__
+    full_classname = f'{module_name}.{short_classname}'
+    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    assert json_alias == 'responsible-party'
+    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    assert json_alias == 'responsible_party'
+
+    short_classname = catalog.Prop.__name__
+    full_classname = f'{module_name}.{short_classname}'
+    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    assert json_alias == 'prop'
+    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    assert json_alias == 'prop'
+
+    short_classname = catalog.MemberOfOrganization.__name__
+    full_classname = f'{module_name}.{short_classname}'
+    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    assert json_alias == 'member-of-organization'
+    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    assert json_alias == 'member_of_organization'

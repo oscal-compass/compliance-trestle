@@ -14,6 +14,7 @@
 # limitations under the License.
 """Utilities for dealing with models."""
 import importlib
+import warnings
 from pathlib import Path
 from typing import Any, List, Optional, Tuple, Type, no_type_check
 
@@ -48,23 +49,30 @@ def get_elements_of_model_type(object_of_interest, type_of_interest):
     return loi
 
 
-def class_to_oscal(class_name: str, mode: str) -> str:
+def classname_to_alias(classname: str, mode: str) -> str:
     """
-    Return oscal json or field element name based on class name.
+    Return oscal key name or field element name based on class name.
 
     This is applicable when asking for a singular element.
     """
-    parts = pascal_case_split(class_name)
+    suffix = classname.split('.')[-1]
+
     if mode == 'json':
-        return '-'.join(map(str.lower, parts))
+        return camel_to_dash(suffix)
     elif mode == 'field':
-        return '_'.join(map(str.lower, parts))
+        return camel_to_snake(suffix)
     else:
         raise err.TrestleError('Bad option')
 
 
+def camel_to_dash(name: str) -> str:
+    """Convert camelcase to dashcase."""
+    return camel_to_snake(name).replace('_', '-')
+
+
 def pascal_case_split(pascal_str: str) -> List[str]:
     """Parse a pascal case string (e.g. a ClassName) and return a list of strings."""
+    warnings.warn('trestle.utils.pascal_case_split function is deprecated', DeprecationWarning)
     start_idx = [i for i, e in enumerate(pascal_str) if e.isupper()] + [len(pascal_str)]
     return [pascal_str[x:y] for x, y in zip(start_idx, start_idx[1:])]
 
@@ -109,11 +117,6 @@ def get_singular_alias_from_collection_model(model) -> str:
     else:
         raise err.TrestleError('Cannot retrieve name of inner class')
     return camel_to_dash(singular_model_name)
-
-
-def camel_to_dash(name: str) -> str:
-    """Convert camelcase to dashcase."""
-    return camel_to_snake(name).replace('_', '-')
 
 
 def get_contextual_path(path: str, contextual_path: Optional[List[str]] = None) -> List[str]:

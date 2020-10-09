@@ -24,6 +24,7 @@ import trestle.core.base_model as ospydantic
 import trestle.core.parser as p
 import trestle.oscal.catalog as oscatalog
 import trestle.oscal.target as ostarget
+from trestle.core.base_model import OscalBaseModel
 
 
 def test_echo_tmpdir(tmpdir):
@@ -162,6 +163,16 @@ def test_stripping_model_class():
     sc_instance = stripped_catalog_object(uuid=str(uuid4()))
     if 'metadata' in sc_instance.__fields__.keys():
         raise Exception('Test failure')
+
+
+def test_stripped_instance(sample_target: OscalBaseModel):
+    """Test stripped_instance method."""
+    assert hasattr(sample_target, 'metadata')
+    sc_instance = sample_target.stripped_instance(strip_fields_aliases=['metadata'])
+    assert not hasattr(sc_instance, 'metadata')
+
+    sc_instance = sample_target.stripped_instance(strip_fields=['metadata'])
+    assert not hasattr(sc_instance, 'metadata')
 
 
 def test_multiple_variable_strip():
