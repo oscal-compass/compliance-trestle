@@ -16,6 +16,8 @@
 """Tests for trestle split command."""
 from tests import test_utils
 
+from trestle.core import const
+from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands import cmd_utils
 from trestle.core.commands.split import SplitCmd
@@ -93,7 +95,8 @@ def test_split_multiple_item_dict(tmp_dir, sample_target):
     sub_model_dir = target_def_dir / element_paths[0].to_file_path()
     for key in sub_models:
         sub_model_item = sub_models[key]
-        file_name = f'{key}{file_ext}'
+        model_type = utils.classname_to_alias(type(sub_model_item).__name__, 'json')
+        file_name = f'{key}{const.IDX_SEP}{model_type}{file_ext}'
         file_path = sub_model_dir / file_name
         expected_plan.add_action(CreatePathAction(file_path))
         expected_plan.add_action(WriteFileAction(file_path, Element(sub_model_item), content_type))

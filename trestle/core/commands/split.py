@@ -20,6 +20,7 @@ from typing import List
 from ilcli import Command
 
 from trestle.core import const
+from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
@@ -110,9 +111,9 @@ class SplitCmd(Command):
                 sub_model_dir = base_dir / element_path.get_element_name()
                 if isinstance(sub_models, list):
                     for i, sub_model_item in enumerate(sub_models):
-                        model_type = ''  # FIXME
+                        model_type = utils.classname_to_alias(type(sub_model_item).__name__, 'json')
                         file_index = str(i).zfill(4)
-                        file_name = f'{file_index}__{model_type}{file_ext}'
+                        file_name = f'{file_index}{const.IDX_SEP}{model_type}{file_ext}'
 
                         sub_model_file = sub_model_dir / file_name
                         split_plan.add_action(CreatePathAction(sub_model_file))
@@ -120,7 +121,8 @@ class SplitCmd(Command):
                 elif isinstance(sub_models, dict):
                     for key in sub_models:
                         sub_model_item = sub_models[key]
-                        file_name = f'{key}{file_ext}'
+                        model_type = utils.classname_to_alias(type(sub_model_item).__name__, 'json')
+                        file_name = f'{key}{const.IDX_SEP}{model_type}{file_ext}'
                         sub_model_file = sub_model_dir / file_name
                         split_plan.add_action(CreatePathAction(sub_model_file))
                         split_plan.add_action(WriteFileAction(sub_model_file, Element(sub_model_item), content_type))
