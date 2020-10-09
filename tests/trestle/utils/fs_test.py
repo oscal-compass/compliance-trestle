@@ -103,6 +103,7 @@ def test_has_trestle_project_in_path(tmp_dir, rand_str):
     # create a file
     sub_data_dir.joinpath('readme.md').touch()
 
+    assert fs.has_trestle_project_in_path(pathlib.Path('/')) is False
     assert fs.has_trestle_project_in_path(sub_data_dir) is False
 
     test_utils.ensure_trestle_config_dir(project_path)

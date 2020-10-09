@@ -72,7 +72,7 @@ def get_trestle_project_root(path: pathlib.Path) -> pathlib.Path:
         return None
 
     current = path
-    while len(current.parts) > 0:
+    while len(current.parts) > 1:  # it must not be the system root directory
         if is_valid_project_root(current):
             return current
         current = current.parent
