@@ -85,7 +85,7 @@ class OscalBaseModel(BaseModel):
                     Optional[current_mfield.outer_type_],
                     Field(None, title=current_mfield.name, alias=current_mfield.alias)
                 )
-        new_model = create_model('partial-' + cls.__class__.__name__, __base__=OscalBaseModel, **new_fields_for_model)
+        new_model = create_model(cls.__name__, __base__=OscalBaseModel, **new_fields_for_model)
 
         return new_model
 
