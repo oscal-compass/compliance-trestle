@@ -21,6 +21,7 @@ import pathlib
 from typing import List, Optional
 
 from pydantic import BaseModel, Extra, Field, create_model
+from pydantic.fields import ModelField
 
 import trestle.core.err as err
 import trestle.core.utils as utils
@@ -97,6 +98,26 @@ class OscalBaseModel(BaseModel):
             alias_to_field[field.alias] = field.name
 
         return alias_to_field
+
+    def get_attribute_value(self, attr: str):
+        """Get attribute value by field alias or field name."""
+        if hasattr(self, attr):
+            return getattr(self, attr, None)
+
+        return self.get_attribute_by_alias(attr)
+
+    def get_field(self, field_alias: str) -> ModelField:
+        """Convert field alias to a field."""
+        attr_field = self.get_fields_by_alias().get(field_alias, None)
+        return attr_field
+
+    def get_attribute_by_alias(self, attr_alias: str):
+        """Get attribute value by field alias."""
+        attr_field = self.get_field(attr_alias)
+        if isinstance(attr_field, ModelField):
+            return getattr(self, attr_field.name, None)
+
+        return None
 
     def stripped_instance(self, strip_fields: List[str] = None, strip_fields_aliases: List[str] = None):
         """Return a new model with the specified fields being stripped.
