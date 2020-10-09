@@ -284,7 +284,7 @@ def test_get_attribute_by_alias(sample_target: TargetDefinition):
     assert sample_target.metadata.get_attribute_by_alias('last_modified') is None
 
 
-def test_get_filed(sample_target: TargetDefinition):
+def test_get_field(sample_target: TargetDefinition):
     """Test get_attribute_value method."""
     assert sample_target.metadata.get_field('last-modified').name == 'last_modified'
     assert sample_target.metadata.get_field('last_modified') is None
