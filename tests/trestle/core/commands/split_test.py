@@ -185,7 +185,7 @@ def test_split_run_failure(tmp_dir, sample_target):
         'trestle', 'split', '-f', 'missing.yaml', '-e', 'target-definition.metadata, target-definition.targets.*'
     ]
     with patch.object(sys, 'argv', testargs):
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(TrestleError):
             Trestle().run()
 
     # check with incorrect file type
