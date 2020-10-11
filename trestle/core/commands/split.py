@@ -23,7 +23,7 @@ from trestle.core import const
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.core.models.actions import CreatePathAction, WriteFileAction
+from trestle.core.models.actions import Action, CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
@@ -82,61 +82,95 @@ class SplitCmd(Command):
         split_plan.execute()
 
     @classmethod
+    def sub_model_split_actions(
+        cls,
+        sub_model_item: OscalBaseModel,
+        sub_model_dir: pathlib.Path,
+        file_prefix: str,
+        content_type: FileContentType
+    ) -> List[Action]:
+        """Create split actions of sub model."""
+        actions: List[Action] = []
+        file_ext = FileContentType.to_file_extension(content_type)
+        model_type = utils.classname_to_alias(type(sub_model_item).__name__, 'json')
+        file_name = f'{file_prefix}{const.IDX_SEP}{model_type}{file_ext}'
+        sub_model_file = sub_model_dir / file_name
+        actions.append(CreatePathAction(sub_model_file))
+        actions.append(WriteFileAction(sub_model_file, Element(sub_model_item), content_type))
+        return actions
+
+    @classmethod
     def split_model(
         cls,
         model: OscalBaseModel,
         element_paths: List[ElementPath],
         base_dir: pathlib.Path,
-        content_type: FileContentType
+        content_type: FileContentType,
+        cur_path_index: int = 0,
+        split_plan: Plan = None
     ) -> Plan:
         """Split the model at the provided element paths.
 
         It returns a plan for the operation
         """
+        if split_plan is None:
+            split_plan = Plan()
+
+        if cur_path_index >= len(element_paths):
+            return split_plan
+
         element = Element(model)
-        split_plan = Plan()
         stripped_field_alias = []
-        file_ext = FileContentType.to_file_extension(content_type)
 
         # add actions to the plan for each sub model specified by the element paths
-        for element_path in element_paths:
-            sub_models = element.get_at(element_path)  # we call is sub_models as in plural, but it can be just one
-            if sub_models is None:
-                continue
+        element_path = element_paths[cur_path_index]
+        sub_models = element.get_at(element_path)  # we call is sub_models as in plural, but it can be just one
+        if sub_models is None:
+            return split_plan
 
-            # if wildard is present in the element_path, create separate file for each sub item
-            if element_path.get_last() == ElementPath.WILDCARD:
-                sub_model_dir = base_dir / element_path.get_element_name()
-                if isinstance(sub_models, list):
-                    for i, sub_model_item in enumerate(sub_models):
-                        model_type = utils.classname_to_alias(type(sub_model_item).__name__, 'json')
-                        file_index = str(i).zfill(4)
-                        file_name = f'{file_index}{const.IDX_SEP}{model_type}{file_ext}'
-
-                        sub_model_file = sub_model_dir / file_name
-                        split_plan.add_action(CreatePathAction(sub_model_file))
-                        split_plan.add_action(WriteFileAction(sub_model_file, Element(sub_model_item), content_type))
-                elif isinstance(sub_models, dict):
-                    for key in sub_models:
-                        sub_model_item = sub_models[key]
-                        model_type = utils.classname_to_alias(type(sub_model_item).__name__, 'json')
-                        file_name = f'{key}{const.IDX_SEP}{model_type}{file_ext}'
-                        sub_model_file = sub_model_dir / file_name
-                        split_plan.add_action(CreatePathAction(sub_model_file))
-                        split_plan.add_action(WriteFileAction(sub_model_file, Element(sub_model_item), content_type))
-                else:
-                    raise TrestleError(f'Sub element at {element_path} is not of type list or dict')
+        # if wildard is present in the element_path, create separate file for each sub item
+        if element_path.get_last() == ElementPath.WILDCARD:
+            sub_model_dir = base_dir / element_path.to_file_path()
+            if isinstance(sub_models, list):
+                cur_path_index = cur_path_index + 1
+                for i, sub_model_item in enumerate(sub_models):
+                    file_prefix = str(i).zfill(4)
+                    if cur_path_index < len(element_paths):
+                        sub_model_plan = cls.split_model(
+                            sub_model_item, element_paths, base_dir, content_type, cur_path_index + 1
+                        )
+                        split_plan.add_actions(sub_model_plan.get_actions())
+                    else:
+                        split_plan.add_actions(
+                            cls.sub_model_split_actions(sub_model_item, sub_model_dir, file_prefix, content_type)
+                        )
+            elif isinstance(sub_models, dict):
+                for key in sub_models:
+                    file_prefix = key
+                    sub_model_item = sub_models[key]
+                    if cur_path_index + 1 < len(element_paths):
+                        sub_model_plan = cls.split_model(
+                            sub_model_item, element_paths, base_dir, content_type, cur_path_index + 1
+                        )
+                        split_plan.add_actions(sub_model_plan.get_actions())
+                    else:
+                        split_plan.add_actions(
+                            cls.sub_model_split_actions(sub_model_item, sub_model_dir, file_prefix, content_type)
+                        )
             else:
-                sub_model_file = base_dir / element_path.to_file_path(content_type)
-                split_plan.add_action(CreatePathAction(sub_model_file))
-                split_plan.add_action(WriteFileAction(sub_model_file, Element(sub_models), content_type))
+                raise TrestleError(f'Sub element at {element_path} is not of type list or dict')
+        else:
+            sub_model_file = base_dir / element_path.to_file_path(content_type)
+            split_plan.add_action(CreatePathAction(sub_model_file))
+            split_plan.add_action(WriteFileAction(sub_model_file, Element(sub_models), content_type))
 
-            stripped_field_alias.append(element_path.get_element_name())
+        stripped_field_alias.append(element_path.get_element_name())
 
-        # WriteAction for the stripped root
-        stripped_root = model.stripped_instance(stripped_field_alias)
-        root_file = base_dir / element_paths[0].to_root_path(content_type)
-        split_plan.add_action(CreatePathAction(root_file))
-        split_plan.add_action(WriteFileAction(root_file, Element(stripped_root), content_type))
+        if cur_path_index == 0:
+            # WriteAction for the stripped root
+            stripped_root = model.stripped_instance(strip_fields_aliases=stripped_field_alias)
+            root_file = base_dir / element_path.to_root_path(content_type)
+            split_plan.add_action(CreatePathAction(root_file))
+            split_plan.add_action(WriteFileAction(root_file, Element(stripped_root), content_type))
 
-        return split_plan
+        return cls.split_model(model, element_paths, base_dir, content_type, cur_path_index + 1, split_plan)
