@@ -67,6 +67,7 @@ class OscalBaseModel(BaseModel):
     def create_stripped_model_type(cls, excluded_fields: List[str]):
         """Use introspection to create a model that removes the fields.
 
+        Either 'excluded_fields' or 'excluded_fields_aliases' need to be passed, not both.
         Returns a model class definition that can be used to instanciate a model.
         """
         current_fields = cls.__fields__
@@ -90,30 +91,21 @@ class OscalBaseModel(BaseModel):
 
         return new_model
 
-    @classmethod
-    def alias_to_fields_map(cls):
-        """Create a map from field alias to field name."""
-        alias_to_field = {}
-        for field in cls.__fields__.values():
-            alias_to_field[field.alias] = field.name
-
-        return alias_to_field
-
-    def get_attribute_value(self, attr: str):
+    def get_field_value(self, field_name_or_alias: str):
         """Get attribute value by field alias or field name."""
-        if hasattr(self, attr):
-            return getattr(self, attr, None)
+        if hasattr(self, field_name_or_alias):
+            return getattr(self, field_name_or_alias, None)
 
-        return self.get_attribute_by_alias(attr)
+        return self.get_field_value_by_alias(field_name_or_alias)
 
-    def get_field(self, field_alias: str) -> ModelField:
+    def get_field_by_alias(self, field_alias: str) -> ModelField:
         """Convert field alias to a field."""
-        attr_field = self.get_fields_by_alias().get(field_alias, None)
+        attr_field = self.alias_to_field_map().get(field_alias, None)
         return attr_field
 
-    def get_attribute_by_alias(self, attr_alias: str):
+    def get_field_value_by_alias(self, attr_alias: str):
         """Get attribute value by field alias."""
-        attr_field = self.get_field(attr_alias)
+        attr_field = self.get_field_by_alias(attr_alias)
         if isinstance(attr_field, ModelField):
             return getattr(self, attr_field.name, None)
 
@@ -132,12 +124,12 @@ class OscalBaseModel(BaseModel):
         if strip_fields is not None:
             excluded_fields = strip_fields
         elif strip_fields_aliases is not None and len(strip_fields_aliases) > 0:
-            alias_to_field = self.alias_to_fields_map()
+            alias_to_field = self.alias_to_field_map()
             for field_alias in strip_fields_aliases:
                 if field_alias not in alias_to_field.keys():
                     raise err.TrestleError(f'Field {field_alias} does not exists in the model')
 
-                excluded_fields.append(alias_to_field[field_alias])
+                excluded_fields.append(alias_to_field[field_alias].name)
 
         # stripped class type
         stripped_class = self.create_stripped_model_type(excluded_fields)
@@ -262,10 +254,10 @@ class OscalBaseModel(BaseModel):
             self.__dict__[raw_field] = recast_object.__dict__[raw_field]
 
     @classmethod
-    def get_fields_by_alias(cls):
-        """Generate a dictionary of fields with the original aliases as keys."""
-        current_fields = cls.__fields__.values()
-        fields_by_alias = {}
-        for field in current_fields:
-            fields_by_alias[field.alias] = field
-        return fields_by_alias
+    def alias_to_field_map(cls):
+        """Create a map from field alias to field."""
+        alias_to_field = {}
+        for field in cls.__fields__.values():
+            alias_to_field[field.alias] = field
+
+        return alias_to_field
