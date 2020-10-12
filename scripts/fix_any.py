@@ -14,6 +14,22 @@ import sys
 pattern1 = 'ies: Optional[Dict[str, Any]]'
 pattern2 = 's: Optional[Dict[str, Any]]'
 class_header = 'class '
+license_header = f'''\
+# -*- mode:python; coding:utf-8 -*-
+# Copyright (c) 2020 IBM Corp. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+'''
 
 
 class ClassText():
@@ -120,6 +136,7 @@ while not no_swaps:
 
 with open(fname, 'w') as out_file:
     out_file.write('# modified by fix_any.py\n')
+    out_file.write(license_header)
     out_file.writelines('\n'.join(header) + '\n')
     for c in all_classes:
         out_file.writelines('\n'.join(c.lines) + '\n')
