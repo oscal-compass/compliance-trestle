@@ -68,14 +68,15 @@ class AddCmd(Command):
         child_element = utils.get_sample_model(child_model)
 
 
-        update_action = UpdateAction(sub_element=sub_element, dest_element=parent_element, sub_element_path= element_path)
+        update_action = UpdateAction(sub_element=child_element, dest_element=Element(parent_element), sub_element_path= element_path)
 
         add_plan = Plan()
-        add_plan.add_action(
-            UpdateAction(
-                pathlib.Path.joinpath(base_dir, 'metadata.json'), Element(sample_target.metadata), content_type
-            )
-        )
+        add_plan.add_action(update_action)
+        add_plan.simulate()
+
+        add_plan.execute()
+
+        print(parent_element)
 
 if __name__ == '__main__':
     import os

@@ -183,24 +183,25 @@ def get_cwm(contextual_path: list) -> str:
 
     return ''
 
-def get_target_model(element_path_list: List[str], current_model) -> BaseModel:
+def get_target_model(element_path_parts: List[str], current_model) -> BaseModel:
     """
     Get the target model from the parts of a Element Path.
     """
-    # FIXME: assumption here is that element path parts are model aliases
+    # FIXME: assumption here is that element path parts are model's field names
     try:
-        for element_alias in element_path_list:
+        for element_part in element_path_parts:
             if is_collection_model(current_model):
                 # Return the model class inside the collection
                 current_model = get_inner_model(current_model)
             else:
-                current_model = current_model.get_fields_by_alias()[element_alias].outer_type_
+                current_model = current_model.get_fields_by_alias()[element_part].outer_type_
         return current_model
     except Exception as e:
         raise err.TrestleError('Bad element path')
 
 def get_sample_model(model : BaseModel) -> OscalBaseModel:
     """ Given a model class, generate an object of that class with sample values"""
+    model_type = BaseModel
     if is_collection_model(model):
         model_type = model.__origin__
         model = get_inner_model(model)
@@ -211,6 +212,8 @@ def get_sample_model(model : BaseModel) -> OscalBaseModel:
         if model.__fields__[field].required :
             model_dict[field]= get_sample_value_by_type(model.__fields__[field].type_)
     
+    if model_type is list:
+        return [model(** model_dict)]
     return model(** model_dict)
 
 
@@ -227,6 +230,8 @@ def get_sample_value_by_type(type_: type) -> Union[datetime, bool, int, str, flo
         return "REPLACE_ME"
     elif type_ is float: 
         return 0.00
+    elif issubclass(type_, BaseModel):
+        return get_sample_model(type_)
     else:
         # FIXME: handle cases when the field is another OscalBaseModel
         raise err.TrestleError("Fatal: Bad type in model")
