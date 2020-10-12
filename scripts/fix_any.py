@@ -1,58 +1,162 @@
-"""Simple script to fix Any's in bad files created by datamodel-code-generator."""
+"""Elaborate script to fix Any's in bad files created by version 0.5.28 datamodel-code-generator."""
 
 # This relies on datamodel-codegen 0.5.28 to create classes that work,
-# but don't do much checking.
+#   but don't do much checking.
 # This is because the generated classes rely on Any - which does no checking.
 # This script changes the Any's appropriately from the plural form of the needed
-# class to the singular form.
+#   class to the singular form, with a lookup table relied on for special cases.
+# It also finds all references in a class to classes it depends on, using regex.
 # It then reorders the classes so there are no forwards required.
-# This reordering is optimistic and assumes there is nothing circular involved -
-# and that there are no side effect classes that become forwarded.
+# The reordering is rigorous and checked by following all referenced classes and their dependencies.
+# This script is normally called by gen_oscal.py when models are generated
 
-import sys
+import re
 
 pattern1 = 'ies: Optional[Dict[str, Any]]'
 pattern2 = 's: Optional[Dict[str, Any]]'
+special_lut = {'ParameterSetting': 'SetParameter'}
 class_header = 'class '
 
 
+class RelOrder():
+    """Capture relative location of each class in list to its refs and deps."""
+
+    def __init__(self, max_index):
+        """Initialize with size of list being reordered."""
+        self.latest_dep = 0
+        self.earliest_ref = max_index
+
+
 class ClassText():
-    """Hold class text as named blocks with references to the added classes."""
+    """Hold class text as named blocks with references to the added classes and capture its refs."""
 
     def __init__(self, first_line):
+        """Construct with first line of class definition."""
         self.lines = [first_line.rstrip()]
         n = first_line.find('(')
         self.name = first_line[len(class_header):n]
         self.refs = set()
+        self.full_refs = set()
+        self.found_all_links = False
 
     def add_line(self, line):
+        """Add new line to class text."""
         self.lines.append(line)
 
     def add_ref(self, ref_name):
+        """Add one of the Any references."""
         self.refs.add(ref_name)
+
+    def add_ref_pattern(self, p, line):
+        """Add new class names found based on pattern."""
+        new_refs = p.findall(line)
+        if new_refs:
+            for r in new_refs:
+                self.refs.add(r)
 
     @staticmethod
     def find_index(class_text_list, name):
+        """Find index of class in list by name."""
         nclasses = len(class_text_list)
         for i in range(nclasses):
             if class_text_list[i].name == name:
                 return i
         return -1
 
+    def add_all_refs(self, line):
+        """Find all refd class names found in line and add to references."""
+        # find lone strings with no brackets
+        p = re.compile('.*\:\s*([^\s\[\]]+).*')
+        self.add_ref_pattern(p, line)
+        # find objects in one or more bracket sets with possible ignored first token and comma
+        p = re.compile('\[(?:.*,\s*)?((?:\[??[^\[]*?))\]')
+        self.add_ref_pattern(p, line)
 
-def swap_ref(class_list, ref):
-    """Swap a reference class definition so it is before first reference."""
-    ref_index = ClassText.find_index(class_list, ref)  # get index of class definition
-    nclasses = len(class_list)
-    did_swap = False
-    for i in range(nclasses):                          # get index of first ref
-        if ref in class_list[i].refs:
-            if i < ref_index:                          # need to swap
-                cdef = class_list.pop(ref_index)
-                class_list.insert(i, cdef)
-                did_swap = True
+    def get_linked_refs(self, class_text_list, known_refs):
+        """Follow all refs to find their refs."""
+        if self.name in known_refs:
+            return set()
+        refs = self.full_refs
+        if self.found_all_links:
+            return refs
+        new_refs = refs.copy()
+        for r in refs:
+            i = ClassText.find_index(class_text_list, r)
+            new_refs = new_refs.union(class_text_list[i].get_linked_refs(class_text_list, refs))
+        self.found_all_links = True
+        return new_refs
+
+    def find_direct_refs(self, class_names_list):
+        """Find direct refs without recursion."""
+        for ref in self.refs:
+            if ref in class_names_list:
+                self.full_refs.add(ref)
+        if len(self.full_refs) == 0:
+            self.found_all_links = True
+
+    def find_full_refs(self, class_text_list):
+        """Find full refs with recursion."""
+        sub_refs = set()
+        for ref in self.full_refs:
+            # find the class named ref
+            i = ClassText.find_index(class_text_list, ref)
+            # accumulate all references associated with each ref in that class
+            sub_refs = sub_refs.union(class_text_list[i].get_linked_refs(class_text_list, sub_refs))
+        return self.full_refs.union(sub_refs)
+
+    def find_order(self, class_text_list):
+        """Find latest dep and earliest reference."""
+        ro = RelOrder(len(class_text_list) - 1)
+        # find first class that needs this class
+        for i, ct in enumerate(class_text_list):
+            if self.name in ct.full_refs:
+                ro.earliest_ref = i
                 break
-    return class_list, did_swap
+        # find last class this one needs
+        for ref in self.full_refs:
+            n = ClassText.find_index(class_text_list, ref)
+            if n > ro.latest_dep:
+                ro.latest_dep = n
+        return ro
+
+
+def reorder(class_list):
+    """Reorder the class list based on the location of its refs and deps."""
+    # build list of all class names defined in file
+    all_class_names = []
+    for c in class_list:
+        all_class_names.append(c.name)
+
+    # find direct references for each class in list
+    for n, c in enumerate(class_list):
+        c.find_direct_refs(all_class_names)
+        class_list[n] = c
+
+    # find full references for each class in list with recursion on each ref
+    for n, c in enumerate(class_list):
+        c.full_refs = c.find_full_refs(class_list)
+        class_list[n] = c
+
+    # with full dependency info, now reorder the classes to remove forward refs
+    did_swap = True
+    while did_swap:
+        did_swap = False
+        # find the relative placement of each class in list to its references and dependencies
+        orders = []
+        for c in class_list:
+            ro = c.find_order(class_list)
+            orders.append(ro)
+        # find first class in list out of place and swap its dependency upwards, then break/loop to find new order
+        for i, ro in enumerate(orders):
+            if ro.latest_dep <= i <= ro.earliest_ref:
+                continue
+            ct = class_list.pop(ro.earliest_ref)
+            class_list.insert(i, ct)
+            did_swap = True
+            break
+
+    # return reordered list of classes with no forward refs
+    return class_list
 
 
 def get_cap_stem(s, clip):
@@ -72,54 +176,54 @@ def get_cap_stem(s, clip):
     return cap
 
 
-fname = sys.argv[1]
-ref_class_names = set()
-all_classes = []
-header = []
+def fix_file(fname):
+    """Fix the Anys in this file and reorder to avoid forward dependencies."""
+    all_classes = []
+    header = []
 
-class_text = None
-done_header = False
+    class_text = None
+    done_header = False
 
-with open(fname, 'r') as infile:
-    for r in infile.readlines():
-        if r.find(class_header) == 0:             # start of new class
-            done_header = True
-            if class_text is not None:            # we are done with current class so add it
-                all_classes.append(class_text)
-            class_text = ClassText(r)
-        else:
-            if not done_header:                   # still in header
-                header.append(r.rstrip())
-            else:                                 # in body of class looking for Any's
-                n1 = r.find(pattern1)
-                n2 = r.find(pattern2)
-                if n1 != -1:                      # ies plural
-                    tail = r[(n1 + len(pattern1)):]
-                    cap_singular = get_cap_stem(r, 3) + 'y'
-                    ref_class_names.add(cap_singular)
-                    class_text.add_ref(cap_singular)
-                    r = r[:(n1 + len(pattern1) - 5)] + cap_singular + ']]' + tail
-                elif n2 != -1:                    # s plural
-                    tail = r[(n2 + len(pattern2)):]
-                    cap_singular = get_cap_stem(r, 1)
-                    ref_class_names.add(cap_singular)
-                    class_text.add_ref(cap_singular)
-                    r = r[:(n2 + len(pattern2) - 5)] + cap_singular + ']]' + tail
-                class_text.add_line(r.rstrip())
+    # Find Any's and replace with appropriate singular class
+    # Otherwise accumulate all class dependencies for reordering with no forward refs
+    with open(fname, 'r') as infile:
+        for r in infile.readlines():
+            if r.find(class_header) == 0:  # start of new class
+                done_header = True
+                if class_text is not None:  # we are done with current class so add it
+                    all_classes.append(class_text)
+                class_text = ClassText(r)
+            else:
+                if not done_header:  # still in header
+                    header.append(r.rstrip())
+                else:  # in body of class looking for Any's
+                    n1 = r.find(pattern1)
+                    n2 = r.find(pattern2)
+                    if n1 != -1:  # ies plural
+                        tail = r[(n1 + len(pattern1)):]
+                        cap_singular = get_cap_stem(r, 3) + 'y'
+                        class_text.add_ref(cap_singular)
+                        r = r[:(n1 + len(pattern1) - 5)] + cap_singular + ']]' + tail
+                    elif n2 != -1:  # s plural
+                        tail = r[(n2 + len(pattern2)):]
+                        cap_singular = get_cap_stem(r, 1)
+                        if cap_singular in special_lut:
+                            cap_singular = special_lut[cap_singular]
+                        class_text.add_ref(cap_singular)
+                        r = r[:(n2 + len(pattern2) - 5)] + cap_singular + ']]' + tail
+                    else:
+                        # for a line that has no Any's, use regex to find referenced class names
+                        class_text.add_all_refs(r)
+                    class_text.add_line(r.rstrip())
 
-all_classes.append(class_text)                    # don't forget final class
+    all_classes.append(class_text)  # don't forget final class
 
-no_swaps = False
+    # reorder the classes to remove forward references
+    all_classes = reorder(all_classes)
 
-while not no_swaps:
-    no_swaps = True
-    for ref in ref_class_names:
-        all_classes, did_swap = swap_ref(all_classes, ref)
-        if did_swap:
-            no_swap = False
-
-with open(fname, 'w') as out_file:
-    out_file.write('# modified by fix_any.py\n')
-    out_file.writelines('\n'.join(header) + '\n')
-    for c in all_classes:
-        out_file.writelines('\n'.join(c.lines) + '\n')
+    # write the classes out in the fixed order
+    with open(fname, 'w') as out_file:
+        out_file.write('# modified by fix_any.py\n')
+        out_file.writelines('\n'.join(header) + '\n')
+        for c in all_classes:
+            out_file.writelines('\n'.join(c.lines) + '\n')

@@ -16,151 +16,96 @@
 """Tests for json and yaml manipulations of oscal files."""
 
 import datetime
-import os
-
-from dateutil.parser import isoparse
-
-import dictdiffer
+import pathlib
 
 import pytest
 
 import trestle.oscal.target as ostarget
-from trestle.utils import fs
 
 import yaml
 
-yaml_path = 'tests/data/yaml/'
-json_path = 'tests/data/json/'
+yaml_path = pathlib.Path('tests/data/yaml/')
+json_path = pathlib.Path('tests/data/json/')
 encoding = 'utf8'
 loader = yaml.Loader
-
-
-def times_equal(t1, t2):
-    """Test timestring equality."""
-    dt1 = isoparse(t1)
-    dt2 = isoparse(t2)
-    assert type(dt1) == datetime.datetime
-    assert type(dt2) == datetime.datetime
-
-    return dt1 == dt2
 
 
 def test_yaml_load():
     """Test yaml load."""
     # happy path
-    with open(yaml_path + 'good_simple.yaml', 'r', encoding=encoding) as read_file:
-        obj = yaml.load(read_file, Loader=loader)
+    read_file = (yaml_path / 'good_simple.yaml').open('r', encoding=encoding)
+    obj = yaml.load(read_file, Loader=loader)
     assert obj is not None
 
     # unhappy path
     with pytest.raises(yaml.parser.ParserError):
-        with open(yaml_path + 'bad_simple.yaml', 'r', encoding=encoding) as read_file:
-            obj = yaml.load(read_file, Loader=loader)
+        read_file = (yaml_path / 'bad_simple.yaml').open('r', encoding=encoding)
+        obj = yaml.load(read_file, Loader=loader)
 
 
-def test_yaml_dump(tmp_dir):
+def test_yaml_dump(tmpdir):
     """Test yaml load and dump."""
     target_name = 'good_target.yaml'
+    tmp_path = pathlib.Path(tmpdir)
 
     # happy path
-    with open(yaml_path + target_name, 'r', encoding=encoding) as read_file:
-        target = yaml.load(read_file, Loader=loader)
+    read_file = (yaml_path / target_name).open('r', encoding=encoding)
+    target = yaml.load(read_file, Loader=loader)
     assert target is not None
 
-    fs.ensure_directory(tmp_dir)
-
-    dump_name = tmp_dir + '/' + target_name
-
-    with open(dump_name, 'w', encoding=encoding) as write_file:
-        yaml.dump(target, write_file)
-
-    with open(dump_name, 'r', encoding=encoding) as read_file:
-        saved_target = yaml.load(read_file, Loader=loader)
+    dump_name = tmp_path / target_name
+    write_file = dump_name.open('w', encoding=encoding)
+    yaml.dump(target, write_file)
+    read_file = dump_name.open('r', encoding=encoding)
+    saved_target = yaml.load(read_file, Loader=loader)
     assert saved_target is not None
 
     assert saved_target == target
 
-    # clean up
-    os.remove(dump_name)
-    os.removedirs(tmp_dir)
 
-
-def test_oscal_model(tmp_dir):
+def test_oscal_model(tmpdir):
     """Test pydantic oscal model."""
     good_target_name = 'good_target.yaml'
+    tmpdir = pathlib.Path(tmpdir)
+
+    tmp_path = pathlib.Path(tmpdir)
 
     # load good target
-    with open(yaml_path + good_target_name, 'r', encoding=encoding) as read_file:
-        yaml_target = yaml.load(read_file, Loader=loader)
-    assert yaml_target is not None
-
-    # represent it internally as pydantic target definition model
-    oscal_target_def = ostarget.TargetDefinition.parse_obj(yaml_target['target-definition'])
-
-    assert oscal_target_def is not None
-
-    yaml_target_def = yaml_target['target-definition']
-
-    fs.ensure_directory(tmp_dir)
-    dump_name = tmp_dir + '/' + good_target_name
+    read_file = yaml_path / good_target_name
+    assert read_file.exists()
+    target = ostarget.TargetDefinition.oscal_read(read_file)
+    assert target is not None
 
     # write the oscal target def out as yaml
-    # exclude all None's and rename to original OSCAL form with - instead of _
-    with open(dump_name, 'w', encoding=encoding) as write_file:
-        yaml.dump(yaml.safe_load(oscal_target_def.json(exclude_none=True, by_alias=True)), write_file)
+    dump_name = tmp_path / good_target_name
+    target.oscal_write(dump_name)
 
     # read it back in
-    with open(dump_name, 'r', encoding=encoding) as read_file:
-        oscal_target_def_reload = yaml.load(read_file, Loader=loader)
+    target_reload = ostarget.TargetDefinition.oscal_read(dump_name)
+    assert target_reload is not None
 
-    # clean up
-    os.remove(dump_name)
-    os.removedirs(tmp_dir)
+    # confirm same
+    assert target == target_reload
 
-    assert oscal_target_def_reload is not None
-
-    # find all differences
-    tdiff = dictdiffer.diff(oscal_target_def_reload, yaml_target_def)
-
-    # allow any differences that appear to be different representations of equivalent datetime
-    # only thing allowed is a change from one timestring to another one representing same global datetime
-    for d in tdiff:
-        assert (d[0] == 'change')
-        assert (times_equal(d[2][0], d[2][1]))
+    # confirm it really is checking the time
+    target_reload.metadata.last_modified = datetime.datetime.now()
+    assert target != target_reload
 
     # load good target with different timezone
-    with open(yaml_path + 'good_target_diff_tz.yaml', 'r', encoding=encoding) as read_file:
-        yaml_target_diff_tz = yaml.load(read_file, Loader=loader)
-    assert yaml_target_diff_tz is not None
+    read_file = yaml_path / 'good_target_diff_tz.yaml'
+    target_diff_tz = ostarget.TargetDefinition.oscal_read(read_file)
+    assert target_diff_tz is not None
 
-    # represent it internally as pydantic target definition model
-    oscal_target_def_diff_tz = ostarget.TargetDefinition.parse_obj(yaml_target_diff_tz['target-definition'])
+    # confirm same since different timezones but same utc time
+    assert target == target_diff_tz
 
-    # find all differences
-    tdiff = dictdiffer.diff(oscal_target_def_diff_tz, oscal_target_def)
+    # try to load file with no timezone specified
+    read_file = yaml_path / 'bad_target_no_tz.yaml'
 
-    # allow any differences that appear to be different representations of equivalent datetime
-    # only thing allowed is a change from one timestring to another one representing same global datetime
-    for d in tdiff:
-        assert (d[0] == 'change')
-        assert (times_equal(d[2][0], d[2][1]))
-
-
-"""
-    # following test can be enabled when the pydantic base class checks for timezone
-    # load bad target with missing timezone
-    with open(yaml_path + 'bad_target_no_tz.yaml', 'r', encoding=encoding) as read_file:
-        yaml_target_no_tz = yaml.load(read_file, Loader=loader)
-    assert yaml_target_no_tz is not None
-
-    # represent it internally as pydantic target definition model
-    # this should fail since timzeone missing
-    oscal_target_def_no_tz = None
-    failed = False
+    # confirm the load fails because it is invalid without timezone specified
     try:
-        oscal_target_def_no_tz = ostarget.TargetDefinition.parse_obj(yaml_target_no_tz['target-definition'])
+        _ = ostarget.TargetDefinition.oscal_read(read_file)
     except Exception:
-        failed = True
-    assert (failed)
-    assert (oscal_target_def_no_tz is None)
-"""
+        assert True
+    else:
+        assert AssertionError()

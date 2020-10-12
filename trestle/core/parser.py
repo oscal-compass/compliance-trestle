@@ -15,6 +15,7 @@
 """Dynamic Model Parser."""
 
 import importlib
+import warnings
 from typing import List
 
 from pydantic import Field, create_model
@@ -35,6 +36,7 @@ def parse_dict(data: dict, model_name: str):
         model_name: it should be of the form <module>.<class>
                     <class> should be a Pydantic class that supports `parse_obj` method
     """
+    warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     if data is None:
         raise TrestleError('data name is required')
 
@@ -57,6 +59,7 @@ def parse_dict(data: dict, model_name: str):
 
 def root_key(data: dict):
     """Find root model name in the data."""
+    warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     if len(data.items()) == 1:
         return next(iter(data))
 
@@ -65,6 +68,7 @@ def root_key(data: dict):
 
 def to_class_name(name: str) -> str:
     """Convert to pascal class name."""
+    warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     if name.find('-') != -1:
         parts = name.split('-')
 
@@ -81,6 +85,7 @@ def to_class_name(name: str) -> str:
 
 def to_full_model_name(root_key: str, name: str = None):
     """Find model name from the root_key in the file."""
+    warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     try:
         # process root key and extract model name
         module_name = root_key.lower()
@@ -118,6 +123,7 @@ def parse_file(file_name: str, model_name: str):
         model_name: it should be of the form <module>.<class>
                     <class> should be a Pydantic class that supports `parse_obj` method
     """
+    warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     if file_name is None:
         raise TrestleError('file_name is required')
 
@@ -130,6 +136,9 @@ def parse_file(file_name: str, model_name: str):
 
 def wrap_for_output(model: OscalBaseModel) -> OscalBaseModel:
     """Dynamically wrap for output a class such that the correct string is provided."""
+    warnings.warn(
+        'trestle.parser functions are deprecated. wrap_for_output built into OSCALBaseModel.', DeprecationWarning
+    )
     # TODO: Refactor based on next method.
     class_name = model.__class__.__name__
     # It would be nice to pass through the description but I can't seem to and
@@ -141,18 +150,21 @@ def wrap_for_output(model: OscalBaseModel) -> OscalBaseModel:
     )
     wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_passer)
     # Default behaviour is strange here.
-    wrapped_model = wrapper_model(**{class_to_oscal(class_name, 'field'): model})
+    wrapped_model = wrapper_model(**{class_to_oscal(class_name, 'json'): model})
     return wrapped_model
 
 
 def wrap_for_input(raw_class):
     """In this instance we are wrapping an actual OSCAL class not an instance."""
+    warnings.warn(
+        'trestle.parser functions are deprecated. wrap_for_input built ito OSCALBaseModel', DeprecationWarning
+    )
     # TODO: Check behaviour is fine when no
     class_name = raw_class.__name__
     dynamic_passer = {}
     dynamic_passer[class_to_oscal(
         class_name, 'field'
-    )] = (raw_class, Field(..., title=class_to_oscal(class_name, 'field'), alias=class_to_oscal(class_name, 'json')))
+    )] = (raw_class, Field(..., title=class_to_oscal(class_name, 'json'), alias=class_to_oscal(class_name, 'json')))
     wrapper_model = create_model('Wrapped' + class_name, __base__=OscalBaseModel, **dynamic_passer)
     return wrapper_model
 
@@ -163,6 +175,7 @@ def class_to_oscal(class_name: str, mode: str) -> str:
 
     This is applicable when asking for a singular element.
     """
+    warnings.warn('trestle.parser functions are deprecated. class_to_oscal now contained in utils', DeprecationWarning)
     parts = pascal_case_split(class_name)
     if mode == 'json':
         return '-'.join(map(str.lower, parts))
@@ -174,5 +187,8 @@ def class_to_oscal(class_name: str, mode: str) -> str:
 
 def pascal_case_split(pascal_str: str) -> List[str]:
     """Parse a pascal case string (e.g. a ClassName) and return a list of strings."""
+    warnings.warn(
+        'trestle.parser functions are deprecated. pascal_case_split now contained in utils', DeprecationWarning
+    )
     start_idx = [i for i, e in enumerate(pascal_str) if e.isupper()] + [len(pascal_str)]
     return [pascal_str[x:y] for x, y in zip(start_idx, start_idx[1:])]

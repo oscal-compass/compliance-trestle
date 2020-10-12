@@ -15,17 +15,18 @@
 # limitations under the License.
 """Tests for models module."""
 
-import os
+import pathlib
 from datetime import datetime
 from uuid import uuid4
 
 from trestle.core import const
 from trestle.core import parser
 from trestle.oscal import catalog
+from trestle.oscal import target
 
 import yaml
 
-yaml_path = 'tests/data/yaml/'
+yaml_path = pathlib.Path('tests/data/yaml/')
 encoding = 'utf8'
 
 
@@ -33,7 +34,7 @@ def test_parse_dict():
     """Test parse_dict."""
     file_name = 'good_target.yaml'
 
-    with open(os.path.join(yaml_path, file_name), 'r', encoding=encoding) as f:
+    with open(pathlib.Path.joinpath(yaml_path, file_name), 'r', encoding=encoding) as f:
         data = yaml.load(f, yaml.FullLoader)
         target = parser.parse_dict(data['target-definition'], 'trestle.oscal.target.TargetDefinition')
         assert target is not None
@@ -101,7 +102,7 @@ def test_parse_file():
     ]
 
     for test in tests:
-        target = parser.parse_file(os.path.join(yaml_path, file_name), model_name=test['model_name'])
+        target = parser.parse_file(pathlib.Path.joinpath(yaml_path, file_name), model_name=test['model_name'])
 
         assert type(target).__name__ == test['expected']
 
@@ -146,6 +147,26 @@ def test_wrap_for_output():
 
     wrapped = parser.wrap_for_output(c)
     assert (wrapped.catalog.metadata.title == c.metadata.title)
+
+    # Test with target definition
+    t_m = target.Metadata(
+        **{
+            'title': 'my cool target definition',
+            'last-modified': datetime.now(),
+            'version': '0.0.1',
+            'oscal-version': '1.0.0'
+        }
+    )
+
+    t = target.TargetDefinition(metadata=t_m)
+    wrapped = parser.wrap_for_output(t)
+    assert (wrapped.target_definition.metadata.title == t.metadata.title)
+
+
+def test_wrap_for_input():
+    """Test input for object that has a hyphen it it's name."""
+    json_path = pathlib.Path('tests/data/json/sample-target-definition.json')
+    parser.wrap_for_input(target.TargetDefinition).parse_file(json_path).target_definition
 
 
 def test_pascal_case_split():

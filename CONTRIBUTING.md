@@ -99,7 +99,7 @@ pip install -q -e ".[dev]" --upgrade --upgrade-strategy eager
 
 ### Testing python in `vscode`
 
-Tests  should be in the test subdirectory.  Each file should be named test\_\*.py and each test function should be named \*\_test().
+Tests should be in the test subdirectory.  Each file should be named test\_\*.py and each test function should be named \*\_test().
 
 Note that with Python3 there should be no need for __init__.py in directories.
 
