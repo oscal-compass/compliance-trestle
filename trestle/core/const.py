@@ -53,3 +53,13 @@ IDX_SEP = '__'
 
 # Wildcard that can be used in the element path to represent all elements
 ELEMENT_WILDCARD = '*'
+ARG_VALIDATE = 'validate'
+ARG_VALIDATE_SHORT = 'v'
+
+ARG_MODE = 'mode'
+ARG_MODE_SHORT = 'm'
+ARG_DESC_MODE = 'Mode of the operation'
+
+ARG_ITEM = 'item'
+ARG_ITEM_SHORT = 'i'
+ARG_DESC_ITEM = 'Item used'

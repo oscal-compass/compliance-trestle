@@ -20,6 +20,7 @@ import pytest
 
 from tests import test_utils
 
+from trestle.core.const import IDX_SEP
 from trestle.core.err import TrestleError
 from trestle.oscal import catalog
 from trestle.utils import fs
@@ -187,7 +188,7 @@ def test_get_contextual_model_type(tmp_dir):
     rps_dir = metadata_dir / 'responsible-parties'
     props_dir = metadata_dir / 'properties'
     groups_dir = mycatalog_dir / 'groups'
-    group_dir = groups_dir / '00000__group'
+    group_dir = groups_dir / f'00000{IDX_SEP}group'
     controls_dir = group_dir / 'controls'
 
     with pytest.raises(TrestleError):
@@ -208,14 +209,14 @@ def test_get_contextual_model_type(tmp_dir):
                                         ) == (catalog.ResponsibleParty, 'responsible-party')
     assert fs.get_contextual_model_type(props_dir) == (List[catalog.Prop], 'properties')
     assert fs.get_contextual_model_type(props_dir / 'properties.json') == (List[catalog.Prop], 'properties')
-    assert fs.get_contextual_model_type(props_dir / '00000__prop.json') == (catalog.Prop, 'prop')
+    assert fs.get_contextual_model_type(props_dir / f'00000{IDX_SEP}prop.json') == (catalog.Prop, 'prop')
     assert fs.get_contextual_model_type(groups_dir) == (List[catalog.Group], 'groups')
     assert fs.get_contextual_model_type(groups_dir / 'groups.json') == (List[catalog.Group], 'groups')
     assert fs.get_contextual_model_type(group_dir) == (catalog.Group, 'group')
     assert fs.get_contextual_model_type(group_dir / 'group.json') == (catalog.Group, 'group')
     assert fs.get_contextual_model_type(controls_dir) == (List[catalog.Control], 'controls')
     assert fs.get_contextual_model_type(controls_dir / 'controls.json') == (List[catalog.Control], 'controls')
-    assert fs.get_contextual_model_type(controls_dir / '00000__control.json') == (catalog.Control, 'control')
+    assert fs.get_contextual_model_type(controls_dir / f'00000{IDX_SEP}control.json') == (catalog.Control, 'control')
 
 
 def create_sample_catalog_project(trestle_base_dir: pathlib.Path):
@@ -228,7 +229,7 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path):
         mycatalog_dir / 'metadata' / 'roles',
         mycatalog_dir / 'metadata' / 'responsible-parties',
         mycatalog_dir / 'metadata' / 'properties',
-        mycatalog_dir / 'groups' / '00000__group' / 'controls'
+        mycatalog_dir / 'groups' / f'00000{IDX_SEP}group' / 'controls'
     ]
 
     for directory in directories:
@@ -238,17 +239,33 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path):
         mycatalog_dir / 'catalogs.json',
         mycatalog_dir / 'back-matter.json',
         mycatalog_dir / 'metadata' / 'metadata.json',
-        mycatalog_dir / 'metadata' / 'roles' / '00000__role.json',
+        mycatalog_dir / 'metadata' / 'roles' / f'00000{IDX_SEP}role.json',
         mycatalog_dir / 'metadata' / 'roles' / 'roles.json',
-        mycatalog_dir / 'metadata' / 'responsible-parties' / 'creator__responsible-party.json',
+        mycatalog_dir / 'metadata' / 'responsible-parties' / f'creator{IDX_SEP}responsible-party.json',
         mycatalog_dir / 'metadata' / 'responsible-parties' / 'responsible-parties.json',
-        mycatalog_dir / 'metadata' / 'properties' / '00000__prop.json',
+        mycatalog_dir / 'metadata' / 'properties' / f'00000{IDX_SEP}prop.json',
         mycatalog_dir / 'metadata' / 'properties' / 'properties.json',
         mycatalog_dir / 'groups' / 'groups.json',
-        mycatalog_dir / 'groups' / '00000__group' / 'group.json',
-        mycatalog_dir / 'groups' / '00000__group' / 'controls' / 'controls.json',
-        mycatalog_dir / 'groups' / '00000__group' / 'controls' / '00000__control.json',
+        mycatalog_dir / 'groups' / f'00000{IDX_SEP}group' / 'group.json',
+        mycatalog_dir / 'groups' / f'00000{IDX_SEP}group' / 'controls' / 'controls.json',
+        mycatalog_dir / 'groups' / f'00000{IDX_SEP}group' / 'controls' / f'00000{IDX_SEP}control.json',
     ]
 
     for file in files:
         file.touch()
+
+
+def test_extract_alias():
+    """Test extraction of alias from filename or directory names."""
+    assert fs.extract_alias(pathlib.Path('catalog')) == 'catalog'
+    assert fs.extract_alias(pathlib.Path('/tmp/catalog')) == 'catalog'
+    assert fs.extract_alias(pathlib.Path('/catalogs/mycatalog/catalog.json')) == 'catalog'
+    assert fs.extract_alias(pathlib.Path('/catalogs/mycatalog/catalog.yaml')) == 'catalog'
+    assert fs.extract_alias(pathlib.Path('responsible-parties')) == 'responsible-parties'
+    assert fs.extract_alias(pathlib.Path('responsible-parties.json')) == 'responsible-parties'
+    assert fs.extract_alias(pathlib.Path('/roles')) == 'roles'
+    assert fs.extract_alias(pathlib.Path('/roles/roles.json')) == 'roles'
+    assert fs.extract_alias(pathlib.Path(f'/roles/00000{IDX_SEP}role.json')) == 'role'
+    assert fs.extract_alias(
+        pathlib.Path(f'/metadata/responsible-parties/creator{IDX_SEP}responsible-party.json')
+    ) == 'responsible-party'

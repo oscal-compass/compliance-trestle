@@ -15,8 +15,7 @@
 """Utilities for dealing with models."""
 import importlib
 import warnings
-from pathlib import Path
-from typing import Any, List, Optional, Tuple, Type, no_type_check
+from typing import Any, List, Tuple, Type, no_type_check
 
 from datamodel_code_generator.parser.base import camel_to_snake
 
@@ -47,6 +46,114 @@ def get_elements_of_model_type(object_of_interest, type_of_interest):
                 continue
             loi.extend(get_elements_of_model_type(getattr(object_of_interest, field), type_of_interest))
     return loi
+
+
+def find_values_by_name_generic(object_of_interest, var_name: str) -> List:
+    """Traverse object and return list of the values in dicts, tuples associated with variable name."""
+    loe = []
+    # looking for a dict or 2-element tuple containing specified variable name
+    if type(object_of_interest) == dict:
+        for key, value in object_of_interest.items():
+            if (key == var_name) and value:
+                # found one so append its value to list
+                loe.append(value)
+            else:
+                new_list = find_values_by_name_generic(value, var_name)
+                if new_list:
+                    loe.extend(new_list)
+    elif type(object_of_interest) == tuple and len(object_of_interest) == 2 and object_of_interest[0] == var_name:
+        if object_of_interest[1]:
+            loe.append(object_of_interest[1])
+    elif type(object_of_interest) != str:
+        try:
+            # iterate over any iterable and recurse on its items
+            o_iter = iter(object_of_interest)
+        except Exception:
+            # it is not a dict and not iterable
+            pass
+        else:
+            next_item = next(o_iter, None)
+            while next_item is not None:
+                new_list = find_values_by_name_generic(next_item, var_name)
+                if new_list:
+                    loe.extend(new_list)
+                next_item = next(o_iter, None)
+            return loe
+    return loe
+
+
+def has_no_duplicate_values_generic(object_of_interest, var_name):
+    """Determine if duplicate values of variable exist in object."""
+    loe = find_values_by_name_generic(object_of_interest, var_name)
+    return len(loe) == len(set(loe))
+
+
+def find_values_by_type(object_of_interest, type_of_interest):
+    """Traverse object and return list of values of specified type."""
+    loe = []
+    # looking for a dict or 2-element tuple containing specified variable name
+    if type(object_of_interest) == type_of_interest:
+        loe.append(object_of_interest)
+        return loe
+    if type(object_of_interest) == dict:
+        for value in object_of_interest.values():
+            new_list = find_values_by_type(value, type_of_interest)
+            if new_list:
+                loe.extend(new_list)
+    elif type(object_of_interest) != str:
+        try:
+            # iterate over any iterable and recurse on its items
+            o_iter = iter(object_of_interest)
+        except Exception:
+            # it is not a dict and not iterable
+            pass
+        else:
+            next_item = next(o_iter, None)
+            while next_item is not None:
+                new_list = find_values_by_type(next_item, type_of_interest)
+                if new_list:
+                    loe.extend(new_list)
+                next_item = next(o_iter, None)
+            return loe
+    return loe
+
+
+def has_no_duplicate_values_by_type(object_of_interest, type_of_interest):
+    """Determine if duplicate values of type exist in object."""
+    loe = find_values_by_type(object_of_interest, type_of_interest)
+    n = len(loe)
+    if n > 1:
+        for i in range(n - 1):
+            for j in range(i + 1, n):
+                if loe[i] == loe[j]:
+                    return False
+    return True
+
+
+def find_values_by_name(object_of_interest, name_of_interest):
+    """Traverse object and return list of values of specified name."""
+    loe = []
+    if isinstance(object_of_interest, BaseModel):
+        value = getattr(object_of_interest, name_of_interest, None)
+        if value is not None:
+            loe.append(value)
+        fields = getattr(object_of_interest, '__fields_set__', None)
+        if fields is not None:
+            for field in fields:
+                loe.extend(find_values_by_name(getattr(object_of_interest, field, None), name_of_interest))
+    elif type(object_of_interest) is list:
+        for item in object_of_interest:
+            loe.extend(find_values_by_name(item, name_of_interest))
+    elif type(object_of_interest) is dict:
+        for item in object_of_interest.values():
+            loe.extend(find_values_by_name(item, name_of_interest))
+    return loe
+
+
+def has_no_duplicate_values_by_name(object_of_interest, name_of_interest):
+    """Determine if duplicate values of type exist in object."""
+    loe = find_values_by_name(object_of_interest, name_of_interest)
+    return len(loe) == len(set(loe))
 
 
 def classname_to_alias(classname: str, mode: str) -> str:
@@ -117,64 +224,6 @@ def get_singular_alias_from_collection_model(model) -> str:
     else:
         raise err.TrestleError('Cannot retrieve name of inner class')
     return camel_to_dash(singular_model_name)
-
-
-def get_contextual_path(path: str, contextual_path: Optional[List[str]] = None) -> List[str]:
-    """
-    Return the contextual path relative to where the nearest .trestle directory is.
-
-    If a .trestle directory is found, it breaks down the path starting with the path of the directory that contains the
-    .trestle directory, followed by a subsequent list of items, each representing a sub-directory leading to the
-    directory path that was passed it.
-    This function allows the user to figure out the depth he/she is running a trestle command from in a trestle project
-    as well as the type of model (by looking at the value stored in index 1 of the list) the command should be
-    referring to.
-    """
-    if contextual_path is None:
-        contextual_path = []
-
-    p = Path(path)
-    if p.name == '':
-        return []
-    config_dir = p / const.TRESTLE_CONFIG_DIR
-    if not config_dir.is_dir():
-        contextual_path.insert(0, p.name)
-        contextual_path = get_contextual_path(str(p.parent), contextual_path)
-    else:
-        contextual_path.insert(0, str(path))
-    return contextual_path
-
-
-def get_contextual_model(contextual_path: list = None) -> Tuple[BaseModel, str]:
-    """Get the contextual model class and alias based on the contextual path."""
-    if contextual_path is None:
-        contextual_path = []
-        contextual_path = get_contextual_path(str(Path.cwd()), contextual_path)
-
-    current_working_module_name = get_cwm(contextual_path)
-    root_model, root_alias = get_root_model(current_working_module_name)
-
-    current_model = root_model
-    current_alias = root_alias
-
-    if len(contextual_path) < 3:
-        raise err.TrestleError('Not in a source directory of a model type')
-    elif len(contextual_path) > 3:
-        for index in range(3, len(contextual_path)):
-            stripped_alias = contextual_path[index].split(sep=const.IDX_SEP)[-1]
-            current_alias = stripped_alias
-
-            # Find property by alias
-            if is_collection_field_type(current_model):
-                # Return the model class inside the collection
-                current_model = get_inner_type(current_model)
-
-            else:
-                current_model = current_model.alias_to_field_map()[current_alias].outer_type_
-
-        return (current_model, current_alias)
-    else:
-        return (current_model, current_alias)
 
 
 def get_cwm(contextual_path: list) -> str:

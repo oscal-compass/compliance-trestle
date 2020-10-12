@@ -64,6 +64,8 @@ class SplitCmd(Command):
         base_dir = file_absolute_path.parent
 
         model_type, model_alias = fs.get_contextual_model_type(file_absolute_path)
+
+        # FIXME: Handle list/dicts
         model: OscalBaseModel = model_type.oscal_read(file_path)
 
         element_paths: List[ElementPath] = cmd_utils.parse_element_args(args[const.ARG_ELEMENT].split(','))
@@ -168,7 +170,7 @@ class SplitCmd(Command):
 
         if cur_path_index == 0:
             # WriteAction for the stripped root
-            stripped_root = model.stripped_instance(strip_fields_aliases=stripped_field_alias)
+            stripped_root = model.stripped_instance(stripped_fields_aliases=stripped_field_alias)
             root_file = base_dir / element_path.to_root_path(content_type)
             split_plan.add_action(CreatePathAction(root_file))
             split_plan.add_action(WriteFileAction(root_file, Element(stripped_root), content_type))
