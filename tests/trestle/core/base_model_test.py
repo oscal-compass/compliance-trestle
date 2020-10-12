@@ -21,6 +21,7 @@ from uuid import uuid4
 import pytest
 
 import trestle.core.base_model as ospydantic
+import trestle.core.err as err
 import trestle.core.parser as p
 import trestle.oscal.catalog as oscatalog
 import trestle.oscal.target as ostarget
@@ -169,11 +170,27 @@ def test_stripping_model_class():
 def test_stripped_instance(sample_target: OscalBaseModel):
     """Test stripped_instance method."""
     assert hasattr(sample_target, 'metadata')
-    sc_instance = sample_target.stripped_instance(strip_fields_aliases=['metadata'])
+
+    sc_instance = sample_target.stripped_instance(stripped_fields_aliases=['metadata'])
     assert not hasattr(sc_instance, 'metadata')
 
-    sc_instance = sample_target.stripped_instance(strip_fields=['metadata'])
+    sc_instance = sample_target.stripped_instance(stripped_fields=['metadata'])
     assert not hasattr(sc_instance, 'metadata')
+
+    with pytest.raises(err.TrestleError):
+        sc_instance = sample_target.stripped_instance(stripped_fields_aliases=['invalid'])
+
+    if isinstance(sample_target, ostarget.TargetDefinition):
+        metadata = sample_target.metadata
+        assert hasattr(metadata, 'last_modified')
+
+        instance = metadata.stripped_instance(stripped_fields_aliases=['last-modified'])
+        assert not hasattr(instance, 'last_modified')
+
+        instance = metadata.stripped_instance(stripped_fields=['last_modified'])
+        assert not hasattr(sc_instance, 'last_modified')
+    else:
+        raise Exception('Test failure')
 
 
 def test_multiple_variable_strip():

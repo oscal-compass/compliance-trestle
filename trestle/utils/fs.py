@@ -129,9 +129,6 @@ def get_contextual_model_type(path: pathlib.Path = None, strip_model: bool = Tru
 
     model_type, model_alias = utils.get_root_model(module_name)
 
-    if path.is_file():
-        pass
-
     for i in range(len(model_relative_path.parts)):
         tmp_path = root_path.joinpath(*relative_path.parts[:2], *model_relative_path.parts[:i + 1])
 
@@ -143,6 +140,10 @@ def get_contextual_model_type(path: pathlib.Path = None, strip_model: bool = Tru
                     model_type = utils.get_inner_type(model_type)
                 else:
                     model_type = model_type.alias_to_field_map()[alias].outer_type_
+
+    # FIXME
+    if strip_model:
+        pass
 
     return model_type, model_alias
 
