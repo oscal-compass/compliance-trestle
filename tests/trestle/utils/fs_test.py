@@ -14,12 +14,14 @@
 """Tests for fs module."""
 
 import pathlib
+from typing import Dict, List
 
 import pytest
 
 from tests import test_utils
 
 from trestle.core.err import TrestleError
+from trestle.oscal import catalog
 from trestle.utils import fs
 
 
@@ -166,3 +168,87 @@ def test_load_file(tmp_dir):
             fs.load_file(sample_file_path)
     except TrestleError:
         pass
+
+
+def test_get_contextual_model_type(tmp_dir):
+    """Test get model type and alias based on filesystem context."""
+    with pytest.raises(TrestleError):
+        fs.get_contextual_model_type(tmp_dir / 'invalidpath') is None
+
+    with pytest.raises(TrestleError):
+        fs.get_contextual_model_type(tmp_dir) is None
+
+    create_sample_catalog_project(tmp_dir)
+
+    catalogs_dir = tmp_dir / 'catalogs'
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+    metadata_dir = mycatalog_dir / 'metadata'
+    roles_dir = metadata_dir / 'roles'
+    rps_dir = metadata_dir / 'responsible-parties'
+    props_dir = metadata_dir / 'properties'
+    groups_dir = mycatalog_dir / 'groups'
+    group_dir = groups_dir / '00000__group'
+    controls_dir = group_dir / 'controls'
+
+    with pytest.raises(TrestleError):
+        assert fs.get_contextual_model_type(catalogs_dir) is None
+
+    assert fs.get_contextual_model_type(mycatalog_dir) == (catalog.Catalog, 'catalog')
+    assert fs.get_contextual_model_type(mycatalog_dir / 'catalog.json') == (catalog.Catalog, 'catalog')
+    assert fs.get_contextual_model_type(mycatalog_dir / 'back-matter.json') == (catalog.BackMatter, 'back-matter')
+    assert fs.get_contextual_model_type(metadata_dir) == (catalog.Metadata, 'metadata')
+    assert fs.get_contextual_model_type(metadata_dir / 'metadata.yaml') == (catalog.Metadata, 'metadata')
+    assert fs.get_contextual_model_type(roles_dir) == (List[catalog.Role], 'roles')
+    assert fs.get_contextual_model_type(roles_dir / 'roles.json') == (List[catalog.Role], 'roles')
+    assert fs.get_contextual_model_type(roles_dir / '00000__role.json') == (catalog.Role, 'role')
+    assert fs.get_contextual_model_type(rps_dir) == (Dict[str, catalog.ResponsibleParty], 'responsible-parties')
+    assert fs.get_contextual_model_type(rps_dir / 'responsible-parties.json'
+                                        ) == (Dict[str, catalog.ResponsibleParty], 'responsible-parties')
+    assert fs.get_contextual_model_type(rps_dir / 'creator__responsible-party.json'
+                                        ) == (catalog.ResponsibleParty, 'responsible-party')
+    assert fs.get_contextual_model_type(props_dir) == (List[catalog.Prop], 'properties')
+    assert fs.get_contextual_model_type(props_dir / 'properties.json') == (List[catalog.Prop], 'properties')
+    assert fs.get_contextual_model_type(props_dir / '00000__prop.json') == (catalog.Prop, 'prop')
+    assert fs.get_contextual_model_type(groups_dir) == (List[catalog.Group], 'groups')
+    assert fs.get_contextual_model_type(groups_dir / 'groups.json') == (List[catalog.Group], 'groups')
+    assert fs.get_contextual_model_type(group_dir) == (catalog.Group, 'group')
+    assert fs.get_contextual_model_type(group_dir / 'group.json') == (catalog.Group, 'group')
+    assert fs.get_contextual_model_type(controls_dir) == (List[catalog.Control], 'controls')
+    assert fs.get_contextual_model_type(controls_dir / 'controls.json') == (List[catalog.Control], 'controls')
+    assert fs.get_contextual_model_type(controls_dir / '00000__control.json') == (catalog.Control, 'control')
+
+
+def create_sample_catalog_project(trestle_base_dir: pathlib.Path):
+    """Create directory structure for a sample catalog named mycatalog."""
+    test_utils.ensure_trestle_config_dir(trestle_base_dir)
+
+    mycatalog_dir = trestle_base_dir / 'catalogs' / 'mycatalog'
+
+    directories = [
+        mycatalog_dir / 'metadata' / 'roles',
+        mycatalog_dir / 'metadata' / 'responsible-parties',
+        mycatalog_dir / 'metadata' / 'properties',
+        mycatalog_dir / 'groups' / '00000__group' / 'controls'
+    ]
+
+    for directory in directories:
+        directory.mkdir(parents=True, exist_ok=True)
+
+    files = [
+        mycatalog_dir / 'catalogs.json',
+        mycatalog_dir / 'back-matter.json',
+        mycatalog_dir / 'metadata' / 'metadata.json',
+        mycatalog_dir / 'metadata' / 'roles' / '00000__role.json',
+        mycatalog_dir / 'metadata' / 'roles' / 'roles.json',
+        mycatalog_dir / 'metadata' / 'responsible-parties' / 'creator__responsible-party.json',
+        mycatalog_dir / 'metadata' / 'responsible-parties' / 'responsible-parties.json',
+        mycatalog_dir / 'metadata' / 'properties' / '00000__prop.json',
+        mycatalog_dir / 'metadata' / 'properties' / 'properties.json',
+        mycatalog_dir / 'groups' / 'groups.json',
+        mycatalog_dir / 'groups' / '00000__group' / 'group.json',
+        mycatalog_dir / 'groups' / '00000__group' / 'controls' / 'controls.json',
+        mycatalog_dir / 'groups' / '00000__group' / 'controls' / '00000__control.json',
+    ]
+
+    for file in files:
+        file.touch()

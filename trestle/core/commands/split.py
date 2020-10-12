@@ -27,7 +27,7 @@ from trestle.core.models.actions import Action, CreatePathAction, WriteFileActio
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.oscal.target import TargetDefinition
+from trestle.utils import fs
 
 from . import cmd_utils
 
@@ -63,8 +63,8 @@ class SplitCmd(Command):
         file_absolute_path = pathlib.Path(file_path.absolute())
         base_dir = file_absolute_path.parent
 
-        # FIXME model: OscalBaseModel = cmd_utils.get_model(file_path)
-        model: OscalBaseModel = TargetDefinition.oscal_read(file_path)
+        model_type, model_alias = fs.get_contextual_model_type(file_absolute_path)
+        model: OscalBaseModel = model_type.oscal_read(file_path)
 
         element_paths: List[ElementPath] = cmd_utils.parse_element_args(args[const.ARG_ELEMENT].split(','))
 
