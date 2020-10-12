@@ -384,6 +384,7 @@ class Protocol(OscalBaseModel):
     port_ranges: Optional[List[PortRange]] = Field(None, alias='port-ranges')
 
 
+
 class AuthorizedPrivilege(OscalBaseModel):
     title: Title
     description: Optional[Description] = None
