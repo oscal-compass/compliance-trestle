@@ -19,7 +19,6 @@ import pathlib
 import pytest
 
 import trestle.core.err as err
-import trestle.core.parser as parser
 import trestle.core.utils as mutils
 import trestle.oscal.assessment_plan as assessment_plan
 import trestle.oscal.assessment_results as assessment_results
@@ -30,13 +29,15 @@ import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp
 import trestle.oscal.target as target
 
+import yaml
+
 
 def load_good_catalog():
     """Load nist 800-53 as a catalog example."""
     good_sample_path = pathlib.Path('nist-source/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
 
     assert (good_sample_path.exists())
-    return parser.wrap_for_input(catalog.Catalog).parse_file(good_sample_path).catalog
+    return catalog.Catalog.oscal_read(good_sample_path)
 
 
 def test_get_elements():
@@ -178,3 +179,43 @@ def test_classname_to_alias():
     assert json_alias == 'member-of-organization'
     json_alias = mutils.classname_to_alias(full_classname, 'field')
     assert json_alias == 'member_of_organization'
+
+
+def test_has_no_duplicate_values_generic():
+    """Test presence of duplicate uuid."""
+    # test with pydantic catalog
+    cat = load_good_catalog()
+    assert mutils.has_no_duplicate_values_generic(cat, 'uuid')
+
+    yaml_path = pathlib.Path('tests/data/yaml')
+
+    # test with valid pydantic target
+    good_target_path = yaml_path / 'good_target.yaml'
+    good_target = target.TargetDefinition.oscal_read(good_target_path)
+    loe = mutils.find_values_by_name(good_target, 'uuid')
+    assert len(loe) == 5
+    assert mutils.has_no_duplicate_values_by_name(good_target, 'uuid')
+
+    # test with pydantic target containing duplicates
+    bad_target_path = yaml_path / 'bad_target_dup_uuid.yaml'
+    bad_target = target.TargetDefinition.oscal_read(bad_target_path)
+    assert not mutils.has_no_duplicate_values_by_name(bad_target, 'uuid')
+
+    # test duplicates with raw yaml target, non-pydantic
+    read_file = bad_target_path.open('r', encoding='utf8')
+    bad_target_yaml = yaml.load(read_file, Loader=yaml.Loader)
+    assert not mutils.has_no_duplicate_values_generic(bad_target_yaml, 'uuid')
+
+
+def test_has_no_duplicate_values_pydantic():
+    """Test presence of duplicate values in pydantic objects."""
+    # test with pydantic catalog - only one instance of Metadata
+    cat = load_good_catalog()
+    assert mutils.has_no_duplicate_values_by_type(cat, catalog.Metadata)
+
+    yaml_path = pathlib.Path('tests/data/yaml')
+
+    # test presence of many duplicate properties
+    good_target_path = yaml_path / 'good_target.yaml'
+    good_target = target.TargetDefinition.oscal_read(good_target_path)
+    assert not mutils.has_no_duplicate_values_by_type(good_target, target.Prop)
