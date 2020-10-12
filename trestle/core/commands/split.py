@@ -64,6 +64,8 @@ class SplitCmd(Command):
         base_dir = file_absolute_path.parent
 
         model_type, model_alias = fs.get_contextual_model_type(file_absolute_path)
+
+        # FIXME: Handle list/dicts
         model: OscalBaseModel = model_type.oscal_read(file_path)
 
         element_paths: List[ElementPath] = cmd_utils.parse_element_args(args[const.ARG_ELEMENT].split(','))

@@ -18,7 +18,7 @@ import pathlib
 from shutil import copyfile
 from typing import List
 
-from trestle.core import const, utils
+from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import ElementPath
@@ -27,12 +27,15 @@ from trestle.utils import fs
 
 def get_trash_file_path(file_path: pathlib.Path):
     """Construct the path to the trashed file."""
-    contextual_path = utils.get_contextual_path(file_path.absolute().as_posix())
-    if len(contextual_path) <= 0:
-        raise TrestleError(f'File path "{file_path}" is not in a valid trestle project')
+    absolute_path = file_path.absolute()
+    root_path = fs.get_trestle_project_root(absolute_path)
 
-    trash_dir = pathlib.Path(contextual_path[0]) / const.TRESTLE_TRASH_DIR
-    trash_file_dir: pathlib.Path = trash_dir.joinpath('/'.join(contextual_path[1:-1]))
+    if root_path is None:
+        raise TrestleError(f'File path "{absolute_path}" is not in a valid trestle project')
+
+    trash_dir = root_path / const.TRESTLE_TRASH_DIR
+
+    trash_file_dir = trash_dir / absolute_path.relative_to(str(root_path)).parent
     trash_file_path = trash_file_dir / f'{file_path.name}{const.TRESTLE_TRASH_FILE_EXT}'
 
     return trash_file_path
