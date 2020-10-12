@@ -64,12 +64,26 @@ class OscalBaseModel(BaseModel):
         validate_assignment = True
 
     @classmethod
-    def create_stripped_model_type(cls, excluded_fields: List[str]):
+    def create_stripped_model_type(cls, stripped_fields: List[str] = None, stripped_fields_aliases: List[str] = None):
         """Use introspection to create a model that removes the fields.
 
-        Either 'excluded_fields' or 'excluded_fields_aliases' need to be passed, not both.
+        Either 'stripped_fields' or 'stripped_fields_aliases' need to be passed, not both.
         Returns a model class definition that can be used to instanciate a model.
         """
+        if stripped_fields is not None and stripped_fields_aliases is not None:
+            raise err.TrestleError('Either "stripped_fields" or "stripped_fields_aliases" need to be passed, not both.')
+
+        # create alias to field_name mapping
+        excluded_fields = []
+        if stripped_fields is not None:
+            excluded_fields = stripped_fields
+        elif stripped_fields_aliases is not None:
+            alias_to_field = cls.alias_to_field_map()
+            try:
+                excluded_fields = [alias_to_field[key].name for key in stripped_fields_aliases]
+            except KeyError as e:
+                raise err.TrestleError(f'Field {str(e)} does not exists in the model')
+
         current_fields = cls.__fields__
         new_fields_for_model = {}
         # Build field list
@@ -111,37 +125,24 @@ class OscalBaseModel(BaseModel):
 
         return None
 
-    def stripped_instance(self, strip_fields: List[str] = None, strip_fields_aliases: List[str] = None):
-        """Return a new model with the specified fields being stripped.
+    def stripped_instance(self, stripped_fields: List[str] = None, stripped_fields_aliases: List[str] = None):
+        """Return a new model instance with the specified fields being stripped.
 
-        Either 'strip_fields' or 'strip_fields_aliases' need to be passed, not both.
+        Either 'stripped_fields' or 'stripped_fields_aliases' need to be passed, not both.
         """
-        if strip_fields is not None and strip_fields_aliases is not None:
-            raise err.TrestleError('Either "strip_fields" or "strip_field_aliases" need to be passed, not both.')
-
-        # create alias to field_name mapping
-        excluded_fields = []
-        if strip_fields is not None:
-            excluded_fields = strip_fields
-        elif strip_fields_aliases is not None and len(strip_fields_aliases) > 0:
-            alias_to_field = self.alias_to_field_map()
-            for field_alias in strip_fields_aliases:
-                if field_alias not in alias_to_field.keys():
-                    raise err.TrestleError(f'Field {field_alias} does not exists in the model')
-
-                excluded_fields.append(alias_to_field[field_alias].name)
-
         # stripped class type
-        stripped_class = self.create_stripped_model_type(excluded_fields)
+        stripped_class = self.create_stripped_model_type(
+            stripped_fields=stripped_fields, stripped_fields_aliases=stripped_fields_aliases
+        )
 
-        # stripped values
-        stripped_values = {}
+        # remaining values
+        remaining_values = {}
         for field in self.__fields__.values():
-            if field.name not in excluded_fields:
-                stripped_values[field.name] = self.__dict__[field.name]
+            if field.name in stripped_class.__fields__:
+                remaining_values[field.name] = self.__dict__[field.name]
 
         # create stripped model instance
-        stripped_instance = stripped_class(**stripped_values)
+        stripped_instance = stripped_class(**remaining_values)
 
         return stripped_instance
 
