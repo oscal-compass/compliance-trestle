@@ -248,7 +248,7 @@ class Element:
             elif isinstance(elm, dict):
                 elm = elm.get(attr, None)
             else:
-                elm = elm.get_attribute_by_alias(attr)
+                elm = elm.get_field_value_by_alias(attr)
 
         return elm
 

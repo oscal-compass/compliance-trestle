@@ -76,7 +76,7 @@ class MergeCmd(Command):
         # List options for merge
         if not utils.is_collection_field_type(current_model):
             # Go through each file or subdirectory in the cwd
-            fields_by_alias = current_model.get_fields_by_alias()
+            fields_by_alias = current_model.alias_to_field_map()
             for filename in Path.iterdir(cwdpath):
                 # Skip if suffix of file is not json
                 if filename.suffix and filename.suffix.lower() != '.json':

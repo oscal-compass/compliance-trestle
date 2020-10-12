@@ -272,19 +272,19 @@ def test_oscal_write(tmpdir):
     ostarget.TargetDefinition.oscal_read(temp_td_yaml)
 
 
-def test_get_attribute_value(sample_target: TargetDefinition):
-    """Test get attribute value method."""
-    assert sample_target.metadata.get_attribute_value('last-modified') == sample_target.metadata.last_modified
-    assert sample_target.metadata.get_attribute_value('last_modified') == sample_target.metadata.last_modified
+def test_get_field_value(sample_target: TargetDefinition):
+    """Test get field value method."""
+    assert sample_target.metadata.get_field_value('last-modified') == sample_target.metadata.last_modified
+    assert sample_target.metadata.get_field_value('last_modified') == sample_target.metadata.last_modified
 
 
-def test_get_attribute_by_alias(sample_target: TargetDefinition):
+def test_get_field_value_by_alias(sample_target: TargetDefinition):
     """Test get attribute by alias method."""
-    assert sample_target.metadata.get_attribute_by_alias('last-modified') == sample_target.metadata.last_modified
-    assert sample_target.metadata.get_attribute_by_alias('last_modified') is None
+    assert sample_target.metadata.get_field_value_by_alias('last-modified') == sample_target.metadata.last_modified
+    assert sample_target.metadata.get_field_value_by_alias('last_modified') is None
 
 
-def test_get_field(sample_target: TargetDefinition):
+def test_get_field_by_alias(sample_target: TargetDefinition):
     """Test get field for field alias."""
-    assert sample_target.metadata.get_field('last-modified').name == 'last_modified'
-    assert sample_target.metadata.get_field('last_modified') is None
+    assert sample_target.metadata.get_field_by_alias('last-modified').name == 'last_modified'
+    assert sample_target.metadata.get_field_by_alias('last_modified') is None

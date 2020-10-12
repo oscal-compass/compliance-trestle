@@ -108,7 +108,7 @@ def has_trestle_project_in_path(path: pathlib.Path) -> bool:
     return trestle_project_root is not None
 
 
-def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBaseModel], str]:
+def get_contextual_model_type(path: pathlib.Path = None, strip_model: bool = True) -> Tuple[Type[OscalBaseModel], str]:
     """Get the contextual model class and alias based on the contextual path."""
     if path is None:
         path = pathlib.Path.cwd()
@@ -142,7 +142,7 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBase
                 if utils.is_collection_field_type(model_type):
                     model_type = utils.get_inner_type(model_type)
                 else:
-                    model_type = model_type.get_fields_by_alias()[alias].outer_type_
+                    model_type = model_type.alias_to_field_map()[alias].outer_type_
 
     return model_type, model_alias
 
