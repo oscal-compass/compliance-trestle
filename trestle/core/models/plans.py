@@ -48,6 +48,10 @@ class Plan:
         """Add a new action."""
         self._actions.append(action)
 
+    def add_actions(self, actions: List[Action]):
+        """Add actions in order."""
+        self._actions.extend(actions)
+
     def clear_actions(self):
         """Clear all actions."""
         self._actions = []

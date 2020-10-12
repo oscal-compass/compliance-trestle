@@ -14,7 +14,7 @@
 """Element wrapper of an OSCAL model element."""
 
 import pathlib
-from typing import List
+from typing import List, Optional
 
 from pydantic import Field, create_model
 from pydantic.error_wrappers import ValidationError
@@ -22,6 +22,7 @@ from pydantic.error_wrappers import ValidationError
 import trestle.core.utils as utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError, TrestleNotFoundError
+from trestle.core.models.file_content_type import FileContentType
 
 import yaml
 
@@ -37,7 +38,10 @@ class ElementPath:
     WILDCARD: str = '*'
 
     def __init__(self, element_path: str, parent_path=None):
-        """Initialize an element wrapper."""
+        """Initialize an element wrapper.
+
+        It assumes the element path contains oscal field alias with hyphens only
+        """
         if isinstance(parent_path, str):
             parent_path = ElementPath(parent_path)
         self._parent_path = parent_path
@@ -95,7 +99,10 @@ class ElementPath:
         return self._path[-1]
 
     def get_element_name(self):
-        """Return the element name from the path."""
+        """Return the element alias name from the path.
+
+        Essentailly this the last part of the element path
+        """
         # if it is available then return otherwise compute
         if self._element_name is None:
             element_name = self.get_last()
@@ -110,6 +117,8 @@ class ElementPath:
         """Get full path parts to the element including parent path parts as a list."""
         if self.get_parent() is not None:
             path_parts = self.get_parent().get()
+            if path_parts[-1] == ElementPath.WILDCARD:
+                path_parts = path_parts[:-1]
             path_parts.extend(self.get())
         else:
             path_parts = self.get()
@@ -131,7 +140,7 @@ class ElementPath:
 
         return self._preceding_path
 
-    def to_file_path(self) -> pathlib.Path:
+    def to_file_path(self, content_type: FileContentType = None) -> pathlib.Path:
         """Convert to a file path for the element path."""
         path_parts = self.get_full_path_parts()
 
@@ -142,15 +151,23 @@ class ElementPath:
         # skip the first root element
         path_parts = path_parts[1:]
         path_str = '/'.join(path_parts)
+        if content_type is not None:
+            file_extension = FileContentType.to_file_extension(content_type)
+            path_str = path_str + file_extension
 
         # prepare the file path
         file_path: pathlib.Path = pathlib.Path(f'./{path_str}')
 
         return file_path
 
-    def to_root_path(self) -> pathlib.Path:
+    def to_root_path(self, content_type: FileContentType = None) -> pathlib.Path:
         """Convert to a file path for the element root."""
-        file_path: pathlib.Path = pathlib.Path(f'./{self.get_first()}')
+        path_str = f'./{self.get_first()}'
+        if content_type is not None:
+            file_extension = FileContentType.to_file_extension(content_type)
+            path_str = path_str + file_extension
+
+        file_path: pathlib.Path = pathlib.Path(path_str)
         return file_path
 
     def __str__(self):
@@ -168,7 +185,7 @@ class ElementPath:
 class Element:
     """Element wrapper of an OSCAL model."""
 
-    _allowed_sub_element_types = [OscalBaseModel.__class__, list.__class__, None.__class__]
+    _allowed_sub_element_types: List[str] = ['Element', 'OscalBaseModel', 'list', 'None']
 
     def __init__(self, elem: OscalBaseModel):
         """Initialize an element wrapper."""
@@ -190,7 +207,7 @@ class Element:
 
         return root_model, path_parts
 
-    def get_at(self, element_path: ElementPath = None):
+    def get_at(self, element_path: ElementPath = None) -> Optional[OscalBaseModel]:
         """Get the element at the specified element path.
 
         it will return the sub-model object at the path. Sub-model object
@@ -205,14 +222,20 @@ class Element:
         # TODO validate that self._elem is of same type as root_model
 
         # initialize the starting element for search
-        elm = self._elem
-        if element_path.get_parent() is not None:
-            elm = self.get_at(element_path.get_parent())
-            if elm is None:
+        elm: OscalBaseModel = self._elem
+
+        # if parent exists and does not end with wildcard, use the parent as the starting element for search
+        if element_path.get_parent() is not None and element_path.get_parent().get_last() != ElementPath.WILDCARD:
+            elm_at = self.get_at(element_path.get_parent())
+            if elm_at is None:
                 raise TrestleNotFoundError(f'Invalid parent path {element_path.get_parent()}')
+            elm = elm_at
 
         # return the sub-element at the specified path
         for attr in path_parts:
+            if elm is None:
+                break
+
             # process for wildcard and array indexes
             if attr == ElementPath.WILDCARD:
                 break
@@ -220,21 +243,19 @@ class Element:
                 if isinstance(elm, list):
                     elm = elm[int(attr)]
                 else:
-                    elm = None
-                    break
+                    # index to a non list type should return None
+                    return None
+            elif isinstance(elm, dict):
+                elm = elm.get(attr, None)
             else:
-                elm = getattr(elm, attr, None)
+                elm = elm.get_field_value_by_alias(attr)
 
         return elm
 
-    def get_preceding_element(self, element_path: ElementPath):
+    def get_preceding_element(self, element_path: ElementPath) -> Optional[OscalBaseModel]:
         """Get the preceding element in the path."""
         preceding_path = element_path.get_preceding_path()
-        if preceding_path is None:
-            preceding_elm = self.get()
-        else:
-            preceding_elm = self.get_at(preceding_path)
-
+        preceding_elm: Optional[OscalBaseModel] = self.get_at(preceding_path)
         return preceding_elm
 
     def _get_sub_element_obj(self, sub_element):
@@ -324,28 +345,30 @@ class Element:
         # It would be nice to pass through the description but I can't seem to and
         # it does not affect the output
         dynamic_passer = {}
-        dynamic_passer[utils.class_to_oscal(class_name, 'field')] = (
+        dynamic_passer[utils.classname_to_alias(class_name, 'field')] = (
             self._elem.__class__,
             Field(
-                self, title=utils.class_to_oscal(class_name, 'field'), alias=utils.class_to_oscal(class_name, 'json')
+                self,
+                title=utils.classname_to_alias(class_name, 'field'),
+                alias=utils.classname_to_alias(class_name, 'json')
             )
         )
         wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_passer)
         # Default behaviour is strange here.
-        wrapped_model = wrapper_model(**{utils.class_to_oscal(class_name, 'json'): self._elem})
+        wrapped_model = wrapper_model(**{utils.classname_to_alias(class_name, 'json'): self._elem})
 
         return wrapped_model
 
     @classmethod
     def get_sub_element_class(cls, parent_elm: OscalBaseModel, sub_element_name: str):
         """Get the class of the sub-element."""
-        sub_element_class = parent_elm.__fields__.get(sub_element_name).outer_type_
+        sub_element_class = parent_elm.__fields__[sub_element_name].outer_type_
         return sub_element_class
 
     @classmethod
     def get_allowed_sub_element_types(cls) -> List[str]:
         """Get the list of allowed sub element types."""
-        return cls._allowed_sub_element_types.append(Element.__class__)
+        return cls._allowed_sub_element_types
 
     @classmethod
     def is_allowed_sub_element_type(cls, elm) -> bool:
@@ -358,3 +381,10 @@ class Element:
     def __str__(self):
         """Return string representation of element."""
         return type(self._elem).__name__
+
+    def __eq__(self, other):
+        """Check that two elements are equal."""
+        if not isinstance(other, Element):
+            return False
+
+        return self.get() == other.get()

@@ -74,9 +74,9 @@ class MergeCmd(Command):
         path_sep = '.' if current_alias else ''
 
         # List options for merge
-        if not utils.is_collection_model(current_model):
+        if not utils.is_collection_field_type(current_model):
             # Go through each file or subdirectory in the cwd
-            fields_by_alias = current_model.get_fields_by_alias()
+            fields_by_alias = current_model.alias_to_field_map()
             for filename in Path.iterdir(cwdpath):
                 # Skip if suffix of file is not json
                 if filename.suffix and filename.suffix.lower() != '.json':
@@ -113,7 +113,7 @@ class MergeCmd(Command):
 
             # Go through each subdirectory in the collection and look for nested merge options
             singular_alias = utils.get_singular_alias_from_collection_model(current_model)
-            singular_model = utils.get_inner_model(current_model)
+            singular_model = utils.get_inner_type(current_model)
             for filename in sorted(cwdpath.glob(f'*{const.IDX_SEP}{singular_alias}')):
                 if Path.is_dir(filename):
                     self._list_options_for_merge(

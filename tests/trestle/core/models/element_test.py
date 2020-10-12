@@ -17,6 +17,8 @@
 from datetime import datetime
 from typing import List
 
+import pytest
+
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
 from trestle.oscal import target
@@ -25,6 +27,14 @@ from trestle.oscal import target
 def test_element_get_at(sample_target: target.TargetDefinition):
     """Test element get method."""
     element = Element(sample_target)
+
+    # field alias should succeed
+    assert element.get_at(
+        ElementPath('target-definition.metadata.last-modified')
+    ) == sample_target.metadata.last_modified
+
+    # field name should fail
+    assert element.get_at(ElementPath('target-definition.metadata.last_modified')) is None
 
     assert element.get() == sample_target
     assert element.get_at() == element.get()
@@ -37,6 +47,10 @@ def test_element_get_at(sample_target: target.TargetDefinition):
     assert element.get_at(ElementPath('target-definition.metadata.parties.0.uuid')
                           ) == sample_target.metadata.parties[0].uuid
 
+    for uuid in sample_target.targets:
+        path_str = f'target-definition.targets.{uuid}'
+        assert element.get_at(ElementPath(path_str)) == sample_target.targets[uuid]
+
     # invalid indexing
     assert element.get_at(ElementPath('target-definition.metadata.title.0')) is None
 
@@ -47,6 +61,24 @@ def test_element_get_at(sample_target: target.TargetDefinition):
     parent_path = ElementPath('target-definition.metadata')
     element_path = ElementPath('parties.*', parent_path)
     assert element.get_at(element_path) == sample_target.metadata.parties
+
+    # element_path with parent path
+    parent_path = ElementPath('target-definition.targets.*')
+    element_path = ElementPath('target-control-implementations.*', parent_path)
+    targets = element.get_at(parent_path)
+    for key in targets:
+        target = targets[key]
+        target_element = Element(target)
+        assert target_element.get_at(element_path) == target.target_control_implementations
+
+    # element_path in a list with parent path
+    parent_path = ElementPath('target-definition.targets.*')
+    element_path = ElementPath('target-control-implementations.0', parent_path)
+    targets = element.get_at(parent_path)
+    for key in targets:
+        target = targets[key]
+        target_element = Element(target)
+        assert target_element.get_at(element_path) == target.target_control_implementations[0]
 
 
 def test_element_set_at(sample_target: target.TargetDefinition):
@@ -96,23 +128,17 @@ def test_element_set_at(sample_target: target.TargetDefinition):
     assert element.set_at('target-definition.metadata.parties',
                           parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
 
-    try:
+    with pytest.raises(TrestleError):
         assert element.set_at(ElementPath('target-definition.metadata.title'),
                               parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
-    except TrestleError:
-        pass
 
     # wildcard requires it to be an OscalBaseModel or list
-    try:
+    with pytest.raises(TrestleError):
         assert element.set_at(ElementPath('target-definition.metadata.parties.*'), 'INVALID')
-    except TrestleError:
-        pass
 
     # invalid attribute
-    try:
+    with pytest.raises(TrestleError):
         assert element.set_at(ElementPath('target-definition.metadata.groups.*'), parties)
-    except TrestleError:
-        pass
 
 
 def test_element_str(sample_target):

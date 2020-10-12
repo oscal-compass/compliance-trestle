@@ -24,6 +24,8 @@ import trestle.core.base_model as ospydantic
 import trestle.core.parser as p
 import trestle.oscal.catalog as oscatalog
 import trestle.oscal.target as ostarget
+from trestle.core.base_model import OscalBaseModel
+from trestle.oscal.target import TargetDefinition
 
 
 def test_echo_tmpdir(tmpdir):
@@ -164,6 +166,16 @@ def test_stripping_model_class():
         raise Exception('Test failure')
 
 
+def test_stripped_instance(sample_target: OscalBaseModel):
+    """Test stripped_instance method."""
+    assert hasattr(sample_target, 'metadata')
+    sc_instance = sample_target.stripped_instance(strip_fields_aliases=['metadata'])
+    assert not hasattr(sc_instance, 'metadata')
+
+    sc_instance = sample_target.stripped_instance(strip_fields=['metadata'])
+    assert not hasattr(sc_instance, 'metadata')
+
+
 def test_multiple_variable_strip():
     """Test mutliple fields can be stripped and checking strict schema enforcement."""
     stripped_catalog_object = oscatalog.Catalog.create_stripped_model_type(['metadata', 'uuid'])
@@ -258,3 +270,21 @@ def test_oscal_write(tmpdir):
     target2.oscal_write(temp_td_yaml)
 
     ostarget.TargetDefinition.oscal_read(temp_td_yaml)
+
+
+def test_get_field_value(sample_target: TargetDefinition):
+    """Test get field value method."""
+    assert sample_target.metadata.get_field_value('last-modified') == sample_target.metadata.last_modified
+    assert sample_target.metadata.get_field_value('last_modified') == sample_target.metadata.last_modified
+
+
+def test_get_field_value_by_alias(sample_target: TargetDefinition):
+    """Test get attribute by alias method."""
+    assert sample_target.metadata.get_field_value_by_alias('last-modified') == sample_target.metadata.last_modified
+    assert sample_target.metadata.get_field_value_by_alias('last_modified') is None
+
+
+def test_get_field_by_alias(sample_target: TargetDefinition):
+    """Test get field for field alias."""
+    assert sample_target.metadata.get_field_by_alias('last-modified').name == 'last_modified'
+    assert sample_target.metadata.get_field_by_alias('last_modified') is None
