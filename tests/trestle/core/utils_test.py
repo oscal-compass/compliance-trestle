@@ -62,27 +62,27 @@ def test_is_collection_field_type():
     assert mutils.is_collection_field_type(type('this is a string')) is False
 
     assert mutils.is_collection_field_type(type(good_catalog)) is False  # Catalog
-    catalog_field = catalog.Model.get_fields_by_alias()['catalog']
+    catalog_field = catalog.Model.alias_to_field_map()['catalog']
     assert mutils.is_collection_field_type(catalog_field.outer_type_) is False  # Catalog
 
     assert mutils.is_collection_field_type(type(good_catalog.metadata)) is False  # Metadata
-    metadata_field = catalog.Catalog.get_fields_by_alias()['metadata']
+    metadata_field = catalog.Catalog.alias_to_field_map()['metadata']
     assert mutils.is_collection_field_type(metadata_field.outer_type_) is False  # Metadata
 
     assert mutils.is_collection_field_type(type(good_catalog.metadata.roles)) is False  # list
-    roles_field = catalog.Metadata.get_fields_by_alias()['roles']
+    roles_field = catalog.Metadata.alias_to_field_map()['roles']
     assert mutils.is_collection_field_type(roles_field.outer_type_) is True  # List[Role]
     assert mutils.is_collection_field_type(roles_field.type_) is False  # Role
 
     assert mutils.is_collection_field_type(type(good_catalog.metadata.responsible_parties)) is False  # list
-    responsible_parties_field = catalog.Metadata.get_fields_by_alias()['responsible-parties']
+    responsible_parties_field = catalog.Metadata.alias_to_field_map()['responsible-parties']
     assert mutils.is_collection_field_type(responsible_parties_field.outer_type_) is True  # Dict[str, ResponsibleParty]
     assert mutils.is_collection_field_type(responsible_parties_field.type_) is False  # ResponsibleParty
 
     assert mutils.is_collection_field_type(
         type(good_catalog.metadata.parties[0].addresses[0].postal_address)
     ) is False  # list
-    postal_address_field = catalog.Address.get_fields_by_alias()['postal-address']
+    postal_address_field = catalog.Address.alias_to_field_map()['postal-address']
     assert mutils.is_collection_field_type(postal_address_field.outer_type_) is True  # List[AddrLine]
     assert mutils.is_collection_field_type(postal_address_field.type_) is False  # AddrLine
 
@@ -97,7 +97,7 @@ def test_get_inner_type():
 
     with pytest.raises(err.TrestleError):
         # Type of field catalog is not a collection field type
-        catalog_field = catalog.Model.get_fields_by_alias()['catalog']
+        catalog_field = catalog.Model.alias_to_field_map()['catalog']
         mutils.get_inner_type(catalog_field.outer_type_)
 
     with pytest.raises(err.TrestleError):
@@ -105,7 +105,7 @@ def test_get_inner_type():
         mutils.get_inner_type(type(good_catalog.metadata.roles))
 
     # Type of field roles is a collection field type
-    roles_field = catalog.Metadata.get_fields_by_alias()['roles']
+    roles_field = catalog.Metadata.alias_to_field_map()['roles']
     role_type = mutils.get_inner_type(roles_field.outer_type_)
     assert role_type == catalog.Role
 
@@ -114,7 +114,7 @@ def test_get_inner_type():
         mutils.get_inner_type(type(good_catalog.metadata.responsible_parties))
 
     # Type of field responsible-parties is a collection field type
-    responsible_parties_field = catalog.Metadata.get_fields_by_alias()['responsible-parties']
+    responsible_parties_field = catalog.Metadata.alias_to_field_map()['responsible-parties']
     responsible_party_type = mutils.get_inner_type(responsible_parties_field.outer_type_)
     assert responsible_party_type == catalog.ResponsibleParty
 

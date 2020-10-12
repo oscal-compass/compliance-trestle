@@ -170,7 +170,7 @@ def get_contextual_model(contextual_path: list = None) -> Tuple[BaseModel, str]:
                 current_model = get_inner_type(current_model)
 
             else:
-                current_model = current_model.get_fields_by_alias()[current_alias].outer_type_
+                current_model = current_model.alias_to_field_map()[current_alias].outer_type_
 
         return (current_model, current_alias)
     else:
