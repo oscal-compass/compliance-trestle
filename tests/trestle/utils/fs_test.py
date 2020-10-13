@@ -14,12 +14,15 @@
 """Tests for fs module."""
 
 import pathlib
+from typing import Dict, List
 
 import pytest
 
 from tests import test_utils
 
+from trestle.core.const import IDX_SEP
 from trestle.core.err import TrestleError
+from trestle.oscal import catalog
 from trestle.utils import fs
 
 
@@ -103,6 +106,7 @@ def test_has_trestle_project_in_path(tmp_dir, rand_str):
     # create a file
     sub_data_dir.joinpath('readme.md').touch()
 
+    assert fs.has_trestle_project_in_path(pathlib.Path('/')) is False
     assert fs.has_trestle_project_in_path(sub_data_dir) is False
 
     test_utils.ensure_trestle_config_dir(project_path)
@@ -165,3 +169,103 @@ def test_load_file(tmp_dir):
             fs.load_file(sample_file_path)
     except TrestleError:
         pass
+
+
+def test_get_contextual_model_type(tmp_dir):
+    """Test get model type and alias based on filesystem context."""
+    with pytest.raises(TrestleError):
+        fs.get_contextual_model_type(tmp_dir / 'invalidpath') is None
+
+    with pytest.raises(TrestleError):
+        fs.get_contextual_model_type(tmp_dir) is None
+
+    create_sample_catalog_project(tmp_dir)
+
+    catalogs_dir = tmp_dir / 'catalogs'
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+    metadata_dir = mycatalog_dir / 'metadata'
+    roles_dir = metadata_dir / 'roles'
+    rps_dir = metadata_dir / 'responsible-parties'
+    props_dir = metadata_dir / 'properties'
+    groups_dir = mycatalog_dir / 'groups'
+    group_dir = groups_dir / f'00000{IDX_SEP}group'
+    controls_dir = group_dir / 'controls'
+
+    with pytest.raises(TrestleError):
+        assert fs.get_contextual_model_type(catalogs_dir) is None
+
+    assert fs.get_contextual_model_type(mycatalog_dir) == (catalog.Catalog, 'catalog')
+    assert fs.get_contextual_model_type(mycatalog_dir / 'catalog.json') == (catalog.Catalog, 'catalog')
+    assert fs.get_contextual_model_type(mycatalog_dir / 'back-matter.json') == (catalog.BackMatter, 'back-matter')
+    assert fs.get_contextual_model_type(metadata_dir) == (catalog.Metadata, 'metadata')
+    assert fs.get_contextual_model_type(metadata_dir / 'metadata.yaml') == (catalog.Metadata, 'metadata')
+    assert fs.get_contextual_model_type(roles_dir) == (List[catalog.Role], 'roles')
+    assert fs.get_contextual_model_type(roles_dir / 'roles.json') == (List[catalog.Role], 'roles')
+    assert fs.get_contextual_model_type(roles_dir / '00000__role.json') == (catalog.Role, 'role')
+    assert fs.get_contextual_model_type(rps_dir) == (Dict[str, catalog.ResponsibleParty], 'responsible-parties')
+    assert fs.get_contextual_model_type(rps_dir / 'responsible-parties.json'
+                                        ) == (Dict[str, catalog.ResponsibleParty], 'responsible-parties')
+    assert fs.get_contextual_model_type(rps_dir / 'creator__responsible-party.json'
+                                        ) == (catalog.ResponsibleParty, 'responsible-party')
+    assert fs.get_contextual_model_type(props_dir) == (List[catalog.Prop], 'properties')
+    assert fs.get_contextual_model_type(props_dir / 'properties.json') == (List[catalog.Prop], 'properties')
+    assert fs.get_contextual_model_type(props_dir / f'00000{IDX_SEP}prop.json') == (catalog.Prop, 'prop')
+    assert fs.get_contextual_model_type(groups_dir) == (List[catalog.Group], 'groups')
+    assert fs.get_contextual_model_type(groups_dir / 'groups.json') == (List[catalog.Group], 'groups')
+    assert fs.get_contextual_model_type(group_dir) == (catalog.Group, 'group')
+    assert fs.get_contextual_model_type(group_dir / 'group.json') == (catalog.Group, 'group')
+    assert fs.get_contextual_model_type(controls_dir) == (List[catalog.Control], 'controls')
+    assert fs.get_contextual_model_type(controls_dir / 'controls.json') == (List[catalog.Control], 'controls')
+    assert fs.get_contextual_model_type(controls_dir / f'00000{IDX_SEP}control.json') == (catalog.Control, 'control')
+
+
+def create_sample_catalog_project(trestle_base_dir: pathlib.Path):
+    """Create directory structure for a sample catalog named mycatalog."""
+    test_utils.ensure_trestle_config_dir(trestle_base_dir)
+
+    mycatalog_dir = trestle_base_dir / 'catalogs' / 'mycatalog'
+
+    directories = [
+        mycatalog_dir / 'metadata' / 'roles',
+        mycatalog_dir / 'metadata' / 'responsible-parties',
+        mycatalog_dir / 'metadata' / 'properties',
+        mycatalog_dir / 'groups' / f'00000{IDX_SEP}group' / 'controls'
+    ]
+
+    for directory in directories:
+        directory.mkdir(parents=True, exist_ok=True)
+
+    files = [
+        mycatalog_dir / 'catalogs.json',
+        mycatalog_dir / 'back-matter.json',
+        mycatalog_dir / 'metadata' / 'metadata.json',
+        mycatalog_dir / 'metadata' / 'roles' / f'00000{IDX_SEP}role.json',
+        mycatalog_dir / 'metadata' / 'roles' / 'roles.json',
+        mycatalog_dir / 'metadata' / 'responsible-parties' / f'creator{IDX_SEP}responsible-party.json',
+        mycatalog_dir / 'metadata' / 'responsible-parties' / 'responsible-parties.json',
+        mycatalog_dir / 'metadata' / 'properties' / f'00000{IDX_SEP}prop.json',
+        mycatalog_dir / 'metadata' / 'properties' / 'properties.json',
+        mycatalog_dir / 'groups' / 'groups.json',
+        mycatalog_dir / 'groups' / f'00000{IDX_SEP}group' / 'group.json',
+        mycatalog_dir / 'groups' / f'00000{IDX_SEP}group' / 'controls' / 'controls.json',
+        mycatalog_dir / 'groups' / f'00000{IDX_SEP}group' / 'controls' / f'00000{IDX_SEP}control.json',
+    ]
+
+    for file in files:
+        file.touch()
+
+
+def test_extract_alias():
+    """Test extraction of alias from filename or directory names."""
+    assert fs.extract_alias(pathlib.Path('catalog')) == 'catalog'
+    assert fs.extract_alias(pathlib.Path('/tmp/catalog')) == 'catalog'
+    assert fs.extract_alias(pathlib.Path('/catalogs/mycatalog/catalog.json')) == 'catalog'
+    assert fs.extract_alias(pathlib.Path('/catalogs/mycatalog/catalog.yaml')) == 'catalog'
+    assert fs.extract_alias(pathlib.Path('responsible-parties')) == 'responsible-parties'
+    assert fs.extract_alias(pathlib.Path('responsible-parties.json')) == 'responsible-parties'
+    assert fs.extract_alias(pathlib.Path('/roles')) == 'roles'
+    assert fs.extract_alias(pathlib.Path('/roles/roles.json')) == 'roles'
+    assert fs.extract_alias(pathlib.Path(f'/roles/00000{IDX_SEP}role.json')) == 'role'
+    assert fs.extract_alias(
+        pathlib.Path(f'/metadata/responsible-parties/creator{IDX_SEP}responsible-party.json')
+    ) == 'responsible-party'

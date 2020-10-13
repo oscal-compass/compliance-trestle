@@ -19,8 +19,9 @@ from typing import List
 
 from tests import test_utils
 
-from trestle.core.models.actions import CreatePathAction, FileContentType, WriteFileAction
+from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.oscal import target
 
