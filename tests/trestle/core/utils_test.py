@@ -245,3 +245,16 @@ def test_get_singular_alias():
 
     assert 'role' == mutils.get_singular_alias(alias_fullpath='catalog.metadata.roles')
     assert 'prop' == mutils.get_singular_alias(alias_fullpath='catalog.metadata.properties')
+
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='target-definition.targets.target-control-implementations')
+    assert 'target-control-implementation' == mutils.get_singular_alias(
+        alias_fullpath='target-definition.targets.*.target-control-implementations'
+    )
+    assert 'target-control-implementation' == mutils.get_singular_alias(
+        alias_fullpath='target-definition.targets.8f95894c-5e6b-4e84-92d0-a730429f08fc.target-control-implementations'
+    )
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='target-definitions.targets.*.target-control-implementations')
+
+    assert 'control' == mutils.get_singular_alias(alias_fullpath='catalog.groups.*.controls.*.controls')

@@ -199,7 +199,7 @@ def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
         raise err.TrestleError('Invalid module')
 
 
-def is_collection_field_type(field_type: Type[Any]) -> bool:
+def is_collection_field_type(field_type) -> bool:
     """Check if model type is a generic collection model such as a typed list or a typed dict."""
     if hasattr(field_type, '__origin__') and hasattr(field_type, '__args__') and (list in field_type.mro()
                                                                                   or dict in field_type.mro()):
