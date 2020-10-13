@@ -82,10 +82,10 @@ class ClassText():
     def add_all_refs(self, line):
         """Find all refd class names found in line and add to references."""
         # find lone strings with no brackets
-        p = re.compile('.*\:\s*([^\s\[\]]+).*')
+        p = re.compile(r'.*\:\s*([^\s\[\]]+).*')
         self.add_ref_pattern(p, line)
         # find objects in one or more bracket sets with possible ignored first token and comma
-        p = re.compile('\[(?:.*,\s*)?((?:\[??[^\[]*?))\]')
+        p = re.compile(r'\[(?:.*,\s*)?((?:\[??[^\[]*?))\]')
         self.add_ref_pattern(p, line)
 
     def get_linked_refs(self, class_text_list, known_refs):
