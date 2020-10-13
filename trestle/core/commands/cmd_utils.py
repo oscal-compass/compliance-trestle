@@ -84,6 +84,7 @@ def parse_element_args(element_args: List[str]) -> List[ElementPath]:
 def parse_element_arg(element_arg: str) -> List[ElementPath]:
     """Parse an element arg string into a list of ElementPath."""
     element_paths: List[ElementPath] = []
+    element_arg = element_arg.strip()
 
     # search for wildcards and create paths with its parent path
     last_pos: int = -1
@@ -102,8 +103,12 @@ def parse_element_arg(element_arg: str) -> List[ElementPath]:
             element_path = ElementPath(p, parent_path=prev_element_path)
             element_paths.append(element_path)
 
-            # TODO FIX
-            parent_model = utils.classname_to_alias(element_path.get_element_name(), 'json')[:-1]
+            # get full path without the wildcard
+            full_path = element_path.get_full_path_parts()
+            path_str = ElementPath.PATH_SEPARATOR.join(full_path[:-1])
+
+            # get the parent model for the full path
+            parent_model = utils.get_singular_alias(path_str)
 
             # store values for next cycle
             prev_element_path = element_path
