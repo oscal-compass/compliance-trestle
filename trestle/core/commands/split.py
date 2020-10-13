@@ -111,40 +111,52 @@ class SplitCmd(Command):
         return sub_model_dir
 
     @classmethod
-    def split_model(
+    def split_model_at_path_chain(
         cls,
-        model: OscalBaseModel,
+        model_obj: OscalBaseModel,
         element_paths: List[ElementPath],
         base_dir: pathlib.Path,
         content_type: FileContentType,
-        cur_path_index: int = 0,
-        split_plan: Plan = None
+        cur_path_index: int,
+        split_plan: Plan,
+        strip_root: bool
     ) -> Plan:
-        """Split the model at the provided element paths.
+        """Recursively split the model at the provided chain of element paths.
 
-        It returns a plan for the operation
+        It assumes the a chain of element paths starts at the cur_path_index with the first path ending
+        with a wildcard (*)
+
+        It returns the index where the chain of path ends. For example, element paths could have a list
+        of paths as below for a `TargetDefinition` model:
+        [
+            'target-definition.targets.*',
+            'target-definition.targets.*.target-control-implementations.*'
+        ]
         """
-        # For clarity of the code and to be able to follow the logi, let's assume the split command is as below:
+        # assume we ran the command below:
         # trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*
 
-        # initialize plan
         if split_plan is None:
-            split_plan = Plan()
+            raise TrestleError('Split plan must have been initialized')
+
+        if cur_path_index < 0:
+            raise TrestleError('Current index of the chain of paths cannot be less than 0')
 
         # if there are no more element_paths, return the current plan
         if cur_path_index >= len(element_paths):
-            return split_plan
+            return cur_path_index
 
         # initialize local variables
-        element = Element(model)
+        element = Element(model_obj)
         stripped_field_alias = []
         file_ext = FileContentType.to_file_extension(content_type)
 
         # get the sub_model specified by the element_path of this round
         element_path = element_paths[cur_path_index]
+        path_chain_end = cur_path_index
         sub_models = element.get_at(element_path)  # we call is sub_models as in plural, but it can be just one
         if sub_models is None:
-            return split_plan
+            return cur_path_index
 
         # if wildard is present in the element_path, create separate file for each sub item
         # for example, in the first round we get the `targets` using the path `target-definition.targets.*`
@@ -186,13 +198,17 @@ class SplitCmd(Command):
                     # prepare individual directory for each sub-model
                     # e.g. `targets/<UUID>__target/`
                     sub_model_dir = cls.get_sub_model_dir(sub_models_dir, sub_model_item, prefix)
-
-                    sub_model_plan = cls.split_model(
-                        sub_model_item, element_paths, sub_model_dir, content_type, cur_path_index + 1
+                    sub_model_plan = Plan()
+                    path_chain_end = cls.split_model_at_path_chain(
+                        sub_model_item,
+                        element_paths,
+                        sub_model_dir,
+                        content_type,
+                        cur_path_index + 1,
+                        sub_model_plan,
+                        True
                     )
-
                     sub_model_actions = sub_model_plan.get_actions()
-
                 else:
                     sub_model_actions = cls.prepare_sub_model_split_actions(
                         sub_model_item, sub_models_dir, prefix, content_type
@@ -200,15 +216,61 @@ class SplitCmd(Command):
 
                 split_plan.add_actions(sub_model_actions)
         else:
+            # the chain of path end at current index.
+            # so no recursive call. Let's just write the sub model
             sub_model_file = base_dir / element_path.to_file_path(content_type)
             split_plan.add_action(CreatePathAction(sub_model_file))
             split_plan.add_action(WriteFileAction(sub_model_file, Element(sub_models), content_type))
 
-        # WriteAction for the stripped root model object
-        stripped_field_alias.append(element_path.get_element_name())
-        stripped_root = model.stripped_instance(stripped_fields_aliases=stripped_field_alias)
-        root_file = base_dir / element_path.to_root_path(content_type)
+        # Strip the root model and add a WriteAction for the updated model object
+        if strip_root:
+            stripped_field_alias.append(element_path.get_element_name())
+            stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
+            root_file = base_dir / element_path.to_root_path(content_type)
+            split_plan.add_action(CreatePathAction(root_file))
+            split_plan.add_action(WriteFileAction(root_file, Element(stripped_root), content_type))
+
+        # return the end of the current path chain
+        return path_chain_end
+
+    @classmethod
+    def split_model(
+        cls,
+        model_obj: OscalBaseModel,
+        element_paths: List[ElementPath],
+        base_dir: pathlib.Path,
+        content_type: FileContentType,
+    ) -> Plan:
+        """Split the model at the provided element paths.
+
+        It returns a plan for the operation
+        """
+        # assume we ran the command below:
+        # trestle split -f target.yaml
+        #   -e 'target-definition.metadata,
+        #   target-definition.targets.*.target-control-implementations.*'
+
+        # initialize plan
+        split_plan = Plan()
+
+        # loop through the element path list and update the split_plan
+        stripped_field_alias = []
+        cur_path_index = 0
+        while cur_path_index < len(element_paths):
+            # extract the sub element name for each of the root path of the path chain
+            stripped_field_alias.append(element_paths[cur_path_index].get_element_name())
+
+            # split model at the path chain
+            cur_path_index = cls.split_model_at_path_chain(
+                model_obj, element_paths, base_dir, content_type, cur_path_index, split_plan, False
+            )
+
+            cur_path_index += 1
+
+        # strip the root model object and add a WriteAction
+        stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
+        root_file = base_dir / element_paths[0].to_root_path(content_type)
         split_plan.add_action(CreatePathAction(root_file))
         split_plan.add_action(WriteFileAction(root_file, Element(stripped_root), content_type))
 
-        return cls.split_model(model, element_paths, base_dir, content_type, cur_path_index + 1, split_plan)
+        return split_plan
