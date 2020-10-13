@@ -15,7 +15,6 @@
 
 import json
 import pathlib
-from io import StringIO
 from typing import List, Optional
 
 from pydantic import Field, create_model
@@ -340,16 +339,7 @@ class Element:
 
     def to_yaml(self):
         """Convert into YAML string."""
-        if issubclass(self._elem.__class__, OscalBaseModel):
-            wrapped_model = self.oscal_wrapper()
-            yaml_data = yaml.dump(yaml.safe_load(wrapped_model.json(exclude_none=True, by_alias=True)))
-            return yaml_data
-        else:
-            string_stream: StringIO = StringIO()
-            yaml.dump(self._elem, string_stream, default_flow_style=False, sort_keys=False)
-            yaml_data = string_stream.getvalue()
-            string_stream.close()
-
+        yaml_data = yaml.dump(yaml.safe_load(self.to_json()))
         return yaml_data
 
     def to_json(self):
