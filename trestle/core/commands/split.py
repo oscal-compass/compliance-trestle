@@ -63,7 +63,7 @@ class SplitCmd(Command):
         file_absolute_path = pathlib.Path(file_path.absolute())
         base_dir = file_absolute_path.parent
 
-        model_type, model_alias = fs.get_contextual_model_type(file_absolute_path)
+        model_type, _ = fs.get_stripped_contextual_model(file_absolute_path)
 
         # FIXME: Handle list/dicts
         model: OscalBaseModel = model_type.oscal_read(file_path)
