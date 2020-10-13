@@ -219,3 +219,29 @@ def test_has_no_duplicate_values_pydantic():
     good_target_path = yaml_path / 'good_target.yaml'
     good_target = target.TargetDefinition.oscal_read(good_target_path)
     assert not mutils.has_no_duplicate_values_by_type(good_target, target.Prop)
+
+
+def test_get_singular_alias():
+    """Test get_singular_alias function."""
+    # Not of collection type
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='catalog')
+
+    # Not fullpath. It should be 'catalog.metadata' instead
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='metadata.something')
+
+    # Invalid alias_fullpath
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='invalid')
+    # Invalid alias_fullpath
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='')
+
+    assert 'responsible-party' == mutils.get_singular_alias(alias_fullpath='catalog.metadata.responsible-parties')
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='catalog.metadata.responsible-parties.*')
+    assert 'prop' == mutils.get_singular_alias(alias_fullpath='catalog.metadata.responsible-parties.*.properties')
+
+    assert 'role' == mutils.get_singular_alias(alias_fullpath='catalog.metadata.roles')
+    assert 'prop' == mutils.get_singular_alias(alias_fullpath='catalog.metadata.properties')
