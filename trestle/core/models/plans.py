@@ -63,8 +63,12 @@ class Plan:
             if action.has_rollback() is False:
                 raise UnsupportedOperation(f'{action.get_type()} does not support rollback')
 
-        self.execute()
-        self.rollback()
+        try:
+            self.execute()
+        except Exception as ex:
+            raise ex
+        finally:
+            self.rollback()
 
     def execute(self):
         """Execute the actions in the plan."""
