@@ -16,6 +16,12 @@ Trestle aims to reduce or remove this barrier by bringing the maintenance of con
 
 Trestle implicitly provides a core opinionated workflow driven by its pipeline steps to allow standardized interlocks with other compliance tooling platforms.
 
+## Development status
+
+Compliance trestle is currently alpha. The expectation is that throughout the remainder of 2020 there may be unnannounced changes that are breaking within the trestle codebase. If you are using trestle please contact us so we are aware your usecase.
+
+The underlying OSCAL schema is also currently changing. The current approach until the formal release of OSCAL 1.0.0 is for compliance trestle to regularly update our models to reflect NIST's changes.
+
 ### Machine readable compliance format
 
 Compliance activities at scale, whether size of estate or number of accreditations, require automation to be successful and repeatable. OSCAL as a standard allows teams to bridge between the "Governance" layer and operational tools.
@@ -30,7 +36,7 @@ Trestle converts complex schema/data structures into simple files in a directory
 
 Install from PYPI and run:
 
-~~~shell
+```shell
 # Setup virtual environement
 python3 -m venv venv
 . ./venv/bin/activate
@@ -40,11 +46,11 @@ pip install compliance-trestle
 
 # Run Trestle CLI
 trestle -h # For command line help
-~~~
+```
 
 In order to install Trestle from source, run the following command:
 
-~~~shell
+```shell
 # Clone
 git clone https://github.com/IBM/compliance-trestle.git
 cd compliance-trestle
@@ -56,7 +62,7 @@ pip install -q -e ".[dev]" --upgrade --upgrade-strategy eager
 
 # Run Trestle CLI
 trestle -h
-~~~
+```
 
 ## Supported OSCAL elements and extensions
 
@@ -81,7 +87,7 @@ Our project welcomes external contributions. Please consult [CONTRIBUTING.md](<C
 If you would like to see the detailed LICENSE click [here](<LICENSE>).
 Consult [MAINTAINERS](<MAINTAINERS.md>) for a list of authors.
 
-~~~text
+```text
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -96,4 +102,4 @@ Consult [MAINTAINERS](<MAINTAINERS.md>) for a list of authors.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-~~~
+```
