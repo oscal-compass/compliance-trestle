@@ -36,7 +36,7 @@ def test_update_action(sample_target):
         }
     )
 
-    sub_element_path = ElementPath('metadata')
+    sub_element_path = ElementPath('target-definition.metadata')
     prev_metadata = element.get_at(sub_element_path)
 
     uac = UpdateAction(metadata, element, sub_element_path)
@@ -68,7 +68,7 @@ def test_update_list_sub_element_action(sample_target):
         })
     )
 
-    sub_element_path = ElementPath('metadata.parties.*')
+    sub_element_path = ElementPath('target-definition.metadata.parties.*')
     uac = UpdateAction(parties, element, sub_element_path)
     uac.execute()
 

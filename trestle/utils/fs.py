@@ -19,8 +19,12 @@ import json
 import logging
 import os
 import pathlib
+from typing import Optional, Tuple, Type
 
 from trestle.core import const
+from trestle.core import err
+from trestle.core import utils
+from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 
 import yaml
@@ -66,13 +70,13 @@ def is_valid_project_root(project_root: pathlib.Path) -> bool:
     return False
 
 
-def get_trestle_project_root(path: pathlib.Path) -> pathlib.Path:
+def get_trestle_project_root(path: pathlib.Path) -> Optional[pathlib.Path]:
     """Get the trestle project root folder in the path."""
     if path is None or len(path.parts) <= 0:
         return None
 
     current = path
-    while len(current.parts) > 0:
+    while len(current.parts) > 1:  # it must not be the system root directory
         if is_valid_project_root(current):
             return current
         current = current.parent
@@ -102,6 +106,53 @@ def has_trestle_project_in_path(path: pathlib.Path) -> bool:
     """Check if path has a valid trestle project among the parents."""
     trestle_project_root = get_trestle_project_root(path)
     return trestle_project_root is not None
+
+
+def get_contextual_model_type(path: pathlib.Path = None, strip_model: bool = True) -> Tuple[Type[OscalBaseModel], str]:
+    """Get the contextual model class and alias based on the contextual path."""
+    if path is None:
+        path = pathlib.Path.cwd()
+
+    root_path = get_trestle_project_root(path)
+
+    if root_path is None:
+        raise err.TrestleError('Trestle root directory not found')
+
+    relative_path = path.relative_to(str(root_path))
+    if len(relative_path.parts) < 2 or relative_path.parts[0] not in const.MODELTYPE_TO_MODELMODULE:
+        raise err.TrestleError('Trestle project not found')
+
+    project_type = relative_path.parts[0]  # catalogs, profiles, etc
+    module_name = const.MODELTYPE_TO_MODELMODULE[project_type]
+
+    model_relative_path = relative_path.relative_to(pathlib.Path(*relative_path.parts[:2]))
+
+    model_type, model_alias = utils.get_root_model(module_name)
+
+    for i in range(len(model_relative_path.parts)):
+        tmp_path = root_path.joinpath(*relative_path.parts[:2], *model_relative_path.parts[:i + 1])
+
+        alias = extract_alias(tmp_path)
+        if tmp_path.is_dir() or (tmp_path.is_file() and alias != extract_alias(tmp_path.parent)):
+            if i > 0 or model_alias != alias:
+                model_alias = alias
+                if utils.is_collection_field_type(model_type):
+                    model_type = utils.get_inner_type(model_type)
+                else:
+                    model_type = model_type.alias_to_field_map()[alias].outer_type_
+
+    # FIXME
+    if strip_model:
+        pass
+
+    return model_type, model_alias
+
+
+def extract_alias(path: pathlib.Path) -> str:
+    """Extract alias from filename or directory name removing extensions and prefixes related to dict and list."""
+    alias = path.with_suffix('').name  # remove suffix extension of file if it exists
+    alias = alias.split(const.IDX_SEP)[-1]  # get suffix of file or directory name representing list or dict item
+    return alias
 
 
 def clean_project_sub_path(sub_path: pathlib.Path):
