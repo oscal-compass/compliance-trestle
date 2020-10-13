@@ -66,3 +66,5 @@ ARG_DESC_MODE = 'Mode of the operation'
 ARG_ITEM = 'item'
 ARG_ITEM_SHORT = 'i'
 ARG_DESC_ITEM = 'Item used'
+
+VAL_MODE_DUPLICATES = 'duplicates'

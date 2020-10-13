@@ -14,17 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Validate Command."""
-from typing import List
+
+import pathlib
 
 from ilcli import Command
 
+import trestle.core.validater as validater
+import trestle.oscal.target as ostarget
 from trestle.core import const
-from trestle.core.base_model import OscalBaseModel
-from trestle.core.err import TrestleError
-from trestle.core.models.elements import ElementPath
-from trestle.core.models.plans import Plan
-
-from . import cmd_utils
+from trestle.core.err import TrestleError, TrestleValidationError
 
 
 class ValidateCmd(Command):
@@ -51,21 +49,29 @@ class ValidateCmd(Command):
 
     def _run(self, args):
         """Validate an OSCAL file in different modes."""
-        # get the Model
-        if args[const.ARG_FILE] is None:
+        if args.file is None:
             raise TrestleError(f'Argument "-{const.ARG_FILE_SHORT}" is required')
 
-        model: OscalBaseModel = cmd_utils.get_model(args[const.ARG_FILE])
-        element_paths: List[ElementPath] = cmd_utils.parse_element_args(args[const.ARG_ELEMENT])
+        if args.mode is None:
+            raise TrestleError(f'Argument "-{const.ARG_MODE_SHORT}" is required')
+        mode = args.mode
+        if mode != const.VAL_MODE_DUPLICATES:
+            raise TrestleError(f'Mode value "{mode}" is not recognized.')
 
-        split_plan = self._split_model(model, element_paths)
+        if args.item is None:
+            raise TrestleError(f'Argument "-{const.ARG_ITEM_SHORT}" is required')
+        item = args.item
 
-        try:
-            split_plan.execute()
-        except Exception as ex:
-            split_plan.rollback()
-            raise TrestleError(f'Could not perform operation: {ex}')
+        model = ostarget.TargetDefinition.oscal_read(pathlib.Path(args.file))
 
-    def _split_model(self, model: OscalBaseModel, element_paths: List[ElementPath]) -> Plan:
-        """Split the model at the provided element paths."""
-        raise NotImplementedError()
+        loe = validater.find_values_by_name(model, item)
+        if loe:
+            nitems = len(loe)
+            is_valid = nitems == len(set(loe))
+            if is_valid:
+                self.out(f'The model is valid and contains no duplicates of item {args.item}')
+            else:
+                self.out(f'The model is invalid and contains duplicates of item {args.item}')
+                raise TrestleValidationError(f'Model {args.file} is invalid with duplicate values of {args.item}')
+        else:
+            self.out(f'The model is valid but contains no items of name {args.item}')
