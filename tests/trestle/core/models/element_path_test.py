@@ -125,6 +125,9 @@ def test_element_path_to_file_path():
         FileContentType.YAML
     ) == pathlib.Path('./metadata/parties.yaml')
 
+    element_path = ElementPath('target.target-control-implementations.*', ElementPath('target-definition.targets.*'))
+    assert element_path.to_file_path() == pathlib.Path('./target-control-implementations')
+
     with pytest.raises(TrestleError):
         assert ElementPath('target-definition.metadata.parties.*').to_file_path(-1)
 

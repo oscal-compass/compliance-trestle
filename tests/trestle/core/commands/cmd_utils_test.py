@@ -63,9 +63,30 @@ def test_parse_element_arg():
 
     element_arg = 'catalog.groups.*.controls.*.controls.*'
     p1 = ElementPath('catalog.groups.*')
-    p2 = ElementPath('controls.*', parent_path=p1)
-    p3 = ElementPath('controls.*', parent_path=p2)
+    p2 = ElementPath('group.controls.*', parent_path=p1)
+    p3 = ElementPath('control.controls.*', parent_path=p2)
     expected_paths: List[ElementPath] = [p1, p2, p3]
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg)
+    assert expected_paths == element_paths
+
+    element_arg = 'catalog.groups.*.controls'
+    p1 = ElementPath('catalog.groups.*')
+    p2 = ElementPath('group.controls', parent_path=p1)
+    expected_paths: List[ElementPath] = [p1, p2]
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg)
+    assert expected_paths == element_paths
+
+    element_arg = 'target-definition.targets.*.target-control-implementations'
+    p1 = ElementPath('target-definition.targets.*')
+    p2 = ElementPath('target.target-control-implementations', parent_path=p1)
+    expected_paths: List[ElementPath] = [p1, p2]
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg)
+    assert expected_paths == element_paths
+
+    element_arg = 'target-definition.targets.*.target-control-implementations.*'
+    p1 = ElementPath('target-definition.targets.*')
+    p2 = ElementPath('target.target-control-implementations.*', parent_path=p1)
+    expected_paths: List[ElementPath] = [p1, p2]
     element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg)
     assert expected_paths == element_paths
 
@@ -84,10 +105,10 @@ def test_parse_element_args():
     element_args = ['catalog.metadata', 'catalog.groups.*.controls.*.controls.*', 'catalog.controls.*.controls.*']
     p0 = ElementPath('catalog.metadata')
     p1 = ElementPath('catalog.groups.*')
-    p2 = ElementPath('controls.*', parent_path=p1)
-    p3 = ElementPath('controls.*', parent_path=p2)
+    p2 = ElementPath('group.controls.*', parent_path=p1)
+    p3 = ElementPath('control.controls.*', parent_path=p2)
     p4 = ElementPath('catalog.controls.*')
-    p5 = ElementPath('controls.*', parent_path=p4)
+    p5 = ElementPath('control.controls.*', parent_path=p4)
     expected: List[ElementPath] = [p0, p1, p2, p3, p4, p5]
     assert cmd_utils.parse_element_args(element_args) == expected
 

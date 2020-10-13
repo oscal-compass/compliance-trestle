@@ -18,10 +18,10 @@ import pathlib
 from shutil import copyfile
 from typing import List
 
-from trestle.core import const
+from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.core.models.elements import ElementPath
+from trestle.core.models.elements import Element, ElementPath
 from trestle.utils import fs
 
 
@@ -88,25 +88,46 @@ def parse_element_arg(element_arg: str) -> List[ElementPath]:
     # search for wildcards and create paths with its parent path
     last_pos: int = -1
     prev_element_path = None
+    parent_model = None
     for cur_pos, c in enumerate(element_arg):
         if c == ElementPath.WILDCARD:
             # extract the path string including wildcard
             start = last_pos + 1
             end = cur_pos + 1
             p = element_arg[start:end]
+            if parent_model is not None:
+                p = ElementPath.PATH_SEPARATOR.join([parent_model, p])
 
             # create and append elment_path
             element_path = ElementPath(p, parent_path=prev_element_path)
             element_paths.append(element_path)
 
+            # TODO FIX
+            parent_model = utils.classname_to_alias(element_path.get_element_name(), 'json')[:-1]
+
             # store values for next cycle
             prev_element_path = element_path
             last_pos = end
 
-    # if there was no wildcard in the path, it is just a single path
-    # so create the path
-    if last_pos == -1:
-        element_path = ElementPath(element_arg)
+    if last_pos + 1 < len(element_arg):
+        p = element_arg[last_pos + 1:]
+        if parent_model is not None:
+            p = ElementPath.PATH_SEPARATOR.join([parent_model, p])
+        element_path = ElementPath(p)
         element_paths.append(element_path)
 
     return element_paths
+
+
+def get_dir_base_file_element(item, name: str) -> Element:
+    """Get an wrapped element for the base file in a split directory.
+
+    If the item is a list, it will return a dict like `{"name": []`
+    If the item is a dict, it will return a dict like `{"name": {}}`
+    """
+    if isinstance(item, list):
+        base_model: dict = {name: []}
+    else:
+        base_model = {name: {}}
+
+    return Element(base_model)
