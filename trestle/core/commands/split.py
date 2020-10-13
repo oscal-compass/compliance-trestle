@@ -123,12 +123,12 @@ class SplitCmd(Command):
     ) -> Plan:
         """Recursively split the model at the provided chain of element paths.
 
-        It assumes the a chain of element paths starts at the cur_path_index with the first path ending
+        It assumes that a chain of element paths starts at the cur_path_index with the first path ending
         with a wildcard (*)
 
         It returns the index where the chain of path ends.
 
-        For example, element paths could have a lis of paths as below for a `TargetDefinition` model where
+        For example, element paths could have a list of paths as below for a `TargetDefinition` model where
         the first path is the start of the chain.
 
         For each of the sub model described by the first element path (e.g target-defintion.targets.*) in the chain,
