@@ -220,7 +220,7 @@ def get_singular_alias(alias_fullpath: str) -> str:
     """Get the alias in the singular form from a jsonpath."""
     singular_alias: str = ''
 
-    path_parts = alias_fullpath.split('.')
+    path_parts = alias_fullpath.split(const.ALIAS_PATH_SEPARATOR)
     if len(path_parts) < 2:
         raise err.TrestleError('Invalid jsonpath.')
 
