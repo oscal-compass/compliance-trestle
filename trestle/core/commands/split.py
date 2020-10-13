@@ -73,7 +73,7 @@ class SplitCmd(Command):
         split_plan = self.split_model(model, element_paths, base_dir, content_type)
 
         # Simulate the plan
-        # if it fails, it would through errors and get out of this command
+        # if it fails, it would throw errors and get out of this command
         split_plan.simulate()
 
         # If we are here then simulation passed
@@ -153,14 +153,18 @@ class SplitCmd(Command):
 
         # get the sub_model specified by the element_path of this round
         element_path = element_paths[cur_path_index]
-        path_chain_end = cur_path_index
         sub_models = element.get_at(element_path)  # we call is sub_models as in plural, but it can be just one
         if sub_models is None:
             return cur_path_index
 
+        # assume cur_path_index is the end of the chain
+        # value of this variable may change during recursive split of the sub-models below
+        path_chain_end = cur_path_index
+
         # if wildard is present in the element_path, create separate file for each sub item
         # for example, in the first round we get the `targets` using the path `target-definition.targets.*`
         # so, now we need to split each of the target recursively. Note that target is an instance of dict
+        # However, there can be other sub_model, which is of type list
         if element_path.get_last() == ElementPath.WILDCARD:
             # create dir for all sub model items. e.g. `targets` or `groups`
             sub_models_dir = base_dir / element_path.to_file_path()
@@ -216,13 +220,13 @@ class SplitCmd(Command):
 
                 split_plan.add_actions(sub_model_actions)
         else:
-            # the chain of path end at current index.
-            # so no recursive call. Let's just write the sub model
+            # the chain of path ends at the current index.
+            # so no recursive call. Let's just write the sub model to the file and get out
             sub_model_file = base_dir / element_path.to_file_path(content_type)
             split_plan.add_action(CreatePathAction(sub_model_file))
             split_plan.add_action(WriteFileAction(sub_model_file, Element(sub_models), content_type))
 
-        # Strip the root model and add a WriteAction for the updated model object
+        # Strip the root model and add a WriteAction for the updated model object in the plan
         if strip_root:
             stripped_field_alias.append(element_path.get_element_name())
             stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
