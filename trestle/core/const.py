@@ -65,4 +65,4 @@ ARG_ITEM = 'item'
 ARG_ITEM_SHORT = 'i'
 ARG_DESC_ITEM = 'Item used'
 
-# validate -f foo.yaml -mode duplicates -item uuid
+VAL_MODE_DUPLICATES = 'duplicates'

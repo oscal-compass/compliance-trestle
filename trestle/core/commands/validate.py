@@ -15,14 +15,14 @@
 # limitations under the License.
 """Trestle Validate Command."""
 
+import pathlib
+
 from ilcli import Command
 
-import trestle.core.utils as mutils
+import trestle.core.validater as validater
+import trestle.oscal.target as ostarget
 from trestle.core import const
-from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-
-from . import cmd_utils
 
 
 class ValidateCmd(Command):
@@ -49,28 +49,28 @@ class ValidateCmd(Command):
 
     def _run(self, args):
         """Validate an OSCAL file in different modes."""
-        if args[const.ARG_FILE] is None:
+        if args.file is None:
             raise TrestleError(f'Argument "-{const.ARG_FILE_SHORT}" is required')
 
-        if args[const.ARG_MODE] is None:
+        if args.mode is None:
             raise TrestleError(f'Argument "-{const.ARG_MODE_SHORT}" is required')
-        mode = args[const.ARG_MODE]
+        mode = args.mode
         if mode != const.VAL_MODE_DUPLICATES:
             raise TrestleError(f'Mode value "{mode}" is not recognized.')
 
-        if args[const.ARG_ITEM] is None:
+        if args.item is None:
             raise TrestleError(f'Argument "-{const.ARG_ITEM_SHORT}" is required')
-        item = args[const.ARG_ITEM]
+        item = args.item
 
-        model: OscalBaseModel = cmd_utils.get_model(args[const.ARG_FILE])
+        model = ostarget.TargetDefinition.oscal_read(pathlib.Path(args.file))
 
-        loe = mutils.find_values_by_name(model, item)
+        loe = validater.find_values_by_name(model, item)
         if loe:
             nitems = len(loe)
             is_valid = nitems == len(set(loe))
             if is_valid:
-                self.out(f'The model is valid and contains no duplicates of item {args[const.ARG_ITEM]}')
+                self.out(f'The model is valid and contains no duplicates of item {args.item}')
             else:
-                self.out(f'The model is invalid and contains duplicates of item {args[const.ARG_ITEM]}')
+                self.out(f'The model is invalid and contains duplicates of item {args.item}')
         else:
-            self.out(f'The model is valid but contains no items of name {args[const.ARG_ITEM]}')
+            self.out(f'The model is valid but contains no items of name {args.item}')
