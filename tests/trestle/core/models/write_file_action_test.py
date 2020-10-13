@@ -20,8 +20,9 @@ import pathlib
 from tests import test_utils
 
 from trestle.core.err import TrestleError
-from trestle.core.models.actions import FileContentType, WriteFileAction
+from trestle.core.models.actions import WriteFileAction
 from trestle.core.models.elements import Element
+from trestle.core.models.file_content_type import FileContentType
 
 
 def test_write_file_action_yaml(tmp_yaml_file: pathlib.Path, sample_target):

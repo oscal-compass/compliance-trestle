@@ -15,31 +15,25 @@
 # limitations under the License.
 """Core constants module containing all constants."""
 
+PACKAGE_OSCAL = 'trestle.oscal'
+
 TRESTLE_CONFIG_DIR = '.trestle'
 TRESTLE_DIST_DIR = 'dist'
-TRESTLE_MODEL_DIRS = [
-    'catalogs',
-    'profiles',
-    'target-definitions',
-    'component-definitions',
-    'system-security-plans',
-    'assessment-plans',
-    'assessment-results',
-    'plan-of-action-and-milestones'
-]
+TRESTLE_TRASH_DIR = '.trestle/_trash/'
+TRESTLE_TRASH_FILE_EXT = '.bk'
 TRESTLE_CONFIG_FILE = 'config.ini'
 
-# list key to model name
-# This is usually a map from plural names to singular
-# However, there could be special cases and therefore we are maintaining this mapping here
-LIST_KEY_TO_MODEL_NAME = {
-    'groups': 'group',
-    'controls': 'control',
-    'targets': 'target',
-    'target-control-implementations': 'target-control-implementation'
+# Map of plural form of a model type to the oscal module that contains the classes related to it
+MODELTYPE_TO_MODELMODULE = {
+    'catalogs': f'{PACKAGE_OSCAL}.catalog',
+    'profiles': f'{PACKAGE_OSCAL}.profile',
+    'target-definitions': f'{PACKAGE_OSCAL}.target',
+    'component-definitions': f'{PACKAGE_OSCAL}.component',
+    'system-security-plans': f'{PACKAGE_OSCAL}.ssp',
+    'assessment-plans': f'{PACKAGE_OSCAL}.assessment_plan',
+    'assessment-results': f'{PACKAGE_OSCAL}.assessment_results',
+    'plan-of-action-and-milestones': f'{PACKAGE_OSCAL}.poam'
 }
-
-PACKAGE_OSCAL = 'trestle.oscal'
 
 # argument names
 ARG_FILE = 'file'
@@ -54,6 +48,11 @@ ARG_DESC_ELEMENT = 'Path of the element in the OSCAL model'
 
 TMP_DIR_NAME = '__tmp_dir'
 
+# Index separater for naming directories representing collection properties
+IDX_SEP = '__'
+
+# Wildcard that can be used in the element path to represent all elements
+ELEMENT_WILDCARD = '*'
 ARG_VALIDATE = 'validate'
 ARG_VALIDATE_SHORT = 'v'
 
