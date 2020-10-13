@@ -126,12 +126,20 @@ class SplitCmd(Command):
         It assumes the a chain of element paths starts at the cur_path_index with the first path ending
         with a wildcard (*)
 
-        It returns the index where the chain of path ends. For example, element paths could have a list
-        of paths as below for a `TargetDefinition` model:
+        It returns the index where the chain of path ends.
+
+        For example, element paths could have a lis of paths as below for a `TargetDefinition` model where
+        the first path is the start of the chain.
+
+        For each of the sub model described by the first element path (e.g target-defintion.targets.*) in the chain,
+        the subsequent paths (e.g. target.target-control-implementations.*) will be applied recursively to retrieve
+        the sub-sub models:
         [
             'target-definition.targets.*',
-            'target-definition.targets.*.target-control-implementations.*'
+            'target.target-control-implementations.*'
         ]
+        for a command like below:
+           trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*
         """
         # assume we ran the command below:
         # trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*
