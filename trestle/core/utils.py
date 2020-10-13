@@ -48,7 +48,7 @@ def get_elements_of_model_type(object_of_interest, type_of_interest):
     return loi
 
 
-def class_to_oscal(class_name: str, mode: str) -> str:
+def classname_to_alias(classname: str, mode: str) -> str:
     """
     Return oscal key name or field element name based on class name.
 

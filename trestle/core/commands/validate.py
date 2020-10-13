@@ -22,7 +22,7 @@ from ilcli import Command
 import trestle.core.validater as validater
 import trestle.oscal.target as ostarget
 from trestle.core import const
-from trestle.core.err import TrestleError
+from trestle.core.err import TrestleError, TrestleValidationError
 
 
 class ValidateCmd(Command):
@@ -72,5 +72,6 @@ class ValidateCmd(Command):
                 self.out(f'The model is valid and contains no duplicates of item {args.item}')
             else:
                 self.out(f'The model is invalid and contains duplicates of item {args.item}')
+                raise TrestleValidationError(f'Model {args.file} is invalid with duplicate values of {args.item}')
         else:
             self.out(f'The model is valid but contains no items of name {args.item}')

@@ -21,6 +21,7 @@ from unittest.mock import patch
 import pytest
 
 from trestle import cli
+from trestle.core.err import TrestleValidationError
 
 
 def test_run():
@@ -34,7 +35,6 @@ def test_run():
 
     testcmd = 'trestle validate -f tests/data/yaml/bad_target_dup_uuid.yaml -m duplicates -i uuid'
     with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
+        with pytest.raises(TrestleValidationError) as pytest_wrapped_e:
             cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code is None
+        assert pytest_wrapped_e.type == TrestleValidationError
