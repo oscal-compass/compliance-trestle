@@ -19,8 +19,9 @@ import os
 
 from tests import test_utils
 
-from trestle.core.models.actions import FileContentType, WriteAction
+from trestle.core.models.actions import WriteAction
 from trestle.core.models.elements import Element
+from trestle.core.models.file_content_type import FileContentType
 
 
 def test_write_action_yaml(tmp_yaml_file, sample_target):
