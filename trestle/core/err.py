@@ -45,3 +45,16 @@ class TrestleNotFoundError(TrestleError):
     def __init__(self, msg):
         """Intialization for TresleNotFoundError."""
         super().__init__(msg)
+
+
+class TrestleValidationError(TrestleError):
+    """
+    General framwork related validation error.
+
+    Args:
+        msg (str): The error message
+    """
+
+    def __init__(self, msg):
+        """Intialization for TresleValidationError."""
+        super().__init__(msg)
