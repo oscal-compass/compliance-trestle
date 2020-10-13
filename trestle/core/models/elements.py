@@ -21,6 +21,7 @@ from typing import List, Optional
 from pydantic import Field, create_model
 from pydantic.error_wrappers import ValidationError
 
+import trestle.core.const as const
 import trestle.core.utils as utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError, TrestleNotFoundError
@@ -35,7 +36,7 @@ class ElementPath:
     This only allows a single wildcard '*' at the end to denote elements of an array of dict
     """
 
-    PATH_SEPARATOR: str = '.'
+    PATH_SEPARATOR: str = const.ALIAS_PATH_SEPARATOR
 
     WILDCARD: str = '*'
 
@@ -85,6 +86,10 @@ class ElementPath:
         """Return the path parts as a list."""
         return self._path
 
+    def to_string(self) -> str:
+        """Return the path parts as a list."""
+        return self.PATH_SEPARATOR.join(self.get())
+
     def get_parent(self):
         """Return the parent path.
 
@@ -117,13 +122,13 @@ class ElementPath:
 
     def get_full_path_parts(self) -> List[str]:
         """Get full path parts to the element including parent path parts as a list."""
+        path_parts = []
         if self.get_parent() is not None:
-            path_parts = self.get_parent().get()
-            if path_parts[-1] == ElementPath.WILDCARD:
-                path_parts = path_parts[:-1]
-            path_parts.extend(self.get())
+            parent_path_parts = self.get_parent().get_full_path_parts()
+            path_parts.extend(parent_path_parts)
+            path_parts.extend(self.get()[1:])  # don't use the first part
         else:
-            path_parts = self.get()
+            path_parts.extend(self.get())
 
         return path_parts
 
@@ -181,7 +186,7 @@ class ElementPath:
 
     def __str__(self):
         """Return string representation of element path."""
-        return self.PATH_SEPARATOR.join(self._path)
+        return self.to_string()
 
     def __eq__(self, other):
         """Override equality method."""
