@@ -158,9 +158,15 @@ def test_split_multi_level_dict(tmp_dir, sample_target):
 
 def test_split_run(tmp_dir, sample_target: TargetDefinition):
     """Test split run."""
+    # common variables
     target_def_dir: pathlib.Path = tmp_dir / 'target-definitions' / 'mytarget'
     target_def_file: pathlib.Path = target_def_dir / 'target-definition.yaml'
+    cwd = os.getcwd()
+    args = {}
+    cmd = SplitCmd()
+    parser = cmd.parser
 
+    # inner function for checking split files
     def check_split_files():
         assert target_def_dir.joinpath('metadata.yaml').exists()
         assert target_def_dir.joinpath('target-definition.yaml').exists()
@@ -181,29 +187,25 @@ def test_split_run(tmp_dir, sample_target: TargetDefinition):
         fs.ensure_directory(target_def_dir)
         sample_target.oscal_write(target_def_file)
 
+    # test
     prepare_target_def_file()
-    cwd = os.getcwd()
-    os.chdir(target_def_dir)
-    args = {}
-    cmd = SplitCmd()
-    parser = cmd.parser
     args = parser.parse_args(
         ['-f', 'target-definition.yaml', '-e', 'target-definition.targets.*,target-definition.metadata']
     )
+    os.chdir(target_def_dir)
     cmd._run(args)
     os.chdir(cwd)
     check_split_files()
 
+    # clean before the next test
     test_utils.clean_tmp_dir(target_def_dir)
+
+    # reverse order test
     prepare_target_def_file()
-    cwd = os.getcwd()
-    os.chdir(target_def_dir)
-    args = {}
-    cmd = SplitCmd()
-    parser = cmd.parser
     args = parser.parse_args(
         ['-f', 'target-definition.yaml', '-e', 'target-definition.metadata,target-definition.targets.*']
     )
+    os.chdir(target_def_dir)
     cmd._run(args)
     os.chdir(cwd)
     check_split_files()
