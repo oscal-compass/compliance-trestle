@@ -16,6 +16,22 @@ pattern1 = 'ies: Optional[Dict[str, Any]]'
 pattern2 = 's: Optional[Dict[str, Any]]'
 special_lut = {'ParameterSetting': 'SetParameter'}
 class_header = 'class '
+license_header = (
+    '# -*- mode:python; coding:utf-8 -*-\n'
+    '# Copyright (c) 2020 IBM Corp. All rights reserved.\n'
+    '#\n'
+    '# Licensed under the Apache License, Version 2.0 (the "License");\n'
+    '# you may not use this file except in compliance with the License.\n'
+    '# You may obtain a copy of the License at\n'
+    '#\n'
+    '#     http://www.apache.org/licenses/LICENSE-2.0\n'
+    '#\n'
+    '# Unless required by applicable law or agreed to in writing, software\n'
+    '# distributed under the License is distributed on an "AS IS" BASIS,\n'
+    '# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n'
+    '# See the License for the specific language governing permissions and\n'
+    '# limitations under the License.\n'
+)
 
 
 class RelOrder():
@@ -52,7 +68,11 @@ class ClassText():
         new_refs = p.findall(line)
         if new_refs:
             for r in new_refs:
-                self.refs.add(r)
+                if type(r) == tuple:
+                    for s in r:
+                        self.refs.add(s)
+                else:
+                    self.refs.add(r)
 
     @staticmethod
     def find_index(class_text_list, name):
@@ -66,10 +86,10 @@ class ClassText():
     def add_all_refs(self, line):
         """Find all refd class names found in line and add to references."""
         # find lone strings with no brackets
-        p = re.compile('.*\:\s*([^\s\[\]]+).*')
+        p = re.compile(r'.*\:\s*([^\s\[\]]+).*')
         self.add_ref_pattern(p, line)
-        # find objects in one or more bracket sets with possible ignored first token and comma
-        p = re.compile('\[(?:.*,\s*)?((?:\[??[^\[]*?))\]')
+        # find objects in one or more bracket sets with possible first token and comma
+        p = re.compile(r'\[(?:(.*),\s*)?((?:\[??[^\[]*?))\]')
         self.add_ref_pattern(p, line)
 
     def get_linked_refs(self, class_text_list, known_refs):
@@ -150,6 +170,7 @@ def reorder(class_list):
         for i, ro in enumerate(orders):
             if ro.latest_dep <= i <= ro.earliest_ref:
                 continue
+            # pop the out-of-place earliest ref and put it in front
             ct = class_list.pop(ro.earliest_ref)
             class_list.insert(i, ct)
             did_swap = True
@@ -224,6 +245,7 @@ def fix_file(fname):
     # write the classes out in the fixed order
     with open(fname, 'w') as out_file:
         out_file.write('# modified by fix_any.py\n')
+        out_file.write(license_header)
         out_file.writelines('\n'.join(header) + '\n')
         for c in all_classes:
             out_file.writelines('\n'.join(c.lines) + '\n')
