@@ -13,12 +13,14 @@
 # limitations under the License.
 """Element wrapper of an OSCAL model element."""
 
+import json
 import pathlib
 from typing import List, Optional
 
 from pydantic import Field, create_model
 from pydantic.error_wrappers import ValidationError
 
+import trestle.core.const as const
 import trestle.core.utils as utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError, TrestleNotFoundError
@@ -33,7 +35,7 @@ class ElementPath:
     This only allows a single wildcard '*' at the end to denote elements of an array of dict
     """
 
-    PATH_SEPARATOR: str = '.'
+    PATH_SEPARATOR: str = const.ALIAS_PATH_SEPARATOR
 
     WILDCARD: str = '*'
 
@@ -83,6 +85,10 @@ class ElementPath:
         """Return the path parts as a list."""
         return self._path
 
+    def to_string(self) -> str:
+        """Return the path parts as a list."""
+        return self.PATH_SEPARATOR.join(self.get())
+
     def get_parent(self):
         """Return the parent path.
 
@@ -115,13 +121,13 @@ class ElementPath:
 
     def get_full_path_parts(self) -> List[str]:
         """Get full path parts to the element including parent path parts as a list."""
+        path_parts = []
         if self.get_parent() is not None:
-            path_parts = self.get_parent().get()
-            if path_parts[-1] == ElementPath.WILDCARD:
-                path_parts = path_parts[:-1]
-            path_parts.extend(self.get())
+            parent_path_parts = self.get_parent().get_full_path_parts()
+            path_parts.extend(parent_path_parts)
+            path_parts.extend(self.get()[1:])  # don't use the first part
         else:
-            path_parts = self.get()
+            path_parts.extend(self.get())
 
         return path_parts
 
@@ -141,21 +147,28 @@ class ElementPath:
         return self._preceding_path
 
     def to_file_path(self, content_type: FileContentType = None) -> pathlib.Path:
-        """Convert to a file path for the element path."""
-        path_parts = self.get_full_path_parts()
+        """Convert to a file or directory path for the element path.
+
+        if content_type is not passed, it will return a path for directory
+        """
+        path_parts = self.get()
+
+        # skip the first root element
+        path_parts = path_parts[1:]
 
         # skip wildcard
         if path_parts[-1] == ElementPath.WILDCARD:
             path_parts = path_parts[:-1]
 
-        # skip the first root element
-        path_parts = path_parts[1:]
         path_str = '/'.join(path_parts)
+
+        # add file extension if required
+        # this will be omitted if it is a dir path
         if content_type is not None:
             file_extension = FileContentType.to_file_extension(content_type)
             path_str = path_str + file_extension
 
-        # prepare the file path
+        # prepare the path
         file_path: pathlib.Path = pathlib.Path(f'./{path_str}')
 
         return file_path
@@ -172,7 +185,7 @@ class ElementPath:
 
     def __str__(self):
         """Return string representation of element path."""
-        return self.PATH_SEPARATOR.join(self._path)
+        return self.to_string()
 
     def __eq__(self, other):
         """Override equality method."""
@@ -197,13 +210,9 @@ class Element:
 
     def _split_element_path(self, element_path: ElementPath):
         """Split the element path into root_model and remaing attr names."""
-        if element_path.get_parent() is None:
-            path_parts = element_path.get()
-            root_model = path_parts[0]
-            path_parts = path_parts[1:]
-        else:
-            root_model, _ = self._split_element_path(element_path.get_parent())
-            path_parts = element_path.get()
+        path_parts = element_path.get()
+        root_model = path_parts[0]
+        path_parts = path_parts[1:]
 
         return root_model, path_parts
 
@@ -330,13 +339,17 @@ class Element:
 
     def to_yaml(self):
         """Convert into YAML string."""
-        wrapped_model = self.oscal_wrapper()
-        return yaml.dump(yaml.safe_load(wrapped_model.json(exclude_none=True, by_alias=True)))
+        yaml_data = yaml.dump(yaml.safe_load(self.to_json()))
+        return yaml_data
 
     def to_json(self):
         """Convert into JSON string."""
-        wrapped_model = self.oscal_wrapper()
-        json_data = wrapped_model.json(exclude_none=True, by_alias=True, indent=4)
+        if issubclass(self._elem.__class__, OscalBaseModel):
+            wrapped_model = self.oscal_wrapper()
+            json_data = wrapped_model.json(exclude_none=True, by_alias=True, indent=4)
+        else:
+            json_data = json.dumps(self._elem, indent=2, sort_keys=False)
+
         return json_data
 
     def oscal_wrapper(self):

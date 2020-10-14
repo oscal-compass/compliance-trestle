@@ -59,12 +59,12 @@ def test_element_get_at(sample_target: target.TargetDefinition):
 
     # element_path with parent path
     parent_path = ElementPath('target-definition.metadata')
-    element_path = ElementPath('parties.*', parent_path)
+    element_path = ElementPath('metadta.parties.*', parent_path)
     assert element.get_at(element_path) == sample_target.metadata.parties
 
     # element_path with parent path
     parent_path = ElementPath('target-definition.targets.*')
-    element_path = ElementPath('target-control-implementations.*', parent_path)
+    element_path = ElementPath('target.target-control-implementations.*', parent_path)
     targets = element.get_at(parent_path)
     for key in targets:
         target = targets[key]
@@ -73,7 +73,7 @@ def test_element_get_at(sample_target: target.TargetDefinition):
 
     # element_path in a list with parent path
     parent_path = ElementPath('target-definition.targets.*')
-    element_path = ElementPath('target-control-implementations.0', parent_path)
+    element_path = ElementPath('target.target-control-implementations.0', parent_path)
     targets = element.get_at(parent_path)
     for key in targets:
         target = targets[key]
