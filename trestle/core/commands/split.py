@@ -207,10 +207,10 @@ class SplitCmd(Command):
 
                 # recursively split the sub-model if there are more element paths to traverse
                 # e.g. split target.target-control-implementations.*
-                require_recurive_split = cur_path_index + 1 < len(element_paths) and element_paths[
+                require_recursive_split = cur_path_index + 1 < len(element_paths) and element_paths[
                     cur_path_index + 1].get_parent() == element_path
 
-                if require_recurive_split:
+                if require_recursive_split:
                     # prepare individual directory for each sub-model
                     # e.g. `targets/<UUID>__target/`
                     sub_model_dir = cls.get_sub_model_dir(sub_models_dir, sub_model_item, prefix)
