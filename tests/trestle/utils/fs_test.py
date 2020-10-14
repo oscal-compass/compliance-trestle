@@ -236,7 +236,7 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path):
         directory.mkdir(parents=True, exist_ok=True)
 
     files = [
-        mycatalog_dir / 'catalogs.json',
+        mycatalog_dir / 'catalog.json',
         mycatalog_dir / 'back-matter.json',
         mycatalog_dir / 'metadata' / 'metadata.json',
         mycatalog_dir / 'metadata' / 'roles' / f'00000{IDX_SEP}role.json',
@@ -269,3 +269,82 @@ def test_extract_alias():
     assert fs.extract_alias(
         pathlib.Path(f'/metadata/responsible-parties/creator{IDX_SEP}responsible-party.json')
     ) == 'responsible-party'
+
+
+def test_get_stripped_contextual_model(tmp_dir):
+    """Test get stripped model type and alias based on filesystem context."""
+    with pytest.raises(TrestleError):
+        fs.get_stripped_contextual_model(tmp_dir / 'invalidpath') is None
+
+    with pytest.raises(TrestleError):
+        fs.get_stripped_contextual_model(tmp_dir) is None
+
+    create_sample_catalog_project(tmp_dir)
+
+    catalogs_dir = tmp_dir / 'catalogs'
+    with pytest.raises(TrestleError):
+        assert fs.get_stripped_contextual_model(catalogs_dir) is None
+
+    def check_stripped_catalog():
+        assert 'uuid' in alias_to_field_map
+        assert 'metadata' not in alias_to_field_map
+        assert 'back-matter' not in alias_to_field_map
+        assert 'groups' not in alias_to_field_map
+
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+    stripped_catalog = fs.get_stripped_contextual_model(mycatalog_dir)
+    alias_to_field_map = stripped_catalog[0].alias_to_field_map()
+    check_stripped_catalog()
+
+    stripped_catalog = fs.get_stripped_contextual_model(mycatalog_dir / 'catalog.json')
+    alias_to_field_map = stripped_catalog[0].alias_to_field_map()
+    check_stripped_catalog()
+
+    def check_stripped_metadata():
+        assert 'title' in alias_to_field_map
+        assert 'published' in alias_to_field_map
+        assert 'last-modified' in alias_to_field_map
+        assert 'version' in alias_to_field_map
+        assert 'oscal-version' in alias_to_field_map
+        assert 'revision-history' in alias_to_field_map
+        assert 'document-ids' in alias_to_field_map
+        assert 'links' in alias_to_field_map
+        assert 'locations' in alias_to_field_map
+        assert 'parties' in alias_to_field_map
+        assert 'remarks' in alias_to_field_map
+        assert 'roles' not in alias_to_field_map
+        assert 'responsible-properties' not in alias_to_field_map
+        assert 'properties' not in alias_to_field_map
+
+    metadata_dir = mycatalog_dir / 'metadata'
+    stripped_catalog = fs.get_stripped_contextual_model(metadata_dir)
+    alias_to_field_map = stripped_catalog[0].alias_to_field_map()
+    check_stripped_metadata()
+
+    stripped_catalog = fs.get_stripped_contextual_model(metadata_dir / 'metadata.json')
+    alias_to_field_map = stripped_catalog[0].alias_to_field_map()
+    check_stripped_metadata()
+
+    groups_dir = mycatalog_dir / 'groups'
+    stripped_catalog = fs.get_stripped_contextual_model(groups_dir)
+    assert stripped_catalog == (List[catalog.Group], 'groups')
+
+    def check_stripped_group():
+        assert 'id' in alias_to_field_map
+        assert 'class' in alias_to_field_map
+        assert 'title' in alias_to_field_map
+        assert 'parameters' in alias_to_field_map
+        assert 'properties' in alias_to_field_map
+        assert 'annotations' in alias_to_field_map
+        assert 'links' in alias_to_field_map
+        assert 'parts' in alias_to_field_map
+        assert 'groups' in alias_to_field_map
+        assert 'controls' not in alias_to_field_map
+
+    stripped_catalog = fs.get_stripped_contextual_model(groups_dir / f'00000{IDX_SEP}group')
+    alias_to_field_map = stripped_catalog[0].alias_to_field_map()
+    check_stripped_group()
+
+    stripped_catalog = fs.get_stripped_contextual_model(groups_dir / f'00000{IDX_SEP}group' / 'group.json')
+    alias_to_field_map = stripped_catalog[0].alias_to_field_map()
+    check_stripped_group()

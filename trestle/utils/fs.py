@@ -19,7 +19,7 @@ import json
 import logging
 import os
 import pathlib
-from typing import Optional, Tuple, Type
+from typing import Optional, Tuple
 
 from trestle.core import const
 from trestle.core import err
@@ -108,8 +108,8 @@ def has_trestle_project_in_path(path: pathlib.Path) -> bool:
     return trestle_project_root is not None
 
 
-def get_contextual_model_type(path: pathlib.Path = None, strip_model: bool = True) -> Tuple[Type[OscalBaseModel], str]:
-    """Get the contextual model class and alias based on the contextual path."""
+def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[OscalBaseModel, str]:
+    """Get the full contextual model class and alias based on the contextual path."""
     if path is None:
         path = pathlib.Path.cwd()
 
@@ -141,9 +141,42 @@ def get_contextual_model_type(path: pathlib.Path = None, strip_model: bool = Tru
                 else:
                     model_type = model_type.alias_to_field_map()[alias].outer_type_
 
-    # FIXME
-    if strip_model:
-        pass
+    return model_type, model_alias
+
+
+def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[OscalBaseModel, str]:
+    """
+    Get the stripped contextual model class and alias based on the contextual path.
+
+    This function relies on the directory structure of the trestle model being edited to determine, based on the
+    existing files and folder, which fields should be stripped from the model type represented by the path passed in as
+    a parameter.
+    """
+    if path is None:
+        path = pathlib.Path.cwd()
+
+    model_type, model_alias = get_contextual_model_type(path)
+
+    # Stripped models do not apply to collection types such as List[] and Dict{}
+    if utils.is_collection_field_type(model_type):
+        return model_type, model_alias
+
+    if path.is_dir():
+        paths = list(path.glob(f'{model_alias}.*'))
+        if len(paths) == 0:
+            raise err.TrestleError(f'{model_alias}.json/yaml/yml not found in {path}')
+        elif len(paths) > 1:
+            raise err.TrestleError(f'There is more than one {model_alias}.json/yaml/yml file in {path}')
+        path = paths[0]
+
+    aliases_to_be_stripped = set()
+    for f in path.parent.iterdir():
+        alias = extract_alias(f)
+        if alias != model_alias:
+            aliases_to_be_stripped.add(alias)
+
+    if len(aliases_to_be_stripped) > 0:
+        model_type = model_type.create_stripped_model_type(stripped_fields_aliases=list(aliases_to_be_stripped))
 
     return model_type, model_alias
 

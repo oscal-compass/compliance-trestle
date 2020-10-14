@@ -85,8 +85,8 @@ class Action(ABC):
         """Check that two actions are equal."""
         if self.get_type() is not other.get_type():
             return False
-
-        return self.__dict__ == other.__dict__
+        is_eq = self.__dict__ == other.__dict__
+        return is_eq
 
     @abstractmethod
     def execute(self):

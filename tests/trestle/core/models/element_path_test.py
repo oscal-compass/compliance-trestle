@@ -85,7 +85,7 @@ def test_element_path_get_preceding_path(sample_target: target.TargetDefinition)
 
     # element_path with parent path
     parent_path = ElementPath('target-definition.metadata')
-    element_path = ElementPath('parties.*', parent_path)
+    element_path = ElementPath('metadata.parties.*', parent_path)
     preceding_path = ElementPath('target-definition.metadata.parties')
     assert element_path.get_preceding_path() == preceding_path
 
@@ -125,6 +125,9 @@ def test_element_path_to_file_path():
         FileContentType.YAML
     ) == pathlib.Path('./metadata/parties.yaml')
 
+    element_path = ElementPath('target.target-control-implementations.*', ElementPath('target-definition.targets.*'))
+    assert element_path.to_file_path() == pathlib.Path('./target-control-implementations')
+
     with pytest.raises(TrestleError):
         assert ElementPath('target-definition.metadata.parties.*').to_file_path(-1)
 
@@ -139,3 +142,15 @@ def test_element_path_to_root_path():
 
     with pytest.raises(TrestleError):
         assert ElementPath('target-definition.metadata.title').to_root_path(-1)
+
+
+def test_full_path():
+    """Test full path parths method."""
+    element_arg = 'catalog.groups.*.controls.*.controls.*'
+    p1 = ElementPath('catalog.groups.*')
+    p2 = ElementPath('group.controls.*', parent_path=p1)
+    p3 = ElementPath('control.controls.*', parent_path=p2)
+
+    full_path_parts = p3.get_full_path_parts()
+    full_path = ElementPath.PATH_SEPARATOR.join(full_path_parts)
+    assert element_arg == full_path

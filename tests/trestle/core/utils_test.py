@@ -177,3 +177,42 @@ def test_classname_to_alias():
     assert json_alias == 'member-of-organization'
     json_alias = mutils.classname_to_alias(full_classname, 'field')
     assert json_alias == 'member_of_organization'
+
+
+def test_get_singular_alias():
+    """Test get_singular_alias function."""
+    # Not of collection type
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='catalog')
+
+    # Not fullpath. It should be 'catalog.metadata' instead
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='metadata.something')
+
+    # Invalid alias_fullpath
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='invalid')
+    # Invalid alias_fullpath
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='')
+
+    assert 'responsible-party' == mutils.get_singular_alias(alias_fullpath='catalog.metadata.responsible-parties')
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='catalog.metadata.responsible-parties.*')
+    assert 'prop' == mutils.get_singular_alias(alias_fullpath='catalog.metadata.responsible-parties.*.properties')
+
+    assert 'role' == mutils.get_singular_alias(alias_fullpath='catalog.metadata.roles')
+    assert 'prop' == mutils.get_singular_alias(alias_fullpath='catalog.metadata.properties')
+
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='target-definition.targets.target-control-implementations')
+    assert 'target-control-implementation' == mutils.get_singular_alias(
+        alias_fullpath='target-definition.targets.*.target-control-implementations'
+    )
+    assert 'target-control-implementation' == mutils.get_singular_alias(
+        alias_fullpath='target-definition.targets.8f95894c-5e6b-4e84-92d0-a730429f08fc.target-control-implementations'
+    )
+    with pytest.raises(err.TrestleError):
+        mutils.get_singular_alias(alias_fullpath='target-definitions.targets.*.target-control-implementations')
+
+    assert 'control' == mutils.get_singular_alias(alias_fullpath='catalog.groups.*.controls.*.controls')
