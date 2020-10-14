@@ -1,4 +1,4 @@
-# Trestle Specifications (v0.0.1)
+# Trestle CLI Specifications (v0.0.1)
 
 ## Table of Contents
 
@@ -40,7 +40,7 @@ For the draft phase of compliance engineering, trestle provides the following co
 
 This command will create a trestle project in the current directory with necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create a directory structure like below for different artefacts:
 
-~~~
+```
 .
 ├── .trestle
 ├── dist
@@ -59,7 +59,7 @@ This command will create a trestle project in the current directory with necessa
 ├── assessment-plans
 ├── assessment-results
 └── plan-of-action-and-milestones
-~~~
+```
 
 `.trestle` directory is a special directory containing various trestle artefacts to help run various other commands.
 
@@ -71,7 +71,7 @@ Notice that trestle is a highly opinionated tool and, therefore, the names of th
 
 This command will create an initial directory structure for various OSCAL models including sample JSON files and subdirectories representing parts of the model. For example, `trestle create catalog -o catalog-cat1` will create a directory structure of a sample catalog like below.
 
-~~~
+```
 .
 ├── .trestle
 ├── dist 
@@ -93,7 +93,7 @@ This command will create an initial directory structure for various OSCAL models
                     ├── 00001__control.json
                     └── 00002__control.json
 ...
-~~~
+```
 
 The following subcommands are currently supported:
 
@@ -119,7 +119,7 @@ This default or reference decomposition behaviour can be changed by modifying th
 
 For `catalog`, the inital sample content is broken down as shown below:
 
-~~~
+```
 .
 ├── .trestle
 ├── dist 
@@ -141,7 +141,7 @@ For `catalog`, the inital sample content is broken down as shown below:
                     ├── 00000__control.json
                     └── 00001__control.json
 ...
-~~~
+```
 
 - a `catalog.json` file containing a catalog JSON object without the `catalog.groups` property.
 - `catalog.groups` property is broken down into a subdirectory called `groups`. The `groups` subdirectory has a `groups.json` file containing a JSON object named `groups` as an empty array.
@@ -153,7 +153,7 @@ For `catalog`, the inital sample content is broken down as shown below:
 
 For `profile`, the initial sample content is not broken down by default as shown below.
 
-~~~
+```
 .
 ├── .trestle
 ├── dist
@@ -163,7 +163,7 @@ For `profile`, the initial sample content is not broken down by default as shown
     └── profile-myprofile
         └── profile.json
 ...
-~~~
+```
 
 - `profile.json` file has the content of the OSCAL profile.
 
@@ -171,7 +171,7 @@ For `profile`, the initial sample content is not broken down by default as shown
 
 For `target-definition`, the initial sample content is broken down as shown below:
 
-~~~
+```
 .
 ├── .trestle
 ├── dist
@@ -195,7 +195,7 @@ For `target-definition`, the initial sample content is broken down as shown belo
                     ├── 00000__target-control-implementation.json
                     └── 00001__target-control-implementation.json
 ...
-~~~
+```
 
 - a `target-definition.json` file containing a target definition JSON object except for the `target-definition.targets` property.
 - `target-definition.targets` property is broken down into a subdirectory named `targets`. The `targets` subdirectory has a `targets.json` file containing a JSON object named `targets` as an empty object.
@@ -211,7 +211,7 @@ The user can increase the level of decomposition by using `trestle split` comman
 
 This command allows users to import existing OSCAL files so that they can be managed using trestle. For example `trestle import -f existing_catalog.json -o my_existing_catalog` will import `existing_catalog.json` into a new folder under `catalogs` as shown below:
 
-~~~
+```
 .
 ├── .trestle
 ├── dist 
@@ -246,7 +246,7 @@ This command allows users to import existing OSCAL files so that they can be man
                     ├── 00000__control.json
                     └── 00001__control.json
 ...
-~~~
+```
 
 The following options are supported:
 
@@ -277,7 +277,7 @@ In the near future, `trestle split` should be smart enough to figure out which j
 
 To illustrate how this command could be used consider a catalog model named `mycatalog` that was created via `trestle create catalog -o mycatalog` or imported via `trestle import -f mycatalog.json`.
 
-~~~
+```
 .
 ├── .trestle
 ├── dist 
@@ -301,11 +301,11 @@ To illustrate how this command could be used consider a catalog model named `myc
                     ├── 00000__control.json
                     └── 00001__control.json
 ...
-~~~
+```
 
 **Step 1**: A user might want to decompose the `metadata` property from `catalog.json`. In order to achieve that he/she would run from `$BASE_FOLDER/catalogs/mycatalog` the command `trestle split -f catalog.json -e 'catalog.metadata'`. This would create a `metadata.json` file at the same level as `catalog.json` and move the whole `metadata` property/section from `catalog.json` to `metadata.json` as below:
 
-~~~
+```
 .
 ├── .trestle
 ├── dist 
@@ -330,14 +330,14 @@ To illustrate how this command could be used consider a catalog model named `myc
                     ├── 00000__control.json
                     └── 00001__control.json
 ...
-~~~
+```
 
 The future version of this command would be: `trestle split -e 'metadata'`
 Notice that in that case, the root property `catalog.` was ommitted and infered by trestle based on the directory the command was executed from.
 
 **Step 2**: Suppose now the user wants to further break down the `revision-history` property under the `metadata` subcomponent. The command to achieve that would be `trestle split -f metadata.json -e 'metadata.revision-history'` which would result in the replacement of the `metadata.json` file by a `metadata` directory containing a `metadata.json` file and a `revision-history.json` file as shown below:
 
-~~~
+```
 .
 ├── .trestle
 ├── dist 
@@ -364,7 +364,7 @@ Notice that in that case, the root property `catalog.` was ommitted and infered 
                     ├── 00000__control.json
                     └── 00001__control.json
 ...
-~~~
+```
 
 The future version of this command would be:
 
@@ -372,7 +372,7 @@ The future version of this command would be:
 
 **Step 3**: Knowing that `revision-history` is an array list, suppose the user wants to edit each item in that array list as a separate subcomponent or file. That can be achieved by running: `trestle split -f metadata/revision-history.json -e 'revision-history.*'` (notice the `.*` referring to each element in the array) which would replace the `revision-history.json` file by a `revision-history` directory containing multiple files prefixed with a 5 digit number representing the index of the array element followed by two underscores and the string `revision-history.json` as shown below:
 
-~~~
+```
 .
 ├── .trestle
 ├── dist 
@@ -403,7 +403,7 @@ The future version of this command would be:
                     ├── 00000__control.json
                     └── 00001__control.json
 ...
-~~~
+```
 
 The future version of this command would be:
 
@@ -412,7 +412,7 @@ The future version of this command would be:
 
 OSCAL also makes use of `additionalProperties` supported by JSON Schema which behaves as a map or dict. OSCAL normally uses this feature as a way to assign multiple objects to a property without necessarily having to enforce a specific order as is the case with JSON array properties. It is like assigning a map/dict to a property. An example of such property in the catalog schema is the `responsible-parties` under `metadata`. One example of contents for a `responsible-parties` property is:
 
-~~~
+```
 "responsible-parties": {
   "creator": {
     "party-uuids": [
@@ -425,13 +425,13 @@ OSCAL also makes use of `additionalProperties` supported by JSON Schema which be
     ]
   }
 }
-~~~
+```
 
 A more evident example of this type of property is in the `components` property under the `target-definition` schema.
 
 **Step 4**: Suppose the user wants to split the `responsible-parties` property in order to be able to edit each arbitrary key/value object under it as a separate file. The command to achieve that would be `trestle split -f metadata/metadata.json -e metadata.responsible-parties.*` (notice the `.*` at the end referring to each key/value pair in the map) which would result in creating a directory called `responsible-parties` and multiple JSON files under it, one for each `additionalProperty` using the key of the `additional property` as the name of the JSON file. The result is shown below:
 
-~~~
+```
 .
 ├── .trestle
 ├── dist 
@@ -466,7 +466,7 @@ A more evident example of this type of property is in the `components` property 
                     ├── 00000__control.json
                     └── 00001__control.json
 ...
-~~~
+```
 
 The future version of this command would be:
 
@@ -501,24 +501,24 @@ This command assembles all contents (files and directories) representing a speci
 
 This command allows users to add an OSCAL model to a subcomponent in source directory structure of the model. For example, `trestle add -f ./catalog.json -e metadata.roles ` will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/mycatalog` directory:
 
-~~~
+```
 "roles": [
   {
     "id": "REPLACE_ME",
     "title": "REPLACE_ME"
   }
-~~~
+```
 
 Default values for mandatory datatypes will be like below. All UUID's will be populated by default whether or not they are mandatory.
 
-~~~
+```
 - DateTime: <Current date-time>
 - Boolean: False
 - Integer: 0 
 - String: REPLACE_ME
 - Float/Double: 0.00
 - Id field: Auto generated UUID
-~~~
+```
 
 #### `trestle remove`
 
