@@ -156,7 +156,7 @@ def test_split_multi_level_dict(tmp_dir, sample_target):
     assert expected_plan == split_plan
 
 
-def test_split_run(tmp_dir, sample_target):
+def test_split_run(tmp_dir, sample_target: TargetDefinition):
     """Test split run."""
     # prepare trestle project dir with the file
     test_utils.ensure_trestle_config_dir(tmp_dir)
@@ -167,17 +167,14 @@ def test_split_run(tmp_dir, sample_target):
 
     cwd = os.getcwd()
     os.chdir(target_def_dir)
-    testargs = [
-        'trestle',
-        'split',
-        '-f',
-        'target-definition.yaml',
-        '-e',
-        'target-definition.metadata, target-definition.targets.*'
-    ]
 
-    with patch.object(sys, 'argv', testargs):
-        Trestle().run()
+    args = {}
+    cmd = SplitCmd()
+    parser = cmd.parser
+    args = parser.parse_args(
+        ['-f', 'target-definition.yaml', '-e', 'target-definition.targets.*,target-definition.metadata']
+    )
+    cmd._run(args)
 
     os.chdir(cwd)
 
@@ -185,6 +182,13 @@ def test_split_run(tmp_dir, sample_target):
     assert target_def_dir.joinpath('target-definition.yaml').exists()
     assert target_def_dir.joinpath('targets').exists()
     assert target_def_dir.joinpath('targets').is_dir()
+    assert target_def_dir.joinpath('targets/targets.yaml').exists()
+
+    targets: dict = Element(sample_target).get_at(ElementPath('target-definition.targets.*'))
+    for uuid in targets:
+        target_file = target_def_dir / f'targets/{uuid}{const.IDX_SEP}target.yaml'
+        assert target_file.exists()
+
     assert cmd_utils.get_trash_file_path(target_def_file).exists()
 
 
