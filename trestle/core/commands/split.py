@@ -22,14 +22,13 @@ from ilcli import Command
 from trestle.core import const
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.commands import cmd_utils
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import Action, CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs
-
-from . import cmd_utils
 
 
 class SplitCmd(Command):
