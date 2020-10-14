@@ -168,7 +168,8 @@ class SplitCmd(Command):
         # value of this variable may change during recursive split of the sub-models below
         path_chain_end = cur_path_index
 
-        # if wildard is present in the element_path, create separate file for each sub item
+        # if wildard is present in the element_path and the next path in the chain has current path as the parent,
+        # create separate file for each sub item
         # for example, in the first round we get the `targets` using the path `target-definition.targets.*`
         # so, now we need to split each of the target recursively. Note that target is an instance of dict
         # However, there can be other sub_model, which is of type list
@@ -205,7 +206,10 @@ class SplitCmd(Command):
 
                 # recursively split the sub-model if there are more element paths to traverse
                 # e.g. split target.target-control-implementations.*
-                if cur_path_index + 1 < len(element_paths):
+                require_recursive_split = cur_path_index + 1 < len(element_paths) and element_paths[
+                    cur_path_index + 1].get_parent() == element_path
+
+                if require_recursive_split:
                     # prepare individual directory for each sub-model
                     # e.g. `targets/<UUID>__target/`
                     sub_model_dir = cls.get_sub_model_dir(sub_models_dir, sub_model_item, prefix)
