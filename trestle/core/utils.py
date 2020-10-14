@@ -108,49 +108,6 @@ def get_inner_type(collection_field_type) -> Type[Any]:
         raise err.TrestleError('Model type is not a Dict or List')
 
 
-def get_singular_alias(alias_fullpath: str) -> str:
-    """Get the alias in the singular form from a jsonpath."""
-    singular_alias: str = ''
-
-    path_parts = alias_fullpath.split(const.ALIAS_PATH_SEPARATOR)
-    if len(path_parts) < 2:
-        raise err.TrestleError('Invalid jsonpath.')
-
-    model_types = []
-
-    root_model_alias = path_parts[0]
-    found = False
-    for module_name in const.MODELTYPE_TO_MODELMODULE.values():
-        model_type, model_alias = get_root_model(module_name)
-        if root_model_alias == model_alias:
-            found = True
-            model_types.append(model_type)
-            break
-
-    if not found:
-        raise err.TrestleError(f'{root_model_alias} is an invalid root model alias.')
-
-    model_type = model_types[0]
-    for i in range(1, len(path_parts)):
-        if is_collection_field_type(model_type):
-            model_type = get_inner_type(model_type)
-            i = i + 1
-        else:
-            model_type = model_type.alias_to_field_map()[path_parts[i]].outer_type_
-        model_types.append(model_type)
-
-    if not is_collection_field_type(model_type):
-        raise err.TrestleError('Not a valid generic collection model.')
-
-    last_alias = path_parts[-1]
-    parent_model_type = model_types[-2]
-    singular_alias = classname_to_alias(
-        get_inner_type(parent_model_type.alias_to_field_map()[last_alias].outer_type_).__name__, 'json'
-    )
-
-    return singular_alias
-
-
 def get_cwm(contextual_path: list) -> str:
     """
     Get current working module name based on the contextual path.

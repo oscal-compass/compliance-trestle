@@ -18,7 +18,7 @@ import pathlib
 from shutil import copyfile
 from typing import List
 
-from trestle.core import const, utils
+from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
@@ -107,8 +107,9 @@ def parse_element_arg(element_arg: str) -> List[ElementPath]:
             full_path = element_path.get_full_path_parts()
             path_str = ElementPath.PATH_SEPARATOR.join(full_path[:-1])
 
-            # get the parent model for the full path
-            parent_model = utils.get_singular_alias(path_str)
+            # get the parent model for the alias path
+            is_valid_project_model_path = fs.is_valid_project_model_path(pathlib.Path.cwd())
+            parent_model = fs.get_singular_alias(path_str, contextual_mode=is_valid_project_model_path)
 
             # store values for next cycle
             prev_element_path = element_path
