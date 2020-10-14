@@ -68,7 +68,11 @@ class ClassText():
         new_refs = p.findall(line)
         if new_refs:
             for r in new_refs:
-                self.refs.add(r)
+                if type(r) == tuple:
+                    for s in r:
+                        self.refs.add(s)
+                else:
+                    self.refs.add(r)
 
     @staticmethod
     def find_index(class_text_list, name):
@@ -84,8 +88,8 @@ class ClassText():
         # find lone strings with no brackets
         p = re.compile(r'.*\:\s*([^\s\[\]]+).*')
         self.add_ref_pattern(p, line)
-        # find objects in one or more bracket sets with possible ignored first token and comma
-        p = re.compile(r'\[(?:.*,\s*)?((?:\[??[^\[]*?))\]')
+        # find objects in one or more bracket sets with possible first token and comma
+        p = re.compile(r'\[(?:(.*),\s*)?((?:\[??[^\[]*?))\]')
         self.add_ref_pattern(p, line)
 
     def get_linked_refs(self, class_text_list, known_refs):
@@ -166,6 +170,7 @@ def reorder(class_list):
         for i, ro in enumerate(orders):
             if ro.latest_dep <= i <= ro.earliest_ref:
                 continue
+            # pop the out-of-place earliest ref and put it in front
             ct = class_list.pop(ro.earliest_ref)
             class_list.insert(i, ct)
             did_swap = True
