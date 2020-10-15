@@ -17,6 +17,7 @@
 #   filename:  oscal_catalog_schema.json
 #   timestamp: 2020-10-15T02:07:31+00:00
 
+
 from __future__ import annotations
 
 from datetime import datetime

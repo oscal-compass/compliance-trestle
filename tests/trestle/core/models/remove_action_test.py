@@ -38,7 +38,7 @@ def prepare_element(sample_target):
         })
     )
 
-    sub_element_path = ElementPath('metadata.parties.*')
+    sub_element_path = ElementPath('target-definition.metadata.parties.*')
     ac = UpdateAction(parties, element, sub_element_path)
     ac.execute()
 
@@ -50,7 +50,7 @@ def prepare_element(sample_target):
 def test_remove_action(sample_target):
     """Test remove action."""
     element = prepare_element(sample_target)
-    sub_element_path = ElementPath('metadata.parties')
+    sub_element_path = ElementPath('target-definition.metadata.parties')
     prev_sub_element = element.get_at(sub_element_path)
 
     rac = RemoveAction(element, sub_element_path)

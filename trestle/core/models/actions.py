@@ -23,6 +23,7 @@ from trestle.core.err import TrestleError
 from trestle.utils import fs
 
 from .elements import Element, ElementPath
+from .file_content_type import FileContentType
 
 
 class ActionType(Enum):
@@ -43,16 +44,6 @@ class ActionType(Enum):
 
     # remove the element at the path
     REMOVE = 21
-
-
-class FileContentType(Enum):
-    """File Content type for read/write."""
-
-    # JSON formatted content
-    JSON = 1
-
-    # YAML formatted content
-    YAML = 2
 
 
 class Action(ABC):
@@ -89,6 +80,13 @@ class Action(ABC):
     def has_rollback(self) -> bool:
         """Return if rollback of the action is possible."""
         return self._has_rollback
+
+    def __eq__(self, other):
+        """Check that two actions are equal."""
+        if self.get_type() is not other.get_type():
+            return False
+        is_eq = self.__dict__ == other.__dict__
+        return is_eq
 
     @abstractmethod
     def execute(self):
@@ -238,7 +236,7 @@ class CreatePathAction(Action):
 
         self._trestle_project_root = fs.get_trestle_project_root(sub_path)
         if self._trestle_project_root is None:
-            raise TrestleError('Sub path should be child of a valid trestle project')
+            raise TrestleError(f'Sub path "{sub_path}" should be child of a valid trestle project')
 
         self._sub_path = sub_path
         self._created_paths: List[pathlib.Path] = []

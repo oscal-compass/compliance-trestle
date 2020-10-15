@@ -25,6 +25,7 @@ from typing import Dict, List, Optional, Union
 
 from pydantic import AnyUrl, EmailStr, Field, constr, conlist
 
+
 from trestle.core.base_model import OscalBaseModel
 
 

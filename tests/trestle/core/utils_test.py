@@ -14,14 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for models util module."""
-
 import pathlib
 
-import trestle.core.utils as mutils
-import trestle.oscal.catalog as catalog
-import trestle.oscal.target as ostarget
+import pytest
 
-import yaml
+import trestle.core.err as err
+import trestle.core.utils as mutils
+import trestle.oscal.assessment_plan as assessment_plan
+import trestle.oscal.assessment_results as assessment_results
+import trestle.oscal.catalog as catalog
+import trestle.oscal.component as component
+import trestle.oscal.poam as poam
+import trestle.oscal.profile as profile
+import trestle.oscal.ssp as ssp
+import trestle.oscal.target as target
 
 
 def load_good_catalog():
@@ -48,41 +54,126 @@ def test_get_elements():
     assert (len(group_list) >= 2)
 
 
-def test_has_no_duplicate_values_generic():
-    """Test presence of duplicate uuid."""
-    # test with pydantic catalog
-    cat = load_good_catalog()
-    assert mutils.has_no_duplicate_values_generic(cat, 'uuid')
+def test_is_collection_field_type():
+    """Test for checking whether the type of a field in an OscalBaseModel object is a collection field."""
+    good_catalog = load_good_catalog()
 
-    yaml_path = pathlib.Path('tests/data/yaml')
+    assert mutils.is_collection_field_type(type('this is a string')) is False
 
-    # test with valid pydantic target
-    good_target_path = yaml_path / 'good_target.yaml'
-    good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
-    loe = mutils.find_values_by_name(good_target, 'uuid')
-    assert len(loe) == 5
-    assert mutils.has_no_duplicate_values_by_name(good_target, 'uuid')
+    assert mutils.is_collection_field_type(type(good_catalog)) is False  # Catalog
+    catalog_field = catalog.Model.alias_to_field_map()['catalog']
+    assert mutils.is_collection_field_type(catalog_field.outer_type_) is False  # Catalog
 
-    # test with pydantic target containing duplicates
-    bad_target_path = yaml_path / 'bad_target_dup_uuid.yaml'
-    bad_target = ostarget.TargetDefinition.oscal_read(bad_target_path)
-    assert not mutils.has_no_duplicate_values_by_name(bad_target, 'uuid')
+    assert mutils.is_collection_field_type(type(good_catalog.metadata)) is False  # Metadata
+    metadata_field = catalog.Catalog.alias_to_field_map()['metadata']
+    assert mutils.is_collection_field_type(metadata_field.outer_type_) is False  # Metadata
 
-    # test duplicates with raw yaml target, non-pydantic
-    read_file = bad_target_path.open('r', encoding='utf8')
-    bad_target_yaml = yaml.load(read_file, Loader=yaml.Loader)
-    assert not mutils.has_no_duplicate_values_generic(bad_target_yaml, 'uuid')
+    assert mutils.is_collection_field_type(type(good_catalog.metadata.roles)) is False  # list
+    roles_field = catalog.Metadata.alias_to_field_map()['roles']
+    assert mutils.is_collection_field_type(roles_field.outer_type_) is True  # List[Role]
+    assert mutils.is_collection_field_type(roles_field.type_) is False  # Role
+
+    assert mutils.is_collection_field_type(type(good_catalog.metadata.responsible_parties)) is False  # list
+    responsible_parties_field = catalog.Metadata.alias_to_field_map()['responsible-parties']
+    assert mutils.is_collection_field_type(responsible_parties_field.outer_type_) is True  # Dict[str, ResponsibleParty]
+    assert mutils.is_collection_field_type(responsible_parties_field.type_) is False  # ResponsibleParty
+
+    assert mutils.is_collection_field_type(
+        type(good_catalog.metadata.parties[0].addresses[0].postal_address)
+    ) is False  # list
+    postal_address_field = catalog.Address.alias_to_field_map()['postal-address']
+    assert mutils.is_collection_field_type(postal_address_field.outer_type_) is True  # List[AddrLine]
+    assert mutils.is_collection_field_type(postal_address_field.type_) is False  # AddrLine
 
 
-def test_has_no_duplicate_values_pydantic():
-    """Test presence of duplicate values in pydantic objects."""
-    # test with pydantic catalog - only one instance of Metadata
-    cat = load_good_catalog()
-    assert mutils.has_no_duplicate_values_by_type(cat, catalog.Metadata)
+def test_get_inner_type():
+    """Test retrievel of inner type of a model field representing a collection."""
+    good_catalog = load_good_catalog()
 
-    yaml_path = pathlib.Path('tests/data/yaml')
+    with pytest.raises(err.TrestleError):
+        # Type of catalog is not a collection field type
+        mutils.get_inner_type(type(good_catalog))
 
-    # test presence of many duplicate properties
-    good_target_path = yaml_path / 'good_target.yaml'
-    good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
-    assert not mutils.has_no_duplicate_values_by_type(good_target, ostarget.Prop)
+    with pytest.raises(err.TrestleError):
+        # Type of field catalog is not a collection field type
+        catalog_field = catalog.Model.alias_to_field_map()['catalog']
+        mutils.get_inner_type(catalog_field.outer_type_)
+
+    with pytest.raises(err.TrestleError):
+        # Type of roles object is not a collection field type
+        mutils.get_inner_type(type(good_catalog.metadata.roles))
+
+    # Type of field roles is a collection field type
+    roles_field = catalog.Metadata.alias_to_field_map()['roles']
+    role_type = mutils.get_inner_type(roles_field.outer_type_)
+    assert role_type == catalog.Role
+
+    with pytest.raises(err.TrestleError):
+        # Type of responsible_parties object is not a collection field type
+        mutils.get_inner_type(type(good_catalog.metadata.responsible_parties))
+
+    # Type of field responsible-parties is a collection field type
+    responsible_parties_field = catalog.Metadata.alias_to_field_map()['responsible-parties']
+    responsible_party_type = mutils.get_inner_type(responsible_parties_field.outer_type_)
+    assert responsible_party_type == catalog.ResponsibleParty
+
+
+def test_get_root_model():
+    """Test looking for the root model of a trestle oscal module."""
+    with pytest.raises(err.TrestleError):
+        mutils.get_root_model('invalid')
+
+    with pytest.raises(err.TrestleError):
+        mutils.get_root_model('pydantic')
+
+    malias_to_mtype = {
+        'catalog': catalog.Catalog,
+        'profile': profile.Profile,
+        'target-definition': target.TargetDefinition,
+        'component-definition': component.ComponentDefinition,
+        'system-security-plan': ssp.SystemSecurityPlan,
+        'assessment-plan': assessment_plan.AssessmentPlan,
+        'assessment-results': assessment_results.AssessmentResults,
+        'plan-of-action-and-milestones': poam.PlanOfActionAndMilestones
+    }
+    for key in malias_to_mtype:
+        module_name = malias_to_mtype[key].__module__
+        model_type, model_alias = mutils.get_root_model(module_name)
+        assert model_type == malias_to_mtype[key]
+        assert model_alias == key
+
+
+def test_classname_to_alias():
+    """Test conversion of class name to alias."""
+    module_name = catalog.Catalog.__module__
+
+    with pytest.raises(err.TrestleError):
+        mutils.classname_to_alias('any', 'invalid_mode')
+
+    short_classname = catalog.Catalog.__name__
+    full_classname = f'{module_name}.{short_classname}'
+    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    assert json_alias == 'catalog'
+    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    assert json_alias == 'catalog'
+
+    short_classname = catalog.ResponsibleParty.__name__
+    full_classname = f'{module_name}.{short_classname}'
+    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    assert json_alias == 'responsible-party'
+    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    assert json_alias == 'responsible_party'
+
+    short_classname = catalog.Prop.__name__
+    full_classname = f'{module_name}.{short_classname}'
+    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    assert json_alias == 'prop'
+    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    assert json_alias == 'prop'
+
+    short_classname = catalog.MemberOfOrganization.__name__
+    full_classname = f'{module_name}.{short_classname}'
+    json_alias = mutils.classname_to_alias(short_classname, 'json')
+    assert json_alias == 'member-of-organization'
+    json_alias = mutils.classname_to_alias(full_classname, 'field')
+    assert json_alias == 'member_of_organization'
