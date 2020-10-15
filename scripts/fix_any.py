@@ -216,6 +216,10 @@ def fix_file(fname):
                 class_text = ClassText(r)
             else:
                 if not done_header:  # still in header
+                    # block import of Any - should not be needed
+                    r = re.sub(' Any, ', ' ', r)
+                    # add import of conlist for Union[A, A] case
+                    r = re.sub(r'^(from\s+pydantic\s+import.*)$', r'\1, conlist', r)
                     header.append(r.rstrip())
                 else:  # in body of class looking for Any's
                     n1 = r.find(pattern1)
@@ -235,6 +239,8 @@ def fix_file(fname):
                     else:
                         # for a line that has no Any's, use regex to find referenced class names
                         class_text.add_all_refs(r)
+                    # fix any line containing Union[A, A] to Union[A, conlist(A, min_items=2)]
+                    r = re.sub(r'Union\[([^,]*),\s*\1\]', r'Union[\1, conlist(\1, min_items=2)]', r)
                     class_text.add_line(r.rstrip())
 
     all_classes.append(class_text)  # don't forget final class
