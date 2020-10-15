@@ -35,6 +35,9 @@ MODELTYPE_TO_MODELMODULE = {
     'plan-of-action-and-milestones': f'{PACKAGE_OSCAL}.poam'
 }
 
+# path separator
+ALIAS_PATH_SEPARATOR: str = '.'
+
 # argument names
 ARG_FILE = 'file'
 ARG_FILE_SHORT = 'f'

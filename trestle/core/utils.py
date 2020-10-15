@@ -91,8 +91,8 @@ def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
         raise err.TrestleError('Invalid module')
 
 
-def is_collection_field_type(field_type: Type[Any]) -> bool:
-    """Check if model type is a  a generic collection model such as a typed list or a typed dict."""
+def is_collection_field_type(field_type) -> bool:
+    """Check if model type is a generic collection model such as a typed list or a typed dict."""
     if hasattr(field_type, '__origin__') and hasattr(field_type, '__args__') and (list in field_type.mro()
                                                                                   or dict in field_type.mro()):
         return True
@@ -106,16 +106,6 @@ def get_inner_type(collection_field_type) -> Type[Any]:
         return collection_field_type.__args__[-1]
     else:
         raise err.TrestleError('Model type is not a Dict or List')
-
-
-def get_singular_alias_from_collection_model(model) -> str:
-    """Get the alias in the singular form of the collection model."""
-    singular_model_class = get_inner_type(model)
-    if isinstance(singular_model_class, type):
-        singular_model_name = singular_model_class.__name__
-    else:
-        raise err.TrestleError('Cannot retrieve name of inner class')
-    return camel_to_dash(singular_model_name)
 
 
 def get_cwm(contextual_path: list) -> str:
