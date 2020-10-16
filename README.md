@@ -1,5 +1,11 @@
 # Compliance-trestle aka trestle
 
+[![OS Compatibility][platform-badge]](<#prerequisites>)
+[![Python Compatibility][python-badge]][python]
+[![pre-commit][pre-commit-badge]][pre-commit]
+[![code-coverage][coverage-badge]][coverage]
+[![pypi-downloads][pypi-downloads-badge]][pypi]
+
 Trestle is a tool that enables the creation and validation of documentation artifacts for compliance requirements. It leverages NIST's [OSCAL](<https://pages.nist.gov/OSCAL/documentation/>) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
 By design Trestle runs as a CICD pipeline running on top of compliance artifacts in `git` to provide transparency to the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the artifacts generated to tools that orchestrate the enforcement, measurement and reporting of compliance.
@@ -103,3 +109,13 @@ Consult [MAINTAINERS](<MAINTAINERS.md>) for a list of authors.
 # limitations under the License.
 
 ```
+
+[coverage]: https://codecov.io/gh/IBM/compliance-trestle
+[coverage-badge]: https://codecov.io/gh/IBM/compliance-trestle/branch/develop/graph/badge.svg?token=1AUXDAF3OB
+[platform-badge]: https://img.shields.io/badge/platform-osx%20%7C%20linux-orange.svg
+[pre-commit]: https://github.com/pre-commit/pre-commit
+[pre-commit-badge]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+[pypi]: https://pypi.org/project/compliance-trestle/
+[pypi-downloads-badge]: https://img.shields.io/pypi/dm/compliance-trestle
+[python]: https://www.python.org/downloads/
+[python-badge]: https://img.shields.io/badge/python-v3.6+-blue.svg
