@@ -95,6 +95,7 @@ def test_element_path_get(sample_target: target.TargetDefinition):
     assert ElementPath('target-definition.metadata.title').get_last() == 'title'
     assert ElementPath('target-definition.metadata').get_last() == 'metadata'
     assert ElementPath('target-definition.metadata.parties.*').get_last() == '*'
+    assert ElementPath('target-definition.metadata.title').get_full() == 'target-definition.metadata.title'
 
 
 def test_element_path_str():
