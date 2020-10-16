@@ -21,7 +21,6 @@ from pydantic import Field, create_model
 from pydantic.error_wrappers import ValidationError
 
 import trestle.core.const as const
-import trestle.core.utils as utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError, TrestleNotFoundError
 from trestle.core.models.file_content_type import FileContentType
@@ -70,8 +69,6 @@ class ElementPath:
         if parts[-1] == self.WILDCARD:
             if len(parts) == 1:
                 raise TrestleError(f'Invalid path {element_path} with wildcard.')
-            elif len(parts) == 2 and self._parent_path is None:
-                raise TrestleError(f'Invalid path {element_path} with wildcard. It should have a parent path.')
 
         if len(parts) <= 1:
             raise TrestleError(
@@ -86,7 +83,7 @@ class ElementPath:
         return self._path
 
     def to_string(self) -> str:
-        """Return the path parts as a list."""
+        """Return the path parts as a comma-separated string."""
         return self.PATH_SEPARATOR.join(self.get())
 
     def get_parent(self):
@@ -103,6 +100,11 @@ class ElementPath:
     def get_last(self) -> str:
         """Return the last part of the path."""
         return self._path[-1]
+
+    def get_full(self) -> str:
+        """Return the full path including parent path parts as a dot separated str."""
+        all_parts = self.get_full_path_parts()
+        return self.PATH_SEPARATOR.join(all_parts)
 
     def get_element_name(self):
         """Return the element alias name from the path.
@@ -200,9 +202,10 @@ class Element:
 
     _allowed_sub_element_types: List[str] = ['Element', 'OscalBaseModel', 'list', 'None']
 
-    def __init__(self, elem: OscalBaseModel):
+    def __init__(self, elem: OscalBaseModel, wrapper_alias: str = ''):
         """Initialize an element wrapper."""
         self._elem: OscalBaseModel = elem
+        self._wrapper_alias: str = wrapper_alias
 
     def get(self) -> OscalBaseModel:
         """Return the model object."""
@@ -231,7 +234,9 @@ class Element:
         # TODO validate that self._elem is of same type as root_model
 
         # initialize the starting element for search
-        elm: OscalBaseModel = self._elem
+        elm = self._elem
+        if hasattr(elm, '__root__') and (isinstance(elm.__root__, dict) or isinstance(elm.__root__, list)):
+            elm = elm.__root__
 
         # if parent exists and does not end with wildcard, use the parent as the starting element for search
         if element_path.get_parent() is not None and element_path.get_parent().get_last() != ElementPath.WILDCARD:
@@ -246,6 +251,7 @@ class Element:
                 break
 
             # process for wildcard and array indexes
+
             if attr == ElementPath.WILDCARD:
                 break
             elif attr.isnumeric():
@@ -344,33 +350,16 @@ class Element:
 
     def to_json(self):
         """Convert into JSON string."""
-        if issubclass(self._elem.__class__, OscalBaseModel):
-            wrapped_model = self.oscal_wrapper()
-            json_data = wrapped_model.json(exclude_none=True, by_alias=True, indent=4)
+        if self._wrapper_alias == '':
+            json_data = json.dumps(self._elem, sort_keys=False, indent=4)
         else:
-            json_data = json.dumps(self._elem, indent=2, sort_keys=False)
+            dynamic_passer = {}
+            dynamic_passer['TransientField'] = (self._elem.__class__, Field(self, alias=self._wrapper_alias))
+            wrapper_model = create_model('TransientModel', __base__=OscalBaseModel, **dynamic_passer)
+            wrapped_model = wrapper_model(**{self._wrapper_alias: self._elem})
+            json_data = wrapped_model.json(exclude_none=True, by_alias=True, indent=4)
 
         return json_data
-
-    def oscal_wrapper(self):
-        """Create OSCAL wrapper model for read and write."""
-        class_name = self._elem.__class__.__name__
-        # It would be nice to pass through the description but I can't seem to and
-        # it does not affect the output
-        dynamic_passer = {}
-        dynamic_passer[utils.classname_to_alias(class_name, 'field')] = (
-            self._elem.__class__,
-            Field(
-                self,
-                title=utils.classname_to_alias(class_name, 'field'),
-                alias=utils.classname_to_alias(class_name, 'json')
-            )
-        )
-        wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_passer)
-        # Default behaviour is strange here.
-        wrapped_model = wrapper_model(**{utils.classname_to_alias(class_name, 'json'): self._elem})
-
-        return wrapped_model
 
     @classmethod
     def get_sub_element_class(cls, parent_elm: OscalBaseModel, sub_element_name: str):
