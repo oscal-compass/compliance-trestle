@@ -21,10 +21,12 @@ import pathlib
 
 import trestle.core.const as const
 from trestle.core.models.elements import Element, ElementPath
-from trestle.core.models.actions import UpdateAction
+from trestle.core.models.actions import UpdateAction, WriteFileAction, CreatePathAction
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.core.commands import cmd_utils
 from trestle.core import utils
+from trestle.utils import fs
 import trestle.core.err as err
 
 class AddCmd(Command):
@@ -47,14 +49,16 @@ class AddCmd(Command):
     def _run(self, args):
         """Add an OSCAL component/subcomponent to the specified component."""
 
-        elements = "metadata.roles"
+        elements = "catalog.metadata.roles"
+        file = "./catalog.json"
         # TODO: what happens during cases like "metadata.responsible-parties.creator"?
         #       what about "metadata.groups."?
 
         # Get parent model and then load json into parent model
-        parent_model, parent_alias = utils.get_contextual_model()
-        file_path = pathlib.Path(f'{parent_alias}.json')
-        parent_element = parent_model.oscal_read(file_path.absolute())
+        file_path = pathlib.Path(file)
+        parent_model, parent_alias = fs.get_contextual_model_type(file_path.absolute(), False)
+        parent_object = parent_model.oscal_read(file_path.absolute())
+        parent_element = Element(parent_object)
 
         # Get child model
         element_path = ElementPath(elements)
@@ -65,18 +69,21 @@ class AddCmd(Command):
             raise err.TrestleError('Bad element path')
 
         # Create child element with sample values
-        child_element = utils.get_sample_model(child_model)
+        child_object = utils.get_sample_model(child_model)
 
-
-        update_action = UpdateAction(sub_element=child_element, dest_element=Element(parent_element), sub_element_path= element_path)
+        update_action = UpdateAction(sub_element=child_object, dest_element=parent_element, sub_element_path= element_path)
+        create_action = CreatePathAction(file_path.absolute())
+        write_action = WriteFileAction(file_path.absolute(), parent_element, FileContentType.to_content_type(file_path.suffix))
 
         add_plan = Plan()
         add_plan.add_action(update_action)
+        add_plan.add_action(create_action)
+        add_plan.add_action(write_action)
         add_plan.simulate()
 
+        cmd_utils.move_to_trash(file_path)
+        
         add_plan.execute()
-
-        print(parent_element)
 
 if __name__ == '__main__':
     import os

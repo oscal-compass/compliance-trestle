@@ -15,6 +15,7 @@
 """Utilities for dealing with models."""
 import importlib
 import warnings
+import uuid
 from pathlib import Path
 from typing import Any, List, Optional, Tuple, Type, no_type_check, Union
 
@@ -25,6 +26,7 @@ from datetime import datetime
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core.base_model import OscalBaseModel
+from pydantic import ConstrainedStr
 
 
 def get_elements_of_model_type(object_of_interest, type_of_interest):
@@ -196,14 +198,14 @@ def get_target_model(element_path_parts: List[str], current_model) -> BaseModel:
     """
     Get the target model from the parts of a Element Path.
     """
-    # FIXME: assumption here is that element path parts are model's field names
+    # assumption here is that element path parts are model's field names
     try:
-        for element_part in element_path_parts:
-            if is_collection_model(current_model):
+        for index in range(1, len(element_path_parts)):
+            if is_collection_field_type(current_model):
                 # Return the model class inside the collection
                 current_model = get_inner_model(current_model)
             else:
-                current_model = current_model.get_fields_by_alias()[element_part].outer_type_
+                current_model = current_model.alias_to_field_map()[element_path_parts[index]].outer_type_
         return current_model
     except Exception as e:
         raise err.TrestleError('Bad element path')
@@ -211,22 +213,28 @@ def get_target_model(element_path_parts: List[str], current_model) -> BaseModel:
 def get_sample_model(model : BaseModel) -> OscalBaseModel:
     """ Given a model class, generate an object of that class with sample values"""
     model_type = BaseModel
-    if is_collection_model(model):
+    if is_collection_field_type(model):
         model_type = model.__origin__
-        model = get_inner_model(model)
+        model = get_inner_type(model)
 
     model_dict = {}
 
     for field in model.__fields__:
         if model.__fields__[field].required :
-            model_dict[field]= get_sample_value_by_type(model.__fields__[field].type_)
+            ''' FIXME: This type_ could be a List or a Dict '''
+            if is_collection_field_type(model.__fields__[field].outer_type_) or issubclass(model.__fields__[field].outer_type_, BaseModel):
+                model_dict[field] = get_sample_model(model.__fields__[field].outer_type_)
+            else:
+                model_dict[field]= get_sample_value_by_type(model.__fields__[field].outer_type_, field)
     
     if model_type is list:
         return [model(** model_dict)]
+    elif model_type is dict:
+        return [{"REPLACE_ME": model(** model_dict)}]
     return model(** model_dict)
 
 
-def get_sample_value_by_type(type_: type) -> Union[datetime, bool, int, str, float]:
+def get_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bool, int, str, float]:
     """Given a type, return sample value"""
     # FIXME: uuid type and sample value?
     if type_ is datetime: 
@@ -235,12 +243,20 @@ def get_sample_value_by_type(type_: type) -> Union[datetime, bool, int, str, flo
         return False
     elif type_ is int:
         return 0
-    elif type_ is str: 
+    elif type_ is str:
         return "REPLACE_ME"
     elif type_ is float: 
         return 0.00
-    elif issubclass(type_, BaseModel):
-        return get_sample_model(type_)
+    # elif issubclass(type_, BaseModel):
+    #     return get_sample_model(type_)
+    elif issubclass(type_, ConstrainedStr):
+        ''' 
+        FIXME: It could be uuid_ref and not uuid. For uuid_ref return uuid format.
+        One assumption - all ConstrainedStr are under uuid_ref fields.
+        '''
+        if field_name is 'uuid':
+            return str(uuid.uuid4())
+        return '00000000-0000-4000-8000-000000000000'
     else:
         # FIXME: handle cases when the field is another OscalBaseModel
         raise err.TrestleError("Fatal: Bad type in model")

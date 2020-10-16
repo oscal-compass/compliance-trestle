@@ -109,7 +109,7 @@ def has_trestle_project_in_path(path: pathlib.Path) -> bool:
 
 
 def get_contextual_model_type(path: pathlib.Path = None, strip_model: bool = True) -> Tuple[Type[OscalBaseModel], str]:
-    """Get the contextual model class and alias based on the contextual path."""
+    """Get the contextual model class and alias based on the contextual path. Input param path here is absolute path."""
     if path is None:
         path = pathlib.Path.cwd()
 
