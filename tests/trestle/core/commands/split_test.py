@@ -34,26 +34,34 @@ from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.oscal.target import Target, TargetDefinition
+from trestle.oscal import target as ostarget
 from trestle.utils import fs
 
 
-def test_split_model(tmp_dir, sample_target: TargetDefinition):
+def prepare_trestle_project_dir(tmp_dir, content_type: FileContentType, sample_target: ostarget.TargetDefinition):
+    """Prepare a temp directory with an example OSCAL model."""
+    test_utils.ensure_trestle_config_dir(tmp_dir)
+    file_ext = FileContentType.to_file_extension(content_type)
+    target_def_dir = tmp_dir / 'target-definitions' / 'mytarget'
+    target_def_file = target_def_dir / f'target-definition{file_ext}'
+    fs.ensure_directory(target_def_dir)
+    sample_target.oscal_write(target_def_file)
+
+    return target_def_dir, target_def_file
+
+
+def test_split_model(tmp_dir, sample_target: ostarget.TargetDefinition):
     """Test for split_model method."""
     # Assume we are running a command like below
     # trestle split -f target-definition.yaml -e target-definition.metadata
 
-    # prepare trestle project dir with the file
-    test_utils.ensure_trestle_config_dir(tmp_dir)
-    target_def_dir = tmp_dir / 'target-definitions' / 'mytarget'
-    target_def_file = target_def_dir / 'target-definition.yaml'
-    fs.ensure_directory(target_def_dir)
-    sample_target.oscal_write(target_def_file)
-
     content_type = FileContentType.YAML
 
+    # prepare trestle project dir with the file
+    target_def_dir, target_def_file = prepare_trestle_project_dir(tmp_dir, content_type, sample_target)
+
     # read the model from file
-    target_def = TargetDefinition.oscal_read(target_def_file)
+    target_def = ostarget.TargetDefinition.oscal_read(target_def_file)
     element = Element(target_def)
     element_args = ['target-definition.metadata']
     element_paths = cmd_utils.parse_element_args(element_args)
@@ -76,7 +84,56 @@ def test_split_model(tmp_dir, sample_target: TargetDefinition):
     assert expected_plan == split_plan
 
 
-def test_split_multi_level_dict(tmp_dir, sample_target):
+def test_subsequent_split_model(tmp_dir, sample_target: ostarget.TargetDefinition):
+    """Test subsequent split of sub models."""
+    # Assume we are running a command like below
+    # trestle split -f target-definition.yaml -e target-definition.metadata
+
+    content_type = FileContentType.YAML
+
+    # prepare trestle project dir with the file
+    target_def_dir, target_def_file = prepare_trestle_project_dir(tmp_dir, content_type, sample_target)
+
+    # first split the target-def into metadata
+    target_def = ostarget.TargetDefinition.oscal_read(target_def_file)
+    element = Element(target_def)
+    element_args = ['target-definition.metadata']
+    element_paths = cmd_utils.parse_element_args(element_args)
+    metadata_file = target_def_dir / element_paths[0].to_file_path(content_type)
+    metadata: ostarget.Metadata = element.get_at(element_paths[0])
+    root_file = target_def_dir / element_paths[0].to_root_path(content_type)
+    remaining_root = element.get().stripped_instance(element_paths[0].get_element_name())
+    first_plan = Plan()
+    first_plan.add_action(CreatePathAction(metadata_file))
+    first_plan.add_action(WriteFileAction(metadata_file, Element(metadata), content_type))
+    first_plan.add_action(CreatePathAction(root_file))
+    first_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
+    first_plan.execute()  # this will split the files in the temp directory
+
+    # now, prepare the expected plan to split metadta at parties
+    second_plan = Plan()
+    element_args = ['metadata.parties.*']
+    element_paths = cmd_utils.parse_element_args(element_args)
+    metadata2 = ostarget.Metadata.oscal_read(metadata_file)
+    element = Element(metadata2)
+    parties_dir = target_def_dir / 'metadata/parties'
+    for i, party in enumerate(element.get_at(element_paths[0])):
+        prefix = str(i).zfill(4)
+        sub_model_actions = SplitCmd.prepare_sub_model_split_actions(party, parties_dir, prefix, content_type)
+        second_plan.add_actions(sub_model_actions)
+
+    # stripped metadata
+    stripped_metadata = metadata2.stripped_instance(stripped_fields_aliases=['parties'])
+    second_plan.add_action(CreatePathAction(metadata_file))
+    second_plan.add_action(WriteFileAction(metadata_file, Element(stripped_metadata), content_type))
+
+    # call the split command and compare the plans
+    split_plan = SplitCmd.split_model(metadata, element_paths, target_def_dir, content_type)
+    split_plan.execute()
+    assert second_plan == split_plan
+
+
+def test_split_multi_level_dict(tmp_dir, sample_target: ostarget.TargetDefinition):
     """Test for split_model method."""
     # Assume we are running a command like below
     # trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*
@@ -92,7 +149,7 @@ def test_split_multi_level_dict(tmp_dir, sample_target):
     file_ext = FileContentType.to_file_extension(content_type)
 
     # read the model from file
-    target_def = TargetDefinition.oscal_read(target_def_file)
+    target_def: ostarget.TargetDefinition = ostarget.TargetDefinition.oscal_read(target_def_file)
     element = Element(target_def)
     element_args = ['target-definition.targets.*.target-control-implementations.*']
     element_paths: List[ElementPath] = cmd_utils.parse_element_args(element_args)
@@ -113,7 +170,7 @@ def test_split_multi_level_dict(tmp_dir, sample_target):
     # split every targets
     for key in targets:
         # individual target dir
-        target: Target = targets[key]
+        target: ostarget.Target = targets[key]
         target_element = Element(targets[key])
         model_type = utils.classname_to_alias(type(target).__name__, 'json')
         dir_prefix = key
@@ -156,7 +213,7 @@ def test_split_multi_level_dict(tmp_dir, sample_target):
     assert expected_plan == split_plan
 
 
-def test_split_run(tmp_dir, sample_target: TargetDefinition):
+def test_split_run(tmp_dir, sample_target: ostarget.TargetDefinition):
     """Test split run."""
     # common variables
     target_def_dir: pathlib.Path = tmp_dir / 'target-definitions' / 'mytarget'
@@ -211,7 +268,7 @@ def test_split_run(tmp_dir, sample_target: TargetDefinition):
     check_split_files()
 
 
-def test_split_run_failure(tmp_dir, sample_target):
+def test_split_run_failure(tmp_dir, sample_target: ostarget.TargetDefinition):
     """Test split run failure."""
     # prepare trestle project dir with the file
     target_def_dir: pathlib.Path = tmp_dir / 'target-definitions' / 'mytarget'
