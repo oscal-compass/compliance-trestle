@@ -17,6 +17,8 @@
 
 import pathlib
 
+import pytest
+
 from tests import test_utils
 
 from trestle.core.err import TrestleError
@@ -27,19 +29,15 @@ def test_create_path_execute(tmp_dir: pathlib.Path):
     """Test create path execute."""
     tmp_data_dir = tmp_dir.joinpath('data')
 
-    try:
+    with pytest.raises(TrestleError):
         # no trestle project should error
         cpa = CreatePathAction(tmp_data_dir)
-    except TrestleError:
-        pass
 
     test_utils.ensure_trestle_config_dir(tmp_dir)
 
-    try:
+    with pytest.raises(TrestleError):
         # invalid sub_path type should error
         cpa = CreatePathAction(('tests/invalid/sub_path'))
-    except TrestleError:
-        pass
 
     # create directories
     cpa = CreatePathAction(tmp_data_dir)
@@ -67,6 +65,55 @@ def test_create_path_execute(tmp_dir: pathlib.Path):
     cpa.rollback()
     assert tmp_data_dir.exists() is False
     assert tmp_data_dir_file.exists() is False
+
+
+def test_create_path_with_content_clear_option(tmp_dir: pathlib.Path):
+    """Test create path with content clear option."""
+    # create trestle project
+    test_utils.ensure_trestle_config_dir(tmp_dir)
+
+    # create directories and a file
+    tmp_data_dir = tmp_dir.joinpath('data')
+    tmp_data_dir_file = tmp_data_dir.joinpath('readme.md')
+    cpa = CreatePathAction(tmp_data_dir_file)
+    cpa.execute()
+    assert len(cpa.get_created_paths()) == 2
+    assert tmp_data_dir.exists()
+    assert tmp_data_dir_file.exists()
+
+    # write some content in the file
+    file_pos = 0
+    dummy_data = ''
+    with open(tmp_data_dir_file, 'a+') as fp:
+        fp.write(dummy_data)
+        file_pos = fp.tell()
+    assert file_pos >= 0
+
+    # create action to create a file without clearing content
+    cpa = CreatePathAction(tmp_data_dir_file, clear_content=False)
+    cpa.execute()
+    assert len(cpa.get_created_paths()) == 0
+    assert tmp_data_dir_file.exists()
+    with open(tmp_data_dir_file, 'a+') as fp:
+        assert file_pos == fp.tell()
+
+    # create action to create a file with clearing content
+    cpa = CreatePathAction(tmp_data_dir_file, clear_content=True)
+    cpa.execute()
+    assert len(cpa.get_created_paths()) == 0
+    assert tmp_data_dir_file.exists()
+    with open(tmp_data_dir_file, 'a+') as fp:
+        assert 0 == fp.tell()
+        data = fp.readline()
+        assert data == ''
+
+    # rollback should bring back the cleared content
+    cpa.rollback()
+    assert tmp_data_dir.exists()
+    assert tmp_data_dir_file.exists()
+    with open(tmp_data_dir_file, 'a+') as fp:
+        assert file_pos == fp.tell()
+        dummy_data == fp.readline()
 
 
 def test_create_path_magic_methods(tmp_dir):
