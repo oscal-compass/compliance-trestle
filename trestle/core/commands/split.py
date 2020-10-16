@@ -97,7 +97,7 @@ class SplitCmd(Command):
         file_name = f'{file_prefix}{const.IDX_SEP}{model_type}{file_ext}'
         sub_model_file = sub_model_dir / file_name
         actions.append(CreatePathAction(sub_model_file))
-        actions.append(WriteFileAction(sub_model_file, Element(sub_model_item), content_type))
+        actions.append(WriteFileAction(sub_model_file, Element(sub_model_item, model_type), content_type))
         return actions
 
     @classmethod
@@ -168,7 +168,7 @@ class SplitCmd(Command):
         # value of this variable may change during recursive split of the sub-models below
         path_chain_end = cur_path_index
 
-        # if wildard is present in the element_path and the next path in the chain has current path as the parent,
+        # if wildcard is present in the element_path and the next path in the chain has current path as the parent,
         # create separate file for each sub item
         # for example, in the first round we get the `targets` using the path `target-definition.targets.*`
         # so, now we need to split each of the target recursively. Note that target is an instance of dict
@@ -235,7 +235,9 @@ class SplitCmd(Command):
             # so no recursive call. Let's just write the sub model to the file and get out
             sub_model_file = base_dir / element_path.to_file_path(content_type)
             split_plan.add_action(CreatePathAction(sub_model_file))
-            split_plan.add_action(WriteFileAction(sub_model_file, Element(sub_models), content_type))
+            split_plan.add_action(
+                WriteFileAction(sub_model_file, Element(sub_models, element_path.get_element_name()), content_type)
+            )
 
         # Strip the root model and add a WriteAction for the updated model object in the plan
         if strip_root:
@@ -243,7 +245,8 @@ class SplitCmd(Command):
             stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
             root_file = base_dir / element_path.to_root_path(content_type)
             split_plan.add_action(CreatePathAction(root_file))
-            split_plan.add_action(WriteFileAction(root_file, Element(stripped_root), content_type))
+            wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
+            split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
 
         # return the end of the current path chain
         return path_chain_end
@@ -273,7 +276,13 @@ class SplitCmd(Command):
         cur_path_index = 0
         while cur_path_index < len(element_paths):
             # extract the sub element name for each of the root path of the path chain
-            stripped_field_alias.append(element_paths[cur_path_index].get_element_name())
+            element_path = element_paths[cur_path_index]
+            if len(element_path.get()) > 1:
+                stripped_part = element_path.get()[1]
+                if stripped_part == ElementPath.WILDCARD:
+                    stripped_field_alias.append('__root__')
+                else:
+                    stripped_field_alias.append(stripped_part)
 
             # split model at the path chain
             cur_path_index = cls.split_model_at_path_chain(
@@ -286,6 +295,7 @@ class SplitCmd(Command):
         stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
         root_file = base_dir / element_paths[0].to_root_path(content_type)
         split_plan.add_action(CreatePathAction(root_file))
-        split_plan.add_action(WriteFileAction(root_file, Element(stripped_root), content_type))
+        wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
+        split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
 
         return split_plan
