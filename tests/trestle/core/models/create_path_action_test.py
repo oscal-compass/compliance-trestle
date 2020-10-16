@@ -115,6 +115,16 @@ def test_create_path_with_content_clear_option(tmp_dir: pathlib.Path):
         assert file_pos == fp.tell()
         dummy_data == fp.readline()
 
+    # clearing content on direction should have no effect of the flag
+    tmp_data_dir2 = tmp_dir / 'data2'
+    tmp_data_dir2.mkdir()
+    cpa = CreatePathAction(tmp_data_dir2, clear_content=True)
+    cpa.execute()
+    assert len(cpa.get_created_paths()) == 0
+    assert tmp_data_dir2.exists()
+    cpa.rollback()
+    assert tmp_data_dir2.exists()
+
 
 def test_create_path_magic_methods(tmp_dir):
     """Test create path magic methods."""
