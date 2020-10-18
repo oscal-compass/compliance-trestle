@@ -189,8 +189,8 @@ class SplitCmd(Command):
             sub_model_items: Dict[str, OscalBaseModel] = {}
             if isinstance(sub_models, list):
                 for i, sub_model_item in enumerate(sub_models):
-                    # e.g. `groups/0000_groups/`
-                    prefix = str(i).zfill(4)
+                    # e.g. `groups/00000_groups/`
+                    prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
                     sub_model_items[prefix] = sub_model_item
             elif isinstance(sub_models, dict):
                 # prefix is the key of the dict

@@ -118,7 +118,7 @@ def test_subsequent_split_model(tmp_dir, sample_target: ostarget.TargetDefinitio
     element = Element(metadata2)
     parties_dir = target_def_dir / 'metadata/parties'
     for i, party in enumerate(element.get_at(element_paths[0])):
-        prefix = str(i).zfill(4)
+        prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
         sub_model_actions = SplitCmd.prepare_sub_model_split_actions(party, parties_dir, prefix, content_type)
         second_plan.add_actions(sub_model_actions)
 
