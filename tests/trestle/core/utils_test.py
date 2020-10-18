@@ -177,3 +177,12 @@ def test_classname_to_alias():
     assert json_alias == 'member-of-organization'
     json_alias = mutils.classname_to_alias(full_classname, 'field')
     assert json_alias == 'member_of_organization'
+
+
+def test_alias_to_classname():
+    """Test alias_to_classname function."""
+    assert mutils.alias_to_classname('target-definition', 'json') == 'TargetDefinition'
+    assert mutils.alias_to_classname('target_definition', 'field') == 'TargetDefinition'
+
+    with pytest.raises(err.TrestleError):
+        assert mutils.alias_to_classname('target-definition', 'invalid') == 'TargetDefinition'

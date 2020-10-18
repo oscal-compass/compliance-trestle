@@ -32,6 +32,7 @@ def test_element_path_init(sample_target: target.TargetDefinition):
     assert ElementPath('target-definition.metadata.parties.0.uuid').get() == [
         'target-definition', 'metadata', 'parties', '0', 'uuid'
     ]
+    assert ElementPath('groups.*').get() == ['groups', '*']
 
     # expect error
     with pytest.raises(TrestleError):
@@ -60,10 +61,6 @@ def test_element_path_init(sample_target: target.TargetDefinition):
     # expect error
     with pytest.raises(TrestleError):
         ElementPath('catalog')
-
-    # expect error
-    with pytest.raises(TrestleError):
-        ElementPath('groups.*')
 
 
 def test_element_path_get_element_name(sample_target: target.TargetDefinition):
@@ -98,6 +95,7 @@ def test_element_path_get(sample_target: target.TargetDefinition):
     assert ElementPath('target-definition.metadata.title').get_last() == 'title'
     assert ElementPath('target-definition.metadata').get_last() == 'metadata'
     assert ElementPath('target-definition.metadata.parties.*').get_last() == '*'
+    assert ElementPath('target-definition.metadata.title').get_full() == 'target-definition.metadata.title'
 
 
 def test_element_path_str():

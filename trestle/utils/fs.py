@@ -21,6 +21,8 @@ import os
 import pathlib
 from typing import Optional, Tuple
 
+from pydantic import create_model
+
 from trestle.core import const
 from trestle.core import err
 from trestle.core import utils
@@ -195,7 +197,11 @@ def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[OscalBaseM
     model_type, model_alias = get_contextual_model_type(path)
 
     # Stripped models do not apply to collection types such as List[] and Dict{}
+    # if model type is a list or dict, generate a new wrapping model for it
     if utils.is_collection_field_type(model_type):
+        malias = model_alias.split('.')[-1]
+        class_name = utils.alias_to_classname(malias, 'json')
+        model_type = create_model(class_name, __base__=OscalBaseModel, __root__=(model_type, ...))
         return model_type, model_alias
 
     malias = model_alias.split('.')[-1]
