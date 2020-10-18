@@ -83,7 +83,7 @@ class ElementPath:
         return self._path
 
     def to_string(self) -> str:
-        """Return the path parts as a comma-separated string."""
+        """Return the path parts as a dot-separated string."""
         return self.PATH_SEPARATOR.join(self.get())
 
     def get_parent(self):
