@@ -15,21 +15,20 @@
 # limitations under the License.
 """Trestle Split Command."""
 import pathlib
-from typing import List
+from typing import Dict, List
 
 from ilcli import Command
 
 from trestle.core import const
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.commands import cmd_utils
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import Action, CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs
-
-from . import cmd_utils
 
 
 class SplitCmd(Command):
@@ -63,7 +62,9 @@ class SplitCmd(Command):
         file_absolute_path = pathlib.Path(file_path.absolute())
         base_dir = file_absolute_path.parent
 
-        model_type, model_alias = fs.get_contextual_model_type(file_absolute_path)
+        model_type, _ = fs.get_stripped_contextual_model(file_absolute_path)
+
+        # FIXME: Handle list/dicts
         model: OscalBaseModel = model_type.oscal_read(file_path)
 
         element_paths: List[ElementPath] = cmd_utils.parse_element_args(args[const.ARG_ELEMENT].split(','))
@@ -71,7 +72,7 @@ class SplitCmd(Command):
         split_plan = self.split_model(model, element_paths, base_dir, content_type)
 
         # Simulate the plan
-        # if it fails, it would through errors and get out of this command
+        # if it fails, it would throw errors and get out of this command
         split_plan.simulate()
 
         # If we are here then simulation passed
@@ -82,7 +83,7 @@ class SplitCmd(Command):
         split_plan.execute()
 
     @classmethod
-    def sub_model_split_actions(
+    def prepare_sub_model_split_actions(
         cls,
         sub_model_item: OscalBaseModel,
         sub_model_dir: pathlib.Path,
@@ -100,77 +101,187 @@ class SplitCmd(Command):
         return actions
 
     @classmethod
-    def split_model(
+    def get_sub_model_dir(cls, base_dir: pathlib.Path, sub_model: OscalBaseModel, dir_prefix: str) -> pathlib.Path:
+        """Get the directory path for the given model."""
+        model_type = utils.classname_to_alias(type(sub_model).__name__, 'json')
+        dir_name = f'{dir_prefix}{const.IDX_SEP}{model_type}'
+        sub_model_dir = base_dir / dir_name
+
+        return sub_model_dir
+
+    @classmethod
+    def split_model_at_path_chain(
         cls,
-        model: OscalBaseModel,
+        model_obj: OscalBaseModel,
         element_paths: List[ElementPath],
         base_dir: pathlib.Path,
         content_type: FileContentType,
-        cur_path_index: int = 0,
-        split_plan: Plan = None
+        cur_path_index: int,
+        split_plan: Plan,
+        strip_root: bool
+    ) -> Plan:
+        """Recursively split the model at the provided chain of element paths.
+
+        It assumes that a chain of element paths starts at the cur_path_index with the first path ending
+        with a wildcard (*)
+
+        It returns the index where the chain of path ends.
+
+        For example, element paths could have a list of paths as below for a `TargetDefinition` model where
+        the first path is the start of the chain.
+
+        For each of the sub model described by the first element path (e.g target-defintion.targets.*) in the chain,
+        the subsequent paths (e.g. target.target-control-implementations.*) will be applied recursively to retrieve
+        the sub-sub models:
+        [
+            'target-definition.targets.*',
+            'target.target-control-implementations.*'
+        ]
+        for a command like below:
+           trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*
+        """
+        # assume we ran the command below:
+        # trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*
+
+        if split_plan is None:
+            raise TrestleError('Split plan must have been initialized')
+
+        if cur_path_index < 0:
+            raise TrestleError('Current index of the chain of paths cannot be less than 0')
+
+        # if there are no more element_paths, return the current plan
+        if cur_path_index >= len(element_paths):
+            return cur_path_index
+
+        # initialize local variables
+        element = Element(model_obj)
+        stripped_field_alias = []
+        file_ext = FileContentType.to_file_extension(content_type)
+
+        # get the sub_model specified by the element_path of this round
+        element_path = element_paths[cur_path_index]
+        sub_models = element.get_at(element_path)  # we call is sub_models as in plural, but it can be just one
+        if sub_models is None:
+            return cur_path_index
+
+        # assume cur_path_index is the end of the chain
+        # value of this variable may change during recursive split of the sub-models below
+        path_chain_end = cur_path_index
+
+        # if wildard is present in the element_path, create separate file for each sub item
+        # for example, in the first round we get the `targets` using the path `target-definition.targets.*`
+        # so, now we need to split each of the target recursively. Note that target is an instance of dict
+        # However, there can be other sub_model, which is of type list
+        if element_path.get_last() == ElementPath.WILDCARD:
+            # create dir for all sub model items. e.g. `targets` or `groups`
+            sub_models_dir = base_dir / element_path.to_file_path()
+
+            # write stripped sub models file in the directory
+            # e.g. targets/targets.yaml
+            element_name = element_path.get_element_name()
+            base_element = cmd_utils.get_dir_base_file_element(sub_models, element_name)
+            dir_base_file = sub_models_dir / f'{element_name}{file_ext}'
+            split_plan.add_action(CreatePathAction(dir_base_file))
+            split_plan.add_action(WriteFileAction(dir_base_file, base_element, content_type))
+
+            # extract sub-models into a dict with appropriate prefix
+            sub_model_items: Dict[str, OscalBaseModel] = {}
+            if isinstance(sub_models, list):
+                for i, sub_model_item in enumerate(sub_models):
+                    # e.g. `groups/0000_groups/`
+                    prefix = str(i).zfill(4)
+                    sub_model_items[prefix] = sub_model_item
+            elif isinstance(sub_models, dict):
+                # prefix is the key of the dict
+                sub_model_items = sub_models
+            else:
+                # unexpected sub model type for multi-level split with wildcard
+                raise TrestleError(f'Sub element at {element_path} is not of type list or dict for further split')
+
+            # process list sub model items
+            for key in sub_model_items:
+                prefix = key
+                sub_model_item = sub_model_items[key]
+
+                # recursively split the sub-model if there are more element paths to traverse
+                # e.g. split target.target-control-implementations.*
+                if cur_path_index + 1 < len(element_paths):
+                    # prepare individual directory for each sub-model
+                    # e.g. `targets/<UUID>__target/`
+                    sub_model_dir = cls.get_sub_model_dir(sub_models_dir, sub_model_item, prefix)
+                    sub_model_plan = Plan()
+                    path_chain_end = cls.split_model_at_path_chain(
+                        sub_model_item,
+                        element_paths,
+                        sub_model_dir,
+                        content_type,
+                        cur_path_index + 1,
+                        sub_model_plan,
+                        True
+                    )
+                    sub_model_actions = sub_model_plan.get_actions()
+                else:
+                    sub_model_actions = cls.prepare_sub_model_split_actions(
+                        sub_model_item, sub_models_dir, prefix, content_type
+                    )
+
+                split_plan.add_actions(sub_model_actions)
+        else:
+            # the chain of path ends at the current index.
+            # so no recursive call. Let's just write the sub model to the file and get out
+            sub_model_file = base_dir / element_path.to_file_path(content_type)
+            split_plan.add_action(CreatePathAction(sub_model_file))
+            split_plan.add_action(WriteFileAction(sub_model_file, Element(sub_models), content_type))
+
+        # Strip the root model and add a WriteAction for the updated model object in the plan
+        if strip_root:
+            stripped_field_alias.append(element_path.get_element_name())
+            stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
+            root_file = base_dir / element_path.to_root_path(content_type)
+            split_plan.add_action(CreatePathAction(root_file))
+            split_plan.add_action(WriteFileAction(root_file, Element(stripped_root), content_type))
+
+        # return the end of the current path chain
+        return path_chain_end
+
+    @classmethod
+    def split_model(
+        cls,
+        model_obj: OscalBaseModel,
+        element_paths: List[ElementPath],
+        base_dir: pathlib.Path,
+        content_type: FileContentType,
     ) -> Plan:
         """Split the model at the provided element paths.
 
         It returns a plan for the operation
         """
-        if split_plan is None:
-            split_plan = Plan()
+        # assume we ran the command below:
+        # trestle split -f target.yaml
+        #   -e 'target-definition.metadata,
+        #   target-definition.targets.*.target-control-implementations.*'
 
-        if cur_path_index >= len(element_paths):
-            return split_plan
+        # initialize plan
+        split_plan = Plan()
 
-        element = Element(model)
+        # loop through the element path list and update the split_plan
         stripped_field_alias = []
+        cur_path_index = 0
+        while cur_path_index < len(element_paths):
+            # extract the sub element name for each of the root path of the path chain
+            stripped_field_alias.append(element_paths[cur_path_index].get_element_name())
 
-        # add actions to the plan for each sub model specified by the element paths
-        element_path = element_paths[cur_path_index]
-        sub_models = element.get_at(element_path)  # we call is sub_models as in plural, but it can be just one
-        if sub_models is None:
-            return split_plan
+            # split model at the path chain
+            cur_path_index = cls.split_model_at_path_chain(
+                model_obj, element_paths, base_dir, content_type, cur_path_index, split_plan, False
+            )
 
-        # if wildard is present in the element_path, create separate file for each sub item
-        if element_path.get_last() == ElementPath.WILDCARD:
-            sub_model_dir = base_dir / element_path.to_file_path()
-            if isinstance(sub_models, list):
-                cur_path_index = cur_path_index + 1
-                for i, sub_model_item in enumerate(sub_models):
-                    file_prefix = str(i).zfill(4)
-                    if cur_path_index < len(element_paths):
-                        sub_model_plan = cls.split_model(
-                            sub_model_item, element_paths, base_dir, content_type, cur_path_index + 1
-                        )
-                        split_plan.add_actions(sub_model_plan.get_actions())
-                    else:
-                        split_plan.add_actions(
-                            cls.sub_model_split_actions(sub_model_item, sub_model_dir, file_prefix, content_type)
-                        )
-            elif isinstance(sub_models, dict):
-                for key in sub_models:
-                    file_prefix = key
-                    sub_model_item = sub_models[key]
-                    if cur_path_index + 1 < len(element_paths):
-                        sub_model_plan = cls.split_model(
-                            sub_model_item, element_paths, base_dir, content_type, cur_path_index + 1
-                        )
-                        split_plan.add_actions(sub_model_plan.get_actions())
-                    else:
-                        split_plan.add_actions(
-                            cls.sub_model_split_actions(sub_model_item, sub_model_dir, file_prefix, content_type)
-                        )
-            else:
-                raise TrestleError(f'Sub element at {element_path} is not of type list or dict')
-        else:
-            sub_model_file = base_dir / element_path.to_file_path(content_type)
-            split_plan.add_action(CreatePathAction(sub_model_file))
-            split_plan.add_action(WriteFileAction(sub_model_file, Element(sub_models), content_type))
+            cur_path_index += 1
 
-        stripped_field_alias.append(element_path.get_element_name())
+        # strip the root model object and add a WriteAction
+        stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
+        root_file = base_dir / element_paths[0].to_root_path(content_type)
+        split_plan.add_action(CreatePathAction(root_file))
+        split_plan.add_action(WriteFileAction(root_file, Element(stripped_root), content_type))
 
-        if cur_path_index == 0:
-            # WriteAction for the stripped root
-            stripped_root = model.stripped_instance(strip_fields_aliases=stripped_field_alias)
-            root_file = base_dir / element_path.to_root_path(content_type)
-            split_plan.add_action(CreatePathAction(root_file))
-            split_plan.add_action(WriteFileAction(root_file, Element(stripped_root), content_type))
-
-        return cls.split_model(model, element_paths, base_dir, content_type, cur_path_index + 1, split_plan)
+        return split_plan

@@ -95,8 +95,8 @@ def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
         raise err.TrestleError('Invalid module')
 
 
-def is_collection_field_type(field_type: Type[Any]) -> bool:
-    """Check if model type is a  a generic collection model such as a typed list or a typed dict."""
+def is_collection_field_type(field_type) -> bool:
+    """Check if model type is a generic collection model such as a typed list or a typed dict."""
     if hasattr(field_type, '__origin__') and hasattr(field_type, '__args__') and (list in field_type.mro()
                                                                                   or dict in field_type.mro()):
         return True
@@ -110,74 +110,6 @@ def get_inner_type(collection_field_type) -> Type[Any]:
         return collection_field_type.__args__[-1]
     else:
         raise err.TrestleError('Model type is not a Dict or List')
-
-
-def get_singular_alias_from_collection_model(model) -> str:
-    """Get the alias in the singular form of the collection model."""
-    singular_model_class = get_inner_type(model)
-    if isinstance(singular_model_class, type):
-        singular_model_name = singular_model_class.__name__
-    else:
-        raise err.TrestleError('Cannot retrieve name of inner class')
-    return camel_to_dash(singular_model_name)
-
-
-def get_contextual_path(path: str, contextual_path: Optional[List[str]] = None) -> List[str]:
-    """
-    Return the contextual path relative to where the nearest .trestle directory is.
-
-    If a .trestle directory is found, it breaks down the path starting with the path of the directory that contains the
-    .trestle directory, followed by a subsequent list of items, each representing a sub-directory leading to the
-    directory path that was passed it.
-    This function allows the user to figure out the depth he/she is running a trestle command from in a trestle project
-    as well as the type of model (by looking at the value stored in index 1 of the list) the command should be
-    referring to.
-    """
-    if contextual_path is None:
-        contextual_path = []
-
-    p = Path(path)
-    if p.name == '':
-        return []
-    config_dir = p / const.TRESTLE_CONFIG_DIR
-    if not config_dir.is_dir():
-        contextual_path.insert(0, p.name)
-        contextual_path = get_contextual_path(str(p.parent), contextual_path)
-    else:
-        contextual_path.insert(0, str(path))
-    return contextual_path
-
-
-def get_contextual_model(contextual_path: list = None) -> Tuple[BaseModel, str]:
-    """Get the contextual model class and alias based on the contextual path."""
-    if contextual_path is None:
-        contextual_path = []
-        contextual_path = get_contextual_path(str(Path.cwd()), contextual_path)
-
-    current_working_module_name = get_cwm(contextual_path)
-    root_model, root_alias = get_root_model(current_working_module_name)
-
-    current_model = root_model
-    current_alias = root_alias
-
-    if len(contextual_path) < 3:
-        raise err.TrestleError('Not in a source directory of a model type')
-    elif len(contextual_path) > 3:
-        for index in range(3, len(contextual_path)):
-            stripped_alias = contextual_path[index].split(sep=const.IDX_SEP)[-1]
-            current_alias = stripped_alias
-
-            # Find property by alias
-            if is_collection_field_type(current_model):
-                # Return the model class inside the collection
-                current_model = get_inner_type(current_model)
-
-            else:
-                current_model = current_model.alias_to_field_map()[current_alias].outer_type_
-
-        return (current_model, current_alias)
-    else:
-        return (current_model, current_alias)
 
 
 def get_cwm(contextual_path: list) -> str:

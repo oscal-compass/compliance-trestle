@@ -19,7 +19,6 @@ import pathlib
 import pytest
 
 import trestle.core.err as err
-import trestle.core.parser as parser
 import trestle.core.utils as mutils
 import trestle.oscal.assessment_plan as assessment_plan
 import trestle.oscal.assessment_results as assessment_results
@@ -36,7 +35,7 @@ def load_good_catalog():
     good_sample_path = pathlib.Path('nist-source/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
 
     assert (good_sample_path.exists())
-    return parser.wrap_for_input(catalog.Catalog).parse_file(good_sample_path).catalog
+    return catalog.Catalog.oscal_read(good_sample_path)
 
 
 def test_get_elements():
