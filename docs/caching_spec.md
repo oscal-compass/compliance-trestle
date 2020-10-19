@@ -6,7 +6,7 @@ This document describes the caching strategy and behaviour that is supported by 
 external to the core repo. A principle that trestle is expected to uphold is that documents, unless the user explicitly
 contradicts, are referred to by reference.
 
-For example the user should *not* be expected to manually copy NIST 800-53 into their working directory (although they may). They waould refer to the source document such that integrity is maintained. Given this a caching strategy is required to manage these documents - especially when operating in a CICD world.
+For example the user should *not* be expected to manually copy NIST 800-53 into their working directory (although they may). They would refer to the source document such that integrity is maintained. Given this a caching strategy is required to manage these documents - especially when operating in a CICD world.
 
 ## Users
 
@@ -35,6 +35,8 @@ artifacts. The table below identifies the references covered by this document.
 | SSP                  | system-security-plan.import-profile.href                            | profile              |
 | component-definition | component-definition.import-component-definition\[*\].href            | component-definition |
 | component-definition | component-definition.component\[*\].control-implementations\[\*\].source | catalog or profile   |
+| target-definition | target-definition.import-target-definition\[*\].href            | target-definition |
+| target-definition | target-definition.component\[*\].control-implementations\[\*\].source | catalog or profile   |
 | assessment-plan      | assessment-plan.import-ssp.href                                     | ssp                  |
 | assessment-results   | assessment-results.import-ap.href                                   | assessment-plan      |
 
