@@ -68,21 +68,41 @@ def copy_values(src: OscalBaseModel, dest: OscalBaseModel) -> OscalBaseModel:
     return dest
 
 
-def parse_element_args(element_args: List[str]) -> List[ElementPath]:
-    """Parse element args into a list of ElementPath."""
+def parse_element_args(element_args: List[str], contextual_mode: bool = True) -> List[ElementPath]:
+    """Parse element args into a list of ElementPath.
+
+    contextual_mode specifies if the path is a valid project model path or not. For example,
+    if we are processing a metadata.parties.*, we need to know which metadata we are processing. If we pass
+    contextual_mode=true, we can infer the root model by inspecting the file directory
+
+    If contextual_mode=False, then the path must include the full path, e.g. catalog.metadata.parties.* instead of just
+    metadata.parties.*
+
+    One option for caller to utilize this utility function: fs.is_valid_project_model_path(pathlib.Path.cwd())
+    """
     if not isinstance(element_args, list):
         raise TrestleError(f'Input element_paths must be a list, but found {element_args.__class__}')
 
     element_paths: List[ElementPath] = []
     for element_arg in element_args:
-        paths = parse_element_arg(element_arg)
+        paths = parse_element_arg(element_arg, contextual_mode)
         element_paths.extend(paths)
 
     return element_paths
 
 
-def parse_element_arg(element_arg: str) -> List[ElementPath]:
-    """Parse an element arg string into a list of ElementPath."""
+def parse_element_arg(element_arg: str, contextual_mode: bool = True) -> List[ElementPath]:
+    """Parse an element arg string into a list of ElementPath.
+
+    contextual_mode specifies if the path is a valid project model path or not. For example,
+    if we are processing a metadata.parties.*, we need to know which metadata we are processing. If we pass
+    contextual_mode=True, we can infer the root model by inspecting the file directory
+
+    If contextual_mode=False, then the path must include the full path, e.g. catalog.metadata.parties.* instead of just
+    metadata.parties.*
+
+    One option for caller to utilize this utility function: fs.is_valid_project_model_path(pathlib.Path.cwd())
+    """
     element_paths: List[ElementPath] = []
     element_arg = element_arg.strip()
 
@@ -108,8 +128,7 @@ def parse_element_arg(element_arg: str) -> List[ElementPath]:
             path_str = ElementPath.PATH_SEPARATOR.join(full_path[:-1])
 
             # get the parent model for the alias path
-            is_valid_project_model_path = fs.is_valid_project_model_path(pathlib.Path.cwd())
-            parent_model = fs.get_singular_alias(path_str, contextual_mode=is_valid_project_model_path)
+            parent_model = fs.get_singular_alias(path_str, contextual_mode)
 
             # store values for next cycle
             prev_element_path = element_path

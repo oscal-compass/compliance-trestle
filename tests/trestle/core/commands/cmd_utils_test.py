@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle cmd utils module."""
+import os
 import pathlib
 from typing import List
 
@@ -49,16 +50,16 @@ def test_copy_values(sample_target: target.TargetDefinition):
     assert sample_metadata2 == sample_target.metadata
 
 
-def test_parse_element_arg():
+def test_parse_element_arg(tmp_dir):
     """Unit test parse a single element arg."""
     element_arg = 'target-definition.targets'
     expected_paths: List[ElementPath] = prepare_expected_element_paths(['target-definition.targets'])
-    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg)
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths
 
     element_arg = 'target-definition.targets.*'
     expected_paths: List[ElementPath] = prepare_expected_element_paths(['target-definition.targets.*'])
-    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg)
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths
 
     element_arg = 'catalog.groups.*.controls.*.controls.*'
@@ -66,29 +67,41 @@ def test_parse_element_arg():
     p2 = ElementPath('group.controls.*', parent_path=p1)
     p3 = ElementPath('control.controls.*', parent_path=p2)
     expected_paths: List[ElementPath] = [p1, p2, p3]
-    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg)
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths
 
     element_arg = 'catalog.groups.*.controls'
     p1 = ElementPath('catalog.groups.*')
     p2 = ElementPath('group.controls', parent_path=p1)
     expected_paths: List[ElementPath] = [p1, p2]
-    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg)
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths
 
     element_arg = 'target-definition.targets.*.target-control-implementations'
     p1 = ElementPath('target-definition.targets.*')
     p2 = ElementPath('target.target-control-implementations', parent_path=p1)
     expected_paths: List[ElementPath] = [p1, p2]
-    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg)
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths
 
     element_arg = 'target-definition.targets.*.target-control-implementations.*'
     p1 = ElementPath('target-definition.targets.*')
     p2 = ElementPath('target.target-control-implementations.*', parent_path=p1)
     expected_paths: List[ElementPath] = [p1, p2]
-    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg)
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths
+
+    # use contextual path for parsing path
+    test_utils.ensure_trestle_config_dir(tmp_dir)
+    target_def_dir: pathlib.Path = tmp_dir / 'target-definitions/mytarget/'
+    fs.ensure_directory(target_def_dir)
+    cur_dir = pathlib.Path.cwd()
+    os.chdir(target_def_dir)
+    element_arg = 'metadata.parties.*'
+    expected_paths: List[ElementPath] = prepare_expected_element_paths(['metadata.parties.*'])
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, True)
+    assert expected_paths == element_paths
+    os.chdir(cur_dir)
 
 
 def test_parse_element_args():
