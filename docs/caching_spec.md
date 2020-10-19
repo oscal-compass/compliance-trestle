@@ -1,15 +1,5 @@
 # Trestle caching architecture
 
-## Table of Contents
-
-- [Purpose](<#purpose>)
-- [Users](<#users>)
-- [Caching Structure](<>)
-- [Dist vs editable structures](<>)
-- [Supported URIs](<>)
-- [Git support](<>)
-- [Update behaviour](<>)
-
 ## Purpose
 
 This document describes the caching strategy and behaviour that is supported by trestle for 3rd party artifacts that are
@@ -26,12 +16,20 @@ The scope of this document is for developers. Once implemented additional docume
 
 This document is only concerned with links which refer to other OSCAL schema objects. External references (say to an xccdf document) are not considered.
 
+## Cache update behaviour.
+
+When a user requests an external resource the cache MUST be used unless the user provides a cache update flag `--update-cache`. If the cache cannot update
+the default behaviour of `--update-cache` is failure. If `--update-cache-opportunistic` is enabled instead the cache will be updated where possible.
+
+Note: Documents MUST only be committed to the cache if and only if they are valid OSCAL. Note that OSCAL validation in this context is defined ONLY as
+meeting the minimum requirements of the json schema.
+
 ## Types of external references.
 
 NIST defines many types of referential links within the OSCAL schema. Here trestle is interested in supporting a subset of these links. In particular these links are characterized specifically by the fact that they refer to 'upstream' OSCAL
 artifacts. The table below identifies the references covered by this document.
 
-| Schema               | Json path (\[*\] represents array or named keys)                      | Refers to            |
+| Schema                                    | Json path (\[*\] represents array or named keys)                      | Refers to            |
 | \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-| \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-- | \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--- |
 | profile              | profile.imports\[*\].href                                             | catalog or profile   |
 | SSP                  | system-security-plan.import-profile.href                            | profile              |
@@ -45,37 +43,26 @@ are missing.
 
 In particular while (say as an example) import-ssp is optional in assessment-plan, without it we cannot validate the control ids provided by the user are sensical.
 
-## Cache directory
+## Trestle cache dir.
 
-The cache directory
+The trestle cache will be located within the `.trestle` project. Files are organised within that directory by hostname
+irrespective of protocol.
+
+The resulting structure is shown below.
 
 ```
 .
 ├── .trestle
 │   └──cache
 │       ├── localhost (./ or file)
-│       │   ├── rel
-│       |   |   └── parent/parent/catalog.json
-│       │   └── abs
-│       |       └── home/username/oscal/catalog.jon
-│       ├── github.com # git+https / git+ssh
-│       |   └── org
-│       |        └── project
-│       |             └── branch/tag/commit
-│       |                   └── expanded/directory/path/for/asset.json
-│       ├── bitbucket.com git+https / git+ssh
-│       |   └── path_to
-│       |        └── project # this is where .git lives
-│       |             └── branch/tag/commit
-│       |                   └── expanded/directory/path/for/asset.json
-│       ├── arbitrary-rest-api.com (https)
-│       |   └── endpoint
-│       |       └── ID (by path)
-│       |           └── object.json (inferred)
-│       ├── arbitrary-static-file.com (https)
-│           └── path
-│               └── to
-│                   └── catalog.json (not inferred)
+│       │   ├── __rel__
+│       |   |   └── __parent__/__parent__/catalog.json
+│       │   └── __abs__
+│       |       └── /__root__/home/username/oscal/catalog.jon
+│       └── hostname.com
+│              └── path/to/file.json
+│
+|         
 ├── dist
 │   ├── catalogs
 │   ├── profiles
@@ -94,6 +81,139 @@ The cache directory
 └── plan-of-action-and-milestones
 ```
 
-### Inclusion in VCS or not
+Note that `localhost` has special treatment to manage relative file references.
 
-### Behaviour on initialization of the cache directory.
+The cache *MAY* live within version control system depending on desired behaviour. It is recommended that caches live
+within the VCS to allow end to end tracking. Keeping the cache within the VCS implies that callers of trestle MUST
+explicitly ask for the cache to be refereshed if required.
+
+The cache MUST NOT reference files within the current trestle context.
+
+The cache MUST NOT support 'distributed OSCAL files'. All files MUST be a valid OSCAL schema in a single document.
+
+## Supported protocols / methods
+
+### Local file system (aka localhost)
+
+The local file system MAY be used as a storage mechanism other files. Local storage is unique in that references may be
+relative at all times (i.e. it does not make sense to expand the directory path). Given this localhost has two sub directories:
+
+`__abs__` for absolute paths,
+
+`__rel__` for relative paths.
+
+In addition to this relative paths MAY contain `../` references to the parent directory. This is represented by
+`__parent__` /
+
+Local storage may be referred to by the following mechanisms:
+
+`file://path/to/file.json`  => `.trestle/cache/localhost/__rel__/path/to/file.json`
+
+`file:///abspath/to/file.json` => `.trestle/cache/localhost/__abs__/abspath/to/file.json`
+
+`/root/file/path.json` => `.trestle/cache/localhost/__abs__/root/file/path.json`
+
+`../relative/path/to/file.json` => `.trestle/cache/localhost/__rel__/__parent__/relative/path/to/file.json`
+
+`http(s)://localhost/path/to/file.json` => `.trestle/cache/localhost/__abs__/path/to/file.json`
+
+References MUST NOT address the local trestle context. References outside of the local trestle context WILL NOT be tested
+for whether they are in the trestle context. For localhost both absolute and relative references are supported. All calls
+over http(s) are treated as absolute paths. Authorization / authentication is as in the following section.
+
+#### Relative path reference root
+
+Relative paths are setup assuming the they are with respect to the editing directory. Relative paths in the `dist` directory
+should be reworked to include `dist`.
+
+### HTTP(S)
+
+HTTP and HTTPS endpoints are supported for trestle. The simplest case is similar to this:
+`http(s)://sample.com/path/to/file.json` => `.trestle/cache/sample.com/path/to/file.json`
+
+For all workloads the http header application type *SHOULD* match the file type provided. Trestle *MAY* warn on inconsistencies,
+however, the file extension takes precidence.
+
+For endpoints where an extension is NOT provided
+`http(s)://sample.com/path/to/file`
+or
+`http(s)://sample.com/path/to/file/`
+Trestle will:
+
+1. Infer file type from http headers
+1. write out the file to object.{filetype} file.
+1. If a user requests http(s)://sample.com/path/to/file/object.json\` trestle MUST warn the user of the risk of conflicts
+   with automatically generated names.
+
+### Authentication:
+
+HTTPS ONLY and NOT HTTP are supported for HTTP basic authentication. Attempting HTTP based authentication MUST cause
+errors. Credentials MUST NOT be stored in cleartext.
+
+NOT ALLOWED: `http(s)://username:password@sample.com/path/to/file/`
+
+Credentials MUST be referred to my moustache templates e.g.:
+
+`http(s)://{{username_var}}:{{password_var}}@sample.com/path/to/file/`
+
+where the "moustache" templated variables refer to environmental variables in the user's environment.
+
+Support for non standard behaviour is suported on specific domains (see below).
+
+### Specific domains over http/https
+
+Given the requirement for raw source files users *may* have issues accurately accessing a resource on many domains for
+which they can get the raw form. This is also true on environments where 2-Factor Authentication may protect accessing
+user facing sites. Specific site support is expected to expand based on user's requirements.
+
+#### Github.com / github.enterprisename.com
+
+Support in this section is intended to cover both github.com and github enterprise deployed at github.{business url}.com.
+
+The first scenario is for unauthenticated access. Unauthenticated access may be addressed through either the 'UI' form
+URL e.g.:
+
+https://github.com/IBM/compliance-trestle/blob/develop/LICENSE
+
+OR
+
+the raw form URL:
+https://raw.githubusercontent.com/IBM/compliance-trestle/develop/LICENSE
+
+Both URLs would map to the following path in trestle cache:
+`.trestle/cache/github.com/IBM/compliance-trestle/develop/LICENSE`
+
+For authenticated scenarios both domains are supported, however, tokens provided to the raw website e.g.:
+https://raw.githubusercontent.com/IBM/compliance-trestle/develop/LICENSE?token=TOKEN
+
+are ignored. Trestle MUST warn users when github tokens are included.
+
+To support authentication with github username / password authentication MUST NOT be supported. API authentication through
+personal access tokens is supported. API tokens will be read from the environment with the following patterns:
+
+github.com: `GITHUB_API_TOKEN`
+
+github.business.com: `GITHUB_BUSINESS_API_TOKEN`
+
+In the future `ssh` based authentication may be supported.
+
+### SFTP
+
+SFTP support may be supported. The URI takes the following form:
+
+`sftp://{{username}}:{{password}}@sftp.com:/path/to/file.json`
+OR
+`sftp://username:{{password}}@sftp.com:/path/to/file.json`
+OR
+`sftp://username@sftp.com:/path/to/file.json`
+
+All user provided paths WILL be expanded to the full path. (e.g. if `~` is used to represent the home directory.) a SSH key
+may be provided by environmental variable `SSH_KEY`.
+
+## Potential future supported methods.
+
+It is anticipated that some applications may be provided with specialised support from the trestle framework. The current
+list being considered includes:
+
+- git (over https or ssh)
+- TBA
