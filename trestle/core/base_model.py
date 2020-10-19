@@ -18,12 +18,14 @@
 import datetime
 import logging
 import pathlib
-from typing import List, Optional
+from typing import List, Optional, Type
 
 from pydantic import BaseModel, Extra, Field, create_model
+from pydantic.fields import ModelField
+from pydantic.parse import load_file
 
 import trestle.core.err as err
-import trestle.core.utils as utils
+from trestle.core.utils import classname_to_alias
 
 import yaml
 
@@ -54,7 +56,7 @@ class OscalBaseModel(BaseModel):
         json_encoders = {datetime.datetime: lambda x: robust_datetime_serialization(x)}
         # this is not safe and caused class: nan in yaml output
         # TODO: Explore fix.
-        # allow_population_by_field_name = True  noqa: E800
+        allow_population_by_field_name = True  # noqa: E800
 
         # Enforce strict schema
         extra = Extra.forbid
@@ -63,16 +65,33 @@ class OscalBaseModel(BaseModel):
         validate_assignment = True
 
     @classmethod
-    def create_stripped_model_type(cls, fields: List[str]):
+    def create_stripped_model_type(
+        cls, stripped_fields: List[str] = None, stripped_fields_aliases: List[str] = None
+    ) -> 'OscalBaseModel':
         """Use introspection to create a model that removes the fields.
 
+        Either 'stripped_fields' or 'stripped_fields_aliases' need to be passed, not both.
         Returns a model class definition that can be used to instanciate a model.
         """
+        if stripped_fields is not None and stripped_fields_aliases is not None:
+            raise err.TrestleError('Either "stripped_fields" or "stripped_fields_aliases" need to be passed, not both.')
+
+        # create alias to field_name mapping
+        excluded_fields = []
+        if stripped_fields is not None:
+            excluded_fields = stripped_fields
+        elif stripped_fields_aliases is not None:
+            alias_to_field = cls.alias_to_field_map()
+            try:
+                excluded_fields = [alias_to_field[key].name for key in stripped_fields_aliases]
+            except KeyError as e:
+                raise err.TrestleError(f'Field {str(e)} does not exists in the model')
+
         current_fields = cls.__fields__
         new_fields_for_model = {}
         # Build field list
         for current_mfield in current_fields.values():
-            if current_mfield.name in fields:
+            if current_mfield.name in excluded_fields:
                 continue
             # Validate name in the field
             # Cehcke behaviour with an alias
@@ -85,11 +104,52 @@ class OscalBaseModel(BaseModel):
                     Optional[current_mfield.outer_type_],
                     Field(None, title=current_mfield.name, alias=current_mfield.alias)
                 )
-        new_model = create_model('partial-' + cls.__class__.__name__, __base__=OscalBaseModel, **new_fields_for_model)
+        new_model = create_model(cls.__name__, __base__=OscalBaseModel, **new_fields_for_model)
 
         return new_model
 
-    def oscal_write(self, path: pathlib.Path, minimize_json=False):
+    def get_field_value(self, field_name_or_alias: str):
+        """Get attribute value by field alias or field name."""
+        if hasattr(self, field_name_or_alias):
+            return getattr(self, field_name_or_alias, None)
+
+        return self.get_field_value_by_alias(field_name_or_alias)
+
+    def get_field_by_alias(self, field_alias: str) -> ModelField:
+        """Convert field alias to a field."""
+        attr_field = self.alias_to_field_map().get(field_alias, None)
+        return attr_field
+
+    def get_field_value_by_alias(self, attr_alias: str):
+        """Get attribute value by field alias."""
+        attr_field = self.get_field_by_alias(attr_alias)
+        if isinstance(attr_field, ModelField):
+            return getattr(self, attr_field.name, None)
+
+        return None
+
+    def stripped_instance(self, stripped_fields: List[str] = None, stripped_fields_aliases: List[str] = None):
+        """Return a new model instance with the specified fields being stripped.
+
+        Either 'stripped_fields' or 'stripped_fields_aliases' need to be passed, not both.
+        """
+        # stripped class type
+        stripped_class: OscalBaseModel = self.create_stripped_model_type(
+            stripped_fields=stripped_fields, stripped_fields_aliases=stripped_fields_aliases
+        )
+
+        # remaining values
+        remaining_values = {}
+        for field in self.__fields__.values():
+            if field.name in stripped_class.__fields__:
+                remaining_values[field.name] = self.__dict__[field.name]
+
+        # create stripped model instance
+        stripped_instance = stripped_class(**remaining_values)
+
+        return stripped_instance
+
+    def oscal_write(self, path: pathlib.Path, minimize_json=False) -> None:
         """
         Write oscal objects.
 
@@ -100,16 +160,14 @@ class OscalBaseModel(BaseModel):
         class_name = self.__class__.__name__
         # It would be nice to pass through the description but I can't seem to and
         # it does not affect the output
-        dynamic_passer = {}
-        dynamic_passer[utils.class_to_oscal(class_name, 'field')] = (
+        dynamic_parser = {}
+        dynamic_parser[classname_to_alias(class_name, 'field')] = (
             self.__class__,
-            Field(
-                self, title=utils.class_to_oscal(class_name, 'field'), alias=utils.class_to_oscal(class_name, 'json')
-            )
+            Field(self, title=classname_to_alias(class_name, 'field'), alias=classname_to_alias(class_name, 'json'))
         )
-        wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_passer)
+        wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_parser)
         # Default behaviour is strange here.
-        wrapped_model = wrapper_model(**{utils.class_to_oscal(class_name, 'json'): self})
+        wrapped_model = wrapper_model(**{classname_to_alias(class_name, 'json'): self})
 
         yaml_suffix = ['.yaml', '.yml']
         json_suffix = ['.json']
@@ -125,7 +183,7 @@ class OscalBaseModel(BaseModel):
             raise err.TrestleError('Unknown file type')
 
     @classmethod
-    def oscal_read(cls, path: pathlib.Path):
+    def oscal_read(cls, path: pathlib.Path) -> 'OscalBaseModel':
         """
         Read OSCAL objects.
 
@@ -134,25 +192,27 @@ class OscalBaseModel(BaseModel):
         # Define valid extensions
         yaml_suffix = ['.yaml', '.yml']
         json_suffix = ['.json']
+
         # Create the wrapper model.
-        class_name = cls.__name__
-        dynamic_passer = {}
-        dynamic_passer[utils.class_to_oscal(class_name, 'field')] = (
-            cls,
-            Field(..., title=utils.class_to_oscal(class_name, 'json'), alias=utils.class_to_oscal(class_name, 'json'))
-        )
-        wrapper_model = create_model('Wrapped' + class_name, __base__=OscalBaseModel, **dynamic_passer)
+        alias = classname_to_alias(cls.__name__, 'json')
 
         if path.suffix in yaml_suffix:
-            return wrapper_model.parse_obj(yaml.safe_load(path.open())
-                                           ).__dict__[utils.class_to_oscal(class_name, 'field')]
+            return cls.parse_obj(yaml.safe_load(path.open())[alias])
         elif path.suffix in json_suffix:
-            return wrapper_model.parse_file(path).__dict__[utils.class_to_oscal(class_name, 'field')]
+            obj = load_file(
+                path,
+                json_loads=cls.__config__.json_loads,
+            )
+            return cls.parse_obj(obj[alias])
         else:
             raise err.TrestleError('Unknown file type')
 
-    def copy_to(self, new_oscal_type):
-        """Copy operation that explicilty does type conversion."""
+    def copy_to(self, new_oscal_type: Type['OscalBaseModel']) -> 'OscalBaseModel':
+        """
+        Copy operation that explicilty does type conversion.
+
+        Input parameter is a class of type OscalBaseModel NOT a a class isntance.
+        """
         logger.debug('Copy to started')
 
         if self.__class__.__name__ == new_oscal_type.__name__:
@@ -167,7 +227,7 @@ class OscalBaseModel(BaseModel):
         # bad place here.
         raise err.TrestleError('Provided inconsistent classes.')
 
-    def copy_from(self, existing_oscal_object):
+    def copy_from(self, existing_oscal_object: 'OscalBaseModel') -> 'OscalBaseModel':
         """
         Copy operation that implicitly does type conversion.
 
@@ -190,3 +250,12 @@ class OscalBaseModel(BaseModel):
         assert (self.__class__ == recast_object.__class__)
         for raw_field in self.__dict__.keys():
             self.__dict__[raw_field] = recast_object.__dict__[raw_field]
+
+    @classmethod
+    def alias_to_field_map(cls):
+        """Create a map from field alias to field."""
+        alias_to_field = {}
+        for field in cls.__fields__.values():
+            alias_to_field[field.alias] = field
+
+        return alias_to_field

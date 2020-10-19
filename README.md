@@ -1,36 +1,48 @@
 # Compliance-trestle aka trestle
 
-Trestle is a tool to which enables the creation and validation of documentation artifacts for compliance requirements. It leverages NIST's [OSCAL](<https://pages.nist.gov/OSCAL/documentation/>) as a standard data format for interchange between tools & people and provides an opinionated approach to OSCAL adoption.
+[![OS Compatibility][platform-badge]](<#prerequisites>)
+[![Python Compatibility][python-badge]][python]
+[![pre-commit][pre-commit-badge]][pre-commit]
+[![code-coverage][coverage-badge]][coverage]
+[![pypi-downloads][pypi-downloads-badge]][pypi]
 
-By design Trestle runs as a CICD pipeline running on top of compliance artifacts in `git` to provide transparency to the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the artifacts generated on to tools to orchestrate the enforcement, measurement and reporting of compliance.
+Trestle is a tool that enables the creation and validation of documentation artifacts for compliance requirements. It leverages NIST's [OSCAL](<https://pages.nist.gov/OSCAL/documentation/>) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
-It also provides tooling to manage OSCAL in a more human-friendly manner. By expanding the large OSCAL data structures into smaller, easier to edit, sub-structures, creation and maintenance of these artifacts can follow normal `git` workflows (peer review via pull request, versioning, releases/tagging).
+By design Trestle runs as a CICD pipeline running on top of compliance artifacts in `git` to provide transparency to the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the artifacts generated to tools that orchestrate the enforcement, measurement and reporting of compliance.
 
-## Why Trestle?
+It also provides tooling to manage OSCAL in a more human-friendly manner. By expanding the large OSCAL data structures into smaller and easier to edit sub-structures, creation and maintenance of these artifacts can follow normal `git` workflows (peer review via pull request, versioning, releases/tagging).
 
-Compliance suffers from being a complex problem that is hard to articulate simply. It requires complete & accurate execution of multiple procedures, across many disciplines (IT, HR, management), with periodic verification and audit of said procedures against controls.
+## Why Trestle
 
-While its possible to manage the description of controls & how an organisation implements them in ad hoc ways, with general tools (spreadsheets, documents), this is hard to maintain for multiple accreditations and, in the IT domain at least, creates a barrier between the compliance efforts and people doing daily work (DevOps staff).
+Compliance suffers from being a complex problem that is hard to articulate simply. It requires complete and accurate execution of multiple procedures across many disciplines (e.g. IT, HR, management) with periodic verification and audit of those procedures against controls.
 
-Trestle aims to reduce or remove this barrier by bringing the maintenance of control descriptions into the DevOps domain. The aim is to have changes to the system (for example, updates to configuration management) easily related to the controls impacted & those controls be modified if required in concert with the system change.
+While it is possible to manage the description of controls and how an organisation implements them in ad hoc ways with general tools (spreadsheets, documents), this is hard to maintain for multiple accreditations and, in the IT domain at least, creates a barrier between the compliance efforts and the people doing daily work (DevOps staff).
 
-Trestle implicitly provides an core opinionated workflow driven by it's pipeline steps to allow standardized interlocks with other compliance tooling platforms.
+Trestle aims to reduce or remove this barrier by bringing the maintenance of control descriptions into the DevOps domain. The goal is to have changes to the system (for example, updates to configuration management) easily related to the controls impacted, and to enable modification of those controls as required in concert with the system changes.
+
+Trestle implicitly provides a core opinionated workflow driven by its pipeline steps to allow standardized interlocks with other compliance tooling platforms.
+
+## Development status
+
+Compliance trestle is currently alpha. The expectation is that throughout the remainder of 2020 there may be unnannounced changes that are breaking within the trestle codebase. If you are using trestle please contact us so we are aware your usecase.
+
+The underlying OSCAL schema is also currently changing. The current approach until the formal release of OSCAL 1.0.0 is for compliance trestle to regularly update our models to reflect NIST's changes.
 
 ### Machine readable compliance format
 
-Compliance activities at scale, be that size of estate, or number of accreditations, require automation to be successful & repeatable. OSCAL as a standard allows teams to bridge between the "Governance" layer and operational tools.
+Compliance activities at scale, whether size of estate or number of accreditations, require automation to be successful and repeatable. OSCAL as a standard allows teams to bridge between the "Governance" layer and operational tools.
 
-By building human managed artifacts into OSCAL, Trestle is not only able to validate the integrity of the artifacts that people generate, it also enables reuse and sharing of artifacts and can also provide suitable input into tools which automate operational compliance.
+By building human managed artifacts into OSCAL, Trestle is not only able to validate the integrity of the artifacts that people generate - it also enables reuse and sharing of artifacts, and furthermore can provide suitable input into tools that automate operational compliance.
 
 ## Using Trestle
 
-Trestle converts complex schema/data structures into simple files in a directory structure. The aim of this is to make it easier to manage for humans - individual objects can be versioned & reviewed, then 'compiled' into the larger structure of a Catalog, SSP or Assessment Plan.
+Trestle converts complex schema/data structures into simple files in a directory structure. The aim of this is to make it easier to manage for humans: Individual objects can be versioned & reviewed, then 'compiled' into the larger structure of a Catalog, SSP or Assessment Plan.
 
-### Install and Run:
+### Install and Run
 
 Install from PYPI and run:
 
-~~~shell
+```shell
 # Setup virtual environement
 python3 -m venv venv
 . ./venv/bin/activate
@@ -40,11 +52,11 @@ pip install compliance-trestle
 
 # Run Trestle CLI
 trestle -h # For command line help
-~~~
+```
 
 In order to install Trestle from source, run the following command:
 
-~~~shell
+```shell
 # Clone
 git clone https://github.com/IBM/compliance-trestle.git
 cd compliance-trestle
@@ -56,32 +68,32 @@ pip install -q -e ".[dev]" --upgrade --upgrade-strategy eager
 
 # Run Trestle CLI
 trestle -h
-~~~
+```
 
 ## Supported OSCAL elements and extensions
 
-`trestle` implciltly supports all OSCAL schemas for use within the object model. As trestle a tentative roadmap includes
+`trestle` implicitly supports all OSCAL schemas for use within the object model. The development roadmap for `trestle` includes
 adding workflow around specific elements / objects that is opinionated.
 
-In addition to the core OSCAL objects trestle supports the definition of a `target`. The `target` (and it's container
-`target-definition`) is a generalization of the `component` model which is designed to specifically support configuration.
+In addition to the core OSCAL objects, trestle supports the definition of a `target`. The `target` (and its container
+`target-definition`) is a generalization of the `component` model that is designed specifically to support configuration.
 
-`catalog` and `profile` object can define parameters. However, by their nature the parameter definitions are at the
+`catalog` and `profile` objects can define parameters. However, by their nature the parameter definitions are at the
 regulatory level. The `trestle` team has seen a need for an object that can define parameters at the `control-implemenation`
-level. E.g. `component` is an implementation `target` is the definition of capabilities of the component.
+level, e.g. `component` is an implementation and `target` is the definition of capabilities of the component.
 
 ### Conformance criteria ontop of OSCAL
 
 ## Contributing to Trestle
 
-Our project welcomes external contributions. Please checkout [CONTRIBUTING.md](<CONTRIBUTING.md>) to get started.
+Our project welcomes external contributions. Please consult [CONTRIBUTING.md](<CONTRIBUTING.md>) to get started.
 
 ## License & Authors
 
 If you would like to see the detailed LICENSE click [here](<LICENSE>).
-Check out [MAINTAINERS](<MAINTAINERS.md>) for list of authors.
+Consult [MAINTAINERS](<MAINTAINERS.md>) for a list of authors.
 
-~~~text
+```text
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -96,4 +108,14 @@ Check out [MAINTAINERS](<MAINTAINERS.md>) for list of authors.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-~~~
+```
+
+[coverage]: https://codecov.io/gh/IBM/compliance-trestle
+[coverage-badge]: https://codecov.io/gh/IBM/compliance-trestle/branch/develop/graph/badge.svg?token=1AUXDAF3OB
+[platform-badge]: https://img.shields.io/badge/platform-osx%20%7C%20linux-orange.svg
+[pre-commit]: https://github.com/pre-commit/pre-commit
+[pre-commit-badge]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+[pypi]: https://pypi.org/project/compliance-trestle/
+[pypi-downloads-badge]: https://img.shields.io/pypi/dm/compliance-trestle
+[python]: https://www.python.org/downloads/
+[python-badge]: https://img.shields.io/badge/python-v3.6+-blue.svg

@@ -51,7 +51,7 @@ class InitCmd(Command):
         """Create the directory tree if it does not exist."""
         # Prepare directory list to be created
         directory_list = [const.TRESTLE_CONFIG_DIR]
-        for model_dir in const.TRESTLE_MODEL_DIRS:
+        for model_dir in const.MODELTYPE_TO_MODELMODULE.keys():
             directory_list.append(model_dir)
             directory_list.append(os.path.join(const.TRESTLE_DIST_DIR, model_dir))
 

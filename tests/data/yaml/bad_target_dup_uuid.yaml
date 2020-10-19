@@ -1,0 +1,144 @@
+target-definition:
+  metadata:
+    title: Demo target definition for both profiles
+    last-modified: '2020-08-13T15:24:24.389Z'
+    version: '2020813'
+    oscal-version: 1.0.0-milestone3
+    parties:
+    - uuid: ee47836c-877c-4007-bbf3-c9d9bd805000
+      party-name: International Business Machines
+      type: organization
+  targets:
+    56666738-0f9a-4e38-9aac-c0fad00a5821:
+      name: Red Hat Open Shift Kubernetes
+      target-type: Software
+      title: Red Hat OpenShift Kubernetes
+      description: RedHat OpenShift Kubernetes
+      target-control-implementations:
+      - uuid: daca7f77-a2eb-433c-aec2-999c185671dd
+        source: https://github.com/usnistgov/OSCAL/blob/v1.0.0-milestone3/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
+        description: Compliance Operator SCAP guide for RedHat OpenShift Kubernetes
+          Service for NIST 800-53. It includes optional configuration to use with
+          an instance of auditree.
+        properties:
+        - name: implementation-type
+          value: enforce
+        - name: implementation-type
+          value: monitor
+        - name: system
+          value: TCE
+        - name: system
+          value: auditree
+        - class: auditree
+          name: fetcher
+          value: TBD
+        - ns: TCE
+          name: configMap
+          value: ssg-ocp4-ds-cis
+        - ns: TCE
+          name: xccdf_profile
+          value: cis
+        links:
+        - text: Links can be used to store URIs but provide us a nice safe way to
+            parse things
+          href: https://quay.io/repository/complianceascode/ocp4
+          rel: whe should be using this field too
+          media-type: scap_org.open-scap_collection_from_xccdf_ssg-ocp4-xccdf-1.2.xml
+        implemented-requirements: []
+      - uuid: ac861221-fff8-4f99-be3a-60eca076c614
+        source: https://github.com/SOME_URL_TO_CIS.json
+        description: Compliance Operator SCAP guide for RedHat OpenShift Kubernetes
+          Service for CIS v7.1. It includes optional configuration to use with an
+          instance of auditree.
+        properties:
+        - name: implementation-type
+          value: enforce
+        - name: implementation-type
+          value: monitor
+        - name: system
+          value: TCE
+        - name: system
+          value: auditree
+        - class: auditree
+          name: fetcher
+          value: TBD
+        - ns: TCE
+          name: configMap
+          value: ssg-ocp4-ds-cis
+        - ns: TCE
+          name: xccdf_profile
+          value: cis
+        links:
+        - text: Links can be used to store URIs but provide us a nice safe way to
+            parse things
+          href: https://github.com/openshift/compliance-operator/blob/master/tests/data/ssg-ocp4-ds-new.xml
+          rel: whe should be using this field too
+          media-type: scap_org.open-scap_collection_from_xccdf_ssg-ocp4-xccdf-1.2.xml
+        implemented-requirements: []
+    89cfe7a7-ce6b-4699-aa7b-2f5739c72001:
+      name: RedHat Enterprise Linux 7.8
+      target-type: Software
+      title: RedHat Enterprise Linux 7.8
+      description: RedHat Enterprise Linux 7.8
+      target-control-implementations:
+      - uuid: daca7f77-a2eb-433c-aec2-999c185671de
+        source: https://github.com/usnistgov/OSCAL/blob/v1.0.0-milestone3/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
+        description: Compliance Operator SCAP guide for RedHat OpenShift Kubernetes
+          Service for NIST 800-53. It includes optional configuration to use with
+          an instance of auditree.
+        properties:
+        - name: implementation-type
+          value: enforce
+        - name: implementation-type
+          value: monitor
+        - name: system
+          value: TCE
+        - name: system
+          value: auditree
+        - class: auditree
+          name: fetcher
+          value: TBD
+        - ns: TCE
+          name: configMap
+          value: ssg-rhel7-ds-cis
+        - ns: TCE
+          name: xccdf_profile
+          value: cis
+        links:
+        - text: Links can be used to store URIs but provide us a nice safe way to
+            parse things
+          href: https://quay.io/repository/complianceascode/ocp4
+          rel: whe should be using this field too
+          media-type: scap_org.open-scap_collection_from_xccdf_ssg-ocp4-xccdf-1.2.xml
+        implemented-requirements: []
+      - uuid: ac861221-fff8-4f99-be3a-60eca076c614
+        source: https://github.com/SOME_URL_TO_CIS.json
+        description: Compliance Operator SCAP guide for RedHat OpenShift Kubernetes
+          Service for CIS v7.1. It includes optional configuration to use with an
+          instance of auditree.
+        properties:
+        - name: implementation-type
+          value: enforce
+        - name: implementation-type
+          value: monitor
+        - name: system
+          value: TCE
+        - name: system
+          value: auditree
+        - class: auditree
+          name: fetcher
+          value: TBD
+        - ns: TCE
+          name: configMap
+          value: ssg-rhel7-ds-cis
+        - ns: TCE
+          name: xccdf_profile
+          value: cis
+        links:
+        - text: Links can be used to store URIs but provide us a nice safe way to
+            parse things
+          href: https://github.com/openshift/compliance-operator/blob/master/tests/data/ssg-ocp4-ds-new.xml
+          rel: whe should be using this field too
+          media-type: scap_org.open-scap_collection_from_xccdf_ssg-ocp4-xccdf-1.2.xml
+        implemented-requirements: []
+
