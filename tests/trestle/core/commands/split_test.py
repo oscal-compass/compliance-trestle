@@ -33,6 +33,7 @@ from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
+from trestle.oscal import catalog as oscatalog
 from trestle.oscal import target as ostarget
 from trestle.utils import fs
 
@@ -71,6 +72,43 @@ def test_split_model(tmp_dir, sample_target_def: ostarget.TargetDefinition):
     expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
 
     split_plan = SplitCmd.split_model(target_def, element_paths, target_def_dir, content_type)
+    assert expected_plan == split_plan
+
+
+def test_split_catalog_model(tmp_dir, sample_catalog: oscatalog.Catalog):
+    """Test for split_model method."""
+    # Assume we are running a command like below
+    # trestle split -f catalog.json -e catalog.metadata
+    content_type = FileContentType.JSON
+
+    # prepare trestle project dir with the file
+    catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_catalog,
+        test_utils.CATALOGS_DIR)
+
+    # read the model from file
+    catalog = oscatalog.Catalog.oscal_read(catalog_file)
+    element = Element(catalog)
+    element_args = ['catalog.metadata']
+    element_paths = cmd_utils.parse_element_args(element_args)
+
+    # extract values
+    metadata_file = catalog_dir / element_paths[0].to_file_path(content_type)
+    metadata = element.get_at(element_paths[0])
+
+    root_file = catalog_dir / element_paths[0].to_root_path(content_type)
+    remaining_root = element.get().stripped_instance(element_paths[0].get_element_name())
+
+    # prepare the plan
+    expected_plan = Plan()
+    expected_plan.add_action(CreatePathAction(metadata_file))
+    expected_plan.add_action(WriteFileAction(metadata_file, Element(metadata), content_type))
+    expected_plan.add_action(CreatePathAction(root_file, True))
+    expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
+
+    split_plan = SplitCmd.split_model(catalog, element_paths, catalog_dir, content_type)
     assert expected_plan == split_plan
 
 
