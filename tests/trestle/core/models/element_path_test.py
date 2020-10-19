@@ -24,7 +24,7 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import target
 
 
-def test_element_path_init(sample_target: target.TargetDefinition):
+def test_element_path_init(sample_target_def: target.TargetDefinition):
     """Test element path construction."""
     assert ElementPath('target-definition.metadata.title').get() == ['target-definition', 'metadata', 'title']
     assert ElementPath('target-definition.targets.*').get() == ['target-definition', 'targets', '*']
@@ -63,7 +63,7 @@ def test_element_path_init(sample_target: target.TargetDefinition):
         ElementPath('catalog')
 
 
-def test_element_path_get_element_name(sample_target: target.TargetDefinition):
+def test_element_path_get_element_name(sample_target_def: target.TargetDefinition):
     """Test get element name method."""
     assert ElementPath('target-definition.metadata.last-modified').get_element_name() == 'last-modified'
     assert ElementPath('target-definition.metadata.title').get_element_name() == 'title'
@@ -71,7 +71,7 @@ def test_element_path_get_element_name(sample_target: target.TargetDefinition):
     assert ElementPath('target-definition.metadata.parties.*').get_element_name() == 'parties'
 
 
-def test_element_path_get_preceding_path(sample_target: target.TargetDefinition):
+def test_element_path_get_preceding_path(sample_target_def: target.TargetDefinition):
     """Test get parent path method."""
     assert ElementPath('target-definition.metadata.title'
                        ).get_preceding_path() == ElementPath('target-definition.metadata')
@@ -87,7 +87,7 @@ def test_element_path_get_preceding_path(sample_target: target.TargetDefinition)
     assert element_path.get_preceding_path() == preceding_path
 
 
-def test_element_path_get(sample_target: target.TargetDefinition):
+def test_element_path_get(sample_target_def: target.TargetDefinition):
     """Test get method of element path."""
     assert ElementPath('target-definition.metadata').get() == ['target-definition', 'metadata']
     assert ElementPath('target-definition.metadata.title').get() == ['target-definition', 'metadata', 'title']
@@ -104,11 +104,11 @@ def test_element_path_str():
     assert str(element_path) == 'target.metadata'
 
 
-def test_element_path_eq(sample_target):
+def test_element_path_eq(sample_target_def):
     """Test for magic method eq."""
     assert ElementPath('target.metadata') == ElementPath('target.metadata')
     assert not (ElementPath('target.metadata') == ElementPath('target.title'))
-    assert not (ElementPath('target.metadata') == Element(sample_target))
+    assert not (ElementPath('target.metadata') == Element(sample_target_def))
 
 
 def test_element_path_to_file_path():

@@ -39,15 +39,15 @@ def prepare_expected_element_paths(element_args: List[str]) -> List[ElementPath]
     return element_paths
 
 
-def test_copy_values(sample_target: target.TargetDefinition):
+def test_copy_values(sample_target_def: target.TargetDefinition):
     """Test copy_values function."""
-    metadata_values = sample_target.metadata.__dict__
+    metadata_values = sample_target_def.metadata.__dict__
     metadata_values['title'] = 'TEST'
     sample_metadata2: target.Metadata = target.Metadata(**metadata_values)
-    assert sample_metadata2 is not sample_target.metadata
+    assert sample_metadata2 is not sample_target_def.metadata
 
-    cmd_utils.copy_values(sample_target.metadata, sample_metadata2)
-    assert sample_metadata2 == sample_target.metadata
+    cmd_utils.copy_values(sample_target_def.metadata, sample_metadata2)
+    assert sample_metadata2 == sample_target_def.metadata
 
 
 def test_parse_element_arg(tmp_dir):

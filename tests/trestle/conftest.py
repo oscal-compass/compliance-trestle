@@ -90,8 +90,8 @@ def json_testdata_path() -> pathlib.Path:
 
 
 @pytest.fixture(scope='function')
-def sample_target():
-    """Return a valid target object."""
+def sample_target_def():
+    """Return a valid target definition object."""
     file_path = pathlib.Path.joinpath(test_utils.YAML_TEST_DATA_PATH, 'good_target.yaml')
     target_obj = TargetDefinition.oscal_read(file_path)
     return target_obj
