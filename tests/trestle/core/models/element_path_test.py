@@ -113,19 +113,25 @@ def test_element_path_eq(sample_target):
 
 def test_element_path_to_file_path():
     """Test to file path method."""
-    assert ElementPath('target-definition.metadata.title').to_file_path() == pathlib.Path('./metadata/title')
+    assert ElementPath('target-definition.metadata.title'
+                       ).to_file_path() == pathlib.Path('./target-definition/metadata/title')
 
-    assert ElementPath('target-definition.metadata.title').to_file_path(FileContentType.YAML
-                                                                        ) == pathlib.Path('./metadata/title.yaml')
-    assert ElementPath('target-definition.metadata.parties').to_file_path(FileContentType.JSON
-                                                                          ) == pathlib.Path('./metadata/parties.json')
+    assert ElementPath('target-definition.metadata.title').to_file_path(
+        FileContentType.YAML
+    ) == pathlib.Path('./target-definition/metadata/title.yaml')
+
+    assert ElementPath('target-definition.metadata.parties').to_file_path(
+        FileContentType.JSON
+    ) == pathlib.Path('./target-definition/metadata/parties.json')
+
     assert ElementPath('target-definition.metadata.parties.*').to_file_path(
         FileContentType.YAML
-    ) == pathlib.Path('./metadata/parties.yaml')
+    ) == pathlib.Path('./target-definition/metadata/parties.yaml')
 
     element_path = ElementPath('target.target-control-implementations.*', ElementPath('target-definition.targets.*'))
-    assert element_path.to_file_path() == pathlib.Path('./target-control-implementations')
+    assert element_path.to_file_path() == pathlib.Path('./target/target-control-implementations')
 
+    # error for invalid content type
     with pytest.raises(TrestleError):
         assert ElementPath('target-definition.metadata.parties.*').to_file_path(-1)
 
@@ -138,6 +144,7 @@ def test_element_path_to_root_path():
     assert ElementPath('target-definition.metadata.title').to_root_path(FileContentType.JSON
                                                                         ) == pathlib.Path('./target-definition.json')
 
+    # error for invalid content type - 1
     with pytest.raises(TrestleError):
         assert ElementPath('target-definition.metadata.title').to_root_path(-1)
 

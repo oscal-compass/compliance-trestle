@@ -155,9 +155,6 @@ class ElementPath:
         """
         path_parts = self.get()
 
-        # skip the first root element
-        path_parts = path_parts[1:]
-
         # skip wildcard
         if path_parts[-1] == ElementPath.WILDCARD:
             path_parts = path_parts[:-1]
