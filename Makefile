@@ -31,7 +31,6 @@ code-lint:
 	pre-commit run flake8 --all-files
 
 code-typing:
-	#mypy --pretty trestle/core trestle/plugins trestle/utils trestle/cli.py
 	mypy --pretty trestle
 test::
 	python -m pytest --cov trestle tests -v --cov-report=xml
