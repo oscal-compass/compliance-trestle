@@ -17,7 +17,6 @@
 import os
 import pathlib
 import sys
-from typing import List
 from unittest.mock import patch
 
 import pytest
@@ -38,27 +37,18 @@ from trestle.oscal import target as ostarget
 from trestle.utils import fs
 
 
-def prepare_trestle_project_dir(tmp_dir, content_type: FileContentType, sample_target: ostarget.TargetDefinition):
-    """Prepare a temp directory with an example OSCAL model."""
-    test_utils.ensure_trestle_config_dir(tmp_dir)
-    file_ext = FileContentType.to_file_extension(content_type)
-    target_def_dir = tmp_dir / 'target-definitions' / 'mytarget'
-    target_def_file = target_def_dir / f'target-definition{file_ext}'
-    fs.ensure_directory(target_def_dir)
-    sample_target.oscal_write(target_def_file)
-
-    return target_def_dir, target_def_file
-
-
 def test_split_model(tmp_dir, sample_target: ostarget.TargetDefinition):
     """Test for split_model method."""
     # Assume we are running a command like below
     # trestle split -f target-definition.yaml -e target-definition.metadata
-
     content_type = FileContentType.YAML
 
     # prepare trestle project dir with the file
-    target_def_dir, target_def_file = prepare_trestle_project_dir(tmp_dir, content_type, sample_target)
+    target_def_dir, target_def_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_target,
+        test_utils.TARGET_DEFS_DIR)
 
     # read the model from file
     target_def = ostarget.TargetDefinition.oscal_read(target_def_file)
@@ -77,7 +67,7 @@ def test_split_model(tmp_dir, sample_target: ostarget.TargetDefinition):
     expected_plan = Plan()
     expected_plan.add_action(CreatePathAction(metadata_file))
     expected_plan.add_action(WriteFileAction(metadata_file, Element(metadata), content_type))
-    expected_plan.add_action(CreatePathAction(root_file))
+    expected_plan.add_action(CreatePathAction(root_file, True))
     expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
 
     split_plan = SplitCmd.split_model(target_def, element_paths, target_def_dir, content_type)
@@ -92,31 +82,40 @@ def test_subsequent_split_model(tmp_dir, sample_target: ostarget.TargetDefinitio
     content_type = FileContentType.YAML
 
     # prepare trestle project dir with the file
-    target_def_dir, target_def_file = prepare_trestle_project_dir(tmp_dir, content_type, sample_target)
+    target_def_dir, target_def_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_target,
+        test_utils.TARGET_DEFS_DIR)
 
     # first split the target-def into metadata
     target_def = ostarget.TargetDefinition.oscal_read(target_def_file)
-    element = Element(target_def)
+    element = Element(target_def, 'target-definition')
     element_args = ['target-definition.metadata']
-    element_paths = cmd_utils.parse_element_args(element_args)
+    element_paths = test_utils.prepare_element_paths(target_def_dir, element_args)
     metadata_file = target_def_dir / element_paths[0].to_file_path(content_type)
     metadata: ostarget.Metadata = element.get_at(element_paths[0])
     root_file = target_def_dir / element_paths[0].to_root_path(content_type)
-    remaining_root = element.get().stripped_instance(element_paths[0].get_element_name())
+    metadata_field_alias = element_paths[0].get_element_name()
+    stripped_root = element.get().stripped_instance(stripped_fields_aliases=[metadata_field_alias])
+    root_wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
+
     first_plan = Plan()
     first_plan.add_action(CreatePathAction(metadata_file))
-    first_plan.add_action(WriteFileAction(metadata_file, Element(metadata), content_type))
-    first_plan.add_action(CreatePathAction(root_file))
-    first_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
+    first_plan.add_action(WriteFileAction(metadata_file, Element(metadata, metadata_field_alias), content_type))
+    first_plan.add_action(CreatePathAction(root_file, True))
+    first_plan.add_action(WriteFileAction(root_file, Element(stripped_root, root_wrapper_alias), content_type))
     first_plan.execute()  # this will split the files in the temp directory
 
     # now, prepare the expected plan to split metadta at parties
     second_plan = Plan()
-    element_args = ['metadata.parties.*']
-    element_paths = cmd_utils.parse_element_args(element_args)
+    metadata_file_dir = target_def_dir / element_paths[0].to_root_path()
     metadata2 = ostarget.Metadata.oscal_read(metadata_file)
-    element = Element(metadata2)
-    parties_dir = target_def_dir / 'metadata/parties'
+    element = Element(metadata2, metadata_field_alias)
+
+    element_args = ['metadata.parties.*']
+    element_paths = test_utils.prepare_element_paths(target_def_dir, element_args)
+    parties_dir = metadata_file_dir / element_paths[0].to_file_path()
     for i, party in enumerate(element.get_at(element_paths[0])):
         prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
         sub_model_actions = SplitCmd.prepare_sub_model_split_actions(party, parties_dir, prefix, content_type)
@@ -124,12 +123,13 @@ def test_subsequent_split_model(tmp_dir, sample_target: ostarget.TargetDefinitio
 
     # stripped metadata
     stripped_metadata = metadata2.stripped_instance(stripped_fields_aliases=['parties'])
-    second_plan.add_action(CreatePathAction(metadata_file))
-    second_plan.add_action(WriteFileAction(metadata_file, Element(stripped_metadata), content_type))
+    second_plan.add_action(CreatePathAction(metadata_file, True))
+    second_plan.add_action(
+        WriteFileAction(metadata_file, Element(stripped_metadata, metadata_field_alias), content_type)
+    )
 
     # call the split command and compare the plans
-    split_plan = SplitCmd.split_model(metadata, element_paths, target_def_dir, content_type)
-    split_plan.execute()
+    split_plan = SplitCmd.split_model(metadata, element_paths, metadata_file_dir, content_type)
     assert second_plan == split_plan
 
 
@@ -141,7 +141,11 @@ def test_split_multi_level_dict(tmp_dir, sample_target: ostarget.TargetDefinitio
     content_type = FileContentType.YAML
 
     # prepare trestle project dir with the file
-    target_def_dir, target_def_file = prepare_trestle_project_dir(tmp_dir, content_type, sample_target)
+    target_def_dir, target_def_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_target,
+        test_utils.TARGET_DEFS_DIR)
 
     file_ext = FileContentType.to_file_extension(content_type)
 
@@ -149,7 +153,7 @@ def test_split_multi_level_dict(tmp_dir, sample_target: ostarget.TargetDefinitio
     target_def: ostarget.TargetDefinition = ostarget.TargetDefinition.oscal_read(target_def_file)
     element = Element(target_def)
     element_args = ['target-definition.targets.*.target-control-implementations.*']
-    element_paths: List[ElementPath] = cmd_utils.parse_element_args(element_args)
+    element_paths = test_utils.prepare_element_paths(target_def_dir, element_args)
 
     expected_plan = Plan()
 
@@ -188,7 +192,7 @@ def test_split_multi_level_dict(tmp_dir, sample_target: ostarget.TargetDefinitio
 
     root_file = target_def_dir / element_paths[0].to_root_path(content_type)
     remaining_root = element.get().stripped_instance(stripped_fields_aliases=[element_paths[0].get_element_name()])
-    expected_plan.add_action(CreatePathAction(root_file))
+    expected_plan.add_action(CreatePathAction(root_file, True))
     expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
 
     split_plan = SplitCmd.split_model(target_def, element_paths, target_def_dir, content_type)

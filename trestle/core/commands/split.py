@@ -285,7 +285,7 @@ class SplitCmd(Command):
         # strip the root model object and add a WriteAction
         stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
         root_file = base_dir / element_paths[0].to_root_path(content_type)
-        split_plan.add_action(CreatePathAction(root_file))
+        split_plan.add_action(CreatePathAction(root_file, True))
         wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
         split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
 

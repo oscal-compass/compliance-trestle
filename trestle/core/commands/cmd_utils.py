@@ -41,7 +41,7 @@ def get_trash_file_path(file_path: pathlib.Path):
     return trash_file_path
 
 
-def move_to_trash(file_path: pathlib.Path):
+def move_to_trash(file_path: pathlib.Path, delete_file: bool = True):
     """Move the specified file to the trash directory.
 
     It overwrites the previous file if exists
@@ -51,7 +51,9 @@ def move_to_trash(file_path: pathlib.Path):
     trash_file_path = get_trash_file_path(file_path)
     fs.ensure_directory(trash_file_path.parent)
     copyfile(file_path, trash_file_path)
-    file_path.unlink()
+
+    if delete_file:
+        file_path.unlink()
 
 
 def get_model(file_path: str) -> OscalBaseModel:
