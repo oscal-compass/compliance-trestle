@@ -17,7 +17,7 @@ import importlib
 import warnings
 from typing import Any, List, Tuple, Type, no_type_check
 
-from datamodel_code_generator.parser.base import camel_to_snake
+from datamodel_code_generator.parser.base import camel_to_snake, snake_to_upper_camel
 
 from pydantic import BaseModel
 
@@ -60,6 +60,20 @@ def classname_to_alias(classname: str, mode: str) -> str:
         return camel_to_dash(suffix)
     elif mode == 'field':
         return camel_to_snake(suffix)
+    else:
+        raise err.TrestleError('Bad option')
+
+
+def alias_to_classname(alias: str, mode: str) -> str:
+    """
+    Return class name based dashed or snake alias.
+
+    This is applicable creating dynamic wrapper model for a list or dict field.
+    """
+    if mode == 'json':
+        return snake_to_upper_camel(alias.replace('-', '_'))
+    elif mode == 'field':
+        return snake_to_upper_camel(alias)
     else:
         raise err.TrestleError('Bad option')
 
