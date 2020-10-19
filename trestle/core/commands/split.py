@@ -159,6 +159,17 @@ class SplitCmd(Command):
 
         # get the sub_model specified by the element_path of this round
         element_path = element_paths[cur_path_index]
+
+        # check that the path is not multiple level deep
+        path_parts = element_path.get()
+        if path_parts[-1] == ElementPath.WILDCARD:
+            path_parts = path_parts[:-1]
+
+        if len(path_parts) > 2:
+            msg = 'Trestle supports split of first level children only, '
+            msg += f'found path "{element_path}" with level = {len(path_parts)}'
+            raise TrestleError(msg)
+
         sub_models = element.get_at(element_path)  # we call is sub_models as in plural, but it can be just one
         if sub_models is None:
             return cur_path_index
