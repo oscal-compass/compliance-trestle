@@ -138,14 +138,11 @@ def test_split_multi_level_dict(tmp_dir, sample_target: ostarget.TargetDefinitio
     # Assume we are running a command like below
     # trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*
 
-    # prepare trestle project dir with the file
-    test_utils.ensure_trestle_config_dir(tmp_dir)
-    target_def_dir = tmp_dir / 'target-definitions' / 'mytarget'
-    target_def_file = target_def_dir / 'target-definition.yaml'
-    fs.ensure_directory(target_def_dir)
-    sample_target.oscal_write(target_def_file)
-
     content_type = FileContentType.YAML
+
+    # prepare trestle project dir with the file
+    target_def_dir, target_def_file = prepare_trestle_project_dir(tmp_dir, content_type, sample_target)
+
     file_ext = FileContentType.to_file_extension(content_type)
 
     # read the model from file
@@ -158,14 +155,7 @@ def test_split_multi_level_dict(tmp_dir, sample_target: ostarget.TargetDefinitio
 
     # extract values
     targets: dict = element.get_at(element_paths[0])
-    targets_dir = target_def_dir / element_paths[0].get_element_name()
-
-    # create targets.yaml under targets dir
-    element_name = element_paths[0].get_element_name()
-    base_element = cmd_utils.get_dir_base_file_element(targets, element_name)
-    dir_base_file = targets_dir / f'{element_name}{file_ext}'
-    expected_plan.add_action(CreatePathAction(dir_base_file))
-    expected_plan.add_action(WriteFileAction(dir_base_file, base_element, content_type))
+    targets_dir = target_def_dir / element_paths[0].to_file_path()
 
     # split every targets
     for key in targets:
@@ -181,17 +171,9 @@ def test_split_multi_level_dict(tmp_dir, sample_target: ostarget.TargetDefinitio
         target_ctrl_impls: dict = target_element.get_at(element_paths[1])
         targets_ctrl_dir = target_dir / element_paths[1].to_file_path()
 
-        # create target-control-implementations.yaml under target-control-implementations dir
-        element_name = element_paths[1].get_element_name()
-        base_element = cmd_utils.get_dir_base_file_element(target_ctrl_impls, element_name)
-        file_name = f'{element_name}{file_ext}'
-        dir_base_file = targets_ctrl_dir / file_name
-        expected_plan.add_action(CreatePathAction(dir_base_file))
-        expected_plan.add_action(WriteFileAction(dir_base_file, base_element, content_type))
-
         for i, target_ctrl_impl in enumerate(target_ctrl_impls):
             model_type = utils.classname_to_alias(type(target_ctrl_impl).__name__, 'json')
-            file_prefix = str(i).zfill(4)
+            file_prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
             file_name = f'{file_prefix}{const.IDX_SEP}{model_type}{file_ext}'
             file_path = targets_ctrl_dir / file_name
             expected_plan.add_action(CreatePathAction(file_path))
@@ -225,15 +207,14 @@ def test_split_run(tmp_dir, sample_target: ostarget.TargetDefinition):
 
     # inner function for checking split files
     def check_split_files():
-        assert target_def_dir.joinpath('metadata.yaml').exists()
+        assert target_def_dir.joinpath('target-definition/metadata.yaml').exists()
         assert target_def_dir.joinpath('target-definition.yaml').exists()
-        assert target_def_dir.joinpath('targets').exists()
-        assert target_def_dir.joinpath('targets').is_dir()
-        assert target_def_dir.joinpath('targets/targets.yaml').exists()
+        assert target_def_dir.joinpath('target-definition/targets').exists()
+        assert target_def_dir.joinpath('target-definition/targets').is_dir()
 
         targets: dict = Element(sample_target).get_at(ElementPath('target-definition.targets.*'))
         for uuid in targets:
-            target_file = target_def_dir / f'targets/{uuid}{const.IDX_SEP}target.yaml'
+            target_file = target_def_dir / f'target-definition/targets/{uuid}{const.IDX_SEP}target.yaml'
             assert target_file.exists()
 
         assert cmd_utils.get_trash_file_path(target_def_file).exists()

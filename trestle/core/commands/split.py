@@ -156,7 +156,6 @@ class SplitCmd(Command):
         # initialize local variables
         element = Element(model_obj)
         stripped_field_alias = []
-        file_ext = FileContentType.to_file_extension(content_type)
 
         # get the sub_model specified by the element_path of this round
         element_path = element_paths[cur_path_index]
@@ -176,14 +175,6 @@ class SplitCmd(Command):
         if element_path.get_last() == ElementPath.WILDCARD:
             # create dir for all sub model items. e.g. `targets` or `groups`
             sub_models_dir = base_dir / element_path.to_file_path()
-
-            # write stripped sub models file in the directory
-            # e.g. targets/targets.yaml
-            element_name = element_path.get_element_name()
-            base_element = cmd_utils.get_dir_base_file_element(sub_models, element_name)
-            dir_base_file = sub_models_dir / f'{element_name}{file_ext}'
-            split_plan.add_action(CreatePathAction(dir_base_file))
-            split_plan.add_action(WriteFileAction(dir_base_file, base_element, content_type))
 
             # extract sub-models into a dict with appropriate prefix
             sub_model_items: Dict[str, OscalBaseModel] = {}
