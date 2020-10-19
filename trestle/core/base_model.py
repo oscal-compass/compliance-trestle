@@ -22,6 +22,7 @@ from typing import List, Optional, Type
 
 from pydantic import BaseModel, Extra, Field, create_model
 from pydantic.fields import ModelField
+from pydantic.parse import load_file
 
 import trestle.core.err as err
 from trestle.core.utils import classname_to_alias
@@ -159,12 +160,12 @@ class OscalBaseModel(BaseModel):
         class_name = self.__class__.__name__
         # It would be nice to pass through the description but I can't seem to and
         # it does not affect the output
-        dynamic_passer = {}
-        dynamic_passer[classname_to_alias(class_name, 'field')] = (
+        dynamic_parser = {}
+        dynamic_parser[classname_to_alias(class_name, 'field')] = (
             self.__class__,
             Field(self, title=classname_to_alias(class_name, 'field'), alias=classname_to_alias(class_name, 'json'))
         )
-        wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_passer)
+        wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_parser)
         # Default behaviour is strange here.
         wrapped_model = wrapper_model(**{classname_to_alias(class_name, 'json'): self})
 
@@ -191,19 +192,18 @@ class OscalBaseModel(BaseModel):
         # Define valid extensions
         yaml_suffix = ['.yaml', '.yml']
         json_suffix = ['.json']
+
         # Create the wrapper model.
-        class_name = cls.__name__
-        dynamic_passer = {}
-        dynamic_passer[classname_to_alias(class_name, 'field')] = (
-            cls, Field(..., title=classname_to_alias(class_name, 'json'), alias=classname_to_alias(class_name, 'json'))
-        )
-        wrapper_model = create_model('Wrapped' + class_name, __base__=OscalBaseModel, **dynamic_passer)
+        alias = classname_to_alias(cls.__name__, 'json')
 
         if path.suffix in yaml_suffix:
-            return wrapper_model.parse_obj(yaml.safe_load(path.open())
-                                           ).__dict__[classname_to_alias(class_name, 'field')]
+            return cls.parse_obj(yaml.safe_load(path.open())[alias])
         elif path.suffix in json_suffix:
-            return wrapper_model.parse_file(path).__dict__[classname_to_alias(class_name, 'field')]
+            obj = load_file(
+                path,
+                json_loads=cls.__config__.json_loads,
+            )
+            return cls.parse_obj(obj[alias])
         else:
             raise err.TrestleError('Unknown file type')
 

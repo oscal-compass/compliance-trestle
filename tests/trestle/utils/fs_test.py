@@ -379,7 +379,9 @@ def test_get_stripped_contextual_model(tmp_dir):
 
     groups_dir = mycatalog_dir / 'groups'
     stripped_catalog = fs.get_stripped_contextual_model(groups_dir)
-    assert stripped_catalog == (List[catalog.Group], 'catalog.groups')
+
+    assert stripped_catalog[0].__name__ == 'Groups'
+    assert stripped_catalog[1] == 'catalog.groups'
 
     def check_stripped_group():
         assert 'id' in alias_to_field_map

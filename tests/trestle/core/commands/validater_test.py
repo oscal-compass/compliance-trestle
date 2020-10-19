@@ -23,7 +23,7 @@ import trestle.oscal.target as ostarget
 
 import yaml
 
-catalog_path = pathlib.Path('nist-source/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
+catalog_path = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
 
 
 def test_has_no_duplicate_values_generic():

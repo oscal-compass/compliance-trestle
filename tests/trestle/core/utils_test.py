@@ -32,7 +32,7 @@ import trestle.oscal.target as target
 
 def load_good_catalog():
     """Load nist 800-53 as a catalog example."""
-    good_sample_path = pathlib.Path('nist-source/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
+    good_sample_path = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
 
     assert (good_sample_path.exists())
     return catalog.Catalog.oscal_read(good_sample_path)
@@ -177,3 +177,12 @@ def test_classname_to_alias():
     assert json_alias == 'member-of-organization'
     json_alias = mutils.classname_to_alias(full_classname, 'field')
     assert json_alias == 'member_of_organization'
+
+
+def test_alias_to_classname():
+    """Test alias_to_classname function."""
+    assert mutils.alias_to_classname('target-definition', 'json') == 'TargetDefinition'
+    assert mutils.alias_to_classname('target_definition', 'field') == 'TargetDefinition'
+
+    with pytest.raises(err.TrestleError):
+        assert mutils.alias_to_classname('target-definition', 'invalid') == 'TargetDefinition'

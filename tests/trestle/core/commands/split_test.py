@@ -156,36 +156,59 @@ def test_split_multi_level_dict(tmp_dir, sample_target):
     assert expected_plan == split_plan
 
 
-def test_split_run(tmp_dir, sample_target):
+def test_split_run(tmp_dir, sample_target: TargetDefinition):
     """Test split run."""
-    # prepare trestle project dir with the file
-    test_utils.ensure_trestle_config_dir(tmp_dir)
+    # common variables
     target_def_dir: pathlib.Path = tmp_dir / 'target-definitions' / 'mytarget'
     target_def_file: pathlib.Path = target_def_dir / 'target-definition.yaml'
-    fs.ensure_directory(target_def_dir)
-    sample_target.oscal_write(target_def_file)
-
     cwd = os.getcwd()
+    args = {}
+    cmd = SplitCmd()
+    parser = cmd.parser
+
+    # inner function for checking split files
+    def check_split_files():
+        assert target_def_dir.joinpath('metadata.yaml').exists()
+        assert target_def_dir.joinpath('target-definition.yaml').exists()
+        assert target_def_dir.joinpath('targets').exists()
+        assert target_def_dir.joinpath('targets').is_dir()
+        assert target_def_dir.joinpath('targets/targets.yaml').exists()
+
+        targets: dict = Element(sample_target).get_at(ElementPath('target-definition.targets.*'))
+        for uuid in targets:
+            target_file = target_def_dir / f'targets/{uuid}{const.IDX_SEP}target.yaml'
+            assert target_file.exists()
+
+        assert cmd_utils.get_trash_file_path(target_def_file).exists()
+
+    # prepare trestle project dir with the file
+    def prepare_target_def_file():
+        test_utils.ensure_trestle_config_dir(tmp_dir)
+        fs.ensure_directory(target_def_dir)
+        sample_target.oscal_write(target_def_file)
+
+    # test
+    prepare_target_def_file()
+    args = parser.parse_args(
+        ['-f', 'target-definition.yaml', '-e', 'target-definition.targets.*,target-definition.metadata']
+    )
     os.chdir(target_def_dir)
-    testargs = [
-        'trestle',
-        'split',
-        '-f',
-        'target-definition.yaml',
-        '-e',
-        'target-definition.metadata, target-definition.targets.*'
-    ]
-
-    with patch.object(sys, 'argv', testargs):
-        Trestle().run()
-
+    cmd._run(args)
     os.chdir(cwd)
+    check_split_files()
 
-    assert target_def_dir.joinpath('metadata.yaml').exists()
-    assert target_def_dir.joinpath('target-definition.yaml').exists()
-    assert target_def_dir.joinpath('targets').exists()
-    assert target_def_dir.joinpath('targets').is_dir()
-    assert cmd_utils.get_trash_file_path(target_def_file).exists()
+    # clean before the next test
+    test_utils.clean_tmp_dir(target_def_dir)
+
+    # reverse order test
+    prepare_target_def_file()
+    args = parser.parse_args(
+        ['-f', 'target-definition.yaml', '-e', 'target-definition.metadata,target-definition.targets.*']
+    )
+    os.chdir(target_def_dir)
+    cmd._run(args)
+    os.chdir(cwd)
+    check_split_files()
 
 
 def test_split_run_failure(tmp_dir, sample_target):
