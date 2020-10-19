@@ -198,7 +198,6 @@ def get_target_model(element_path_parts: List[str], current_model) -> BaseModel:
     """
     Get the target model from the parts of a Element Path.
     """
-    # assumption here is that element path parts are model's field names
     try:
         for index in range(1, len(element_path_parts)):
             if is_collection_field_type(current_model):

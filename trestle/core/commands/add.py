@@ -49,7 +49,7 @@ class AddCmd(Command):
     def _run(self, args):
         """Add an OSCAL component/subcomponent to the specified component."""
 
-        elements = "catalog.metadata.roles"
+        elements = "catalog.metadata.responsible-parties"
         file = "./catalog.json"
         # TODO: what happens during cases like "metadata.responsible-parties.creator"?
         #       what about "metadata.groups."?
