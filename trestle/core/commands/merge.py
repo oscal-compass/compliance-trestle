@@ -18,7 +18,7 @@
 import os
 from pathlib import Path
 
-from ilcli import Command
+from ilcli import Command  # type: ignore
 
 import trestle.core.const as const
 import trestle.core.utils as utils

@@ -47,7 +47,7 @@ class Trestle(Command):
         self.add_argument('-v', '--verbose', help='Display verbose output.', action='count', default=1)
 
 
-def run():
+def run() -> None:
     """Run the test cli."""
     exit(Trestle().run())
 

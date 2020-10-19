@@ -41,6 +41,7 @@ jobs:
       run: |
         make code-lint
     - name: Run code typing check (mypy)
+      run: |
         make code-typing
     - name: Pytest
       run: |

@@ -17,7 +17,7 @@
 
 import pathlib
 
-from ilcli import Command
+from ilcli import Command  # type: ignore
 
 import trestle.core.validater as validater
 import trestle.oscal.target as ostarget
