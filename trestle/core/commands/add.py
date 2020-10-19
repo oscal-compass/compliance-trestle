@@ -49,14 +49,14 @@ class AddCmd(Command):
     def _run(self, args):
         """Add an OSCAL component/subcomponent to the specified component."""
 
-        elements = "catalog.metadata.responsible-parties"
+        elements = "catalog.metadata.roles"
         file = "./catalog.json"
         # TODO: what happens during cases like "metadata.responsible-parties.creator"?
         #       what about "metadata.groups."?
 
         # Get parent model and then load json into parent model
         file_path = pathlib.Path(file)
-        parent_model, parent_alias = fs.get_contextual_model_type(file_path.absolute(), False)
+        parent_model, parent_alias = fs.get_contextual_model_type(file_path.absolute())
         parent_object = parent_model.oscal_read(file_path.absolute())
         parent_element = Element(parent_object)
 

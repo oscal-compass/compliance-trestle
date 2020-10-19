@@ -26,7 +26,6 @@ from datetime import datetime
 
 import trestle.core.const as const
 import trestle.core.err as err
-from trestle.core.base_model import OscalBaseModel
 from pydantic import ConstrainedStr
 
 
@@ -156,7 +155,7 @@ def get_target_model(element_path_parts: List[str], current_model) -> BaseModel:
     except Exception as e:
         raise err.TrestleError('Bad element path')
 
-def get_sample_model(model : BaseModel) -> OscalBaseModel:
+def get_sample_model(model : BaseModel) -> BaseModel:
     """ Given a model class, generate an object of that class with sample values"""
     model_type = BaseModel
     if is_collection_field_type(model):
