@@ -408,7 +408,7 @@ The command would replace the `revision-history.json` file by a `revision-histor
             │   └── revision-history
             │       ├── 00000__revision-history.json
             │       ├── 00001__revision-history.json
-            │       └── 00002__revision-history.json                
+            │       └── 00002__revision-history.json
             └── groups
                 ├── 00000__group.json        
                 ├── 00000__group
