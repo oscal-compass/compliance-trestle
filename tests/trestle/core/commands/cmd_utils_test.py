@@ -26,7 +26,6 @@ from trestle.core import const
 from trestle.core.commands import cmd_utils
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import ElementPath
-from trestle.oscal import target
 from trestle.utils import fs
 
 
@@ -37,17 +36,6 @@ def prepare_expected_element_paths(element_args: List[str]) -> List[ElementPath]
         element_paths.append(ElementPath(element_arg))
 
     return element_paths
-
-
-def test_copy_values(sample_target_def: target.TargetDefinition):
-    """Test copy_values function."""
-    metadata_values = sample_target_def.metadata.__dict__
-    metadata_values['title'] = 'TEST'
-    sample_metadata2: target.Metadata = target.Metadata(**metadata_values)
-    assert sample_metadata2 is not sample_target_def.metadata
-
-    cmd_utils.copy_values(sample_target_def.metadata, sample_metadata2)
-    assert sample_metadata2 == sample_target_def.metadata
 
 
 def test_parse_element_arg(tmp_dir):
