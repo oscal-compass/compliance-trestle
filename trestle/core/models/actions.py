@@ -17,7 +17,7 @@ import io
 import pathlib
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 from trestle.core.err import TrestleError
 from trestle.utils import fs
@@ -100,14 +100,14 @@ class Action(ABC):
 class WriteAction(Action):
     """Write the element to a destination stream."""
 
-    def __init__(self, writer: io.TextIOWrapper, element: Element, content_type: FileContentType):
+    def __init__(self, writer: Optional[io.TextIOWrapper], element: Element, content_type: FileContentType):
         """Initialize an write file action."""
         super().__init__(ActionType.WRITE, True)
 
         if writer is not None and not issubclass(io.TextIOWrapper, writer.__class__):
             raise TrestleError(f'Writer must be of io.TextIOWrapper, given f{writer.__class__}')
 
-        self._writer: io.TextIOWrapper = writer
+        self._writer: Optional[io.TextIOWrapper] = writer
         self._element: Element = element
         self._content_type: FileContentType = content_type
         self._lastStreamPos = -1

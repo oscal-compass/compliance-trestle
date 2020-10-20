@@ -221,7 +221,9 @@ def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[Type[Oscal
         model_type = singular_model_type.create_stripped_model_type(
             stripped_fields_aliases=list(aliases_to_be_stripped)
         )
-    return model_type, model_alias
+        return model_type, model_alias
+    else:
+        return singular_model_type, model_alias
 
 
 def extract_alias(path: pathlib.Path) -> str:

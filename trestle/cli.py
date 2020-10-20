@@ -16,7 +16,7 @@
 
 from ilcli import Command  # type: ignore
 
-from trestle.__init__ import __version__
+from trestle import __version__
 from trestle.core.commands.add import AddCmd
 from trestle.core.commands.assemble import AssembleCmd
 from trestle.core.commands.create import CreateCmd

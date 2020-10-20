@@ -39,7 +39,7 @@ class ElementPath:
 
     WILDCARD: str = '*'
 
-    def __init__(self, element_path: str, parent_path=None):
+    def __init__(self, element_path: str, parent_path: Optional['ElementPath'] = None):
         """Initialize an element wrapper.
 
         It assumes the element path contains oscal field alias with hyphens only
@@ -51,10 +51,10 @@ class ElementPath:
         self._path: List[str] = self._parse(element_path)
 
         # Initialize private variables for lazy processing and caching
-        self._element_name = None
-        self._preceding_path = None
+        self._element_name: Optional[str] = None
+        self._preceding_path: Optional['ElementPath'] = None
 
-    def _parse(self, element_path) -> List[str]:
+    def _parse(self, element_path: str) -> List[str]:
         """Parse the element path and validate."""
         parts: List[str] = element_path.split(self.PATH_SEPARATOR)
 
@@ -374,7 +374,7 @@ class Element:
         else:
             dynamic_passer = {}
             dynamic_passer['TransientField'] = (self._elem.__class__, Field(self, alias=self._wrapper_alias))
-            wrapper_model = create_model('TransientModel', __base__=OscalBaseModel, **dynamic_passer)
+            wrapper_model = create_model('TransientModel', __base__=OscalBaseModel, **dynamic_passer)  # type: ignore
             wrapped_model = wrapper_model(**{self._wrapper_alias: self._elem})
             json_data = wrapped_model.json(exclude_none=True, by_alias=True, indent=4)
 
