@@ -376,7 +376,8 @@ class Element:
     def is_allowed_sub_element_type(cls, elm) -> bool:
         """Check if is of allowed sub element type."""
         # FIXME: The following logic does not use the _allowed_sub_element_types being defined for the class
-        if (isinstance(elm, Element) or isinstance(elm, OscalBaseModel) or isinstance(elm, list) or isinstance(elm, dict) or elm is None):
+        if (isinstance(elm, Element) or isinstance(elm, OscalBaseModel) or isinstance(elm, list)
+                or isinstance(elm, dict) or elm is None):
             return True
 
         return False

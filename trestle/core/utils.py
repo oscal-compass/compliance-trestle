@@ -140,6 +140,7 @@ def get_cwm(contextual_path: list) -> str:
 
     return ''
 
+
 def get_target_model(element_path_parts: List[str], current_model) -> BaseModel:
     """
     Get the target model from the parts of a Element Path.
@@ -155,7 +156,8 @@ def get_target_model(element_path_parts: List[str], current_model) -> BaseModel:
     except Exception as e:
         raise err.TrestleError('Bad element path')
 
-def get_sample_model(model : BaseModel) -> BaseModel:
+
+def get_sample_model(model: BaseModel) -> BaseModel:
     """ Given a model class, generate an object of that class with sample values"""
     model_type = BaseModel
     if is_collection_field_type(model):
@@ -165,24 +167,24 @@ def get_sample_model(model : BaseModel) -> BaseModel:
     model_dict = {}
 
     for field in model.__fields__:
-        if model.__fields__[field].required :
+        if model.__fields__[field].required:
             ''' FIXME: This type_ could be a List or a Dict '''
-            if is_collection_field_type(model.__fields__[field].outer_type_) or issubclass(model.__fields__[field].outer_type_, BaseModel):
+            if is_collection_field_type(model.__fields__[field].outer_type_) or issubclass(
+                    model.__fields__[field].outer_type_, BaseModel):
                 model_dict[field] = get_sample_model(model.__fields__[field].outer_type_)
             else:
-                model_dict[field]= get_sample_value_by_type(model.__fields__[field].outer_type_, field)
-    
+                model_dict[field] = get_sample_value_by_type(model.__fields__[field].outer_type_, field)
+
     if model_type is list:
-        return [model(** model_dict)]
+        return [model(**model_dict)]
     elif model_type is dict:
-        return {"REPLACE_ME": model(** model_dict)}
-    return model(** model_dict)
+        return {"REPLACE_ME": model(**model_dict)}
+    return model(**model_dict)
 
 
 def get_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bool, int, str, float]:
     """Given a type, return sample value"""
-    # FIXME: uuid type and sample value?
-    if type_ is datetime: 
+    if type_ is datetime:
         return datetime.now()
     elif type_ is bool:
         return False
@@ -190,18 +192,15 @@ def get_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bo
         return 0
     elif type_ is str:
         return "REPLACE_ME"
-    elif type_ is float: 
+    elif type_ is float:
         return 0.00
-    # elif issubclass(type_, BaseModel):
-    #     return get_sample_model(type_)
     elif issubclass(type_, ConstrainedStr):
         ''' 
         FIXME: It could be uuid_ref and not uuid. For uuid_ref return uuid format.
-        One assumption - all ConstrainedStr are under uuid_ref fields.
+        One assumption - all ConstrainedStr are under uuid_ref/uuid fields.
         '''
         if field_name is 'uuid':
             return str(uuid.uuid4())
         return '00000000-0000-4000-8000-000000000000'
     else:
-        # FIXME: handle cases when the field is another OscalBaseModel
         raise err.TrestleError("Fatal: Bad type in model")
