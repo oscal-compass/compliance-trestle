@@ -39,14 +39,16 @@ def test_plan_execution(tmp_dir, sample_target: target.TargetDefinition):
     # hand craft a split plan
     split_plan = Plan()
     split_plan.add_action(CreatePathAction(metadata_yaml))
-    split_plan.add_action(WriteFileAction(metadata_yaml, Element(sample_target.metadata), content_type))
+    split_plan.add_action(
+        WriteFileAction(metadata_yaml, Element(sample_target.metadata, 'target-definition'), content_type)
+    )
 
     target_files: List[pathlib.Path] = []
     for tid, t in sample_target.targets.items():
         target_file: pathlib.Path = pathlib.Path.joinpath(targets_dir, tid + '.yaml')
         target_files.append(target_file)
         split_plan.add_action(CreatePathAction(target_file))
-        split_plan.add_action(WriteFileAction(target_file, Element(t), content_type))
+        split_plan.add_action(WriteFileAction(target_file, Element(t, 'target'), content_type))
 
     # execute the plan
     split_plan.execute()

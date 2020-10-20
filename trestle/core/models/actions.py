@@ -222,7 +222,7 @@ class WriteFileAction(WriteAction):
 class CreatePathAction(Action):
     """Create a file or directory path."""
 
-    def __init__(self, sub_path: pathlib.Path):
+    def __init__(self, sub_path: pathlib.Path, clear_content: bool = False):
         """Initialize a create path action.
 
         It creates all the missing directories in the path.
@@ -240,6 +240,11 @@ class CreatePathAction(Action):
 
         self._sub_path = sub_path
         self._created_paths: List[pathlib.Path] = []
+
+        # variables for handling with file content
+        self._clear_content = clear_content
+        self._old_file_content = None
+
         super().__init__(ActionType.CREATE_PATH, True)
 
     def get_trestle_project_root(self):
@@ -265,17 +270,29 @@ class CreatePathAction(Action):
             # sub directories or files relative to the project root
             cur_path = cur_path.joinpath(part)
 
-            # create the sub_path if it does not exists already
-            if not cur_path.exists():
-                if cur_path.suffix != '':
+            # create the sub_path file or directory if it does not exists already
+            if cur_path.suffix != '':  # suffix will denote a file
+                if not cur_path.exists():
                     # create file
                     cur_path.touch()
-                else:
+
+                    # add in the list for rollback
+                    self._created_paths.append(cur_path)
+                elif self._clear_content:
+                    # read file content for rollback
+                    with open(cur_path, 'r+') as fp:
+                        # read all content
+                        self._old_file_content = fp.read()
+
+                        # clear file content
+                        fp.truncate(0)
+            else:
+                if not cur_path.exists():
                     # create directory
                     cur_path.mkdir()
 
-                # add in the list for rollback
-                self._created_paths.append(cur_path)
+                    # add in the list for rollback
+                    self._created_paths.append(cur_path)
 
             # move to the next part of the sub_path parts
             cur_index = cur_index + 1
@@ -284,14 +301,24 @@ class CreatePathAction(Action):
 
     def rollback(self):
         """Rollback the action."""
-        if self.has_executed() and len(self._created_paths) > 0:
-            for cur_path in reversed(self._created_paths):
-                if cur_path.exists():
-                    if cur_path.is_file():
-                        cur_path.unlink()
-                    elif cur_path.is_dir():
-                        cur_path.rmdir()
-            self._created_paths.clear()
+        if self.has_executed():
+            if len(self._created_paths) > 0:
+                for cur_path in reversed(self._created_paths):
+                    if cur_path.exists():
+                        if cur_path.is_file():
+                            cur_path.unlink()
+                        elif cur_path.is_dir():
+                            cur_path.rmdir()
+
+                self._created_paths.clear()
+
+            # rollback the content of a file if required
+            # we should be here only if there were no path created and the sub_part already existed
+            elif self._sub_path.is_file() and self._sub_path.exists() and self._clear_content is True:
+                if self._old_file_content is not None:
+                    with open(self._sub_path, 'w') as fp:
+                        fp.write(self._old_file_content)
+
         self._mark_rollback()
 
     def __str__(self):

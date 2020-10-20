@@ -27,7 +27,7 @@ from trestle.core.models.file_content_type import FileContentType
 
 def test_write_file_action_yaml(tmp_yaml_file: pathlib.Path, sample_target):
     """Test write yaml action."""
-    element = Element(sample_target)
+    element = Element(sample_target, 'target-definition')
 
     try:
         # string path should error
@@ -56,7 +56,7 @@ def test_write_file_action_yaml(tmp_yaml_file: pathlib.Path, sample_target):
 
 def test_write_file_rollback(tmp_yaml_file: pathlib.Path, sample_target):
     """Test rollback."""
-    element = Element(sample_target)
+    element = Element(sample_target, 'target-definition')
     tmp_yaml_file.touch()
     wa = WriteFileAction(tmp_yaml_file, element, FileContentType.YAML)
     wa.execute()
@@ -83,7 +83,7 @@ def test_write_existing_file_rollback(tmp_yaml_file, sample_target):
         current_pos = fp.tell()
 
     # write to the file
-    element = Element(sample_target)
+    element = Element(sample_target, 'target-definition')
     wa = WriteFileAction(tmp_yaml_file, element, FileContentType.YAML)
     wa.execute()
 
