@@ -150,7 +150,7 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[OscalBaseModel
         path = pathlib.Path.cwd()
 
     if not is_valid_project_model_path(path):
-        raise err.TrestleError('Trestle project not found')
+        raise err.TrestleError(f'Trestle project not found at {path}')
 
     root_path = get_trestle_project_root(path)
     project_model_path = get_project_model_path(path)

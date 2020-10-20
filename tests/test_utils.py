@@ -15,15 +15,23 @@
 # limitations under the License.
 """Test utils module."""
 
+import os
 import pathlib
+from typing import List
 
-from trestle.core import const
+from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.commands import cmd_utils
+from trestle.core.models.elements import ElementPath
+from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
 
 BASE_TMP_DIR = pathlib.Path('tests/__tmp_dir')
 YAML_TEST_DATA_PATH = pathlib.Path('tests/data/yaml/')
 JSON_TEST_DATA_PATH = pathlib.Path('tests/data/json/')
+
+TARGET_DEFS_DIR = 'target-definitions'
+CATALOGS_DIR = 'catalogs'
 
 
 def clean_tmp_dir(tmp_dir: pathlib.Path):
@@ -52,3 +60,30 @@ def ensure_trestle_config_dir(sub_dir: pathlib.Path):
     """Ensure that the sub_dir has trestle config dir."""
     trestle_dir = pathlib.Path.joinpath(sub_dir, const.TRESTLE_CONFIG_DIR)
     fs.ensure_directory(trestle_dir)
+
+
+def prepare_element_paths(base_dir, element_args) -> List[ElementPath]:
+    """Prepare element paths for tests."""
+    cur_dir = pathlib.Path.cwd()
+    os.chdir(base_dir)
+    element_paths: List[ElementPath] = cmd_utils.parse_element_args(element_args, True)
+    os.chdir(cur_dir)
+
+    return element_paths
+
+
+def prepare_trestle_project_dir(
+    tmp_dir, content_type: FileContentType, model_obj: OscalBaseModel, models_dir_name: str
+):
+    """Prepare a temp directory with an example OSCAL model."""
+    ensure_trestle_config_dir(tmp_dir)
+
+    model_alias = utils.classname_to_alias(model_obj.__class__.__name__, 'json')
+
+    file_ext = FileContentType.to_file_extension(content_type)
+    models_full_path = tmp_dir / models_dir_name / 'my_test_model'
+    model_def_file = models_full_path / f'{model_alias}{file_ext}'
+    fs.ensure_directory(models_full_path)
+    model_obj.oscal_write(model_def_file)
+
+    return models_full_path, model_def_file

@@ -26,7 +26,7 @@ from trestle.core.models.plans import Plan
 from trestle.oscal import target
 
 
-def test_plan_execution(tmp_dir, sample_target: target.TargetDefinition):
+def test_plan_execution(tmp_dir, sample_target_def: target.TargetDefinition):
     """Test successful execution of a valid plan."""
     content_type = FileContentType.YAML
 
@@ -40,11 +40,11 @@ def test_plan_execution(tmp_dir, sample_target: target.TargetDefinition):
     split_plan = Plan()
     split_plan.add_action(CreatePathAction(metadata_yaml))
     split_plan.add_action(
-        WriteFileAction(metadata_yaml, Element(sample_target.metadata, 'target-definition'), content_type)
+        WriteFileAction(metadata_yaml, Element(sample_target_def.metadata, 'target-definition'), content_type)
     )
 
     target_files: List[pathlib.Path] = []
-    for tid, t in sample_target.targets.items():
+    for tid, t in sample_target_def.targets.items():
         target_file: pathlib.Path = pathlib.Path.joinpath(targets_dir, tid + '.yaml')
         target_files.append(target_file)
         split_plan.add_action(CreatePathAction(target_file))
