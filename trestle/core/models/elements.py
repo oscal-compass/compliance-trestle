@@ -21,6 +21,7 @@ from pydantic import Field, create_model
 from pydantic.error_wrappers import ValidationError
 
 import trestle.core.const as const
+from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError, TrestleNotFoundError
 from trestle.core.models.file_content_type import FileContentType
@@ -155,9 +156,6 @@ class ElementPath:
         """
         path_parts = self.get()
 
-        # skip the first root element
-        path_parts = path_parts[1:]
-
         # skip wildcard
         if path_parts[-1] == ElementPath.WILDCARD:
             path_parts = path_parts[:-1]
@@ -200,11 +198,31 @@ class ElementPath:
 class Element:
     """Element wrapper of an OSCAL model."""
 
+    IGNORE_WRAPPER_ALIAS = '__'
+
     _allowed_sub_element_types: List[str] = ['Element', 'OscalBaseModel', 'list', 'None', 'dict']
 
     def __init__(self, elem: OscalBaseModel, wrapper_alias: str = ''):
-        """Initialize an element wrapper."""
+        """Initialize an element wrapper.
+
+        wrapper_alias is the OSCAL alias for the given elem object and used for seriazation in to_json() method.
+
+        For example,
+         - List[Catalog.Group] element should have wrapper alias 'groups'
+         - Catalog element should have wrapper alias 'catalog'
+
+        wrapper_alias is mandatory for collection type object
+
+        if wrapper_alias = IGNORE_WRAPPER_ALIAS, then it is ignored and assumed to be json-serializable during to_json()
+        """
         self._elem: OscalBaseModel = elem
+
+        if wrapper_alias == '' and wrapper_alias != self.IGNORE_WRAPPER_ALIAS:
+            if utils.is_collection_field_type(elem):
+                raise TrestleError('wrapper_alias is required for a collection type object')
+            else:
+                wrapper_alias = utils.classname_to_alias(elem.__class__.__name__, 'json')
+
         self._wrapper_alias: str = wrapper_alias
 
     def get(self) -> OscalBaseModel:
@@ -219,7 +237,7 @@ class Element:
 
         return root_model, path_parts
 
-    def get_at(self, element_path: ElementPath = None) -> Optional[OscalBaseModel]:
+    def get_at(self, element_path: ElementPath = None, check_parent: bool = True) -> Optional[OscalBaseModel]:
         """Get the element at the specified element path.
 
         it will return the sub-model object at the path. Sub-model object
@@ -239,7 +257,8 @@ class Element:
             elm = elm.__root__
 
         # if parent exists and does not end with wildcard, use the parent as the starting element for search
-        if element_path.get_parent() is not None and element_path.get_parent().get_last() != ElementPath.WILDCARD:
+        if check_parent and element_path.get_parent(
+        ) is not None and element_path.get_parent().get_last() != ElementPath.WILDCARD:
             elm_at = self.get_at(element_path.get_parent())
             if elm_at is None:
                 raise TrestleNotFoundError(f'Invalid parent path {element_path.get_parent()}')
@@ -350,7 +369,7 @@ class Element:
 
     def to_json(self):
         """Convert into JSON string."""
-        if self._wrapper_alias == '':
+        if self._wrapper_alias == self.IGNORE_WRAPPER_ALIAS:
             json_data = json.dumps(self._elem, sort_keys=False, indent=4)
         else:
             dynamic_passer = {}

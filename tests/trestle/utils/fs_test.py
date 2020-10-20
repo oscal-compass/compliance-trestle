@@ -226,7 +226,8 @@ def test_get_contextual_model_type(tmp_dir):
 
     catalogs_dir = tmp_dir / 'catalogs'
     mycatalog_dir = catalogs_dir / 'mycatalog'
-    metadata_dir = mycatalog_dir / 'metadata'
+    catalog_dir = mycatalog_dir / 'catalog'
+    metadata_dir = catalog_dir / 'metadata'
     roles_dir = metadata_dir / 'roles'
     rps_dir = metadata_dir / 'responsible-parties'
     props_dir = metadata_dir / 'properties'
@@ -239,34 +240,25 @@ def test_get_contextual_model_type(tmp_dir):
 
     assert fs.get_contextual_model_type(mycatalog_dir) == (catalog.Catalog, 'catalog')
     assert fs.get_contextual_model_type(mycatalog_dir / 'catalog.json') == (catalog.Catalog, 'catalog')
-    assert fs.get_contextual_model_type(mycatalog_dir / 'back-matter.json'
-                                        ) == (catalog.BackMatter, 'catalog.back-matter')
+    assert fs.get_contextual_model_type(catalog_dir / 'back-matter.json') == (catalog.BackMatter, 'catalog.back-matter')
+    assert fs.get_contextual_model_type(catalog_dir / 'metadata.yaml') == (catalog.Metadata, 'catalog.metadata')
     assert fs.get_contextual_model_type(metadata_dir) == (catalog.Metadata, 'catalog.metadata')
-    assert fs.get_contextual_model_type(metadata_dir / 'metadata.yaml') == (catalog.Metadata, 'catalog.metadata')
     assert fs.get_contextual_model_type(roles_dir) == (List[catalog.Role], 'catalog.metadata.roles')
-    assert fs.get_contextual_model_type(roles_dir / 'roles.json') == (List[catalog.Role], 'catalog.metadata.roles')
     assert fs.get_contextual_model_type(roles_dir / '00000__role.json') == (catalog.Role, 'catalog.metadata.roles.role')
     assert fs.get_contextual_model_type(rps_dir) == (
         Dict[str, catalog.ResponsibleParty], 'catalog.metadata.responsible-parties'
     )
     assert fs.get_contextual_model_type(
-        rps_dir / 'responsible-parties.json'
-    ) == (Dict[str, catalog.ResponsibleParty], 'catalog.metadata.responsible-parties')
-    assert fs.get_contextual_model_type(
         rps_dir / 'creator__responsible-party.json'
     ) == (catalog.ResponsibleParty, 'catalog.metadata.responsible-parties.responsible-party')
     assert fs.get_contextual_model_type(props_dir) == (List[catalog.Prop], 'catalog.metadata.properties')
-    assert fs.get_contextual_model_type(props_dir / 'properties.json'
-                                        ) == (List[catalog.Prop], 'catalog.metadata.properties')
     assert fs.get_contextual_model_type(props_dir / f'00000{IDX_SEP}prop.json'
                                         ) == (catalog.Prop, 'catalog.metadata.properties.prop')
     assert fs.get_contextual_model_type(groups_dir) == (List[catalog.Group], 'catalog.groups')
-    assert fs.get_contextual_model_type(groups_dir / 'groups.json') == (List[catalog.Group], 'catalog.groups')
+    assert fs.get_contextual_model_type(groups_dir / f'00000{IDX_SEP}group.json'
+                                        ) == (catalog.Group, 'catalog.groups.group')
     assert fs.get_contextual_model_type(group_dir) == (catalog.Group, 'catalog.groups.group')
-    assert fs.get_contextual_model_type(group_dir / 'group.json') == (catalog.Group, 'catalog.groups.group')
     assert fs.get_contextual_model_type(controls_dir) == (List[catalog.Control], 'catalog.groups.group.controls')
-    assert fs.get_contextual_model_type(controls_dir / 'controls.json'
-                                        ) == (List[catalog.Control], 'catalog.groups.group.controls')
     assert fs.get_contextual_model_type(controls_dir / f'00000{IDX_SEP}control.json'
                                         ) == (catalog.Control, 'catalog.groups.group.controls.control')
 
@@ -278,10 +270,10 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path):
     mycatalog_dir = trestle_base_dir / 'catalogs' / 'mycatalog'
 
     directories = [
-        mycatalog_dir / 'metadata' / 'roles',
-        mycatalog_dir / 'metadata' / 'responsible-parties',
-        mycatalog_dir / 'metadata' / 'properties',
-        mycatalog_dir / 'groups' / f'00000{IDX_SEP}group' / 'controls'
+        mycatalog_dir / 'catalog' / 'metadata' / 'roles',
+        mycatalog_dir / 'catalog' / 'metadata' / 'responsible-parties',
+        mycatalog_dir / 'catalog' / 'metadata' / 'properties',
+        mycatalog_dir / 'catalog' / 'groups' / f'00000{IDX_SEP}group' / 'controls'
     ]
 
     for directory in directories:
@@ -289,18 +281,13 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path):
 
     files = [
         mycatalog_dir / 'catalog.json',
-        mycatalog_dir / 'back-matter.json',
-        mycatalog_dir / 'metadata' / 'metadata.json',
-        mycatalog_dir / 'metadata' / 'roles' / f'00000{IDX_SEP}role.json',
-        mycatalog_dir / 'metadata' / 'roles' / 'roles.json',
-        mycatalog_dir / 'metadata' / 'responsible-parties' / f'creator{IDX_SEP}responsible-party.json',
-        mycatalog_dir / 'metadata' / 'responsible-parties' / 'responsible-parties.json',
-        mycatalog_dir / 'metadata' / 'properties' / f'00000{IDX_SEP}prop.json',
-        mycatalog_dir / 'metadata' / 'properties' / 'properties.json',
-        mycatalog_dir / 'groups' / 'groups.json',
-        mycatalog_dir / 'groups' / f'00000{IDX_SEP}group' / 'group.json',
-        mycatalog_dir / 'groups' / f'00000{IDX_SEP}group' / 'controls' / 'controls.json',
-        mycatalog_dir / 'groups' / f'00000{IDX_SEP}group' / 'controls' / f'00000{IDX_SEP}control.json',
+        mycatalog_dir / 'catalog' / 'back-matter.json',
+        mycatalog_dir / 'catalog' / 'metadata.json',
+        mycatalog_dir / 'catalog' / 'metadata' / 'roles' / f'00000{IDX_SEP}role.json',
+        mycatalog_dir / 'catalog' / 'metadata' / 'responsible-parties' / f'creator{IDX_SEP}responsible-party.json',
+        mycatalog_dir / 'catalog' / 'metadata' / 'properties' / f'00000{IDX_SEP}prop.json',
+        mycatalog_dir / 'catalog' / 'groups' / f'00000{IDX_SEP}group.json',
+        mycatalog_dir / 'catalog' / 'groups' / f'00000{IDX_SEP}group' / 'controls' / f'00000{IDX_SEP}control.json',
     ]
 
     for file in files:
@@ -368,16 +355,17 @@ def test_get_stripped_contextual_model(tmp_dir):
         assert 'responsible-properties' not in alias_to_field_map
         assert 'properties' not in alias_to_field_map
 
-    metadata_dir = mycatalog_dir / 'metadata'
+    catalog_dir = mycatalog_dir / 'catalog'
+    metadata_dir = catalog_dir / 'metadata'
     stripped_catalog = fs.get_stripped_contextual_model(metadata_dir)
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_metadata()
 
-    stripped_catalog = fs.get_stripped_contextual_model(metadata_dir / 'metadata.json')
+    stripped_catalog = fs.get_stripped_contextual_model(catalog_dir / 'metadata.json')
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_metadata()
 
-    groups_dir = mycatalog_dir / 'groups'
+    groups_dir = catalog_dir / 'groups'
     stripped_catalog = fs.get_stripped_contextual_model(groups_dir)
 
     assert stripped_catalog[0].__name__ == 'Groups'
@@ -399,7 +387,7 @@ def test_get_stripped_contextual_model(tmp_dir):
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_group()
 
-    stripped_catalog = fs.get_stripped_contextual_model(groups_dir / f'00000{IDX_SEP}group' / 'group.json')
+    stripped_catalog = fs.get_stripped_contextual_model(groups_dir / f'00000{IDX_SEP}group.json')
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_group()
 
@@ -447,10 +435,11 @@ def test_contextual_get_singular_alias(tmp_dir):
     """Test get_singular_alias in contextual mode."""
     # Contextual model tests
     create_sample_catalog_project(tmp_dir)
-    catalog_dir = tmp_dir.absolute() / 'catalogs'
-    mycatalog_dir = catalog_dir / 'mycatalog'
-    metadata_dir = mycatalog_dir / 'metadata'
-    groups_dir = mycatalog_dir / 'groups'
+    catalogs_dir = tmp_dir.absolute() / 'catalogs'
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+    catalog_dir = mycatalog_dir / 'catalog'
+    metadata_dir = catalog_dir / 'metadata'
+    groups_dir = catalog_dir / 'groups'
     group_dir = groups_dir / f'00000{IDX_SEP}group'
 
     cwd = os.getcwd()

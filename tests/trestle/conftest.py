@@ -22,6 +22,7 @@ import pytest
 
 from tests import test_utils
 
+from trestle.oscal.catalog import Catalog
 from trestle.oscal.target import TargetDefinition
 from trestle.utils import fs
 
@@ -90,8 +91,16 @@ def json_testdata_path() -> pathlib.Path:
 
 
 @pytest.fixture(scope='function')
-def sample_target():
-    """Return a valid target object."""
+def sample_target_def():
+    """Return a valid target definition object."""
     file_path = pathlib.Path.joinpath(test_utils.YAML_TEST_DATA_PATH, 'good_target.yaml')
     target_obj = TargetDefinition.oscal_read(file_path)
     return target_obj
+
+
+@pytest.fixture(scope='function')
+def sample_catalog():
+    """Return a valid catalog object."""
+    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'good_catalog.json')
+    catalog_obj = Catalog.oscal_read(file_path)
+    return catalog_obj

@@ -54,6 +54,9 @@ TMP_DIR_NAME = '__tmp_dir'
 # Index separater for naming directories representing collection properties
 IDX_SEP = '__'
 
+# Digit prefix for split files
+FILE_DIGIT_PREFIX_LENGTH = 5
+
 # Wildcard that can be used in the element path to represent all elements
 ELEMENT_WILDCARD = '*'
 ARG_VALIDATE = 'validate'
