@@ -14,19 +14,18 @@
 # limitations under the License.
 """Utilities for dealing with models."""
 import importlib
-import warnings
 import uuid
-from pathlib import Path
-from typing import Any, List, Optional, Tuple, Type, no_type_check, Union
+import warnings
+from datetime import datetime
+from typing import Any, List, Tuple, Type, Union, no_type_check
 
 from datamodel_code_generator.parser.base import camel_to_snake, snake_to_upper_camel
 
 from pydantic import BaseModel
-from datetime import datetime
+from pydantic import ConstrainedStr
 
 import trestle.core.const as const
 import trestle.core.err as err
-from pydantic import ConstrainedStr
 
 
 def get_elements_of_model_type(object_of_interest, type_of_interest):
@@ -141,24 +140,27 @@ def get_cwm(contextual_path: list) -> str:
     return ''
 
 
-def get_target_model(element_path_parts: List[str], current_model) -> BaseModel:
-    """
-    Get the target model from the parts of a Element Path.
+def get_target_model(element_path_parts: List[str], current_model: BaseModel) -> BaseModel:
+    """Get the target model from the parts of a Element Path.
+
+    Takes as input a list, containing parts of an ElementPath as str and expressed in aliases,
+    and the parent model to follow the ElementPath in.
+    Returns the type of the model at the specified ElementPath of the input model
     """
     try:
         for index in range(1, len(element_path_parts)):
             if is_collection_field_type(current_model):
                 # Return the model class inside the collection
-                current_model = get_inner_model(current_model)
+                current_model = get_inner_type(current_model)
             else:
                 current_model = current_model.alias_to_field_map()[element_path_parts[index]].outer_type_
         return current_model
     except Exception as e:
-        raise err.TrestleError('Bad element path')
+        raise err.TrestleError(f'Possibly bad element path. {str(e)}')
 
 
 def get_sample_model(model: BaseModel) -> BaseModel:
-    """ Given a model class, generate an object of that class with sample values"""
+    """Given a model class, generate an object of that class with sample values."""
     model_type = BaseModel
     if is_collection_field_type(model):
         model_type = model.__origin__
@@ -168,7 +170,7 @@ def get_sample_model(model: BaseModel) -> BaseModel:
 
     for field in model.__fields__:
         if model.__fields__[field].required:
-            ''' FIXME: This type_ could be a List or a Dict '''
+            """ FIXME: This type_ could be a List or a Dict """
             if is_collection_field_type(model.__fields__[field].outer_type_) or issubclass(
                     model.__fields__[field].outer_type_, BaseModel):
                 model_dict[field] = get_sample_model(model.__fields__[field].outer_type_)
@@ -178,12 +180,12 @@ def get_sample_model(model: BaseModel) -> BaseModel:
     if model_type is list:
         return [model(**model_dict)]
     elif model_type is dict:
-        return {"REPLACE_ME": model(**model_dict)}
+        return {'REPLACE_ME': model(**model_dict)}
     return model(**model_dict)
 
 
 def get_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bool, int, str, float]:
-    """Given a type, return sample value"""
+    """Given a type, return sample value."""
     if type_ is datetime:
         return datetime.now()
     elif type_ is bool:
@@ -191,16 +193,16 @@ def get_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bo
     elif type_ is int:
         return 0
     elif type_ is str:
-        return "REPLACE_ME"
+        return 'REPLACE_ME'
     elif type_ is float:
         return 0.00
     elif issubclass(type_, ConstrainedStr):
-        ''' 
+        """
         FIXME: It could be uuid_ref and not uuid. For uuid_ref return uuid format.
         One assumption - all ConstrainedStr are under uuid_ref/uuid fields.
-        '''
-        if field_name is 'uuid':
+        """
+        if field_name == 'uuid':
             return str(uuid.uuid4())
         return '00000000-0000-4000-8000-000000000000'
     else:
-        raise err.TrestleError("Fatal: Bad type in model")
+        raise err.TrestleError('Fatal: Bad type in model')

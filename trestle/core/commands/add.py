@@ -15,18 +15,19 @@
 # limitations under the License.
 """Trestle Add Command."""
 
-from ilcli import Command
 import pathlib
 
+from ilcli import Command
+
 import trestle.core.const as const
+import trestle.core.err as err
+from trestle.core import utils
+from trestle.core.commands import cmd_utils
+from trestle.core.models.actions import CreatePathAction, UpdateAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
-from trestle.core.models.actions import UpdateAction, WriteFileAction, CreatePathAction
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.core.commands import cmd_utils
-from trestle.core import utils
 from trestle.utils import fs
-import trestle.core.err as err
 
 
 class AddCmd(Command):
