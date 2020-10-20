@@ -159,6 +159,8 @@ class SplitCmd(Command):
 
         # get the sub_model specified by the element_path of this round
         element_path = element_paths[cur_path_index]
+        is_parent = cur_path_index + 1 < len(element_paths) and element_paths[cur_path_index
+                                                                              + 1].get_parent() == element_path
 
         # check that the path is not multiple level deep
         path_parts = element_path.get()
@@ -170,7 +172,7 @@ class SplitCmd(Command):
             msg += f'found path "{element_path}" with level = {len(path_parts)}'
             raise TrestleError(msg)
 
-        sub_models = element.get_at(element_path)  # we call is sub_models as in plural, but it can be just one
+        sub_models = element.get_at(element_path, False)  # we call is sub_models as in plural, but it can be just one
         if sub_models is None:
             return cur_path_index
 
@@ -183,7 +185,17 @@ class SplitCmd(Command):
         # for example, in the first round we get the `targets` using the path `target-definition.targets.*`
         # so, now we need to split each of the target recursively. Note that target is an instance of dict
         # However, there can be other sub_model, which is of type list
-        if element_path.get_last() == ElementPath.WILDCARD:
+        if is_parent and element_path.get_last() is not ElementPath.WILDCARD:
+            # create dir for all sub model items
+            sub_models_dir = base_dir / element_path.to_root_path()
+
+            sub_model_plan = Plan()
+            path_chain_end = cls.split_model_at_path_chain(
+                sub_models, element_paths, sub_models_dir, content_type, cur_path_index + 1, sub_model_plan, True
+            )
+            sub_model_actions = sub_model_plan.get_actions()
+            split_plan.add_actions(sub_model_actions)
+        elif element_path.get_last() == ElementPath.WILDCARD:
             # create dir for all sub model items. e.g. `targets` or `groups`
             sub_models_dir = base_dir / element_path.to_file_path()
 
@@ -279,7 +291,8 @@ class SplitCmd(Command):
         while cur_path_index < len(element_paths):
             # extract the sub element name for each of the root path of the path chain
             element_path = element_paths[cur_path_index]
-            if len(element_path.get()) > 1:
+
+            if element_path.get_parent() is None and len(element_path.get()) > 1:
                 stripped_part = element_path.get()[1]
                 if stripped_part == ElementPath.WILDCARD:
                     stripped_field_alias.append('__root__')

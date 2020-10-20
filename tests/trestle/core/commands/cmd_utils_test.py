@@ -52,6 +52,29 @@ def test_copy_values(sample_target_def: target.TargetDefinition):
 
 def test_parse_element_arg(tmp_dir):
     """Unit test parse a single element arg."""
+    with pytest.raises(TrestleError):
+        cmd_utils.parse_element_arg('target-definition', False)
+
+    with pytest.raises(TrestleError):
+        cmd_utils.parse_element_arg('target-definition.*', False)
+
+    with pytest.raises(TrestleError):
+        cmd_utils.parse_element_arg('*.target', False)
+
+    with pytest.raises(TrestleError):
+        cmd_utils.parse_element_arg('*.*', False)
+
+    with pytest.raises(TrestleError):
+        cmd_utils.parse_element_arg('*', False)
+
+    with pytest.raises(TrestleError):
+        cmd_utils.parse_element_arg('target-definition.targets.*.*', False)
+
+    element_arg = 'catalog.metadata.parties.*'
+    expected_paths: List[ElementPath] = prepare_expected_element_paths(['catalog.metadata', 'metadata.parties.*'])
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, False)
+    assert expected_paths == element_paths
+
     element_arg = 'target-definition.targets'
     expected_paths: List[ElementPath] = prepare_expected_element_paths(['target-definition.targets'])
     element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, False)

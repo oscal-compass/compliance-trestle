@@ -237,7 +237,7 @@ class Element:
 
         return root_model, path_parts
 
-    def get_at(self, element_path: ElementPath = None) -> Optional[OscalBaseModel]:
+    def get_at(self, element_path: ElementPath = None, check_parent: bool = True) -> Optional[OscalBaseModel]:
         """Get the element at the specified element path.
 
         it will return the sub-model object at the path. Sub-model object
@@ -257,7 +257,8 @@ class Element:
             elm = elm.__root__
 
         # if parent exists and does not end with wildcard, use the parent as the starting element for search
-        if element_path.get_parent() is not None and element_path.get_parent().get_last() != ElementPath.WILDCARD:
+        if check_parent and element_path.get_parent(
+        ) is not None and element_path.get_parent().get_last() != ElementPath.WILDCARD:
             elm_at = self.get_at(element_path.get_parent())
             if elm_at is None:
                 raise TrestleNotFoundError(f'Invalid parent path {element_path.get_parent()}')

@@ -109,39 +109,47 @@ def parse_element_arg(element_arg: str, contextual_mode: bool = True) -> List[El
     element_arg = element_arg.strip()
 
     # search for wildcards and create paths with its parent path
-    last_pos: int = -1
+    path_parts = element_arg.split(ElementPath.PATH_SEPARATOR)
+    if len(path_parts) <= 0:
+        raise TrestleError(f'Invalid element path "{element_arg}" without any path separator')
+
     prev_element_path = None
-    parent_model = None
-    for cur_pos, c in enumerate(element_arg):
-        if c == ElementPath.WILDCARD:
-            # extract the path string including wildcard
-            start = last_pos + 1
-            end = cur_pos + 1
-            p = element_arg[start:end]
-            if parent_model is not None:
-                p = ElementPath.PATH_SEPARATOR.join([parent_model, p])
+    parent_model = path_parts[0]
+    i = 1
+    while i < len(path_parts):
+        p = path_parts[i]
+        if p == ElementPath.WILDCARD:
+            # * cannot be the second part in the path
+            if len(element_paths) <= 0:
+                raise TrestleError(f'Invalid element path "{element_arg}" with {ElementPath.WILDCARD}')
 
+            # append wildcard to the latest element path
+            latest_path = element_paths.pop()
+            if latest_path.get_last() == ElementPath.WILDCARD:
+                raise TrestleError(f'Invalid element path with consecutive {ElementPath.WILDCARD}')
+
+            latest_path_str = ElementPath.PATH_SEPARATOR.join([latest_path.to_string(), p])
+            element_path = ElementPath(latest_path_str, latest_path.get_parent())
+        else:
             # create and append elment_path
-            element_path = ElementPath(p, parent_path=prev_element_path)
-            element_paths.append(element_path)
-
-            # get full path without the wildcard
-            full_path = element_path.get_full_path_parts()
-            path_str = ElementPath.PATH_SEPARATOR.join(full_path[:-1])
-
-            # get the parent model for the alias path
-            parent_model = fs.get_singular_alias(path_str, contextual_mode)
-
-            # store values for next cycle
-            prev_element_path = element_path
-            last_pos = end
-
-    if last_pos + 1 < len(element_arg):
-        p = element_arg[last_pos + 1:]
-        if parent_model is not None:
             p = ElementPath.PATH_SEPARATOR.join([parent_model, p])
-        element_path = ElementPath(p)
+            element_path = ElementPath(p, parent_path=prev_element_path)
+
+        # if the path has wildcard and there is more parts later,
+        # get the parent model for the alias path
+        if element_path.get_last() == ElementPath.WILDCARD:
+            full_path_str = ElementPath.PATH_SEPARATOR.join(element_path.get_full_path_parts()[:-1])
+            parent_model = fs.get_singular_alias(full_path_str, contextual_mode)
+        else:
+            parent_model = element_path.get_element_name()
+
+        # store values for next cycle
+        prev_element_path = element_path
         element_paths.append(element_path)
+        i += 1
+
+    if len(element_paths) <= 0:
+        raise TrestleError(f'Invalid element path "{element_arg}" without any path separator')
 
     return element_paths
 
