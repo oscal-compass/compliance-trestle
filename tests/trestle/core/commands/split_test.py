@@ -75,10 +75,11 @@ def test_split_model(tmp_dir, sample_target_def: ostarget.TargetDefinition):
     assert expected_plan == split_plan
 
 
-def test_split_catalog_model(tmp_dir, sample_catalog: oscatalog.Catalog):
-    """Test for split_model method."""
+def test_split_chained_sub_models(tmp_dir, sample_catalog: oscatalog.Catalog):
+    """Test for split_model method with chained sum models like catalog.metadata.parties.*."""
     # Assume we are running a command like below
-    # trestle split -f catalog.json -e catalog.metadata
+    # trestle split -f catalog.json -e catalog.metadata.parties.*
+    # see https://github.com/IBM/compliance-trestle/issues/172
     content_type = FileContentType.JSON
 
     # prepare trestle project dir with the file
@@ -91,20 +92,36 @@ def test_split_catalog_model(tmp_dir, sample_catalog: oscatalog.Catalog):
     # read the model from file
     catalog = oscatalog.Catalog.oscal_read(catalog_file)
     element = Element(catalog)
-    element_args = ['catalog.metadata']
-    element_paths = cmd_utils.parse_element_args(element_args)
+    element_args = ['catalog.metadata.parties.*']
+    element_paths = test_utils.prepare_element_paths(catalog_dir, element_args)
+    assert 2 == len(element_paths)
 
-    # extract values
-    metadata_file = catalog_dir / element_paths[0].to_file_path(content_type)
-    metadata = element.get_at(element_paths[0])
-
-    root_file = catalog_dir / element_paths[0].to_root_path(content_type)
-    remaining_root = element.get().stripped_instance(element_paths[0].get_element_name())
-
-    # prepare the plan
     expected_plan = Plan()
+
+    # prepare to extract metadata and parties
+    metadata_file_dir = catalog_dir / element_paths[0].to_root_path()
+    metadata_file = catalog_dir / element_paths[0].to_file_path(content_type)
+    metadata_field_alias = element_paths[0].get_element_name()
+    metadata = element.get_at(element_paths[0])
+    meta_element = Element(metadata, metadata_field_alias)
+
+    # extract parties
+    parties_dir = metadata_file_dir / element_paths[1].to_file_path()
+    for i, party in enumerate(meta_element.get_at(element_paths[1], False)):
+        prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
+        sub_model_actions = SplitCmd.prepare_sub_model_split_actions(party, parties_dir, prefix, content_type)
+        expected_plan.add_actions(sub_model_actions)
+
+    # stripped metadata
+    stripped_metadata = metadata.stripped_instance(stripped_fields_aliases=['parties'])
     expected_plan.add_action(CreatePathAction(metadata_file))
-    expected_plan.add_action(WriteFileAction(metadata_file, Element(metadata), content_type))
+    expected_plan.add_action(
+        WriteFileAction(metadata_file, Element(stripped_metadata, metadata_field_alias), content_type)
+    )
+
+    # stripped catalog
+    root_file = catalog_dir / element_paths[0].to_root_path(content_type)
+    remaining_root = element.get().stripped_instance(metadata_field_alias)
     expected_plan.add_action(CreatePathAction(root_file, True))
     expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
 
@@ -320,6 +337,12 @@ def test_split_run_failure(tmp_dir, sample_target_def: ostarget.TargetDefinition
     # create trestle project
     test_utils.ensure_trestle_config_dir(tmp_dir)
 
+    # no file specified
+    testargs = ['trestle', 'split', '-e', 'target-definition.metadata, target-definition.targets.*']
+    with patch.object(sys, 'argv', testargs):
+        with pytest.raises(TrestleError):
+            Trestle().run()
+
     # check with missing file
     testargs = [
         'trestle', 'split', '-f', 'missing.yaml', '-e', 'target-definition.metadata, target-definition.targets.*'
@@ -337,3 +360,56 @@ def test_split_run_failure(tmp_dir, sample_target_def: ostarget.TargetDefinition
             Trestle().run()
 
     os.chdir(cwd)
+
+
+def test_split_model_at_path_chain_failures(tmp_dir, sample_catalog: oscatalog.Catalog):
+    """Test for split_model_at_path_chain method failure scenarios."""
+    content_type = FileContentType.JSON
+
+    # prepare trestle project dir with the file
+    catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_catalog,
+        test_utils.CATALOGS_DIR)
+
+    split_plan = Plan()
+    element_paths = [ElementPath('catalog.metadata.parties.*')]
+
+    # long chain of path should error
+    with pytest.raises(TrestleError):
+        SplitCmd.split_model_at_path_chain(
+            sample_catalog, element_paths, catalog_dir, content_type, 0, split_plan, False
+        )
+
+    # no plan should error
+    with pytest.raises(TrestleError):
+        SplitCmd.split_model_at_path_chain(sample_catalog, element_paths, catalog_dir, content_type, 0, None, False)
+
+    # negative path index should error
+    with pytest.raises(TrestleError):
+        SplitCmd.split_model_at_path_chain(
+            sample_catalog, element_paths, catalog_dir, content_type, -1, split_plan, False
+        )
+
+    # too large path index should return the path index
+    cur_path_index = len(element_paths) + 1
+    cur_path_index == SplitCmd.split_model_at_path_chain(
+        sample_catalog, element_paths, catalog_dir, content_type, cur_path_index, split_plan, False
+    )
+
+    # invalid model path should return withour doing anything
+    element_paths = [ElementPath('catalog.meta')]
+    cur_path_index = 0
+    cur_path_index == SplitCmd.split_model_at_path_chain(
+        sample_catalog, element_paths, catalog_dir, content_type, cur_path_index, split_plan, False
+    )
+
+    # invalid path for multi item sub-model
+    p0 = ElementPath('catalog.uuid.*')  # uuid exists, but it is not a multi-item sub-model object
+    p1 = ElementPath('uuid.metadata.*', p0)  # this is invalid but we just need a path with the p0 as the parent
+    element_paths = [p0, p1]
+    with pytest.raises(TrestleError):
+        SplitCmd.split_model_at_path_chain(
+            sample_catalog, element_paths, catalog_dir, content_type, 0, split_plan, False
+        )

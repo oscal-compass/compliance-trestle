@@ -172,7 +172,7 @@ class SplitCmd(Command):
             msg += f'found path "{element_path}" with level = {len(path_parts)}'
             raise TrestleError(msg)
 
-        sub_models = element.get_at(element_path, False)  # we call is sub_models as in plural, but it can be just one
+        sub_models = element.get_at(element_path, False)  # we call sub_models as in plural, but it can be just one
         if sub_models is None:
             return cur_path_index
 
@@ -181,7 +181,7 @@ class SplitCmd(Command):
         path_chain_end = cur_path_index
 
         # if wildcard is present in the element_path and the next path in the chain has current path as the parent,
-        # create separate file for each sub item
+        # we need to split recursively and create separate file for each sub item
         # for example, in the first round we get the `targets` using the path `target-definition.targets.*`
         # so, now we need to split each of the target recursively. Note that target is an instance of dict
         # However, there can be other sub_model, which is of type list
