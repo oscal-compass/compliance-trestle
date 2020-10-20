@@ -175,7 +175,7 @@ def get_sample_model(model : BaseModel) -> BaseModel:
     if model_type is list:
         return [model(** model_dict)]
     elif model_type is dict:
-        return [{"REPLACE_ME": model(** model_dict)}]
+        return {"REPLACE_ME": model(** model_dict)}
     return model(** model_dict)
 
 

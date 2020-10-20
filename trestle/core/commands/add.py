@@ -49,7 +49,7 @@ class AddCmd(Command):
     def _run(self, args):
         """Add an OSCAL component/subcomponent to the specified component."""
 
-        elements = "catalog.metadata.roles"
+        elements = "catalog.metadata.responsible-parties"
         file = "./catalog.json"
         # TODO: what happens during cases like "metadata.responsible-parties.creator"?
         #       what about "metadata.groups."?
@@ -58,18 +58,30 @@ class AddCmd(Command):
         file_path = pathlib.Path(file)
         parent_model, parent_alias = fs.get_contextual_model_type(file_path.absolute())
         parent_object = parent_model.oscal_read(file_path.absolute())
-        parent_element = Element(parent_object)
+        parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
 
         # Get child model
         element_path = ElementPath(elements)
         element_path_list = element_path.get_full_path_parts()
+
         try:
             child_model = utils.get_target_model(element_path_list, parent_model)
+            # Create child element with sample values
+            child_object = utils.get_sample_model(child_model)
+
+            if parent_element.get_at(element_path) is not None:
+                # The element already exists
+                if type(parent_element.get_at(element_path)) is list:
+                    child_object = parent_element.get_at(element_path) + child_object
+                elif type(parent_element.get_at(element_path)) is dict:
+                    child_object = {** parent_element.get_at(element_path), ** child_object}
+                else:
+                    raise err.TrestleError('Already exists and is not a list or dictionary.')
+            
         except Exception as e:
             raise err.TrestleError('Bad element path')
 
-        # Create child element with sample values
-        child_object = utils.get_sample_model(child_model)
+        
 
         update_action = UpdateAction(sub_element=child_object, dest_element=parent_element, sub_element_path= element_path)
         create_action = CreatePathAction(file_path.absolute())
