@@ -68,8 +68,9 @@ class AddCmd(Command):
         parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
 
         # Do _add for each element_path specified in args
-        element_paths: list[ElementPath] = cmd_utils.parse_element_args(args[const.ARG_ELEMENT].split(','))
-        for element_path in element_paths:
+        element_paths: list[str] = args[const.ARG_ELEMENT].split(',')
+        for elm_path_str in element_paths:
+            element_path = ElementPath(elm_path_str)
             self._add(file_path, element_path, parent_model, parent_element)
 
     def _add(self, file_path, element_path, parent_model, parent_element):
@@ -117,3 +118,10 @@ class AddCmd(Command):
         cmd_utils.move_to_trash(file_path)
 
         add_plan.execute()
+
+
+if __name__ == '__main__':
+    import os
+    os.chdir('tmp/tmp/catalogs/mycatalog')
+    arguments = type('obj', (object, ), {'file': './catalog.json', 'element': 'catalog.metadata.roles'})
+    AddCmd()._run(args=arguments)
