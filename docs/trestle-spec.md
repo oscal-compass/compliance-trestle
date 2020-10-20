@@ -1,4 +1,4 @@
-# Trestle Specifications (v0.1.0)
+# Trestle CLI Specifications (v0.1.0)
 
 ## Table of Contents
 
@@ -14,7 +14,7 @@
 
 ## Purpose
 
-This document contains detail specifications of the Trestle commands.
+This document contains detail specifications of the Trestle CLI commands.
 
 Trestle offers various commands to simplify operations at different steps in compliance management and reporting.
 
