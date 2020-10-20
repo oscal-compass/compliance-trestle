@@ -19,7 +19,7 @@ def load_git():
     except CalledProcessError:
         # silently ignore already existing module
         pass
-    # Add second module 
+    # Add second module
     try:
         check_call('git submodule add https://github.com/usnistgov/oscal-content.git nist-content'.split())
     except CalledProcessError:
@@ -29,14 +29,14 @@ def load_git():
         check_call('git submodule update --init'.split())
     except CalledProcessError as error:
         print(f'Error updating the oscal git submodule {error}')
-    try: 
+    try:
         check_call('git submodule update --remote --merge'.split())
     except CalledProcessError as error:
-        print(f'Error updating the oscal git submodule {error}')     
+        print(f'Error updating the oscal git submodule {error}')
 
 def generate_model(full_name, out_full_name):
     """Generate a single model with datamodel-codegen."""
-    print(f'generate model {full_name} -> {out_full_name}') 
+    print(f'generate model {full_name} -> {out_full_name}')
     args = ['datamodel-codegen', '--input-file-type', 'jsonschema', '--input', full_name, '--base-class',
             'trestle.core.base_model.OscalBaseModel', '--output', out_full_name]
     try:
