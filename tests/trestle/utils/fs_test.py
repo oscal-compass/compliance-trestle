@@ -339,6 +339,15 @@ def test_get_stripped_contextual_model(tmp_dir):
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_catalog()
 
+    stripped_catalog = fs.get_stripped_contextual_model(
+        mycatalog_dir / 'catalog.json', aliases_not_to_be_stripped=['groups', 'back-matter']
+    )
+    alias_to_field_map = stripped_catalog[0].alias_to_field_map()
+    assert 'uuid' in alias_to_field_map
+    assert 'metadata' not in alias_to_field_map
+    assert 'back-matter' in alias_to_field_map
+    assert 'groups' in alias_to_field_map
+
     def check_stripped_metadata():
         assert 'title' in alias_to_field_map
         assert 'published' in alias_to_field_map

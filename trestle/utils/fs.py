@@ -19,7 +19,7 @@ import json
 import logging
 import os
 import pathlib
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 from pydantic import create_model
 
@@ -182,7 +182,8 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[OscalBaseModel
     return model_type, full_alias
 
 
-def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[OscalBaseModel, str]:
+def get_stripped_contextual_model(path: pathlib.Path = None,
+                                  aliases_not_to_be_stripped: List[str] = None) -> Tuple[OscalBaseModel, str]:
     """
     Get the stripped contextual model class and alias based on the contextual path.
 
@@ -192,6 +193,8 @@ def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[OscalBaseM
     """
     if path is None:
         path = pathlib.Path.cwd()
+    if aliases_not_to_be_stripped is None:
+        aliases_not_to_be_stripped = []
 
     model_type, model_alias = get_contextual_model_type(path)
 
@@ -214,7 +217,8 @@ def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[OscalBaseM
     if split_subdir.exists():
         for f in split_subdir.iterdir():
             alias = extract_alias(f)
-            aliases_to_be_stripped.add(alias)
+            if alias not in aliases_not_to_be_stripped:
+                aliases_to_be_stripped.add(alias)
 
     if len(aliases_to_be_stripped) > 0:
         model_type = model_type.create_stripped_model_type(stripped_fields_aliases=list(aliases_to_be_stripped))
