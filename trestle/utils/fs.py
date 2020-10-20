@@ -171,14 +171,13 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[OscalBaseModel
         tmp_path = root_path.joinpath(*relative_path.parts[:2], *model_relative_path.parts[:i + 1])
 
         alias = extract_alias(tmp_path)
-        if tmp_path.is_dir() or (tmp_path.is_file() and alias != extract_alias(tmp_path.parent)):
-            if i > 0 or model_alias != alias:
-                model_alias = alias
-                full_alias = f'{full_alias}.{model_alias}'
-                if utils.is_collection_field_type(model_type):
-                    model_type = utils.get_inner_type(model_type)
-                else:
-                    model_type = model_type.alias_to_field_map()[alias].outer_type_
+        if i > 0 or model_alias != alias:
+            model_alias = alias
+            full_alias = f'{full_alias}.{model_alias}'
+            if utils.is_collection_field_type(model_type):
+                model_type = utils.get_inner_type(model_type)
+            else:
+                model_type = model_type.alias_to_field_map()[alias].outer_type_
 
     return model_type, full_alias
 
@@ -205,23 +204,17 @@ def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[OscalBaseM
         return model_type, model_alias
 
     malias = model_alias.split('.')[-1]
-    if path.is_dir():
-        paths = list(path.glob(f'{malias}.*'))
-        if len(paths) == 0:
-            raise err.TrestleError(f'{malias}.json/yaml/yml not found in {path}')
-        elif len(paths) > 1:
-            raise err.TrestleError(f'There is more than one {malias}.json/yaml/yml file in {path}')
-        path = paths[0]
+
+    if path.is_dir() and malias != extract_alias(path):
+        split_subdir = path / malias
+    else:
+        split_subdir = path.parent / path.with_suffix('').name
 
     aliases_to_be_stripped = set()
-    parent_model_type, parent_model_alias = get_contextual_model_type(path.parent)
-    palias = parent_model_alias.split('.')[-1]
-    alias = extract_alias(path)
-    if palias == alias:
-        for f in path.parent.iterdir():
+    if split_subdir.exists():
+        for f in split_subdir.iterdir():
             alias = extract_alias(f)
-            if alias != malias:
-                aliases_to_be_stripped.add(alias)
+            aliases_to_be_stripped.add(alias)
 
     if len(aliases_to_be_stripped) > 0:
         model_type = model_type.create_stripped_model_type(stripped_fields_aliases=list(aliases_to_be_stripped))
