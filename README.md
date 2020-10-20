@@ -82,7 +82,15 @@ In addition to the core OSCAL objects, trestle supports the definition of a `tar
 regulatory level. The `trestle` team has seen a need for an object that can define parameters at the `control-implemenation`
 level, e.g. `component` is an implementation and `target` is the definition of capabilities of the component.
 
-### Conformance criteria ontop of OSCAL
+## Supported file formats for OSCAL objects.
+
+OSCAL supports `xml`, `json` and `yaml` with their [metaschema](<https://github.com/usnistgov/metaschema>) tooling. Trestle
+natively supports only `json` and `yaml` formats at this time.
+
+Future roadmap anticipates that support for xml (import)\[https://github.com/IBM/compliance-trestle/issues/177\] and (upstream references)\[https://github.com/IBM/compliance-trestle/issues/178\] will be enabled. However, it is expected
+that full support will remain only for `json` and  `yaml`.
+
+Users needing to import XML OSCAL artifacts are recommended to look at NIST's XML to json conversion page (here)\[https://github.com/usnistgov/OSCAL/tree/master/json\#oscal-xml-to-json-converters\].
 
 ## Contributing to Trestle
 
