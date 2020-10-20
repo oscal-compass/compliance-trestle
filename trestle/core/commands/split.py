@@ -28,7 +28,7 @@ from trestle.core.models.actions import Action, CreatePathAction, WriteFileActio
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.utils import fs
+from trestle.utils import fs, trash
 
 
 class SplitCmd(Command):
@@ -77,7 +77,7 @@ class SplitCmd(Command):
 
         # If we are here then simulation passed
         # so move the original file to the trash
-        cmd_utils.move_to_trash(file_path)
+        trash.move_to_trash(file_path)
 
         # execute the plan
         split_plan.execute()

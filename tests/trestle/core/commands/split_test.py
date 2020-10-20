@@ -35,7 +35,7 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.oscal import catalog as oscatalog
 from trestle.oscal import target as ostarget
-from trestle.utils import fs
+from trestle.utils import fs, trash
 
 
 def test_split_model(tmp_dir, sample_target_def: ostarget.TargetDefinition):
@@ -276,7 +276,7 @@ def test_split_run(tmp_dir, sample_target_def: ostarget.TargetDefinition):
             target_file = target_def_dir / f'target-definition/targets/{uuid}{const.IDX_SEP}target.yaml'
             assert target_file.exists()
 
-        assert cmd_utils.get_trash_file_path(target_def_file).exists()
+        assert trash.get_trash_file_path(target_def_file).exists()
 
     # prepare trestle project dir with the file
     def prepare_target_def_file():
