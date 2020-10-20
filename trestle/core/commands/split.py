@@ -156,11 +156,23 @@ class SplitCmd(Command):
         # initialize local variables
         element = Element(model_obj)
         stripped_field_alias = []
-        file_ext = FileContentType.to_file_extension(content_type)
 
         # get the sub_model specified by the element_path of this round
         element_path = element_paths[cur_path_index]
-        sub_models = element.get_at(element_path)  # we call is sub_models as in plural, but it can be just one
+        is_parent = cur_path_index + 1 < len(element_paths) and element_paths[cur_path_index
+                                                                              + 1].get_parent() == element_path
+
+        # check that the path is not multiple level deep
+        path_parts = element_path.get()
+        if path_parts[-1] == ElementPath.WILDCARD:
+            path_parts = path_parts[:-1]
+
+        if len(path_parts) > 2:
+            msg = 'Trestle supports split of first level children only, '
+            msg += f'found path "{element_path}" with level = {len(path_parts)}'
+            raise TrestleError(msg)
+
+        sub_models = element.get_at(element_path, False)  # we call sub_models as in plural, but it can be just one
         if sub_models is None:
             return cur_path_index
 
@@ -169,28 +181,30 @@ class SplitCmd(Command):
         path_chain_end = cur_path_index
 
         # if wildcard is present in the element_path and the next path in the chain has current path as the parent,
-        # create separate file for each sub item
+        # we need to split recursively and create separate file for each sub item
         # for example, in the first round we get the `targets` using the path `target-definition.targets.*`
         # so, now we need to split each of the target recursively. Note that target is an instance of dict
         # However, there can be other sub_model, which is of type list
-        if element_path.get_last() == ElementPath.WILDCARD:
+        if is_parent and element_path.get_last() is not ElementPath.WILDCARD:
+            # create dir for all sub model items
+            sub_models_dir = base_dir / element_path.to_root_path()
+
+            sub_model_plan = Plan()
+            path_chain_end = cls.split_model_at_path_chain(
+                sub_models, element_paths, sub_models_dir, content_type, cur_path_index + 1, sub_model_plan, True
+            )
+            sub_model_actions = sub_model_plan.get_actions()
+            split_plan.add_actions(sub_model_actions)
+        elif element_path.get_last() == ElementPath.WILDCARD:
             # create dir for all sub model items. e.g. `targets` or `groups`
             sub_models_dir = base_dir / element_path.to_file_path()
-
-            # write stripped sub models file in the directory
-            # e.g. targets/targets.yaml
-            element_name = element_path.get_element_name()
-            base_element = cmd_utils.get_dir_base_file_element(sub_models, element_name)
-            dir_base_file = sub_models_dir / f'{element_name}{file_ext}'
-            split_plan.add_action(CreatePathAction(dir_base_file))
-            split_plan.add_action(WriteFileAction(dir_base_file, base_element, content_type))
 
             # extract sub-models into a dict with appropriate prefix
             sub_model_items: Dict[str, OscalBaseModel] = {}
             if isinstance(sub_models, list):
                 for i, sub_model_item in enumerate(sub_models):
-                    # e.g. `groups/0000_groups/`
-                    prefix = str(i).zfill(4)
+                    # e.g. `groups/00000_groups/`
+                    prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
                     sub_model_items[prefix] = sub_model_item
             elif isinstance(sub_models, dict):
                 # prefix is the key of the dict
@@ -277,7 +291,8 @@ class SplitCmd(Command):
         while cur_path_index < len(element_paths):
             # extract the sub element name for each of the root path of the path chain
             element_path = element_paths[cur_path_index]
-            if len(element_path.get()) > 1:
+
+            if element_path.get_parent() is None and len(element_path.get()) > 1:
                 stripped_part = element_path.get()[1]
                 if stripped_part == ElementPath.WILDCARD:
                     stripped_field_alias.append('__root__')
@@ -294,7 +309,7 @@ class SplitCmd(Command):
         # strip the root model object and add a WriteAction
         stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
         root_file = base_dir / element_paths[0].to_root_path(content_type)
-        split_plan.add_action(CreatePathAction(root_file))
+        split_plan.add_action(CreatePathAction(root_file, True))
         wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
         split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
 

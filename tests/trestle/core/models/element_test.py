@@ -24,32 +24,32 @@ from trestle.core.models.elements import Element, ElementPath
 from trestle.oscal import target
 
 
-def test_element_get_at(sample_target: target.TargetDefinition):
+def test_element_get_at(sample_target_def: target.TargetDefinition):
     """Test element get method."""
-    element = Element(sample_target)
+    element = Element(sample_target_def)
 
     # field alias should succeed
     assert element.get_at(
         ElementPath('target-definition.metadata.last-modified')
-    ) == sample_target.metadata.last_modified
+    ) == sample_target_def.metadata.last_modified
 
     # field name should fail
     assert element.get_at(ElementPath('target-definition.metadata.last_modified')) is None
 
-    assert element.get() == sample_target
+    assert element.get() == sample_target_def
     assert element.get_at() == element.get()
-    assert element.get_at(ElementPath('target-definition.metadata')) == sample_target.metadata
-    assert element.get_at(ElementPath('target-definition.metadata.title')) == sample_target.metadata.title
-    assert element.get_at(ElementPath('target-definition.targets')) == sample_target.targets
-    assert element.get_at(ElementPath('target-definition.targets.*')) == sample_target.targets
-    assert element.get_at(ElementPath('target-definition.metadata.parties.*')) == sample_target.metadata.parties
-    assert element.get_at(ElementPath('target-definition.metadata.parties.0')) == sample_target.metadata.parties[0]
+    assert element.get_at(ElementPath('target-definition.metadata')) == sample_target_def.metadata
+    assert element.get_at(ElementPath('target-definition.metadata.title')) == sample_target_def.metadata.title
+    assert element.get_at(ElementPath('target-definition.targets')) == sample_target_def.targets
+    assert element.get_at(ElementPath('target-definition.targets.*')) == sample_target_def.targets
+    assert element.get_at(ElementPath('target-definition.metadata.parties.*')) == sample_target_def.metadata.parties
+    assert element.get_at(ElementPath('target-definition.metadata.parties.0')) == sample_target_def.metadata.parties[0]
     assert element.get_at(ElementPath('target-definition.metadata.parties.0.uuid')
-                          ) == sample_target.metadata.parties[0].uuid
+                          ) == sample_target_def.metadata.parties[0].uuid
 
-    for uuid in sample_target.targets:
+    for uuid in sample_target_def.targets:
         path_str = f'target-definition.targets.{uuid}'
-        assert element.get_at(ElementPath(path_str)) == sample_target.targets[uuid]
+        assert element.get_at(ElementPath(path_str)) == sample_target_def.targets[uuid]
 
     # invalid indexing
     assert element.get_at(ElementPath('target-definition.metadata.title.0')) is None
@@ -60,7 +60,7 @@ def test_element_get_at(sample_target: target.TargetDefinition):
     # element_path with parent path
     parent_path = ElementPath('target-definition.metadata')
     element_path = ElementPath('metadta.parties.*', parent_path)
-    assert element.get_at(element_path) == sample_target.metadata.parties
+    assert element.get_at(element_path) == sample_target_def.metadata.parties
 
     # element_path with parent path
     parent_path = ElementPath('target-definition.targets.*')
@@ -81,9 +81,9 @@ def test_element_get_at(sample_target: target.TargetDefinition):
         assert target_element.get_at(element_path) == target.target_control_implementations[0]
 
 
-def test_element_set_at(sample_target: target.TargetDefinition):
+def test_element_set_at(sample_target_def: target.TargetDefinition):
     """Test element get method."""
-    element = Element(sample_target)
+    element = Element(sample_target_def)
 
     metadata = target.Metadata(
         **{
@@ -141,7 +141,7 @@ def test_element_set_at(sample_target: target.TargetDefinition):
         assert element.set_at(ElementPath('target-definition.metadata.groups.*'), parties)
 
 
-def test_element_str(sample_target):
+def test_element_str(sample_target_def):
     """Test for magic method str."""
-    element = Element(sample_target)
+    element = Element(sample_target_def)
     assert str(element) == 'TargetDefinition'
