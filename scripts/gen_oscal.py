@@ -33,6 +33,7 @@ def load_git():
         check_call('git submodule update --remote --merge'.split())
     except CalledProcessError as error:
         print(f'Error updating the oscal git submodule {error}')
+        
 
 def generate_model(full_name, out_full_name):
     """Generate a single model with datamodel-codegen."""
