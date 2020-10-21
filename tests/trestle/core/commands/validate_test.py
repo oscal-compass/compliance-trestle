@@ -24,8 +24,10 @@ import pytest
 from tests import test_utils
 
 from trestle import cli
+from trestle.core import utils
 from trestle.core.err import TrestleValidationError
 from trestle.core.models.file_content_type import FileContentType
+from trestle.oscal import target as ostarget
 from trestle.utils import fs
 
 
@@ -33,12 +35,13 @@ def test_target_dups(tmp_dir):
     """Test model validation."""
     content_type = FileContentType.YAML
     models_dir_name = test_utils.TARGET_DEFS_DIR
+    model_ref = ostarget.TargetDefinition
 
     test_utils.ensure_trestle_config_dir(tmp_dir)
 
     file_ext = FileContentType.to_file_extension(content_type)
     models_full_path = tmp_dir / models_dir_name / 'my_test_model'
-    model_alias = 'target-definition'
+    model_alias = utils.classname_to_alias(model_ref.__name__, 'json')
     model_def_file = models_full_path / f'{model_alias}{file_ext}'
     fs.ensure_directory(models_full_path)
 
