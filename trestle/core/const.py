@@ -19,8 +19,6 @@ PACKAGE_OSCAL = 'trestle.oscal'
 
 TRESTLE_CONFIG_DIR = '.trestle'
 TRESTLE_DIST_DIR = 'dist'
-TRESTLE_TRASH_DIR = '.trestle/_trash/'
-TRESTLE_TRASH_FILE_EXT = '.bk'
 TRESTLE_CONFIG_FILE = 'config.ini'
 
 # Map of plural form of a model type to the oscal module that contains the classes related to it
@@ -53,6 +51,9 @@ TMP_DIR_NAME = '__tmp_dir'
 
 # Index separater for naming directories representing collection properties
 IDX_SEP = '__'
+
+# Digit prefix for split files
+FILE_DIGIT_PREFIX_LENGTH = 5
 
 # Wildcard that can be used in the element path to represent all elements
 ELEMENT_WILDCARD = '*'

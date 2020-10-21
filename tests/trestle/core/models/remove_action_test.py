@@ -22,9 +22,9 @@ from trestle.core.models.elements import Element, ElementPath
 from trestle.oscal import target
 
 
-def prepare_element(sample_target):
+def prepare_element(sample_target_def):
     """Prepare a target element for remove tests."""
-    element = Element(sample_target)
+    element = Element(sample_target_def)
 
     parties: List[target.Party] = []
     parties.append(
@@ -47,9 +47,9 @@ def prepare_element(sample_target):
     return element
 
 
-def test_remove_action(sample_target):
+def test_remove_action(sample_target_def):
     """Test remove action."""
-    element = prepare_element(sample_target)
+    element = prepare_element(sample_target_def)
     sub_element_path = ElementPath('target-definition.metadata.parties')
     prev_sub_element = element.get_at(sub_element_path)
 
