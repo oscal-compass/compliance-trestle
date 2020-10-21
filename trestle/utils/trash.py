@@ -175,7 +175,7 @@ def recover_file(file_path: pathlib.Path, delete_trash: bool = True):
     It recovers the latest file from trash if exists
     """
     trash_file_path = to_trash_file_path(file_path)
-    if not trash_file_path.is_dir():
+    if not trash_file_path.exists():
         raise AssertionError(f'Specified path "{file_path}" could not be found in trash')
 
     fs.ensure_directory(file_path.parent)
@@ -193,15 +193,15 @@ def recover_dir(dest_dir_path: pathlib.Path, delete_trash: bool = True):
     It recovers the latest directory and contents from trash if exists
     """
     trash_dir_path = to_trash_dir_path(dest_dir_path)
-    if not trash_dir_path.is_dir():
+    if not (trash_dir_path.exists() and trash_dir_path.is_dir()):
         raise AssertionError(f'Specified path "{dest_dir_path}" could not be found in trash')
 
     # move all files/directories under sub_path
     for item_path in pathlib.Path.iterdir(trash_dir_path):
         if item_path.is_file():
-            recover_file(item_path)
+            recover_file(to_origin_file_path(item_path))
         elif item_path.is_dir():
-            recover_dir(item_path)
+            recover_dir(to_origin_dir_path(item_path))
 
 
 def recover(dest_content_path: pathlib.Path):

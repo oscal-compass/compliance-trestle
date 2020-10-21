@@ -236,3 +236,62 @@ def test_trash_store(tmp_dir):
     assert readme_file.exists() is False
     assert trash.to_trash_dir_path(data_dir).exists()
     assert trash.to_trash_file_path(readme_file).exists()
+
+
+def test_trash_recover_dir(tmp_dir):
+    """Test recover trashed directory and contents."""
+    test_utils.ensure_trestle_config_dir(tmp_dir)
+    data_dir: pathlib.Path = tmp_dir / 'data'
+    fs.ensure_directory(data_dir)
+    readme_file: pathlib.Path = data_dir / 'readme.md'
+    readme_file.touch()
+
+    trash.store_dir(data_dir, True)
+    assert data_dir.exists() is False
+    assert readme_file.exists() is False
+
+    trash.recover_dir(data_dir)
+    assert data_dir.exists()
+    assert readme_file.exists()
+
+
+def test_trash_recover_file(tmp_dir):
+    """Test recover trashed file."""
+    test_utils.ensure_trestle_config_dir(tmp_dir)
+    data_dir: pathlib.Path = tmp_dir / 'data'
+    fs.ensure_directory(data_dir)
+    readme_file: pathlib.Path = data_dir / 'readme.md'
+    readme_file.touch()
+
+    trash.store_file(readme_file, True)
+    assert data_dir.exists()
+    assert readme_file.exists() is False
+
+    trash.recover_file(readme_file)
+    assert data_dir.exists()
+    assert readme_file.exists()
+
+
+def test_trash_recover(tmp_dir):
+    """Test recover trashed file or directory."""
+    test_utils.ensure_trestle_config_dir(tmp_dir)
+    data_dir: pathlib.Path = tmp_dir / 'data'
+    fs.ensure_directory(data_dir)
+    readme_file: pathlib.Path = data_dir / 'readme.md'
+    readme_file.touch()
+
+    trash.store(readme_file, True)
+    assert data_dir.exists()
+    assert readme_file.exists() is False
+
+    trash.recover(readme_file)
+    assert data_dir.exists()
+    assert readme_file.exists()
+
+    trash.store(data_dir, True)
+    assert data_dir.exists() is False
+    assert readme_file.exists() is False
+
+    trash.recover(data_dir)
+    assert data_dir.exists()
+    assert readme_file.exists()
