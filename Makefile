@@ -17,6 +17,8 @@
 
 develop:
 	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager
+
+pre-commit: 
 	pre-commit install
 	pre-commit autoupdate
 
