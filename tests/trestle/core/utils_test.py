@@ -15,9 +15,10 @@
 # limitations under the License.
 """Tests for models util module."""
 import pathlib
-from datetime import datetime
-from pydantic import ConstrainedStr
 import uuid
+from datetime import datetime
+
+from pydantic import ConstrainedStr
 
 import pytest
 
@@ -192,6 +193,7 @@ def test_alias_to_classname():
 
 
 def is_valid_uuid(val):
+    """Check if a string is a valid uuid."""
     try:
         uuid.UUID(str(val))
         return True
@@ -202,7 +204,7 @@ def is_valid_uuid(val):
 def test_get_sample_value_by_type():
     """Test get_sample_value_by_type function."""
     assert type(mutils.get_sample_value_by_type(datetime, '')) == datetime
-    assert mutils.get_sample_value_by_type(bool, '') == False
+    assert mutils.get_sample_value_by_type(bool, '') is False
     assert mutils.get_sample_value_by_type(int, '') == 0
     assert mutils.get_sample_value_by_type(str, '') == 'REPLACE_ME'
     assert mutils.get_sample_value_by_type(float, '') == 0.00
