@@ -56,7 +56,7 @@ def to_trash_path(path: pathlib.Path):
     """Convert the dir or file path to apporpriate trash file or dir path."""
     if path.suffix != '':
         return to_trash_file_path(path)
-    elif path.is_dir():
+    else:
         return to_trash_dir_path(path)
 
 
@@ -123,7 +123,7 @@ def to_origin_path(trash_content_path: pathlib.Path):
         return to_origin_dir_path(trash_content_path)
 
 
-def store_file(file_path: pathlib.Path, delete_source: bool = True):
+def store_file(file_path: pathlib.Path, delete_source: bool = False):
     """Move the specified file to the trash directory.
 
     It overwrites the previous file if exists
@@ -139,7 +139,7 @@ def store_file(file_path: pathlib.Path, delete_source: bool = True):
         file_path.unlink()
 
 
-def store_dir(dir_path: pathlib.Path, delete_source: bool = True):
+def store_dir(dir_path: pathlib.Path, delete_source: bool = False):
     """Move the specified dir to the trash directory.
 
     It overwrites the previous directory and contents if exists
@@ -158,7 +158,7 @@ def store_dir(dir_path: pathlib.Path, delete_source: bool = True):
         dir_path.rmdir()
 
 
-def store(content_path: pathlib.Path, delete_content: bool = True):
+def store(content_path: pathlib.Path, delete_content: bool = False):
     """Move the specified file or directory to the trash directory.
 
     It overwrites the previous file or directory if exists
@@ -169,7 +169,7 @@ def store(content_path: pathlib.Path, delete_content: bool = True):
         return store_dir(content_path, delete_content)
 
 
-def recover_file(file_path: pathlib.Path, delete_trash: bool = True):
+def recover_file(file_path: pathlib.Path, delete_trash: bool = False):
     """Recover the specified file from the trash directory.
 
     It recovers the latest file from trash if exists
@@ -185,7 +185,7 @@ def recover_file(file_path: pathlib.Path, delete_trash: bool = True):
         trash_file_path.unlink()
 
 
-def recover_dir(dest_dir_path: pathlib.Path, delete_trash: bool = True):
+def recover_dir(dest_dir_path: pathlib.Path, delete_trash: bool = False):
     """Move the specified dir from the trash directory.
 
     dest_dir_path: destination path of the directory inside a trestle project
@@ -199,18 +199,21 @@ def recover_dir(dest_dir_path: pathlib.Path, delete_trash: bool = True):
     # move all files/directories under sub_path
     for item_path in pathlib.Path.iterdir(trash_dir_path):
         if item_path.is_file():
-            recover_file(to_origin_file_path(item_path))
+            recover_file(to_origin_file_path(item_path), delete_trash)
         elif item_path.is_dir():
-            recover_dir(to_origin_dir_path(item_path))
+            recover_dir(to_origin_dir_path(item_path), delete_trash)
+
+    if delete_trash:
+        trash_dir_path.rmdir()
 
 
-def recover(dest_content_path: pathlib.Path):
+def recover(dest_content_path: pathlib.Path, delete_trash: bool = False):
     """Recover the specified file or directory from the trash directory.
 
     dest_content_path: destination content path that needs to be recovered from trash
     It recovers the latest path content from trash if exists
     """
     if dest_content_path.suffix != '':
-        return recover_file(dest_content_path)
+        return recover_file(dest_content_path, delete_trash)
     else:
-        return recover_dir(dest_content_path)
+        return recover_dir(dest_content_path, delete_trash)
