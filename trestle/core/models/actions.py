@@ -20,7 +20,7 @@ from enum import Enum
 from typing import List
 
 from trestle.core.err import TrestleError
-from trestle.utils import fs
+from trestle.utils import fs, trash
 
 from .elements import Element, ElementPath
 from .file_content_type import FileContentType
@@ -35,6 +35,9 @@ class ActionType(Enum):
 
     # create a file or directory path
     CREATE_PATH = 10
+
+    # remove a file or directory path
+    REMOVE_PATH = 12
 
     # write element to a destination file or stream
     WRITE = 11
@@ -318,6 +321,55 @@ class CreatePathAction(Action):
                 if self._old_file_content is not None:
                     with open(self._sub_path, 'w') as fp:
                         fp.write(self._old_file_content)
+
+        self._mark_rollback()
+
+    def __str__(self):
+        """Return string representation."""
+        return f'{self._type} {self._sub_path}'
+
+
+class RemovePathAction(Action):
+    """Remove a file or directory path."""
+
+    def __init__(self, sub_path: pathlib.Path):
+        """Initialize a remove path action.
+
+        It removes the file or directory recursively into trash.
+
+        Arguments:
+            sub_path: this is the desired file or directory path that needs to be removed under the project root
+        """
+        if not isinstance(sub_path, pathlib.Path):
+            raise TrestleError('Sub path must be of type pathlib.Path')
+
+        self._trestle_project_root = fs.get_trestle_project_root(sub_path)
+        if self._trestle_project_root is None:
+            raise TrestleError(f'Sub path "{sub_path}" should be child of a valid trestle project')
+
+        self._sub_path = sub_path
+
+        super().__init__(ActionType.REMOVE_PATH, True)
+
+    def get_trestle_project_root(self):
+        """Return the trestle project root path."""
+        return self._trestle_project_root
+
+    def execute(self):
+        """Execute the action."""
+        if not self._sub_path.exists():
+            raise FileNotFoundError(f'Path "{self._sub_path}" does not exist')
+
+        trash.store(self._sub_path, True)
+        self._mark_executed()
+
+    def rollback(self):
+        """Rollback the action."""
+        if self.has_executed():
+            trash_path = trash.to_trash_path(self._sub_path)
+            if trash_path is None or trash_path.exists() is False:
+                raise FileNotFoundError(f'Trash contents is not found for path "{self._sub_path}"')
+            trash.recover(self._sub_path, True)
 
         self._mark_rollback()
 
