@@ -118,10 +118,3 @@ class AddCmd(Command):
         cmd_utils.move_to_trash(file_path)
 
         add_plan.execute()
-
-
-if __name__ == '__main__':
-    import os
-    os.chdir('tmp/tmp/catalogs/mycatalog')
-    arguments = type('obj', (object, ), {'file': './catalog.json', 'element': 'catalog.metadata.roles'})
-    AddCmd()._run(args=arguments)
