@@ -307,7 +307,7 @@ class Element:
 
         return model_obj
 
-    def set_at(self, element_path, sub_element):
+    def set_at(self, element_path: ElementPath, sub_element: OscalBaseModel) -> None:
         """Set a sub_element at the path in the current element.
 
         Sub element can be Element, OscalBaseModel, list or None type
@@ -364,12 +364,12 @@ class Element:
         # returning self will allow to do 'chaining' of commands after set
         return self
 
-    def to_yaml(self):
+    def to_yaml(self) -> str:
         """Convert into YAML string."""
         yaml_data = yaml.dump(yaml.safe_load(self.to_json()))
         return yaml_data
 
-    def to_json(self):
+    def to_json(self) -> str:
         """Convert into JSON string."""
         if self._wrapper_alias == self.IGNORE_WRAPPER_ALIAS:
             json_data = json.dumps(self._elem, sort_keys=False, indent=4)
@@ -401,11 +401,11 @@ class Element:
 
         return False
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of element."""
         return type(self._elem).__name__
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         """Check that two elements are equal."""
         if not isinstance(other, Element):
             return False

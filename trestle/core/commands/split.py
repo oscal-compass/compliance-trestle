@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Split Command."""
+
 import pathlib
 from typing import Dict, List
 
@@ -51,11 +52,11 @@ class SplitCmd(Command):
     def _run(self, args) -> None:
         """Split an OSCAL file into elements."""
         # get the Model
-        args = args.__dict__
-        if args[const.ARG_FILE] is None:
+        args_raw = args.__dict__
+        if args_raw[const.ARG_FILE] is None:
             raise TrestleError(f'Argument "-{const.ARG_FILE_SHORT}" is required')
 
-        file_path = pathlib.Path(args[const.ARG_FILE])
+        file_path = pathlib.Path(args_raw[const.ARG_FILE])
         content_type = FileContentType.to_content_type(file_path.suffix)
 
         # find the base directory of the file

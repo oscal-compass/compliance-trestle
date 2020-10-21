@@ -33,7 +33,7 @@ code-lint:
 code-typing:
 	#mypy --pretty trestle
 	# This is very strict.
-	mypy --pretty trestle --disallow-untyped-calls  --disallow-untyped-calls --disallow-untyped-defs
+	mypy --pretty trestle --disallow-untyped-calls  --disallow-untyped-defs
 test::
 	python -m pytest --cov trestle tests -v --cov-report=xml
 

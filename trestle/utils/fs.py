@@ -39,7 +39,7 @@ def should_ignore(name) -> bool:
     return name[0] == '.' or name[0] == '_'
 
 
-def ensure_directory(path):
+def ensure_directory(path: pathlib.Path) -> None:
     """
     Ensure the directory ```path``` exists.
 

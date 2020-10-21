@@ -16,11 +16,12 @@
 """Trestle Merge Command."""
 
 from pathlib import Path
-from typing import Set
+from typing import Set, Type
 
 from ilcli import Command  # type: ignore
 
 from trestle.core import const, utils
+from trestle.core.base_model import OscalBaseModel
 from trestle.utils import fs
 
 
@@ -29,7 +30,7 @@ class MergeCmd(Command):
 
     name = 'merge'
 
-    def _init_arguments(self):
+    def _init_arguments(self) -> None:
         self.add_argument('-e', '--elements', help='Comma-separated list of paths of properties to be merged.')
         self.add_argument(
             '-l',
@@ -38,12 +39,12 @@ class MergeCmd(Command):
             help='Comma-separated list of paths of properties that can be merged.'
         )
 
-    def _run(self, args):
+    def _run(self, args) -> None:
         """Merge elements into the parent oscal model."""
         if args.list_available_elements:
             self._list_available_elements()
 
-    def _list_available_elements(self):
+    def _list_available_elements(self) -> None:
         """List element paths that can be merged from the current context."""
         current_model, current_alias = fs.get_contextual_model_type(Path.cwd())
 
@@ -53,10 +54,10 @@ class MergeCmd(Command):
 
     def _list_options_for_merge(
         self,
-        cwd,
-        current_alias,
-        current_model,
-        current_filename,
+        cwd: Path,
+        current_alias: str,
+        current_model: Type[OscalBaseModel],
+        current_filename: str,
         initial_path: Path = None,
         visited_elements: Set[str] = None
     ):
@@ -123,7 +124,7 @@ class MergeCmd(Command):
                         visited_elements=visited_elements
                     )
 
-    def _print_merge_option(self, visited_elements, element, source_path, destination_path):
+    def _print_merge_option(self, visited_elements, element, source_path, destination_path) -> None:
         if element not in visited_elements:
             visited_elements.add(element)
             self.out(f"{element} (merges all files/subdirectories under {source_path} into \'{destination_path}\')")

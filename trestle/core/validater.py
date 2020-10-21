@@ -14,10 +14,13 @@
 # limitations under the License.
 """Utilities for dealing with models."""
 
+from typing import Any, List
+
 import pydantic
 
 
-def find_values_by_name_generic(object_of_interest, var_name):
+# TODO: Improve typing.
+def find_values_by_name_generic(object_of_interest: Any, var_name: str) -> List[str]:
     """Traverse object and return list of the values in dicts, tuples associated with variable name."""
     loe = []
     # looking for a dict or 2-element tuple containing specified variable name

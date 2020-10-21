@@ -76,7 +76,7 @@ class Action(ABC):
         """Return if the action has been executed."""
         return self._has_executed
 
-    def _mark_rollback(self):
+    def _mark_rollback(self) -> None:
         """Set flag that the action has been rollbacked."""
         self._has_executed = False
 
@@ -332,7 +332,7 @@ class CreatePathAction(Action):
 class RemovePathAction(Action):
     """Remove a file or directory path."""
 
-    def __init__(self, sub_path: pathlib.Path):
+    def __init__(self, sub_path: pathlib.Path) -> None:
         """Initialize a remove path action.
 
         It removes the file or directory recursively into trash.
@@ -351,7 +351,7 @@ class RemovePathAction(Action):
 
         super().__init__(ActionType.REMOVE_PATH, True)
 
-    def get_trestle_project_root(self) -> None:
+    def get_trestle_project_root(self) -> pathlib.Path:
         """Return the trestle project root path."""
         return self._trestle_project_root
 

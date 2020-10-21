@@ -82,5 +82,5 @@ class CreateCmd(Command):
         PlanOfActionAndMilestoneCmd
     ]
 
-    def _init_arguments(self):
+    def _init_arguments(self) -> None:
         self.add_argument('-o', '--output', help='Name of the model.', required=True)
