@@ -19,10 +19,11 @@ import pathlib
 
 from ilcli import Command
 
-import trestle.core.validater as validater
-import trestle.oscal.target as ostarget
+import trestle.core.validator as validator
 from trestle.core import const
+from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError, TrestleValidationError
+from trestle.utils import fs
 
 
 class ValidateCmd(Command):
@@ -62,9 +63,11 @@ class ValidateCmd(Command):
             raise TrestleError(f'Argument "-{const.ARG_ITEM_SHORT}" is required')
         item = args.item
 
-        model = ostarget.TargetDefinition.oscal_read(pathlib.Path(args.file))
+        file_path = pathlib.Path(args.file).absolute()
+        model_type, _ = fs.get_contextual_model_type(file_path)
+        model: OscalBaseModel = model_type.oscal_read(file_path)
 
-        loe = validater.find_values_by_name(model, item)
+        loe = validator.find_values_by_name(model, item)
         if loe:
             nitems = len(loe)
             is_valid = nitems == len(set(loe))
