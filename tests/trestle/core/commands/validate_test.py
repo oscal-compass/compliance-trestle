@@ -26,32 +26,34 @@ from tests import test_utils
 from trestle import cli
 from trestle.core.err import TrestleValidationError
 from trestle.core.models.file_content_type import FileContentType
-from trestle.oscal import target as ostarget
+from trestle.utils import fs
 
 
-def test_target_dups(tmp_dir, sample_target_def: ostarget.TargetDefinition):
+def test_target_dups(tmp_dir):
     """Test model validation."""
     content_type = FileContentType.YAML
+    models_dir_name = test_utils.TARGET_DEFS_DIR
 
-    # prepare trestle project dir with the file
-    target_def_dir, target_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
-        content_type,
-        sample_target_def,
-        test_utils.TARGET_DEFS_DIR)
+    test_utils.ensure_trestle_config_dir(tmp_dir)
 
-    shutil.copyfile('tests/data/yaml/good_target.yaml', target_def_file)
+    file_ext = FileContentType.to_file_extension(content_type)
+    models_full_path = tmp_dir / models_dir_name / 'my_test_model'
+    model_alias = 'target-definition'
+    model_def_file = models_full_path / f'{model_alias}{file_ext}'
+    fs.ensure_directory(models_full_path)
 
-    testcmd = f'trestle validate -f {target_def_file} -m duplicates -i uuid'
+    shutil.copyfile('tests/data/yaml/good_target.yaml', model_def_file)
+
+    testcmd = f'trestle validate -f {model_def_file} -m duplicates -i uuid'
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code is None
 
-    shutil.copyfile('tests/data/yaml/bad_target_dup_uuid.yaml', target_def_file)
+    shutil.copyfile('tests/data/yaml/bad_target_dup_uuid.yaml', model_def_file)
 
-    testcmd = f'trestle validate -f {target_def_file} -m duplicates -i uuid'
+    testcmd = f'trestle validate -f {model_def_file} -m duplicates -i uuid'
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(TrestleValidationError) as pytest_wrapped_e:
             cli.run()
