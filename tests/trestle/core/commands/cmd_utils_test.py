@@ -22,7 +22,6 @@ import pytest
 
 from tests import test_utils
 
-from trestle.core import const
 from trestle.core.commands import cmd_utils
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import ElementPath
@@ -135,35 +134,3 @@ def test_parse_element_args():
     p5 = ElementPath('control.controls.*', parent_path=p4)
     expected: List[ElementPath] = [p0, p1, p2, p3, p4, p5]
     assert cmd_utils.parse_element_args(element_args, False) == expected
-
-
-def test_get_trash_file_path(tmp_dir):
-    """Test get_trash_file_path method."""
-    tmp_file = tmp_dir / 'tmp_file.md'
-    data_dir: pathlib.Path = tmp_dir / 'data'
-    fs.ensure_directory(data_dir)
-    readme_file: pathlib.Path = data_dir / 'readme.md'
-    readme_file.touch()
-
-    with pytest.raises(TrestleError):
-        cmd_utils.get_trash_file_path(readme_file)
-
-    test_utils.ensure_trestle_config_dir(tmp_dir)
-
-    assert cmd_utils.get_trash_file_path(tmp_file) is not None
-    assert cmd_utils.get_trash_file_path(tmp_file).parent.name == pathlib.Path(const.TRESTLE_TRASH_DIR).name
-    assert cmd_utils.get_trash_file_path(readme_file).parent.name == 'data'
-
-
-def test_move_to_trash(tmp_dir):
-    """Test move_to_trash command."""
-    test_utils.ensure_trestle_config_dir(tmp_dir)
-    data_dir: pathlib.Path = tmp_dir / 'data'
-    fs.ensure_directory(data_dir)
-    readme_file: pathlib.Path = data_dir / 'readme.md'
-    readme_file.touch()
-
-    assert not cmd_utils.get_trash_file_path(readme_file).exists()
-    cmd_utils.move_to_trash(readme_file)
-    assert readme_file.exists() is False
-    assert cmd_utils.get_trash_file_path(readme_file).exists()
