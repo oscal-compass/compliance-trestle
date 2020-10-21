@@ -1,0 +1,26 @@
+{
+    "metadata": {
+        "title": "NIST Special Publication 800-53: Security and Privacy Controls for Federal Information\n         Systems and Organizations, Revision 5 Final Public Draft",
+        "last-modified": "2020-03-16T13:24:48.516-04:00",
+        "version": "Revision 5",
+        "oscal-version": "1.0.0-Milestone3",
+        "properties": [
+            {
+                "name": "keywords",
+                "value": "assurance, availability, computer security, confidentiality, control,\n         cybersecurity, FISMA, information security, information system, integrity, personally\n         identifiable information, Privacy Act, privacy controls, privacy functions, privacy\n         requirements, Risk Management Framework, security controls, security functions, security\n         requirements, system, system security"
+            }
+        ],
+        "links": [
+            {
+                "href": "#90ec1671-8dcf-4bcf-8efe-ac6d06a806f0",
+                "rel": "alternate",
+                "text": "NIST publication (PDF)"
+            },
+            {
+                "href": "#abe434a3-7630-4138-8699-2ab8c7a9aa6c",
+                "rel": "canonical",
+                "text": "NIST publication via DOI lookup"
+            }
+        ]
+    }
+}
