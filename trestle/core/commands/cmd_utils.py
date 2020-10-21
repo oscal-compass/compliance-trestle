@@ -61,7 +61,7 @@ def get_model(file_path: str) -> OscalBaseModel:
     raise NotImplementedError()
 
 
-def parse_element_args(element_args: List[str], contextual_mode: bool = True):
+def parse_element_args(element_args: List[str], contextual_mode: bool = True) -> List[ElementPath]:
     """Parse element args into a list of ElementPath.
 
     contextual_mode specifies if the path is a valid project model path or not. For example,
@@ -76,7 +76,7 @@ def parse_element_args(element_args: List[str], contextual_mode: bool = True):
     if not isinstance(element_args, list):
         raise TrestleError(f'Input element_paths must be a list, but found {element_args.__class__}')
 
-    element_paths = []
+    element_paths: List[ElementPath] = []
     for element_arg in element_args:
         paths = parse_element_arg(element_arg, contextual_mode)
         element_paths.extend(paths)
