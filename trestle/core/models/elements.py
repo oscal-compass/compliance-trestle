@@ -15,7 +15,7 @@
 
 import json
 import pathlib
-from typing import List, Optional
+from typing import Dict, List, Optional, Union
 
 from pydantic import Field, create_model
 from pydantic.error_wrappers import ValidationError
@@ -39,7 +39,7 @@ class ElementPath:
 
     WILDCARD: str = '*'
 
-    def __init__(self, element_path: str, parent_path: Optional['ElementPath'] = None):
+    def __init__(self, element_path: str, parent_path: Optional['ElementPath'] = None) -> None:
         """Initialize an element wrapper.
 
         It assumes the element path contains oscal field alias with hyphens only
@@ -87,7 +87,7 @@ class ElementPath:
         """Return the path parts as a dot-separated string."""
         return self.PATH_SEPARATOR.join(self.get())
 
-    def get_parent(self):
+    def get_parent(self) -> 'ElementPath':
         """Return the parent path.
 
         It can be None or a valid ElementPath
@@ -107,7 +107,7 @@ class ElementPath:
         all_parts = self.get_full_path_parts()
         return self.PATH_SEPARATOR.join(all_parts)
 
-    def get_element_name(self):
+    def get_element_name(self) -> str:
         """Return the element alias name from the path.
 
         Essentailly this the last part of the element path
@@ -134,7 +134,7 @@ class ElementPath:
 
         return path_parts
 
-    def get_preceding_path(self):
+    def get_preceding_path(self) -> 'ElementPath':
         """Return the element path to the preceding element in the path."""
         # if it is available then return otherwise compute
         if self._preceding_path is None:
@@ -183,11 +183,11 @@ class ElementPath:
         file_path: pathlib.Path = pathlib.Path(path_str)
         return file_path
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of element path."""
         return self.to_string()
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """Override equality method."""
         if not isinstance(other, ElementPath):
             return False
@@ -237,7 +237,9 @@ class Element:
 
         return root_model, path_parts
 
-    def get_at(self, element_path: ElementPath = None, check_parent: bool = True) -> Optional[OscalBaseModel]:
+    def get_at(self,
+               element_path: ElementPath = None,
+               check_parent: bool = True) -> Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]:
         """Get the element at the specified element path.
 
         it will return the sub-model object at the path. Sub-model object

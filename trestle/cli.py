@@ -36,7 +36,7 @@ class Trestle(Command):
         InitCmd, CreateCmd, SplitCmd, MergeCmd, ReplicateCmd, AddCmd, RemoveCmd, ValidateCmd, ImportCmd, AssembleCmd
     ]
 
-    def _init_arguments(self):
+    def _init_arguments(self) -> None:
         self.add_argument(
             '-V',
             '--version',

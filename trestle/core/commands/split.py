@@ -28,7 +28,7 @@ from trestle.core.models.actions import Action, CreatePathAction, WriteFileActio
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.utils import fs
+from trestle.utils import fs, trash
 
 
 class SplitCmd(Command):
@@ -36,7 +36,7 @@ class SplitCmd(Command):
 
     name = 'split'
 
-    def _init_arguments(self):
+    def _init_arguments(self) -> None:
         self.add_argument(
             f'-{const.ARG_FILE_SHORT}',
             f'--{const.ARG_FILE}',
@@ -48,7 +48,7 @@ class SplitCmd(Command):
             help=const.ARG_DESC_ELEMENT + ' to split.',
         )
 
-    def _run(self, args):
+    def _run(self, args) -> None:
         """Split an OSCAL file into elements."""
         # get the Model
         args = args.__dict__
@@ -77,7 +77,7 @@ class SplitCmd(Command):
 
         # If we are here then simulation passed
         # so move the original file to the trash
-        cmd_utils.move_to_trash(file_path)
+        trash.store(file_path, True)
 
         # execute the plan
         split_plan.execute()
@@ -119,7 +119,7 @@ class SplitCmd(Command):
         cur_path_index: int,
         split_plan: Plan,
         strip_root: bool
-    ) -> Plan:
+    ) -> int:
         """Recursively split the model at the provided chain of element paths.
 
         It assumes that a chain of element paths starts at the cur_path_index with the first path ending
