@@ -16,10 +16,13 @@
 """Trestle Merge Command."""
 
 from pathlib import Path
+from typing import List
 
 from ilcli import Command
 
 from trestle.core import const, utils
+from trestle.core.commands import cmd_utils
+from trestle.core.models.elements import ElementPath
 from trestle.utils import fs
 
 
@@ -29,7 +32,11 @@ class MergeCmd(Command):
     name = 'merge'
 
     def _init_arguments(self):
-        self.add_argument('-e', '--elements', help='Comma-separated list of paths of properties to be merged.')
+        self.add_argument(
+            f'-{const.ARG_ELEMENT_SHORT}',
+            f'--{const.ARG_ELEMENT}',
+            help=f'Comma-separated list of {const.ARG_DESC_ELEMENT}(s) to be merged.',
+        )
         self.add_argument(
             '-l',
             '--list-available-elements',
@@ -41,6 +48,14 @@ class MergeCmd(Command):
         """Merge elements into the parent oscal model."""
         if args.list_available_elements:
             self._list_available_elements()
+        elif args.element:
+            self._merge(args.element)
+
+    def _merge(self, elements: str):
+        element_paths: List[ElementPath] = cmd_utils.parse_element_args(elements.split(','))
+
+        self.out(elements)
+        self.out(element_paths)
 
     def _list_available_elements(self):
         """List element paths that can be merged from the current context."""
