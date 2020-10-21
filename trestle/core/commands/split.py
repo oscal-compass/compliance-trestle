@@ -77,7 +77,7 @@ class SplitCmd(Command):
 
         # If we are here then simulation passed
         # so move the original file to the trash
-        trash.move_to_trash(file_path)
+        trash.store(file_path, True)
 
         # execute the plan
         split_plan.execute()
