@@ -69,7 +69,7 @@ class SplitCmd(Command):
 
         element_paths: List[ElementPath] = cmd_utils.parse_element_args(args[const.ARG_ELEMENT].split(','))
 
-        split_plan = self.split_model(model, element_paths, base_dir, content_type)
+        split_plan = self.split_model(model, element_paths, base_dir, content_type, root_file_name=args[const.ARG_FILE])
 
         # Simulate the plan
         # if it fails, it would throw errors and get out of this command
@@ -92,9 +92,8 @@ class SplitCmd(Command):
     ) -> List[Action]:
         """Create split actions of sub model."""
         actions: List[Action] = []
-        file_ext = FileContentType.to_file_extension(content_type)
+        file_name = cmd_utils.to_model_file_name(sub_model_item, file_prefix, content_type)
         model_type = utils.classname_to_alias(type(sub_model_item).__name__, 'json')
-        file_name = f'{file_prefix}{const.IDX_SEP}{model_type}{file_ext}'
         sub_model_file = sub_model_dir / file_name
         actions.append(CreatePathAction(sub_model_file))
         actions.append(WriteFileAction(sub_model_file, Element(sub_model_item, model_type), content_type))
@@ -118,7 +117,8 @@ class SplitCmd(Command):
         content_type: FileContentType,
         cur_path_index: int,
         split_plan: Plan,
-        strip_root: bool
+        strip_root: bool,
+        root_file_name: str = ''
     ) -> Plan:
         """Recursively split the model at the provided chain of element paths.
 
@@ -162,6 +162,13 @@ class SplitCmd(Command):
         is_parent = cur_path_index + 1 < len(element_paths) and element_paths[cur_path_index
                                                                               + 1].get_parent() == element_path
 
+        # root dir name for sub models dir
+        # 00000__group.json will have the root_dir name as 00000__group for sub models of group
+        # catalog.json will have the root_dir name as catalog sub models
+        root_dir = ''
+        if root_file_name != '':
+            root_dir = pathlib.Path(root_file_name).stem
+
         # check that the path is not multiple level deep
         path_parts = element_path.get()
         if path_parts[-1] == ElementPath.WILDCARD:
@@ -188,7 +195,6 @@ class SplitCmd(Command):
         if is_parent and element_path.get_last() is not ElementPath.WILDCARD:
             # create dir for all sub model items
             sub_models_dir = base_dir / element_path.to_root_path()
-
             sub_model_plan = Plan()
             path_chain_end = cls.split_model_at_path_chain(
                 sub_models, element_paths, sub_models_dir, content_type, cur_path_index + 1, sub_model_plan, True
@@ -196,11 +202,9 @@ class SplitCmd(Command):
             sub_model_actions = sub_model_plan.get_actions()
             split_plan.add_actions(sub_model_actions)
         elif element_path.get_last() == ElementPath.WILDCARD:
-            # create dir for all sub model items. e.g. `targets` or `groups`
-            sub_models_dir = base_dir / element_path.to_file_path()
-
             # extract sub-models into a dict with appropriate prefix
             sub_model_items: Dict[str, OscalBaseModel] = {}
+            sub_models_dir = base_dir / element_path.to_file_path(root_dir=root_dir)
             if isinstance(sub_models, list):
                 for i, sub_model_item in enumerate(sub_models):
                     # e.g. `groups/00000_groups/`
@@ -226,16 +230,18 @@ class SplitCmd(Command):
                 if require_recursive_split:
                     # prepare individual directory for each sub-model
                     # e.g. `targets/<UUID>__target/`
-                    sub_model_dir = cls.get_sub_model_dir(sub_models_dir, sub_model_item, prefix)
+                    sub_root_file_name = cmd_utils.to_model_file_name(sub_model_item, prefix, content_type)
                     sub_model_plan = Plan()
+
                     path_chain_end = cls.split_model_at_path_chain(
                         sub_model_item,
                         element_paths,
-                        sub_model_dir,
+                        sub_models_dir,
                         content_type,
                         cur_path_index + 1,
                         sub_model_plan,
-                        True
+                        True,
+                        sub_root_file_name
                     )
                     sub_model_actions = sub_model_plan.get_actions()
                 else:
@@ -247,7 +253,7 @@ class SplitCmd(Command):
         else:
             # the chain of path ends at the current index.
             # so no recursive call. Let's just write the sub model to the file and get out
-            sub_model_file = base_dir / element_path.to_file_path(content_type)
+            sub_model_file = base_dir / element_path.to_file_path(content_type, root_dir=root_dir)
             split_plan.add_action(CreatePathAction(sub_model_file))
             split_plan.add_action(
                 WriteFileAction(sub_model_file, Element(sub_models, element_path.get_element_name()), content_type)
@@ -257,7 +263,11 @@ class SplitCmd(Command):
         if strip_root:
             stripped_field_alias.append(element_path.get_element_name())
             stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
-            root_file = base_dir / element_path.to_root_path(content_type)
+            if root_file_name != '':
+                root_file = base_dir / root_file_name
+            else:
+                root_file = base_dir / element_path.to_root_path(content_type)
+
             split_plan.add_action(CreatePathAction(root_file))
             wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
             split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
@@ -272,6 +282,7 @@ class SplitCmd(Command):
         element_paths: List[ElementPath],
         base_dir: pathlib.Path,
         content_type: FileContentType,
+        root_file_name: str = ''
     ) -> Plan:
         """Split the model at the provided element paths.
 
@@ -301,14 +312,17 @@ class SplitCmd(Command):
 
             # split model at the path chain
             cur_path_index = cls.split_model_at_path_chain(
-                model_obj, element_paths, base_dir, content_type, cur_path_index, split_plan, False
+                model_obj, element_paths, base_dir, content_type, cur_path_index, split_plan, False, root_file_name
             )
 
             cur_path_index += 1
 
         # strip the root model object and add a WriteAction
         stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
-        root_file = base_dir / element_paths[0].to_root_path(content_type)
+        if root_file_name != '':
+            root_file = base_dir / root_file_name
+        else:
+            root_file = base_dir / element_paths[0].to_root_path(content_type)
         split_plan.add_action(CreatePathAction(root_file, True))
         wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
         split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
