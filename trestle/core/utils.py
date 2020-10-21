@@ -187,7 +187,7 @@ def get_sample_model(model: BaseModel) -> BaseModel:
 def get_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bool, int, str, float]:
     """Given a type, return sample value."""
     if type_ is datetime:
-        return datetime.now()
+        return datetime.now().astimezone()
     elif type_ is bool:
         return False
     elif type_ is int:
