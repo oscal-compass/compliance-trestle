@@ -19,8 +19,6 @@ PACKAGE_OSCAL = 'trestle.oscal'
 
 TRESTLE_CONFIG_DIR = '.trestle'
 TRESTLE_DIST_DIR = 'dist'
-TRESTLE_TRASH_DIR = '.trestle/_trash/'
-TRESTLE_TRASH_FILE_EXT = '.bk'
 TRESTLE_CONFIG_FILE = 'config.ini'
 
 # Map of plural form of a model type to the oscal module that contains the classes related to it
