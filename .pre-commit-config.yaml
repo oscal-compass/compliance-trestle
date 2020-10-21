@@ -38,3 +38,4 @@ repos:
     rev: 0.3.4  # Use the ref you want to point at
     hooks:
     - id: mdformat
+      exclude: "CHANGELOG.md"
