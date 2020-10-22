@@ -22,7 +22,6 @@ from ilcli import Command
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core import utils
-from trestle.core.commands import cmd_utils
 from trestle.core.models.actions import CreatePathAction, UpdateAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
@@ -74,7 +73,7 @@ class AddCmd(Command):
             self._add(file_path, element_path, parent_model, parent_element)
 
     @classmethod
-    def _add(self, file_path, element_path, parent_model, parent_element):
+    def _add(cls, file_path, element_path, parent_model, parent_element):
         """For a file_path and element_path, add a child model to the parent_element of a given parent_model.
 
         First we find the child model at the specified element path and instantiate it with default values.

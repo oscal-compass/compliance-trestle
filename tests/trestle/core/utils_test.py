@@ -237,7 +237,9 @@ def test_get_target_model():
     assert mutils.is_collection_field_type(
         mutils.get_target_model(['catalog', 'metadata', 'responsible-parties', 'creator'], catalog.Catalog)
     ) is False
-    assert mutils.get_target_model(['catalog', 'metadata', 'responsible-parties', 'creator'], catalog.Catalog) is catalog.ResponsibleParty
+    assert mutils.get_target_model(
+        ['catalog', 'metadata', 'responsible-parties', 'creator'], catalog.Catalog
+    ) is catalog.ResponsibleParty
 
     assert mutils.get_target_model(['catalog', 'metadata', 'title'], catalog.Catalog) is catalog.Title
 

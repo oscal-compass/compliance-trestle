@@ -105,6 +105,7 @@ def sample_catalog():
     catalog_obj = Catalog.oscal_read(file_path)
     return catalog_obj
 
+
 @pytest.fixture(scope='function')
 def sample_catalog_minimal():
     """Return a valid catalog object with minimum fields necessary."""
