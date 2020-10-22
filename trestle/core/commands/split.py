@@ -70,7 +70,9 @@ class SplitCmd(Command):
 
         element_paths: List[ElementPath] = cmd_utils.parse_element_args(args_raw[const.ARG_ELEMENT].split(','))
 
-        split_plan = self.split_model(model, element_paths, base_dir, content_type, root_file_name=args[const.ARG_FILE])
+        split_plan = self.split_model(
+            model, element_paths, base_dir, content_type, root_file_name=args_raw[const.ARG_FILE]
+        )
 
         # Simulate the plan
         # if it fails, it would throw errors and get out of this command
