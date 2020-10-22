@@ -16,9 +16,11 @@
 """Trestle command related utilities."""
 from typing import Any, Dict, List
 
+from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
+from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
 
 
@@ -75,11 +77,7 @@ def parse_element_arg(element_arg: str, contextual_mode: bool = True) -> List[El
     i = 1
     while i < len(path_parts):
         p = path_parts[i]
-        if p == ElementPath.WILDCARD:
-            # * cannot be the second part in the path
-            if len(element_paths) <= 0:
-                raise TrestleError(f'Invalid element path "{element_arg}" with {ElementPath.WILDCARD}')
-
+        if p == ElementPath.WILDCARD and len(element_paths) > 0:
             # append wildcard to the latest element path
             latest_path = element_paths.pop()
             if latest_path.get_last() == ElementPath.WILDCARD:
@@ -124,3 +122,11 @@ def get_dir_base_file_element(item, name: str) -> Element:
         base_model[name] = {}
 
     return Element(base_model)
+
+
+def to_model_file_name(model_obj: OscalBaseModel, file_prefix: str, content_type: FileContentType) -> str:
+    """Return the file name for the item."""
+    file_ext = FileContentType.to_file_extension(content_type)
+    model_type = utils.classname_to_alias(type(model_obj).__name__, 'json')
+    file_name = f'{file_prefix}{const.IDX_SEP}{model_type}{file_ext}'
+    return file_name
