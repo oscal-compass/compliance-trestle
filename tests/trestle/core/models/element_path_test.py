@@ -128,6 +128,9 @@ def test_element_path_to_file_path():
         FileContentType.YAML
     ) == pathlib.Path('./target-definition/metadata/parties.yaml')
 
+    assert ElementPath('group.controls.*').to_file_path(FileContentType.YAML,
+                                                        '00000__group') == pathlib.Path('./00000__group/controls.yaml')
+
     element_path = ElementPath('target.target-control-implementations.*', ElementPath('target-definition.targets.*'))
     assert element_path.to_file_path() == pathlib.Path('./target/target-control-implementations')
 

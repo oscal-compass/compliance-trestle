@@ -16,9 +16,11 @@
 """Trestle command related utilities."""
 from typing import List
 
+from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
+from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
 
 
@@ -123,3 +125,11 @@ def get_dir_base_file_element(item, name: str) -> Element:
         base_model = {name: {}}
 
     return Element(base_model)
+
+
+def to_model_file_name(model_obj: OscalBaseModel, file_prefix: str, content_type: FileContentType) -> str:
+    """Return the file name for the item."""
+    file_ext = FileContentType.to_file_extension(content_type)
+    model_type = utils.classname_to_alias(type(model_obj).__name__, 'json')
+    file_name = f'{file_prefix}{const.IDX_SEP}{model_type}{file_ext}'
+    return file_name
