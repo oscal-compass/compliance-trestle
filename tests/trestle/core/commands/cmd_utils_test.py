@@ -43,9 +43,6 @@ def test_parse_element_arg(tmp_dir):
         cmd_utils.parse_element_arg('target-definition', False)
 
     with pytest.raises(TrestleError):
-        cmd_utils.parse_element_arg('target-definition.*', False)
-
-    with pytest.raises(TrestleError):
         cmd_utils.parse_element_arg('*.target', False)
 
     with pytest.raises(TrestleError):
@@ -56,6 +53,23 @@ def test_parse_element_arg(tmp_dir):
 
     with pytest.raises(TrestleError):
         cmd_utils.parse_element_arg('target-definition.targets.*.*', False)
+
+    element_arg = 'catalog.groups.*'
+    expected_paths: List[ElementPath] = prepare_expected_element_paths(['catalog.groups.*'])
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, False)
+    assert expected_paths == element_paths
+
+    # contextual path
+    test_utils.ensure_trestle_config_dir(tmp_dir)
+    catalog_split_dir = tmp_dir / 'catalogs/nist800-53/catalog'
+    fs.ensure_directory(catalog_split_dir)
+    cur_dir = pathlib.Path.cwd()
+    os.chdir(catalog_split_dir)
+    element_arg = 'groups.*'
+    expected_paths: List[ElementPath] = prepare_expected_element_paths(['groups.*'])
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, True)
+    assert expected_paths == element_paths
+    os.chdir(cur_dir)
 
     element_arg = 'catalog.metadata.parties.*'
     expected_paths: List[ElementPath] = prepare_expected_element_paths(['catalog.metadata', 'metadata.parties.*'])

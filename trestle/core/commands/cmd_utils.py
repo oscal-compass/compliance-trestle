@@ -77,11 +77,7 @@ def parse_element_arg(element_arg: str, contextual_mode: bool = True) -> List[El
     i = 1
     while i < len(path_parts):
         p = path_parts[i]
-        if p == ElementPath.WILDCARD:
-            # * cannot be the second part in the path
-            if len(element_paths) <= 0:
-                raise TrestleError(f'Invalid element path "{element_arg}" with {ElementPath.WILDCARD}')
-
+        if p == ElementPath.WILDCARD and len(element_paths) > 0:
             # append wildcard to the latest element path
             latest_path = element_paths.pop()
             if latest_path.get_last() == ElementPath.WILDCARD:
