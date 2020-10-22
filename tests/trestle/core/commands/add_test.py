@@ -15,12 +15,15 @@
 # limitations under the License.
 """Tests for trestle add command."""
 import pathlib
+import sys
+from unittest.mock import patch
 
 import pytest
 
 from tests import test_utils
 
 import trestle.core.err as err
+from trestle.cli import Trestle
 from trestle.core.commands.add import AddCmd
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
@@ -96,3 +99,16 @@ def test_add_failure(tmp_dir, sample_catalog_minimal):
     element_path = ElementPath('catalog.metadata.bad_path')
     with pytest.raises(err.TrestleError):
         AddCmd._add(catalog_def_dir / 'catalog.json', element_path, Catalog, catalog_element)
+
+
+def test_run_failure():
+    """Test failure of _run for AddCmd."""
+    testargs = ['trestle', 'add', '-e', 'catalog.metadata.roles']
+    with patch.object(sys, 'argv', testargs):
+        with pytest.raises(err.TrestleError):
+            Trestle().run()
+
+    testargs = ['trestle', 'add', '-f', './catalog.json']
+    with patch.object(sys, 'argv', testargs):
+        with pytest.raises(err.TrestleError):
+            Trestle().run()
