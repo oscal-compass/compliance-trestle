@@ -234,7 +234,15 @@ def test_get_target_model():
         mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog)
     ) is catalog.ResponsibleParty
 
+    assert mutils.is_collection_field_type(
+        mutils.get_target_model(['catalog', 'metadata', 'responsible-parties', 'creator'], catalog.Catalog)
+    ) is False
+    assert mutils.get_target_model(['catalog', 'metadata', 'responsible-parties', 'creator'], catalog.Catalog) is catalog.ResponsibleParty
+
     assert mutils.get_target_model(['catalog', 'metadata', 'title'], catalog.Catalog) is catalog.Title
+
+    with pytest.raises(err.TrestleError):
+        mutils.get_target_model(['catalog', 'metadata', 'bad_element'], catalog.Catalog)
 
 
 def test_get_sample_model():

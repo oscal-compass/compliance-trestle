@@ -145,7 +145,7 @@ def get_target_model(element_path_parts: List[str], current_model: BaseModel) ->
 
     Takes as input a list, containing parts of an ElementPath as str and expressed in aliases,
     and the parent model to follow the ElementPath in.
-    Returns the type of the model at the specified ElementPath of the input model
+    Returns the type of the model at the specified ElementPath of the input model.
     """
     try:
         for index in range(1, len(element_path_parts)):

@@ -27,7 +27,7 @@ from trestle.core.models.actions import CreatePathAction, UpdateAction, WriteFil
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.utils import fs
+from trestle.utils import fs, trash
 
 
 class AddCmd(Command):
@@ -73,6 +73,7 @@ class AddCmd(Command):
             element_path = ElementPath(elm_path_str)
             self._add(file_path, element_path, parent_model, parent_element)
 
+    @classmethod
     def _add(self, file_path, element_path, parent_model, parent_element):
         """For a file_path and element_path, add a child model to the parent_element of a given parent_model.
 
@@ -83,6 +84,8 @@ class AddCmd(Command):
         at the same location and write the file.
         """
         element_path_list = element_path.get_full_path_parts()
+        if '*' in element_path_list:
+            raise err.TrestleError('trestle add does not support Wildcard element path.')
         # Get child model
         try:
             child_model = utils.get_target_model(element_path_list, parent_model)
@@ -115,6 +118,6 @@ class AddCmd(Command):
         add_plan.add_action(write_action)
         add_plan.simulate()
 
-        cmd_utils.move_to_trash(file_path)
+        trash.store(file_path, True)
 
         add_plan.execute()

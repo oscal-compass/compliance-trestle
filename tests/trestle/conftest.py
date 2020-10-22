@@ -104,3 +104,10 @@ def sample_catalog():
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'good_catalog.json')
     catalog_obj = Catalog.oscal_read(file_path)
     return catalog_obj
+
+@pytest.fixture(scope='function')
+def sample_catalog_minimal():
+    """Return a valid catalog object with minimum fields necessary."""
+    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog.json')
+    catalog_obj = Catalog.oscal_read(file_path)
+    return catalog_obj
