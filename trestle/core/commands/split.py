@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Split Command."""
-
+import argparse
 import pathlib
 from typing import Dict, List
 
@@ -49,7 +49,7 @@ class SplitCmd(Command):
             help=const.ARG_DESC_ELEMENT + ' to split.',
         )
 
-    def _run(self, args) -> None:
+    def _run(self, args: argparse.ArgumentParser) -> None:
         """Split an OSCAL file into elements."""
         # get the Model
         args_raw = args.__dict__
