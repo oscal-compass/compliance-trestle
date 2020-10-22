@@ -61,14 +61,14 @@ def test_add(tmp_dir, sample_catalog_minimal):
     # Execute second _add - this time roles already exists, so this adds a roles object to roles array
     catalog_element = Element(actual_catalog_roles)
     AddCmd._add(catalog_def_dir / 'catalog.json', element_path, Catalog, catalog_element)
-    actual_catalog_roles2 = Catalog.oscal_read(catalog_def_dir / 'catalog.json') 
+    actual_catalog_roles2 = Catalog.oscal_read(catalog_def_dir / 'catalog.json')
     assert actual_catalog_roles2 == expected_catalog_roles2
 
     # Execute _add for responsible-parties to the same catalog
     element_path = ElementPath('catalog.metadata.responsible-parties')
     catalog_element = Element(actual_catalog_roles2)
     AddCmd._add(catalog_def_dir / 'catalog.json', element_path, Catalog, catalog_element)
-    actual_catalog_roles2_rp = Catalog.oscal_read(catalog_def_dir / 'catalog.json') 
+    actual_catalog_roles2_rp = Catalog.oscal_read(catalog_def_dir / 'catalog.json')
     assert actual_catalog_roles2_rp == expected_catalog_roles2_rp
 
 
