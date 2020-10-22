@@ -86,6 +86,8 @@ class Action(ABC):
 
     def __eq__(self, other: object) -> bool:
         """Check that two actions are equal."""
+        if not isinstance(other, Action):
+            return False
         if self.get_type() is not other.get_type():
             return False
         is_eq = self.__dict__ == other.__dict__

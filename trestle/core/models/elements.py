@@ -307,7 +307,7 @@ class Element:
 
         return model_obj
 
-    def set_at(self, element_path: ElementPath, sub_element: OscalBaseModel) -> None:
+    def set_at(self, element_path: ElementPath, sub_element: OscalBaseModel) -> 'Element':
         """Set a sub_element at the path in the current element.
 
         Sub element can be Element, OscalBaseModel, list or None type
