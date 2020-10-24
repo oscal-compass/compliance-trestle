@@ -15,25 +15,48 @@
 # limitations under the License.
 """Tests for cli module."""
 
+import shutil
 import sys
 from unittest.mock import patch
 
 import pytest
 
+from tests import test_utils
+
 from trestle import cli
+from trestle.core import utils
 from trestle.core.err import TrestleValidationError
+from trestle.core.models.file_content_type import FileContentType
+from trestle.oscal import target as ostarget
+from trestle.utils import fs
 
 
-def test_run():
+def test_target_dups(tmp_dir):
     """Test model validation."""
-    testcmd = 'trestle validate -f tests/data/yaml/good_target.yaml -m duplicates -i uuid'
+    content_type = FileContentType.YAML
+    models_dir_name = test_utils.TARGET_DEFS_DIR
+    model_ref = ostarget.TargetDefinition
+
+    test_utils.ensure_trestle_config_dir(tmp_dir)
+
+    file_ext = FileContentType.to_file_extension(content_type)
+    models_full_path = tmp_dir / models_dir_name / 'my_test_model'
+    model_alias = utils.classname_to_alias(model_ref.__name__, 'json')
+    model_def_file = models_full_path / f'{model_alias}{file_ext}'
+    fs.ensure_directory(models_full_path)
+
+    shutil.copyfile('tests/data/yaml/good_target.yaml', model_def_file)
+
+    testcmd = f'trestle validate -f {model_def_file} -m duplicates -i uuid'
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code is None
 
-    testcmd = 'trestle validate -f tests/data/yaml/bad_target_dup_uuid.yaml -m duplicates -i uuid'
+    shutil.copyfile('tests/data/yaml/bad_target_dup_uuid.yaml', model_def_file)
+
+    testcmd = f'trestle validate -f {model_def_file} -m duplicates -i uuid'
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(TrestleValidationError) as pytest_wrapped_e:
             cli.run()

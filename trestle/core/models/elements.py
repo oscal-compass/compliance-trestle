@@ -149,7 +149,7 @@ class ElementPath:
 
         return self._preceding_path
 
-    def to_file_path(self, content_type: FileContentType = None) -> pathlib.Path:
+    def to_file_path(self, content_type: FileContentType = None, root_dir: str = '') -> pathlib.Path:
         """Convert to a file or directory path for the element path.
 
         if content_type is not passed, it will return a path for directory
@@ -159,6 +159,9 @@ class ElementPath:
         # skip wildcard
         if path_parts[-1] == ElementPath.WILDCARD:
             path_parts = path_parts[:-1]
+
+        if root_dir != '':
+            path_parts[0] = root_dir
 
         path_str = '/'.join(path_parts)
 
