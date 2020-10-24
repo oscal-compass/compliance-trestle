@@ -56,22 +56,22 @@ def test_add(tmp_dir, sample_catalog_minimal):
     # Execute first _add
     element_path = ElementPath('catalog.metadata.roles')
     catalog_element = Element(sample_catalog_minimal)
-    AddCmd._add(catalog_def_dir / 'catalog.json', element_path, Catalog, catalog_element)
+    AddCmd._add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
 
-    actual_catalog_roles = Catalog.oscal_read(catalog_def_dir / 'catalog.json')
+    actual_catalog_roles = Catalog.oscal_read(catalog_def_dir / catalog_def_file)
     assert actual_catalog_roles == expected_catalog_roles1
 
     # Execute second _add - this time roles already exists, so this adds a roles object to roles array
     catalog_element = Element(actual_catalog_roles)
-    AddCmd._add(catalog_def_dir / 'catalog.json', element_path, Catalog, catalog_element)
-    actual_catalog_roles2 = Catalog.oscal_read(catalog_def_dir / 'catalog.json')
+    AddCmd._add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
+    actual_catalog_roles2 = Catalog.oscal_read(catalog_def_dir / catalog_def_file)
     assert actual_catalog_roles2 == expected_catalog_roles2
 
     # Execute _add for responsible-parties to the same catalog
     element_path = ElementPath('catalog.metadata.responsible-parties')
     catalog_element = Element(actual_catalog_roles2)
-    AddCmd._add(catalog_def_dir / 'catalog.json', element_path, Catalog, catalog_element)
-    actual_catalog_roles2_rp = Catalog.oscal_read(catalog_def_dir / 'catalog.json')
+    AddCmd._add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
+    actual_catalog_roles2_rp = Catalog.oscal_read(catalog_def_dir / catalog_def_file)
     assert actual_catalog_roles2_rp == expected_catalog_roles2_rp
 
 
@@ -90,15 +90,15 @@ def test_add_failure(tmp_dir, sample_catalog_minimal):
     catalog_element = Element(sample_catalog_minimal)
 
     with pytest.raises(err.TrestleError):
-        AddCmd._add(catalog_def_dir / 'catalog.json', element_path, Catalog, catalog_element)
+        AddCmd._add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
 
     element_path = ElementPath('catalog.metadata.title')
     with pytest.raises(err.TrestleError):
-        AddCmd._add(catalog_def_dir / 'catalog.json', element_path, Catalog, catalog_element)
+        AddCmd._add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
 
     element_path = ElementPath('catalog.metadata.bad_path')
     with pytest.raises(err.TrestleError):
-        AddCmd._add(catalog_def_dir / 'catalog.json', element_path, Catalog, catalog_element)
+        AddCmd._add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
 
 
 def test_run_failure():
@@ -112,3 +112,34 @@ def test_run_failure():
     with patch.object(sys, 'argv', testargs):
         with pytest.raises(err.TrestleError):
             Trestle().run()
+
+
+def test_run(tmp_dir, sample_catalog_minimal):
+    """Test _run for AddCmd."""
+    # expected catalog after add of Responsible-Party
+    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_roles_double_rp.json')
+    expected_catalog_roles2_rp = Catalog.oscal_read(file_path)
+
+    content_type = FileContentType.YAML
+
+    catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_catalog_minimal,
+        test_utils.CATALOGS_DIR
+    )
+
+    testargs = [
+        'trestle',
+        'add',
+        '-f',
+        str(catalog_def_file),
+        '-e',
+        'catalog.metadata.roles, catalog.metadata.roles, catalog.metadata.responsible-parties'
+    ]
+
+    with patch.object(sys, 'argv', testargs):
+        Trestle().run()
+
+    actual_catalog = Catalog.oscal_read(catalog_def_file)
+    assert expected_catalog_roles2_rp == actual_catalog
