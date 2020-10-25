@@ -15,7 +15,7 @@
 # limitations under the License.
 """Trestle Replicate Command."""
 
-from ilcli import Command
+from ilcli import Command  # type: ignore
 
 
 class ReplicateCmd(Command):

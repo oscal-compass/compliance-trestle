@@ -14,10 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Split Command."""
+import argparse
 import pathlib
 from typing import Dict, List
 
-from ilcli import Command
+from ilcli import Command  # type: ignore
 
 from trestle.core import const
 from trestle.core import utils
@@ -36,7 +37,7 @@ class SplitCmd(Command):
 
     name = 'split'
 
-    def _init_arguments(self):
+    def _init_arguments(self) -> None:
         self.add_argument(
             f'-{const.ARG_FILE_SHORT}',
             f'--{const.ARG_FILE}',
@@ -48,14 +49,14 @@ class SplitCmd(Command):
             help=const.ARG_DESC_ELEMENT + ' to split.',
         )
 
-    def _run(self, args):
+    def _run(self, args: argparse.ArgumentParser) -> None:
         """Split an OSCAL file into elements."""
         # get the Model
-        args = args.__dict__
-        if args[const.ARG_FILE] is None:
+        args_raw = args.__dict__
+        if args_raw[const.ARG_FILE] is None:
             raise TrestleError(f'Argument "-{const.ARG_FILE_SHORT}" is required')
 
-        file_path = pathlib.Path(args[const.ARG_FILE])
+        file_path = pathlib.Path(args_raw[const.ARG_FILE])
         content_type = FileContentType.to_content_type(file_path.suffix)
 
         # find the base directory of the file
@@ -67,9 +68,11 @@ class SplitCmd(Command):
         # FIXME: Handle list/dicts
         model: OscalBaseModel = model_type.oscal_read(file_path)
 
-        element_paths: List[ElementPath] = cmd_utils.parse_element_args(args[const.ARG_ELEMENT].split(','))
+        element_paths: List[ElementPath] = cmd_utils.parse_element_args(args_raw[const.ARG_ELEMENT].split(','))
 
-        split_plan = self.split_model(model, element_paths, base_dir, content_type, root_file_name=args[const.ARG_FILE])
+        split_plan = self.split_model(
+            model, element_paths, base_dir, content_type, root_file_name=args_raw[const.ARG_FILE]
+        )
 
         # Simulate the plan
         # if it fails, it would throw errors and get out of this command
@@ -119,7 +122,7 @@ class SplitCmd(Command):
         split_plan: Plan,
         strip_root: bool,
         root_file_name: str = ''
-    ) -> Plan:
+    ) -> int:
         """Recursively split the model at the provided chain of element paths.
 
         It assumes that a chain of element paths starts at the cur_path_index with the first path ending

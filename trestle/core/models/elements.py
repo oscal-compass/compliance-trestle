@@ -15,7 +15,7 @@
 
 import json
 import pathlib
-from typing import List, Optional
+from typing import Dict, List, Optional, Union
 
 from pydantic import Field, create_model
 from pydantic.error_wrappers import ValidationError
@@ -39,7 +39,7 @@ class ElementPath:
 
     WILDCARD: str = '*'
 
-    def __init__(self, element_path: str, parent_path=None):
+    def __init__(self, element_path: str, parent_path: Optional['ElementPath'] = None) -> None:
         """Initialize an element wrapper.
 
         It assumes the element path contains oscal field alias with hyphens only
@@ -51,10 +51,10 @@ class ElementPath:
         self._path: List[str] = self._parse(element_path)
 
         # Initialize private variables for lazy processing and caching
-        self._element_name = None
-        self._preceding_path = None
+        self._element_name: Optional[str] = None
+        self._preceding_path: Optional['ElementPath'] = None
 
-    def _parse(self, element_path) -> List[str]:
+    def _parse(self, element_path: str) -> List[str]:
         """Parse the element path and validate."""
         parts: List[str] = element_path.split(self.PATH_SEPARATOR)
 
@@ -87,7 +87,7 @@ class ElementPath:
         """Return the path parts as a dot-separated string."""
         return self.PATH_SEPARATOR.join(self.get())
 
-    def get_parent(self):
+    def get_parent(self) -> 'ElementPath':
         """Return the parent path.
 
         It can be None or a valid ElementPath
@@ -107,7 +107,7 @@ class ElementPath:
         all_parts = self.get_full_path_parts()
         return self.PATH_SEPARATOR.join(all_parts)
 
-    def get_element_name(self):
+    def get_element_name(self) -> str:
         """Return the element alias name from the path.
 
         Essentailly this the last part of the element path
@@ -134,7 +134,7 @@ class ElementPath:
 
         return path_parts
 
-    def get_preceding_path(self):
+    def get_preceding_path(self) -> 'ElementPath':
         """Return the element path to the preceding element in the path."""
         # if it is available then return otherwise compute
         if self._preceding_path is None:
@@ -186,11 +186,11 @@ class ElementPath:
         file_path: pathlib.Path = pathlib.Path(path_str)
         return file_path
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of element path."""
         return self.to_string()
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """Override equality method."""
         if not isinstance(other, ElementPath):
             return False
@@ -240,7 +240,9 @@ class Element:
 
         return root_model, path_parts
 
-    def get_at(self, element_path: ElementPath = None, check_parent: bool = True) -> Optional[OscalBaseModel]:
+    def get_at(self,
+               element_path: ElementPath = None,
+               check_parent: bool = True) -> Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]:
         """Get the element at the specified element path.
 
         it will return the sub-model object at the path. Sub-model object
@@ -308,7 +310,7 @@ class Element:
 
         return model_obj
 
-    def set_at(self, element_path, sub_element):
+    def set_at(self, element_path: ElementPath, sub_element: OscalBaseModel) -> 'Element':
         """Set a sub_element at the path in the current element.
 
         Sub element can be Element, OscalBaseModel, list or None type
@@ -365,19 +367,19 @@ class Element:
         # returning self will allow to do 'chaining' of commands after set
         return self
 
-    def to_yaml(self):
+    def to_yaml(self) -> str:
         """Convert into YAML string."""
         yaml_data = yaml.dump(yaml.safe_load(self.to_json()))
         return yaml_data
 
-    def to_json(self):
+    def to_json(self) -> str:
         """Convert into JSON string."""
         if self._wrapper_alias == self.IGNORE_WRAPPER_ALIAS:
             json_data = json.dumps(self._elem, sort_keys=False, indent=4)
         else:
             dynamic_passer = {}
             dynamic_passer['TransientField'] = (self._elem.__class__, Field(self, alias=self._wrapper_alias))
-            wrapper_model = create_model('TransientModel', __base__=OscalBaseModel, **dynamic_passer)
+            wrapper_model = create_model('TransientModel', __base__=OscalBaseModel, **dynamic_passer)  # type: ignore
             wrapped_model = wrapper_model(**{self._wrapper_alias: self._elem})
             json_data = wrapped_model.json(exclude_none=True, by_alias=True, indent=4)
 
@@ -402,11 +404,11 @@ class Element:
 
         return False
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of element."""
         return type(self._elem).__name__
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         """Check that two elements are equal."""
         if not isinstance(other, Element):
             return False

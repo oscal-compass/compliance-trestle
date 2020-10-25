@@ -14,9 +14,9 @@
 # limitations under the License.
 """Starting point for the Trestle CLI."""
 
-from ilcli import Command
+from ilcli import Command  # type: ignore
 
-from trestle.__init__ import __version__
+from trestle import __version__
 from trestle.core.commands.add import AddCmd
 from trestle.core.commands.assemble import AssembleCmd
 from trestle.core.commands.create import CreateCmd
@@ -36,7 +36,7 @@ class Trestle(Command):
         InitCmd, CreateCmd, SplitCmd, MergeCmd, ReplicateCmd, AddCmd, RemoveCmd, ValidateCmd, ImportCmd, AssembleCmd
     ]
 
-    def _init_arguments(self):
+    def _init_arguments(self) -> None:
         self.add_argument(
             '-V',
             '--version',
@@ -47,7 +47,7 @@ class Trestle(Command):
         self.add_argument('-v', '--verbose', help='Display verbose output.', action='count', default=1)
 
 
-def run():
+def run() -> None:
     """Run the test cli."""
     exit(Trestle().run())
 

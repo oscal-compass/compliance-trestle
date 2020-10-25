@@ -13,12 +13,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Trestle Remove Command."""
-
-from ilcli import Command  # type: ignore
-
-
-class RemoveCmd(Command):
-    """Remove a subcomponent to an existing model."""
-
-    name = 'remove'
+"""Trestle core.models."""

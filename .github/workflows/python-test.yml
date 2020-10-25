@@ -36,6 +36,10 @@ jobs:
     - name: Run code linting (flake8)
       run: |
         make code-lint
+    - name: Run code typing check (mypy)
+      continue-on-error: true
+      run: |
+        make code-typing
     - name: Pytest
       run: |
         make test

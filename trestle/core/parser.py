@@ -16,7 +16,7 @@
 
 import importlib
 import warnings
-from typing import List
+from typing import Any, Dict, List, Type, cast
 
 from pydantic import Field, create_model
 
@@ -29,7 +29,7 @@ from trestle.utils import log
 logger = log.get_logger()
 
 
-def parse_dict(data: dict, model_name: str):
+def parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
     """Load a model from the data dict.
 
     Argument:
@@ -57,7 +57,7 @@ def parse_dict(data: dict, model_name: str):
     return instance
 
 
-def root_key(data: dict):
+def root_key(data: Dict[str, Any]) -> str:
     """Find root model name in the data."""
     warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     if len(data.items()) == 1:
@@ -148,13 +148,14 @@ def wrap_for_output(model: OscalBaseModel) -> OscalBaseModel:
         model.__class__,
         Field(model, title=class_to_oscal(class_name, 'field'), alias=class_to_oscal(class_name, 'json'))
     )
-    wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_passer)
+    wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_passer)  # type: ignore
     # Default behaviour is strange here.
     wrapped_model = wrapper_model(**{class_to_oscal(class_name, 'json'): model})
+    wrapped_model = cast(OscalBaseModel, wrapped_model)
     return wrapped_model
 
 
-def wrap_for_input(raw_class):
+def wrap_for_input(raw_class: Type[OscalBaseModel]) -> Type[OscalBaseModel]:
     """In this instance we are wrapping an actual OSCAL class not an instance."""
     warnings.warn(
         'trestle.parser functions are deprecated. wrap_for_input built ito OSCALBaseModel', DeprecationWarning
@@ -165,7 +166,8 @@ def wrap_for_input(raw_class):
     dynamic_passer[class_to_oscal(
         class_name, 'field'
     )] = (raw_class, Field(..., title=class_to_oscal(class_name, 'json'), alias=class_to_oscal(class_name, 'json')))
-    wrapper_model = create_model('Wrapped' + class_name, __base__=OscalBaseModel, **dynamic_passer)
+    wrapper_model = create_model('Wrapped' + class_name, __base__=OscalBaseModel, **dynamic_passer)  # type: ignore
+    wrapper_model = cast(Type[OscalBaseModel], wrapper_model)
     return wrapper_model
 
 

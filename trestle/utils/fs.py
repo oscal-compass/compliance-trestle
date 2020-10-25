@@ -19,7 +19,7 @@ import json
 import logging
 import os
 import pathlib
-from typing import Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, Type, cast
 
 from pydantic import create_model
 
@@ -39,7 +39,7 @@ def should_ignore(name) -> bool:
     return name[0] == '.' or name[0] == '_'
 
 
-def ensure_directory(path):
+def ensure_directory(path: str) -> None:
     """
     Ensure the directory ```path``` exists.
 
@@ -144,7 +144,7 @@ def has_trestle_project_in_path(path: pathlib.Path) -> bool:
     return trestle_project_root is not None
 
 
-def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[OscalBaseModel, str]:
+def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBaseModel], str]:
     """Get the full contextual model class and full jsonpath for the alias based on the contextual path."""
     if path is None:
         path = pathlib.Path.cwd()
@@ -182,7 +182,7 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[OscalBaseModel
     return model_type, full_alias
 
 
-def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[OscalBaseModel, str]:
+def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[Type[OscalBaseModel], str]:
     """
     Get the stripped contextual model class and alias based on the contextual path.
 
@@ -193,14 +193,15 @@ def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[OscalBaseM
     if path is None:
         path = pathlib.Path.cwd()
 
-    model_type, model_alias = get_contextual_model_type(path)
+    singular_model_type, model_alias = get_contextual_model_type(path)
 
     # Stripped models do not apply to collection types such as List[] and Dict{}
     # if model type is a list or dict, generate a new wrapping model for it
-    if utils.is_collection_field_type(model_type):
+    if utils.is_collection_field_type(singular_model_type):
         malias = model_alias.split('.')[-1]
         class_name = utils.alias_to_classname(malias, 'json')
-        model_type = create_model(class_name, __base__=OscalBaseModel, __root__=(model_type, ...))
+        model_type = create_model(class_name, __base__=OscalBaseModel, __root__=(singular_model_type, ...))
+        model_type = cast(Type[OscalBaseModel], model_type)
         return model_type, model_alias
 
     malias = model_alias.split('.')[-1]
@@ -217,9 +218,12 @@ def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[OscalBaseM
             aliases_to_be_stripped.add(alias)
 
     if len(aliases_to_be_stripped) > 0:
-        model_type = model_type.create_stripped_model_type(stripped_fields_aliases=list(aliases_to_be_stripped))
-
-    return model_type, model_alias
+        model_type = singular_model_type.create_stripped_model_type(
+            stripped_fields_aliases=list(aliases_to_be_stripped)
+        )
+        return model_type, model_alias
+    else:
+        return singular_model_type, model_alias
 
 
 def extract_alias(path: pathlib.Path) -> str:
@@ -252,8 +256,8 @@ def clean_project_sub_path(sub_path: pathlib.Path):
             sub_path.unlink()
 
 
-def load_file(file_name: str):
-    """Load JSON or YAML file content."""
+def load_file(file_name: str) -> Dict[str, Any]:
+    """Load JSON or YAML file content into a dict."""
     _, file_extension = os.path.splitext(file_name)
 
     with open(file_name) as f:
@@ -265,7 +269,7 @@ def load_file(file_name: str):
             raise TrestleError(f'Invalid file extension "{file_extension}"')
 
 
-def find_node(data: dict, key: str, depth: int = 0, max_depth: int = 1, instance_type: type = list):
+def find_node(data: Dict[Any, Any], key: str, depth: int = 0, max_depth: int = 1, instance_type: type = list):
     """Find a node of an instance_type in the data recursively."""
     if depth > max_depth:
         return

@@ -17,7 +17,7 @@ import importlib
 import warnings
 from typing import Any, List, Tuple, Type, no_type_check
 
-from datamodel_code_generator.parser.base import camel_to_snake, snake_to_upper_camel
+from datamodel_code_generator.parser.base import camel_to_snake, snake_to_upper_camel  # type: ignore
 
 from pydantic import BaseModel
 
@@ -122,7 +122,7 @@ def get_inner_type(collection_field_type) -> Type[Any]:
         raise err.TrestleError('Model type is not a Dict or List')
 
 
-def get_cwm(contextual_path: list) -> str:
+def get_cwm(contextual_path: List[str]) -> str:
     """
     Get current working module name based on the contextual path.
 
