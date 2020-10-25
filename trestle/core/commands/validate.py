@@ -17,7 +17,7 @@
 
 import pathlib
 
-from ilcli import Command
+from ilcli import Command  # type: ignore
 
 import trestle.core.validator as validator
 from trestle.core import const
@@ -31,7 +31,7 @@ class ValidateCmd(Command):
 
     name = 'validate'
 
-    def _init_arguments(self):
+    def _init_arguments(self) -> None:
         self.add_argument(
             f'-{const.ARG_FILE_SHORT}',
             f'--{const.ARG_FILE}',
@@ -48,7 +48,7 @@ class ValidateCmd(Command):
             help=const.ARG_DESC_MODE + ' to validate.',
         )
 
-    def _run(self, args):
+    def _run(self, args) -> None:
         """Validate an OSCAL file in different modes."""
         if args.file is None:
             raise TrestleError(f'Argument "-{const.ARG_FILE_SHORT}" is required')

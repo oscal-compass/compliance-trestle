@@ -35,7 +35,13 @@ repos:
         exclude: "oscal"
         stages: [commit]
   - repo: https://github.com/hukkinj1/mdformat
-    rev: 0.3.4  # Use the ref you want to point at
+    rev: 0.4.0  # Use the ref you want to point at
     hooks:
     - id: mdformat
       exclude: "CHANGELOG.md"
+      
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: ''
+  #   hooks:
+  #   - id: mypy
+
