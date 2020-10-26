@@ -17,32 +17,73 @@
 from datetime import datetime
 from typing import List
 
+import pytest
+
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
 from trestle.oscal import target
 
 
-def test_element_get_at(sample_target: target.TargetDefinition):
+def test_element_get_at(sample_target_def: target.TargetDefinition):
     """Test element get method."""
-    element = Element(sample_target)
+    element = Element(sample_target_def)
 
-    assert element.get() == sample_target
+    # field alias should succeed
+    assert element.get_at(
+        ElementPath('target-definition.metadata.last-modified')
+    ) == sample_target_def.metadata.last_modified
+
+    # field name should fail
+    assert element.get_at(ElementPath('target-definition.metadata.last_modified')) is None
+
+    assert element.get() == sample_target_def
     assert element.get_at() == element.get()
-    assert element.get_at(ElementPath('metadata')) == sample_target.metadata
-    assert element.get_at(ElementPath('metadata.title')) == sample_target.metadata.title
-    assert element.get_at(ElementPath('targets')) == sample_target.targets
-    assert element.get_at(ElementPath('targets.*')) == sample_target.targets
-    assert element.get_at(ElementPath('metadata.parties.*')) == sample_target.metadata.parties
-    assert element.get_at(ElementPath('metadata.parties.0')) == sample_target.metadata.parties[0]
-    assert element.get_at(ElementPath('metadata.parties.0.uuid')) == sample_target.metadata.parties[0].uuid
+    assert element.get_at(ElementPath('target-definition.metadata')) == sample_target_def.metadata
+    assert element.get_at(ElementPath('target-definition.metadata.title')) == sample_target_def.metadata.title
+    assert element.get_at(ElementPath('target-definition.targets')) == sample_target_def.targets
+    assert element.get_at(ElementPath('target-definition.targets.*')) == sample_target_def.targets
+    assert element.get_at(ElementPath('target-definition.metadata.parties.*')) == sample_target_def.metadata.parties
+    assert element.get_at(ElementPath('target-definition.metadata.parties.0')) == sample_target_def.metadata.parties[0]
+    assert element.get_at(ElementPath('target-definition.metadata.parties.0.uuid')
+                          ) == sample_target_def.metadata.parties[0].uuid
+
+    for uuid in sample_target_def.targets:
+        path_str = f'target-definition.targets.{uuid}'
+        assert element.get_at(ElementPath(path_str)) == sample_target_def.targets[uuid]
 
     # invalid indexing
-    assert element.get_at(ElementPath('metadata.title.0')) is None
+    assert element.get_at(ElementPath('target-definition.metadata.title.0')) is None
+
+    # invalid path with missing root model
+    assert element.get_at(ElementPath('metadata.title')) is None
+
+    # element_path with parent path
+    parent_path = ElementPath('target-definition.metadata')
+    element_path = ElementPath('metadta.parties.*', parent_path)
+    assert element.get_at(element_path) == sample_target_def.metadata.parties
+
+    # element_path with parent path
+    parent_path = ElementPath('target-definition.targets.*')
+    element_path = ElementPath('target.target-control-implementations.*', parent_path)
+    targets = element.get_at(parent_path)
+    for key in targets:
+        target = targets[key]
+        target_element = Element(target)
+        assert target_element.get_at(element_path) == target.target_control_implementations
+
+    # element_path in a list with parent path
+    parent_path = ElementPath('target-definition.targets.*')
+    element_path = ElementPath('target.target-control-implementations.0', parent_path)
+    targets = element.get_at(parent_path)
+    for key in targets:
+        target = targets[key]
+        target_element = Element(target)
+        assert target_element.get_at(element_path) == target.target_control_implementations[0]
 
 
-def test_element_set_at(sample_target: target.TargetDefinition):
+def test_element_set_at(sample_target_def: target.TargetDefinition):
     """Test element get method."""
-    element = Element(sample_target)
+    element = Element(sample_target_def)
 
     metadata = target.Metadata(
         **{
@@ -67,37 +108,40 @@ def test_element_set_at(sample_target: target.TargetDefinition):
         })
     )
 
-    assert element.set_at(ElementPath('metadata'), metadata).get_at(ElementPath('metadata')) == metadata
-    assert element.set_at(ElementPath('metadata.title'), title).get_at(ElementPath('metadata.title')) == title
+    assert element.set_at(ElementPath('target-definition.metadata'),
+                          metadata).get_at(ElementPath('target-definition.metadata')) == metadata
 
-    assert element.set_at(ElementPath('metadata.parties'), parties).get_at(ElementPath('metadata.parties')) == parties
-    assert element.set_at(ElementPath('metadata.parties.*'), parties).get_at(ElementPath('metadata.parties')) == parties
+    assert element.set_at(ElementPath('target-definition.metadata.title'),
+                          title).get_at(ElementPath('target-definition.metadata.title')) == title
+
+    assert element.set_at(ElementPath('target-definition.metadata.parties'),
+                          parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
+
+    assert element.set_at(ElementPath('target-definition.metadata.parties.*'),
+                          parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
 
     # unset
-    assert element.set_at(ElementPath('metadata.parties'), None).get_at(ElementPath('metadata.parties')) is None
+    assert element.set_at(ElementPath('target-definition.metadata.parties'),
+                          None).get_at(ElementPath('target-definition.metadata.parties')) is None
 
     # string element path
-    assert element.set_at('metadata.parties', parties).get_at(ElementPath('metadata.parties')) == parties
+    assert element.set_at('target-definition.metadata.parties',
+                          parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
 
-    try:
-        assert element.set_at(ElementPath('metadata.title'), parties).get_at(ElementPath('metadata.parties')) == parties
-    except TrestleError:
-        pass
+    with pytest.raises(TrestleError):
+        assert element.set_at(ElementPath('target-definition.metadata.title'),
+                              parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
 
     # wildcard requires it to be an OscalBaseModel or list
-    try:
-        assert element.set_at(ElementPath('metadata.parties.*'), 'INVALID')
-    except TrestleError:
-        pass
+    with pytest.raises(TrestleError):
+        assert element.set_at(ElementPath('target-definition.metadata.parties.*'), 'INVALID')
 
     # invalid attribute
-    try:
-        assert element.set_at(ElementPath('metadata.groups.*'), parties)
-    except TrestleError:
-        pass
+    with pytest.raises(TrestleError):
+        assert element.set_at(ElementPath('target-definition.metadata.groups.*'), parties)
 
 
-def test_element_str(sample_target):
+def test_element_str(sample_target_def):
     """Test for magic method str."""
-    element = Element(sample_target)
+    element = Element(sample_target_def)
     assert str(element) == 'TargetDefinition'

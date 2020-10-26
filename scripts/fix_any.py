@@ -197,6 +197,21 @@ def get_cap_stem(s, clip):
     return cap
 
 
+def fix_header(header, needs_conlist):
+    """Fix imports and remove timestamp from header."""
+    new_header = []
+    for r in header:
+        # block import of Any - should not be needed
+        r = re.sub(' Any, ', ' ', r)
+        if r.find(' timestamp: ') >= 0:
+            continue
+        if needs_conlist:
+            # add import of conlist for Union[A, A] case
+            r = re.sub(r'^(from\s+pydantic\s+import.*)$', r'\1, conlist', r)
+        new_header.append(r)
+    return new_header
+
+
 def fix_file(fname):
     """Fix the Anys in this file and reorder to avoid forward dependencies."""
     all_classes = []
@@ -204,6 +219,7 @@ def fix_file(fname):
 
     class_text = None
     done_header = False
+    needs_conlist = False
 
     # Find Any's and replace with appropriate singular class
     # Otherwise accumulate all class dependencies for reordering with no forward refs
@@ -216,10 +232,6 @@ def fix_file(fname):
                 class_text = ClassText(r)
             else:
                 if not done_header:  # still in header
-                    # block import of Any - should not be needed
-                    r = re.sub(' Any, ', ' ', r)
-                    # add import of conlist for Union[A, A] case
-                    r = re.sub(r'^(from\s+pydantic\s+import.*)$', r'\1, conlist', r)
                     header.append(r.rstrip())
                 else:  # in body of class looking for Any's
                     n1 = r.find(pattern1)
@@ -241,12 +253,18 @@ def fix_file(fname):
                         class_text.add_all_refs(r)
                     # fix any line containing Union[A, A] to Union[A, conlist(A, min_items=2)]
                     r = re.sub(r'Union\[([^,]*),\s*\1\]', r'Union[\1, conlist(\1, min_items=2)]', r)
+                    if r.find(', conlist(') >= 0:
+                        needs_conlist = True
+                    # mark regex strings as raw
+                    r = re.sub(r"(\s*regex\s*=\s*)\'(.*)", r"\1r'\2", r)
                     class_text.add_line(r.rstrip())
 
     all_classes.append(class_text)  # don't forget final class
 
     # reorder the classes to remove forward references
     all_classes = reorder(all_classes)
+
+    header = fix_header(header, needs_conlist)
 
     # write the classes out in the fixed order
     with open(fname, 'w') as out_file:

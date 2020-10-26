@@ -23,9 +23,9 @@ from trestle.core.models.elements import Element, ElementPath
 from trestle.oscal import target
 
 
-def test_update_action(sample_target):
+def test_update_action(sample_target_def):
     """Test update action."""
-    element = Element(sample_target)
+    element = Element(sample_target_def)
 
     metadata = target.Metadata(
         **{
@@ -36,7 +36,7 @@ def test_update_action(sample_target):
         }
     )
 
-    sub_element_path = ElementPath('metadata')
+    sub_element_path = ElementPath('target-definition.metadata')
     prev_metadata = element.get_at(sub_element_path)
 
     uac = UpdateAction(metadata, element, sub_element_path)
@@ -52,9 +52,9 @@ def test_update_action(sample_target):
     assert element.get_at(sub_element_path) is not metadata
 
 
-def test_update_list_sub_element_action(sample_target):
+def test_update_list_sub_element_action(sample_target_def):
     """Test setting a list."""
-    element = Element(sample_target)
+    element = Element(sample_target_def)
 
     parties: List[target.Party] = []
     parties.append(
@@ -68,7 +68,7 @@ def test_update_list_sub_element_action(sample_target):
         })
     )
 
-    sub_element_path = ElementPath('metadata.parties.*')
+    sub_element_path = ElementPath('target-definition.metadata.parties.*')
     uac = UpdateAction(parties, element, sub_element_path)
     uac.execute()
 

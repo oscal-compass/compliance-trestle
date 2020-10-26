@@ -16,19 +16,24 @@
 
 
 develop:
-	pip install -e .[dev] --upgrade --upgrade-strategy eager
+	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager
+
+pre-commit: 
 	pre-commit install
 	pre-commit autoupdate
 
 install:
-	pip install  --upgrade pip setuptools
-	pip install . --upgrade --upgrade-strategy eager
+	python -m pip install  --upgrade pip setuptools
+	python -m pip install . --upgrade --upgrade-strategy eager
 
 code-format:
 	pre-commit run yapf --all-files
 
 code-lint:
 	pre-commit run flake8 --all-files
+
+code-typing:
+	mypy --pretty trestle
 
 test::
 	python -m pytest --cov trestle tests -v --cov-report=xml

@@ -22,7 +22,7 @@ import logging
 _logger = logging.getLogger('trestle')
 
 
-def init(level=logging.DEBUG) -> logging.Logger:
+def init(level: int = logging.DEBUG) -> logging.Logger:
     """Initialize the logger."""
     # create logger
     _logger.setLevel(level)
@@ -43,12 +43,12 @@ def init(level=logging.DEBUG) -> logging.Logger:
     return _logger
 
 
-def set_level(level=logging.DEBUG):
+def set_level(level: int = logging.DEBUG) -> logging.Logger:
     """Set log level."""
     _logger.setLevel(level)
     return _logger
 
 
-def get_logger(level=logging.DEBUG):
+def get_logger(level: int = logging.DEBUG) -> logging.Logger:
     """Get the trestle default logger."""
     return set_level(level)

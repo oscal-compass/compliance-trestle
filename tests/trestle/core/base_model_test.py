@@ -21,9 +21,12 @@ from uuid import uuid4
 import pytest
 
 import trestle.core.base_model as ospydantic
+import trestle.core.err as err
 import trestle.core.parser as p
 import trestle.oscal.catalog as oscatalog
 import trestle.oscal.target as ostarget
+from trestle.core.base_model import OscalBaseModel
+from trestle.oscal.target import TargetDefinition
 
 
 def test_echo_tmpdir(tmpdir):
@@ -164,6 +167,32 @@ def test_stripping_model_class():
         raise Exception('Test failure')
 
 
+def test_stripped_instance(sample_target_def: OscalBaseModel):
+    """Test stripped_instance method."""
+    assert hasattr(sample_target_def, 'metadata')
+
+    sc_instance = sample_target_def.stripped_instance(stripped_fields_aliases=['metadata'])
+    assert not hasattr(sc_instance, 'metadata')
+
+    sc_instance = sample_target_def.stripped_instance(stripped_fields=['metadata'])
+    assert not hasattr(sc_instance, 'metadata')
+
+    with pytest.raises(err.TrestleError):
+        sc_instance = sample_target_def.stripped_instance(stripped_fields_aliases=['invalid'])
+
+    if isinstance(sample_target_def, ostarget.TargetDefinition):
+        metadata = sample_target_def.metadata
+        assert hasattr(metadata, 'last_modified')
+
+        instance = metadata.stripped_instance(stripped_fields_aliases=['last-modified'])
+        assert not hasattr(instance, 'last_modified')
+
+        instance = metadata.stripped_instance(stripped_fields=['last_modified'])
+        assert not hasattr(sc_instance, 'last_modified')
+    else:
+        raise Exception('Test failure')
+
+
 def test_multiple_variable_strip():
     """Test mutliple fields can be stripped and checking strict schema enforcement."""
     stripped_catalog_object = oscatalog.Catalog.create_stripped_model_type(['metadata', 'uuid'])
@@ -258,3 +287,23 @@ def test_oscal_write(tmpdir):
     target2.oscal_write(temp_td_yaml)
 
     ostarget.TargetDefinition.oscal_read(temp_td_yaml)
+
+
+def test_get_field_value(sample_target_def: TargetDefinition):
+    """Test get field value method."""
+    assert sample_target_def.metadata.get_field_value('last-modified') == sample_target_def.metadata.last_modified
+    assert sample_target_def.metadata.get_field_value('last_modified') == sample_target_def.metadata.last_modified
+
+
+def test_get_field_value_by_alias(sample_target_def: TargetDefinition):
+    """Test get attribute by alias method."""
+    assert sample_target_def.metadata.get_field_value_by_alias(
+        'last-modified'
+    ) == sample_target_def.metadata.last_modified
+    assert sample_target_def.metadata.get_field_value_by_alias('last_modified') is None
+
+
+def test_get_field_by_alias(sample_target_def: TargetDefinition):
+    """Test get field for field alias."""
+    assert sample_target_def.metadata.get_field_by_alias('last-modified').name == 'last_modified'
+    assert sample_target_def.metadata.get_field_by_alias('last_modified') is None

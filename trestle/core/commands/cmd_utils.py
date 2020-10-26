@@ -14,11 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle command related utilities."""
-from typing import List
+from typing import Any, Dict, List
 
+from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.core.models.elements import ElementPath
+from trestle.core.models.elements import Element, ElementPath
+from trestle.core.models.file_content_type import FileContentType
+from trestle.utils import fs
 
 
 def get_model(file_path: str) -> OscalBaseModel:
@@ -26,45 +29,104 @@ def get_model(file_path: str) -> OscalBaseModel:
     raise NotImplementedError()
 
 
-def parse_element_args(element_args: List[str]) -> List[ElementPath]:
-    """Parse element args into a list of ElementPath."""
+def parse_element_args(element_args: List[str], contextual_mode: bool = True) -> List[ElementPath]:
+    """Parse element args into a list of ElementPath.
+
+    contextual_mode specifies if the path is a valid project model path or not. For example,
+    if we are processing a metadata.parties.*, we need to know which metadata we are processing. If we pass
+    contextual_mode=true, we can infer the root model by inspecting the file directory
+
+    If contextual_mode=False, then the path must include the full path, e.g. catalog.metadata.parties.* instead of just
+    metadata.parties.*
+
+    One option for caller to utilize this utility function: fs.is_valid_project_model_path(pathlib.Path.cwd())
+    """
     if not isinstance(element_args, list):
         raise TrestleError(f'Input element_paths must be a list, but found {element_args.__class__}')
 
     element_paths: List[ElementPath] = []
     for element_arg in element_args:
-        paths = parse_element_arg(element_arg)
+        paths = parse_element_arg(element_arg, contextual_mode)
         element_paths.extend(paths)
 
     return element_paths
 
 
-def parse_element_arg(element_arg: str) -> List[ElementPath]:
-    """Parse an element arg stirng into a list of ElementPath."""
+def parse_element_arg(element_arg: str, contextual_mode: bool = True) -> List[ElementPath]:
+    """Parse an element arg string into a list of ElementPath.
+
+    contextual_mode specifies if the path is a valid project model path or not. For example,
+    if we are processing a metadata.parties.*, we need to know which metadata we are processing. If we pass
+    contextual_mode=True, we can infer the root model by inspecting the file directory
+
+    If contextual_mode=False, then the path must include the full path, e.g. catalog.metadata.parties.* instead of just
+    metadata.parties.*
+
+    One option for caller to utilize this utility function: fs.is_valid_project_model_path(pathlib.Path.cwd())
+    """
     element_paths: List[ElementPath] = []
+    element_arg = element_arg.strip()
 
     # search for wildcards and create paths with its parent path
-    last_pos: int = -1
+    path_parts = element_arg.split(ElementPath.PATH_SEPARATOR)
+    if len(path_parts) <= 0:
+        raise TrestleError(f'Invalid element path "{element_arg}" without any path separator')
+
     prev_element_path = None
-    for cur_pos, c in enumerate(element_arg):
-        if c == ElementPath.WILDCARD:
-            # extract the path string including wildcard
-            start = last_pos + 1
-            end = cur_pos + 1
-            p = element_arg[start:end]
+    parent_model = path_parts[0]
+    i = 1
+    while i < len(path_parts):
+        p = path_parts[i]
+        if p == ElementPath.WILDCARD and len(element_paths) > 0:
+            # append wildcard to the latest element path
+            latest_path = element_paths.pop()
+            if latest_path.get_last() == ElementPath.WILDCARD:
+                raise TrestleError(f'Invalid element path with consecutive {ElementPath.WILDCARD}')
 
+            latest_path_str = ElementPath.PATH_SEPARATOR.join([latest_path.to_string(), p])
+            element_path = ElementPath(latest_path_str, latest_path.get_parent())
+        else:
             # create and append elment_path
+            p = ElementPath.PATH_SEPARATOR.join([parent_model, p])
             element_path = ElementPath(p, parent_path=prev_element_path)
-            element_paths.append(element_path)
 
-            # store values for next cycle
-            prev_element_path = element_path
-            last_pos = end
+        # if the path has wildcard and there is more parts later,
+        # get the parent model for the alias path
+        if element_path.get_last() == ElementPath.WILDCARD:
+            full_path_str = ElementPath.PATH_SEPARATOR.join(element_path.get_full_path_parts()[:-1])
+            parent_model = fs.get_singular_alias(full_path_str, contextual_mode)
+        else:
+            parent_model = element_path.get_element_name()
 
-    # if there was no wildcard in the path, it is just a single path
-    # so create the path
-    if last_pos == -1:
-        element_path = ElementPath(element_arg)
+        # store values for next cycle
+        prev_element_path = element_path
         element_paths.append(element_path)
+        i += 1
+
+    if len(element_paths) <= 0:
+        raise TrestleError(f'Invalid element path "{element_arg}" without any path separator')
 
     return element_paths
+
+
+def get_dir_base_file_element(item, name: str) -> Element:
+    """Get an wrapped element for the base file in a split directory.
+
+    If the item is a list, it will return a dict like `{"name": []`
+    If the item is a dict, it will return a dict like `{"name": {}}`
+    """
+    base_model: Dict[str, Any] = {}
+    if isinstance(item, list):
+        base_model[name] = []
+    else:
+        base_model[name] = {}
+
+    return Element(base_model)
+
+
+def to_model_file_name(model_obj: OscalBaseModel, file_prefix: str, content_type: FileContentType) -> str:
+    """Return the file name for the item."""
+    file_ext = FileContentType.to_file_extension(content_type)
+    model_type = utils.classname_to_alias(type(model_obj).__name__, 'json')
+    file_name = f'{file_prefix}{const.IDX_SEP}{model_type}{file_ext}'
+    return file_name
