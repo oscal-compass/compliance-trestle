@@ -70,10 +70,10 @@ class AddCmd(Command):
         element_paths: list[str] = args[const.ARG_ELEMENT].split(',')
         for elm_path_str in element_paths:
             element_path = ElementPath(elm_path_str)
-            self._add(file_path, element_path, parent_model, parent_element)
+            self.add(file_path, element_path, parent_model, parent_element)
 
     @classmethod
-    def _add(cls, file_path, element_path, parent_model, parent_element):
+    def add(cls, file_path, element_path, parent_model, parent_element):
         """For a file_path and element_path, add a child model to the parent_element of a given parent_model.
 
         First we find the child model at the specified element path and instantiate it with default values.
@@ -106,7 +106,7 @@ class AddCmd(Command):
         update_action = UpdateAction(
             sub_element=child_object, dest_element=parent_element, sub_element_path=element_path
         )
-        create_action = CreatePathAction(file_path.absolute())
+        create_action = CreatePathAction(file_path.absolute(), True)
         write_action = WriteFileAction(
             file_path.absolute(), parent_element, FileContentType.to_content_type(file_path.suffix)
         )
@@ -116,7 +116,5 @@ class AddCmd(Command):
         add_plan.add_action(create_action)
         add_plan.add_action(write_action)
         add_plan.simulate()
-
-        trash.store(file_path, True)
 
         add_plan.execute()

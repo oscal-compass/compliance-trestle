@@ -56,21 +56,21 @@ def test_add(tmp_dir, sample_catalog_minimal):
     # Execute first _add
     element_path = ElementPath('catalog.metadata.roles')
     catalog_element = Element(sample_catalog_minimal)
-    AddCmd._add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
+    AddCmd.add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
 
     actual_catalog_roles = Catalog.oscal_read(catalog_def_dir / catalog_def_file)
     assert actual_catalog_roles == expected_catalog_roles1
 
     # Execute second _add - this time roles already exists, so this adds a roles object to roles array
     catalog_element = Element(actual_catalog_roles)
-    AddCmd._add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
+    AddCmd.add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
     actual_catalog_roles2 = Catalog.oscal_read(catalog_def_dir / catalog_def_file)
     assert actual_catalog_roles2 == expected_catalog_roles2
 
     # Execute _add for responsible-parties to the same catalog
     element_path = ElementPath('catalog.metadata.responsible-parties')
     catalog_element = Element(actual_catalog_roles2)
-    AddCmd._add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
+    AddCmd.add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
     actual_catalog_roles2_rp = Catalog.oscal_read(catalog_def_dir / catalog_def_file)
     assert actual_catalog_roles2_rp == expected_catalog_roles2_rp
 
@@ -90,15 +90,15 @@ def test_add_failure(tmp_dir, sample_catalog_minimal):
     catalog_element = Element(sample_catalog_minimal)
 
     with pytest.raises(err.TrestleError):
-        AddCmd._add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
+        AddCmd.add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
 
     element_path = ElementPath('catalog.metadata.title')
     with pytest.raises(err.TrestleError):
-        AddCmd._add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
+        AddCmd.add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
 
     element_path = ElementPath('catalog.metadata.bad_path')
     with pytest.raises(err.TrestleError):
-        AddCmd._add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
+        AddCmd.add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
 
 
 def test_run_failure():
