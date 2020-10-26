@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle command related utilities."""
-from typing import List
+from typing import Any, Dict, List
 
 from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
@@ -115,10 +115,11 @@ def get_dir_base_file_element(item, name: str) -> Element:
     If the item is a list, it will return a dict like `{"name": []`
     If the item is a dict, it will return a dict like `{"name": {}}`
     """
+    base_model: Dict[str, Any] = {}
     if isinstance(item, list):
-        base_model: dict = {name: []}
+        base_model[name] = []
     else:
-        base_model = {name: {}}
+        base_model[name] = {}
 
     return Element(base_model)
 

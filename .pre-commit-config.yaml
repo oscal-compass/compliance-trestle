@@ -39,3 +39,9 @@ repos:
     hooks:
     - id: mdformat
       exclude: "CHANGELOG.md"
+      
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: ''
+  #   hooks:
+  #   - id: mypy
+
