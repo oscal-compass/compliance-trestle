@@ -203,7 +203,7 @@ class Element:
 
     IGNORE_WRAPPER_ALIAS = '__'
 
-    _allowed_sub_element_types: List[str] = ['Element', 'OscalBaseModel', 'list', 'None']
+    _allowed_sub_element_types: List[str] = ['Element', 'OscalBaseModel', 'list', 'None', 'dict']
 
     def __init__(self, elem: OscalBaseModel, wrapper_alias: str = ''):
         """Initialize an element wrapper.
@@ -347,7 +347,7 @@ class Element:
             raise TrestleError(f'Invalid sub element path {element_path} with no valid preceding element')
 
         # check if it can be a valid sub_element of the parent
-        sub_element_name = element_path.get_element_name()
+        sub_element_name = element_path.get_element_name().replace('-', '_')
         if hasattr(preceding_elm, sub_element_name) is False:
             raise TrestleError(
                 f'Element "{preceding_elm.__class__}" does not have the attribute "{sub_element_name}" \
@@ -399,7 +399,9 @@ class Element:
     @classmethod
     def is_allowed_sub_element_type(cls, elm) -> bool:
         """Check if is of allowed sub element type."""
-        if (isinstance(elm, Element) or isinstance(elm, OscalBaseModel) or isinstance(elm, list) or elm is None):
+        # FIXME: The following logic does not use the _allowed_sub_element_types being defined for the class
+        if (isinstance(elm, Element) or isinstance(elm, OscalBaseModel) or isinstance(elm, list)
+                or isinstance(elm, dict) or elm is None):
             return True
 
         return False
