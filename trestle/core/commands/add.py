@@ -26,7 +26,7 @@ from trestle.core.models.actions import CreatePathAction, UpdateAction, WriteFil
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.utils import fs, trash
+from trestle.utils import fs
 
 
 class AddCmd(Command):
