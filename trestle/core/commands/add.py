@@ -16,6 +16,7 @@
 """Trestle Add Command."""
 
 import pathlib
+from typing import List
 
 from ilcli import Command  # type: ignore
 
@@ -34,7 +35,7 @@ class AddCmd(Command):
 
     name = 'add'
 
-    def _init_arguments(self):
+    def _init_arguments(self) -> None:
         self.add_argument(
             f'-{const.ARG_FILE_SHORT}',
             f'--{const.ARG_FILE}',
@@ -48,7 +49,7 @@ class AddCmd(Command):
             required=True
         )
 
-    def _run(self, args):
+    def _run(self, args) -> int:
         """Add an OSCAL component/subcomponent to the specified component.
 
         This method takes input a filename and a list of comma-seperated element path. Element paths are field aliases.
@@ -67,7 +68,7 @@ class AddCmd(Command):
         add_plan = Plan()
 
         # Do _add for each element_path specified in args
-        element_paths: list[str] = args[const.ARG_ELEMENT].split(',')
+        element_paths: List[str] = args[const.ARG_ELEMENT].split(',')
         for elm_path_str in element_paths:
             element_path = ElementPath(elm_path_str)
             update_action, parent_element = self.add(element_path, parent_model, parent_element)
@@ -85,8 +86,8 @@ class AddCmd(Command):
         add_plan.execute()
 
     @classmethod
-    def add(cls, element_path, parent_model, parent_element):
-        """For a element_path, add a child model to the parent_element of a given parent_model.
+    def add(cls, file_path: pathlib.Path, element_path, parent_model, parent_element) -> None:
+        """For a file_path and element_path, add a child model to the parent_element of a given parent_model.
 
         First we find the child model at the specified element path and instantiate it with default values.
         Then we check if there's already existing element at that path, in which case we append the child model
@@ -120,5 +121,6 @@ class AddCmd(Command):
             sub_element=child_object, dest_element=parent_element, sub_element_path=element_path
         )
         parent_element = parent_element.set_at(element_path, child_object)
+
 
         return update_action, parent_element
