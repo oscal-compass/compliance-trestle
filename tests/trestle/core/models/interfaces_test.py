@@ -18,9 +18,9 @@ import pytest
 import trestle.core.models.interfaces as interfaces
 
 
-def test_model_tree():
+def test_oscal_assembly() -> None:
     """Basic test of model tree functionality."""
-    instance = interfaces.ModelTree()
+    instance = interfaces.OSCALAssembly()
     broken_pseudo_sar = {'fake': True}
 
     with pytest.raises(Exception):
