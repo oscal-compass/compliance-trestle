@@ -26,8 +26,12 @@ import trestle.oscal.ssp as o_ssp
 import trestle.oscal.target as o_target
 
 
-class ModelTree(BaseModel):
-    """Data model to represent a set of cross referenced OSCAL objects."""
+class OSCALAssembly(BaseModel):
+    """Data model to represent an assembled set of OSCAL objects.
+
+    Here the assembly represents the constraints as expected by the current OSCAL
+    schema. At this point in time a 'flat' model has been chosen rather than an tree.
+    """
 
     poam: Optional[o_poam.PlanOfActionAndMilestones] = None
     sar: Optional[o_ar.AssessmentResults] = None
@@ -42,9 +46,7 @@ class ModelTree(BaseModel):
         """Pydantic config overrides."""
 
         allow_population_by_field_name = True
-
         # Enforce strict schema
         extra = Extra.forbid
-
         # Validate on assignment of variables to ensure no escapes
         validate_assignment = True
