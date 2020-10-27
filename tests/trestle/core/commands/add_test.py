@@ -101,19 +101,6 @@ def test_add_failure(tmp_dir, sample_catalog_minimal):
         AddCmd.add(catalog_def_dir / catalog_def_file, element_path, Catalog, catalog_element)
 
 
-def test_run_failure():
-    """Test failure of _run for AddCmd."""
-    testargs = ['trestle', 'add', '-e', 'catalog.metadata.roles']
-    with patch.object(sys, 'argv', testargs):
-        with pytest.raises(err.TrestleError):
-            Trestle().run()
-
-    testargs = ['trestle', 'add', '-f', './catalog.json']
-    with patch.object(sys, 'argv', testargs):
-        with pytest.raises(err.TrestleError):
-            Trestle().run()
-
-
 def test_run(tmp_dir, sample_catalog_minimal):
     """Test _run for AddCmd."""
     # expected catalog after add of Responsible-Party

@@ -16,6 +16,7 @@
 """Trestle Add Command."""
 
 import pathlib
+from typing import List
 
 from ilcli import Command  # type: ignore
 
@@ -34,19 +35,21 @@ class AddCmd(Command):
 
     name = 'add'
 
-    def _init_arguments(self):
+    def _init_arguments(self) -> None:
         self.add_argument(
             f'-{const.ARG_FILE_SHORT}',
             f'--{const.ARG_FILE}',
             help=const.ARG_DESC_FILE + ' to add component/subcomponent to.',
+            required=True
         )
         self.add_argument(
             f'-{const.ARG_ELEMENT_SHORT}',
             f'--{const.ARG_ELEMENT}',
             help=const.ARG_DESC_ELEMENT + ' to add.',
+            required=True
         )
 
-    def _run(self, args):
+    def _run(self, args) -> int:
         """Add an OSCAL component/subcomponent to the specified component.
 
         This method takes input a filename and a list of comma-seperated element path. Element paths are field aliases.
@@ -54,10 +57,6 @@ class AddCmd(Command):
         Then the method executes 'add' for each of the element paths specified.
         """
         args = args.__dict__
-        if args[const.ARG_FILE] is None:
-            raise err.TrestleError(f'Argument "-{const.ARG_FILE_SHORT}" is required')
-        if args[const.ARG_ELEMENT] is None:
-            raise err.TrestleError(f'Argument "-{const.ARG_ELEMENT}" is required')
 
         file_path = pathlib.Path(args[const.ARG_FILE])
 
@@ -67,13 +66,13 @@ class AddCmd(Command):
         parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
 
         # Do _add for each element_path specified in args
-        element_paths: list[str] = args[const.ARG_ELEMENT].split(',')
+        element_paths: List[str] = args[const.ARG_ELEMENT].split(',')
         for elm_path_str in element_paths:
             element_path = ElementPath(elm_path_str)
             self.add(file_path, element_path, parent_model, parent_element)
 
     @classmethod
-    def add(cls, file_path, element_path, parent_model, parent_element):
+    def add(cls, file_path: pathlib.Path, element_path, parent_model, parent_element) -> None:
         """For a file_path and element_path, add a child model to the parent_element of a given parent_model.
 
         First we find the child model at the specified element path and instantiate it with default values.
