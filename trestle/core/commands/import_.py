@@ -15,10 +15,59 @@
 # limitations under the License.
 """Trestle Import Command."""
 
+import pathlib
+import typing
+
 from ilcli import Command  # type: ignore
+
+from trestle.utils import fs
+from trestle.utils import log
+
+logger = log.get_logger()
 
 
 class ImportCmd(Command):
-    """Import a model from an existing JSON/YAML file into Trestle."""
+    """Import an existing full OSCAL model into the trestle project."""
 
+    # The line above comes with the doc string
     name = 'import'
+
+    def _init_arguments(self) -> None:
+        logger.debug('Init arguments')
+        self.add_argument('-f', '--file', help='OSCAL file to import.', type=str)
+
+        self.add_argument('-o', '--output', help='Name of output project.', type=str)
+
+        self.add_argument(
+            '-r', '--regenerate', type=bool, default=False, help='Enable to regenerate uuids within the document'
+        )
+
+    def _run(self, args) -> int:
+        """Top level import run command."""
+        logger.debug('Entering import run.')
+
+        # Validate input arguments are as expected.
+        if args.file is None or len(args.file) == 0:
+            logger.error('trestle import requires a file to be provided with -f or --file.')
+            return 1
+
+        input_file = pathlib.Path(args.file)
+        if not input_file.exists():
+            logger.error(f'Input file {args.file} does not exist.')
+            return 1
+
+        cwd = pathlib.Path.cwd().resolve()
+        trestle_root = fs.get_trestle_project_root(cwd)
+        if trestle_root is None:
+            logger.error(f'Current working directory: {cwd} is not within a trestle project.')
+            return 1
+        trestle_root = typing.cast(pathlib.Path, trestle_root)
+
+        # Ensure file is not in trestle dir
+        trestle_root = trestle_root.resolve()
+
+        # load file
+
+        # throw errors on bad loads
+
+        #

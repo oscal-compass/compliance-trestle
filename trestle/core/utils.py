@@ -151,6 +151,7 @@ def get_target_model(element_path_parts: List[str], current_model: BaseModel) ->
         for index in range(1, len(element_path_parts)):
             if is_collection_field_type(current_model):
                 # Return the model class inside the collection
+                # FIXME: From a typing perspective this is wrong.
                 current_model = get_inner_type(current_model)
             else:
                 current_model = current_model.alias_to_field_map()[element_path_parts[index]].outer_type_

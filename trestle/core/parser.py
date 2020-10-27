@@ -59,7 +59,6 @@ def parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
 
 def root_key(data: Dict[str, Any]) -> str:
     """Find root model name in the data."""
-    warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     if len(data.items()) == 1:
         return next(iter(data))
 
