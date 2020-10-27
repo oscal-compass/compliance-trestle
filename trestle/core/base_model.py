@@ -56,7 +56,7 @@ class OscalBaseModel(BaseModel):
         json_encoders = {datetime.datetime: lambda x: robust_datetime_serialization(x)}
         # this is not safe and caused class: nan in yaml output
         # TODO: Explore fix.
-        allow_population_by_field_name = True  # noqa: E800
+        allow_population_by_field_name = True
 
         # Enforce strict schema
         extra = Extra.forbid
@@ -122,8 +122,9 @@ class OscalBaseModel(BaseModel):
         attr_field = self.alias_to_field_map().get(field_alias, None)
         return attr_field
 
-    def get_field_value_by_alias(self, attr_alias: str):
+    def get_field_value_by_alias(self, attr_alias: str) -> Optional[Any]:
         """Get attribute value by field alias."""
+        # TODO: can this be restricted beyond Any easily.
         attr_field = self.get_field_by_alias(attr_alias)
         if isinstance(attr_field, ModelField):
             return getattr(self, attr_field.name, None)
@@ -154,7 +155,7 @@ class OscalBaseModel(BaseModel):
 
         return stripped_instance
 
-    def oscal_write(self, path: pathlib.Path, minimize_json=False) -> None:
+    def oscal_write(self, path: pathlib.Path, minimize_json: bool = False) -> None:
         """
         Write oscal objects.
 
@@ -180,10 +181,8 @@ class OscalBaseModel(BaseModel):
         write_file = pathlib.Path(path).open('w', encoding=encoding)
         if path.suffix in yaml_suffix:
             yaml.dump(yaml.safe_load(wrapped_model.json(exclude_none=True, by_alias=True)), write_file)
-            pass
         elif path.suffix in json_suffix:
             write_file.write(wrapped_model.json(exclude_none=True, by_alias=True, indent=2))
-
         else:
             raise err.TrestleError('Unknown file type')
 
