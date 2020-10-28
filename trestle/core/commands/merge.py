@@ -16,7 +16,7 @@
 """Trestle Merge Command."""
 
 from pathlib import Path
-from typing import Set, Type
+from typing import Optional, Set, Type
 
 from ilcli import Command  # type: ignore
 
@@ -58,9 +58,9 @@ class MergeCmd(Command):
         current_alias: str,
         current_model: Type[OscalBaseModel],
         current_filename: str,
-        initial_path: Path = None,
-        visited_elements: Set[str] = None
-    ):
+        initial_path: Optional[Path] = None,
+        visited_elements: Optional[Set[str]] = None
+    ) -> None:
         """List paths that can be used in the -e option for the merge operation."""
         if initial_path is None:
             initial_path = cwd
