@@ -242,7 +242,7 @@ class CreatePathAction(Action):
 
         super().__init__(ActionType.CREATE_PATH, True)
 
-    def get_trestle_project_root(self):
+    def get_trestle_project_root(self) -> pathlib.Path:
         """Return the trestle project root path."""
         return self._trestle_project_root
 
@@ -343,7 +343,7 @@ class RemovePathAction(Action):
 
         super().__init__(ActionType.REMOVE_PATH, True)
 
-    def get_trestle_project_root(self) -> pathlib.Path:
+    def get_trestle_project_root(self) -> Optional[pathlib.Path]:
         """Return the trestle project root path."""
         return self._trestle_project_root
 

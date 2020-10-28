@@ -16,13 +16,14 @@
 """Trestle Add Command."""
 
 import pathlib
-from typing import List
+from typing import List, Type
 
 from ilcli import Command  # type: ignore
 
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core import utils
+from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.actions import CreatePathAction, UpdateAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
@@ -71,8 +72,16 @@ class AddCmd(Command):
             element_path = ElementPath(elm_path_str)
             self.add(file_path, element_path, parent_model, parent_element)
 
+        return 0
+
     @classmethod
-    def add(cls, file_path: pathlib.Path, element_path, parent_model, parent_element) -> None:
+    def add(
+        cls,
+        file_path: pathlib.Path,
+        element_path: ElementPath,
+        parent_model: Type[OscalBaseModel],
+        parent_element: Element
+    ) -> None:
         """For a file_path and element_path, add a child model to the parent_element of a given parent_model.
 
         First we find the child model at the specified element path and instantiate it with default values.
@@ -115,5 +124,4 @@ class AddCmd(Command):
         add_plan.add_action(create_action)
         add_plan.add_action(write_action)
         add_plan.simulate()
-
         add_plan.execute()

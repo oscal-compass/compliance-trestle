@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Import Command."""
-
+import argparse
 import pathlib
 import typing
 
@@ -34,20 +34,20 @@ class ImportCmd(Command):
 
     def _init_arguments(self) -> None:
         logger.debug('Init arguments')
-        self.add_argument('-f', '--file', help='OSCAL file to import.', type=str)
+        self.add_argument('-f', '--file', help='OSCAL file to import.', type=str, required=True)
 
-        self.add_argument('-o', '--output', help='Name of output project.', type=str)
+        self.add_argument('-o', '--output', help='Name of output project.', type=str, required=True)
 
         self.add_argument(
             '-r', '--regenerate', type=bool, default=False, help='Enable to regenerate uuids within the document'
         )
 
-    def _run(self, args) -> int:
+    def _run(self, args: argparse.Namespace) -> int:
         """Top level import run command."""
         logger.debug('Entering import run.')
 
         # Validate input arguments are as expected.
-        if args.file is None or len(args.file) == 0:
+        if len(args.file) == 0:
             logger.error('trestle import requires a file to be provided with -f or --file.')
             return 1
 
@@ -71,3 +71,4 @@ class ImportCmd(Command):
         # throw errors on bad loads
 
         #
+        return 0
