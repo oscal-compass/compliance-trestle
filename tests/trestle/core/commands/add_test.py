@@ -25,10 +25,10 @@ from tests import test_utils
 import trestle.core.err as err
 from trestle.cli import Trestle
 from trestle.core.commands.add import AddCmd
+from trestle.core.models.actions import UpdateAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal.catalog import Catalog
-from trestle.core.models.actions import UpdateAction
 
 
 def test_add(tmp_dir, sample_catalog_minimal):
@@ -70,11 +70,12 @@ def test_add(tmp_dir, sample_catalog_minimal):
     assert actual_catalog_roles2 == expected_catalog_roles2
     assert actual_update_action2 == expected_update_action_2
 
-
     # Execute _add for responsible-parties to the same catalog
     element_path = ElementPath('catalog.metadata.responsible-parties')
     catalog_element = actual_catalog_roles2
-    expected_update_action_3 = UpdateAction(expected_catalog_roles2_rp.get_at(element_path), catalog_element, element_path)
+    expected_update_action_3 = UpdateAction(
+        expected_catalog_roles2_rp.get_at(element_path), catalog_element, element_path
+    )
     actual_update_action3, actual_catalog_roles2_rp = AddCmd.add(element_path, Catalog, catalog_element)
     assert actual_catalog_roles2_rp == expected_catalog_roles2_rp
     assert actual_update_action3 == expected_update_action_3

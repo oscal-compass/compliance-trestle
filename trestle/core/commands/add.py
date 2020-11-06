@@ -84,7 +84,6 @@ class AddCmd(Command):
         add_plan.simulate()
         add_plan.execute()
 
-
     @classmethod
     def add(cls, element_path, parent_model, parent_element):
         """For a element_path, add a child model to the parent_element of a given parent_model.
@@ -121,5 +120,5 @@ class AddCmd(Command):
             sub_element=child_object, dest_element=parent_element, sub_element_path=element_path
         )
         parent_element = parent_element.set_at(element_path, child_object)
-        
+
         return update_action, parent_element
