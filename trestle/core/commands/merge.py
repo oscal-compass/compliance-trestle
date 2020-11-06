@@ -23,6 +23,7 @@ from ilcli import Command
 from trestle.core import const, utils
 from trestle.core.commands import cmd_utils
 from trestle.core.models.elements import ElementPath
+from trestle.core.models.plans import Plan
 from trestle.utils import fs
 
 
@@ -49,13 +50,63 @@ class MergeCmd(Command):
         if args.list_available_elements:
             self._list_available_elements()
         elif args.element:
-            self._merge(args.element)
+            element_paths = args.element.split(',')
+            self.merge(cmd_utils.parse_element_args(element_paths))
 
-    def _merge(self, elements: str):
-        element_paths: List[ElementPath] = cmd_utils.parse_element_args(elements.split(','))
+    @classmethod
+    def merge(cls, element_paths: List[ElementPath]) -> Plan:
+        """Merge operations.
 
-        self.out(elements)
-        self.out(element_paths)
+        It returns a plan for the operation
+        """
+        plan: Plan = Plan()
+
+        sorted_element_paths = _sort_element_paths(element_paths)
+
+        if metadata_dir.exists():
+            # First action: Reset the intermediate destination: metadata.json
+            reset_destination_action = CreatePathAction(metadata_file, clear_content=True)
+            expected_plan.add_action(reset_destination_action)
+
+            aliases_not_to_be_stripped = []
+            instances_to_be_merged: List[OscalBaseModel] = []
+            for filepath in Path.iterdir(metadata_dir):
+                if filepath.is_file():
+                    model_type, model_alias = fs.get_stripped_contextual_model(filepath)
+                    model_instance = model_type.oscal_read(filepath)
+
+                    if hasattr(model_instance, '__root__') and (isinstance(model_instance.__root__, dict)
+                                                                or isinstance(model_instance.__root__, list)):
+                        model_instance = model_instance.__root__
+
+                    instances_to_be_merged.append(model_instance)
+                    aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
+                elif filepath.is_dir():
+                    pass
+
+            stripped_metadata_type, _ = fs.get_stripped_contextual_model(metadata_file)
+            stripped_metadata = stripped_metadata_type.oscal_read(metadata_file)
+
+            # Create merged model and instance for writeaction
+            merged_metadata_type, merged_metadata_alias = fs.get_stripped_contextual_model(
+                metadata_file, aliases_not_to_be_stripped=aliases_not_to_be_stripped)
+            merged_dict = stripped_metadata.__dict__
+            for i in range(len(aliases_not_to_be_stripped)):
+                alias = aliases_not_to_be_stripped[i]
+                instance = instances_to_be_merged[i]
+                merged_dict[alias] = instance
+            merged_metadata = merged_metadata_type(**merged_dict)
+            element = Element(merged_metadata, merged_metadata_alias)
+
+            # Second action: Write new merged contents of metadata.json
+            write_destination_action = WriteFileAction(metadata_file, element, content_type=content_type)
+            expected_plan.add_action(write_destination_action)
+
+            # Third action: Delete expanded metadata folder
+            delete_element_action = RemovePathAction(metadata_dir)
+            expected_plan.add_action(delete_element_action)
+
+        return plan
 
     def _list_available_elements(self):
         """List element paths that can be merged from the current context."""
@@ -141,3 +192,8 @@ class MergeCmd(Command):
         if element not in visited_elements:
             visited_elements.add(element)
             self.out(f"{element} (merges all files/subdirectories under {source_path} into \'{destination_path}\')")
+
+
+def sort_element_paths(element_paths: List[ElementPath]) -> List[ElementPath]:
+    """Sort list of element paths for merge purposes."""
+    raise NotImplementedError()

@@ -24,10 +24,10 @@ from tests import test_utils
 
 import trestle.oscal.catalog as oscatalog
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.commands.merge import MergeCmd
+from trestle.core.commands.merge import MergeCmd, sort_element_paths
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
-from trestle.core.models.elements import Element
+from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs
@@ -98,19 +98,24 @@ def test_merge_plan_simple_case(tmp_dir):
     expected_plan.add_action(write_destination_action)
     expected_plan.add_action(delete_element_action)
 
-    expected_plan.execute()
+    # expected_plan.execute()
 
-    # Assert the new file structure makes sense
-    assert catalog_file.exists()
-    new_catalog = merged_catalog_type.oscal_read(catalog_file)
-    assert new_catalog.get_field_value_by_alias('back-matter') is not None
-    assert not back_matter_file.exists()
+    # # Assert the new file structure makes sense
+    # assert catalog_file.exists()
+    # new_catalog = merged_catalog_type.oscal_read(catalog_file)
+    # assert new_catalog.get_field_value_by_alias('back-matter') is not None
+    # assert not back_matter_file.exists()
 
-    # Call generated_plan = mergeCmd.merge()
-    # Assert the generated plan matches the expected plan
+    # expected_plan.rollback()
+
+    # Call merged()
+    generated_plan = MergeCmd.merge('catalog.back-matter')
+
+    # Assert the generated plan matches the expected plan'
+    assert generated_plan == expected_plan
 
 
-def test_merge_plan_complex_case(tmp_dir):
+def test_merge_expanded_metadata_into_catalog(tmp_dir):
     """Test '$mycatalog$ trestle merge -e catalog.metadata' when metadata is already split."""
     # Assume we are running a command like below
     # trestle merge -e catalog.back-matter
@@ -215,14 +220,44 @@ def test_merge_plan_complex_case(tmp_dir):
     delete_element_action = RemovePathAction(catalog_dir)
     expected_plan.add_action(delete_element_action)
 
-    # Execute plan
-    expected_plan.execute()
+    # # Execute plan
+    # expected_plan.execute()
 
-    # Assert the new file structure makes sense
-    assert catalog_file.exists()
-    assert not catalog_dir.exists()
-    assert not metadata_dir.exists()
-    assert not metadata_file.exists()
+    # # Assert the new file structure makes sense
+    # assert catalog_file.exists()
+    # assert not catalog_dir.exists()
+    # assert not metadata_dir.exists()
+    # assert not metadata_file.exists()
 
-    # Call generated_plan = mergeCmd.merge()
+    # expected_plan.rollback()
+
+    # Call merged()
+    generated_plan = MergeCmd.merge('catalog.metadata')
+
     # Assert the generated plan matches the expected plan'
+    assert generated_plan == expected_plan
+
+
+def test_sort_element_paths(tmp_dir, sample_catalog: oscatalog.Catalog) -> None:
+    """Test sorting of element paths for merging purposes."""
+    content_type = FileContentType.JSON
+
+    catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_catalog,
+        test_utils.CATALOGS_DIR)
+
+    element_str = (
+        'catalog.metadata.responsible-parties.*'
+        # 'catalog.metadata.roles,'
+        # 'catalog.metadata,'
+        # 'catalog.metadata.*,'
+        # 'catalog.metadata.parties.*,'
+        # 'catalog.controls,'
+        # 'catalog.metadata.responsible-parties'
+    )
+
+    element_paths: List[ElementPath] = test_utils.prepare_element_paths(catalog_dir, element_str.split(','))
+
+    sorted_element_path = sort_element_paths(element_paths)

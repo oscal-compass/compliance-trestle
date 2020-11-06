@@ -335,10 +335,14 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
             model_type = model_type.alias_to_field_map()[path_parts[i]].outer_type_
         model_types.append(model_type)
 
+    last_alias = path_parts[-1]
     if not utils.is_collection_field_type(model_type):
         raise err.TrestleError('Not a valid generic collection model.')
+        # if last_alias != const.ELEMENT_WILDCARD:
+        #     raise err.TrestleError('Invalid jsonpath.')
+        # else:
+        #     return utils.classname_to_alias(model_type.__name__, 'json')
 
-    last_alias = path_parts[-1]
     parent_model_type = model_types[-2]
     singular_alias = utils.classname_to_alias(
         utils.get_inner_type(parent_model_type.alias_to_field_map()[last_alias].outer_type_).__name__, 'json'
