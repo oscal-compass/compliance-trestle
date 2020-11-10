@@ -16,7 +16,6 @@
 """Trestle Import Command."""
 import argparse
 import pathlib
-import typing
 
 from ilcli import Command  # type: ignore
 
@@ -59,14 +58,19 @@ class ImportCmd(Command):
         cwd = pathlib.Path.cwd().resolve()
         trestle_root = fs.get_trestle_project_root(cwd)
         if trestle_root is None:
+            # TODO: I think this should probably be handled as an exception not a none check.
             logger.error(f'Current working directory: {cwd} is not within a trestle project.')
             return 1
-        trestle_root = typing.cast(pathlib.Path, trestle_root)
 
         # Ensure file is not in trestle dir
         trestle_root = trestle_root.resolve()
+        try:
+            input_file.relative_to(trestle_root)
+        except Exception:
+            logger.error('Input file cannot be from current trestle project. Use duplicate instead.')
+            return 1
 
-        # load file
+        # peek at file to get typing information.
 
         # throw errors on bad loads
 

@@ -55,7 +55,6 @@ class SplitCmd(Command):
         args_raw = args.__dict__
         if args_raw[const.ARG_FILE] is None:
             raise TrestleError(f'Argument "-{const.ARG_FILE_SHORT}" is required')
-
         file_path = pathlib.Path(args_raw[const.ARG_FILE])
         content_type = FileContentType.to_content_type(file_path.suffix)
 
