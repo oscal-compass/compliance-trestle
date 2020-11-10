@@ -1,5 +1,4 @@
 # -*- mode:python; coding:utf-8 -*-
-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Wrapper to allow python -m trestle calls."""
 
-#TODO: Ensure this is automatically updated succusfully.
-OSCAL_VERSION = 'v1.0.0-milestone3'
+import trestle.cli
+
+if __name__ == '__main__':
+    trestle.cli.run()

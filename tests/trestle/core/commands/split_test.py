@@ -304,6 +304,8 @@ def test_split_run(tmp_dir, sample_target_def: ostarget.TargetDefinition):
     os.chdir(cwd)
     check_split_files()
 
+    os.chdir(cwd)
+
 
 def test_split_run_failure(tmp_dir, sample_target_def: ostarget.TargetDefinition):
     """Test split run failure."""
