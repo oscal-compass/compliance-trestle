@@ -170,7 +170,7 @@ class CreateCmd(Command):
         # Create sample model.
         sample_model = utils.get_sample_model(object_type)
         # Presuming top level level model not sure how to do the typing for this.
-        sample_model.metadata.title = f'Generic {model_alias} created by trestle.'
+        sample_model.metadata.title = f'Generic {model_alias} created by trestle.'  # type: ignore
         sample_model.metadata.last_modified = datetime.now().astimezone()
         sample_model.metadata.oscal_version = trestle.oscal.OSCAL_VERSION
 
@@ -184,11 +184,12 @@ class CreateCmd(Command):
         # create a plan to write the directory and file.
         try:
             create_plan = Plan()
-            create_plan.add(create_action)
-            create_plan.add(write_action)
+            create_plan.add_action(create_action)
+            create_plan.add_action(write_action)
             create_plan.simulate()
             create_plan.execute()
             return 0
-        except Exception:
-            logger.error()
+        except Exception as e:
+            logger.error('Unknown error executing trestle create operations. Rolling back.')
+            logger.debug(e)
             return 1
