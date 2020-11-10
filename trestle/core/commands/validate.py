@@ -15,15 +15,12 @@
 # limitations under the License.
 """Trestle Validate Command."""
 
-import pathlib
+import argparse
 
-from ilcli import Command  # type: ignore
+from ilcli import Command
 
-import trestle.core.validator as validator
 from trestle.core import const
-from trestle.core.base_model import OscalBaseModel
-from trestle.core.err import TrestleError, TrestleValidationError
-from trestle.utils import fs
+from trestle.core.validator_factory import validator_factory
 
 
 class ValidateCmd(Command):
@@ -48,33 +45,10 @@ class ValidateCmd(Command):
             help=const.ARG_DESC_MODE + ' to validate.',
         )
 
-    def _run(self, args) -> None:
+    def _run(self, args: argparse.ArgumentParser) -> int:
         """Validate an OSCAL file in different modes."""
-        if args.file is None:
-            raise TrestleError(f'Argument "-{const.ARG_FILE_SHORT}" is required')
+        args_raw = args.__dict__
 
-        if args.mode is None:
-            raise TrestleError(f'Argument "-{const.ARG_MODE_SHORT}" is required')
-        mode = args.mode
-        if mode != const.VAL_MODE_DUPLICATES:
-            raise TrestleError(f'Mode value "{mode}" is not recognized.')
+        validator = validator_factory.create(args_raw[const.ARG_MODE])
 
-        if args.item is None:
-            raise TrestleError(f'Argument "-{const.ARG_ITEM_SHORT}" is required')
-        item = args.item
-
-        file_path = pathlib.Path(args.file).absolute()
-        model_type, _ = fs.get_contextual_model_type(file_path)
-        model: OscalBaseModel = model_type.oscal_read(file_path)
-
-        loe = validator.find_values_by_name(model, item)
-        if loe:
-            nitems = len(loe)
-            is_valid = nitems == len(set(loe))
-            if is_valid:
-                self.out(f'The model is valid and contains no duplicates of item {args.item}')
-            else:
-                self.out(f'The model is invalid and contains duplicates of item {args.item}')
-                raise TrestleValidationError(f'Model {args.file} is invalid with duplicate values of {args.item}')
-        else:
-            self.out(f'The model is valid but contains no items of name {args.item}')
+        return validator.validate(**args_raw)
