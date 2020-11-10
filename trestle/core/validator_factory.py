@@ -15,7 +15,6 @@
 # limitations under the License.
 """Register all validators here in the validator_factory."""
 
-
 from trestle.core import const
 from trestle.core import duplicates_validator
 from trestle.core.object_factory import ObjectFactory
