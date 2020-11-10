@@ -16,18 +16,19 @@
 """Trestle Remove Command."""
 
 import pathlib
+import warnings
 
 from ilcli import Command  # type: ignore
 
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core import utils
-from trestle.core.models.actions import CreatePathAction, RemovePathAction, RemoveAction, UpdateAction, WriteFileAction
+from trestle.core.models.actions import CreatePathAction, RemoveAction, RemovePathAction, UpdateAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs
-import warnings
+
 
 class RemoveCmd(Command):
     """Remove a subcomponent to an existing model."""
@@ -80,10 +81,10 @@ class RemoveCmd(Command):
         If not, we complain.
         Then we set up an action plan to update the model (specified by file_path) in memory, create a file
         at the same location and write the file.
-        
+
         LIMITATIONS:
         1. This does not remove elements of a list or dict. Instead, the entire list or dict is removed.
-        2. This cannot remove arbitrarily named elements that are not specified in the schema. 
+        2. This cannot remove arbitrarily named elements that are not specified in the schema.
         For example, "responsible-parties" contains named elements, e.g., "organisation". The tool will not
         remove the "organisation" as it is not in the schema, but one can remove its elements, e.g., "party-uuids".
         """
@@ -98,11 +99,18 @@ class RemoveCmd(Command):
                 # The element already exists
                 if type(deleting_element) is list:
                     pass
-                    warnings.warn('trestle remove does not support removing elements of a list -- this removes the entire list', Warning)
+                    warnings.warn(
+                        'trestle remove does not support removing elements of a list -- this removes the entire list',
+                        Warning
+                    )
                 elif type(deleting_element) is dict:
                     pass
-                    warnings.warn('trestle remove does not support removing dict elements -- this removes the entire dict', Warning)
-
+                    warnings.warn(
+                        'trestle remove does not support removing dict elements -- this removes the entire dict',
+                        Warning
+                    )
+            else:
+                raise err.TrestleError(f'Bad element path. {str(element_path)}')
 
         except Exception as e:
             raise err.TrestleError(f'Bad element path. {str(e)}')
