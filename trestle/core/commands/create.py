@@ -49,7 +49,7 @@ class CatalogCmd(Command):
     name = 'catalog'
 
     def _run(self, args: argparse.Namespace) -> int:
-        logger.info(f'Creating catalog titled: {args.output}')
+        logger.info(f'Creating catalog titled: {args.name}')
         return CreateCmd.create_object(self.name, catalog.Catalog, args)
 
 
@@ -59,7 +59,7 @@ class ProfileCmd(Command):
     name = 'profile'
 
     def _run(self, args: argparse.Namespace) -> int:
-        logger.info(f'Creating profile titled: {args.output}')
+        logger.info(f'Creating profile titled: {args.name}')
         return CreateCmd.create_object(self.name, profile.Profile, args)
 
 
@@ -102,7 +102,7 @@ class AssessmentPlanCmd(Command):
 class AssessmentResultCmd(Command):
     """Create a sample assessment result."""
 
-    name = 'assessment-result'
+    name = 'assessment-results'
 
     def _run(self, args: argparse.Namespace) -> int:
         return CreateCmd.create_object(self.name, assessment_results.AssessmentResults, args)
@@ -136,12 +136,7 @@ class CreateCmd(Command):
     def _init_arguments(self) -> None:
         self.add_argument('-n', '--name', help='Name of the model.', required=True)
         self.add_argument(
-            '-x'
-            '--extension',
-            help='Type of file output.',
-            required=False,
-            choices=['json', 'yaml', 'yml'],
-            default='json'
+            '-x', '--extension', help='Type of file output.', choices=['json', 'yaml', 'yml'], default='json'
         )
 
     @classmethod
@@ -158,7 +153,7 @@ class CreateCmd(Command):
         else:
             plural_path = model_alias + 's'
 
-        desired_model_dir = trestle_root / plural_path / args.output
+        desired_model_dir = trestle_root / plural_path / args.name
 
         desired_model_path = desired_model_dir / (model_alias + '.' + args.extension)
 
@@ -173,8 +168,9 @@ class CreateCmd(Command):
         sample_model.metadata.title = f'Generic {model_alias} created by trestle.'
         sample_model.metadata.last_modified = datetime.now().astimezone()
         sample_model.metadata.oscal_version = trestle.oscal.OSCAL_VERSION
+        sample_model.metadata.version = '0.0.0'
 
-        top_element = Element(sample_model, model_alias, args.extension)
+        top_element = Element(sample_model, model_alias)
 
         create_action = CreatePathAction(desired_model_path.absolute(), True)
         write_action = WriteFileAction(
