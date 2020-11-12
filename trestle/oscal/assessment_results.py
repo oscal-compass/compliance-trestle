@@ -363,10 +363,6 @@ class Revision(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class ResultsGroupItem(OscalBaseModel):
-    pass
-
-
 class Part(OscalBaseModel):
     uuid: Optional[
         constr(
@@ -1346,7 +1342,7 @@ class AssessmentResults(OscalBaseModel):
     assessment_activities: Optional[AssessmentActivities] = Field(
         None, alias='assessment-activities'
     )
-    results_group: Union[Results, ResultsGroupItem]
+    results_group: Union[Results, conlist(Results, min_items=2)]
     back_matter: Optional[BackMatter] = Field(None, alias='back-matter')
 
 

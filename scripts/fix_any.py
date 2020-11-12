@@ -15,6 +15,9 @@ import re
 pattern1 = 'ies: Optional[Dict[str, Any]]'
 pattern2 = 's: Optional[Dict[str, Any]]'
 special_lut = {'ParameterSetting': 'SetParameter'}
+# Class names with this substring are due to confusion in oscal that will go away.
+# For now delete the classes and convert the corresponding unions to conlist
+singleton_name = 'GroupItem'
 class_header = 'class '
 license_header = (
     '# -*- mode:python; coding:utf-8 -*-\n'
@@ -59,9 +62,10 @@ class ClassText():
         """Add new line to class text."""
         self.lines.append(line)
 
-    def add_ref(self, ref_name):
-        """Add one of the Any references."""
-        self.refs.add(ref_name)
+    def add_ref_if_good(self, ref_name):
+        """Only add refs if the name isnt an anomolous singleton type."""
+        if ref_name.find(singleton_name) == -1:
+            self.refs.add(ref_name)
 
     def add_ref_pattern(self, p, line):
         """Add new class names found based on pattern."""
@@ -70,9 +74,9 @@ class ClassText():
             for r in new_refs:
                 if type(r) == tuple:
                     for s in r:
-                        self.refs.add(s)
+                        self.add_ref_if_good(s)
                 else:
-                    self.refs.add(r)
+                    self.add_ref_if_good(r)
 
     @staticmethod
     def find_index(class_text_list, name):
@@ -228,30 +232,35 @@ def fix_file(fname):
             if r.find(class_header) == 0:  # start of new class
                 done_header = True
                 if class_text is not None:  # we are done with current class so add it
-                    all_classes.append(class_text)
+                    # prevent anomalous singletons from appearing in output
+                    if class_text.name.find(singleton_name) == -1:
+                        all_classes.append(class_text)
                 class_text = ClassText(r)
             else:
                 if not done_header:  # still in header
                     header.append(r.rstrip())
                 else:  # in body of class looking for Any's
+                    # first delete any singleton substrings if present
+                    r = r.replace(singleton_name, '')
                     n1 = r.find(pattern1)
                     n2 = r.find(pattern2)
                     if n1 != -1:  # ies plural
                         tail = r[(n1 + len(pattern1)):]
                         cap_singular = get_cap_stem(r, 3) + 'y'
-                        class_text.add_ref(cap_singular)
+                        class_text.add_ref_if_good(cap_singular)
                         r = r[:(n1 + len(pattern1) - 5)] + cap_singular + ']]' + tail
                     elif n2 != -1:  # s plural
                         tail = r[(n2 + len(pattern2)):]
                         cap_singular = get_cap_stem(r, 1)
                         if cap_singular in special_lut:
                             cap_singular = special_lut[cap_singular]
-                        class_text.add_ref(cap_singular)
+                        class_text.add_ref_if_good(cap_singular)
                         r = r[:(n2 + len(pattern2) - 5)] + cap_singular + ']]' + tail
                     else:
                         # for a line that has no Any's, use regex to find referenced class names
                         class_text.add_all_refs(r)
                     # fix any line containing Union[A, A] to Union[A, conlist(A, min_items=2)]
+                    # this may now include Unions that previously involved the anomalous singletons
                     r = re.sub(r'Union\[([^,]*),\s*\1\]', r'Union[\1, conlist(\1, min_items=2)]', r)
                     if r.find(', conlist(') >= 0:
                         needs_conlist = True
