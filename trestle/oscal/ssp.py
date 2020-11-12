@@ -629,18 +629,6 @@ class Responsibility(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class ProvidedGroupItem(OscalBaseModel):
-    pass
-
-
-class SatisfiedGroupItem(OscalBaseModel):
-    pass
-
-
-class InheritedGroupItem(OscalBaseModel):
-    pass
-
-
 class Component(OscalBaseModel):
     component_type: str = Field(
         ...,
@@ -750,7 +738,7 @@ class Export(OscalBaseModel):
     properties: Optional[List[Prop]] = None
     annotations: Optional[Union[Annotation, conlist(Annotation, min_items=2)]] = None
     links: Optional[List[Link]] = None
-    provided_group: Optional[Union[Provided, ProvidedGroupItem]] = Field(
+    provided_group: Optional[Union[Provided, conlist(Provided, min_items=2)]] = Field(
         None, alias='provided-group'
     )
     responsibilities: Optional[Union[Responsibility, conlist(Responsibility, min_items=2)]] = None
@@ -877,10 +865,10 @@ class ByComponent(OscalBaseModel):
     properties: Optional[List[Prop]] = None
     annotations: Optional[List[Annotation]] = None
     export: Optional[Export] = None
-    inherited_group: Optional[Union[Inherited, InheritedGroupItem]] = Field(
+    inherited_group: Optional[Union[Inherited, conlist(Inherited, min_items=2)]] = Field(
         None, alias='inherited-group'
     )
-    satisfied_group: Optional[Union[Satisfied, SatisfiedGroupItem]] = Field(
+    satisfied_group: Optional[Union[Satisfied, conlist(Satisfied, min_items=2)]] = Field(
         None, alias='satisfied-group'
     )
     links: Optional[List[Link]] = None
