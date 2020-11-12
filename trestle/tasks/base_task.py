@@ -25,6 +25,8 @@ class TaskOutcome(Enum):
     SUCCESS = 'success'
     FAILURE = 'failure'
     ROLLEDBACK = 'rolledback'
+    SIM_SUCCESS = 'simulated-success'
+    SIM_FAILURE = 'simulated-failure'
 
 
 class TasksBase(ABC):
@@ -32,7 +34,6 @@ class TasksBase(ABC):
 
     def __init__(self, config_object):
         """Initialize task base."""
-        self._config_object = config_object
 
     @abstractmethod
     def print_help(self) -> str:
@@ -42,4 +43,9 @@ class TasksBase(ABC):
     @abstractmethod
     def execute() -> TaskOutcome:
         """Execute the task including potential rollback."""
+        pass
+
+    @abstractmethod
+    def simulate() -> TaskOutcome:
+        """Simulate the task and report task outcome."""
         pass
