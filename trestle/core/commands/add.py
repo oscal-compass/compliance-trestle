@@ -16,14 +16,12 @@
 """Trestle Add Command."""
 
 import pathlib
-from typing import List, Type
 
 from ilcli import Command  # type: ignore
 
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core import utils
-from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.actions import CreatePathAction, UpdateAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
@@ -36,7 +34,7 @@ class AddCmd(Command):
 
     name = 'add'
 
-    def _init_arguments(self) -> None:
+    def _init_arguments(self):
         self.add_argument(
             f'-{const.ARG_FILE_SHORT}',
             f'--{const.ARG_FILE}',
@@ -50,7 +48,7 @@ class AddCmd(Command):
             required=True
         )
 
-    def _run(self, args) -> int:
+    def _run(self, args):
         """Add an OSCAL component/subcomponent to the specified component.
 
         This method takes input a filename and a list of comma-seperated element path. Element paths are field aliases.
@@ -62,14 +60,14 @@ class AddCmd(Command):
         file_path = pathlib.Path(args[const.ARG_FILE])
 
         # Get parent model and then load json into parent model
-        parent_model, parent_alias = fs.get_contextual_model_type(file_path.absolute())
+        parent_model, parent_alias = fs.get_stripped_contextual_model(file_path.absolute())
         parent_object = parent_model.oscal_read(file_path.absolute())
         parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
 
         add_plan = Plan()
 
         # Do _add for each element_path specified in args
-        element_paths: List[str] = args[const.ARG_ELEMENT].split(',')
+        element_paths: list[str] = args[const.ARG_ELEMENT].split(',')
         for elm_path_str in element_paths:
             element_path = ElementPath(elm_path_str)
             update_action, parent_element = self.add(element_path, parent_model, parent_element)
@@ -86,17 +84,9 @@ class AddCmd(Command):
         add_plan.simulate()
         add_plan.execute()
 
-        return 0
-
     @classmethod
-    def add(
-        cls,
-        file_path: pathlib.Path,
-        element_path: ElementPath,
-        parent_model: Type[OscalBaseModel],
-        parent_element: Element
-    ) -> None:
-        """For a file_path and element_path, add a child model to the parent_element of a given parent_model.
+    def add(cls, element_path, parent_model, parent_element):
+        """For a element_path, add a child model to the parent_element of a given parent_model.
 
         First we find the child model at the specified element path and instantiate it with default values.
         Then we check if there's already existing element at that path, in which case we append the child model
@@ -131,9 +121,4 @@ class AddCmd(Command):
         )
         parent_element = parent_element.set_at(element_path, child_object)
 
-        add_plan = Plan()
-        add_plan.add_action(update_action)
-        add_plan.add_action(create_action)
-        add_plan.add_action(write_action)
-        add_plan.simulate()
-        add_plan.execute()
+        return update_action, parent_element
