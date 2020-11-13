@@ -36,7 +36,7 @@ def test_init(tmpdir):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()
         assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code is None
+        assert pytest_wrapped_e.value.code == 0
         for directory in const.MODELTYPE_TO_MODELMODULE.keys():
             assert os.path.isdir(directory)
             assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
