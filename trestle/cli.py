@@ -50,7 +50,3 @@ class Trestle(Command):
 def run() -> None:
     """Run the test cli."""
     exit(Trestle().run())
-
-
-if __name__ == '__main__':
-    run()
