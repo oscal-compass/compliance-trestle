@@ -39,27 +39,6 @@ def should_ignore(name) -> bool:
     return name[0] == '.' or name[0] == '_'
 
 
-def ensure_directory(path: str) -> None:
-    """
-    Ensure the directory ```path``` exists.
-
-    It creates the directories along the path if they do not exist.
-    Arguments:
-        path(str): The path to the directory
-
-    Raises:
-        AssertionError: If the directory path exists but is not a directory
-
-    Returns: None
-    """
-    path = os.path.abspath(path)
-
-    if not os.path.exists(path):
-        os.makedirs(path)
-    elif not os.path.isdir(path):
-        raise AssertionError(f'Path `{path}` exists but is not a directory')
-
-
 def is_valid_project_root(project_root: pathlib.Path) -> bool:
     """Check if the project root is a valid trestle project root."""
     if project_root is None or project_root == '' or len(project_root.parts) <= 0:
