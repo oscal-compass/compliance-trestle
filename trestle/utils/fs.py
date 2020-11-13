@@ -28,13 +28,14 @@ from trestle.core import err
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
+from trestle.core.models.file_content_type import FileContentType
 
 import yaml
 
 logger = logging.getLogger(__name__)
 
 
-def should_ignore(name) -> bool:
+def should_ignore(name: str) -> bool:
     """Check if the file or directory should be ignored or not."""
     return name[0] == '.' or name[0] == '_'
 
@@ -233,7 +234,7 @@ def extract_alias(path: pathlib.Path) -> str:
     return alias
 
 
-def clean_project_sub_path(sub_path: pathlib.Path):
+def clean_project_sub_path(sub_path: pathlib.Path) -> None:
     """Clean all directories and files in the project sub sub.
 
     It ensures the sub_path is a child path in the project root.
@@ -256,21 +257,28 @@ def clean_project_sub_path(sub_path: pathlib.Path):
             sub_path.unlink()
 
 
-def load_file(file_name: str) -> Dict[str, Any]:
-    """Load JSON or YAML file content into a dict."""
-    _, file_extension = os.path.splitext(file_name)
+def load_file(file_name: pathlib.Path) -> Dict[str, Any]:
+    """
+    Load JSON or YAML file content into a dict.
 
-    with open(file_name) as f:
-        if file_extension == '.yaml':
+    This is not intended to be the default load mechanism. It should only be used
+    if a OSCAL object type is unknown but the context a user is in.
+    """
+    content_type = FileContentType.to_content_type(file_name.suffix)
+    with file_name.open('r', encoding=const.FILE_ENCODING) as f:
+        if content_type == FileContentType.YAML:
             return yaml.load(f, yaml.FullLoader)
-        elif file_extension == '.json':
+        elif content_type == FileContentType.JSON:
             return json.load(f)
         else:
-            raise TrestleError(f'Invalid file extension "{file_extension}"')
+            logger.debug(f'Invalid file extension "{file_name.suffix}" in load')
+            raise TrestleError(f'Invalid file extension "{file_name.suffix}"')
 
 
 def find_node(data: Dict[Any, Any], key: str, depth: int = 0, max_depth: int = 1, instance_type: type = list):
     """Find a node of an instance_type in the data recursively."""
+    # TODO: Properly annotate with yield output typing as shown here:
+    # https://stackoverflow.com/questions/38419654/proper-type-annotation-of-python-functions-with-yield
     if depth > max_depth:
         return
 
