@@ -69,3 +69,5 @@ ARG_ITEM_SHORT = 'i'
 ARG_DESC_ITEM = 'Item used'
 
 VAL_MODE_DUPLICATES = 'duplicates'
+
+FILE_ENCODING = 'utf8'
