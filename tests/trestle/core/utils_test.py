@@ -17,6 +17,7 @@
 import pathlib
 import uuid
 from datetime import datetime
+from typing import Any
 
 from pydantic import ConstrainedStr, typing
 
@@ -183,7 +184,7 @@ def test_classname_to_alias():
     assert json_alias == 'member_of_organization'
 
 
-def test_alias_to_classname():
+def test_alias_to_classname() -> None:
     """Test alias_to_classname function."""
     assert mutils.alias_to_classname('target-definition', 'json') == 'TargetDefinition'
     assert mutils.alias_to_classname('target_definition', 'field') == 'TargetDefinition'
@@ -192,7 +193,7 @@ def test_alias_to_classname():
         assert mutils.alias_to_classname('target-definition', 'invalid') == 'TargetDefinition'
 
 
-def is_valid_uuid(val):
+def is_valid_uuid(val: Any) -> bool:
     """Check if a string is a valid uuid."""
     try:
         uuid.UUID(str(val))
@@ -207,9 +208,10 @@ def test_get_sample_value_by_type():
     assert mutils.get_sample_value_by_type(bool, '') is False
     assert mutils.get_sample_value_by_type(int, '') == 0
     assert mutils.get_sample_value_by_type(str, '') == 'REPLACE_ME'
-    assert mutils.get_sample_value_by_type(float, '') == 0.00
+    assert mutils.get_sample_value_by_type(float, '') == 0.0
     assert mutils.get_sample_value_by_type(ConstrainedStr, '') == '00000000-0000-4000-8000-000000000000'
     uuid_ = mutils.get_sample_value_by_type(ConstrainedStr, 'uuid')
+    assert mutils.get_sample_value_by_type(ssp.SecuritySensitivityLevel, '') == ssp.SecuritySensitivityLevel('low')
     assert is_valid_uuid(uuid_) and str(uuid_) != '00000000-0000-4000-8000-000000000000'
 
     with pytest.raises(err.TrestleError):

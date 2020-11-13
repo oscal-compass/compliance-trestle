@@ -17,6 +17,7 @@ import importlib
 import uuid
 import warnings
 from datetime import datetime
+from enum import Enum
 from typing import Any, List, Tuple, Type, Union, no_type_check
 
 from datamodel_code_generator.parser.base import camel_to_snake, snake_to_upper_camel  # type: ignore
@@ -151,6 +152,7 @@ def get_target_model(element_path_parts: List[str], current_model: BaseModel) ->
         for index in range(1, len(element_path_parts)):
             if is_collection_field_type(current_model):
                 # Return the model class inside the collection
+                # FIXME: From a typing perspective this is wrong.
                 current_model = get_inner_type(current_model)
             else:
                 current_model = current_model.alias_to_field_map()[element_path_parts[index]].outer_type_
@@ -184,7 +186,7 @@ def get_sample_model(model: BaseModel) -> BaseModel:
     return model(**model_dict)
 
 
-def get_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bool, int, str, float]:
+def get_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bool, int, str, float, Enum]:
     """Given a type, return sample value."""
     if type_ is datetime:
         return datetime.now().astimezone()
@@ -204,5 +206,7 @@ def get_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bo
         if field_name == 'uuid':
             return str(uuid.uuid4())
         return '00000000-0000-4000-8000-000000000000'
+    elif issubclass(type_, Enum):
+        return type_(list(type_.__members__.keys())[0])
     else:
         raise err.TrestleError('Fatal: Bad type in model')
