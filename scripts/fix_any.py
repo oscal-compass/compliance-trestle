@@ -260,13 +260,10 @@ def fix_file(fname):
                         r = r[:(n2 + len(pattern2) - 5)] + cap_singular + ']]' + tail
                     elif n3 != -1:  # s plural
                         tail = r[(n3 + len(pattern3)):]
-                        print('r is ', r)
-                        print('tail is ', tail)
                         cap_singular = get_cap_stem(r, 1)
-                        print('cap sing is ', cap_singular)
                         if cap_singular in special_lut:
                             cap_singular = special_lut[cap_singular]
-                        class_text.add_ref(cap_singular)
+                        class_text.add_ref_if_good(cap_singular)
                         r = r[:(n3 + 3)] + 'Dict[str, ' + cap_singular + ']' + tail
                     else:
                         # for a line that has no Any's, use regex to find referenced class names
