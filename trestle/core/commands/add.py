@@ -60,7 +60,7 @@ class AddCmd(Command):
         file_path = pathlib.Path(args[const.ARG_FILE])
 
         # Get parent model and then load json into parent model
-        parent_model, parent_alias = fs.get_contextual_model_type(file_path.absolute())
+        parent_model, parent_alias = fs.get_stripped_contextual_model(file_path.absolute())
         parent_object = parent_model.oscal_read(file_path.absolute())
         parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
 
