@@ -40,11 +40,13 @@ class RemoveCmd(Command):
             f'-{const.ARG_FILE_SHORT}',
             f'--{const.ARG_FILE}',
             help=const.ARG_DESC_FILE + ' to remove component/subcomponent to.',
+            required=True
         )
         self.add_argument(
             f'-{const.ARG_ELEMENT_SHORT}',
             f'--{const.ARG_ELEMENT}',
             help=const.ARG_DESC_ELEMENT + ' to remove.',
+            required=True
         )
 
     def _run(self, args):
@@ -67,20 +69,37 @@ class RemoveCmd(Command):
         parent_object = parent_model.oscal_read(file_path.absolute())
         parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
 
+        add_plan = Plan()
+
         # Do _remove for each element_path specified in args
         element_paths: list[str] = args[const.ARG_ELEMENT].split(',')
         for elm_path_str in element_paths:
             element_path = ElementPath(elm_path_str)
-            self.remove(file_path, element_path, parent_model, parent_element)
+            update_action, parent_element = self.remove(element_path, parent_model, parent_element)
+            add_plan.add_action(update_action)
+
+        remove_path_action = RemovePathAction(file_path.absolute())
+        remove_action = RemoveAction(parent_element, element_path)
+
+        create_action = CreatePathAction(file_path.absolute(), True)
+        write_action = WriteFileAction(
+            file_path.absolute(), parent_element, FileContentType.to_content_type(file_path.suffix)
+        )
+        add_plan.add_action(remove_action)
+        add_plan.add_action(remove_path_action)
+        add_plan.add_action(create_action)
+        add_plan.add_action(write_action)
+        add_plan.simulate()
+        add_plan.execute()
 
     @classmethod
-    def remove(cls, file_path, element_path, parent_model, parent_element):
-        """For a file_path and, at the element_path, remove a model from the parent_element of a given parent_model.
+    def remove(cls, element_path, parent_model, parent_element):
+        """For the element_path, remove a model from the parent_element of a given parent_model.
 
         First we check if there is an existing element at that path
         If not, we complain.
-        Then we set up an action plan to update the model (specified by file_path) in memory, create a file
-        at the same location and write the file.
+        Then we set up an action plan to update the model (specified by file_path) in memory, 
+        and return the parent_element to prepare for next removes in the chain.
 
         LIMITATIONS:
         1. This does not remove elements of a list or dict. Instead, the entire list or dict is removed.
@@ -118,19 +137,6 @@ class RemoveCmd(Command):
         update_action = UpdateAction(
             sub_element=deleting_element, dest_element=parent_element, sub_element_path=element_path
         )
-        remove_path_action = RemovePathAction(file_path.absolute())
-        remove_action = RemoveAction(parent_element, element_path)
-        create_action = CreatePathAction(file_path.absolute(), True)
-        write_action = WriteFileAction(
-            file_path.absolute(), parent_element, FileContentType.to_content_type(file_path.suffix)
-        )
 
-        add_plan = Plan()
-        add_plan.add_action(update_action)
-        add_plan.add_action(remove_action)
-        add_plan.add_action(remove_path_action)
-        add_plan.add_action(create_action)
-        add_plan.add_action(write_action)
-        add_plan.simulate()
-
-        add_plan.execute()
+        return update_action, parent_element
+        
