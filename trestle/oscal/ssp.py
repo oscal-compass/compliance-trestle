@@ -353,38 +353,6 @@ class Purpose(OscalBaseModel):
     __root__: str
 
 
-<<<<<<< HEAD
-class SystemInventory(OscalBaseModel):
-    inventory_items: Dict[str, InventoryItem] = Field(..., alias='inventory-items')
-    remarks: Optional[Remarks] = None
-
-
-class Annotation(OscalBaseModel):
-    name: str = Field(
-        ...,
-        description='Identifying the purpose and intended use of the property, part or other object.',
-        title='Name',
-    )
-    uuid: Optional[
-        constr(
-            regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-        )
-    ] = Field(
-        None,
-        description='A RFC 4122 version 4 Universally Unique Identifier (UUID) for the containing object.',
-        title='Universally Unique Identifier',
-    )
-    ns: Optional[str] = Field(
-        None, description='A namespace qualifying the name.', title='Namespace'
-    )
-    value: Optional[str] = Field(
-        None, description='Indicates the value of the characteristic.', title='Value'
-    )
-    remarks: Optional[Remarks] = None
-
-
-=======
->>>>>>> develop
 class Protocol(OscalBaseModel):
     uuid: Optional[
         constr(
@@ -651,16 +619,7 @@ class ResponsibleRole(OscalBaseModel):
     properties: Optional[List[Prop]] = None
     annotations: Optional[List[Annotation]] = None
     links: Optional[List[Link]] = None
-<<<<<<< HEAD
-    leveraged_authorizations: Optional[List[LeveragedAuthorization]] = Field(
-        None, alias='leveraged-authorizations'
-    )
-    users: Dict[str, User]
-    components: Optional[Dict[str, Component]] = None
-    system_inventory: Optional[SystemInventory] = Field(None, alias='system-inventory')
-=======
     party_uuids: Optional[List[PartyUuid]] = Field(None, alias='party-uuids')
->>>>>>> develop
     remarks: Optional[Remarks] = None
 
 
