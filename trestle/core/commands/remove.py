@@ -98,7 +98,7 @@ class RemoveCmd(Command):
 
         First we check if there is an existing element at that path
         If not, we complain.
-        Then we set up an action plan to update the model (specified by file_path) in memory, 
+        Then we set up an action plan to update the model (specified by file_path) in memory,
         and return the parent_element to prepare for next removes in the chain.
 
         LIMITATIONS:
@@ -118,16 +118,12 @@ class RemoveCmd(Command):
                 # The element already exists
                 if type(deleting_element) is list:
                     pass
-                    warnings.warn(
-                        'trestle remove does not support removing elements of a list -- this removes the entire list',
-                        Warning
-                    )
+                    warnings.warn('trestle remove does not support removing elements of a list', Warning)
+                    warnings.warn('trestle remove of a list removes the entire list', Warning)
                 elif type(deleting_element) is dict:
                     pass
-                    warnings.warn(
-                        'trestle remove does not support removing dict elements -- this removes the entire dict',
-                        Warning
-                    )
+                    warnings.warn('trestle remove does not support removing dict elements', Warning)
+                    warnings.warn('trestle remove of a dict element removes the entire dict element', Warning)
             else:
                 raise err.TrestleError(f'Bad element path. {str(element_path)}')
 
@@ -139,4 +135,3 @@ class RemoveCmd(Command):
         )
 
         return update_action, parent_element
-        
