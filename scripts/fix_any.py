@@ -14,6 +14,7 @@ import re
 
 pattern1 = 'ies: Optional[Dict[str, Any]]'
 pattern2 = 's: Optional[Dict[str, Any]]'
+pattern3 = 's: Dict[str, Any]'
 special_lut = {'ParameterSetting': 'SetParameter'}
 # Class names with this substring are due to confusion in oscal that will go away.
 # For now delete the classes and convert the corresponding unions to conlist
@@ -244,6 +245,7 @@ def fix_file(fname):
                     r = r.replace(singleton_name, '')
                     n1 = r.find(pattern1)
                     n2 = r.find(pattern2)
+                    n3 = r.find(pattern3)
                     if n1 != -1:  # ies plural
                         tail = r[(n1 + len(pattern1)):]
                         cap_singular = get_cap_stem(r, 3) + 'y'
@@ -256,6 +258,13 @@ def fix_file(fname):
                             cap_singular = special_lut[cap_singular]
                         class_text.add_ref_if_good(cap_singular)
                         r = r[:(n2 + len(pattern2) - 5)] + cap_singular + ']]' + tail
+                    elif n3 != -1:  # s plural
+                        tail = r[(n3 + len(pattern3)):]
+                        cap_singular = get_cap_stem(r, 1)
+                        if cap_singular in special_lut:
+                            cap_singular = special_lut[cap_singular]
+                        class_text.add_ref_if_good(cap_singular)
+                        r = r[:(n3 + 3)] + 'Dict[str, ' + cap_singular + ']' + tail
                     else:
                         # for a line that has no Any's, use regex to find referenced class names
                         class_text.add_all_refs(r)
