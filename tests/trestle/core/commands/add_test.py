@@ -159,6 +159,7 @@ def test_run(tmp_dir, sample_catalog_minimal):
 
 def test_striped_model(tmp_dir, sample_catalog_minimal):
     """Test _run for AddCmd for stripped model."""
+    cwd = os.getcwd()
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
         tmp_dir,
@@ -195,3 +196,5 @@ def test_striped_model(tmp_dir, sample_catalog_minimal):
     actual_model, _ = get_stripped_contextual_model()
     actual_catalog = actual_model.oscal_read(pathlib.Path('catalog.json'))
     assert expected_catalog == actual_catalog
+
+    os.chdir(cwd)
