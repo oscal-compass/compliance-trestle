@@ -14,3 +14,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle create command."""
+import pathlib
+import sys
+from unittest.mock import patch
+
+from trestle.cli import Trestle
+
+subcommand_list = [
+    'catalog',
+    'profile',
+    'target-definition',
+    'component-definition',
+    'system-security-plan',
+    'assessment-plan',
+    'assessment-results',
+    'plan-of-action-and-milestones'
+]
+
+
+def test_create_object(tmp_trestle_dir: pathlib.Path) -> None:
+    """Happy path test at the cli level."""
+    # Test
+    testargs_root = ['trestle', 'create']
+    for subcommand in subcommand_list:
+        test_args = testargs_root + [subcommand] + ['-n', f'random_named_{subcommand}']
+        with patch.object(sys, 'argv', test_args):
+            rc = Trestle().run()
+            assert rc == 0
+
+
+def test_no_dir(tmpdir: pathlib.Path) -> None:
+    """Test for no trestle directory."""
+    pass
+
+
+def test_broken_args(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test behaviour on broken arguments."""
+    pass

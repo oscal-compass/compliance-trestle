@@ -354,7 +354,7 @@ class Purpose(OscalBaseModel):
 
 
 class SystemInventory(OscalBaseModel):
-    inventory_items: Dict[str, Any] = Field(..., alias='inventory-items')
+    inventory_items: Dict[str, InventoryItem] = Field(..., alias='inventory-items')
     remarks: Optional[Remarks] = None
 
 
@@ -785,7 +785,7 @@ class SystemImplementation(OscalBaseModel):
     leveraged_authorizations: Optional[List[LeveragedAuthorization]] = Field(
         None, alias='leveraged-authorizations'
     )
-    users: Dict[str, Any]
+    users: Dict[str, User]
     components: Optional[Dict[str, Component]] = None
     system_inventory: Optional[SystemInventory] = Field(None, alias='system-inventory')
     remarks: Optional[Remarks] = None

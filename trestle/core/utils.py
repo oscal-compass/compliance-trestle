@@ -161,7 +161,7 @@ def get_target_model(element_path_parts: List[str], current_model: BaseModel) ->
         raise err.TrestleError(f'Possibly bad element path. {str(e)}')
 
 
-def get_sample_model(model: BaseModel) -> BaseModel:
+def get_sample_model(model: Type[BaseModel]) -> BaseModel:
     """Given a model class, generate an object of that class with sample values."""
     model_type = BaseModel
     if is_collection_field_type(model):
@@ -171,14 +171,17 @@ def get_sample_model(model: BaseModel) -> BaseModel:
     model_dict = {}
 
     for field in model.__fields__:
-        if model.__fields__[field].required:
-            """ FIXME: This type_ could be a List or a Dict """
-            if is_collection_field_type(model.__fields__[field].outer_type_) or issubclass(
-                    model.__fields__[field].outer_type_, BaseModel):
-                model_dict[field] = get_sample_model(model.__fields__[field].outer_type_)
-            else:
-                model_dict[field] = get_sample_value_by_type(model.__fields__[field].outer_type_, field)
-
+        try:
+            if model.__fields__[field].required:
+                """ FIXME: This type_ could be a List or a Dict """
+                if is_collection_field_type(model.__fields__[field].outer_type_) or issubclass(
+                        model.__fields__[field].outer_type_, BaseModel):
+                    model_dict[field] = get_sample_model(model.__fields__[field].outer_type_)
+                else:
+                    model_dict[field] = get_sample_value_by_type(model.__fields__[field].outer_type_, field)
+        except Exception as e:
+            vanity = model.__fields__[field].outer_type_
+            raise err.TrestleError(f'Hit error of type {e} where outer_type_ is: {vanity}')
     if model_type is list:
         return [model(**model_dict)]
     elif model_type is dict:
@@ -207,6 +210,7 @@ def get_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bo
             return str(uuid.uuid4())
         return '00000000-0000-4000-8000-000000000000'
     elif issubclass(type_, Enum):
-        return type_(list(type_.__members__.keys())[0])
+        # keys and values diverge due to hypens in oscal names
+        return type_(list(type_.__members__.values())[0])
     else:
         raise err.TrestleError('Fatal: Bad type in model')
