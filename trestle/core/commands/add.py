@@ -55,34 +55,40 @@ class AddCmd(Command):
         The method first finds the parent model from the file and loads the file into the model.
         Then the method executes 'add' for each of the element paths specified.
         """
-        args = args.__dict__
+        try:
+            args = args.__dict__
 
-        file_path = pathlib.Path(args[const.ARG_FILE])
+            file_path = pathlib.Path(args[const.ARG_FILE])
 
-        # Get parent model and then load json into parent model
-        parent_model, parent_alias = fs.get_stripped_contextual_model(file_path.absolute())
-        parent_object = parent_model.oscal_read(file_path.absolute())
-        parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
+            # Get parent model and then load json into parent model
+            parent_model, parent_alias = fs.get_stripped_contextual_model(file_path.absolute())
+            parent_object = parent_model.oscal_read(file_path.absolute())
+            parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
 
-        add_plan = Plan()
+            add_plan = Plan()
 
-        # Do _add for each element_path specified in args
-        element_paths: list[str] = args[const.ARG_ELEMENT].split(',')
-        for elm_path_str in element_paths:
-            element_path = ElementPath(elm_path_str)
-            update_action, parent_element = self.add(element_path, parent_model, parent_element)
-            add_plan.add_action(update_action)
+            # Do _add for each element_path specified in args
+            element_paths: list[str] = args[const.ARG_ELEMENT].split(',')
+            for elm_path_str in element_paths:
+                element_path = ElementPath(elm_path_str)
+                update_action, parent_element = self.add(element_path, parent_model, parent_element)
+                add_plan.add_action(update_action)
 
-        create_action = CreatePathAction(file_path.absolute(), True)
-        write_action = WriteFileAction(
-            file_path.absolute(), parent_element, FileContentType.to_content_type(file_path.suffix)
-        )
+            create_action = CreatePathAction(file_path.absolute(), True)
+            write_action = WriteFileAction(
+                file_path.absolute(), parent_element, FileContentType.to_content_type(file_path.suffix)
+            )
 
-        add_plan.add_action(create_action)
-        add_plan.add_action(write_action)
+            add_plan.add_action(create_action)
+            add_plan.add_action(write_action)
 
-        add_plan.simulate()
-        add_plan.execute()
+            add_plan.simulate()
+            add_plan.execute()
+
+        except BaseException as err:
+            self.err(f'Add failed: {err}')
+            return 1
+        return 0
 
     @classmethod
     def add(cls, element_path, parent_model, parent_element):
