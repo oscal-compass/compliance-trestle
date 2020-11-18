@@ -14,7 +14,7 @@
 # limitations under the License.
 """Capabilities to allow the generation of various oscal objects."""
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from enum import Enum
 from typing import Any, Optional, Type, Union
 
@@ -52,15 +52,12 @@ def generate_sample_value_by_type(
     elif type_ is float:
         return 0.00
     elif issubclass(type_, ConstrainedStr) or 'ConstrainedStr' in str(type):
-        # There are some ConstrainedStr which seems to be causing crazyiness.
-        """
-        FIXME: It could be uuid_ref and not uuid. For uuid_ref return uuid format.
-        One assumption - all ConstrainedStr are under uuid_ref/uuid fields.
-        """
+        # This code here is messy. we need to meet a set of constraints. If we do
+        # not do so it fails to generate.
         if 'uuid' == field_name:
             return str(uuid.uuid4())
-        elif type_ == trestle.oscal.ssp.DateAuthorized:
-            raise err.TrestleError('Fatal: Not implemented')
+        elif parent_model == trestle.oscal.ssp.DateAuthorized:
+            return date.today().isoformat()
         return '00000000-0000-4000-8000-000000000000'
     elif issubclass(type_, Enum):
         # keys and values diverge due to hypens in oscal names
@@ -99,7 +96,7 @@ def generate_sample_model(model: Type[Any]) -> OscalBaseModel:
                 if utils.is_collection_field_type(outer_type) or issubclass(outer_type, BaseModel):
                     model_dict[field] = generate_sample_model(outer_type)
                 else:
-                    model_dict[field] = generate_sample_value_by_type(outer_type, field)
+                    model_dict[field] = generate_sample_value_by_type(outer_type, field, model)
         except Exception as e:
             raise err.TrestleError(f'Hit error of type {e} where outer_type_ is: {outer_type} for field {field}')
     if model_type is list:

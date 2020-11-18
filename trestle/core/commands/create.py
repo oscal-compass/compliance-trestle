@@ -23,7 +23,7 @@ from typing import Type
 from ilcli import Command  # type: ignore
 
 import trestle.oscal
-from trestle.core import utils
+from trestle.core import generators
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
@@ -163,7 +163,7 @@ class CreateCmd(Command):
             return 1
 
         # Create sample model.
-        sample_model = utils.get_sample_model(object_type)
+        sample_model = generators.generate_sample_model(object_type)
         # Presuming top level level model not sure how to do the typing for this.
         sample_model.metadata.title = f'Generic {model_alias} created by trestle.'  # type: ignore
         sample_model.metadata.last_modified = datetime.now().astimezone()
