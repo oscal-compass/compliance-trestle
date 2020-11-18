@@ -178,10 +178,7 @@ def test_striped_model(tmp_dir, sample_catalog_minimal):
     testargs = ['trestle', 'add', '-f', 'catalog.json', '-e', 'catalog.metadata.roles']
 
     with patch.object(sys, 'argv', testargs):
-        with pytest.raises(Exception) as e:
-            Trestle().run()
-        assert e.type == err.TrestleError
-        assert e.value.msg == "Bad element path. Possibly bad element path. 'metadata'"
+        assert Trestle().run() == 1
 
     testargs = ['trestle', 'add', '-f', 'catalog.json', '-e', 'catalog.back-matter']
 
