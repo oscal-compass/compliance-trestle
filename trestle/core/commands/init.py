@@ -17,7 +17,6 @@
 import argparse
 import os
 from shutil import copyfile
-from typing import Union
 
 from ilcli import Command  # type: ignore
 
@@ -31,7 +30,7 @@ class InitCmd(Command):
 
     name = 'init'
 
-    def _run(self, args: argparse.ArgumentParser) -> Union[int, None]:
+    def _run(self, args: argparse.ArgumentParser) -> int:
         """Create a trestle project in the current directory."""
         dir_path = os.getcwd()
 
@@ -47,6 +46,7 @@ class InitCmd(Command):
         except BaseException as err:
             self.err(f'Initialization failed: {err}')
             return 1
+        return 0
 
     def _create_directories(self) -> None:
         """Create the directory tree if it does not exist."""
