@@ -84,21 +84,17 @@ def generate_sample_model(model: Type[Any]) -> OscalBaseModel:
     model_dict = {}
 
     for field in model.__fields__:
-        try:
-
-            outer_type = model.__fields__[field].outer_type_
-            # Check for unions. This is awkward due to allow support for python 3.7
-            # It also does not inspect for which union we want. Should be removable with oscal 1.0.0
-            if getattr(outer_type, '__origin__', None) == Union:
-                outer_type = outer_type.__args__[0]
-            if model.__fields__[field].required:
-                """ FIXME: This type_ could be a List or a Dict """
-                if utils.is_collection_field_type(outer_type) or issubclass(outer_type, BaseModel):
-                    model_dict[field] = generate_sample_model(outer_type)
-                else:
-                    model_dict[field] = generate_sample_value_by_type(outer_type, field, model)
-        except Exception as e:
-            raise err.TrestleError(f'Hit error of type {e} where outer_type_ is: {outer_type} for field {field}')
+        outer_type = model.__fields__[field].outer_type_
+        # Check for unions. This is awkward due to allow support for python 3.7
+        # It also does not inspect for which union we want. Should be removable with oscal 1.0.0
+        if getattr(outer_type, '__origin__', None) == Union:
+            outer_type = outer_type.__args__[0]
+        if model.__fields__[field].required:
+            """ FIXME: This type_ could be a List or a Dict """
+            if utils.is_collection_field_type(outer_type) or issubclass(outer_type, BaseModel):
+                model_dict[field] = generate_sample_model(outer_type)
+            else:
+                model_dict[field] = generate_sample_value_by_type(outer_type, field, model)
     if model_type is list:
         return [model(**model_dict)]
     elif model_type is dict:

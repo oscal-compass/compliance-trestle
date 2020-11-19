@@ -19,9 +19,10 @@ import os
 import pkgutil
 import sys
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
+import pydantic.networks
 from pydantic import ConstrainedStr, typing
 
 import pytest
@@ -54,7 +55,13 @@ def test_get_sample_value_by_type():
     uuid_ = gens.generate_sample_value_by_type(ConstrainedStr, 'uuid')
     assert gens.generate_sample_value_by_type(ssp.SecuritySensitivityLevel, '') == ssp.SecuritySensitivityLevel('low')
     assert is_valid_uuid(uuid_) and str(uuid_) != '00000000-0000-4000-8000-000000000000'
-
+    assert gens.generate_sample_value_by_type(ConstrainedStr, 'anything',
+                                              ssp.DateAuthorized) == date.today().isoformat()
+    assert gens.generate_sample_value_by_type(pydantic.networks.EmailStr,
+                                              'anything') == pydantic.networks.EmailStr('dummy@sample.com')
+    assert gens.generate_sample_value_by_type(pydantic.networks.AnyUrl, 'anything') == pydantic.networks.AnyUrl(
+        'https://sample.com/replaceme.html', scheme='http', host='sample.com'
+    )
     with pytest.raises(err.TrestleError):
         gens.generate_sample_value_by_type(list, 'uuid')
 

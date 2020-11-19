@@ -39,7 +39,7 @@ test::
 	python -m pytest --cov trestle tests --cov-report=xml
 
 test-verbose:
-	python -m pytest --cov trestle tests -v
+	python -m pytest --cov trestle tests -v --cov-report=term-missing --cov-report=html:cov_html
 
 release::
 	git config --global user.name "semantic-release (via Github actions)"
