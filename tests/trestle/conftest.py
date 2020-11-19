@@ -119,7 +119,7 @@ def sample_catalog_minimal():
 
 
 @pytest.fixture(scope='function')
-def tmp_trestle_dir(tmpdir) -> pathlib.Path:
+def tmp_trestle_dir(tmpdir: pathlib.Path) -> pathlib.Path:
     """Create and return a new trestle project directory using std tmpdir fixture.
 
     Note that this fixture relies on the 'trestle init' command and therefore may
@@ -131,6 +131,21 @@ def tmp_trestle_dir(tmpdir) -> pathlib.Path:
     with patch.object(sys, 'argv', testargs):
         # FIXME: Correctly capture return codes
         Trestle().run()
+    yield tmpdir
+
+    os.chdir(pytest_cwd)
+
+
+@pytest.fixture(scope='function')
+def tmp_empty_cwd(tmpdir: pathlib.Path) -> pathlib.Path:
+    """Create a temporary directory and cd into that directory with fail out afterwards.
+
+    The purpose of this is to provide a clean directory per unit test and ensure we get
+    back to the base time.
+    """
+    pytest_cwd = pathlib.Path.cwd()
+    os.chdir(tmpdir)
+
     yield tmpdir
 
     os.chdir(pytest_cwd)

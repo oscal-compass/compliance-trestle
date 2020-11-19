@@ -49,6 +49,7 @@ class CatalogCmd(Command):
     name = 'catalog'
 
     def _run(self, args: argparse.Namespace) -> int:
+        """Create a sample catalog in the trestle directory structure, given an OSCAL schema."""
         logger.info(f'Creating catalog titled: {args.name}')
         return CreateCmd.create_object(self.name, catalog.Catalog, args)
 
@@ -118,7 +119,7 @@ class PlanOfActionAndMilestonesCmd(Command):
 
 
 class CreateCmd(Command):
-    """Create a sample trestle model."""
+    """Create a sample OSCAL model in trestle project."""
 
     name = 'create'
 
