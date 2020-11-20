@@ -14,5 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#TODO: Ensure this is automatically updated succusfully.
+#TODO: Ensure this is automatically updated successfully.
 OSCAL_VERSION = 'v1.0.0-milestone3'
+
