@@ -95,7 +95,7 @@ class RemoveCmd(Command):
         First we check if there is an existing element at that path
         If not, we complain.
         Then we set up an action plan to update the model (specified by file_path) in memory,
-        and return the parent_element to prepare for next removes in the chain.
+        return the action and return the parent_element.
 
         LIMITATIONS:
         1. This does not remove elements of a list or dict. Instead, the entire list or dict is removed.
