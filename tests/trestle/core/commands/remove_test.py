@@ -34,7 +34,7 @@ from trestle.oscal.catalog import Catalog
 
 
 def test_remove(tmp_dir, sample_catalog_minimal):
-    """Test RemoveCmd.remove() method for trestle remove: removing Roles."""
+    """Test RemoveCmd.remove() method for trestle remove: removing Roles and Responsible-Parties."""
     # 1. Remove responsible-parties
     # Note: minimal catalog does have responsible-parties but doesn't have Roles.
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog.json')
@@ -88,3 +88,44 @@ def test_remove(tmp_dir, sample_catalog_minimal):
 
     ## 2.2 Assertion about resulting element after removal
     assert catalog_without_roles == actual_catalog_removed_roles
+
+def test_remove_failure(tmp_dir, sample_catalog_minimal):
+    """Test failure of RemoveCmd.remove() method for trestle remove."""
+    # Remove metadata -- should raise an error
+
+    content_type = FileContentType.JSON
+
+    catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_catalog_minimal,
+        test_utils.CATALOGS_DIR
+    )
+
+    # Note: minimal catalog just has uuid and metadata, both required.
+    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog.json')
+    minimal_catalog = Element(Catalog.oscal_read(file_path))
+
+    # 1. Remove a required element:
+    element_path = ElementPath('catalog.metadata')
+    expected_remove_action = RemoveAction(minimal_catalog, element_path)
+
+    with pytest.raises(err.TrestleError):
+        ## Call remove() method
+        remove_action, remove_results = RemoveCmd.remove(element_path, Catalog, minimal_catalog)
+        add_plan = Plan()
+        add_plan.add_action(remove_action)
+        add_plan.simulate()
+        add_plan.execute()
+
+    # 2. Remove a nonexistent element:
+    element_path = ElementPath('catalog.metadata.roles')
+    expected_remove_action = RemoveAction(minimal_catalog, element_path)
+
+    with pytest.raises(err.TrestleError):
+        ## Call remove() method
+        remove_action, remove_results = RemoveCmd.remove(element_path, Catalog, minimal_catalog)
+        add_plan = Plan()
+        add_plan.add_action(remove_action)
+        add_plan.simulate()
+        add_plan.execute()
