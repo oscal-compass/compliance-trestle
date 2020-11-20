@@ -44,14 +44,16 @@ def test_remove(tmp_dir, sample_catalog_minimal):
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_no_responsible-parties.json')
     expected_catalog_responsible_parties_removed = Element(Catalog.oscal_read(file_path))
 
-    ##  Target path for removal:
+    # Target path for removal:
     element_path = ElementPath('catalog.metadata.responsible-parties')
     expected_remove_action = RemoveAction(catalog_with_responsible_parties, element_path)
 
-    ## Call remove() method
-    actual_remove_action, actual_catalog_removed_responsible_parties = RemoveCmd.remove(element_path, Catalog, catalog_with_responsible_parties)
+    # Call remove() method
+    actual_remove_action, actual_catalog_removed_responsible_parties = RemoveCmd.remove(
+        element_path, Catalog, catalog_with_responsible_parties
+    )
 
-    ## 1.1 Assertion about action
+    # 1.1 Assertion about action
     assert expected_remove_action == actual_remove_action
 
     add_plan = Plan()
@@ -59,7 +61,7 @@ def test_remove(tmp_dir, sample_catalog_minimal):
     add_plan.simulate()
     add_plan.execute()
 
-    ## 1.2 Assertion about resulting element after removal
+    # 1.2 Assertion about resulting element after removal
     assert expected_catalog_responsible_parties_removed == actual_catalog_removed_responsible_parties
 
     # 2. Remove roles
@@ -71,14 +73,14 @@ def test_remove(tmp_dir, sample_catalog_minimal):
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_roles.json')
     catalog_with_roles = Element(Catalog.oscal_read(file_path))
 
-    ##  Target path for removal:
+    # Target path for removal:
     element_path = ElementPath('catalog.metadata.roles')
     expected_remove_action = RemoveAction(catalog_with_roles, element_path)
 
-    ## Call remove() method
+    # Call remove() method
     actual_remove_action, actual_catalog_removed_roles = RemoveCmd.remove(element_path, Catalog, catalog_with_roles)
 
-    ## 2.1 Assertion about action
+    # 2.1 Assertion about action
     assert expected_remove_action == actual_remove_action
 
     add_plan = Plan()
@@ -86,8 +88,9 @@ def test_remove(tmp_dir, sample_catalog_minimal):
     add_plan.simulate()
     add_plan.execute()
 
-    ## 2.2 Assertion about resulting element after removal
+    # 2.2 Assertion about resulting element after removal
     assert catalog_without_roles == actual_catalog_removed_roles
+
 
 def test_remove_failure(tmp_dir, sample_catalog_minimal):
     """Test failure of RemoveCmd.remove() method for trestle remove."""
@@ -108,22 +111,16 @@ def test_remove_failure(tmp_dir, sample_catalog_minimal):
 
     # 1. Remove a required element:
     element_path = ElementPath('catalog.metadata')
-    expected_remove_action = RemoveAction(minimal_catalog, element_path)
-
     with pytest.raises(err.TrestleError):
-        ## Call remove() method
         remove_action, remove_results = RemoveCmd.remove(element_path, Catalog, minimal_catalog)
         add_plan = Plan()
         add_plan.add_action(remove_action)
         add_plan.simulate()
         add_plan.execute()
 
-    # 2. Remove a nonexistent element:
+    # 2. Remove an element that is not there:
     element_path = ElementPath('catalog.metadata.roles')
-    expected_remove_action = RemoveAction(minimal_catalog, element_path)
-
     with pytest.raises(err.TrestleError):
-        ## Call remove() method
         remove_action, remove_results = RemoveCmd.remove(element_path, Catalog, minimal_catalog)
         add_plan = Plan()
         add_plan.add_action(remove_action)
