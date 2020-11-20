@@ -23,7 +23,7 @@ from ilcli import Command  # type: ignore
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core import utils
-from trestle.core.models.actions import CreatePathAction, RemoveAction, RemovePathAction, UpdateAction, WriteFileAction
+from trestle.core.models.actions import CreatePathAction, RemoveAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
@@ -75,11 +75,10 @@ class RemoveCmd(Command):
         element_paths: list[str] = args[const.ARG_ELEMENT].split(',')
         for elm_path_str in element_paths:
             element_path = ElementPath(elm_path_str)
-            update_action, parent_element = self.remove(element_path, parent_model, parent_element)
-            add_plan.add_action(update_action)
+            remove_action, parent_element = self.remove(element_path, parent_model, parent_element)
+            add_plan.add_action(remove_action)
 
         remove_path_action = RemovePathAction(file_path.absolute())
-        remove_action = RemoveAction(parent_element, element_path)
 
         create_action = CreatePathAction(file_path.absolute(), True)
         write_action = WriteFileAction(
@@ -130,8 +129,6 @@ class RemoveCmd(Command):
         except Exception as e:
             raise err.TrestleError(f'Bad element path. {str(e)}')
 
-        update_action = UpdateAction(
-            sub_element=deleting_element, dest_element=parent_element, sub_element_path=element_path
-        )
+        remove_action = RemoveAction(parent_element, element_path)
 
-        return update_action, parent_element
+        return remove_action, parent_element
