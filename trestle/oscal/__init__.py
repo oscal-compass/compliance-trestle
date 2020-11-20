@@ -14,11 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-<<<<<<< HEAD
-#TODO: Ensure this is automatically updated succusfully.
-OSCAL_VERSION = 'v1.0.0-milestone3'
-=======
 #TODO: Ensure this is automatically updated successfully.
 OSCAL_VERSION = 'v1.0.0-milestone3'
 
->>>>>>> feature/trestle-create
