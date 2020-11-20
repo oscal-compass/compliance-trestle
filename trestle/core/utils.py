@@ -14,19 +14,18 @@
 # limitations under the License.
 """Utilities for dealing with models."""
 import importlib
-import uuid
 import warnings
-from datetime import datetime
-from enum import Enum
-from typing import Any, List, Tuple, Type, Union, no_type_check
+from typing import Any, List, Tuple, Type, no_type_check
 
 from datamodel_code_generator.parser.base import camel_to_snake, snake_to_upper_camel  # type: ignore
 
 from pydantic import BaseModel
-from pydantic import ConstrainedStr
 
 import trestle.core.const as const
 import trestle.core.err as err
+import trestle.utils.log as log
+
+logger = log.get_logger()
 
 
 def get_elements_of_model_type(object_of_interest, type_of_interest):
@@ -148,6 +147,7 @@ def get_target_model(element_path_parts: List[str], current_model: BaseModel) ->
     and the parent model to follow the ElementPath in.
     Returns the type of the model at the specified ElementPath of the input model.
     """
+    # FIXME: Could be in oscal base model
     try:
         for index in range(1, len(element_path_parts)):
             if is_collection_field_type(current_model):
@@ -159,54 +159,3 @@ def get_target_model(element_path_parts: List[str], current_model: BaseModel) ->
         return current_model
     except Exception as e:
         raise err.TrestleError(f'Possibly bad element path. {str(e)}')
-
-
-def get_sample_model(model: BaseModel) -> BaseModel:
-    """Given a model class, generate an object of that class with sample values."""
-    model_type = BaseModel
-    if is_collection_field_type(model):
-        model_type = model.__origin__
-        model = get_inner_type(model)
-
-    model_dict = {}
-
-    for field in model.__fields__:
-        if model.__fields__[field].required:
-            """ FIXME: This type_ could be a List or a Dict """
-            if is_collection_field_type(model.__fields__[field].outer_type_) or issubclass(
-                    model.__fields__[field].outer_type_, BaseModel):
-                model_dict[field] = get_sample_model(model.__fields__[field].outer_type_)
-            else:
-                model_dict[field] = get_sample_value_by_type(model.__fields__[field].outer_type_, field)
-
-    if model_type is list:
-        return [model(**model_dict)]
-    elif model_type is dict:
-        return {'REPLACE_ME': model(**model_dict)}
-    return model(**model_dict)
-
-
-def get_sample_value_by_type(type_: type, field_name: str) -> Union[datetime, bool, int, str, float, Enum]:
-    """Given a type, return sample value."""
-    if type_ is datetime:
-        return datetime.now().astimezone()
-    elif type_ is bool:
-        return False
-    elif type_ is int:
-        return 0
-    elif type_ is str:
-        return 'REPLACE_ME'
-    elif type_ is float:
-        return 0.00
-    elif issubclass(type_, ConstrainedStr):
-        """
-        FIXME: It could be uuid_ref and not uuid. For uuid_ref return uuid format.
-        One assumption - all ConstrainedStr are under uuid_ref/uuid fields.
-        """
-        if field_name == 'uuid':
-            return str(uuid.uuid4())
-        return '00000000-0000-4000-8000-000000000000'
-    elif issubclass(type_, Enum):
-        return type_(list(type_.__members__.keys())[0])
-    else:
-        raise err.TrestleError('Fatal: Bad type in model')
