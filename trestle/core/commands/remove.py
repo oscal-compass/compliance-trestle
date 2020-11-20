@@ -23,7 +23,7 @@ from ilcli import Command  # type: ignore
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core import utils
-from trestle.core.models.actions import CreatePathAction, RemoveAction, RemovePathAction, WriteFileAction
+from trestle.core.models.actions import CreatePathAction, RemoveAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
@@ -78,14 +78,11 @@ class RemoveCmd(Command):
             remove_action, parent_element = self.remove(element_path, parent_model, parent_element)
             add_plan.add_action(remove_action)
 
-        remove_path_action = RemovePathAction(file_path.absolute())
-
         create_action = CreatePathAction(file_path.absolute(), True)
         write_action = WriteFileAction(
             file_path.absolute(), parent_element, FileContentType.to_content_type(file_path.suffix)
         )
         add_plan.add_action(remove_action)
-        add_plan.add_action(remove_path_action)
         add_plan.add_action(create_action)
         add_plan.add_action(write_action)
         add_plan.simulate()
