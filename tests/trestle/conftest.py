@@ -13,15 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Common fixtures."""
+import os
 import pathlib
 import random
 import string
+import sys
+from unittest.mock import patch
 from uuid import uuid4
 
 import pytest
 
 from tests import test_utils
 
+from trestle.cli import Trestle
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.target import TargetDefinition
 from trestle.utils import fs
@@ -112,3 +116,36 @@ def sample_catalog_minimal():
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog.json')
     catalog_obj = Catalog.oscal_read(file_path)
     return catalog_obj
+
+
+@pytest.fixture(scope='function')
+def tmp_trestle_dir(tmpdir: pathlib.Path) -> pathlib.Path:
+    """Create and return a new trestle project directory using std tmpdir fixture.
+
+    Note that this fixture relies on the 'trestle init' command and therefore may
+    misbehave if there are errors in trestle init.
+    """
+    pytest_cwd = pathlib.Path.cwd()
+    os.chdir(tmpdir)
+    testargs = ['trestle', 'init']
+    with patch.object(sys, 'argv', testargs):
+        # FIXME: Correctly capture return codes
+        Trestle().run()
+    yield tmpdir
+
+    os.chdir(pytest_cwd)
+
+
+@pytest.fixture(scope='function')
+def tmp_empty_cwd(tmpdir: pathlib.Path) -> pathlib.Path:
+    """Create a temporary directory and cd into that directory with fail out afterwards.
+
+    The purpose of this is to provide a clean directory per unit test and ensure we get
+    back to the base time.
+    """
+    pytest_cwd = pathlib.Path.cwd()
+    os.chdir(tmpdir)
+
+    yield tmpdir
+
+    os.chdir(pytest_cwd)
