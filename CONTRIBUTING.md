@@ -50,6 +50,16 @@ release once per sprint (2 weeks)
 Hotfixes *may* be merged directly into master when critical bugs are found. Each hotfix *must* be squashed when merging
 into master and MUST only be a commit of type `fix:` in angular style.
 
+## Typing, docstrings and documentation
+
+`trestle` has a goal of using [PEP 484](https://www.python.org/dev/peps/pep-0484/) type annotations where possible / practical.
+The devops process does not _strictly_ enforce typing, however, the expectation is that type coverage is added for new
+commits with a focus on quality over quantity (e.g. don't add `Any` everywhere just to meet coverage requirements).
+
+`mkbuild` is used to generate the [trestle documenation site](https://ibm.github.io/compliance-trestle). The `mkbuild`
+website includes an API reference section generated from the code. Docstrings within the code are expected to follow
+[google style docstrings](https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html).
+
 ## Legal
 
 Each source file must include a license header for the Apache
