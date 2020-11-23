@@ -1,17 +1,16 @@
 # Trestle CLI Specifications (v0.1.0)
 
-
 ## Table of Contents
 
-- [Purpose](<#purpose>)
-- [Users](<#users>)
-- [Scope](<#scope>)
-- [Trestle commands](<#trestle-commands>)
-  - [Draft commands](<#draft-commands>)
-- [Future work](<#future-work>)
-  - [Deploy commands](<#deploy-commands>)
-  - [Monitor commands](<#monitor-commands>)
-  - [Reporting commands](<#reporting-commands>)
+- [Purpose](#purpose)
+- [Users](#users)
+- [Scope](#scope)
+- [Trestle commands](#trestle-commands)
+  - [Draft commands](#draft-commands)
+- [Future work](#future-work)
+  - [Deploy commands](#deploy-commands)
+  - [Monitor commands](#monitor-commands)
+  - [Reporting commands](#reporting-commands)
 
 ## Purpose
 
@@ -110,10 +109,8 @@ This command will create an initial directory structure for various OSCAL models
 ...
 ```
 
-
 Notice that subdirectories under a trestle directory model such as `$TRESTLE_BASEDIR/catalogs/nist800-53/catalog` and `$TRESTLE_BASEDIR/catalogs/nist800-53/catalog/groups` represent a decomposition of the original file. The subdirectory `catalog` means that the original `catalog.json` was split and the split parts are inside the `catalog` directory (in this case `groups`).
 Every subdirectory in a trestle directory model should have a corresponding `.json` or `.yaml` file with the same name. Exceptions to that rule are named fields (dicts) such as `catalog.metadata.responsible-parties` and array fields such as `catalog.groups`. When those subcomponents are split/expanded each file or subdirectory under them represents an item of the collection. Because of that, if a corresponding `groups.json | groups.yaml` file were to exist, its contents would just be an empty representation of that collection and the user would need to be careful never to edit that file. Therefore, we decided not to create that corresponding file in those cases. Following the same logic, another exception is when all the fields from a `.json | .yaml` file are split, leaving the original file as an empty object. In that case, the file would be deleted as well.
-
 
 The following subcommands are currently supported:
 
@@ -318,7 +315,6 @@ To illustrate how this command could be used consider a catalog model named `nis
 
 **Step 1**: A user might want to decompose the `metadata` property from `catalog.json`. The command to achieve that would be:
 
-
 `$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle split -f catalog.json -e 'catalog.metadata'`.
 
 This would create a `metadata.json` file under `catalog` subdirectory and move the whole `metadata` property/section from `catalog.json` to `catalog/metadata.json` as below:
@@ -352,7 +348,6 @@ This would create a `metadata.json` file under `catalog` subdirectory and move t
 The future version of this command would be:
 
 > `$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle split -e 'catalog.metadata'`
-
 
 **Step 2**: Suppose now the user wants to further break down the `revision-history` property under the `metadata` subcomponent. The command to achieve that would be:
 
@@ -453,7 +448,7 @@ A more evident example of this type of property is in the `targets` property und
 
 **Step 4**: Suppose the user wants to split the `responsible-parties` property in order to be able to edit each arbitrary key/value object under it as a separate file. The command to achieve that would be:
 
- `$TRESTLE_BASEDIR/catalogs/nist800-53/catalog$ trestle split -f metadata.json -e metadata.responsible-parties.*`
+`$TRESTLE_BASEDIR/catalogs/nist800-53/catalog$ trestle split -f metadata.json -e metadata.responsible-parties.*`
 
 Notice the `.*` at the end referring to each key/value pair in the map).
 The command would result in creating a directory called `responsible-parties` under `metadata` and multiple JSON files under it, one for each named field using the key of the named field as the name of the JSON file. The result is shown below:

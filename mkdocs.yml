@@ -1,0 +1,62 @@
+site_name: "Compliance Trestle"
+site_description: "Documentation for compliance-trestle package."
+site_url: "https://compliance-trestle.github.io"
+repo_url: "https://github.com/IBM/compliance-trestle"
+repo_name: "IBM/compliance-trestle"
+
+nav:
+  - Overview: index.md
+  - Trestle commands: commands.md
+  - API Reference:
+    - oscal:
+      - Catalog: api_reference/oscal/catalog.md
+      - Profile: api_reference/oscal/catalog.md
+      - Component: api_reference/oscal/component.md
+      - Target (Trestle defined): api_reference/oscal/target.md
+      - System Security Plan: api_reference/oscal/ssp.md
+      - System Assessment Plan: api_reference/oscal/sap.md
+      - System Assessment Results: api_reference/oscal/sar.md
+      - Plan of action & Milestones: api_reference/oscal/poam.md
+    - core:
+      - models: api_reference/core/models.md
+      - remote: api_reference/core/remote.md
+  - Code of Conduct: ../CODE_OF_CONDUCT.md
+  - Contributing: ../CONTRIBUTING.md
+
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: teal
+    accent: purple
+
+
+
+markdown_extensions:
+  - admonition
+  - markdown_include.include
+  - pymdownx.emoji
+  - pymdownx.magiclink
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist
+  - toc:
+      permalink: "¤"
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          selection:
+            new_path_syntax: yes
+            filters:
+              - "!^_[^_]"
+              - "!^__json"
+          rendering:
+            show_root_heading: True
+            
+
+      watch:
+        - trestle

@@ -48,3 +48,6 @@ release::
 
 gen-oscal::
 	python ./scripts/gen_oscal.py
+
+docs-site:
+	mkdocs serve	
