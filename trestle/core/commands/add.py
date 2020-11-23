@@ -21,6 +21,7 @@ from ilcli import Command  # type: ignore
 
 import trestle.core.const as const
 import trestle.core.err as err
+import trestle.core.generators as gens
 from trestle.core import utils
 from trestle.core.models.actions import CreatePathAction, UpdateAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
@@ -108,7 +109,7 @@ class AddCmd(Command):
         try:
             child_model = utils.get_target_model(element_path_list, parent_model)
             # Create child element with sample values
-            child_object = utils.get_sample_model(child_model)
+            child_object = gens.generate_sample_model(child_model)
 
             if parent_element.get_at(element_path) is not None:
                 # The element already exists

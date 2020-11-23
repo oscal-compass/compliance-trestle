@@ -15,6 +15,3 @@ coverage:
         if_not_found: success
         if_ci_failed: error
         only_pulls: false
-
-ignore:
-  - "trestle/oscal"
