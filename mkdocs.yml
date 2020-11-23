@@ -54,9 +54,12 @@ plugins:
             filters:
               - "!^_[^_]"
               - "!^__json"
+              - "!^__config__"
           rendering:
             show_root_heading: True
-            
+            show_category_heading: True
+            show_if_no_docstring: True
+            group_by_category: True
 
       watch:
         - trestle
