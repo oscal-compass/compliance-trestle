@@ -15,46 +15,34 @@
 # limitations under the License.
 """Validate by confirming no duplicate items."""
 
+import argparse
 import pathlib
-from typing import Any, Dict
+from abc import ABC, abstractmethod
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.validator_helper import find_values_by_name
 from trestle.utils import fs
 
 
-class DuplicatesValidator:
+class Validator(ABC):
+    """Abstract Validator interface."""
+
+    @abstractmethod
+    def validate(self, args: argparse.Namespace) -> int:
+        """Validate the model."""
+
+
+class DuplicatesValidator(Validator):
     """Find duplicate items in oscal object."""
 
-    def __init__(self, **kwargs: Dict[str, Any]) -> None:
-        """No initialization needed."""
-        pass
-
-    def validate(self, **kwargs: Dict[str, Any]) -> int:
+    def validate(self, args: argparse.Namespace) -> int:
         """Perform the validation."""
-        oscal_object_name = kwargs['file']
-        item_name = kwargs['item']
-
-        file_path = pathlib.Path(oscal_object_name).absolute()
+        file_path = pathlib.Path(args.file).absolute()
         model_type, _ = fs.get_contextual_model_type(file_path)
         model: OscalBaseModel = model_type.oscal_read(file_path)
 
-        loe = find_values_by_name(model, item_name)
+        loe = find_values_by_name(model, args.item)
         if loe:
             nitems = len(loe)
             return 0 if nitems == len(set(loe)) else 1
         return 0
-
-
-class DuplicatesValidatorBuilder:
-    """Builder for the validator."""
-
-    def __init__(self) -> None:
-        """Initialize the instance as None."""
-        self._instance = None
-
-    def __call__(self, **kwargs: Dict[str, Any]) -> Any:
-        """Do the validation call."""
-        if not self._instance:
-            self._instance = DuplicatesValidator(**kwargs)
-        return self._instance

@@ -19,36 +19,18 @@ import argparse
 
 from ilcli import Command
 
-from trestle.core import const
-from trestle.core.validator_factory import validator_factory
+import trestle.core.validator_factory as vfact
 
 
 class ValidateCmd(Command):
-    """Validate contents of a trestle model."""
+    """Validate contents of a trestle model in different modes."""
 
     name = 'validate'
 
     def _init_arguments(self) -> None:
-        self.add_argument(
-            f'-{const.ARG_FILE_SHORT}',
-            f'--{const.ARG_FILE}',
-            help=const.ARG_DESC_FILE + ' to validate.',
-        )
-        self.add_argument(
-            f'-{const.ARG_ITEM_SHORT}',
-            f'--{const.ARG_ITEM}',
-            help=const.ARG_DESC_ITEM + ' to validate.',
-        )
-        self.add_argument(
-            f'-{const.ARG_MODE_SHORT}',
-            f'--{const.ARG_MODE}',
-            help=const.ARG_DESC_MODE + ' to validate.',
-        )
+        vfact.init_arguments(self)
 
-    def _run(self, args: argparse.ArgumentParser) -> int:
-        """Validate an OSCAL file in different modes."""
-        args_raw = args.__dict__
+    def _run(self, args: argparse.Namespace) -> int:
+        validator = vfact.validator_factory.get(args)
 
-        validator = validator_factory.create(args_raw[const.ARG_MODE])
-
-        return validator.validate(**args_raw)
+        return validator.validate(self, args)

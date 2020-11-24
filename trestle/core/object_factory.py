@@ -15,6 +15,7 @@
 # limitations under the License.
 """Generic object factory."""
 
+import argparse
 from typing import Any, Dict
 
 
@@ -22,16 +23,13 @@ class ObjectFactory:
     """Allow registration and creation of validators."""
 
     def __init__(self) -> None:
-        """Initialize the builders dictionary as empty."""
-        self._builders: Dict[str, Any] = {}
+        """Initialize the objects dictionary as empty."""
+        self._objects: Dict[str, Any] = {}
 
-    def register_builder(self, key: str, builder: Any) -> None:
-        """Register the builder."""
-        self._builders[key] = builder
+    def register_object(self, mode: str, obj: Any) -> None:
+        """Register the object."""
+        self._objects[mode] = obj
 
-    def create(self, key: str, **kwargs: Dict[str, Any]) -> Any:
-        """Create the builder."""
-        builder = self._builders.get(key)
-        if not builder:
-            raise ValueError(key)
-        return builder(**kwargs)
+    def get(self, args: argparse.Namespace) -> Any:
+        """Create the object from the args."""
+        return self._objects.get(args.mode)
