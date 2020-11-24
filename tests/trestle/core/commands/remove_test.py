@@ -126,6 +126,15 @@ def test_remove_failure(tmp_dir, sample_catalog_minimal):
         add_plan.simulate()
         add_plan.execute()
 
+    # 3. Remove an element with a wildcard:
+    element_path = ElementPath('catalog.metadata.*')
+    with pytest.raises(err.TrestleError):
+        remove_action, remove_results = RemoveCmd.remove(element_path, Catalog, minimal_catalog)
+        add_plan = Plan()
+        add_plan.add_action(remove_action)
+        add_plan.simulate()
+        add_plan.execute()
+
 
 def test_run_failure():
     """Test failure of _run for RemoveCmd."""
