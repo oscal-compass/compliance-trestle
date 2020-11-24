@@ -13,24 +13,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Trestle Validate Command."""
+"""Generic object factory."""
 
 import argparse
-
-from ilcli import Command
-
-import trestle.core.validator_factory as vfact
+from typing import Any, Dict
 
 
-class ValidateCmd(Command):
-    """Validate contents of a trestle model in different modes."""
+class ObjectFactory:
+    """Allow registration and creation of validators."""
 
-    name = 'validate'
+    def __init__(self) -> None:
+        """Initialize the objects dictionary as empty."""
+        self._objects: Dict[str, Any] = {}
 
-    def _init_arguments(self) -> None:
-        vfact.init_arguments(self)
+    def register_object(self, mode: str, obj: Any) -> None:
+        """Register the object."""
+        self._objects[mode] = obj
 
-    def _run(self, args: argparse.Namespace) -> int:
-        validator = vfact.validator_factory.get(args)
-
-        return validator.validate(self, args)
+    def get(self, args: argparse.Namespace) -> Any:
+        """Create the object from the args."""
+        return self._objects.get(args.mode)
