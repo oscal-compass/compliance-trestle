@@ -155,12 +155,14 @@ def test_run_failure():
 
 def test_run(tmp_dir, sample_catalog_minimal):
     """Test _run for RemoveCmd."""
+    # 1. Test trestle remove for one element.
     # expected catalog after remove of Responsible-Party
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_no_responsible-parties.json')
     expected_catalog_no_rp = Catalog.oscal_read(file_path)
 
-    content_type = FileContentType.YAML
+    content_type = FileContentType.JSON
 
+    # Create a temporary file with responsible-parties to be removed.
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
         tmp_dir,
         content_type,
@@ -174,4 +176,26 @@ def test_run(tmp_dir, sample_catalog_minimal):
         Trestle().run()
 
     actual_catalog = Catalog.oscal_read(catalog_def_file)
+    assert expected_catalog_no_rp == actual_catalog
+
+    # 2. Test trestle remove for multiple comma-separated elements.
+    # minimal catalog with Roles and Resposibile-Parties.
+    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_roles.json')
+    catalog_with_roles = Element(Catalog.oscal_read(file_path))
+    catalog_with_roles_responsible_parties = Catalog.oscal_read(file_path)
+
+    # Create a temporary file with Roles and Responsible-Parties to be removed.
+    catalog_def_dir, catalog_def_file_2 = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        catalog_with_roles_responsible_parties,
+        test_utils.CATALOGS_DIR
+    )
+
+    testargs = ['trestle', 'remove', '-f', str(catalog_def_file_2), '-e', 'catalog.metadata.responsible-parties,catalog.metadata.roles']
+
+    with patch.object(sys, 'argv', testargs):
+        Trestle().run()
+
+    actual_catalog = Catalog.oscal_read(catalog_def_file_2)
     assert expected_catalog_no_rp == actual_catalog
