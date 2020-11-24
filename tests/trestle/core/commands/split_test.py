@@ -391,14 +391,14 @@ def test_split_model_at_path_chain_failures(tmp_dir, sample_catalog: oscatalog.C
 
     # too large path index should return the path index
     cur_path_index = len(element_paths) + 1
-    cur_path_index == SplitCmd.split_model_at_path_chain(
+    SplitCmd.split_model_at_path_chain(
         sample_catalog, element_paths, catalog_dir, content_type, cur_path_index, split_plan, False
     )
 
     # invalid model path should return withour doing anything
     element_paths = [ElementPath('catalog.meta')]
     cur_path_index = 0
-    cur_path_index == SplitCmd.split_model_at_path_chain(
+    SplitCmd.split_model_at_path_chain(
         sample_catalog, element_paths, catalog_dir, content_type, cur_path_index, split_plan, False
     )
 
