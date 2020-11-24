@@ -61,3 +61,12 @@ def test_target_dups(tmp_dir) -> None:
             cli.run()
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 1
+
+    shutil.copyfile('tests/data/yaml/good_target.yaml', model_def_file)
+
+    testcmd = f'trestle validate -f {model_def_file} -m duplicates -i foobar'
+    with patch.object(sys, 'argv', testcmd.split()):
+        with pytest.raises(SystemExit) as pytest_wrapped_e:
+            cli.run()
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code == 0
