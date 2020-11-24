@@ -181,7 +181,6 @@ def test_run(tmp_dir, sample_catalog_minimal):
     # 2. Test trestle remove for multiple comma-separated elements.
     # minimal catalog with Roles and Resposibile-Parties.
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_roles.json')
-    catalog_with_roles = Element(Catalog.oscal_read(file_path))
     catalog_with_roles_responsible_parties = Catalog.oscal_read(file_path)
 
     # Create a temporary file with Roles and Responsible-Parties to be removed.
@@ -192,7 +191,14 @@ def test_run(tmp_dir, sample_catalog_minimal):
         test_utils.CATALOGS_DIR
     )
 
-    testargs = ['trestle', 'remove', '-f', str(catalog_def_file_2), '-e', 'catalog.metadata.responsible-parties,catalog.metadata.roles']
+    testargs = [
+        'trestle',
+        'remove',
+        '-f',
+        str(catalog_def_file_2),
+        '-e',
+        'catalog.metadata.responsible-parties,catalog.metadata.roles'
+    ]
 
     with patch.object(sys, 'argv', testargs):
         Trestle().run()
