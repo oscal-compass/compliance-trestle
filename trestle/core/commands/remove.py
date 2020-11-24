@@ -57,10 +57,6 @@ class RemoveCmd(Command):
         Then the method executes 'remove' for each of the element paths specified.
         """
         args = args.__dict__
-        if args[const.ARG_FILE] is None:
-            raise err.TrestleError(f'Argument "-{const.ARG_FILE_SHORT}" is required')
-        if args[const.ARG_ELEMENT] is None:
-            raise err.TrestleError(f'Argument "-{const.ARG_ELEMENT}" is required')
 
         file_path = pathlib.Path(args[const.ARG_FILE])
 
@@ -105,7 +101,7 @@ class RemoveCmd(Command):
         """
         element_path_list = element_path.get_full_path_parts()
         if '*' in element_path_list:
-            raise err.TrestleError('trestle add does not support Wildcard element path.')
+            raise err.TrestleError('trestle remove does not support Wildcard element path.')
 
         try:
             deleting_element = parent_element.get_at(element_path)
