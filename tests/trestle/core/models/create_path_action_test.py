@@ -113,7 +113,7 @@ def test_create_path_with_content_clear_option(tmp_dir: pathlib.Path):
     assert tmp_data_dir_file.exists()
     with open(tmp_data_dir_file, 'a+') as fp:
         assert file_pos == fp.tell()
-        dummy_data == fp.readline()
+        fp.readline()
 
     # clearing content on direction should have no effect of the flag
     tmp_data_dir2 = tmp_dir / 'data2'
