@@ -15,8 +15,9 @@
 """Dynamic Model Parser."""
 
 import importlib
+import pathlib
 import warnings
-from typing import Any, Dict, List, Type, cast
+from typing import Any, Dict, List, Optional, Type, cast
 
 from pydantic import Field, create_model
 
@@ -59,7 +60,6 @@ def parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
 
 def root_key(data: Dict[str, Any]) -> str:
     """Find root model name in the data."""
-    warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     if len(data.items()) == 1:
         return next(iter(data))
 
@@ -83,7 +83,7 @@ def to_class_name(name: str) -> str:
     return ''.join(chars)
 
 
-def to_full_model_name(root_key: str, name: str = None):
+def to_full_model_name(root_key: str, name: str = None) -> Optional[str]:
     """Find model name from the root_key in the file."""
     warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     try:
@@ -116,7 +116,7 @@ def to_full_model_name(root_key: str, name: str = None):
     return None
 
 
-def parse_file(file_name: str, model_name: str):
+def parse_file(file_name: pathlib.Path, model_name: str) -> OscalBaseModel:
     """Load a model from the file.
 
     Argument:
@@ -158,7 +158,7 @@ def wrap_for_output(model: OscalBaseModel) -> OscalBaseModel:
 def wrap_for_input(raw_class: Type[OscalBaseModel]) -> Type[OscalBaseModel]:
     """In this instance we are wrapping an actual OSCAL class not an instance."""
     warnings.warn(
-        'trestle.parser functions are deprecated. wrap_for_input built ito OSCALBaseModel', DeprecationWarning
+        'trestle.parser functions are deprecated. wrap_for_input built ito OscalBaseModel', DeprecationWarning
     )
     # TODO: Check behaviour is fine when no
     class_name = raw_class.__name__

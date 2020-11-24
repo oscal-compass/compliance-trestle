@@ -41,7 +41,7 @@ class FileContentType(Enum):
         """Get content type form file extension."""
         if file_extension == '.json':
             return FileContentType.JSON
-        elif file_extension == '.yaml':
+        elif file_extension == '.yaml' or file_extension == '.yml':
             return FileContentType.YAML
 
         raise TrestleError(f'Unsupported file extension {file_extension}')

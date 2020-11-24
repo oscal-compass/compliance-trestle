@@ -1,5 +1,3 @@
-# -*- mode:python; coding:utf-8 -*-
-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,24 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Trestle Validate Command."""
+"""Interfaces tests which is a little redudant."""
 
-import argparse
+import pytest
 
-from ilcli import Command
-
-import trestle.core.validator_factory as vfact
+import trestle.core.models.interfaces as interfaces
 
 
-class ValidateCmd(Command):
-    """Validate contents of a trestle model in different modes."""
+def test_oscal_assembly() -> None:
+    """Basic test of model tree functionality."""
+    instance = interfaces.OSCALAssembly()
+    broken_pseudo_sar = {'fake': True}
 
-    name = 'validate'
-
-    def _init_arguments(self) -> None:
-        vfact.init_arguments(self)
-
-    def _run(self, args: argparse.Namespace) -> int:
-        validator = vfact.validator_factory.get(args)
-
-        return validator.validate(self, args)
+    with pytest.raises(Exception):
+        instance.sar = broken_pseudo_sar  # typing: ignore

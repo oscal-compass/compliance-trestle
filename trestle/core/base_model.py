@@ -24,7 +24,9 @@ from pydantic import BaseModel, Extra, Field, create_model
 from pydantic.fields import ModelField
 from pydantic.parse import load_file
 
+import trestle.core.const as const
 import trestle.core.err as err
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.utils import classname_to_alias
 
 import yaml
@@ -56,7 +58,7 @@ class OscalBaseModel(BaseModel):
         json_encoders = {datetime.datetime: lambda x: robust_datetime_serialization(x)}
         # this is not safe and caused class: nan in yaml output
         # TODO: Explore fix.
-        allow_population_by_field_name = True  # noqa: E800
+        allow_population_by_field_name = True
 
         # Enforce strict schema
         extra = Extra.forbid
@@ -122,8 +124,9 @@ class OscalBaseModel(BaseModel):
         attr_field = self.alias_to_field_map().get(field_alias, None)
         return attr_field
 
-    def get_field_value_by_alias(self, attr_alias: str):
+    def get_field_value_by_alias(self, attr_alias: str) -> Optional[Any]:
         """Get attribute value by field alias."""
+        # TODO: can this be restricted beyond Any easily.
         attr_field = self.get_field_by_alias(attr_alias)
         if isinstance(attr_field, ModelField):
             return getattr(self, attr_field.name, None)
@@ -154,7 +157,7 @@ class OscalBaseModel(BaseModel):
 
         return stripped_instance
 
-    def oscal_write(self, path: pathlib.Path, minimize_json=False) -> None:
+    def oscal_write(self, path: pathlib.Path, minimize_json: bool = False) -> None:
         """
         Write oscal objects.
 
@@ -173,17 +176,13 @@ class OscalBaseModel(BaseModel):
         wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_parser)  # type: ignore
         # Default behaviour is strange here.
         wrapped_model = wrapper_model(**{classname_to_alias(class_name, 'json'): self})
-
-        yaml_suffix = ['.yaml', '.yml']
-        json_suffix = ['.json']
-        encoding = 'utf8'
-        write_file = pathlib.Path(path).open('w', encoding=encoding)
-        if path.suffix in yaml_suffix:
+        #
+        content_type = FileContentType.to_content_type(path.suffix)
+        write_file = pathlib.Path(path).open('w', encoding=const.FILE_ENCODING)
+        if content_type == FileContentType.YAML:
             yaml.dump(yaml.safe_load(wrapped_model.json(exclude_none=True, by_alias=True)), write_file)
-            pass
-        elif path.suffix in json_suffix:
+        elif content_type == FileContentType.JSON:
             write_file.write(wrapped_model.json(exclude_none=True, by_alias=True, indent=2))
-
         else:
             raise err.TrestleError('Unknown file type')
 
@@ -194,16 +193,14 @@ class OscalBaseModel(BaseModel):
 
         Handles the fact OSCAL wrap's top level elements and also deals with both yaml and json.
         """
-        # Define valid extensions
-        yaml_suffix = ['.yaml', '.yml']
-        json_suffix = ['.json']
-
         # Create the wrapper model.
         alias = classname_to_alias(cls.__name__, 'json')
 
-        if path.suffix in yaml_suffix:
+        content_type = FileContentType.to_content_type(path.suffix)
+
+        if content_type == FileContentType.YAML:
             return cls.parse_obj(yaml.safe_load(path.open())[alias])
-        elif path.suffix in json_suffix:
+        elif content_type == FileContentType.JSON:
             obj = load_file(
                 path,
                 json_loads=cls.__config__.json_loads,

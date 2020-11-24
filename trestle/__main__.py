@@ -1,5 +1,4 @@
 # -*- mode:python; coding:utf-8 -*-
-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,24 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Trestle Validate Command."""
+"""Wrapper to allow python -m trestle calls."""
 
-import argparse
+import trestle.cli
 
-from ilcli import Command
-
-import trestle.core.validator_factory as vfact
-
-
-class ValidateCmd(Command):
-    """Validate contents of a trestle model in different modes."""
-
-    name = 'validate'
-
-    def _init_arguments(self) -> None:
-        vfact.init_arguments(self)
-
-    def _run(self, args: argparse.Namespace) -> int:
-        validator = vfact.validator_factory.get(args)
-
-        return validator.validate(self, args)
+if __name__ == '__main__':
+    trestle.cli.run()

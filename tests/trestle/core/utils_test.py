@@ -15,10 +15,6 @@
 # limitations under the License.
 """Tests for models util module."""
 import pathlib
-import uuid
-from datetime import datetime
-
-from pydantic import ConstrainedStr, typing
 
 import pytest
 
@@ -183,37 +179,13 @@ def test_classname_to_alias():
     assert json_alias == 'member_of_organization'
 
 
-def test_alias_to_classname():
+def test_alias_to_classname() -> None:
     """Test alias_to_classname function."""
     assert mutils.alias_to_classname('target-definition', 'json') == 'TargetDefinition'
     assert mutils.alias_to_classname('target_definition', 'field') == 'TargetDefinition'
 
     with pytest.raises(err.TrestleError):
         assert mutils.alias_to_classname('target-definition', 'invalid') == 'TargetDefinition'
-
-
-def is_valid_uuid(val):
-    """Check if a string is a valid uuid."""
-    try:
-        uuid.UUID(str(val))
-        return True
-    except ValueError:
-        return False
-
-
-def test_get_sample_value_by_type():
-    """Test get_sample_value_by_type function."""
-    assert type(mutils.get_sample_value_by_type(datetime, '')) == datetime
-    assert mutils.get_sample_value_by_type(bool, '') is False
-    assert mutils.get_sample_value_by_type(int, '') == 0
-    assert mutils.get_sample_value_by_type(str, '') == 'REPLACE_ME'
-    assert mutils.get_sample_value_by_type(float, '') == 0.00
-    assert mutils.get_sample_value_by_type(ConstrainedStr, '') == '00000000-0000-4000-8000-000000000000'
-    uuid_ = mutils.get_sample_value_by_type(ConstrainedStr, 'uuid')
-    assert is_valid_uuid(uuid_) and str(uuid_) != '00000000-0000-4000-8000-000000000000'
-
-    with pytest.raises(err.TrestleError):
-        mutils.get_sample_value_by_type(list, 'uuid')
 
 
 def test_get_target_model():
@@ -245,45 +217,3 @@ def test_get_target_model():
 
     with pytest.raises(err.TrestleError):
         mutils.get_target_model(['catalog', 'metadata', 'bad_element'], catalog.Catalog)
-
-
-def test_get_sample_model():
-    """Test utils method get_sample_model."""
-    # Create the expected catalog first
-    expected_ctlg_dict = {
-        'uuid': 'ea784488-49a1-4ee5-9830-38058c7c10a4',
-        'metadata': {
-            'title': 'REPLACE_ME',
-            'last-modified': '2020-10-21T06:52:10.387+00:00',
-            'version': 'REPLACE_ME',
-            'oscal-version': 'REPLACE_ME'
-        }
-    }
-    expected_ctlg = catalog.Catalog(**expected_ctlg_dict)
-
-    actual_ctlg = mutils.get_sample_model(catalog.Catalog)
-
-    # Check if uuid is valid, then change to uuid of expected catalog, as newly generated
-    # uuids will always be different
-    assert is_valid_uuid(actual_ctlg.uuid)
-    actual_ctlg.uuid = expected_ctlg.uuid
-    # Check if last-modified datetime is of type datetime, and then equate in actual and expected
-    assert type(actual_ctlg.metadata.last_modified) is catalog.LastModified
-    actual_ctlg.metadata.last_modified = expected_ctlg.metadata.last_modified
-    # Check that expected generated catalog is now same a actual catalog
-    assert expected_ctlg == actual_ctlg
-
-    # Test list type models
-    expected_role = catalog.Role(**{'id': 'REPLACE_ME', 'title': 'REPLACE_ME'})
-    list_role = mutils.get_sample_model(typing.List[catalog.Role])
-    assert type(list_role) is list
-    actual_role = list_role[0]
-    assert expected_role == actual_role
-
-    # Test dict type models
-    expected_rp = {'party-uuids': ['00000000-0000-4000-8000-000000000000']}
-    expected_rp = catalog.ResponsibleParty(**expected_rp)
-    expected_rp_dict = {'REPLACE_ME': expected_rp}
-    actual_rp_dict = mutils.get_sample_model(typing.Dict[str, catalog.ResponsibleParty])
-    assert type(actual_rp_dict) is dict
-    assert expected_rp_dict == actual_rp_dict
