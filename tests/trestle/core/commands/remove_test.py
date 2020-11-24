@@ -24,7 +24,6 @@ from tests import test_utils
 
 import trestle.core.err as err
 from trestle.cli import Trestle
-from trestle.core.commands.add import AddCmd
 from trestle.core.commands.remove import RemoveCmd
 from trestle.core.models.actions import RemoveAction
 from trestle.core.models.elements import Element, ElementPath
@@ -126,3 +125,44 @@ def test_remove_failure(tmp_dir, sample_catalog_minimal):
         add_plan.add_action(remove_action)
         add_plan.simulate()
         add_plan.execute()
+
+
+def test_run_failure():
+    """Test failure of _run for RemoveCmd."""
+    testargs = ['trestle', 'remove', '-e', 'catalog.metadata.roles']
+    with patch.object(sys, 'argv', testargs):
+        with pytest.raises(SystemExit) as e:
+            Trestle().run()
+        assert e.type == SystemExit
+        assert e.value.code == 2
+
+    testargs = ['trestle', 'remove', '-f', './catalog.json']
+    with patch.object(sys, 'argv', testargs):
+        with pytest.raises(SystemExit) as e:
+            Trestle().run()
+        assert e.type == SystemExit
+        assert e.value.code == 2
+
+
+def test_run(tmp_dir, sample_catalog_minimal):
+    """Test _run for RemoveCmd."""
+    # expected catalog after remove of Responsible-Party
+    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_no_responsible-parties.json')
+    expected_catalog_no_rp = Catalog.oscal_read(file_path)
+
+    content_type = FileContentType.YAML
+
+    catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_catalog_minimal,
+        test_utils.CATALOGS_DIR
+    )
+
+    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata.responsible-parties']
+
+    with patch.object(sys, 'argv', testargs):
+        Trestle().run()
+
+    actual_catalog = Catalog.oscal_read(catalog_def_file)
+    assert expected_catalog_no_rp == actual_catalog
