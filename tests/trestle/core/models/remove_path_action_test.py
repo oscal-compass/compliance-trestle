@@ -61,7 +61,7 @@ def test_remove_path_file(tmp_dir: pathlib.Path):
 
     # rollback file
     rpa.rollback()
-    tmp_data_file_trash.exists() is False
+    tmp_data_file_trash.exists()
     tmp_data_file.exists()
     with open(tmp_data_file, 'a+') as fp:
         assert file_pos == fp.tell()

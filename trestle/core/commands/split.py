@@ -18,7 +18,7 @@ import argparse
 import pathlib
 from typing import Dict, List
 
-from ilcli import Command  # type: ignore
+from ilcli import Command
 
 from trestle.core import const
 from trestle.core import utils
