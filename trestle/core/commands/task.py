@@ -34,12 +34,14 @@ logger = log.get_logger()
 
 
 class TaskCmd(Command):
-    """Run arbitrary trestle tasks in a templated method."""
+    """Run arbitrary trestle tasks in a simple and extensible methodology."""
+
+    name = 'task'
 
     def _init_arguments(self) -> None:
         self.add_argument(
             'task',
-            nargs=1,
+            nargs='?',
             type=str,
             help='The name of the task to be run, trestle task -l will list available tasks.'
         )
@@ -52,11 +54,11 @@ class TaskCmd(Command):
     def _run(self, args: argparse.Namespace) -> int:
         # TOD
         # Initial logic for conflicting args
-        if len(args.task) > 0 and args.list:
+        if args.task and args.list:
             logger.error('Incorrect use of trestle tasks')
             logger.error('')
             return 1
-        elif len(args.task) == 0 and not args.list:
+        elif args.task == 0 and not args.list:
             logger.error('Insufficient arguments passed to trestle task')
             logger.error('Either a trestle task or "-l/--list" shoudl be passed as input arguments.')
             return 1
@@ -76,7 +78,7 @@ class TaskCmd(Command):
             logger.error(f'Config file at {config_path} does not exist.')
             return 1
         # run setup
-        task_index = self.__build_task_index()
+        task_index = self._build_task_index()
 
         # Clean to run
         if args.list:
