@@ -16,18 +16,21 @@
 """Trestle Remove Command."""
 
 import pathlib
-import warnings
 
 from ilcli import Command  # type: ignore
 
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core import utils
+from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemoveAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs
+from trestle.utils import log
+
+logger = log.get_logger()
 
 
 class RemoveCmd(Command):
@@ -71,7 +74,12 @@ class RemoveCmd(Command):
         element_paths: list[str] = args[const.ARG_ELEMENT].split(',')
         for elm_path_str in element_paths:
             element_path = ElementPath(elm_path_str)
-            remove_action, parent_element = self.remove(element_path, parent_model, parent_element)
+            try:
+                remove_action, parent_element = self.remove(element_path, parent_model, parent_element)
+            except TrestleError as err:
+                logger.debug(f'self.remove() failed: {err}')
+                logger.error(f'Remove failed: {err}')
+                return 1
             add_plan.add_action(remove_action)
 
         create_action = CreatePathAction(file_path.absolute(), True)
@@ -81,8 +89,22 @@ class RemoveCmd(Command):
         add_plan.add_action(remove_action)
         add_plan.add_action(create_action)
         add_plan.add_action(write_action)
-        add_plan.simulate()
-        add_plan.execute()
+
+        try:
+            add_plan.simulate()
+        except TrestleError as err:
+            logger.debug(f'Remove failed at simulate(): {err}')
+            logger.error(f'Remove failed: {err}')
+            return 1
+
+        try:
+            add_plan.execute()
+        except TrestleError as err:
+            logger.debug(f'Remove failed at execute(): {err}')
+            logger.error(f'Remove failed: {err}')
+            return 1
+
+        return 0
 
     @classmethod
     def remove(cls, element_path, parent_model, parent_element):
@@ -103,24 +125,18 @@ class RemoveCmd(Command):
         if '*' in element_path_list:
             raise err.TrestleError('trestle remove does not support Wildcard element path.')
 
-        try:
-            deleting_element = parent_element.get_at(element_path)
+        deleting_element = parent_element.get_at(element_path)
 
-            if deleting_element is not None:
-                # The element already exists
-                if type(deleting_element) is list:
-                    pass
-                    warnings.warn('trestle remove does not support removing elements of a list', Warning)
-                    warnings.warn('trestle remove of a list removes the entire list', Warning)
-                elif type(deleting_element) is dict:
-                    pass
-                    warnings.warn('trestle remove does not support removing dict elements', Warning)
-                    warnings.warn('trestle remove of a dict element removes the entire dict element', Warning)
-            else:
-                raise err.TrestleError(f'Bad element path. {str(element_path)}')
-
-        except Exception as e:
-            raise err.TrestleError(f'Bad element path. {str(e)}')
+        if deleting_element is not None:
+            # The element already exists
+            if type(deleting_element) is list:
+                logger.warn('trestle remove does not support removing elements of a list')
+                logger.warn('trestle remove of a list removes the entire list')
+            elif type(deleting_element) is dict:
+                logger.warn('trestle remove does not support removing dict elements')
+                logger.warn('trestle remove of a dict element removes the entire dict element')
+        else:
+            raise err.TrestleError(f'Bad element path: {str(element_path)}')
 
         remove_action = RemoveAction(parent_element, element_path)
 
