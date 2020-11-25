@@ -16,6 +16,7 @@
 """Trestle Remove Command."""
 
 import pathlib
+from typing import Tuple
 
 from ilcli import Command  # type: ignore
 
@@ -52,7 +53,7 @@ class RemoveCmd(Command):
             required=True
         )
 
-    def _run(self, args):
+    def _run(self, args) -> int:
         """Remove an OSCAL component/subcomponent to the specified component.
 
         This method takes input a filename and a list of comma-seperated element path. Element paths are field aliases.
@@ -107,7 +108,7 @@ class RemoveCmd(Command):
         return 0
 
     @classmethod
-    def remove(cls, element_path, parent_model, parent_element):
+    def remove(cls, element_path, parent_model, parent_element) -> Tuple[RemoveAction, Element]:
         """For the element_path, remove a model from the parent_element of a given parent_model.
 
         First we check if there is an existing element at that path
@@ -130,11 +131,15 @@ class RemoveCmd(Command):
         if deleting_element is not None:
             # The element already exists
             if type(deleting_element) is list:
-                logger.warn('trestle remove does not support removing elements of a list')
-                logger.warn('trestle remove of a list removes the entire list')
+                logger.warn(
+                    'Warning: trestle remove does not support removing elements of a list: '
+                    'this removes the entire list'
+                )
             elif type(deleting_element) is dict:
-                logger.warn('trestle remove does not support removing dict elements')
-                logger.warn('trestle remove of a dict element removes the entire dict element')
+                logger.warn(
+                    'Warning: trestle remove does not support removing dict elements: '
+                    'this removes the entire dict element'
+                )
         else:
             raise err.TrestleError(f'Bad element path: {str(element_path)}')
 
