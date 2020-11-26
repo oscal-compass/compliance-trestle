@@ -65,8 +65,19 @@ class RemoveCmd(Command):
         file_path = pathlib.Path(args[const.ARG_FILE])
 
         # Get parent model and then load json into parent model
-        parent_model, parent_alias = fs.get_contextual_model_type(file_path.absolute())
-        parent_object = parent_model.oscal_read(file_path.absolute())
+        try:
+            parent_model, parent_alias = fs.get_contextual_model_type(file_path.absolute())
+        except Exception as err:
+            logger.debug(f'fs.get_contextual_model_type() failed: {err}')
+            logger.error(f'Remove failed (fs.get_contextual_model_type()): {err}')
+            return 1
+
+        try:
+            parent_object = parent_model.oscal_read(file_path.absolute())
+        except FileNotFoundError as err:
+            logger.debug(f'fs.get_contextual_model_type() failed: {err}')
+            logger.error(f'Remove failed (fs.get_contextual_model_type()): {err}')
+            return 1
         parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
 
         add_plan = Plan()
@@ -79,7 +90,7 @@ class RemoveCmd(Command):
                 remove_action, parent_element = self.remove(element_path, parent_model, parent_element)
             except TrestleError as err:
                 logger.debug(f'self.remove() failed: {err}')
-                logger.error(f'Remove failed: {err}')
+                logger.error(f'Remove failed (self.remove()): {err}')
                 return 1
             add_plan.add_action(remove_action)
 
@@ -95,14 +106,14 @@ class RemoveCmd(Command):
             add_plan.simulate()
         except TrestleError as err:
             logger.debug(f'Remove failed at simulate(): {err}')
-            logger.error(f'Remove failed: {err}')
+            logger.error(f'Remove failed (simulate()): {err}')
             return 1
 
         try:
             add_plan.execute()
         except TrestleError as err:
             logger.debug(f'Remove failed at execute(): {err}')
-            logger.error(f'Remove failed: {err}')
+            logger.error(f'Remove failed (execute()): {err}')
             return 1
 
         return 0
