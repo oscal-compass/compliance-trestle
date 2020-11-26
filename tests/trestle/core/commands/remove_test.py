@@ -15,6 +15,7 @@
 # limitations under the License.
 """Tests for trestle remove command."""
 import pathlib
+import re
 import sys
 from unittest.mock import patch
 
@@ -22,7 +23,6 @@ import pytest
 
 from tests import test_utils
 
-import trestle.core.err as err
 from trestle.cli import Trestle
 from trestle.core.commands.remove import RemoveCmd
 from trestle.core.models.actions import RemoveAction
@@ -93,51 +93,36 @@ def test_remove(tmp_dir, sample_catalog_minimal):
 
 def test_remove_failure(tmp_dir, sample_catalog_minimal):
     """Test failure of RemoveCmd.remove() method for trestle remove."""
-    # Remove metadata -- should raise an error
-
-    content_type = FileContentType.JSON
-
-    catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
-        content_type,
-        sample_catalog_minimal,
-        test_utils.CATALOGS_DIR
-    )
-
-    # Note: minimal catalog just has uuid and metadata, both required.
+    # Note: minimal catalog does have responsible-parties but doesn't have Roles.
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog.json')
-    minimal_catalog = Element(Catalog.oscal_read(file_path))
+    catalog_with_responsible_parties = Element(Catalog.oscal_read(file_path))
 
-    # 1. Remove a required element:
-    element_path = ElementPath('catalog.metadata')
-    with pytest.raises(err.TrestleError):
-        remove_action, remove_results = RemoveCmd.remove(element_path, Catalog, minimal_catalog)
-        add_plan = Plan()
-        add_plan.add_action(remove_action)
-        add_plan.simulate()
-        add_plan.execute()
-
-    # 2. Remove an element that is not there:
+    # Supply nonexistent element Roles for removal:
     element_path = ElementPath('catalog.metadata.roles')
-    with pytest.raises(err.TrestleError):
-        remove_action, remove_results = RemoveCmd.remove(element_path, Catalog, minimal_catalog)
-        add_plan = Plan()
-        add_plan.add_action(remove_action)
-        add_plan.simulate()
-        add_plan.execute()
+    try:
+        actual_remove_action, actual_catalog_removed_responsible_parties = RemoveCmd.remove(
+            element_path, Catalog, catalog_with_responsible_parties
+        )
+    except Exception:
+        assert True
+    else:
+        AssertionError()
 
-    # 3. Remove an element with a wildcard:
-    element_path = ElementPath('catalog.metadata.*')
-    with pytest.raises(err.TrestleError):
-        remove_action, remove_results = RemoveCmd.remove(element_path, Catalog, minimal_catalog)
-        add_plan = Plan()
-        add_plan.add_action(remove_action)
-        add_plan.simulate()
-        add_plan.execute()
+    # Supply a wildcard element for removal:
+    element_path = ElementPath('catalog.*')
+    try:
+        actual_remove_action, actual_catalog_removed_responsible_parties = RemoveCmd.remove(
+            element_path, Catalog, catalog_with_responsible_parties
+        )
+    except Exception:
+        assert True
+    else:
+        AssertionError()
 
 
-def test_run_failure():
-    """Test failure of _run for RemoveCmd."""
+def test_run_failure_switches(tmp_dir, sample_catalog_minimal):
+    """Test failure of _run on bad switches for RemoveCmd."""
+    # 1. Missing --file argument.
     testargs = ['trestle', 'remove', '-e', 'catalog.metadata.roles']
     with patch.object(sys, 'argv', testargs):
         with pytest.raises(SystemExit) as e:
@@ -145,12 +130,106 @@ def test_run_failure():
         assert e.type == SystemExit
         assert e.value.code == 2
 
+    # 2. Missing --element argument.
     testargs = ['trestle', 'remove', '-f', './catalog.json']
     with patch.object(sys, 'argv', testargs):
         with pytest.raises(SystemExit) as e:
             Trestle().run()
         assert e.type == SystemExit
         assert e.value.code == 2
+
+
+def test_run_failure_nonexistent_element(tmp_dir, sample_catalog_minimal):
+    """Test failure of _run on RemoveCmd in specifying nonexistent element for removal."""
+    # Create a temporary catalog file with responsible-parties
+    content_type = FileContentType.JSON
+    catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_catalog_minimal,
+        test_utils.CATALOGS_DIR
+    )
+
+    # 3. self.remove() fails -- Should happen if wildcard is given, or nonexistent element.
+    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.blah']
+    with patch.object(sys, 'argv', testargs):
+        exitcode = Trestle().run()
+        assert exitcode == 1
+
+
+def test_run_failure_wildcard(tmp_dir, sample_catalog_minimal):
+    """Test failure of _run on RemoveCmd in specifying wildcard in element for removal."""
+    # Create a temporary catalog file with responsible-parties
+    content_type = FileContentType.JSON
+    catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_catalog_minimal,
+        test_utils.CATALOGS_DIR
+    )
+    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.*']
+    with patch.object(sys, 'argv', testargs):
+        exitcode = Trestle().run()
+        assert exitcode == 1
+
+
+def test_run_failure_required_element(tmp_dir, sample_catalog_minimal):
+    """Test failure of _run on RemoveCmd in specifying a required element for removal."""
+    # Create a temporary catalog file with responsible-parties
+    content_type = FileContentType.JSON
+    catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_catalog_minimal,
+        test_utils.CATALOGS_DIR
+    )
+    # 4. simulate() fails -- Should happen if required element is target for deletion
+    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata']
+    with patch.object(sys, 'argv', testargs):
+        exitcode = Trestle().run()
+        assert exitcode == 1
+
+
+def test_run_failure_project_not_found(tmp_dir, sample_catalog_minimal):
+    """Test failure of _run on RemoveCmd in specifying file in non-initialized location."""
+    # Create a temporary catalog file with responsible-parties
+    content_type = FileContentType.JSON
+    catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_catalog_minimal,
+        test_utils.CATALOGS_DIR
+    )
+    # 5. get_contextual_model_type() fails, i.e., "Trestle project not found"
+    testargs = ['trestle', 'remove', '-f', '/dev/null', '-e', 'catalog.metadata']
+    with patch.object(sys, 'argv', testargs):
+        exitcode = Trestle().run()
+        assert exitcode == 1
+
+
+def test_run_failure_filenotfounderror(tmp_dir, sample_catalog_minimal):
+    """Test failure of _run on RemoveCmd in specifying a nonexistent file."""
+    # Create a temporary catalog file with responsible-parties
+    content_type = FileContentType.JSON
+    catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_catalog_minimal,
+        test_utils.CATALOGS_DIR
+    )
+    # 6. oscal_read fails because file is not found
+    # Must specify catalogs/ location, not catalogs/my_test_model/.
+    testargs = [
+        'trestle', 'remove', '-f', re.sub('my_test_model\/', '', str(catalog_def_file)), '-e', 'catalog.metadata'
+    ]
+    with patch.object(sys, 'argv', testargs):
+        exitcode = Trestle().run()
+        assert exitcode == 1
+
+
+def test_run_failure_plan_execute(tmp_dir, sample_catalog_minimal):
+    """Test failure plan execute() in _run on RemoveCmd."""
+    assert True
 
 
 def test_run(tmp_dir, sample_catalog_minimal):
