@@ -75,9 +75,10 @@ class RemoveCmd(Command):
         try:
             parent_object = parent_model.oscal_read(file_path.absolute())
         except FileNotFoundError as err:
-            logger.debug(f'fs.get_contextual_model_type() failed: {err}')
-            logger.error(f'Remove failed (fs.get_contextual_model_type()): {err}')
+            logger.debug(f'parent_model.oscal_read() failed: {err}')
+            logger.error(f'Remove failed (parent_model.oscal_read()): {err}')
             return 1
+
         parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
 
         add_plan = Plan()
