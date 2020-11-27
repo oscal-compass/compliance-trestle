@@ -53,6 +53,7 @@ class TaskCmd(Command):
         self.add_argument('-i', '--info', action='store_true', help='Print information about a particular task.')
 
     def _run(self, args: argparse.Namespace) -> int:
+        logger.debug('Entering trestle task.')
         log.set_log_level_from_args(args)
         # Initial logic for conflicting args
         if args.task and args.list:
