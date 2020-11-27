@@ -17,12 +17,14 @@
 import pathlib
 import re
 import sys
+from unittest import mock
 from unittest.mock import patch
 
 import pytest
 
 from tests import test_utils
 
+import trestle.core.err as err
 from trestle.cli import Trestle
 from trestle.core.commands.remove import RemoveCmd
 from trestle.core.models.actions import RemoveAction
@@ -220,7 +222,7 @@ def test_run_failure_filenotfounderror(tmp_dir, sample_catalog_minimal):
     # 6. oscal_read fails because file is not found
     # Must specify catalogs/ location, not catalogs/my_test_model/.
     testargs = [
-        'trestle', 'remove', '-f', re.sub('my_test_model\/', '', str(catalog_def_file)), '-e', 'catalog.metadata'
+        'trestle', 'remove', '-f', re.sub('my_test_model/', '', str(catalog_def_file)), '-e', 'catalog.metadata'
     ]
     with patch.object(sys, 'argv', testargs):
         exitcode = Trestle().run()
@@ -229,7 +231,22 @@ def test_run_failure_filenotfounderror(tmp_dir, sample_catalog_minimal):
 
 def test_run_failure_plan_execute(tmp_dir, sample_catalog_minimal):
     """Test failure plan execute() in _run on RemoveCmd."""
-    assert True
+    # Create a temporary file as a valid arg for trestle remove:
+    content_type = FileContentType.JSON
+    catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
+        tmp_dir,
+        content_type,
+        sample_catalog_minimal,
+        test_utils.CATALOGS_DIR
+    )
+    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata.responsible-parties']
+
+    with mock.patch('trestle.core.models.plans.Plan.simulate'):
+        with mock.patch('trestle.core.models.plans.Plan.execute') as execute_mock:
+            execute_mock.side_effect = err.TrestleError('stuff')
+            with patch.object(sys, 'argv', testargs):
+                exitcode = Trestle().run()
+                assert exitcode == 1
 
 
 def test_run(tmp_dir, sample_catalog_minimal):
