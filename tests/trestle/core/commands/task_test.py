@@ -14,15 +14,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Validate command tests."""
-
 import pathlib
+import sys
+from unittest import mock
+
+import pytest
+
+import trestle.cli
+
+
+def test_get_list_cli(tmp_trestle_dir) -> None:
+    """Simple test which does E2E tests."""
+    command = 'trestle task -l'
+
+    with mock.patch.object(sys, 'argv', command.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+            assert wrapped_error == SystemExit
+            assert wrapped_error.code == 0
 
 
 def test_arguments_ordering(tmp_trestle_dir: pathlib.Path) -> None:
     """Test that the argument loading behave correctly."""
     # should pass and return a list
-    testargs = 'trestle task -l'
-
     # also should work but same as above
     testargs = 'trestle task -l -c config_file.json'
 
