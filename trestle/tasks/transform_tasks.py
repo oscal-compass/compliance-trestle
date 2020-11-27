@@ -15,11 +15,11 @@
 # limitations under the License.
 """Trestle tasks base templating."""
 import configparser
+import logging
 
 import trestle.tasks.base_task as base_task
-import trestle.utils.log as log
 
-logger = log.get_logger()
+logger = logging.getLogger(__name__)
 
 
 class ComponentsFromTargets(base_task.TaskBase):
@@ -61,7 +61,7 @@ class SSPFromTargets(base_task.TaskBase):
         name: Name of the task.
     """
 
-    name = 'SSP-from-targets'
+    name = 'SSP-from-profile-components'
 
     def __init__(self, config_object: configparser.SectionProxy) -> None:
         """
@@ -74,9 +74,17 @@ class SSPFromTargets(base_task.TaskBase):
 
     def print_info(self) -> None:
         """Print information on ComponentsFromTargets using logger to the CLI."""
+        pass
 
     def execute(self) -> base_task.TaskOutcome:
         """Execute the task."""
+        if self._config['template-ssp']:
+            # load ssp
+            pass
+        else:
+            # generate bare minimum ssp
+            pass
+
         return base_task.TaskOutcome('not-implemented')
 
     def simulate(self) -> base_task.TaskOutcome:

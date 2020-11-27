@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Starting point for the Trestle CLI."""
+import logging
 
 from ilcli import Command  # type: ignore
 
@@ -28,6 +29,9 @@ from trestle.core.commands.replicate import ReplicateCmd
 from trestle.core.commands.split import SplitCmd
 from trestle.core.commands.task import TaskCmd
 from trestle.core.commands.validate import ValidateCmd
+from trestle.utils import log
+
+logger = logging.getLogger('trestle')
 
 
 class Trestle(Command):
@@ -55,9 +59,12 @@ class Trestle(Command):
             action='version',
             version=f'Trestle version v{__version__}'
         )
-        self.add_argument('-v', '--verbose', help='Display verbose output.', action='count', default=1)
+        self.add_argument('-v', '--verbose', help='Display verbose output.', action='count', default=0)
 
 
 def run() -> None:
-    """Run the test cli."""
+    """Run the trestle cli."""
+    log.set_global_logging_levels()
+    logger.debug('Main entry point.')
+
     exit(Trestle().run())

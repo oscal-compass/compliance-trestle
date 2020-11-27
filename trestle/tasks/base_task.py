@@ -15,12 +15,11 @@
 # limitations under the License.
 """Trestle tasks base templating."""
 import configparser
+import logging
 from abc import ABC, abstractmethod
 from enum import Enum
 
-import trestle.utils.log as log
-
-logger = log.get_logger()
+logger = logging.getLogger(__name__)
 
 
 class TaskOutcome(Enum):

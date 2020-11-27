@@ -17,6 +17,7 @@
 import argparse
 import configparser
 import inspect
+import logging
 import pathlib
 import pkgutil
 import sys
@@ -30,7 +31,7 @@ import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.tasks.base_task import TaskBase, TaskOutcome
 
-logger = log.get_logger()
+logger = logging.getLogger(__name__)
 
 
 class TaskCmd(Command):
@@ -52,11 +53,11 @@ class TaskCmd(Command):
         self.add_argument('-i', '--info', action='store_true', help='Print information about a particular task.')
 
     def _run(self, args: argparse.Namespace) -> int:
-        # TOD
+        log.set_log_level_from_args(args)
         # Initial logic for conflicting args
         if args.task and args.list:
             logger.error('Incorrect use of trestle tasks')
-            logger.error('')
+            logger.error('task name or -l can be provided not both.')
             return 1
         elif args.task == 0 and not args.list:
             logger.error('Insufficient arguments passed to trestle task')

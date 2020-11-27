@@ -15,6 +15,7 @@
 """Dynamic Model Parser."""
 
 import importlib
+import logging
 import pathlib
 import warnings
 from typing import Any, Dict, List, Optional, Type, cast
@@ -25,9 +26,8 @@ from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.utils import fs
-from trestle.utils import log
 
-logger = log.get_logger()
+logger = logging.getLogger(__name__)
 
 
 def parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
