@@ -19,6 +19,7 @@ import pathlib
 
 from ilcli import Command  # type: ignore
 
+from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
 from trestle.utils import log
 
@@ -70,7 +71,13 @@ class ImportCmd(Command):
             logger.error('Input file cannot be from current trestle project. Use duplicate instead.')
             return 1
 
-        # peek at file to get typing information.
+        try:
+            # peek at file to get typing information.
+            content_type = FileContentType.to_content_type(input_file.suffix)
+        except Exception as err:
+            logger.debug(f'FileContentType.to_content_type() failed: {err}')
+            logger.error(f'Remove failed (FileContentType.to_content_type()): {err}')
+            return 1
 
         # throw errors on bad loads
 
