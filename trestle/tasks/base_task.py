@@ -18,6 +18,7 @@ import configparser
 import logging
 from abc import ABC, abstractmethod
 from enum import Enum
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +44,7 @@ class TaskBase(ABC):
 
     name: str = 'base'
 
-    def __init__(self, config_object: configparser.SectionProxy) -> None:
+    def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """Initialize task base and store config."""
         self._config = config_object
 
@@ -70,22 +71,41 @@ class PassFail(TaskBase):
 
     name = 'pass-fail'
 
-    def __init__(self, config_object: configparser.SectionProxy) -> None:
+    def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
         Initialize trestle task pass-fail.
 
         Attributes:
             config_object: Config section associated with the task.
         """
-        super.__init__(config_object)
+        super().__init__(config_object)
 
     def print_info(self) -> None:
         """Print the help string."""
         logger.info(f'Help information for {self.name} task.')
         logger.info('This is a template task which reports pass fail depending on the specific configuration.')
-        logger.info('')
+        logger.info(
+            'In this case if no config section is provided the task will fail. This a a task specific behavior.'
+        )
         logger.info('Configuration flags sit under [tasks.pass-fail]')
         logger.info('with two boolean flags')
-        logger.info('execute_status = True/False')
-        logger.info('simulate_status = True/False')
-        logger.info('The princple goal is a simple development example')
+        logger.info('execute_status = True/False with a default pass')
+        logger.info('simulate_status = True/False with a default fail')
+        logger.info('Note that if the config file does not have the appropriate section this should fail.')
+        logger.info('The princple goal is a simple development example.')
+
+    def simulate(self) -> TaskOutcome:
+        """Provide a simulated outcome."""
+        if self._config:
+            outcome = self._config.getboolean('simulate_status', fallback=True)
+            if outcome:
+                return TaskOutcome('simulated-success')
+        return TaskOutcome('simulated-failure')
+
+    def execute(self) -> TaskOutcome:
+        """Provide a actual outcome."""
+        if self._config:
+            outcome = self._config.getboolean('execute_status', fallback=True)
+            if outcome:
+                return TaskOutcome('success')
+        return TaskOutcome('failure')

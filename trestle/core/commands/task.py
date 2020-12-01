@@ -21,7 +21,7 @@ import logging
 import pathlib
 import pkgutil
 import sys
-from typing import Dict, Type
+from typing import Dict, Optional, Type
 
 from ilcli import Command  # type: ignore
 
@@ -60,7 +60,7 @@ class TaskCmd(Command):
             logger.error('Incorrect use of trestle tasks')
             logger.error('task name or -l can be provided not both.')
             return 1
-        elif args.task == 0 and not args.list:
+        elif not args.task and not args.list:
             logger.error('Insufficient arguments passed to trestle task')
             logger.error('Either a trestle task or "-l/--list" shoudl be passed as input arguments.')
             return 1
@@ -71,14 +71,13 @@ class TaskCmd(Command):
             return 1
         config_path = trestle_root / trestle.core.const.TRESTLE_CONFIG_DIR / trestle.core.const.TRESTLE_CONFIG_FILE
 
-        global_config = configparser.ConfigParser()
-        global_config.read_file(config_path.open('r'))
-
         if args.config:
             config_path = pathlib.Path(args.config)
         if not config_path.exists():
             logger.error(f'Config file at {config_path} does not exist.')
             return 1
+        global_config = configparser.ConfigParser()
+        global_config.read_file(config_path.open('r'))
         # run setup
         task_index = self._build_task_index()
 
@@ -87,29 +86,37 @@ class TaskCmd(Command):
             self._list_tasks(task_index)
             return 0
         # run the task
-        if args.name not in task_index.keys():
-            logger.error(f'Unknown trestle task: {args.name}')
+        if args.task not in task_index.keys():
+            logger.error(f'Unknown trestle task: {args.task}')
             return 1
         # Generic try catch around execution
         try:
             logger.debug(f'Loading task: {args.task}')
-            config_section = global_config['task-' + args.name]
+            section_label = 'task.' + args.task
+            config_section: Optional[configparser.SectionProxy] = None
+            if section_label in global_config.sections():
+                config_section = global_config[section_label]
+            else:
+                logger.warn(
+                    f'Config file was not configured with the appropriate section for the task: "[{section_label}]"'
+                )
+
             task = task_index[args.task](config_section)
             if args.info:
                 task.print_info()
                 return 0
             simulate_result = task.simulate()
-            if not simulate_result == TaskOutcome.SIM_SUCCESS:
-                logger.error(f'Task {args.name} reported a {simulate_result}')
+            if not (simulate_result == TaskOutcome.SIM_SUCCESS):
+                logger.error(f'Task {args.task} reported a {simulate_result}')
                 return 1
-            actual_result = task.simulate()
-            if not actual_result == TaskOutcome.SUCCESS:
-                logger.error(f'Task {args.name} reported a {actual_result}')
+            actual_result = task.execute()
+            if not (actual_result == TaskOutcome.SUCCESS):
+                logger.error(f'Task {args.task} reported a {actual_result}')
                 return 1
-            logger.info(f'Task: {args.name} executed successfully.')
+            logger.info(f'Task: {args.task} executed successfully.')
             return 0
         except Exception as e:
-            logger.error(f'Trestle task {args.name} failed unexpectedly')
+            logger.error(f'Trestle task {args.task} failed unexpectedly')
             logger.debug(e)
             return 1
 
