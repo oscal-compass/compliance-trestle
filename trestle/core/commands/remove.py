@@ -74,7 +74,7 @@ class RemoveCmd(Command):
 
         try:
             parent_object = parent_model.oscal_read(file_path.absolute())
-        except FileNotFoundError as err:
+        except Exception as err:
             logger.debug(f'parent_model.oscal_read() failed: {err}')
             logger.error(f'Remove failed (parent_model.oscal_read()): {err}')
             return 1
