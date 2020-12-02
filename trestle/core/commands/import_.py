@@ -120,16 +120,23 @@ class ImportCmd(Command):
         write_action = WriteFileAction(desired_model_path.absolute(), top_element, content_type)
 
         # create a plan to create the directory and imported file.
+        import_plan = Plan()
+        import_plan.add_action(create_action)
+        import_plan.add_action(write_action)
+
         try:
-            import_plan = Plan()
-            import_plan.add_action(create_action)
-            import_plan.add_action(write_action)
             import_plan.simulate()
+        except Exception as err:
+            logger.debug(f'import_plan.simulate() failed: {err}')
+            logger.error(f'Import failed (import_plan.simulate()): {err}')
+            return 1
+
+        try:
             import_plan.execute()
-            return 0
-        except Exception as e:
-            logger.error('Unknown error executing trestle create operations. Rolling back.')
-            logger.debug(e)
+        except Exception as err:
+            logger.debug(f'import_plan.execute() failed: {err}')
+            logger.error(f'Import failed (import_plan.execute()): {err}')
             return 1
 
         # 7. Leave the rest to trestle split
+        return 0
