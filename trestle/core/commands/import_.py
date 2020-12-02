@@ -19,7 +19,11 @@ import pathlib
 
 from ilcli import Command  # type: ignore
 
+from trestle.core import parser
+from trestle.core.models.actions import CreatePathAction, WriteFileAction
+from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
+from trestle.core.models.plans import Plan
 from trestle.utils import fs
 from trestle.utils import log
 
@@ -46,7 +50,7 @@ class ImportCmd(Command):
         """Top level import run command."""
         logger.debug('Entering import run.')
 
-        # Validate input arguments are as expected.
+        # 1. Validate input arguments are as expected.
         if len(args.file) == 0:
             logger.error('trestle import requires a file to be provided with -f or --file.')
             return 1
@@ -57,29 +61,75 @@ class ImportCmd(Command):
             return 1
 
         cwd = pathlib.Path.cwd().resolve()
-        trestle_root = fs.get_trestle_project_root(cwd)
-        if trestle_root is None:
-            # TODO: I think this should probably be handled as an exception not a none check.
+        try:
+            trestle_root = fs.get_trestle_project_root(cwd)
+        except Exception:
             logger.error(f'Current working directory: {cwd} is not within a trestle project.')
             return 1
+        else:
+            if trestle_root is None:
+                logger.error(f'Current working directory: {cwd} is not within a trestle project.')
+                return 1
 
-        # Ensure file is not in trestle dir
+        # 2. Ensure file is not in trestle dir
         trestle_root = trestle_root.resolve()
         try:
-            input_file.relative_to(trestle_root)
+            input_file.absolute().relative_to(trestle_root)
         except Exception:
             logger.error('Input file cannot be from current trestle project. Use duplicate instead.')
             return 1
 
+        # 3. Work out typing information from input suffix.
         try:
-            # peek at file to get typing information.
             content_type = FileContentType.to_content_type(input_file.suffix)
         except Exception as err:
             logger.debug(f'FileContentType.to_content_type() failed: {err}')
-            logger.error(f'Remove failed (FileContentType.to_content_type()): {err}')
+            logger.error(f'Import failed (FileContentType.to_content_type()): {err}')
             return 1
 
-        # throw errors on bad loads
+        # 4. Load input and parse for model
+        data = fs.load_file(input_file.absolute())
+        parent_alias = parser.root_key(data)
+        parent_model_name = parser.to_full_model_name(parent_alias)
+        try:
+            parent_model = parser.parse_file(input_file.absolute(), parent_model_name)
+        except Exception as err:
+            logger.debug(f'parser.parse_file() failed: {err}')
+            logger.error(f'Import failed (parser.parse_file()): {err}')
+            return 1
 
-        #
-        return 0
+        # 5. Work out output directory and file
+        plural_path: str
+        # Cater to POAM
+        if parent_alias[-1] == 's':
+            plural_path = parent_alias
+        else:
+            plural_path = parent_alias + 's'
+
+        desired_model_dir = trestle_root / plural_path
+        desired_model_path = desired_model_dir / args.output / (parent_alias + input_file.suffix)
+
+        if desired_model_path.exists():
+            logger.error(f'OSCAL file to be created here: {desired_model_path} exists.')
+            logger.error('Aborting trestle import.')
+            return 1
+
+        # 6. Prepare actions and plan
+        top_element = Element(parent_model.oscal_read(input_file))
+        create_action = CreatePathAction(desired_model_path.absolute(), True)
+        write_action = WriteFileAction(desired_model_path.absolute(), top_element, content_type)
+
+        # create a plan to create the directory and imported file.
+        try:
+            import_plan = Plan()
+            import_plan.add_action(create_action)
+            import_plan.add_action(write_action)
+            import_plan.simulate()
+            import_plan.execute()
+            return 0
+        except Exception as e:
+            logger.error('Unknown error executing trestle create operations. Rolling back.')
+            logger.debug(e)
+            return 1
+
+        # 7. Leave the rest to trestle split
