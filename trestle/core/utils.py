@@ -17,12 +17,15 @@ import importlib
 import warnings
 from typing import Any, List, Tuple, Type, no_type_check
 
-from datamodel_code_generator.parser.base import camel_to_snake, snake_to_upper_camel
+from datamodel_code_generator.parser.base import camel_to_snake, snake_to_upper_camel  # type: ignore
 
 from pydantic import BaseModel
 
 import trestle.core.const as const
 import trestle.core.err as err
+import trestle.utils.log as log
+
+logger = log.get_logger()
 
 
 def get_elements_of_model_type(object_of_interest, type_of_interest):
@@ -122,7 +125,7 @@ def get_inner_type(collection_field_type) -> Type[Any]:
         raise err.TrestleError('Model type is not a Dict or List')
 
 
-def get_cwm(contextual_path: list) -> str:
+def get_cwm(contextual_path: List[str]) -> str:
     """
     Get current working module name based on the contextual path.
 
@@ -135,3 +138,24 @@ def get_cwm(contextual_path: list) -> str:
         return model_type_module_name
 
     return ''
+
+
+def get_target_model(element_path_parts: List[str], current_model: BaseModel) -> BaseModel:
+    """Get the target model from the parts of a Element Path.
+
+    Takes as input a list, containing parts of an ElementPath as str and expressed in aliases,
+    and the parent model to follow the ElementPath in.
+    Returns the type of the model at the specified ElementPath of the input model.
+    """
+    # FIXME: Could be in oscal base model
+    try:
+        for index in range(1, len(element_path_parts)):
+            if is_collection_field_type(current_model):
+                # Return the model class inside the collection
+                # FIXME: From a typing perspective this is wrong.
+                current_model = get_inner_type(current_model)
+            else:
+                current_model = current_model.alias_to_field_map()[element_path_parts[index]].outer_type_
+        return current_model
+    except Exception as e:
+        raise err.TrestleError(f'Possibly bad element path. {str(e)}')

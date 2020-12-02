@@ -18,7 +18,7 @@
 from pathlib import Path
 from typing import List
 
-from ilcli import Command
+from ilcli import Command  # type: ignore
 
 from trestle.core import const, utils
 from trestle.core.commands import cmd_utils
@@ -45,7 +45,7 @@ class MergeCmd(Command):
             help='Comma-separated list of paths of properties that can be merged.'
         )
 
-    def _run(self, args):
+    def _run(self, args) -> None:
         """Merge elements into the parent oscal model."""
         if args.list_available_elements:
             self._list_available_elements()
@@ -108,7 +108,7 @@ class MergeCmd(Command):
 
         return plan
 
-    def _list_available_elements(self):
+    def _list_available_elements(self) -> None:
         """List element paths that can be merged from the current context."""
         current_model, current_alias = fs.get_contextual_model_type(Path.cwd())
 
@@ -118,12 +118,12 @@ class MergeCmd(Command):
 
     def _list_options_for_merge(
         self,
-        cwd,
-        current_alias,
-        current_model,
-        current_filename,
+        cwd: Path,
+        current_alias: str,
+        current_model: Type[OscalBaseModel],
+        current_filename: str,
         initial_path: Path = None,
-        visited_elements: set = None
+        visited_elements: Set[str] = None
     ):
         """List paths that can be used in the -e option for the merge operation."""
         if initial_path is None:
@@ -188,7 +188,7 @@ class MergeCmd(Command):
                         visited_elements=visited_elements
                     )
 
-    def _print_merge_option(self, visited_elements, element, source_path, destination_path):
+    def _print_merge_option(self, visited_elements, element, source_path, destination_path) -> None:
         if element not in visited_elements:
             visited_elements.add(element)
             self.out(f"{element} (merges all files/subdirectories under {source_path} into \'{destination_path}\')")

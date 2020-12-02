@@ -179,10 +179,41 @@ def test_classname_to_alias():
     assert json_alias == 'member_of_organization'
 
 
-def test_alias_to_classname():
+def test_alias_to_classname() -> None:
     """Test alias_to_classname function."""
     assert mutils.alias_to_classname('target-definition', 'json') == 'TargetDefinition'
     assert mutils.alias_to_classname('target_definition', 'field') == 'TargetDefinition'
 
     with pytest.raises(err.TrestleError):
         assert mutils.alias_to_classname('target-definition', 'invalid') == 'TargetDefinition'
+
+
+def test_get_target_model():
+    """Test utils method get_target_model."""
+    assert mutils.is_collection_field_type(
+        mutils.get_target_model(['catalog', 'metadata', 'roles'], catalog.Catalog)
+    ) is True
+    assert (mutils.get_target_model(['catalog', 'metadata', 'roles'], catalog.Catalog)).__origin__ is list
+    assert mutils.get_inner_type(
+        mutils.get_target_model(['catalog', 'metadata', 'roles'], catalog.Catalog)
+    ) is catalog.Role
+
+    assert mutils.is_collection_field_type(
+        mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog)
+    ) is True
+    assert mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog).__origin__ is dict
+    assert mutils.get_inner_type(
+        mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog)
+    ) is catalog.ResponsibleParty
+
+    assert mutils.is_collection_field_type(
+        mutils.get_target_model(['catalog', 'metadata', 'responsible-parties', 'creator'], catalog.Catalog)
+    ) is False
+    assert mutils.get_target_model(
+        ['catalog', 'metadata', 'responsible-parties', 'creator'], catalog.Catalog
+    ) is catalog.ResponsibleParty
+
+    assert mutils.get_target_model(['catalog', 'metadata', 'title'], catalog.Catalog) is catalog.Title
+
+    with pytest.raises(err.TrestleError):
+        mutils.get_target_model(['catalog', 'metadata', 'bad_element'], catalog.Catalog)

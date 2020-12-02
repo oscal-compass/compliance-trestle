@@ -14,11 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Init Command."""
-
+import argparse
 import os
+import pathlib
 from shutil import copyfile
 
-from ilcli import Command
+from ilcli import Command  # type: ignore
 
 from pkg_resources import resource_filename
 
@@ -30,7 +31,7 @@ class InitCmd(Command):
 
     name = 'init'
 
-    def _run(self, args):
+    def _run(self, args: argparse.ArgumentParser) -> int:
         """Create a trestle project in the current directory."""
         dir_path = os.getcwd()
 
@@ -46,21 +47,22 @@ class InitCmd(Command):
         except BaseException as err:
             self.err(f'Initialization failed: {err}')
             return 1
+        return 0
 
-    def _create_directories(self):
+    def _create_directories(self) -> None:
         """Create the directory tree if it does not exist."""
         # Prepare directory list to be created
-        directory_list = [const.TRESTLE_CONFIG_DIR]
+        directory_list = [pathlib.Path(const.TRESTLE_CONFIG_DIR)]
         for model_dir in const.MODELTYPE_TO_MODELMODULE.keys():
-            directory_list.append(model_dir)
-            directory_list.append(os.path.join(const.TRESTLE_DIST_DIR, model_dir))
+            directory_list.append(pathlib.Path(model_dir))
+            directory_list.append(pathlib.Path(const.TRESTLE_DIST_DIR) / model_dir)
 
         # Create directories
         for directory in directory_list:
-            os.makedirs(name=directory, exist_ok=True)
+            directory.mkdir(parents=True, exist_ok=True)
 
-    def _copy_config_file(self):
+    def _copy_config_file(self) -> None:
         """Copy the initial config.ini file to .trestle directory."""
         source_path = resource_filename('trestle.resources', const.TRESTLE_CONFIG_FILE)
-        destination_path = os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE)
+        destination_path = pathlib.Path(const.TRESTLE_CONFIG_DIR) / const.TRESTLE_CONFIG_FILE
         copyfile(source_path, destination_path)

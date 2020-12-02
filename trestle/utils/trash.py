@@ -17,7 +17,7 @@
 
 import pathlib
 from shutil import copyfile
-from typing import List
+from typing import List, Optional
 
 from . import fs
 
@@ -26,7 +26,7 @@ TRESTLE_TRASH_FILE_EXT = '.bk'  # should start with a dot
 TRESTLE_TRASH_DIR_EXT = '__bk'
 
 
-def to_trash_dir_path(dir_path: pathlib.Path):
+def to_trash_dir_path(dir_path: pathlib.Path) -> pathlib.Path:
     """Construct the path to the trashed file."""
     absolute_path = dir_path.absolute()
     root_path = fs.get_trestle_project_root(absolute_path)
@@ -44,7 +44,7 @@ def to_trash_dir_path(dir_path: pathlib.Path):
     return trash_dir
 
 
-def to_trash_file_path(file_path: pathlib.Path):
+def to_trash_file_path(file_path: pathlib.Path) -> pathlib.Path:
     """Construct the path to the trashed file."""
     trash_file_dir = to_trash_dir_path(file_path.parent)
     trash_file_path = trash_file_dir / f'{file_path.name}{TRESTLE_TRASH_FILE_EXT}'
@@ -52,7 +52,7 @@ def to_trash_file_path(file_path: pathlib.Path):
     return trash_file_path
 
 
-def to_trash_path(path: pathlib.Path):
+def to_trash_path(path: pathlib.Path) -> pathlib.Path:
     """Convert the dir or file path to apporpriate trash file or dir path."""
     if path.suffix != '':
         return to_trash_file_path(path)
@@ -60,7 +60,7 @@ def to_trash_path(path: pathlib.Path):
         return to_trash_dir_path(path)
 
 
-def get_trash_root(path: pathlib.Path):
+def get_trash_root(path: pathlib.Path) -> Optional[pathlib.Path]:
     """Find the trestle trash root path."""
     if path is None or len(path.parts) <= 0:
         return None
@@ -75,7 +75,7 @@ def get_trash_root(path: pathlib.Path):
     return None
 
 
-def to_origin_dir_path(trash_dir_path: pathlib.Path):
+def to_origin_dir_path(trash_dir_path: pathlib.Path) -> pathlib.Path:
     """Convert trash content path to origin path."""
     if trash_dir_path.suffix != '' and trash_dir_path.suffix.endswith(TRESTLE_TRASH_FILE_EXT):
         raise AssertionError(f'Given path "{trash_dir_path}" is a trash file, not a valid trash directory')
@@ -103,7 +103,7 @@ def to_origin_dir_path(trash_dir_path: pathlib.Path):
     return origin_path
 
 
-def to_origin_file_path(trash_file_path: pathlib.Path):
+def to_origin_file_path(trash_file_path: pathlib.Path) -> pathlib.Path:
     """Convert trash file path to origin file path."""
     if trash_file_path.suffix != TRESTLE_TRASH_FILE_EXT:
         raise AssertionError(f'File path "{trash_file_path}" is not a valid trash file path')
@@ -115,7 +115,7 @@ def to_origin_file_path(trash_file_path: pathlib.Path):
     return origin_file_path
 
 
-def to_origin_path(trash_content_path: pathlib.Path):
+def to_origin_path(trash_content_path: pathlib.Path) -> pathlib.Path:
     """Convert the trash path to origin path."""
     if trash_content_path.suffix == TRESTLE_TRASH_FILE_EXT:
         return to_origin_file_path(trash_content_path)
@@ -123,7 +123,7 @@ def to_origin_path(trash_content_path: pathlib.Path):
         return to_origin_dir_path(trash_content_path)
 
 
-def store_file(file_path: pathlib.Path, delete_source: bool = False):
+def store_file(file_path: pathlib.Path, delete_source: bool = False) -> None:
     """Move the specified file to the trash directory.
 
     It overwrites the previous file if exists
@@ -139,7 +139,7 @@ def store_file(file_path: pathlib.Path, delete_source: bool = False):
         file_path.unlink()
 
 
-def store_dir(dir_path: pathlib.Path, delete_source: bool = False):
+def store_dir(dir_path: pathlib.Path, delete_source: bool = False) -> None:
     """Move the specified dir to the trash directory.
 
     It overwrites the previous directory and contents if exists
@@ -158,7 +158,7 @@ def store_dir(dir_path: pathlib.Path, delete_source: bool = False):
         dir_path.rmdir()
 
 
-def store(content_path: pathlib.Path, delete_content: bool = False):
+def store(content_path: pathlib.Path, delete_content: bool = False) -> None:
     """Move the specified file or directory to the trash directory.
 
     It overwrites the previous file or directory if exists
@@ -169,7 +169,7 @@ def store(content_path: pathlib.Path, delete_content: bool = False):
         return store_dir(content_path, delete_content)
 
 
-def recover_file(file_path: pathlib.Path, delete_trash: bool = False):
+def recover_file(file_path: pathlib.Path, delete_trash: bool = False) -> None:
     """Recover the specified file from the trash directory.
 
     It recovers the latest file from trash if exists
@@ -185,7 +185,7 @@ def recover_file(file_path: pathlib.Path, delete_trash: bool = False):
         trash_file_path.unlink()
 
 
-def recover_dir(dest_dir_path: pathlib.Path, delete_trash: bool = False):
+def recover_dir(dest_dir_path: pathlib.Path, delete_trash: bool = False) -> None:
     """Move the specified dir from the trash directory.
 
     dest_dir_path: destination path of the directory inside a trestle project
@@ -207,7 +207,7 @@ def recover_dir(dest_dir_path: pathlib.Path, delete_trash: bool = False):
         trash_dir_path.rmdir()
 
 
-def recover(dest_content_path: pathlib.Path, delete_trash: bool = False):
+def recover(dest_content_path: pathlib.Path, delete_trash: bool = False) -> None:
     """Recover the specified file or directory from the trash directory.
 
     dest_content_path: destination content path that needs to be recovered from trash

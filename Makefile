@@ -17,6 +17,8 @@
 
 develop:
 	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager
+
+pre-commit: 
 	pre-commit install
 	pre-commit autoupdate
 
@@ -30,8 +32,14 @@ code-format:
 code-lint:
 	pre-commit run flake8 --all-files
 
+code-typing:
+	mypy --pretty trestle
+
 test::
-	python -m pytest --cov trestle tests -v --cov-report=xml
+	python -m pytest --cov trestle tests --cov-report=xml
+
+test-verbose:
+	python -m pytest --cov trestle tests -v --cov-report=term-missing --cov-report=html:cov_html
 
 release::
 	git config --global user.name "semantic-release (via Github actions)"

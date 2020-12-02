@@ -17,7 +17,7 @@
 
 import pathlib
 
-import trestle.core.validater as validater
+import trestle.core.validator_helper as validator_helper
 import trestle.oscal.catalog as catalog
 import trestle.oscal.target as ostarget
 
@@ -26,41 +26,41 @@ import yaml
 catalog_path = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
 
 
-def test_has_no_duplicate_values_generic():
+def test_has_no_duplicate_values_generic() -> None:
     """Test presence of duplicate uuid."""
     # test with pydantic catalog
     cat = catalog.Catalog.oscal_read(catalog_path)
-    assert validater.has_no_duplicate_values_generic(cat, 'uuid')
+    assert validator_helper.has_no_duplicate_values_generic(cat, 'uuid')
 
     yaml_path = pathlib.Path('tests/data/yaml')
 
     # test with valid pydantic target
     good_target_path = yaml_path / 'good_target.yaml'
     good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
-    loe = validater.find_values_by_name(good_target, 'uuid')
+    loe = validator_helper.find_values_by_name(good_target, 'uuid')
     assert len(loe) == 5
-    assert validater.has_no_duplicate_values_by_name(good_target, 'uuid')
+    assert validator_helper.has_no_duplicate_values_by_name(good_target, 'uuid')
 
     # test with pydantic target containing duplicates
     bad_target_path = yaml_path / 'bad_target_dup_uuid.yaml'
     bad_target = ostarget.TargetDefinition.oscal_read(bad_target_path)
-    assert not validater.has_no_duplicate_values_by_name(bad_target, 'uuid')
+    assert not validator_helper.has_no_duplicate_values_by_name(bad_target, 'uuid')
 
     # test duplicates with raw yaml target, non-pydantic
     read_file = bad_target_path.open('r', encoding='utf8')
     bad_target_yaml = yaml.load(read_file, Loader=yaml.Loader)
-    assert not validater.has_no_duplicate_values_generic(bad_target_yaml, 'uuid')
+    assert not validator_helper.has_no_duplicate_values_generic(bad_target_yaml, 'uuid')
 
 
-def test_has_no_duplicate_values_pydantic():
+def test_has_no_duplicate_values_pydantic() -> None:
     """Test presence of duplicate values in pydantic objects."""
     # test with pydantic catalog - only one instance of Metadata
     cat = catalog.Catalog.oscal_read(catalog_path)
-    assert validater.has_no_duplicate_values_by_type(cat, catalog.Metadata)
+    assert validator_helper.has_no_duplicate_values_by_type(cat, catalog.Metadata)
 
     yaml_path = pathlib.Path('tests/data/yaml')
 
     # test presence of many duplicate properties
     good_target_path = yaml_path / 'good_target.yaml'
     good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
-    assert not validater.has_no_duplicate_values_by_type(good_target, ostarget.Prop)
+    assert not validator_helper.has_no_duplicate_values_by_type(good_target, ostarget.Prop)

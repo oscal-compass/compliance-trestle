@@ -63,7 +63,7 @@ def test_plan_execution(tmp_dir, sample_target_def: target.TargetDefinition):
     assert targets_dir.exists() is False
     assert metadata_yaml.exists() is False
     for target_file in target_files:
-        target_file.exists() is False
+        target_file.exists()
 
 
 def test_plan_execution_failure():

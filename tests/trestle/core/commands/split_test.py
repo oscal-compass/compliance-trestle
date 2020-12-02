@@ -99,14 +99,13 @@ def test_split_chained_sub_models(tmp_dir, sample_catalog: oscatalog.Catalog):
     expected_plan = Plan()
 
     # prepare to extract metadata and parties
-    metadata_file_dir = catalog_dir / element_paths[0].to_root_path()
     metadata_file = catalog_dir / element_paths[0].to_file_path(content_type)
     metadata_field_alias = element_paths[0].get_element_name()
     metadata = element.get_at(element_paths[0])
     meta_element = Element(metadata, metadata_field_alias)
 
     # extract parties
-    parties_dir = metadata_file_dir / element_paths[1].to_file_path()
+    parties_dir = catalog_dir / 'catalog/metadata/parties'
     for i, party in enumerate(meta_element.get_at(element_paths[1], False)):
         prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
         sub_model_actions = SplitCmd.prepare_sub_model_split_actions(party, parties_dir, prefix, content_type)
@@ -223,12 +222,12 @@ def test_split_multi_level_dict(tmp_dir, sample_target_def: ostarget.TargetDefin
         target_element = Element(targets[key])
         model_type = utils.classname_to_alias(type(target).__name__, 'json')
         dir_prefix = key
-        dir_name = f'{dir_prefix}{const.IDX_SEP}{model_type}'
-        target_dir = targets_dir / dir_name
+        target_dir_name = f'{dir_prefix}{const.IDX_SEP}{model_type}'
+        target_file = targets_dir / f'{target_dir_name}{file_ext}'
 
         # target control impl dir for the target
         target_ctrl_impls: dict = target_element.get_at(element_paths[1])
-        targets_ctrl_dir = target_dir / element_paths[1].to_file_path()
+        targets_ctrl_dir = targets_dir / element_paths[1].to_file_path(root_dir=target_dir_name)
 
         for i, target_ctrl_impl in enumerate(target_ctrl_impls):
             model_type = utils.classname_to_alias(type(target_ctrl_impl).__name__, 'json')
@@ -239,13 +238,11 @@ def test_split_multi_level_dict(tmp_dir, sample_target_def: ostarget.TargetDefin
             expected_plan.add_action(WriteFileAction(file_path, Element(target_ctrl_impl), content_type))
 
         # write stripped target model
-        model_type = utils.classname_to_alias(type(target).__name__, 'json')
-        target_file = target_dir / f'{model_type}{file_ext}'
         stripped_target = target.stripped_instance(stripped_fields_aliases=[element_paths[1].get_element_name()])
         expected_plan.add_action(CreatePathAction(target_file))
         expected_plan.add_action(WriteFileAction(target_file, Element(stripped_target), content_type))
 
-    root_file = target_def_dir / element_paths[0].to_root_path(content_type)
+    root_file = target_def_dir / f'target-definition{file_ext}'
     remaining_root = element.get().stripped_instance(stripped_fields_aliases=[element_paths[0].get_element_name()])
     expected_plan.add_action(CreatePathAction(root_file, True))
     expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
@@ -394,14 +391,14 @@ def test_split_model_at_path_chain_failures(tmp_dir, sample_catalog: oscatalog.C
 
     # too large path index should return the path index
     cur_path_index = len(element_paths) + 1
-    cur_path_index == SplitCmd.split_model_at_path_chain(
+    SplitCmd.split_model_at_path_chain(
         sample_catalog, element_paths, catalog_dir, content_type, cur_path_index, split_plan, False
     )
 
     # invalid model path should return withour doing anything
     element_paths = [ElementPath('catalog.meta')]
     cur_path_index = 0
-    cur_path_index == SplitCmd.split_model_at_path_chain(
+    SplitCmd.split_model_at_path_chain(
         sample_catalog, element_paths, catalog_dir, content_type, cur_path_index, split_plan, False
     )
 

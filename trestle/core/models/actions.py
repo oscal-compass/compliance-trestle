@@ -17,7 +17,7 @@ import io
 import pathlib
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 from trestle.core.err import TrestleError
 from trestle.utils import fs, trash
@@ -52,7 +52,7 @@ class ActionType(Enum):
 class Action(ABC):
     """Action wrapper of a command."""
 
-    def __init__(self, action_type: ActionType, has_rollback: bool):
+    def __init__(self, action_type: ActionType, has_rollback: bool) -> None:
         """Initialize an base action."""
         self._type: ActionType = action_type
         self._has_rollback: bool = has_rollback
@@ -68,15 +68,15 @@ class Action(ABC):
         """Return the action type."""
         return self._type
 
-    def _mark_executed(self):
+    def _mark_executed(self) -> None:
         """Set flag that the action has been executed."""
         self._has_executed = True
 
-    def has_executed(self):
+    def has_executed(self) -> bool:
         """Return if the action has been executed."""
         return self._has_executed
 
-    def _mark_rollback(self):
+    def _mark_rollback(self) -> None:
         """Set flag that the action has been rollbacked."""
         self._has_executed = False
 
@@ -84,33 +84,35 @@ class Action(ABC):
         """Return if rollback of the action is possible."""
         return self._has_rollback
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         """Check that two actions are equal."""
+        if not isinstance(other, Action):
+            return False
         if self.get_type() is not other.get_type():
             return False
         is_eq = self.__dict__ == other.__dict__
         return is_eq
 
     @abstractmethod
-    def execute(self):
+    def execute(self) -> None:
         """Execute the action."""
 
     @abstractmethod
-    def rollback(self):
+    def rollback(self) -> None:
         """Rollback the action."""
 
 
 class WriteAction(Action):
     """Write the element to a destination stream."""
 
-    def __init__(self, writer: io.TextIOWrapper, element: Element, content_type: FileContentType):
+    def __init__(self, writer: Optional[io.TextIOWrapper], element: Element, content_type: FileContentType) -> None:
         """Initialize an write file action."""
         super().__init__(ActionType.WRITE, True)
 
         if writer is not None and not issubclass(io.TextIOWrapper, writer.__class__):
             raise TrestleError(f'Writer must be of io.TextIOWrapper, given f{writer.__class__}')
 
-        self._writer: io.TextIOWrapper = writer
+        self._writer: Optional[io.TextIOWrapper] = writer
         self._element: Element = element
         self._content_type: FileContentType = content_type
         self._lastStreamPos = -1
@@ -132,7 +134,7 @@ class WriteAction(Action):
 
         raise TrestleError(f'Invalid content type {self._content_type}')
 
-    def execute(self):
+    def execute(self) -> None:
         """Execute the action."""
         if self._element is None:
             raise TrestleError('Element is empty and cannot write')
@@ -144,7 +146,7 @@ class WriteAction(Action):
         self._writer.flush()
         self._mark_executed()
 
-    def rollback(self):
+    def rollback(self) -> None:
         """Rollback the action."""
         if not self._is_writer_valid():
             raise TrestleError('Writer is not provided or closed')
@@ -158,7 +160,7 @@ class WriteAction(Action):
 
         self._mark_rollback()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation."""
         return f'{self.get_type()} {self._element}'
 
@@ -166,7 +168,7 @@ class WriteAction(Action):
 class WriteFileAction(WriteAction):
     """Write the element to a destination file."""
 
-    def __init__(self, file_path: pathlib.Path, element: Element, content_type: FileContentType):
+    def __init__(self, file_path: pathlib.Path, element: Element, content_type: FileContentType) -> None:
         """Initialize a write file action.
 
         It opens the file in append mode. Therefore the file needs to exist even if it is a new file.
@@ -174,10 +176,9 @@ class WriteFileAction(WriteAction):
         if not isinstance(file_path, pathlib.Path):
             raise TrestleError('file_path should be of type pathlib.Path')
 
-        if not self._valid_file_extension(file_path, content_type):
-            raise TrestleError(
-                f'Invalid file type extension in path "{file_path}" for content type "{content_type.name}"'
-            )
+        inferred_content_type = FileContentType.to_content_type(file_path.suffix)
+        if inferred_content_type != content_type:
+            raise TrestleError(f'Mismatch between stated content type {content_type.name} and file path {file_path}')
 
         self._file_path = file_path
 
@@ -185,16 +186,7 @@ class WriteFileAction(WriteAction):
         # Note, execute and rollback sets the writer as appropriate
         super().__init__(None, element, content_type)
 
-    def _valid_file_extension(self, file_path: pathlib.Path, content_type: FileContentType) -> bool:
-        if content_type == FileContentType.JSON and file_path.suffix == '.json':
-            return True
-
-        if content_type == FileContentType.YAML and file_path.suffix == '.yaml':
-            return True
-
-        return False
-
-    def execute(self):
+    def execute(self) -> None:
         """Execute the action."""
         if not self._file_path.exists():
             raise TrestleError(f'File at {self._file_path} does not exist')
@@ -208,7 +200,7 @@ class WriteFileAction(WriteAction):
             self._writer = writer
             super().execute()
 
-    def rollback(self):
+    def rollback(self) -> None:
         """Execute the rollback action."""
         if not self._file_path.exists():
             raise TrestleError(f'File at {self._file_path} does not exist')
@@ -217,7 +209,7 @@ class WriteFileAction(WriteAction):
             self._writer = writer
             super().rollback()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation."""
         return f'{self._type} {self._element} to "{self._file_path}"'
 
@@ -225,7 +217,7 @@ class WriteFileAction(WriteAction):
 class CreatePathAction(Action):
     """Create a file or directory path."""
 
-    def __init__(self, sub_path: pathlib.Path, clear_content: bool = False):
+    def __init__(self, sub_path: pathlib.Path, clear_content: bool = False) -> None:
         """Initialize a create path action.
 
         It creates all the missing directories in the path.
@@ -250,7 +242,7 @@ class CreatePathAction(Action):
 
         super().__init__(ActionType.CREATE_PATH, True)
 
-    def get_trestle_project_root(self):
+    def get_trestle_project_root(self) -> pathlib.Path:
         """Return the trestle project root path."""
         return self._trestle_project_root
 
@@ -258,7 +250,7 @@ class CreatePathAction(Action):
         """Get the list of paths that were created after being executed."""
         return self._created_paths
 
-    def execute(self):
+    def execute(self) -> None:
         """Execute the action."""
         # find the start of the sub_path relative to trestle project root
         cur_index = len(self._trestle_project_root.parts)
@@ -302,7 +294,7 @@ class CreatePathAction(Action):
 
         self._mark_executed()
 
-    def rollback(self):
+    def rollback(self) -> None:
         """Rollback the action."""
         if self.has_executed():
             if len(self._created_paths) > 0:
@@ -324,7 +316,7 @@ class CreatePathAction(Action):
 
         self._mark_rollback()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation."""
         return f'{self._type} {self._sub_path}'
 
@@ -332,7 +324,7 @@ class CreatePathAction(Action):
 class RemovePathAction(Action):
     """Remove a file or directory path."""
 
-    def __init__(self, sub_path: pathlib.Path):
+    def __init__(self, sub_path: pathlib.Path) -> None:
         """Initialize a remove path action.
 
         It removes the file or directory recursively into trash.
@@ -351,11 +343,11 @@ class RemovePathAction(Action):
 
         super().__init__(ActionType.REMOVE_PATH, True)
 
-    def get_trestle_project_root(self):
+    def get_trestle_project_root(self) -> Optional[pathlib.Path]:
         """Return the trestle project root path."""
         return self._trestle_project_root
 
-    def execute(self):
+    def execute(self) -> None:
         """Execute the action."""
         if not self._sub_path.exists():
             raise FileNotFoundError(f'Path "{self._sub_path}" does not exist')
@@ -363,7 +355,7 @@ class RemovePathAction(Action):
         trash.store(self._sub_path, True)
         self._mark_executed()
 
-    def rollback(self):
+    def rollback(self) -> None:
         """Rollback the action."""
         if self.has_executed():
             trash_path = trash.to_trash_path(self._sub_path)
@@ -373,7 +365,7 @@ class RemovePathAction(Action):
 
         self._mark_rollback()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation."""
         return f'{self._type} {self._sub_path}'
 
@@ -381,7 +373,7 @@ class RemovePathAction(Action):
 class UpdateAction(Action):
     """Update element at the element path in the destination element with the source element."""
 
-    def __init__(self, sub_element, dest_element: Element, sub_element_path: ElementPath):
+    def __init__(self, sub_element, dest_element: Element, sub_element_path: ElementPath) -> None:
         """Initialize an add element action.
 
         Sub element can be OscalBaseModel, Element, list or None
@@ -399,19 +391,19 @@ class UpdateAction(Action):
         self._sub_element_path: ElementPath = sub_element_path
         self._prev_sub_element = None
 
-    def execute(self):
+    def execute(self) -> None:
         """Execute the action."""
         self._prev_sub_element = self._dest_element.get_at(self._sub_element_path)
         self._dest_element.set_at(self._sub_element_path, self._sub_element)
         self._mark_executed()
 
-    def rollback(self):
+    def rollback(self) -> None:
         """Rollback the action."""
         if self.has_executed():
             self._dest_element.set_at(self._sub_element_path, self._prev_sub_element)
         self._mark_rollback()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation."""
         return f'{self._type} {self._model_obj.__class__} to {self._dest_element} at {self._sub_element_path}'
 
@@ -419,7 +411,7 @@ class UpdateAction(Action):
 class RemoveAction(Action):
     """Remove sub element at the element path in the source element."""
 
-    def __init__(self, src_element: Element, sub_element_path: ElementPath):
+    def __init__(self, src_element: Element, sub_element_path: ElementPath) -> None:
         """Initialize a remove element action."""
         super().__init__(ActionType.REMOVE, True)
 
@@ -427,18 +419,18 @@ class RemoveAction(Action):
         self._sub_element_path: ElementPath = sub_element_path
         self._prev_sub_element = None
 
-    def execute(self):
+    def execute(self) -> None:
         """Execute the action."""
         self._prev_sub_element = self._src_element.get_at(self._sub_element_path)
         self._src_element.set_at(self._sub_element_path, None)
         self._mark_executed()
 
-    def rollback(self):
+    def rollback(self) -> None:
         """Rollback the action."""
         if self.has_executed():
             self._src_element.set_at(self._sub_element_path, self._prev_sub_element)
         self._mark_rollback()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation."""
         return f'{self._type} element at {self._sub_element_path} from {self._src_element}'

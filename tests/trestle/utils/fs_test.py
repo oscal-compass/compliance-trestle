@@ -217,10 +217,10 @@ def test_load_file(tmp_dir):
 def test_get_contextual_model_type(tmp_dir):
     """Test get model type and alias based on filesystem context."""
     with pytest.raises(TrestleError):
-        fs.get_contextual_model_type(tmp_dir / 'invalidpath') is None
+        fs.get_contextual_model_type(tmp_dir / 'invalidpath')
 
     with pytest.raises(TrestleError):
-        fs.get_contextual_model_type(tmp_dir) is None
+        fs.get_contextual_model_type(tmp_dir)
 
     create_sample_catalog_project(tmp_dir)
 
@@ -313,10 +313,10 @@ def test_extract_alias():
 def test_get_stripped_contextual_model(tmp_dir):
     """Test get stripped model type and alias based on filesystem context."""
     with pytest.raises(TrestleError):
-        fs.get_stripped_contextual_model(tmp_dir / 'invalidpath') is None
+        fs.get_stripped_contextual_model(tmp_dir / 'invalidpath')
 
     with pytest.raises(TrestleError):
-        fs.get_stripped_contextual_model(tmp_dir) is None
+        fs.get_stripped_contextual_model(tmp_dir)
 
     create_sample_catalog_project(tmp_dir)
 

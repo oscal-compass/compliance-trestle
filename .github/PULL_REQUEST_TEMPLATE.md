@@ -10,7 +10,9 @@
 - \[ \] I have updated the documentation accordingly.
 - \[ \] I have added tests to cover my changes.
 - \[ \] All new and existing tests passed.
+- \[ \] All commits are signed.
 
+<!---
 ## Pull requests instructions
 
 Please, go through these steps before you submit a PR.
@@ -37,4 +39,4 @@ Please, go through these steps before you submit a PR.
 
    e Link all other issues which the PR refers to if not closing an issue. At least one issue MUST be linked or close for a PR to be accepted.
 
-**PLEASE REMOVE THESE INSTRUCTIONS BEFORE SUBMITTING**
+-->
