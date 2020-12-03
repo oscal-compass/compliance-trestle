@@ -114,7 +114,11 @@ class ImportCmd(Command):
             plural_path = parent_alias + 's'
 
         desired_model_dir = trestle_root / plural_path
-        desired_model_path = desired_model_dir / args.output / (parent_alias + input_file.suffix)
+        if args.output:
+            desired_model_path = desired_model_dir / args.output / (parent_alias + input_file.suffix)
+        else:
+            logger.error('trestle import requires an output name to be provided with -o or --output.')
+            return 1
 
         if desired_model_path.exists():
             logger.error(f'OSCAL file to be created here: {desired_model_path} exists.')
