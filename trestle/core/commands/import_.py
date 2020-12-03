@@ -76,6 +76,8 @@ class ImportCmd(Command):
         try:
             input_file.absolute().relative_to(trestle_root)
         except Exception:
+            pass
+        else:
             logger.error('Input file cannot be from current trestle project. Use duplicate instead.')
             return 1
 
