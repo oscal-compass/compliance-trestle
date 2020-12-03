@@ -12,23 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle import command."""
-import argparse
 import os
 import pathlib
 import sys
-from unittest import mock
 from unittest.mock import patch
-
-import pytest
 
 from tests import test_utils
 
-import trestle.core.err as err
 from trestle.cli import Trestle
-from trestle.core.models.elements import Element
-from trestle.core.models.file_content_type import FileContentType
-from trestle.core.models.plans import Plan
-from trestle.oscal.catalog import Catalog
 
 subcommand_list = [
     'catalog',
@@ -52,7 +43,7 @@ def test_import_cmd(tmp_dir: pathlib.Path) -> None:
     target_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'sample-target-definition.json')
     # Temporary directory for trestle init to trestle import into
     os.chdir(tmp_dir.absolute())
-    init_args = ['trestle' , 'init']
+    init_args = ['trestle', 'init']
     with patch.object(sys, 'argv', init_args):
         # Init tmp_dir
         Trestle().run()
@@ -83,7 +74,7 @@ def test_import_missing_input(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_bad_input_extension(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for bad input extension."""
     # Test
-    test_args = ['trestle', 'import', '-f', f'random_named_file.txt', '-o', f'catalog']
+    test_args = ['trestle', 'import', '-f', 'random_named_file.txt', '-o', 'catalog']
     with patch.object(sys, 'argv', test_args):
         try:
             Trestle().run()
