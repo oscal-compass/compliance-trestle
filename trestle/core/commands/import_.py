@@ -89,7 +89,14 @@ class ImportCmd(Command):
 
         # 4. Load input and parse for model
         data = fs.load_file(input_file.absolute())
-        parent_alias = parser.root_key(data)
+
+        try:
+            parent_alias = parser.root_key(data)
+        except Exception as err:
+            logger.debug(f'parser.root_key() failed: {err}')
+            logger.error(f'Import failed (parser.root_key()): {err}')
+            return 1
+
         parent_model_name = parser.to_full_model_name(parent_alias)
         try:
             parent_model = parser.parse_file(input_file.absolute(), parent_model_name)
