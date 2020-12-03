@@ -12,10 +12,89 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle import command."""
+import argparse
+import os
+import pathlib
+import sys
+from unittest import mock
+from unittest.mock import patch
+
+import pytest
+
+from tests import test_utils
+
+import trestle.core.err as err
+from trestle.cli import Trestle
+from trestle.core.models.elements import Element
+from trestle.core.models.file_content_type import FileContentType
+from trestle.core.models.plans import Plan
+from trestle.oscal.catalog import Catalog
+
+subcommand_list = [
+    'catalog',
+    'profile',
+    'target-definition',
+    'component-definition',
+    'system-security-plan',
+    'assessment-plan',
+    'assessment-results',
+    'plan-of-action-and-milestones'
+]
+
+
+def test_import_cmd(tmp_dir: pathlib.Path) -> None:
+    """Happy path test at the cli level."""
+    # Input file, catalog:
+    catalog_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'minimal_catalog.json')
+    # Input file, profile:
+    profile_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'good_profile.json')
+    # Input file, target:
+    target_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'sample-target-definition.json')
+    # Temporary directory for trestle init to trestle import into
+    os.chdir(tmp_dir.absolute())
+    init_args = ['trestle' , 'init']
+    with patch.object(sys, 'argv', init_args):
+        # Init tmp_dir
+        Trestle().run()
+        # Test
+        test_args = ['trestle', 'import', '-f', str(catalog_file_path), '-o', 'imported']
+        with patch.object(sys, 'argv', test_args):
+            rc = Trestle().run()
+            assert rc == 0
+        # Test
+        test_args = ['trestle', 'import', '-f', str(profile_file_path), '-o', 'imported']
+        with patch.object(sys, 'argv', test_args):
+            rc = Trestle().run()
+            assert rc == 0
+        # Test
+        test_args = ['trestle', 'import', '-f', str(target_file_path), '-o', 'imported']
+        with patch.object(sys, 'argv', test_args):
+            rc = Trestle().run()
+            assert rc == 0
+
+
+def test_import_missing_input(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test for missing input argument."""
+    # Test
+    # This can't be tested cleanly because the SystemExit:2 comes from cli.py
+    pass
+
+
+def test_import_bad_input_extension(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test for bad input extension."""
+    # Test
+    test_args = ['trestle', 'import', '-f', f'random_named_file.txt', '-o', f'catalog']
+    with patch.object(sys, 'argv', test_args):
+        try:
+            Trestle().run()
+        except Exception:
+            assert True
+        else:
+            AssertionError()
 
 
 def test_import_success(tmp_dir):
-    """Test for success cross multiple models."""
+    """Test for success across multiple models."""
     pass
 
 
