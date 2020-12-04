@@ -52,9 +52,7 @@ class ImportCmd(Command):
         logger.debug('Entering import run.')
 
         # 1. Validate input arguments are as expected. This code block may never be reached because cli.py enforces required args.
-        if len(args.file) == 0:
-            logger.error('trestle import requires a file to be provided with -f or --file.')
-            return 1
+        # NB: args.file is required by lcli which checks for it.
 
         input_file = pathlib.Path(args.file)
         if not input_file.exists():
@@ -86,7 +84,12 @@ class ImportCmd(Command):
             return 1
 
         # 4. Load input and parse for model
-        data = fs.load_file(input_file.absolute())
+        try:
+            data = fs.load_file(input_file.absolute())
+        except Exception as err:
+            logger.debug(f'fs.load_file() failed: {err}')
+            logger.error(f'Import failed (fs.load_file()): {err}')
+            return 1
 
         try:
             parent_alias = parser.root_key(data)
