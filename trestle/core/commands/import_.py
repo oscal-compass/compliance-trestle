@@ -16,7 +16,6 @@
 """Trestle Import Command."""
 import argparse
 import pathlib
-import warnings
 
 from ilcli import Command  # type: ignore
 
@@ -51,7 +50,8 @@ class ImportCmd(Command):
         """Top level import run command."""
         logger.debug('Entering import run.')
 
-        # 1. Validate input arguments are as expected. This code block may never be reached because cli.py enforces required args.
+        # 1. Validate input arguments are as expected.
+        # This code block may never be reached because cli.py enforces required args.
         # NB: args.file is required by lcli which checks for it.
 
         # 1.1 Check that input file given exists.
