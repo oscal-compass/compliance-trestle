@@ -16,6 +16,7 @@
 """Trestle Import Command."""
 import argparse
 import pathlib
+import warnings
 
 from ilcli import Command  # type: ignore
 
@@ -40,7 +41,7 @@ class ImportCmd(Command):
         logger.debug('Init arguments')
         self.add_argument('-f', '--file', help='OSCAL file to import.', type=str, required=True)
 
-        self.add_argument('-o', '--output', help='Name of output project.', type=str, required=True)
+        self.add_argument('-o', '--output', help='Name of output element.', type=str, required=True)
 
         self.add_argument(
             '-r', '--regenerate', type=bool, default=False, help='Enable to regenerate uuids within the document'
@@ -50,7 +51,7 @@ class ImportCmd(Command):
         """Top level import run command."""
         logger.debug('Entering import run.')
 
-        # 1. Validate input arguments are as expected.
+        # 1. Validate input arguments are as expected. This code block may never be reached because cli.py enforces required args.
         if len(args.file) == 0:
             logger.error('trestle import requires a file to be provided with -f or --file.')
             return 1
@@ -61,15 +62,10 @@ class ImportCmd(Command):
             return 1
 
         cwd = pathlib.Path.cwd().resolve()
-        try:
-            trestle_root = fs.get_trestle_project_root(cwd)
-        except Exception:
+        trestle_root = fs.get_trestle_project_root(cwd)
+        if trestle_root is None:
             logger.error(f'Current working directory: {cwd} is not within a trestle project.')
             return 1
-        else:
-            if trestle_root is None:
-                logger.error(f'Current working directory: {cwd} is not within a trestle project.')
-                return 1
 
         # 2. Ensure file is not in trestle dir
         trestle_root = trestle_root.resolve()
