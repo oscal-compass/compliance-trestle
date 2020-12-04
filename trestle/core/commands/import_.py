@@ -54,22 +54,25 @@ class ImportCmd(Command):
         # 1. Validate input arguments are as expected. This code block may never be reached because cli.py enforces required args.
         # NB: args.file is required by lcli which checks for it.
 
+        # 1.1 Check that input file given exists.
         input_file = pathlib.Path(args.file)
         if not input_file.exists():
             logger.error(f'Input file {args.file} does not exist.')
             return 1
 
+        # 1.2 Bad working directory if trestle_root is not found from it
         cwd = pathlib.Path.cwd().resolve()
         trestle_root = fs.get_trestle_project_root(cwd)
         if trestle_root is None:
             logger.error(f'Current working directory: {cwd} is not within a trestle project.')
             return 1
 
-        # 2. Ensure file is not in trestle dir
+        # 2. Importing a file that is already inside a trestle-initialized dir is bad
         trestle_root = trestle_root.resolve()
         try:
             input_file.absolute().relative_to(trestle_root)
         except Exception:
+            # An exception here is good: it means that the input file is not inside a trestle dir.
             pass
         else:
             logger.error('Input file cannot be from current trestle project. Use duplicate instead.')
@@ -84,6 +87,8 @@ class ImportCmd(Command):
             return 1
 
         # 4. Load input and parse for model
+
+        # 4.1 Load from file
         try:
             data = fs.load_file(input_file.absolute())
         except Exception as err:
@@ -91,6 +96,7 @@ class ImportCmd(Command):
             logger.error(f'Import failed (fs.load_file()): {err}')
             return 1
 
+        # 4.2 root key check
         try:
             parent_alias = parser.root_key(data)
         except Exception as err:
@@ -98,6 +104,7 @@ class ImportCmd(Command):
             logger.error(f'Import failed (parser.root_key()): {err}')
             return 1
 
+        # 4.3 parse the model
         parent_model_name = parser.to_full_model_name(parent_alias)
         try:
             parent_model = parser.parse_file(input_file.absolute(), parent_model_name)
