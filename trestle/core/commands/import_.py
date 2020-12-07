@@ -116,9 +116,7 @@ class ImportCmd(Command):
         # 5. Work out output directory and file
         plural_path: str
         # Cater to POAM
-        if parent_alias[-1] == 's':
-            plural_path = parent_alias
-        else:
+        if parent_alias[-1] != 's':
             plural_path = parent_alias + 's'
 
         desired_model_dir = trestle_root / plural_path
