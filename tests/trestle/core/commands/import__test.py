@@ -155,7 +155,7 @@ def test_import_bad_input_extension(tmp_trestle_dir: pathlib.Path) -> None:
             AssertionError()
 
 
-def test_import_load_file_failure(tmp_trestle_dir):
+def test_import_load_file_failure(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model failures throw errors and exit badly."""
     # DONE
     # Input file, bad json:
@@ -171,7 +171,7 @@ def test_import_load_file_failure(tmp_trestle_dir):
             assert rc == 1
 
 
-def test_import_root_key_failure(tmp_trestle_dir):
+def test_import_root_key_failure(tmp_trestle_dir: pathlib.Path) -> None:
     """Test root key is not found."""
     # DONE
     sample_file = tempfile.NamedTemporaryFile(suffix='.json')
@@ -190,7 +190,7 @@ def test_import_root_key_failure(tmp_trestle_dir):
             AssertionError()
 
 
-def test_import_failure_parse_file(tmp_trestle_dir):
+def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model failures throw errors and exit badly."""
     # DONE
     sample_file = tempfile.NamedTemporaryFile(suffix='.json')
@@ -211,7 +211,7 @@ def test_import_failure_parse_file(tmp_trestle_dir):
                 AssertionError()
 
 
-def test_import_root_key_found(tmp_trestle_dir):
+def test_import_root_key_found(tmp_trestle_dir: pathlib.Path) -> None:
     """Test root key is found."""
     # DONE
     catalog_file = tempfile.NamedTemporaryFile(suffix='.json')
@@ -234,7 +234,7 @@ def test_import_root_key_found(tmp_trestle_dir):
         assert rc == 0
 
 
-def test_import_failure_simulate_plan(tmp_trestle_dir):
+def test_import_failure_simulate_plan(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model failures throw errors and exit badly."""
     # DONE
     catalog_file = tempfile.NamedTemporaryFile(suffix='.json')
@@ -259,7 +259,7 @@ def test_import_failure_simulate_plan(tmp_trestle_dir):
             assert rc == 1
 
 
-def test_import_failure_execute_plan(tmp_trestle_dir):
+def test_import_failure_execute_plan(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model failures throw errors and exit badly."""
     # DONE
     catalog_file = tempfile.NamedTemporaryFile(suffix='.json')
