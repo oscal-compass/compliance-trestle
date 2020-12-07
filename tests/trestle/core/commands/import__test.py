@@ -161,16 +161,17 @@ def test_import_bad_input_extension(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_load_file_failure(tmp_dir):
     """Test model failures throw errors and exit badly."""
     # DONE
-    # Input file, catalog:
-    catalog_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'bad_simple.json')
-    # Temporary directory for trestle init to trestle import into
-    os.chdir(tmp_dir.absolute())
+    # Input file, bad json:
+    json_file = tempfile.NamedTemporaryFile(suffix='.json')
+    sample_data = '"star": {'
+    json_file.write(sample_data.encode('utf8'))
+    json_file.seek(0)
     init_args = 'trestle init'.split()
     with patch.object(sys, 'argv', init_args):
         # Init tmp_dir
         Trestle().run()
         # Test
-        test_args = f'trestle import -f {str(catalog_file_path)} -o imported'.split()
+        test_args = f'trestle import -f {str(json_file.name)} -o imported'.split()
         with patch('trestle.utils.fs.load_file') as load_file_mock:
             load_file_mock.side_effect = err.TrestleError('stuff')
             with patch.object(sys, 'argv', test_args):
@@ -179,7 +180,7 @@ def test_import_load_file_failure(tmp_dir):
 
 
 def test_import_root_key_failure(tmp_trestle_dir):
-    """Test root key is found."""
+    """Test root key is not found."""
     # DONE
     sample_file = tempfile.NamedTemporaryFile(suffix='.json')
     # Using dict to json to bytes, to keep flake8 quiet.
@@ -218,42 +219,75 @@ def test_import_failure_parse_file(tmp_trestle_dir):
                 AssertionError()
 
 
-def test_import_failure_simulate_plan(tmp_dir):
+def test_import_root_key_found(tmp_trestle_dir):
+    """Test root key is found."""
+    # DONE
+    catalog_file = tempfile.NamedTemporaryFile(suffix='.json')
+    sample_data = {
+        "catalog": {
+            "uuid": "ad0d0a7c-9634-48d9-ba90-fd10bcaf45b8",
+            "metadata": {
+                "title": "Generic catalog created by trestle.",
+                "last-modified": "2020-12-07T06:18:18.430+00:00",
+                "version": "0.0.0",
+                "oscal-version": "v1.0.0-milestone3"
+            }
+        }
+    }
+    catalog_file.write(json.dumps(sample_data).encode('utf8'))
+    catalog_file.seek(0)
+    test_args = f'trestle import -f {catalog_file.name} -o catalog'.split()
+    with patch.object(sys, 'argv', test_args):
+        rc = Trestle().run()
+        assert rc == 0
+
+
+def test_import_failure_simulate_plan(tmp_trestle_dir):
     """Test model failures throw errors and exit badly."""
     # DONE
-    # Input file, catalog:
-    catalog_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'minimal_catalog.json')
-    # Temporary directory for trestle init to trestle import into
-    os.chdir(tmp_dir.absolute())
-    init_args = 'trestle init'.split()
-    with patch.object(sys, 'argv', init_args):
-        # Init tmp_dir
-        Trestle().run()
-        # Import with simulate() mocked to fail
-        test_args = f'trestle import -f {str(catalog_file_path)} -o imported'.split()
-        with patch('trestle.core.models.plans.Plan.simulate') as simulate_plan_mock:
-            simulate_plan_mock.side_effect = err.TrestleError('stuff')
+    catalog_file = tempfile.NamedTemporaryFile(suffix='.json')
+    sample_data = {
+        "catalog": {
+            "uuid": "ad0d0a7c-9634-48d9-ba90-fd10bcaf45b8",
+            "metadata": {
+                "title": "Generic catalog created by trestle.",
+                "last-modified": "2020-12-07T06:18:18.430+00:00",
+                "version": "0.0.0",
+                "oscal-version": "v1.0.0-milestone3"
+            }
+        }
+    }
+    catalog_file.write(json.dumps(sample_data).encode('utf8'))
+    catalog_file.seek(0)
+    test_args = f'trestle import -f {str(catalog_file.name)} -o imported'.split()
+    with patch('trestle.core.models.plans.Plan.simulate') as simulate_plan_mock:
+        simulate_plan_mock.side_effect = err.TrestleError('stuff')
+        with patch.object(sys, 'argv', test_args):
+            rc = Trestle().run()
+            assert rc == 1
+
+
+def test_import_failure_execute_plan(tmp_trestle_dir):
+    """Test model failures throw errors and exit badly."""
+    # DONE
+    catalog_file = tempfile.NamedTemporaryFile(suffix='.json')
+    sample_data = {
+        "catalog": {
+            "uuid": "ad0d0a7c-9634-48d9-ba90-fd10bcaf45b8",
+            "metadata": {
+                "title": "Generic catalog created by trestle.",
+                "last-modified": "2020-12-07T06:18:18.430+00:00",
+                "version": "0.0.0",
+                "oscal-version": "v1.0.0-milestone3"
+            }
+        }
+    }
+    catalog_file.write(json.dumps(sample_data).encode('utf8'))
+    catalog_file.seek(0)
+    test_args = f'trestle import -f {str(catalog_file.name)} -o imported'.split()
+    with patch('trestle.core.models.plans.Plan.simulate'):
+        with patch('trestle.core.models.plans.Plan.execute') as execute_plan_mock:
+            execute_plan_mock.side_effect = err.TrestleError('stuff')
             with patch.object(sys, 'argv', test_args):
                 rc = Trestle().run()
                 assert rc == 1
-
-
-def test_import_failure_execute_plan(tmp_dir):
-    """Test model failures throw errors and exit badly."""
-    # DONE
-    # Input file, catalog:
-    catalog_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'minimal_catalog.json')
-    # Temporary directory for trestle init to trestle import into
-    os.chdir(tmp_dir.absolute())
-    init_args = 'trestle init'.split()
-    with patch.object(sys, 'argv', init_args):
-        # Init tmp_dir
-        Trestle().run()
-        # Import with execute() mocked to fail
-        test_args = f'trestle import -f {str(catalog_file_path)} -o imported'.split()
-        with patch('trestle.core.models.plans.Plan.simulate'):
-            with patch('trestle.core.models.plans.Plan.execute') as execute_plan_mock:
-                execute_plan_mock.side_effect = err.TrestleError('stuff')
-                with patch.object(sys, 'argv', test_args):
-                    rc = Trestle().run()
-                    assert rc == 1
