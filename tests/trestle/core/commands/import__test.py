@@ -55,6 +55,11 @@ def test_import_cmd(tmp_dir: pathlib.Path) -> None:
         with patch.object(sys, 'argv', test_args):
             rc = Trestle().run()
             assert rc == 0
+        # Import going to the same output should fail due to output file clash
+        test_args = ['trestle', 'import', '-f', str(catalog_file_path), '-o', 'imported']
+        with patch.object(sys, 'argv', test_args):
+            rc = Trestle().run()
+            assert rc == 1
         # Test
         test_args = ['trestle', 'import', '-f', str(profile_file_path), '-o', 'imported']
         with patch.object(sys, 'argv', test_args):
@@ -69,7 +74,7 @@ def test_import_cmd(tmp_dir: pathlib.Path) -> None:
 
 def test_import_missing_input(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for missing input argument."""
-    # This can't be unit tested here as lcli implements checks for required arguments like the input file.
+    # This can't be unit tested here as cli implements checks for required arguments like the input file.
     pass
 
 

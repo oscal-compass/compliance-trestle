@@ -51,8 +51,7 @@ class ImportCmd(Command):
         logger.debug('Entering import run.')
 
         # 1. Validate input arguments are as expected.
-        # This code block may never be reached because cli.py enforces required args.
-        # NB: args.file is required by lcli which checks for it.
+        # This code block may never be reached as the argument is declared to be required.
 
         # 1.1 Check that input file given exists.
         input_file = pathlib.Path(args.file)
@@ -121,11 +120,9 @@ class ImportCmd(Command):
             plural_path = parent_alias + 's'
 
         desired_model_dir = trestle_root / plural_path
+        # args.output is presumed to be assured as it is declared to be required
         if args.output:
             desired_model_path = desired_model_dir / args.output / (parent_alias + input_file.suffix)
-        else:
-            logger.error('trestle import requires an output name to be provided with -o or --output.')
-            return 1
 
         if desired_model_path.exists():
             logger.error(f'OSCAL file to be created here: {desired_model_path} exists.')
