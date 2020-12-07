@@ -15,6 +15,7 @@
 # limitations under the License.
 """Trestle Import Command."""
 import argparse
+import logging
 import pathlib
 
 from ilcli import Command  # type: ignore
@@ -27,7 +28,7 @@ from trestle.core.models.plans import Plan
 from trestle.utils import fs
 from trestle.utils import log
 
-logger = log.get_logger()
+logger = logging.getLogger(__name__)
 
 
 class ImportCmd(Command):
@@ -48,6 +49,8 @@ class ImportCmd(Command):
 
     def _run(self, args: argparse.Namespace) -> int:
         """Top level import run command."""
+        log.set_log_level_from_args(args)
+
         logger.debug('Entering import run.')
 
         # 1. Validate input arguments are as expected.

@@ -155,7 +155,7 @@ def test_import_bad_input_extension(tmp_trestle_dir: pathlib.Path) -> None:
             AssertionError()
 
 
-def test_import_load_file_failure(tmp_dir):
+def test_import_load_file_failure(tmp_trestle_dir):
     """Test model failures throw errors and exit badly."""
     # DONE
     # Input file, bad json:
@@ -163,17 +163,12 @@ def test_import_load_file_failure(tmp_dir):
     sample_data = '"star": {'
     json_file.write(sample_data.encode('utf8'))
     json_file.seek(0)
-    init_args = 'trestle init'.split()
-    with patch.object(sys, 'argv', init_args):
-        # Init tmp_dir
-        Trestle().run()
-        # Test
-        test_args = f'trestle import -f {str(json_file.name)} -o imported'.split()
-        with patch('trestle.utils.fs.load_file') as load_file_mock:
-            load_file_mock.side_effect = err.TrestleError('stuff')
-            with patch.object(sys, 'argv', test_args):
-                rc = Trestle().run()
-                assert rc == 1
+    test_args = f'trestle import -f {str(json_file.name)} -o imported'.split()
+    with patch('trestle.utils.fs.load_file') as load_file_mock:
+        load_file_mock.side_effect = err.TrestleError('stuff')
+        with patch.object(sys, 'argv', test_args):
+            rc = Trestle().run()
+            assert rc == 1
 
 
 def test_import_root_key_failure(tmp_trestle_dir):
