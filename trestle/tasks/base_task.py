@@ -87,7 +87,7 @@ class PassFail(TaskBase):
         logger.info(
             'In this case if no config section is provided the task will fail. This a a task specific behavior.'
         )
-        logger.info('Configuration flags sit under [tasks.pass-fail]')
+        logger.info('Configuration flags sit under [task.pass-fail]')
         logger.info('with two boolean flags')
         logger.info('execute_status = True/False with a default pass')
         logger.info('simulate_status = True/False with a default fail')
