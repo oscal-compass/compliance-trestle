@@ -115,6 +115,7 @@ class ImportCmd(Command):
 
         # 5. Work out output directory and file
         plural_path: str
+        plural_path = parent_alias
         # Cater to POAM
         if parent_alias[-1] != 's':
             plural_path = parent_alias + 's'
