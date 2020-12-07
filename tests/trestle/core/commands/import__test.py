@@ -13,7 +13,6 @@
 # limitations under the License.
 """Tests for trestle import command."""
 import json
-import os
 import pathlib
 import sys
 import tempfile
@@ -30,13 +29,13 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
     # Input file, catalog:
     catalog_file = tempfile.NamedTemporaryFile(suffix='.json')
     sample_data = {
-        "catalog": {
-            "uuid": "ad0d0a7c-9634-48d9-ba90-fd10bcaf45b8",
-            "metadata": {
-                "title": "Generic catalog created by trestle.",
-                "last-modified": "2020-12-07T06:18:18.430+00:00",
-                "version": "0.0.0",
-                "oscal-version": "v1.0.0-milestone3"
+        'catalog': {
+            'uuid': 'ad0d0a7c-9634-48d9-ba90-fd10bcaf45b8',
+            'metadata': {
+                'title': 'Generic catalog created by trestle.',
+                'last-modified': '2020-12-07T06:18:18.430+00:00',
+                'version': '0.0.0',
+                'oscal-version': 'v1.0.0-milestone3'
             }
         }
     }
@@ -45,19 +44,17 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
     # Input file, profile:
     profile_file = tempfile.NamedTemporaryFile(suffix='.json')
     sample_data = {
-        "profile": {
-            "uuid": "0611c5c3-436b-4506-9618-81fe7685a1c1",
-            "metadata": {
-                "title": "Generic profile created by trestle.",
-                "last-modified": "2020-12-07T06:18:11.311+00:00",
-                "version": "0.0.0",
-                "oscal-version": "v1.0.0-milestone3"
+        'profile': {
+            'uuid': '0611c5c3-436b-4506-9618-81fe7685a1c1',
+            'metadata': {
+                'title': 'Generic profile created by trestle.',
+                'last-modified': '2020-12-07T06:18:11.311+00:00',
+                'version': '0.0.0',
+                'oscal-version': 'v1.0.0-milestone3'
             },
-            "imports": [
-                {
-                    "href": "REPLACE_ME"
-                }
-            ]
+            'imports': [{
+                'href': 'REPLACE_ME'
+            }]
         }
     }
     profile_file.write(json.dumps(sample_data).encode('utf8'))
@@ -65,12 +62,12 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
     # Input file, target:
     target_definition_file = tempfile.NamedTemporaryFile(suffix='.json')
     sample_data = {
-        "target-definition": {
-            "metadata": {
-                "title": "Generic target-definition created by trestle.",
-                "last-modified": "2020-12-07T06:18:07.435+00:00",
-                "version": "0.0.0",
-                "oscal-version": "v1.0.0-milestone3"
+        'target-definition': {
+            'metadata': {
+                'title': 'Generic target-definition created by trestle.',
+                'last-modified': '2020-12-07T06:18:07.435+00:00',
+                'version': '0.0.0',
+                'oscal-version': 'v1.0.0-milestone3'
             }
         }
     }
@@ -224,13 +221,13 @@ def test_import_root_key_found(tmp_trestle_dir):
     # DONE
     catalog_file = tempfile.NamedTemporaryFile(suffix='.json')
     sample_data = {
-        "catalog": {
-            "uuid": "ad0d0a7c-9634-48d9-ba90-fd10bcaf45b8",
-            "metadata": {
-                "title": "Generic catalog created by trestle.",
-                "last-modified": "2020-12-07T06:18:18.430+00:00",
-                "version": "0.0.0",
-                "oscal-version": "v1.0.0-milestone3"
+        'catalog': {
+            'uuid': 'ad0d0a7c-9634-48d9-ba90-fd10bcaf45b8',
+            'metadata': {
+                'title': 'Generic catalog created by trestle.',
+                'last-modified': '2020-12-07T06:18:18.430+00:00',
+                'version': '0.0.0',
+                'oscal-version': 'v1.0.0-milestone3'
             }
         }
     }
@@ -247,13 +244,13 @@ def test_import_failure_simulate_plan(tmp_trestle_dir):
     # DONE
     catalog_file = tempfile.NamedTemporaryFile(suffix='.json')
     sample_data = {
-        "catalog": {
-            "uuid": "ad0d0a7c-9634-48d9-ba90-fd10bcaf45b8",
-            "metadata": {
-                "title": "Generic catalog created by trestle.",
-                "last-modified": "2020-12-07T06:18:18.430+00:00",
-                "version": "0.0.0",
-                "oscal-version": "v1.0.0-milestone3"
+        'catalog': {
+            'uuid': 'ad0d0a7c-9634-48d9-ba90-fd10bcaf45b8',
+            'metadata': {
+                'title': 'Generic catalog created by trestle.',
+                'last-modified': '2020-12-07T06:18:18.430+00:00',
+                'version': '0.0.0',
+                'oscal-version': 'v1.0.0-milestone3'
             }
         }
     }
@@ -272,13 +269,13 @@ def test_import_failure_execute_plan(tmp_trestle_dir):
     # DONE
     catalog_file = tempfile.NamedTemporaryFile(suffix='.json')
     sample_data = {
-        "catalog": {
-            "uuid": "ad0d0a7c-9634-48d9-ba90-fd10bcaf45b8",
-            "metadata": {
-                "title": "Generic catalog created by trestle.",
-                "last-modified": "2020-12-07T06:18:18.430+00:00",
-                "version": "0.0.0",
-                "oscal-version": "v1.0.0-milestone3"
+        'catalog': {
+            'uuid': 'ad0d0a7c-9634-48d9-ba90-fd10bcaf45b8',
+            'metadata': {
+                'title': 'Generic catalog created by trestle.',
+                'last-modified': '2020-12-07T06:18:18.430+00:00',
+                'version': '0.0.0',
+                'oscal-version': 'v1.0.0-milestone3'
             }
         }
     }
