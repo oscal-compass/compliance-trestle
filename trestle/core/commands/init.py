@@ -15,6 +15,7 @@
 # limitations under the License.
 """Trestle Init Command."""
 import argparse
+import logging
 import os
 import pathlib
 from shutil import copyfile
@@ -24,6 +25,9 @@ from ilcli import Command  # type: ignore
 from pkg_resources import resource_filename
 
 import trestle.core.const as const
+import trestle.utils.log as log
+
+logger = logging.getLogger(__name__)
 
 
 class InitCmd(Command):
@@ -31,8 +35,9 @@ class InitCmd(Command):
 
     name = 'init'
 
-    def _run(self, args: argparse.ArgumentParser) -> int:
+    def _run(self, args: argparse.Namespace) -> int:
         """Create a trestle project in the current directory."""
+        log.set_log_level_from_args(args)
         dir_path = os.getcwd()
 
         try:
@@ -42,10 +47,10 @@ class InitCmd(Command):
             # Create config file
             self._copy_config_file()
 
-            self.out(f'Initialized trestle project successfully in {dir_path}')
+            logger.info(f'Initialized trestle project successfully in {dir_path}')
 
         except BaseException as err:
-            self.err(f'Initialization failed: {err}')
+            logger.error(f'Initialization failed: {err}')
             return 1
         return 0
 

@@ -57,7 +57,7 @@ def test_create_object_directly(tmp_trestle_dir: pathlib.Path) -> None:
 def test_no_dir(tmp_empty_cwd: pathlib.Path) -> None:
     """Test for no trestle directory."""
     # Setup argparse
-    args = argparse.Namespace(extension='json', name='catalog')
+    args = argparse.Namespace(extension='json', name='catalog', verbose=0)
     rc = create.CreateCmd.create_object('catalog', Catalog, args)
     # check for non zero return code.
     assert rc > 0
@@ -65,7 +65,7 @@ def test_no_dir(tmp_empty_cwd: pathlib.Path) -> None:
 
 def test_fail_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     """Test that a failure occurs when doubling up a create."""
-    args = argparse.Namespace(extension='json', name='my_catalog')
+    args = argparse.Namespace(extension='json', name='my_catalog', verbose=0)
     rc = create.CreateCmd.create_object('catalog', Catalog, args)
     assert rc == 0
     rc = create.CreateCmd.create_object('catalog', Catalog, args)
@@ -111,7 +111,7 @@ def test_broken_args(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_execute_failure(tmp_trestle_dir: pathlib.Path) -> None:
     """Ensure create plan failure will return clean return codes from run."""
-    args = argparse.Namespace(extension='json', name='my_catalog')
+    args = argparse.Namespace(extension='json', name='my_catalog', verbose=0)
 
     with mock.patch('trestle.core.models.plans.Plan.simulate') as simulate_mock:
         simulate_mock.side_effect = err.TrestleError('stuff')
