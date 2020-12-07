@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Add Command."""
-
+import argparse
+import logging
 import pathlib
 
 from ilcli import Command  # type: ignore
@@ -28,6 +29,9 @@ from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs
+from trestle.utils import log
+
+logger = logging.getLogger(__name__)
 
 
 class AddCmd(Command):
@@ -49,13 +53,14 @@ class AddCmd(Command):
             required=True
         )
 
-    def _run(self, args):
+    def _run(self, args: argparse.Namespace) -> int:
         """Add an OSCAL component/subcomponent to the specified component.
 
         This method takes input a filename and a list of comma-seperated element path. Element paths are field aliases.
         The method first finds the parent model from the file and loads the file into the model.
         Then the method executes 'add' for each of the element paths specified.
         """
+        log.set_log_level_from_args(args)
         try:
             args = args.__dict__
 
@@ -87,7 +92,7 @@ class AddCmd(Command):
             add_plan.execute()
 
         except BaseException as err:
-            self.err(f'Add failed: {err}')
+            logger.error(f'Add failed: {err}')
             return 1
         return 0
 

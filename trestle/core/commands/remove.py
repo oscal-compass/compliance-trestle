@@ -14,15 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Remove Command."""
-
+import argparse
+import logging
 import pathlib
-from typing import Tuple
+from typing import List, Tuple, Type
 
 from ilcli import Command  # type: ignore
 
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core import utils
+from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemoveAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
@@ -31,7 +33,7 @@ from trestle.core.models.plans import Plan
 from trestle.utils import fs
 from trestle.utils import log
 
-logger = log.get_logger()
+logger = logging.getLogger(__name__)
 
 
 class RemoveCmd(Command):
@@ -53,16 +55,17 @@ class RemoveCmd(Command):
             required=True
         )
 
-    def _run(self, args) -> int:
+    def _run(self, args: argparse.Namespace) -> int:
         """Remove an OSCAL component/subcomponent to the specified component.
 
         This method takes input a filename and a list of comma-seperated element path. Element paths are field aliases.
         The method first finds the parent model from the file and loads the file into the model.
         Then the method executes 'remove' for each of the element paths specified.
         """
-        args = args.__dict__
+        log.set_log_level_from_args(args)
+        args_dict = args.__dict__
 
-        file_path = pathlib.Path(args[const.ARG_FILE])
+        file_path = pathlib.Path(args_dict[const.ARG_FILE])
 
         # Get parent model and then load json into parent model
         try:
@@ -84,7 +87,7 @@ class RemoveCmd(Command):
         add_plan = Plan()
 
         # Do _remove for each element_path specified in args
-        element_paths: list[str] = args[const.ARG_ELEMENT].split(',')
+        element_paths: List[str] = str(args_dict[const.ARG_ELEMENT]).split(',')
         for elm_path_str in element_paths:
             element_path = ElementPath(elm_path_str)
             try:
@@ -120,7 +123,8 @@ class RemoveCmd(Command):
         return 0
 
     @classmethod
-    def remove(cls, element_path, parent_model, parent_element) -> Tuple[RemoveAction, Element]:
+    def remove(cls, element_path: ElementPath, parent_model: Type[OscalBaseModel],
+               parent_element: Element) -> Tuple[RemoveAction, Element]:
         """For the element_path, remove a model from the parent_element of a given parent_model.
 
         First we check if there is an existing element at that path
