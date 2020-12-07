@@ -24,17 +24,6 @@ from tests import test_utils
 import trestle.core.err as err
 from trestle.cli import Trestle
 
-subcommand_list = [
-    'catalog',
-    'profile',
-    'target-definition',
-    'component-definition',
-    'system-security-plan',
-    'assessment-plan',
-    'assessment-results',
-    'plan-of-action-and-milestones'
-]
-
 
 def test_import_cmd(tmp_dir: pathlib.Path) -> None:
     """Happy path test at the cli level."""
@@ -46,42 +35,36 @@ def test_import_cmd(tmp_dir: pathlib.Path) -> None:
     target_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'sample-target-definition.json')
     # Temporary directory for trestle init to trestle import into
     os.chdir(tmp_dir.absolute())
-    init_args = ['trestle', 'init']
+    init_args = 'trestle init'.split()
     with patch.object(sys, 'argv', init_args):
         # Init tmp_dir
         Trestle().run()
         # Test
-        test_args = ['trestle', 'import', '-f', str(catalog_file_path), '-o', 'imported']
+        test_args = f'trestle import -f {str(catalog_file_path)} -o imported'.split()
         with patch.object(sys, 'argv', test_args):
             rc = Trestle().run()
             assert rc == 0
         # Import going to the same output should fail due to output file clash
-        test_args = ['trestle', 'import', '-f', str(catalog_file_path), '-o', 'imported']
+        test_args = f'trestle import -f {str(catalog_file_path)} -o imported'.split()
         with patch.object(sys, 'argv', test_args):
             rc = Trestle().run()
             assert rc == 1
         # Test
-        test_args = ['trestle', 'import', '-f', str(profile_file_path), '-o', 'imported']
+        test_args = f'trestle import -f {str(profile_file_path)} -o imported'.split()
         with patch.object(sys, 'argv', test_args):
             rc = Trestle().run()
             assert rc == 0
         # Test
-        test_args = ['trestle', 'import', '-f', str(target_file_path), '-o', 'imported']
+        test_args = f'trestle import -f {str(target_file_path)} -o imported'.split()
         with patch.object(sys, 'argv', test_args):
             rc = Trestle().run()
             assert rc == 0
-
-
-def test_import_missing_input(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test for missing input argument."""
-    # This can't be unit tested here as cli implements checks for required arguments like the input file.
-    pass
 
 
 def test_import_missing_input_file(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for missing input file."""
     # Test
-    test_args = ['trestle', 'import', '-f', 'random_named_file.json', '-o', 'catalog']
+    test_args = 'trestle import -f random_named_file.json -o catalog'.split()
     with patch.object(sys, 'argv', test_args):
         try:
             Trestle().run()
@@ -139,11 +122,6 @@ def test_import_bad_input_extension(tmp_trestle_dir: pathlib.Path) -> None:
             AssertionError()
 
 
-def test_import_success(tmp_dir):
-    """Test for success across multiple models."""
-    pass
-
-
 def test_import_load_file_failure(tmp_dir):
     """Test model failures throw errors and exit badly."""
     # DONE
@@ -151,12 +129,12 @@ def test_import_load_file_failure(tmp_dir):
     catalog_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'bad_simple.json')
     # Temporary directory for trestle init to trestle import into
     os.chdir(tmp_dir.absolute())
-    init_args = ['trestle', 'init']
+    init_args = 'trestle init'.split()
     with patch.object(sys, 'argv', init_args):
         # Init tmp_dir
         Trestle().run()
         # Test
-        test_args = ['trestle', 'import', '-f', str(catalog_file_path), '-o', 'imported']
+        test_args = f'trestle import -f {str(catalog_file_path)} -o imported'.split()
         with patch('trestle.utils.fs.load_file') as load_file_mock:
             load_file_mock.side_effect = err.TrestleError('stuff')
             with patch.object(sys, 'argv', test_args):
@@ -204,11 +182,42 @@ def test_import_failure_parse_file(tmp_trestle_dir):
                 AssertionError()
 
 
-def test_failure_reference_inside_trestle_project(tmp_dir):
-    """Ensure failure if a reference pulls in an object which is inside the current context."""
-    pass
+def test_import_failure_simulate_plan(tmp_dir):
+    """Test model failures throw errors and exit badly."""
+    # DONE
+    # Input file, catalog:
+    catalog_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'minimal_catalog.json')
+    # Temporary directory for trestle init to trestle import into
+    os.chdir(tmp_dir.absolute())
+    init_args = 'trestle init'.split()
+    with patch.object(sys, 'argv', init_args):
+        # Init tmp_dir
+        Trestle().run()
+        # Import with simulate() mocked to fail
+        test_args = f'trestle import -f {str(catalog_file_path)} -o imported'.split()
+        with patch('trestle.core.models.plans.Plan.simulate') as simulate_plan_mock:
+            simulate_plan_mock.side_effect = err.TrestleError('stuff')
+            with patch.object(sys, 'argv', test_args):
+                rc = Trestle().run()
+                assert rc == 1
 
 
-def test_failure_duplicate_output_key(tmp_dir):
-    """Fail if output name and type is duplicated."""
-    pass
+def test_import_failure_execute_plan(tmp_dir):
+    """Test model failures throw errors and exit badly."""
+    # DONE
+    # Input file, catalog:
+    catalog_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'minimal_catalog.json')
+    # Temporary directory for trestle init to trestle import into
+    os.chdir(tmp_dir.absolute())
+    init_args = 'trestle init'.split()
+    with patch.object(sys, 'argv', init_args):
+        # Init tmp_dir
+        Trestle().run()
+        # Import with execute() mocked to fail
+        test_args = f'trestle import -f {str(catalog_file_path)} -o imported'.split()
+        with patch('trestle.core.models.plans.Plan.simulate'):
+            with patch('trestle.core.models.plans.Plan.execute') as execute_plan_mock:
+                execute_plan_mock.side_effect = err.TrestleError('stuff')
+                with patch.object(sys, 'argv', test_args):
+                    rc = Trestle().run()
+                    assert rc == 1
