@@ -25,40 +25,76 @@ import trestle.core.err as err
 from trestle.cli import Trestle
 
 
-def test_import_cmd(tmp_dir: pathlib.Path) -> None:
+def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
     """Happy path test at the cli level."""
     # Input file, catalog:
-    catalog_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'minimal_catalog.json')
+    catalog_file = tempfile.NamedTemporaryFile(suffix='.json')
+    sample_data = {
+        "catalog": {
+            "uuid": "ad0d0a7c-9634-48d9-ba90-fd10bcaf45b8",
+            "metadata": {
+                "title": "Generic catalog created by trestle.",
+                "last-modified": "2020-12-07T06:18:18.430+00:00",
+                "version": "0.0.0",
+                "oscal-version": "v1.0.0-milestone3"
+            }
+        }
+    }
+    catalog_file.write(json.dumps(sample_data).encode('utf8'))
+    catalog_file.seek(0)
     # Input file, profile:
-    profile_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'good_profile.json')
+    profile_file = tempfile.NamedTemporaryFile(suffix='.json')
+    sample_data = {
+        "profile": {
+            "uuid": "0611c5c3-436b-4506-9618-81fe7685a1c1",
+            "metadata": {
+                "title": "Generic profile created by trestle.",
+                "last-modified": "2020-12-07T06:18:11.311+00:00",
+                "version": "0.0.0",
+                "oscal-version": "v1.0.0-milestone3"
+            },
+            "imports": [
+                {
+                    "href": "REPLACE_ME"
+                }
+            ]
+        }
+    }
+    profile_file.write(json.dumps(sample_data).encode('utf8'))
+    profile_file.seek(0)
     # Input file, target:
-    target_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'sample-target-definition.json')
-    # Temporary directory for trestle init to trestle import into
-    os.chdir(tmp_dir.absolute())
-    init_args = 'trestle init'.split()
-    with patch.object(sys, 'argv', init_args):
-        # Init tmp_dir
-        Trestle().run()
-        # Test
-        test_args = f'trestle import -f {str(catalog_file_path)} -o imported'.split()
-        with patch.object(sys, 'argv', test_args):
-            rc = Trestle().run()
-            assert rc == 0
-        # Import going to the same output should fail due to output file clash
-        test_args = f'trestle import -f {str(catalog_file_path)} -o imported'.split()
-        with patch.object(sys, 'argv', test_args):
-            rc = Trestle().run()
-            assert rc == 1
-        # Test
-        test_args = f'trestle import -f {str(profile_file_path)} -o imported'.split()
-        with patch.object(sys, 'argv', test_args):
-            rc = Trestle().run()
-            assert rc == 0
-        # Test
-        test_args = f'trestle import -f {str(target_file_path)} -o imported'.split()
-        with patch.object(sys, 'argv', test_args):
-            rc = Trestle().run()
-            assert rc == 0
+    target_definition_file = tempfile.NamedTemporaryFile(suffix='.json')
+    sample_data = {
+        "target-definition": {
+            "metadata": {
+                "title": "Generic target-definition created by trestle.",
+                "last-modified": "2020-12-07T06:18:07.435+00:00",
+                "version": "0.0.0",
+                "oscal-version": "v1.0.0-milestone3"
+            }
+        }
+    }
+    target_definition_file.write(json.dumps(sample_data).encode('utf8'))
+    target_definition_file.seek(0)
+    test_args = f'trestle import -f {str(catalog_file.name)} -o imported'.split()
+    with patch.object(sys, 'argv', test_args):
+        rc = Trestle().run()
+        assert rc == 0
+    # Import going to the same output should fail due to output file clash
+    test_args = f'trestle import -f {str(catalog_file.name)} -o imported'.split()
+    with patch.object(sys, 'argv', test_args):
+        rc = Trestle().run()
+        assert rc == 1
+    # Test
+    test_args = f'trestle import -f {str(profile_file.name)} -o imported'.split()
+    with patch.object(sys, 'argv', test_args):
+        rc = Trestle().run()
+        assert rc == 0
+    # Test
+    test_args = f'trestle import -f {str(target_definition_file.name)} -o imported'.split()
+    with patch.object(sys, 'argv', test_args):
+        rc = Trestle().run()
+        assert rc == 0
 
 
 def test_import_missing_input_file(tmp_trestle_dir: pathlib.Path) -> None:
