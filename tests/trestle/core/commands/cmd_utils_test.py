@@ -37,7 +37,7 @@ def prepare_expected_element_paths(element_args: List[str]) -> List[ElementPath]
     return element_paths
 
 
-def test_parse_element_arg(tmp_dir):
+def test_parse_element_arg(tmp_path):
     """Unit test parse a single element arg."""
     with pytest.raises(TrestleError):
         cmd_utils.parse_element_arg('target-definition', False)
@@ -60,8 +60,8 @@ def test_parse_element_arg(tmp_dir):
     assert expected_paths == element_paths
 
     # contextual path
-    test_utils.ensure_trestle_config_dir(tmp_dir)
-    catalog_split_dir = tmp_dir / 'catalogs/nist800-53/catalog'
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    catalog_split_dir = tmp_path / 'catalogs/nist800-53/catalog'
     fs.ensure_directory(catalog_split_dir)
     cur_dir = pathlib.Path.cwd()
     os.chdir(catalog_split_dir)
@@ -116,8 +116,8 @@ def test_parse_element_arg(tmp_dir):
     assert expected_paths == element_paths
 
     # use contextual path for parsing path
-    test_utils.ensure_trestle_config_dir(tmp_dir)
-    target_def_dir: pathlib.Path = tmp_dir / 'target-definitions/mytarget/'
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    target_def_dir: pathlib.Path = tmp_path / 'target-definitions/mytarget/'
     fs.ensure_directory(target_def_dir)
     cur_dir = pathlib.Path.cwd()
     os.chdir(target_def_dir)

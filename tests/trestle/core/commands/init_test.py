@@ -27,10 +27,10 @@ import trestle.core.const as const
 from trestle import cli
 
 
-def test_init(tmpdir):
+def test_init(tmp_path):
     """Test init happy path."""
     owd = os.getcwd()
-    os.chdir(tmpdir)
+    os.chdir(tmp_path)
     testargs = ['trestle', 'init']
     with patch.object(sys, 'argv', testargs):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -45,13 +45,13 @@ def test_init(tmpdir):
     os.chdir(owd)
 
 
-def test_directory_creation_error(tmpdir):
+def test_directory_creation_error(tmp_path):
     """Test error during init when a directory cannot be created."""
     # Windows read-only on dir does not prevent file creation in dir
     if platform.system() == 'Windows':
         return
     owd = os.getcwd()
-    os.chdir(tmpdir)
+    os.chdir(tmp_path)
     os.mkdir(const.TRESTLE_CONFIG_DIR)
     os.chmod(const.TRESTLE_CONFIG_DIR, stat.S_IREAD)
     testargs = ['trestle', 'init']
@@ -68,10 +68,10 @@ def test_directory_creation_error(tmpdir):
     os.chdir(owd)
 
 
-def test_config_copy_error(tmpdir):
+def test_config_copy_error(tmp_path):
     """Test error during init when a contents of .trestle cannot be created."""
     owd = os.getcwd()
-    os.chdir(tmpdir)
+    os.chdir(tmp_path)
     os.mkdir(const.TRESTLE_CONFIG_DIR)
     open(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE), 'a').close()
     os.chmod(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE), stat.S_IREAD)

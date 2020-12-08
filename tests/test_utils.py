@@ -26,7 +26,7 @@ from trestle.core.models.elements import ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
 
-BASE_TMP_DIR = pathlib.Path('tests/__tmp_dir')
+BASE_TMP_DIR = pathlib.Path('tests/__tmp_path')
 YAML_TEST_DATA_PATH = pathlib.Path('tests/data/yaml/')
 JSON_TEST_DATA_PATH = pathlib.Path('tests/data/json/')
 
@@ -34,21 +34,21 @@ TARGET_DEFS_DIR = 'target-definitions'
 CATALOGS_DIR = 'catalogs'
 
 
-def clean_tmp_dir(tmp_dir: pathlib.Path):
+def clean_tmp_path(tmp_path: pathlib.Path):
     """Clean tmp directory."""
-    if tmp_dir.exists() and fs.has_parent_path(tmp_dir, BASE_TMP_DIR):
+    if tmp_path.exists():
         # clean all files/directories under sub_path
-        for item in pathlib.Path.iterdir(tmp_dir):
+        for item in pathlib.Path.iterdir(tmp_path):
             if item.is_file():
                 item.unlink()
             elif item.is_dir():
-                clean_tmp_dir(item)
+                clean_tmp_path(item)
 
         # delete the sub_path
-        if tmp_dir.is_file():
-            tmp_dir.unlink()
-        elif tmp_dir.is_dir():
-            tmp_dir.rmdir()
+        if tmp_path.is_file():
+            tmp_path.unlink()
+        elif tmp_path.is_dir():
+            tmp_path.rmdir()
 
 
 def verify_file_content(file_path: pathlib.Path, model: OscalBaseModel):
@@ -73,15 +73,15 @@ def prepare_element_paths(base_dir, element_args) -> List[ElementPath]:
 
 
 def prepare_trestle_project_dir(
-    tmp_dir, content_type: FileContentType, model_obj: OscalBaseModel, models_dir_name: str
+    tmp_path, content_type: FileContentType, model_obj: OscalBaseModel, models_dir_name: str
 ):
     """Prepare a temp directory with an example OSCAL model."""
-    ensure_trestle_config_dir(tmp_dir)
+    ensure_trestle_config_dir(tmp_path)
 
     model_alias = utils.classname_to_alias(model_obj.__class__.__name__, 'json')
 
     file_ext = FileContentType.to_file_extension(content_type)
-    models_full_path = tmp_dir / models_dir_name / 'my_test_model'
+    models_full_path = tmp_path / models_dir_name / 'my_test_model'
     model_def_file = models_full_path / f'{model_alias}{file_ext}'
     fs.ensure_directory(models_full_path)
     model_obj.oscal_write(model_def_file)
