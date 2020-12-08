@@ -14,6 +14,7 @@
 # limitations under the License.
 """Utilities for dealing with models."""
 import importlib
+import logging
 import warnings
 from typing import Any, List, Tuple, Type, no_type_check
 
@@ -23,9 +24,8 @@ from pydantic import BaseModel
 
 import trestle.core.const as const
 import trestle.core.err as err
-import trestle.utils.log as log
 
-logger = log.get_logger()
+logger = logging.getLogger(__name__)
 
 
 def get_elements_of_model_type(object_of_interest, type_of_interest):
