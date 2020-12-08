@@ -7,8 +7,29 @@ repo_name: "IBM/compliance-trestle"
 nav:
   - Overview: index.md
   - Trestle commands: commands.md
-  - API Reference:
+  - Code of Conduct: mkdocs_code_of_conduct.md
+  - Contributing:
+      - Overview: contributing/mkdocs_contributing.md
+  - Reference:
     - Overview: api_reference/overview.md
+    - core:
+      - base_model: api_reference/core/base_model.md
+      - const: api_reference/core/const.md
+      - duplicates_validator: api_reference/core/duplicates_validator.md
+      - err: api_reference/core/err.md
+      - generators: api_reference/core/generators.md
+      - object_factory: api_reference/core/object_factory.md
+      - parser: api_reference/core/parser.md
+      - utils: api_reference/core/utils.md
+      - validator_factory: api_reference/core/validator_factory.md
+      - validator_helper: api_reference/core/validator_helper.md
+      - commands: api_reference/core/commands/commands.md
+      - models:
+        - actions: api_reference/core/models/actions.md
+        - elements: api_reference/core/models/elements.md
+        - file_content_type: api_reference/core/models/file_content_type.md
+        - interfaces: api_reference/core/models/interfaces.md
+        - plans: api_reference/core/models/plans.md
     - oscal:
       - Catalog: api_reference/oscal/catalog.md
       - Profile: api_reference/oscal/catalog.md
@@ -18,14 +39,13 @@ nav:
       - System Assessment Plan: api_reference/oscal/sap.md
       - System Assessment Results: api_reference/oscal/sar.md
       - Plan of action & Milestones: api_reference/oscal/poam.md
-    - core:
-      - core: api_reference/core/core.md
-      - models: api_reference/core/models.md
-      - remote: api_reference/core/remote.md
-  - API Reference 2: api_reference/all_in_one.md
-  - Code of Conduct: mkdocs_code_of_conduct.md
-  - Contributing:
-      - Overview: contributing/mkdocs_contributing.md
+    - tasks:
+      - base_task: api_reference/tasks/base_task.md
+      - transform: api_reference/tasks/transform.md
+    - utils:
+      - fs: api_reference/utils/fs.md
+      - log: api_reference/utils/log.md
+      - trash: api_reference/utils/trash.md
 
 
 theme:

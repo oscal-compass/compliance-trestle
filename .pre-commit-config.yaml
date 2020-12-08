@@ -38,7 +38,10 @@ repos:
     rev: 0.5.3  # Use the ref you want to point at
     hooks:
     - id: mdformat
-      exclude: "CHANGELOG.md"
+      exclude: "CHANGELOG.md|docs/mkdocs_code_of_conduct.md"
+      additional_dependencies:
+      - mdformat-tables
+      - mdformat-config
       
   # - repo: https://github.com/pre-commit/mirrors-mypy
   #   rev: ''

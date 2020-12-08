@@ -2,4 +2,4 @@
 
 Do not add additional content to this file.
 \<-->
-{!CODE\_OF\_CONDUCT.md!}
+{!CODE_OF_CONDUCT.md!}
