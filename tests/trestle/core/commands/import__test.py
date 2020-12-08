@@ -18,6 +18,8 @@ import sys
 import tempfile
 from unittest.mock import patch
 
+import pytest
+
 from tests import test_utils
 
 import trestle.core.err as err
@@ -99,12 +101,8 @@ def test_import_missing_input_file(tmp_trestle_dir: pathlib.Path) -> None:
     # Test
     test_args = 'trestle import -f random_named_file.json -o catalog'.split()
     with patch.object(sys, 'argv', test_args):
-        try:
-            Trestle().run()
-        except Exception:
-            assert True
-        else:
-            AssertionError()
+        rc = Trestle().run()
+        assert rc == 1
 
 
 def test_import_bad_working_directory(tmp_dir: pathlib.Path) -> None:
@@ -116,12 +114,8 @@ def test_import_bad_working_directory(tmp_dir: pathlib.Path) -> None:
     with patch('trestle.utils.fs.get_trestle_project_root') as get_trestle_project_root_mock:
         get_trestle_project_root_mock.return_value = None
         with patch.object(sys, 'argv', test_args):
-            try:
-                Trestle().run()
-            except Exception:
-                assert True
-            else:
-                AssertionError()
+            rc = Trestle().run()
+            assert rc == 1
 
 
 def test_import_from_inside_trestle_project_is_bad(tmp_trestle_dir: pathlib.Path) -> None:
@@ -132,13 +126,8 @@ def test_import_from_inside_trestle_project_is_bad(tmp_trestle_dir: pathlib.Path
     sample_file.close()
     test_args = 'trestle import -f infile.json -o catalog'.split()
     with patch.object(sys, 'argv', test_args):
-        try:
-            Trestle().run()
-        except Exception:
-            assert True
-        else:
-            AssertionError()
-
+        rc = Trestle().run()
+        assert rc == 1
 
 def test_import_bad_input_extension(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for bad input extension."""
@@ -147,12 +136,8 @@ def test_import_bad_input_extension(tmp_trestle_dir: pathlib.Path) -> None:
     temp_file = tempfile.NamedTemporaryFile(suffix='.txt')
     test_args = f'trestle import -f {temp_file.name} -o catalog'.split()
     with patch.object(sys, 'argv', test_args):
-        try:
-            Trestle().run()
-        except Exception:
-            assert True
-        else:
-            AssertionError()
+        rc = Trestle().run()
+        assert rc == 1
 
 
 def test_import_load_file_failure(tmp_trestle_dir: pathlib.Path) -> None:
@@ -182,13 +167,8 @@ def test_import_root_key_failure(tmp_trestle_dir: pathlib.Path) -> None:
     sample_file.seek(0)
     test_args = f'trestle import -f {sample_file.name} -o catalog'.split()
     with patch.object(sys, 'argv', test_args):
-        try:
-            Trestle().run()
-        except Exception:
-            assert True
-        else:
-            AssertionError()
-
+        rc = Trestle().run()
+        assert rc == 1
 
 def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model failures throw errors and exit badly."""
@@ -203,13 +183,8 @@ def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path) -> None:
     with patch('trestle.core.parser.parse_file') as parse_file_mock:
         parse_file_mock.side_effect = err.TrestleError('stuff')
         with patch.object(sys, 'argv', test_args):
-            try:
-                Trestle().run()
-            except Exception:
-                assert True
-            else:
-                AssertionError()
-
+            rc = Trestle().run()
+            assert rc == 1
 
 def test_import_root_key_found(tmp_trestle_dir: pathlib.Path) -> None:
     """Test root key is found."""
