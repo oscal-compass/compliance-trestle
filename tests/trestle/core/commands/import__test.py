@@ -18,8 +18,6 @@ import sys
 import tempfile
 from unittest.mock import patch
 
-import pytest
-
 from tests import test_utils
 
 import trestle.core.err as err
@@ -100,15 +98,7 @@ def test_import_non_top_level_element(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for expected fail to import non-top level element, e.g., groups."""
     # Input file, catalog:
     groups_file = tempfile.NamedTemporaryFile(suffix='.json')
-    sample_data = {
-        "groups": [
-            {
-                "id": "ac",
-                "class": "family",
-                "title": "Access Control"
-            }
-        ]
-    }
+    sample_data = {'groups': [{'id': 'ac', 'class': 'family', 'title': 'Access Control'}]}
     groups_file.write(json.dumps(sample_data).encode('utf8'))
     groups_file.seek(0)
     test_args = f'trestle import -f {str(groups_file.name)} -o imported'.split()
@@ -149,6 +139,7 @@ def test_import_from_inside_trestle_project_is_bad(tmp_trestle_dir: pathlib.Path
     with patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 1
+
 
 def test_import_bad_input_extension(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for bad input extension."""
@@ -191,6 +182,7 @@ def test_import_root_key_failure(tmp_trestle_dir: pathlib.Path) -> None:
         rc = Trestle().run()
         assert rc == 1
 
+
 def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model failures throw errors and exit badly."""
     # DONE
@@ -206,6 +198,7 @@ def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path) -> None:
         with patch.object(sys, 'argv', test_args):
             rc = Trestle().run()
             assert rc == 1
+
 
 def test_import_root_key_found(tmp_trestle_dir: pathlib.Path) -> None:
     """Test root key is found."""
