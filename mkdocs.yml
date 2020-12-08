@@ -8,6 +8,7 @@ nav:
   - Overview: index.md
   - Trestle commands: commands.md
   - API Reference:
+    - Overview: api_reference/overview.md
     - oscal:
       - Catalog: api_reference/oscal/catalog.md
       - Profile: api_reference/oscal/catalog.md
@@ -18,10 +19,13 @@ nav:
       - System Assessment Results: api_reference/oscal/sar.md
       - Plan of action & Milestones: api_reference/oscal/poam.md
     - core:
+      - core: api_reference/core/core.md
       - models: api_reference/core/models.md
       - remote: api_reference/core/remote.md
-  - Code of Conduct: ../CODE_OF_CONDUCT.md
-  - Contributing: ../CONTRIBUTING.md
+  - API Reference 2: api_reference/all_in_one.md
+  - Code of Conduct: mkdocs_code_of_conduct.md
+  - Contributing:
+      - Overview: contributing/mkdocs_contributing.md
 
 
 theme:

@@ -34,8 +34,8 @@ def parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
     """Load a model from the data dict.
 
     Argument:
-        model_name: it should be of the form <module>.<class>
-                    <class> should be a Pydantic class that supports `parse_obj` method
+        model_name: it should be of the form module.class
+                    class should be a Pydantic class that supports `parse_obj` method
     """
     warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     if data is None:
@@ -120,8 +120,8 @@ def parse_file(file_name: pathlib.Path, model_name: str) -> OscalBaseModel:
     """Load a model from the file.
 
     Argument:
-        model_name: it should be of the form <module>.<class>
-                    <class> should be a Pydantic class that supports `parse_obj` method
+        model_name: it should be of the form module.class
+                    class should be a Pydantic class that supports `parse_obj` method
     """
     warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     if file_name is None:
