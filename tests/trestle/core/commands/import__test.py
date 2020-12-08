@@ -96,6 +96,27 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
         assert rc == 0
 
 
+def test_import_non_top_level_element(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test for expected fail to import non-top level element, e.g., groups."""
+    # Input file, catalog:
+    groups_file = tempfile.NamedTemporaryFile(suffix='.json')
+    sample_data = {
+        "groups": [
+            {
+                "id": "ac",
+                "class": "family",
+                "title": "Access Control"
+            }
+        ]
+    }
+    groups_file.write(json.dumps(sample_data).encode('utf8'))
+    groups_file.seek(0)
+    test_args = f'trestle import -f {str(groups_file.name)} -o imported'.split()
+    with patch.object(sys, 'argv', test_args):
+        rc = Trestle().run()
+        assert rc == 1
+
+
 def test_import_missing_input_file(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for missing input file."""
     # Test
