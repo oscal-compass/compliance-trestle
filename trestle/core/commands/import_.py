@@ -86,7 +86,7 @@ class ImportCmd(Command):
             content_type = FileContentType.to_content_type(input_file.suffix)
         except TrestleError as err:
             logger.debug(f'FileContentType.to_content_type() failed: {err}')
-            logger.error(f'Import failed (FileContentType.to_content_type()): {err}')
+            logger.error(f'Import failed, could not work out content type from file suffix: {err}')
             return 1
 
         # 4. Load input and parse for model
@@ -96,7 +96,7 @@ class ImportCmd(Command):
             data = fs.load_file(input_file.absolute())
         except TrestleError as err:
             logger.debug(f'fs.load_file() failed: {err}')
-            logger.error(f'Import failed (fs.load_file()): {err}')
+            logger.error(f'Import failed, error loading file: {err}')
             return 1
 
         # 4.2 root key check
@@ -104,7 +104,7 @@ class ImportCmd(Command):
             parent_alias = parser.root_key(data)
         except TrestleError as err:
             logger.debug(f'parser.root_key() failed: {err}')
-            logger.error(f'Import failed (parser.root_key()): {err}')
+            logger.error(f'Import failed, failed to parse input file for root key: {err}')
             return 1
 
         # 4.3 parse the model
@@ -113,7 +113,7 @@ class ImportCmd(Command):
             parent_model = parser.parse_file(input_file.absolute(), parent_model_name)
         except TrestleError as err:
             logger.debug(f'parser.parse_file() failed: {err}')
-            logger.error(f'Import failed (parser.parse_file()): {err}')
+            logger.error(f'Import failed, failed to parse valid contents of input file: {err}')
             return 1
 
         # 5. Work out output directory and file
@@ -147,14 +147,14 @@ class ImportCmd(Command):
             import_plan.simulate()
         except TrestleError as err:
             logger.debug(f'import_plan.simulate() failed: {err}')
-            logger.error(f'Import failed (import_plan.simulate()): {err}')
+            logger.error(f'Import failed, error in testing import operation: {err}')
             return 1
 
         try:
             import_plan.execute()
         except TrestleError as err:
             logger.debug(f'import_plan.execute() failed: {err}')
-            logger.error(f'Import failed (import_plan.execute()): {err}')
+            logger.error(f'Import failed, error in actual import operation: {err}')
             return 1
 
         # 7. Leave the rest to trestle split
