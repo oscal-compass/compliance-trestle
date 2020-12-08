@@ -21,6 +21,7 @@ import pathlib
 from ilcli import Command  # type: ignore
 
 from trestle.core import parser
+from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
@@ -73,7 +74,7 @@ class ImportCmd(Command):
         trestle_root = trestle_root.resolve()
         try:
             input_file.absolute().relative_to(trestle_root)
-        except Exception:
+        except ValueError as err:
             # An exception here is good: it means that the input file is not inside a trestle dir.
             pass
         else:
@@ -83,7 +84,7 @@ class ImportCmd(Command):
         # 3. Work out typing information from input suffix.
         try:
             content_type = FileContentType.to_content_type(input_file.suffix)
-        except Exception as err:
+        except TrestleError as err:
             logger.debug(f'FileContentType.to_content_type() failed: {err}')
             logger.error(f'Import failed (FileContentType.to_content_type()): {err}')
             return 1
@@ -93,7 +94,7 @@ class ImportCmd(Command):
         # 4.1 Load from file
         try:
             data = fs.load_file(input_file.absolute())
-        except Exception as err:
+        except TrestleError as err:
             logger.debug(f'fs.load_file() failed: {err}')
             logger.error(f'Import failed (fs.load_file()): {err}')
             return 1
@@ -101,7 +102,7 @@ class ImportCmd(Command):
         # 4.2 root key check
         try:
             parent_alias = parser.root_key(data)
-        except Exception as err:
+        except TrestleError as err:
             logger.debug(f'parser.root_key() failed: {err}')
             logger.error(f'Import failed (parser.root_key()): {err}')
             return 1
@@ -110,7 +111,7 @@ class ImportCmd(Command):
         parent_model_name = parser.to_full_model_name(parent_alias)
         try:
             parent_model = parser.parse_file(input_file.absolute(), parent_model_name)
-        except Exception as err:
+        except TrestleError as err:
             logger.debug(f'parser.parse_file() failed: {err}')
             logger.error(f'Import failed (parser.parse_file()): {err}')
             return 1
@@ -144,14 +145,14 @@ class ImportCmd(Command):
 
         try:
             import_plan.simulate()
-        except Exception as err:
+        except TrestleError as err:
             logger.debug(f'import_plan.simulate() failed: {err}')
             logger.error(f'Import failed (import_plan.simulate()): {err}')
             return 1
 
         try:
             import_plan.execute()
-        except Exception as err:
+        except TrestleError as err:
             logger.debug(f'import_plan.execute() failed: {err}')
             logger.error(f'Import failed (import_plan.execute()): {err}')
             return 1
