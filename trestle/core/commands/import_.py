@@ -74,7 +74,7 @@ class ImportCmd(Command):
         trestle_root = trestle_root.resolve()
         try:
             input_file.absolute().relative_to(trestle_root)
-        except ValueError as err:
+        except ValueError:
             # An exception here is good: it means that the input file is not inside a trestle dir.
             pass
         else:
