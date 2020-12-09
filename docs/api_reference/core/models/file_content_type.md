@@ -1,2 +1,2 @@
-::: trestle.core.models.file\_content\_type
+::: trestle.core.models.file_content_type
 handler: python

@@ -1,2 +1,2 @@
-::: trestle.core.base\_model
+::: trestle.core.base_model
 handler: python
