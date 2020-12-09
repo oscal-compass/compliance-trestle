@@ -114,13 +114,16 @@ class Observations():
 
     def _create_evidence(self, rule, metadata):
         evidence = {}
-        if 'repo-url' in metadata:
-            evidence['description'] = 'Evidence location.'
-            evidence['href'] = metadata['repo-url']
-        if 'ns' in metadata:
-            ns = metadata['ns']
-        else:
-            ns = None
+        name = rule['name']
+        entry = metadata[name]
+        if entry is not None:
+            if 'locker' in entry:
+                evidence['description'] = 'Evidence location.'
+                evidence['href'] = entry['locker']
+            if 'namespace' in entry:
+                ns = entry['namespace']
+            else:
+                ns = None
         p1 = self._create_property(ns, 'id', 'rule', rule['idref'])
         p2 = self._create_property(ns, 'timestamp', 'time', rule['time'])
         p3 = self._create_property(ns, 'result', 'result', rule['result_type'])

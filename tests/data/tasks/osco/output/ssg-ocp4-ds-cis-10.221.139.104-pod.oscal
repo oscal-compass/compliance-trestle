@@ -1,28 +1,34 @@
 {
   "observations": [
     {
-      "uuid": "8b3af6c1-bbbc-4ff7-8db8-0674b2129056",
+      "uuid": "1770a4c2-3701-4a9b-9511-fc6e115fdea5",
       "description": "xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd",
       "title": "xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notselected"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -53,28 +59,34 @@
       ]
     },
     {
-      "uuid": "7cc59e9a-43d4-4560-8e40-5ad48703ad08",
+      "uuid": "c7585d84-bce9-440a-ad8d-d4183932a79e",
       "description": "xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens",
       "title": "xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -105,28 +117,34 @@
       ]
     },
     {
-      "uuid": "fe3a4232-1318-4fbe-aceb-900736c519b1",
+      "uuid": "e08e5ae9-c02f-46e9-bb0f-cde6a5c85293",
       "description": "xccdf_org.ssgproject.content_rule_accounts_unique_service_account",
       "title": "xccdf_org.ssgproject.content_rule_accounts_unique_service_account",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_accounts_unique_service_account"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -157,28 +175,34 @@
       ]
     },
     {
-      "uuid": "5608acd0-5f6d-4a0e-a48b-164615680df3",
+      "uuid": "a22d637e-2e77-4858-af4a-b0037cb3d11a",
       "description": "xccdf_org.ssgproject.content_rule_configure_network_policies",
       "title": "xccdf_org.ssgproject.content_rule_configure_network_policies",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_configure_network_policies"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -209,28 +233,34 @@
       ]
     },
     {
-      "uuid": "e3826f74-8227-4cd7-8f1e-b1fd14d2352f",
+      "uuid": "e6660bde-858f-4870-b9be-4e7b25828cae",
       "description": "xccdf_org.ssgproject.content_rule_configure_network_policies_namespaces",
       "title": "xccdf_org.ssgproject.content_rule_configure_network_policies_namespaces",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_configure_network_policies_namespaces"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -261,28 +291,34 @@
       ]
     },
     {
-      "uuid": "9a3ef3e3-a65a-48e4-93ba-5399f5226438",
+      "uuid": "d74f0a9c-df35-4a22-8c2c-c5c743985a4f",
       "description": "xccdf_org.ssgproject.content_rule_scheduler_profiling_argument",
       "title": "xccdf_org.ssgproject.content_rule_scheduler_profiling_argument",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_scheduler_profiling_argument"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -313,28 +349,34 @@
       ]
     },
     {
-      "uuid": "5ceb2c35-47fe-405f-8951-0d453410b97f",
+      "uuid": "710462d9-6e4d-4deb-b739-de722c2aa88a",
       "description": "xccdf_org.ssgproject.content_rule_secrets_no_environment_variables",
       "title": "xccdf_org.ssgproject.content_rule_secrets_no_environment_variables",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_secrets_no_environment_variables"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -365,28 +407,34 @@
       ]
     },
     {
-      "uuid": "30930ed6-8578-471a-aa00-accb130ec1bd",
+      "uuid": "4117b319-f699-446b-8468-8276874ae63e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_worker_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_worker_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_worker_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -417,28 +465,34 @@
       ]
     },
     {
-      "uuid": "a2156080-a165-4d8b-a049-e7a783adfb64",
+      "uuid": "7188fa89-6845-4193-ba8d-b90de14028bd",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_service",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_service",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_service"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -469,28 +523,34 @@
       ]
     },
     {
-      "uuid": "d22487d1-edd2-40be-8d15-2c5021b5b199",
+      "uuid": "068c0230-9260-45cf-89b9-1f0e46845ae2",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_proxy_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_proxy_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_proxy_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -521,28 +581,34 @@
       ]
     },
     {
-      "uuid": "2413a183-bb6b-4188-b63b-3ac61f1c2057",
+      "uuid": "fa43874c-c9db-4f46-b145-03bed8153f53",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_worker_ca",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_worker_ca",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_worker_ca"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -573,28 +639,34 @@
       ]
     },
     {
-      "uuid": "0be8144f-e4d2-4493-a300-74e7eb301f64",
+      "uuid": "387061c0-f8fc-4261-82af-812a0679d65a",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_worker_service",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_worker_service",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_worker_service"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -625,28 +697,34 @@
       ]
     },
     {
-      "uuid": "3cf63848-04ee-4878-8863-7f11f0f2696b",
+      "uuid": "07469975-a6bc-4035-8f1c-3b434becde52",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -677,28 +755,34 @@
       ]
     },
     {
-      "uuid": "57a6a7cd-18e3-4f13-8059-42926c23f62c",
+      "uuid": "c800da88-c928-4d8d-a536-05e8a88917f4",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_kubelet_conf",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_kubelet_conf",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kubelet_conf"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -729,28 +813,34 @@
       ]
     },
     {
-      "uuid": "16fd9568-bef1-41d9-900a-ba73f876440c",
+      "uuid": "15781498-feb8-496d-820a-f501abbffa47",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_worker_service",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_worker_service",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_worker_service"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -781,28 +871,34 @@
       ]
     },
     {
-      "uuid": "539a6060-379f-4dba-b60a-3fb667133a21",
+      "uuid": "c63182da-a73f-4721-8a44-c886bf75b63e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_proxy_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_proxy_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_proxy_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -833,28 +929,34 @@
       ]
     },
     {
-      "uuid": "00cd72ef-55bd-4d24-a825-68ffacbc146f",
+      "uuid": "93e22975-f445-4cab-b15d-ad5e930a35aa",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_worker_ca",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_worker_ca",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_worker_ca"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -885,28 +987,34 @@
       ]
     },
     {
-      "uuid": "060e4a7a-ae97-489b-ad52-60c5d4e0a3b4",
+      "uuid": "a1d6c563-38e0-49dc-8a1b-cf991c348f99",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_proxy_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_proxy_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_proxy_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -937,28 +1045,34 @@
       ]
     },
     {
-      "uuid": "939169e2-c2fd-421d-b4fb-5753a134fef5",
+      "uuid": "be6184a6-1811-4a9d-8a24-ed35ed2ada49",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_ca",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_ca",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_ca"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -989,28 +1103,34 @@
       ]
     },
     {
-      "uuid": "e640d179-a3b3-4919-aa72-758330b56819",
+      "uuid": "5a712db6-dd5c-4bba-b1d7-c8575f3246fd",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_worker_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_worker_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_worker_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1041,28 +1161,34 @@
       ]
     },
     {
-      "uuid": "903718e8-5eab-4ee0-83a1-7213e6631b60",
+      "uuid": "d741c4ce-6a04-4cee-8330-77e20da93154",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_kubelet_conf",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_kubelet_conf",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_kubelet_conf"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1093,28 +1219,34 @@
       ]
     },
     {
-      "uuid": "87288679-f89b-4cec-bddd-2d96fb505f36",
+      "uuid": "e982da4c-f57c-471a-b580-4e47120ce001",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_kubelet_conf",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_kubelet_conf",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_kubelet_conf"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1145,28 +1277,34 @@
       ]
     },
     {
-      "uuid": "b09c14f4-82d3-4698-94fd-126b1e4c85a0",
+      "uuid": "adb11c3a-f6d6-45b8-afa2-d664a25e43a4",
       "description": "xccdf_org.ssgproject.content_rule_controller_use_service_account",
       "title": "xccdf_org.ssgproject.content_rule_controller_use_service_account",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_controller_use_service_account"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "pass"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1197,28 +1335,34 @@
       ]
     },
     {
-      "uuid": "98d6bb17-506b-4f1f-96ea-6a093df3ddc6",
+      "uuid": "4ae66f31-e89f-4a80-b13a-0ccc01494e57",
       "description": "xccdf_org.ssgproject.content_rule_controller_bind_address",
       "title": "xccdf_org.ssgproject.content_rule_controller_bind_address",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_controller_bind_address"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "pass"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1249,28 +1393,34 @@
       ]
     },
     {
-      "uuid": "2079f900-57ef-4e33-a3d4-d8d28992b96a",
+      "uuid": "d9b3f89d-845a-400b-bb37-81cf80b64b9d",
       "description": "xccdf_org.ssgproject.content_rule_controller_service_account_private_key",
       "title": "xccdf_org.ssgproject.content_rule_controller_service_account_private_key",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_controller_service_account_private_key"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1301,28 +1451,34 @@
       ]
     },
     {
-      "uuid": "118c8bef-2719-4517-9c43-33d21d2caf61",
+      "uuid": "7d7c160b-ae63-43b9-805f-7d6c27f05bbd",
       "description": "xccdf_org.ssgproject.content_rule_controller_service_account_ca",
       "title": "xccdf_org.ssgproject.content_rule_controller_service_account_ca",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_controller_service_account_ca"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1353,28 +1509,34 @@
       ]
     },
     {
-      "uuid": "d3cad875-5462-4557-8872-bc877485a410",
+      "uuid": "866e7ca4-77ed-431f-a385-5315469447a6",
       "description": "xccdf_org.ssgproject.content_rule_controller_rotate_kubelet_server_certs",
       "title": "xccdf_org.ssgproject.content_rule_controller_rotate_kubelet_server_certs",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_controller_rotate_kubelet_server_certs"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1405,28 +1567,34 @@
       ]
     },
     {
-      "uuid": "c65ed99d-ded7-4867-abf3-28af733893d3",
+      "uuid": "808ecd11-a6e3-49e5-ab60-905759687f58",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_process_id_namespace",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_process_id_namespace",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_process_id_namespace"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1457,28 +1625,34 @@
       ]
     },
     {
-      "uuid": "63fe37dd-47dd-4006-a8f5-56113c0af8a3",
+      "uuid": "97c794e3-e7b4-40c3-af73-cffa0c08cf7d",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_root_containers",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_root_containers",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_root_containers"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1509,28 +1683,34 @@
       ]
     },
     {
-      "uuid": "aac55b59-f9df-4406-987c-0f8df885870c",
+      "uuid": "84fb98ef-877c-45bf-bd3f-b0d312ebb062",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_privilege_escalation",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_privilege_escalation",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_privilege_escalation"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1561,28 +1741,34 @@
       ]
     },
     {
-      "uuid": "c57b31da-8f15-4109-8e58-03d73db34e38",
+      "uuid": "a6e25832-fba4-4b4b-9a33-14bf95f16f13",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_ipc_namespace",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_ipc_namespace",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_ipc_namespace"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1613,28 +1799,34 @@
       ]
     },
     {
-      "uuid": "96351f3f-38fc-4f18-bc74-518facb5fbeb",
+      "uuid": "def7b3ee-18e8-4b82-bd98-43bb5b93b701",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_container_allowed_capabilities",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_container_allowed_capabilities",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_container_allowed_capabilities"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1665,28 +1857,34 @@
       ]
     },
     {
-      "uuid": "e7ea073f-c817-4812-8893-5be54fe62aa8",
+      "uuid": "4a595cda-5bea-4c85-9e7e-28d5689f85e8",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_net_raw_capability",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_net_raw_capability",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_net_raw_capability"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1717,28 +1915,34 @@
       ]
     },
     {
-      "uuid": "ad85d599-d985-4449-a695-27a0d7b1d2b1",
+      "uuid": "1732ba21-b4d5-4f9b-92c3-6a297f5ce0aa",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_network_namespace",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_network_namespace",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_network_namespace"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1769,28 +1973,34 @@
       ]
     },
     {
-      "uuid": "4ee9aa27-fd2c-4b92-8d79-f62ac01f25b7",
+      "uuid": "a753bfa7-7cc8-4d7a-9d8d-1be038744cf7",
       "description": "xccdf_org.ssgproject.content_rule_scc_drop_container_capabilities",
       "title": "xccdf_org.ssgproject.content_rule_scc_drop_container_capabilities",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_scc_drop_container_capabilities"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1821,28 +2031,34 @@
       ]
     },
     {
-      "uuid": "501d0999-7659-46d0-bdae-46ec2df214ba",
+      "uuid": "6f69550f-4ba0-45a0-a7dc-7637a36a2753",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_privileged_containers",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_privileged_containers",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_privileged_containers"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1873,28 +2089,34 @@
       ]
     },
     {
-      "uuid": "307b41c7-91a5-4e8a-8326-066235d200ea",
+      "uuid": "51128c54-04a5-40c5-8acb-d0375edda59a",
       "description": "xccdf_org.ssgproject.content_rule_general_configure_imagepolicywebhook",
       "title": "xccdf_org.ssgproject.content_rule_general_configure_imagepolicywebhook",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_general_configure_imagepolicywebhook"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1925,28 +2147,34 @@
       ]
     },
     {
-      "uuid": "2b3b4509-a95c-4f86-b301-7bf2cb7c2836",
+      "uuid": "c713fa3d-0ba1-4d91-b1f5-d3fb55eb394f",
       "description": "xccdf_org.ssgproject.content_rule_rbac_limit_secrets_access",
       "title": "xccdf_org.ssgproject.content_rule_rbac_limit_secrets_access",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_rbac_limit_secrets_access"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -1977,28 +2205,34 @@
       ]
     },
     {
-      "uuid": "a576d7d6-4f4d-4670-804e-8900513166c5",
+      "uuid": "63b8e815-98b7-4467-89d7-323344d472fc",
       "description": "xccdf_org.ssgproject.content_rule_rbac_wildcard_use",
       "title": "xccdf_org.ssgproject.content_rule_rbac_wildcard_use",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_rbac_wildcard_use"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2029,28 +2263,34 @@
       ]
     },
     {
-      "uuid": "6895a8d4-fac3-436c-8f87-1347335ec71d",
+      "uuid": "422ce38c-25e2-407d-9b84-a9153000db66",
       "description": "xccdf_org.ssgproject.content_rule_rbac_pod_creation_access",
       "title": "xccdf_org.ssgproject.content_rule_rbac_pod_creation_access",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_rbac_pod_creation_access"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2081,28 +2321,34 @@
       ]
     },
     {
-      "uuid": "81cf62a2-502f-4555-8ff7-337fcc0572b6",
+      "uuid": "49ecde80-87b7-4926-8a43-30d02b4040e7",
       "description": "xccdf_org.ssgproject.content_rule_rbac_limit_cluster_admin",
       "title": "xccdf_org.ssgproject.content_rule_rbac_limit_cluster_admin",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_rbac_limit_cluster_admin"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2133,28 +2379,34 @@
       ]
     },
     {
-      "uuid": "6f8d452d-085d-47b4-bcca-eefbd7a6a05b",
+      "uuid": "a2ad87d1-1615-4d83-aefd-204677b8dfd6",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_configure_client_ca",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_configure_client_ca",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_configure_client_ca"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2185,28 +2437,34 @@
       ]
     },
     {
-      "uuid": "93f17b40-3b5f-4ae6-97ce-ac53df16495f",
+      "uuid": "66ca1224-0d8b-41c1-9409-f1bcd1bdae4a",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_disable_readonly_port",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_disable_readonly_port",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_disable_readonly_port"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "pass"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2237,28 +2495,34 @@
       ]
     },
     {
-      "uuid": "2b9062ca-ac2e-4377-a0e7-d3f8a4eef0de",
+      "uuid": "84ea8105-36ce-4488-ad4f-05b2ca732965",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_anonymous_auth",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_anonymous_auth",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_anonymous_auth"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2289,28 +2553,34 @@
       ]
     },
     {
-      "uuid": "b8eb3973-94fd-4ac6-9689-b5bb738a5f25",
+      "uuid": "cdea591b-2bc7-4274-8e96-f633c856d33d",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_enable_server_cert_rotation",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_enable_server_cert_rotation",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_enable_server_cert_rotation"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2341,28 +2611,34 @@
       ]
     },
     {
-      "uuid": "d55e4639-8cfc-4604-b7c0-3be02c2d5fd7",
+      "uuid": "1bd17213-3951-4006-8d49-a65b78c63460",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_key",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_key",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_key"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2393,28 +2669,34 @@
       ]
     },
     {
-      "uuid": "955eff8a-ef3c-4695-85fe-00ec59ea1e88",
+      "uuid": "2da774e9-0d55-44f3-82dc-78055e86e909",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_enable_streaming_connections",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_enable_streaming_connections",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_enable_streaming_connections"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2445,28 +2727,34 @@
       ]
     },
     {
-      "uuid": "ed1c96ae-3afc-4fdb-8550-f2fd5c22a63a",
+      "uuid": "4e3267f8-c4d8-4d38-b64e-e09e998b5a6b",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_authorization_mode",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_authorization_mode",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_authorization_mode"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2497,28 +2785,34 @@
       ]
     },
     {
-      "uuid": "872954f7-d7db-42cd-9843-1de785f19cbf",
+      "uuid": "8ef70a71-8f29-48f8-83b9-66031cab19f7",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_configure_event_creation",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_configure_event_creation",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_configure_event_creation"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2549,28 +2843,34 @@
       ]
     },
     {
-      "uuid": "f1813093-1f49-45ff-bff4-f2817cbe2645",
+      "uuid": "75181f76-30d6-48a1-bce1-29fedd4d5ab5",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_enable_client_cert_rotation",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_enable_client_cert_rotation",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_enable_client_cert_rotation"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2601,28 +2901,34 @@
       ]
     },
     {
-      "uuid": "77f1011a-c675-4ef4-80d2-3a8b06d68e63",
+      "uuid": "8682700d-e9b3-401a-b2d3-79473162c0e6",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cert",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cert",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cert"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2653,28 +2959,34 @@
       ]
     },
     {
-      "uuid": "9d062e54-9e42-49d8-920b-4c28abcd95ed",
+      "uuid": "cf32216c-e6f3-4a5e-80c7-61c9578778c1",
       "description": "xccdf_org.ssgproject.content_rule_ocp_allowed_registries_for_import",
       "title": "xccdf_org.ssgproject.content_rule_ocp_allowed_registries_for_import",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_ocp_allowed_registries_for_import"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notselected"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2705,28 +3017,34 @@
       ]
     },
     {
-      "uuid": "36b81262-f5c3-419c-9afe-abab515a542c",
+      "uuid": "82d37590-ed26-4e5b-9fbd-ab20a43f7203",
       "description": "xccdf_org.ssgproject.content_rule_etcd_client_cert_auth",
       "title": "xccdf_org.ssgproject.content_rule_etcd_client_cert_auth",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_etcd_client_cert_auth"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2757,28 +3075,34 @@
       ]
     },
     {
-      "uuid": "21923029-790f-4b93-9172-aa93d8d885e4",
+      "uuid": "946c8db2-1c8f-4047-a89e-b95e0e5620d5",
       "description": "xccdf_org.ssgproject.content_rule_etcd_peer_key_file",
       "title": "xccdf_org.ssgproject.content_rule_etcd_peer_key_file",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_etcd_peer_key_file"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2809,28 +3133,34 @@
       ]
     },
     {
-      "uuid": "47c437d8-cf53-4fe1-b9f0-4e3490963508",
+      "uuid": "862f7167-c18d-4a17-995e-3abd18f02188",
       "description": "xccdf_org.ssgproject.content_rule_etcd_peer_cert_file",
       "title": "xccdf_org.ssgproject.content_rule_etcd_peer_cert_file",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_etcd_peer_cert_file"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2861,28 +3191,34 @@
       ]
     },
     {
-      "uuid": "7f525f98-eedc-4b60-bb4c-8c4fddb7e956",
+      "uuid": "ce68b074-16f9-4162-88e7-2a874ae9aa44",
       "description": "xccdf_org.ssgproject.content_rule_etcd_unique_ca",
       "title": "xccdf_org.ssgproject.content_rule_etcd_unique_ca",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_etcd_unique_ca"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2913,28 +3249,34 @@
       ]
     },
     {
-      "uuid": "16d64ba9-6b5c-4df4-8c1d-95565519be09",
+      "uuid": "7f32cc58-458d-4af4-a14b-39bdab35667b",
       "description": "xccdf_org.ssgproject.content_rule_etcd_peer_auto_tls",
       "title": "xccdf_org.ssgproject.content_rule_etcd_peer_auto_tls",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_etcd_peer_auto_tls"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -2965,28 +3307,34 @@
       ]
     },
     {
-      "uuid": "85458bd2-fb51-4f30-9260-2b003a5822dc",
+      "uuid": "8f3d3a1d-87f5-4c7d-beaf-ae7b148b97ec",
       "description": "xccdf_org.ssgproject.content_rule_etcd_peer_client_cert_auth",
       "title": "xccdf_org.ssgproject.content_rule_etcd_peer_client_cert_auth",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_etcd_peer_client_cert_auth"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3017,28 +3365,34 @@
       ]
     },
     {
-      "uuid": "3942504f-b6f2-4264-95a0-353b4219fded",
+      "uuid": "df05ec4f-bc47-45a6-9651-2ce8dc8a517b",
       "description": "xccdf_org.ssgproject.content_rule_etcd_cert_file",
       "title": "xccdf_org.ssgproject.content_rule_etcd_cert_file",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_etcd_cert_file"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3069,28 +3423,34 @@
       ]
     },
     {
-      "uuid": "d7f6eea8-7c2c-4c27-93aa-6285ee7c0b3a",
+      "uuid": "0d9dd36a-6f80-4ea1-9864-0b18e026d321",
       "description": "xccdf_org.ssgproject.content_rule_etcd_auto_tls",
       "title": "xccdf_org.ssgproject.content_rule_etcd_auto_tls",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_etcd_auto_tls"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3121,28 +3481,34 @@
       ]
     },
     {
-      "uuid": "cf1bf24f-d1b7-428d-b861-3da67e22ed5a",
+      "uuid": "ff6c18ed-bdc9-4cb2-b041-b8dd2abd37cc",
       "description": "xccdf_org.ssgproject.content_rule_etcd_key_file",
       "title": "xccdf_org.ssgproject.content_rule_etcd_key_file",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_etcd_key_file"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3173,28 +3539,34 @@
       ]
     },
     {
-      "uuid": "1e34d866-b88e-486f-8c68-7feb85385b5c",
+      "uuid": "bafbf8fd-b914-42e3-902f-aee5fab45c48",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_cni_conf",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_cni_conf",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_cni_conf"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "pass"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3225,28 +3597,34 @@
       ]
     },
     {
-      "uuid": "d21d8900-3c6c-400c-80e8-2e5c9cafd001",
+      "uuid": "6bf237aa-97a7-4e73-aad3-adee13edc4be",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_etcd_member",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_etcd_member",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_etcd_member"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3277,28 +3655,34 @@
       ]
     },
     {
-      "uuid": "c6b6bc56-4d0b-4165-9757-02cbb0b8db80",
+      "uuid": "d996ef7c-8744-4ea1-ab51-e56e7a73665f",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_etcd_member",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_etcd_member",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_etcd_member"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3329,28 +3713,34 @@
       ]
     },
     {
-      "uuid": "0c01e3a5-3cd5-48ed-8a1e-7bc164850ca8",
+      "uuid": "0f29cd3f-652d-40d6-90ca-247bfce709ac",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_kube_scheduler",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_kube_scheduler",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_kube_scheduler"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3381,28 +3771,34 @@
       ]
     },
     {
-      "uuid": "0b616c4e-4147-4a78-a842-e6461924c775",
+      "uuid": "8840fb57-1a8f-4d33-ac7a-d80f68c5f67e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3433,28 +3829,34 @@
       ]
     },
     {
-      "uuid": "fcca262e-398e-4686-848f-00aec55d76bb",
+      "uuid": "6d778f28-a6be-499c-802e-a0f45cf0fb8a",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3485,28 +3887,34 @@
       ]
     },
     {
-      "uuid": "9fe71e54-7f28-45b2-ab2c-0cd20598e3aa",
+      "uuid": "7104dec1-3e42-4ee0-b9f8-e5b4cf2f7e9d",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_openvswitch",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_openvswitch",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_openvswitch"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3537,28 +3945,34 @@
       ]
     },
     {
-      "uuid": "827f6527-1a22-497b-9b01-60309078ba6c",
+      "uuid": "482b0e31-d2ce-4942-a087-af596c1d761e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3589,28 +4003,34 @@
       ]
     },
     {
-      "uuid": "f6f67fe6-dc5f-4b0d-b2f2-f5e0e31db70d",
+      "uuid": "d7b6f184-cfda-4abe-a52b-e525025cadc7",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_controller_manager_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_controller_manager_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_controller_manager_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3641,28 +4061,34 @@
       ]
     },
     {
-      "uuid": "7fd6f59e-1d7d-4747-9abc-43b6baa25ae2",
+      "uuid": "32483424-87b2-4bf5-b353-406cd8751af1",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_scheduler_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_scheduler_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_scheduler_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3693,28 +4119,34 @@
       ]
     },
     {
-      "uuid": "ae2593ee-6abc-4bb1-bb15-8851090ef459",
+      "uuid": "43dd361f-7dec-4a2a-a30d-239fe3e22416",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_openvswitch",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_openvswitch",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_openvswitch"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3745,28 +4177,34 @@
       ]
     },
     {
-      "uuid": "776f3744-d0e0-4012-ae4b-50755d0be8b1",
+      "uuid": "2c3b9717-75db-4da9-ac0a-fb61af500e18",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_var_lib_etcd",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_var_lib_etcd",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_var_lib_etcd"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3797,28 +4235,34 @@
       ]
     },
     {
-      "uuid": "2b24e474-d47b-4dcb-8907-8eb0c45967c1",
+      "uuid": "c8c4f959-73d4-4c2d-aee2-dbf9eb322192",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_var_lib_etcd",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_var_lib_etcd",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_var_lib_etcd"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3849,28 +4293,34 @@
       ]
     },
     {
-      "uuid": "996bf48d-1194-4086-8d2a-be391135555f",
+      "uuid": "9fb4db10-5413-46c6-b162-e0dd5339eabf",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_controller_manager_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_controller_manager_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_controller_manager_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3901,28 +4351,34 @@
       ]
     },
     {
-      "uuid": "2844804f-1a3a-44fa-ba52-3c1d0120bfbb",
+      "uuid": "8c6009ae-c342-422c-a5b8-2b1399366320",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_scheduler_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_scheduler_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_scheduler_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -3953,28 +4409,34 @@
       ]
     },
     {
-      "uuid": "d2a8d96b-1d7d-4c61-833f-70fd9d5de977",
+      "uuid": "ae1e0bf3-96ec-4dad-8cd2-d92f0b9a8e76",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_kube_controller_manager",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_kube_controller_manager",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_kube_controller_manager"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4005,28 +4467,34 @@
       ]
     },
     {
-      "uuid": "6ce4c179-6485-430c-9e42-e6ed7487c0c8",
+      "uuid": "b6bd4dc7-ae61-4e89-9337-5e7c2c15cb00",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4057,28 +4525,34 @@
       ]
     },
     {
-      "uuid": "7a4c2e97-f16b-4309-a4b6-b4fbe2b15d9e",
+      "uuid": "d7ddbecd-81c0-4d9d-aa8d-cf3a2fc9e309",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_kube_scheduler",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_kube_scheduler",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_kube_scheduler"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4109,28 +4583,34 @@
       ]
     },
     {
-      "uuid": "1ed9ca75-4dc9-43eb-84a3-bfacd7076f64",
+      "uuid": "3e9c0967-3585-4de0-8e6c-c907db03d3c7",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4161,28 +4641,34 @@
       ]
     },
     {
-      "uuid": "3c411b7c-3fd7-4e2b-9ebc-a056e100b0b9",
+      "uuid": "3f537ebf-28b5-4843-87ef-e95eb52e83db",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_controller_manager",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_controller_manager",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_controller_manager"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4213,28 +4699,34 @@
       ]
     },
     {
-      "uuid": "e77f56f7-ba55-41f3-ac46-52f2fa1994a8",
+      "uuid": "9a1c3106-ad9a-4f34-a95e-2f0a8d52e362",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4265,28 +4757,34 @@
       ]
     },
     {
-      "uuid": "29eb5dd3-7539-4051-98d9-823225fc6d75",
+      "uuid": "5687e158-f66d-444d-9bef-424ed0e6e5d5",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_cni_conf",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_cni_conf",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_cni_conf"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "pass"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4317,28 +4815,34 @@
       ]
     },
     {
-      "uuid": "5454413c-6d21-4ca5-bb29-6891ef86a994",
+      "uuid": "451da959-043c-4bc2-9474-dcd67896ad90",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4369,28 +4873,34 @@
       ]
     },
     {
-      "uuid": "a53acce0-267d-4215-b5a5-aeda0651687b",
+      "uuid": "e3dd5a8c-226a-4974-a433-ddcce823a8ae",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_scheduler",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_scheduler",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_scheduler"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4421,28 +4931,34 @@
       ]
     },
     {
-      "uuid": "6249a58c-d04c-467a-8f91-2bb52a95b731",
+      "uuid": "0189f915-a48f-4719-8742-0d11bfadd193",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_controller_manager_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_controller_manager_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_controller_manager_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4473,28 +4989,34 @@
       ]
     },
     {
-      "uuid": "2d568f83-3fdb-4b88-b278-eedfb913ef7e",
+      "uuid": "0c43347c-2070-425f-ba1e-eda23ab726a5",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_cni_conf",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_cni_conf",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_cni_conf"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "pass"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4525,28 +5047,34 @@
       ]
     },
     {
-      "uuid": "68b1df23-20e4-4224-9523-3b5c7ad4250c",
+      "uuid": "f9480679-9ae5-43ae-9ff9-d62ad5d18c9c",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_openvswitch",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_openvswitch",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_openvswitch"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4577,28 +5105,34 @@
       ]
     },
     {
-      "uuid": "599ace34-af6a-4818-8a97-6a0ed111b188",
+      "uuid": "a37b9fca-3917-4814-a153-c6154476d781",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_etcd_member",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_etcd_member",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_etcd_member"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4629,28 +5163,34 @@
       ]
     },
     {
-      "uuid": "09c79a71-560e-41bd-a459-be695b2de5cc",
+      "uuid": "a0d3e6ab-9f9a-462f-9d30-28a2caed5d6a",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_scheduler_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_scheduler_kubeconfig",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_scheduler_kubeconfig"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "notchecked"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4681,28 +5221,34 @@
       ]
     },
     {
-      "uuid": "72f79678-eb6f-4ebf-b1b1-096259f2edbb",
+      "uuid": "94206102-1e1b-4d6c-95fa-d5fb22b43c67",
       "description": "xccdf_org.ssgproject.content_rule_api_server_insecure_port",
       "title": "xccdf_org.ssgproject.content_rule_api_server_insecure_port",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_insecure_port"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "pass"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4733,28 +5279,34 @@
       ]
     },
     {
-      "uuid": "dc67f323-2094-4cf6-9214-e9cf0fa78ea9",
+      "uuid": "d623012c-b6d0-43d9-b563-bc13eecf580d",
       "description": "xccdf_org.ssgproject.content_rule_api_server_tls_private_key",
       "title": "xccdf_org.ssgproject.content_rule_api_server_tls_private_key",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_tls_private_key"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4785,28 +5337,34 @@
       ]
     },
     {
-      "uuid": "af534a29-3467-4d11-b308-5db426e79e51",
+      "uuid": "49c02da5-bff6-4500-94dd-c840c8968559",
       "description": "xccdf_org.ssgproject.content_rule_api_server_tls_cert",
       "title": "xccdf_org.ssgproject.content_rule_api_server_tls_cert",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_tls_cert"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4837,28 +5395,34 @@
       ]
     },
     {
-      "uuid": "98606e09-34e8-4e76-b6db-54958375993f",
+      "uuid": "6a20a101-d157-4b72-adb5-334dbf79ad40",
       "description": "xccdf_org.ssgproject.content_rule_api_server_client_ca",
       "title": "xccdf_org.ssgproject.content_rule_api_server_client_ca",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_client_ca"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4889,28 +5453,34 @@
       ]
     },
     {
-      "uuid": "d1de959c-9a60-4eac-af8c-53747405a61e",
+      "uuid": "1994dc03-0849-471b-9249-6a33d5a41de0",
       "description": "xccdf_org.ssgproject.content_rule_api_server_audit_log_path",
       "title": "xccdf_org.ssgproject.content_rule_api_server_audit_log_path",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_audit_log_path"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4941,28 +5511,34 @@
       ]
     },
     {
-      "uuid": "2e10f24f-cd69-4941-9882-e3a2fea117f6",
+      "uuid": "e9079ac8-7717-4024-824f-813c007ca61c",
       "description": "xccdf_org.ssgproject.content_rule_api_server_tls_cipher_suites",
       "title": "xccdf_org.ssgproject.content_rule_api_server_tls_cipher_suites",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_tls_cipher_suites"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -4993,28 +5569,34 @@
       ]
     },
     {
-      "uuid": "f7e28a0d-71e8-4f42-a75b-7836a33cea13",
+      "uuid": "c347d2ff-575f-43d3-9d86-73bfc48eaf60",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_EventRateLimit",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_EventRateLimit",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_EventRateLimit"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5045,28 +5627,34 @@
       ]
     },
     {
-      "uuid": "1bd802e2-ba1f-4fc5-8707-303e72d49a65",
+      "uuid": "e588752c-e26a-4abe-9e4c-b306a3de4157",
       "description": "xccdf_org.ssgproject.content_rule_api_server_authorization_mode",
       "title": "xccdf_org.ssgproject.content_rule_api_server_authorization_mode",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_authorization_mode"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "pass"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5097,28 +5685,34 @@
       ]
     },
     {
-      "uuid": "7d155079-4e3a-4d36-aeb7-8dbcb70273ae",
+      "uuid": "46aaa85d-76a1-4b07-9a73-689f54b083e2",
       "description": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxage",
       "title": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxage",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxage"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5149,28 +5743,34 @@
       ]
     },
     {
-      "uuid": "0a1aed7f-3641-479d-9297-d3f84c7e54b4",
+      "uuid": "bc23c63e-394d-4119-acc4-e6725dead041",
       "description": "xccdf_org.ssgproject.content_rule_api_server_profiling",
       "title": "xccdf_org.ssgproject.content_rule_api_server_profiling",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_profiling"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5201,28 +5801,34 @@
       ]
     },
     {
-      "uuid": "0c703130-fe2b-4742-91de-191a23bad793",
+      "uuid": "a0463a48-e8cf-4798-8cd5-3f6fa79a5af0",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_ServiceAccount",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_ServiceAccount",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_ServiceAccount"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5253,28 +5859,34 @@
       ]
     },
     {
-      "uuid": "c9fa4e31-e02f-42e1-b241-4e0cb7ef628f",
+      "uuid": "034d70fc-c34a-487b-aa3d-6b9d40159e72",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysAdmit",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysAdmit",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysAdmit"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "pass"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5305,28 +5917,34 @@
       ]
     },
     {
-      "uuid": "83c0fb5f-4bd4-4fd7-b474-525037325e95",
+      "uuid": "32eea07c-633f-483b-ac8f-bee306f70417",
       "description": "xccdf_org.ssgproject.content_rule_api_server_encryption_provider_cipher",
       "title": "xccdf_org.ssgproject.content_rule_api_server_encryption_provider_cipher",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_encryption_provider_cipher"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5357,28 +5975,34 @@
       ]
     },
     {
-      "uuid": "b43263b0-e891-42f6-8db9-53312b0b7611",
+      "uuid": "a4fdb15e-120b-4954-9770-008eee04139b",
       "description": "xccdf_org.ssgproject.content_rule_api_server_token_auth",
       "title": "xccdf_org.ssgproject.content_rule_api_server_token_auth",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_token_auth"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "pass"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5409,28 +6033,34 @@
       ]
     },
     {
-      "uuid": "5fd50094-f127-4d33-9e48-0c3648239e3c",
+      "uuid": "ebe3101c-37e1-4143-a40c-7741282aa800",
       "description": "xccdf_org.ssgproject.content_rule_api_server_anonymous_auth",
       "title": "xccdf_org.ssgproject.content_rule_api_server_anonymous_auth",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_anonymous_auth"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5461,28 +6091,34 @@
       ]
     },
     {
-      "uuid": "0f6ff793-def9-4c01-a86d-20ca8bbc6b83",
+      "uuid": "ebf6f544-1aae-4b5c-baf3-0f7ab33bebb7",
       "description": "xccdf_org.ssgproject.content_rule_api_server_etcd_ca",
       "title": "xccdf_org.ssgproject.content_rule_api_server_etcd_ca",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_etcd_ca"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5513,28 +6149,34 @@
       ]
     },
     {
-      "uuid": "6587441e-c58f-40d1-ac7a-787054f80e04",
+      "uuid": "a3a1b77d-d87e-4b38-829a-c69437a50767",
       "description": "xccdf_org.ssgproject.content_rule_api_server_encryption_provider_config",
       "title": "xccdf_org.ssgproject.content_rule_api_server_encryption_provider_config",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_encryption_provider_config"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5565,28 +6207,34 @@
       ]
     },
     {
-      "uuid": "f139f7d6-7b4a-4192-a0e0-47423652672c",
+      "uuid": "11bf7227-b462-45a1-a145-ed880c429990",
       "description": "xccdf_org.ssgproject.content_rule_api_server_request_timeout",
       "title": "xccdf_org.ssgproject.content_rule_api_server_request_timeout",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_request_timeout"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5617,28 +6265,34 @@
       ]
     },
     {
-      "uuid": "f5d1cec9-fadf-4227-ae0b-92c19280bb7a",
+      "uuid": "8eca6a48-2477-4700-a23f-b6349dbd288b",
       "description": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxsize",
       "title": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxsize",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxsize"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5669,28 +6323,34 @@
       ]
     },
     {
-      "uuid": "4342c216-254b-4e54-b33c-289f7b6add59",
+      "uuid": "e5b6cc7a-d0f0-4cf1-9e6f-85ca92be31d0",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NodeRestriction",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NodeRestriction",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NodeRestriction"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5721,28 +6381,34 @@
       ]
     },
     {
-      "uuid": "235498da-4c92-447f-a582-0edeac10a47c",
+      "uuid": "ebed7ae5-37a0-467b-a46e-b96fcccf2c7b",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_SecurityContextDeny",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_SecurityContextDeny",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_SecurityContextDeny"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5773,28 +6439,34 @@
       ]
     },
     {
-      "uuid": "4e02469c-d51b-4bb3-8d2c-f2e890422b98",
+      "uuid": "7711ec12-19e1-4e28-aa39-66c685415cae",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_PodSecurityPolicy",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_PodSecurityPolicy",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_PodSecurityPolicy"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5825,28 +6497,34 @@
       ]
     },
     {
-      "uuid": "1e48f6f0-6c58-4166-95c9-5680befbd596",
+      "uuid": "47916d5d-6c19-4d2d-98d9-ecc89d86efa7",
       "description": "xccdf_org.ssgproject.content_rule_api_server_basic_auth",
       "title": "xccdf_org.ssgproject.content_rule_api_server_basic_auth",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_basic_auth"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "pass"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5877,28 +6555,34 @@
       ]
     },
     {
-      "uuid": "192cf6b5-0c39-481d-b29a-d1264951ec90",
+      "uuid": "18995710-14c4-45b8-9f7a-ee7fb98f00c2",
       "description": "xccdf_org.ssgproject.content_rule_api_server_kubelet_client_key",
       "title": "xccdf_org.ssgproject.content_rule_api_server_kubelet_client_key",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_kubelet_client_key"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5929,28 +6613,34 @@
       ]
     },
     {
-      "uuid": "d9370724-4f86-4e2b-b7f8-6622e6b1d359",
+      "uuid": "64c63dcb-5593-4e7c-b702-91b0aea44bb3",
       "description": "xccdf_org.ssgproject.content_rule_api_server_service_account_public_key",
       "title": "xccdf_org.ssgproject.content_rule_api_server_service_account_public_key",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_service_account_public_key"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -5981,28 +6671,34 @@
       ]
     },
     {
-      "uuid": "7bd48205-5fad-4059-b3c2-b20773b3f99f",
+      "uuid": "c52fbbc6-56a0-4064-a986-7bcf0216c3ee",
       "description": "xccdf_org.ssgproject.content_rule_api_server_etcd_key",
       "title": "xccdf_org.ssgproject.content_rule_api_server_etcd_key",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_etcd_key"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -6033,28 +6729,34 @@
       ]
     },
     {
-      "uuid": "29115ddc-9d96-4b01-a5f2-447ea5964581",
+      "uuid": "79696a81-1e89-4093-9e0b-5f8b70091a94",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysPullImages",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysPullImages",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysPullImages"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -6085,28 +6787,34 @@
       ]
     },
     {
-      "uuid": "f5829867-4a52-4742-9971-3f7220ca98ce",
+      "uuid": "d0d359a5-c024-446b-8539-c9ae80cc90c5",
       "description": "xccdf_org.ssgproject.content_rule_api_server_kubelet_client_cert",
       "title": "xccdf_org.ssgproject.content_rule_api_server_kubelet_client_cert",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_kubelet_client_cert"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -6137,28 +6845,34 @@
       ]
     },
     {
-      "uuid": "b557e473-2d69-4f7d-a372-fd44e62a2477",
+      "uuid": "97d7022e-ee0d-43ab-b231-5e64bb495379",
       "description": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxbackup",
       "title": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxbackup",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxbackup"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -6189,28 +6903,34 @@
       ]
     },
     {
-      "uuid": "7eed8b96-96f3-472b-b8b4-8965066ce60c",
+      "uuid": "4a75bd7d-caf0-4130-9a62-3d6e5b169e1f",
       "description": "xccdf_org.ssgproject.content_rule_api_server_kubelet_https",
       "title": "xccdf_org.ssgproject.content_rule_api_server_kubelet_https",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_kubelet_https"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -6241,28 +6961,34 @@
       ]
     },
     {
-      "uuid": "8f322ef9-74d9-46b2-9176-6cc09e482475",
+      "uuid": "7c215c64-9639-44a2-b6eb-d8d89fb20941",
       "description": "xccdf_org.ssgproject.content_rule_api_server_etcd_cert",
       "title": "xccdf_org.ssgproject.content_rule_api_server_etcd_cert",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_etcd_cert"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -6293,28 +7019,34 @@
       ]
     },
     {
-      "uuid": "517a3ad3-1584-4f66-88b5-9649d6513ee6",
+      "uuid": "77627382-c004-46a1-9264-254c5f4e394e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_insecure_bind_address",
       "title": "xccdf_org.ssgproject.content_rule_api_server_insecure_bind_address",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_insecure_bind_address"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "pass"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -6345,28 +7077,34 @@
       ]
     },
     {
-      "uuid": "d5f79be0-8fff-4feb-8c47-df2f6bb5607c",
+      "uuid": "d26d8622-1f97-4a0e-9563-97c9cfe4059b",
       "description": "xccdf_org.ssgproject.content_rule_api_server_kubelet_certificate_authority",
       "title": "xccdf_org.ssgproject.content_rule_api_server_kubelet_certificate_authority",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_kubelet_certificate_authority"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -6397,28 +7135,34 @@
       ]
     },
     {
-      "uuid": "b956e48c-a541-45f3-b4ef-23453407a239",
+      "uuid": "6fd4dda1-1e28-4ee9-8eb6-5651ca5068d0",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NamespaceLifecycle",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NamespaceLifecycle",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NamespaceLifecycle"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
@@ -6449,28 +7193,34 @@
       ]
     },
     {
-      "uuid": "124491ef-2617-47bc-b6ae-15669f35cf20",
+      "uuid": "4f859376-279f-4799-8d47-87b857698492",
       "description": "xccdf_org.ssgproject.content_rule_api_server_secure_port",
       "title": "xccdf_org.ssgproject.content_rule_api_server_secure_port",
       "evidence-group": [
         {
+          "description": "Evidence location.",
+          "href": "https://github.ibm.com/degenaro/evidence-locker",
           "properties": [
             {
+              "ns": "xccdf",
               "class": "id",
               "name": "rule",
               "value": "xccdf_org.ssgproject.content_rule_api_server_secure_port"
             },
             {
+              "ns": "xccdf",
               "class": "timestamp",
               "name": "time",
               "value": "2020-08-03T02:26:26+00:00"
             },
             {
+              "ns": "xccdf",
               "class": "result",
               "name": "result",
               "value": "fail"
             },
             {
+              "ns": "xccdf",
               "class": "target",
               "name": "target",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"

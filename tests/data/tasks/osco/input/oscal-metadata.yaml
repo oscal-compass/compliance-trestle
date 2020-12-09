@@ -1,5 +1,7 @@
  
 ssg-ocp4-ds-cis-10.221.139.104-pod:
+   locker: https://github.ibm.com/degenaro/evidence-locker
+   namespace: xccdf
    subject-references:
       component:
          uuid-ref: 56666738-0f9a-4e38-9aac-c0fad00a5821
@@ -16,6 +18,8 @@ ssg-ocp4-ds-cis-10.221.139.104-pod:
             cluster-region: us-south
             
 ssg-ocp4-ds-cis-10.221.139.105-pod:
+   locker: https://github.ibm.com/degenaro/evidence-locker
+   namespace: xccdf
    subject-references:
       component:
          uuid-ref: 56666738-0f9a-4e38-9aac-c0fad00a5821
@@ -32,6 +36,8 @@ ssg-ocp4-ds-cis-10.221.139.105-pod:
             cluster-region: us-south
             
 ssg-ocp4-ds-cis-10.221.139.107-pod:
+   locker: https://github.ibm.com/degenaro/evidence-locker
+   namespace: xccdf
    subject-references:
       component:
          uuid-ref: 56666738-0f9a-4e38-9aac-c0fad00a5821
@@ -48,6 +54,8 @@ ssg-ocp4-ds-cis-10.221.139.107-pod:
             cluster-region: us-south
          
 ssg-rhel7-ds-cis-10.221.139.104-pod:
+   locker: https://github.ibm.com/degenaro/evidence-locker
+   namespace: xccdf
    subject-references:
       component:
          uuid-ref: 89cfe7a7-ce6b-4699-aa7b-2f5739c72001
@@ -64,6 +72,8 @@ ssg-rhel7-ds-cis-10.221.139.104-pod:
             cluster-region: us-south
             
 ssg-rhel7-ds-cis-10.221.139.105-pod:
+   locker: https://github.ibm.com/degenaro/evidence-locker
+   namespace: xccdf
    subject-references:
       component:
          uuid-ref: 89cfe7a7-ce6b-4699-aa7b-2f5739c72001
@@ -80,6 +90,8 @@ ssg-rhel7-ds-cis-10.221.139.105-pod:
             cluster-region: us-south
             
 ssg-rhel7-ds-cis-10.221.139.107-pod:
+   locker: https://github.ibm.com/degenaro/evidence-locker
+   namespace: xccdf
    subject-references:
       component:
          uuid-ref: 89cfe7a7-ce6b-4699-aa7b-2f5739c72001
