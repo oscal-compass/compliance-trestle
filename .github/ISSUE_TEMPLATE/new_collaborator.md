@@ -1,6 +1,10 @@
-______________________________________________________________________
-
-## name: New Collaborator about: Request collaborator access
+---
+name: New Collaborator
+about: Request collaborator access
+title: ''
+labels: ''
+assignees: ''
+---
 
 I would like collaborator (write) access to this repository.
 
