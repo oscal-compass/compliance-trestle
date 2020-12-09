@@ -44,12 +44,12 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
     sample_data = generators.generate_sample_model(trestle.oscal.target.TargetDefinition)
     sample_data.oscal_write(pathlib.Path(target_definition_file.name))
     # Test 1
-    test_args = f'trestle import -f {str(profile_file.name)} -o imported'.split()
+    test_args = f'trestle import -f {profile_file.name} -o imported'.split()
     with patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
     # Test 2
-    test_args = f'trestle import -f {str(target_definition_file.name)} -o imported'.split()
+    test_args = f'trestle import -f {target_definition_file.name} -o imported'.split()
     with patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
