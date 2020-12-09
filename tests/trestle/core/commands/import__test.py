@@ -36,7 +36,6 @@ from trestle.oscal.catalog import Catalog
 def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
     """Happy path test at the cli level."""
     # 1. Input file, profile:
-    # profile_file = tempfile.NamedTemporaryFile(suffix='.json')
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     profile_file = f'{tmp_trestle_dir.dirname}/{rand_str}.json'
     profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
