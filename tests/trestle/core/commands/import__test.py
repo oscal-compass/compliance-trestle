@@ -20,6 +20,7 @@ import random
 import string
 import sys
 import tempfile
+from json.decoder import JSONDecodeError
 from unittest.mock import patch
 
 from tests import test_utils
@@ -150,16 +151,24 @@ def test_import_load_file_failure(tmp_trestle_dir: pathlib.Path) -> None:
     bad_file.close()
     with patch('trestle.utils.fs.load_file') as load_file_mock:
         load_file_mock.side_effect = err.TrestleError('stuff')
-        args = argparse.Namespace(file=f'{tmp_trestle_dir.dirname}/{rand_str}.json', output='imported', verbose=True)
+        args = argparse.Namespace(file=bad_file.name, output='imported', verbose=True)
         i = importcmd.ImportCmd()
         rc = i._run(args)
         assert rc == 1
-    # Force an actual PermissionError:
-    os.chmod(bad_file.name, 0o000)
-    args = argparse.Namespace(file=f'{tmp_trestle_dir.dirname}/{rand_str}.json', output='imported', verbose=True)
-    i = importcmd.ImportCmd()
-    rc = i._run(args)
-    assert rc == 1
+    # Force PermissionError:
+    with patch('trestle.utils.fs.load_file') as load_file_mock:
+        load_file_mock.side_effect = PermissionError
+        args = argparse.Namespace(file=bad_file.name, output='imported', verbose=True)
+        i = importcmd.ImportCmd()
+        rc = i._run(args)
+        assert rc == 1
+    # Force JSONDecodeError:
+    with patch('trestle.utils.fs.load_file') as load_file_mock:
+        load_file_mock.side_effect = JSONDecodeError(msg='Extra data:', doc=bad_file.name, pos=0)
+        args = argparse.Namespace(file=bad_file.name, output='imported', verbose=True)
+        i = importcmd.ImportCmd()
+        rc = i._run(args)
+        assert rc == 1
     # This is in case the same tmp_trestle_dir.dirname is used, as across succeeding scopes of one pytest
     os.chmod(bad_file.name, 0o600)
     os.remove(bad_file.name)

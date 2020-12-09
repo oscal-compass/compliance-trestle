@@ -17,6 +17,7 @@
 import argparse
 import logging
 import pathlib
+from json.decoder import JSONDecodeError
 
 from ilcli import Command  # type: ignore
 
@@ -94,6 +95,10 @@ class ImportCmd(Command):
         # 4.1 Load from file
         try:
             data = fs.load_file(input_file.absolute())
+        except JSONDecodeError as err:
+            logger.debug(f'fs.load_file() failed: {err}')
+            logger.error(f'Import failed, JSON error loading file: {err}')
+            return 1
         except TrestleError as err:
             logger.debug(f'fs.load_file() failed: {err}')
             logger.error(f'Import failed, error loading file: {err}')
