@@ -63,7 +63,7 @@ class ImportCmd(Command):
             logger.error(f'Input file {args.file} does not exist.')
             return 1
 
-        # 1.2 Bad working directory if trestle_root is not found from it
+        # 1.2 Bad working directory if not running from current working directory
         cwd = pathlib.Path.cwd().resolve()
         trestle_root = fs.get_trestle_project_root(cwd)
         if trestle_root is None:
@@ -97,6 +97,10 @@ class ImportCmd(Command):
         except TrestleError as err:
             logger.debug(f'fs.load_file() failed: {err}')
             logger.error(f'Import failed, error loading file: {err}')
+            return 1
+        except PermissionError as err:
+            logger.debug(f'fs.load_file() failed: {err}')
+            logger.error(f'Import failed, access permission error loading file: {err}')
             return 1
 
         # 4.2 root key check
