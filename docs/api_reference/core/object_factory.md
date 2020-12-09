@@ -1,2 +1,2 @@
-::: trestle.core.object\_factory
+::: trestle.core.object_factory
 handler: python

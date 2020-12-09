@@ -1,2 +1,2 @@
-::: trestle.core.validator\_helper
+::: trestle.core.validator_helper
 handler: python

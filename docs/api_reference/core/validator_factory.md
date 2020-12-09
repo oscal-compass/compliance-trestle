@@ -1,2 +1,2 @@
-::: trestle.core.validator\_factory
+::: trestle.core.validator_factory
 handler: python
