@@ -25,12 +25,12 @@ from unittest.mock import patch
 from tests import test_utils
 
 import trestle.core.commands.import_ as importcmd
-from trestle.core.commands import create
 import trestle.core.err as err
 import trestle.oscal
-from trestle.oscal.catalog import Catalog
-from trestle.core import generators
 from trestle.cli import Trestle
+from trestle.core import generators
+from trestle.core.commands import create
+from trestle.oscal.catalog import Catalog
 
 
 def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
@@ -151,13 +151,13 @@ def test_import_load_file_failure(tmp_trestle_dir: pathlib.Path) -> None:
         rc = i._run(args)
         assert rc == 1
     # Force an actual PermissionError:
-    os.chmod(bad_file.name,0o000)
+    os.chmod(bad_file.name, 0o000)
     args = argparse.Namespace(file=f'{tmp_trestle_dir.dirname}/{rand_str}.json', output='imported', verbose=True)
     i = importcmd.ImportCmd()
     rc = i._run(args)
     assert rc == 1
     # This is in case the same tmp_trestle_dir.dirname is used, as across succeeding scopes of one pytest
-    os.chmod(bad_file.name,0o600)
+    os.chmod(bad_file.name, 0o600)
     os.remove(bad_file.name)
 
 
