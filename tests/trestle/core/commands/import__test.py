@@ -36,20 +36,23 @@ from trestle.oscal.catalog import Catalog
 def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
     """Happy path test at the cli level."""
     # 1. Input file, profile:
-    profile_file = tempfile.NamedTemporaryFile(suffix='.json')
-    sample_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
-    sample_data.oscal_write(pathlib.Path(profile_file.name))
+    # profile_file = tempfile.NamedTemporaryFile(suffix='.json')
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    profile_file = f'{tmp_trestle_dir.dirname}/{rand_str}.json'
+    profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
+    profile_data.oscal_write(pathlib.Path(profile_file))
     # 2. Input file, target:
-    target_definition_file = tempfile.NamedTemporaryFile(suffix='.json')
-    sample_data = generators.generate_sample_model(trestle.oscal.target.TargetDefinition)
-    sample_data.oscal_write(pathlib.Path(target_definition_file.name))
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    target_file = f'{tmp_trestle_dir.dirname}/{rand_str}.json'
+    target_data = generators.generate_sample_model(trestle.oscal.target.TargetDefinition)
+    target_data.oscal_write(pathlib.Path(target_file))
     # Test 1
-    test_args = f'trestle import -f {profile_file.name} -o imported'.split()
+    test_args = f'trestle import -f {profile_file} -o imported'.split()
     with patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
     # Test 2
-    test_args = f'trestle import -f {target_definition_file.name} -o imported'.split()
+    test_args = f'trestle import -f {target_file} -o imported'.split()
     with patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
