@@ -87,3 +87,5 @@ plugins:
 
       watch:
         - trestle
+extra_css:
+  - css/extra.css
