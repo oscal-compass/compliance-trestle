@@ -1,2 +1,2 @@
-::: trestle.tasks.base\_task
+::: trestle.tasks.base_task
 handler: python
