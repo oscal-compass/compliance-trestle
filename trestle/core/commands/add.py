@@ -64,6 +64,7 @@ class AddCmd(Command):
             # Get parent model and then load json into parent model
             parent_model, parent_alias = fs.get_stripped_contextual_model(file_path.absolute())
             parent_object = parent_model.oscal_read(file_path.absolute())
+            # FIXME : handle YAML files after detecting file type
             parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
 
             add_plan = Plan()

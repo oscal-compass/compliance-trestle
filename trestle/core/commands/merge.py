@@ -17,14 +17,19 @@
 
 from pathlib import Path
 from typing import List
+import os
 
 from ilcli import Command  # type: ignore
 
 from trestle.core import const, utils
 from trestle.core.commands import cmd_utils
-from trestle.core.models.elements import ElementPath
+from trestle.core.models.actions import CreatePathAction, WriteFileAction, RemovePathAction
+from trestle.core.models.elements import Element, ElementPath
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.utils import fs
+from trestle.utils import fs, load_distributed
+from trestle.core.base_model import OscalBaseModel
+from typing import Type, Set
 
 
 class MergeCmd(Command):
@@ -38,6 +43,7 @@ class MergeCmd(Command):
             f'--{const.ARG_ELEMENT}',
             help=f'Comma-separated list of {const.ARG_DESC_ELEMENT}(s) to be merged.',
         )
+
         self.add_argument(
             '-l',
             '--list-available-elements',
@@ -50,61 +56,68 @@ class MergeCmd(Command):
         if args.list_available_elements:
             self._list_available_elements()
         elif args.element:
-            element_paths = args.element.split(',')
-            self.merge(cmd_utils.parse_element_args(element_paths))
+            # FIXME: Handle multiple element paths: element_paths = args.element.split(',')
+            # self.merge(args.file, cmd_utils.parse_element_args(element_paths))
+            plan = self.merge(ElementPath(args.element))
+
+            plan.simulate()
+            plan.execute()
 
     @classmethod
-    def merge(cls, element_paths: List[ElementPath]) -> Plan:
+    def merge(cls, element_path: ElementPath) -> Plan:
         """Merge operations.
 
         It returns a plan for the operation
         """
+        element_path_list = element_path.get_full_path_parts()
+        target_model_alias = element_path_list[-1]
+
+        """1. Load desination model into a stripped model"""
+        # Load destination model
+        destination_model_type, destination_model_alias = fs.get_stripped_contextual_model()
+        # Destination model filename
+        destination_model_filename = Path(f'{utils.classname_to_alias(destination_model_type.__name__, "json")}.json')
+        
+        destination_model_object = destination_model_type.oscal_read(destination_model_filename)
+
+        # Get destination model without the target field stripped
+        merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(
+            destination_model_filename.absolute(),
+            aliases_not_to_be_stripped=[target_model_alias])
+
+        """2. Is target model decomposed"""
+
+        """# 3. If YES, merge recursively first - destination model is the previous target model,
+         new target model is each of the decomposed models"""
+
+
+        """4. Insert target model into destination model, could be stripped"""
+        
+        target_model_type = utils.get_target_model(element_path_list, merged_model_type)
+        # target_model filename
+        if (Path(os.getcwd()) / destination_model_alias).exists():
+            target_model_filename = Path(os.getcwd()) / destination_model_alias / f'{target_model_alias}.json'
+        else:
+            target_model_filename = Path(f'{target_model_alias}.json')
+        target_model_object = target_model_type.oscal_read(target_model_filename)
+        
+
+        # Insert destination model into merged model
+        merged_dict = destination_model_object.__dict__
+        merged_dict[target_model_alias] = target_model_object
+        merged_model_object = merged_model_type(**merged_dict)
+        merged_destination_element = Element(merged_model_object)
+
+        """5. Create action  plan"""
+        reset_destination_action = CreatePathAction(destination_model_filename.absolute(), clear_content=True)
+        write_destination_action = WriteFileAction(
+            destination_model_filename, merged_destination_element, content_type=FileContentType.JSON)
+        delete_target_action = RemovePathAction(target_model_filename)
+
         plan: Plan = Plan()
-
-        sorted_element_paths = _sort_element_paths(element_paths)
-
-        if metadata_dir.exists():
-            # First action: Reset the intermediate destination: metadata.json
-            reset_destination_action = CreatePathAction(metadata_file, clear_content=True)
-            expected_plan.add_action(reset_destination_action)
-
-            aliases_not_to_be_stripped = []
-            instances_to_be_merged: List[OscalBaseModel] = []
-            for filepath in Path.iterdir(metadata_dir):
-                if filepath.is_file():
-                    model_type, model_alias = fs.get_stripped_contextual_model(filepath)
-                    model_instance = model_type.oscal_read(filepath)
-
-                    if hasattr(model_instance, '__root__') and (isinstance(model_instance.__root__, dict)
-                                                                or isinstance(model_instance.__root__, list)):
-                        model_instance = model_instance.__root__
-
-                    instances_to_be_merged.append(model_instance)
-                    aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
-                elif filepath.is_dir():
-                    pass
-
-            stripped_metadata_type, _ = fs.get_stripped_contextual_model(metadata_file)
-            stripped_metadata = stripped_metadata_type.oscal_read(metadata_file)
-
-            # Create merged model and instance for writeaction
-            merged_metadata_type, merged_metadata_alias = fs.get_stripped_contextual_model(
-                metadata_file, aliases_not_to_be_stripped=aliases_not_to_be_stripped)
-            merged_dict = stripped_metadata.__dict__
-            for i in range(len(aliases_not_to_be_stripped)):
-                alias = aliases_not_to_be_stripped[i]
-                instance = instances_to_be_merged[i]
-                merged_dict[alias] = instance
-            merged_metadata = merged_metadata_type(**merged_dict)
-            element = Element(merged_metadata, merged_metadata_alias)
-
-            # Second action: Write new merged contents of metadata.json
-            write_destination_action = WriteFileAction(metadata_file, element, content_type=content_type)
-            expected_plan.add_action(write_destination_action)
-
-            # Third action: Delete expanded metadata folder
-            delete_element_action = RemovePathAction(metadata_dir)
-            expected_plan.add_action(delete_element_action)
+        plan.add_action(reset_destination_action)
+        plan.add_action(write_destination_action)
+        plan.add_action(delete_target_action)
 
         return plan
 
@@ -197,3 +210,12 @@ class MergeCmd(Command):
 def sort_element_paths(element_paths: List[ElementPath]) -> List[ElementPath]:
     """Sort list of element paths for merge purposes."""
     raise NotImplementedError()
+
+
+if __name__ == '__main__':
+    os.chdir("/Users/nebula/workspace/compliance-trestle/tmp/tmp/catalogs/mycatalog")
+    type_, alias, instance = load_distributed.distributed_load(Path("/Users/nebula/workspace/compliance-trestle/tmp/tmp/catalogs/mycatalog/catalog.json"))
+    plan = MergeCmd.merge(ElementPath('catalog.back-matter'))
+    plan.simulate()
+    plan.execute()
+
