@@ -3,6 +3,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.5.0 (2020-12-10)
+
+
 ## v0.4.0 (2020-11-24)
 ### Feature
 * Validation of duplicates now uses object factory (#216) ([`cf00f8b`](https://github.com/IBM/compliance-trestle/commit/cf00f8bb0ea4f0a7c039e1399525ede8d8d0ace8))
