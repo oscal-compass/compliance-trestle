@@ -37,7 +37,7 @@ For a list of the maintainers, see the [MAINTAINERS.md](MAINTAINERS.md) page.
 
 ### Merging and release workflow.
 
-`trestle` today is maintaing two protected workflow branches. The a trunk development branch `develop` which is the target
+`trestle` today is maintaining two protected workflow branches. The a trunk development branch `develop` which is the target
 for all enhancements and non critical features. `main` is used to track releases and allow for hotfixes.
 
 Each merge into `develop` will be squashed into a single commit. This can either be performed on merge or via developers
