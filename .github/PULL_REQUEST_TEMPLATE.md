@@ -29,7 +29,7 @@ Please, go through these steps before you submit a PR.
 
 1. **After** these steps, you're ready to open a pull request.
 
-   a. Your pull request MUST NOT target the `master` branch on this repository. You probably want to target `develop` instead.
+   a. Your pull request MUST NOT target the `main` branch on this repository. You probably want to target `develop` instead.
 
    b. Give a descriptive title to your PR.
 
