@@ -30,6 +30,7 @@ from trestle.core.models.plans import Plan
 from trestle.utils import fs, load_distributed
 from trestle.core.base_model import OscalBaseModel
 from typing import Type, Set
+from trestle.utils import log
 
 
 class MergeCmd(Command):
@@ -53,6 +54,7 @@ class MergeCmd(Command):
 
     def _run(self, args) -> None:
         """Merge elements into the parent oscal model."""
+        log.set_log_level_from_args(args)
         if args.list_available_elements:
             self._list_available_elements()
         elif args.element:

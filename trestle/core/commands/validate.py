@@ -16,10 +16,14 @@
 """Trestle Validate Command."""
 
 import argparse
+import logging
 
 from ilcli import Command
 
 import trestle.core.validator_factory as vfact
+import trestle.utils.log as log
+
+logger = logging.getLogger(__name__)
 
 
 class ValidateCmd(Command):
@@ -31,6 +35,9 @@ class ValidateCmd(Command):
         vfact.init_arguments(self)
 
     def _run(self, args: argparse.Namespace) -> int:
+        logger.debug('Entering trestle validate.')
+        log.set_log_level_from_args(args)
+
         validator = vfact.validator_factory.get(args)
 
         return validator.validate(self, args)

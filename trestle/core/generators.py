@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Capabilities to allow the generation of various oscal objects."""
+import logging
 import uuid
 from datetime import date, datetime
 from enum import Enum
@@ -25,10 +26,9 @@ from pydantic import ConstrainedStr
 import trestle.core.err as err
 import trestle.core.utils as utils
 import trestle.oscal.ssp
-import trestle.utils.log as log
 from trestle.core.base_model import OscalBaseModel
 
-logger = log.get_logger()
+logger = logging.getLogger(__name__)
 
 
 def generate_sample_value_by_type(

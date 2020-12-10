@@ -14,7 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Common logging utilities."""
+import argparse
 import logging
+import sys
 
 # Singleton logger instance
 # All other CLI sub module will inherit settings of this logger as long as
@@ -22,33 +24,56 @@ import logging
 _logger = logging.getLogger('trestle')
 
 
-def init(level: int = logging.DEBUG) -> logging.Logger:
-    """Initialize the logger."""
-    # create logger
+class SpecificLevelFilter(logging.Filter):
+    """
+    Filter for the same level as provided by setLevel for a log handler.
+
+    Python by default logs all levels above to a given destination. This makes it easy to split levels where you might
+    log all levels to file and only errors to std.err, however, does not allow logging a specific level elsewhere.
+    """
+
+    def __init__(self, level: int) -> None:
+        """Initialize providing maximum level to be pushed through the filter."""
+        self._level = level
+
+    def filter(self, log_record: logging.LogRecord) -> bool:  # noqa: A003
+        """Filter log messages."""
+        return log_record.levelno <= self._level
+
+
+def set_global_logging_levels(level: int = logging.INFO):
+    """Initialise logging.
+
+    Should only be invoked by the CLI classes or similar.
+    """
+    # Remove handlers
+    _logger.handlers = []
+    # set global level
     _logger.setLevel(level)
+    # Create standard out
+    console_out_handler = logging.StreamHandler(sys.stdout)
+    console_out_handler.setLevel(logging.INFO)
+    console_out_handler.addFilter(SpecificLevelFilter(logging.INFO))
 
-    # create console handler and set level to debug
-    ch = logging.StreamHandler()
-    ch.setLevel(level)
+    console_debug_handler = logging.StreamHandler(sys.stdout)
+    console_debug_handler.setLevel(logging.DEBUG)
+    console_debug_handler.addFilter(SpecificLevelFilter(logging.DEBUG))
 
-    # create formatter
-    formatter = logging.Formatter('%(asctime)s %(name)s:%(lineno)d %(levelname)s: %(message)s')
-
-    # add formatter to ch
-    ch.setFormatter(formatter)
-
+    console_error_handler = logging.StreamHandler(sys.stderr)
+    console_error_handler.setLevel(logging.ERROR)
+    # create formatters
+    error_formatter = logging.Formatter('%(asctime)s %(name)s:%(lineno)d %(levelname)s: %(message)s')
+    console_debug_handler.setFormatter(error_formatter)
+    console_error_handler.setFormatter(error_formatter)
     # add ch to logger
-    _logger.addHandler(ch)
-
-    return _logger
-
-
-def set_level(level: int = logging.DEBUG) -> logging.Logger:
-    """Set log level."""
-    _logger.setLevel(level)
-    return _logger
+    _logger.addHandler(console_out_handler)
+    _logger.addHandler(console_error_handler)
+    _logger.addHandler(console_debug_handler)
 
 
-def get_logger(level: int = logging.DEBUG) -> logging.Logger:
-    """Get the trestle default logger."""
-    return set_level(level)
+def set_log_level_from_args(args: argparse.Namespace):
+    """Vanity function to automatically set log levels based on verbosity flags."""
+    if args.verbose > 0:
+        set_global_logging_levels(logging.DEBUG)
+    else:
+        set_global_logging_levels(logging.INFO)

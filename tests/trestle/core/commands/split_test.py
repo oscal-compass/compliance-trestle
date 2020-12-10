@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle split command."""
+import argparse
 import os
 import pathlib
 import sys
@@ -259,7 +260,6 @@ def test_split_run(tmp_dir, sample_target_def: ostarget.TargetDefinition):
     cwd = os.getcwd()
     args = {}
     cmd = SplitCmd()
-    parser = cmd.parser
 
     # inner function for checking split files
     def check_split_files():
@@ -283,9 +283,10 @@ def test_split_run(tmp_dir, sample_target_def: ostarget.TargetDefinition):
 
     # test
     prepare_target_def_file()
-    args = parser.parse_args(
-        ['-f', 'target-definition.yaml', '-e', 'target-definition.targets.*,target-definition.metadata']
+    args = argparse.Namespace(
+        file='target-definition.yaml', element='target-definition.targets.*,target-definition.metadata', verbose=0
     )
+
     os.chdir(target_def_dir)
     cmd._run(args)
     os.chdir(cwd)
@@ -296,8 +297,8 @@ def test_split_run(tmp_dir, sample_target_def: ostarget.TargetDefinition):
 
     # reverse order test
     prepare_target_def_file()
-    args = parser.parse_args(
-        ['-f', 'target-definition.yaml', '-e', 'target-definition.metadata,target-definition.targets.*']
+    args = argparse.Namespace(
+        file='target-definition.yaml', element='target-definition.metadata,target-definition.targets.*', verbose=0
     )
     os.chdir(target_def_dir)
     cmd._run(args)
@@ -337,9 +338,8 @@ def test_split_run_failure(tmp_dir, sample_target_def: ostarget.TargetDefinition
     # no file specified
     testargs = ['trestle', 'split', '-e', 'target-definition.metadata, target-definition.targets.*']
     with patch.object(sys, 'argv', testargs):
-        with pytest.raises(TrestleError):
-            Trestle().run()
-
+        rc = Trestle().run()
+        assert rc > 0
     # check with missing file
     testargs = [
         'trestle', 'split', '-f', 'missing.yaml', '-e', 'target-definition.metadata, target-definition.targets.*'
