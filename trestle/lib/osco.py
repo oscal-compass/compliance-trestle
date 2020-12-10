@@ -16,66 +16,48 @@
 
 import base64
 import bz2
-import json
 import logging
 from uuid import uuid4
 from xml.etree import ElementTree
 
-import yaml
-
 logger = logging.getLogger(__name__)
 
 
-def transform(ifile, ofile, overwrite, metadata):
+def get_observations(idata, metadata):
     """
-    Transform ```ifile``` from OSCO yaml to NIST OSCAL json and save as ```ofile```.
+    Transform OSCO yaml to NIST OSCAL json with statistics.
 
-    An existing .oscal file is replaced unless the specified value for the
-    ```overwrite``` parameter is ```False```.
+    Required ```idata``` is dict representation of OSCO yaml.
+    Optional ```metadata``` helps more completely formulate each observation.
 
-    Provide optional ```metadata``` to more completely formulate the observations.
-
+    Returned ```odata``` comprises list of OSCAL-like Assessment Results observations.
+    Returned ```analysis``` comprises dict of statistics.
     -----
     Sample metadata entry:
     -----
     ssg-ocp4-ds-cis-10.221.139.104-pod:
-       subject-references:
-          component:
-             uuid-ref: 56666738-0f9a-4e38-9aac-c0fad00a5821
-             type: component
-             title: Red Hat OpenShift Kubernetes
-          inventory-item:
-             uuid-ref: 46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e
-             type: inventory-item
-             title: Pod
-             properties:
-                target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm
-                cluster-name: ROKS-OpenSCAP-1
-                cluster-type: openshift
-                cluster-region: us-south
+      locker: https://github.ibm.com/degenaro/evidence-locker
+      namespace: xccdf
+      subject-references:
+         component:
+            uuid-ref: 56666738-0f9a-4e38-9aac-c0fad00a5821
+            type: component
+            title: Red Hat OpenShift Kubernetes
+         inventory-item:
+            uuid-ref: 46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e
+            type: inventory-item
+            title: Pod
+            properties:
+               target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm
+               cluster-name: ROKS-OpenSCAP-1
+               cluster-type: openshift
+               cluster-region: us-south
     -----
     """
-    content = _read_content(ifile)
-    rules = Rules(content)
+    rules = Rules(idata)
     observations = Observations(rules, metadata)
-    output = {'observations': observations.instances}
-    _write_content(ofile, output)
-    return rules.analysis
-
-
-def _read_content(ifile):
-    with open(ifile, 'r+') as fp:
-        data = fp.read()
-        content = yaml.full_load(data)
-    logger.debug('========== <content> ==========')
-    logger.debug(content)
-    logger.debug('========== </content> ==========')
-    return content
-
-
-def _write_content(ofile, content):
-    with open(ofile, 'w', encoding='utf-8') as fp:
-        json.dump(content, fp, ensure_ascii=False, indent=2)
+    odata = {'observations': observations.instances}
+    return odata, rules.analysis
 
 
 class Observations():

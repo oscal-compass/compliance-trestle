@@ -18,6 +18,7 @@
 import configparser
 import logging
 import os
+import json
 import pathlib
 import traceback
 from typing import Optional
@@ -84,6 +85,14 @@ class OscoToOscal(TaskBase):
                             return TaskOutcome('simulated-failure')
                     mfile = self._calculate_mfile(idir)
                     metadata = self._get_metadata(mfile)
+                    logger.debug(f'create: {ofile}')
+                    idata = self._read_content(ifile)
+                    odata, analysis = osco.get_observations(idata, metadata)
+                    self._write_content(ofile, odata, True)
+                    logger.debug(f'Rules Analysis:')
+                    logger.debug(f'config_maps: {analysis["config_maps"]}')
+                    logger.debug(f'dispatched rules: {analysis["dispatched_rules"]}')
+                    logger.debug(f'result types: {analysis["result_types"]}')
                 return TaskOutcome('simulated-success')
             logger.error(f'config missing')
             return TaskOutcome('simulated-failure')
@@ -119,7 +128,9 @@ class OscoToOscal(TaskBase):
                     mfile = self._calculate_mfile(idir)
                     metadata = self._get_metadata(mfile)
                     logger.info(f'create: {ofile}')
-                    analysis = osco.transform(ifile, ofile, overwrite, metadata)
+                    idata = self._read_content(ifile)
+                    odata, analysis = osco.get_observations(idata, metadata)
+                    self._write_content(ofile, odata)
                     logger.info(f'Rules Analysis:')
                     logger.info(f'config_maps: {analysis["config_maps"]}')
                     logger.info(f'dispatched rules: {analysis["dispatched_rules"]}')
@@ -131,6 +142,21 @@ class OscoToOscal(TaskBase):
         except Exception:
             traceback.print_exc()
             return TaskOutcome('exception')
+    
+    def _read_content(self, ifile):
+        with open(ifile, 'r+') as fp:
+            data = fp.read()
+            content = yaml.full_load(data)
+        logger.debug('========== <content> ==========')
+        logger.debug(content)
+        logger.debug('========== </content> ==========')
+        return content
+
+    def _write_content(self, ofile, content, simulate=False):
+        if simulate:
+            return
+        with open(ofile, 'w', encoding='utf-8') as fp:
+            json.dump(content, fp, ensure_ascii=False, indent=2)
     
     def _calculate_ofile(self, ifile, odir):
         """Synthesize output file path+name."""
