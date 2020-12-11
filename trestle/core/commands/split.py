@@ -15,11 +15,13 @@
 # limitations under the License.
 """Trestle Split Command."""
 import argparse
+import logging
 import pathlib
 from typing import Dict, List
 
-from ilcli import Command  # type: ignore
+from ilcli import Command
 
+import trestle.utils.log as log
 from trestle.core import const
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
@@ -30,6 +32,8 @@ from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs, trash
+
+logger = logging.getLogger(__name__)
 
 
 class SplitCmd(Command):
@@ -49,12 +53,15 @@ class SplitCmd(Command):
             help=const.ARG_DESC_ELEMENT + ' to split.',
         )
 
-    def _run(self, args: argparse.ArgumentParser) -> None:
+    def _run(self, args: argparse.Namespace) -> int:
         """Split an OSCAL file into elements."""
+        logger.debug('Entering trestle split.')
+        log.set_log_level_from_args(args)
         # get the Model
         args_raw = args.__dict__
         if args_raw[const.ARG_FILE] is None:
-            raise TrestleError(f'Argument "-{const.ARG_FILE_SHORT}" is required')
+            logger.error(f'Argument "-{const.ARG_FILE_SHORT}" is required')
+            return 1
 
         file_path = pathlib.Path(args_raw[const.ARG_FILE])
         content_type = FileContentType.to_content_type(file_path.suffix)
@@ -84,6 +91,7 @@ class SplitCmd(Command):
 
         # execute the plan
         split_plan.execute()
+        return 0
 
     @classmethod
     def prepare_sub_model_split_actions(

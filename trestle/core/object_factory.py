@@ -13,7 +13,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Generic object factory."""
 
-#TODO: Ensure this is automatically updated successfully.
-OSCAL_VERSION = 'v1.0.0-milestone3'
+import argparse
+from typing import Any, Dict
 
+
+class ObjectFactory:
+    """Allow registration and creation of validators."""
+
+    def __init__(self) -> None:
+        """Initialize the objects dictionary as empty."""
+        self._objects: Dict[str, Any] = {}
+
+    def register_object(self, mode: str, obj: Any) -> None:
+        """Register the object."""
+        self._objects[mode] = obj
+
+    def get(self, args: argparse.Namespace) -> Any:
+        """Create the object from the args."""
+        return self._objects.get(args.mode)
