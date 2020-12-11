@@ -1,5 +1,4 @@
 # -*- mode:python; coding:utf-8 -*-
-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,8 +12,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""OSCO to OSCAL transformation tests."""
+"""OSCO to OSCAL task tests."""
 
-def test_transformation():
-    """Test OSCO to OSCAL transformation."""
-    print('TBD.')
+from trestle.tasks import osco_to_oscal
+
+def test_print_info(tmpdir):
+    #TODO
+    pass
+
+def test_simulate(tmpdir):
+    #TODO
+    pass
+    
+def test_execute(tmpdir):
+    #TODO
+    pass

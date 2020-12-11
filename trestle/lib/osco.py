@@ -17,7 +17,7 @@
 import base64
 import bz2
 import logging
-from uuid import uuid4
+import uuid
 from xml.etree import ElementTree
 
 logger = logging.getLogger(__name__)
@@ -79,7 +79,7 @@ class Observations():
 
     def _create_observation(self, rule, metadata):
         observation = {}
-        observation['uuid'] = str(uuid4())
+        observation['uuid'] = str(uuid.uuid4())
         observation['description'] = rule['idref']
         observation['title'] = rule['idref']
         observation['evidence-group'] = self._create_evidence_group(rule, metadata)

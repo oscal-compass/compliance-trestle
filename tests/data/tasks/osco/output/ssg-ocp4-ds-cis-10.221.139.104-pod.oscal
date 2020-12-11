@@ -1,7 +1,7 @@
 {
   "observations": [
     {
-      "uuid": "1770a4c2-3701-4a9b-9511-fc6e115fdea5",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd",
       "title": "xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd",
       "evidence-group": [
@@ -59,7 +59,7 @@
       ]
     },
     {
-      "uuid": "c7585d84-bce9-440a-ad8d-d4183932a79e",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens",
       "title": "xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens",
       "evidence-group": [
@@ -117,7 +117,7 @@
       ]
     },
     {
-      "uuid": "e08e5ae9-c02f-46e9-bb0f-cde6a5c85293",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_accounts_unique_service_account",
       "title": "xccdf_org.ssgproject.content_rule_accounts_unique_service_account",
       "evidence-group": [
@@ -175,7 +175,7 @@
       ]
     },
     {
-      "uuid": "a22d637e-2e77-4858-af4a-b0037cb3d11a",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_configure_network_policies",
       "title": "xccdf_org.ssgproject.content_rule_configure_network_policies",
       "evidence-group": [
@@ -233,7 +233,7 @@
       ]
     },
     {
-      "uuid": "e6660bde-858f-4870-b9be-4e7b25828cae",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_configure_network_policies_namespaces",
       "title": "xccdf_org.ssgproject.content_rule_configure_network_policies_namespaces",
       "evidence-group": [
@@ -291,7 +291,7 @@
       ]
     },
     {
-      "uuid": "d74f0a9c-df35-4a22-8c2c-c5c743985a4f",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_scheduler_profiling_argument",
       "title": "xccdf_org.ssgproject.content_rule_scheduler_profiling_argument",
       "evidence-group": [
@@ -349,7 +349,7 @@
       ]
     },
     {
-      "uuid": "710462d9-6e4d-4deb-b739-de722c2aa88a",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_secrets_no_environment_variables",
       "title": "xccdf_org.ssgproject.content_rule_secrets_no_environment_variables",
       "evidence-group": [
@@ -407,7 +407,7 @@
       ]
     },
     {
-      "uuid": "4117b319-f699-446b-8468-8276874ae63e",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_worker_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_worker_kubeconfig",
       "evidence-group": [
@@ -465,7 +465,7 @@
       ]
     },
     {
-      "uuid": "7188fa89-6845-4193-ba8d-b90de14028bd",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_service",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_service",
       "evidence-group": [
@@ -523,7 +523,7 @@
       ]
     },
     {
-      "uuid": "068c0230-9260-45cf-89b9-1f0e46845ae2",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_proxy_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_proxy_kubeconfig",
       "evidence-group": [
@@ -581,7 +581,7 @@
       ]
     },
     {
-      "uuid": "fa43874c-c9db-4f46-b145-03bed8153f53",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_worker_ca",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_worker_ca",
       "evidence-group": [
@@ -639,7 +639,7 @@
       ]
     },
     {
-      "uuid": "387061c0-f8fc-4261-82af-812a0679d65a",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_worker_service",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_worker_service",
       "evidence-group": [
@@ -697,7 +697,7 @@
       ]
     },
     {
-      "uuid": "07469975-a6bc-4035-8f1c-3b434becde52",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_kubeconfig",
       "evidence-group": [
@@ -755,7 +755,7 @@
       ]
     },
     {
-      "uuid": "c800da88-c928-4d8d-a536-05e8a88917f4",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_kubelet_conf",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_kubelet_conf",
       "evidence-group": [
@@ -813,7 +813,7 @@
       ]
     },
     {
-      "uuid": "15781498-feb8-496d-820a-f501abbffa47",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_worker_service",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_worker_service",
       "evidence-group": [
@@ -871,7 +871,7 @@
       ]
     },
     {
-      "uuid": "c63182da-a73f-4721-8a44-c886bf75b63e",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_proxy_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_proxy_kubeconfig",
       "evidence-group": [
@@ -929,7 +929,7 @@
       ]
     },
     {
-      "uuid": "93e22975-f445-4cab-b15d-ad5e930a35aa",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_worker_ca",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_worker_ca",
       "evidence-group": [
@@ -987,7 +987,7 @@
       ]
     },
     {
-      "uuid": "a1d6c563-38e0-49dc-8a1b-cf991c348f99",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_proxy_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_proxy_kubeconfig",
       "evidence-group": [
@@ -1045,7 +1045,7 @@
       ]
     },
     {
-      "uuid": "be6184a6-1811-4a9d-8a24-ed35ed2ada49",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_ca",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_ca",
       "evidence-group": [
@@ -1103,7 +1103,7 @@
       ]
     },
     {
-      "uuid": "5a712db6-dd5c-4bba-b1d7-c8575f3246fd",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_worker_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_worker_kubeconfig",
       "evidence-group": [
@@ -1161,7 +1161,7 @@
       ]
     },
     {
-      "uuid": "d741c4ce-6a04-4cee-8330-77e20da93154",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_kubelet_conf",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_kubelet_conf",
       "evidence-group": [
@@ -1219,7 +1219,7 @@
       ]
     },
     {
-      "uuid": "e982da4c-f57c-471a-b580-4e47120ce001",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_kubelet_conf",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_kubelet_conf",
       "evidence-group": [
@@ -1277,7 +1277,7 @@
       ]
     },
     {
-      "uuid": "adb11c3a-f6d6-45b8-afa2-d664a25e43a4",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_controller_use_service_account",
       "title": "xccdf_org.ssgproject.content_rule_controller_use_service_account",
       "evidence-group": [
@@ -1335,7 +1335,7 @@
       ]
     },
     {
-      "uuid": "4ae66f31-e89f-4a80-b13a-0ccc01494e57",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_controller_bind_address",
       "title": "xccdf_org.ssgproject.content_rule_controller_bind_address",
       "evidence-group": [
@@ -1393,7 +1393,7 @@
       ]
     },
     {
-      "uuid": "d9b3f89d-845a-400b-bb37-81cf80b64b9d",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_controller_service_account_private_key",
       "title": "xccdf_org.ssgproject.content_rule_controller_service_account_private_key",
       "evidence-group": [
@@ -1451,7 +1451,7 @@
       ]
     },
     {
-      "uuid": "7d7c160b-ae63-43b9-805f-7d6c27f05bbd",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_controller_service_account_ca",
       "title": "xccdf_org.ssgproject.content_rule_controller_service_account_ca",
       "evidence-group": [
@@ -1509,7 +1509,7 @@
       ]
     },
     {
-      "uuid": "866e7ca4-77ed-431f-a385-5315469447a6",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_controller_rotate_kubelet_server_certs",
       "title": "xccdf_org.ssgproject.content_rule_controller_rotate_kubelet_server_certs",
       "evidence-group": [
@@ -1567,7 +1567,7 @@
       ]
     },
     {
-      "uuid": "808ecd11-a6e3-49e5-ab60-905759687f58",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_process_id_namespace",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_process_id_namespace",
       "evidence-group": [
@@ -1625,7 +1625,7 @@
       ]
     },
     {
-      "uuid": "97c794e3-e7b4-40c3-af73-cffa0c08cf7d",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_root_containers",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_root_containers",
       "evidence-group": [
@@ -1683,7 +1683,7 @@
       ]
     },
     {
-      "uuid": "84fb98ef-877c-45bf-bd3f-b0d312ebb062",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_privilege_escalation",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_privilege_escalation",
       "evidence-group": [
@@ -1741,7 +1741,7 @@
       ]
     },
     {
-      "uuid": "a6e25832-fba4-4b4b-9a33-14bf95f16f13",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_ipc_namespace",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_ipc_namespace",
       "evidence-group": [
@@ -1799,7 +1799,7 @@
       ]
     },
     {
-      "uuid": "def7b3ee-18e8-4b82-bd98-43bb5b93b701",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_container_allowed_capabilities",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_container_allowed_capabilities",
       "evidence-group": [
@@ -1857,7 +1857,7 @@
       ]
     },
     {
-      "uuid": "4a595cda-5bea-4c85-9e7e-28d5689f85e8",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_net_raw_capability",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_net_raw_capability",
       "evidence-group": [
@@ -1915,7 +1915,7 @@
       ]
     },
     {
-      "uuid": "1732ba21-b4d5-4f9b-92c3-6a297f5ce0aa",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_network_namespace",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_network_namespace",
       "evidence-group": [
@@ -1973,7 +1973,7 @@
       ]
     },
     {
-      "uuid": "a753bfa7-7cc8-4d7a-9d8d-1be038744cf7",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_scc_drop_container_capabilities",
       "title": "xccdf_org.ssgproject.content_rule_scc_drop_container_capabilities",
       "evidence-group": [
@@ -2031,7 +2031,7 @@
       ]
     },
     {
-      "uuid": "6f69550f-4ba0-45a0-a7dc-7637a36a2753",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_scc_limit_privileged_containers",
       "title": "xccdf_org.ssgproject.content_rule_scc_limit_privileged_containers",
       "evidence-group": [
@@ -2089,7 +2089,7 @@
       ]
     },
     {
-      "uuid": "51128c54-04a5-40c5-8acb-d0375edda59a",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_general_configure_imagepolicywebhook",
       "title": "xccdf_org.ssgproject.content_rule_general_configure_imagepolicywebhook",
       "evidence-group": [
@@ -2147,7 +2147,7 @@
       ]
     },
     {
-      "uuid": "c713fa3d-0ba1-4d91-b1f5-d3fb55eb394f",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_rbac_limit_secrets_access",
       "title": "xccdf_org.ssgproject.content_rule_rbac_limit_secrets_access",
       "evidence-group": [
@@ -2205,7 +2205,7 @@
       ]
     },
     {
-      "uuid": "63b8e815-98b7-4467-89d7-323344d472fc",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_rbac_wildcard_use",
       "title": "xccdf_org.ssgproject.content_rule_rbac_wildcard_use",
       "evidence-group": [
@@ -2263,7 +2263,7 @@
       ]
     },
     {
-      "uuid": "422ce38c-25e2-407d-9b84-a9153000db66",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_rbac_pod_creation_access",
       "title": "xccdf_org.ssgproject.content_rule_rbac_pod_creation_access",
       "evidence-group": [
@@ -2321,7 +2321,7 @@
       ]
     },
     {
-      "uuid": "49ecde80-87b7-4926-8a43-30d02b4040e7",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_rbac_limit_cluster_admin",
       "title": "xccdf_org.ssgproject.content_rule_rbac_limit_cluster_admin",
       "evidence-group": [
@@ -2379,7 +2379,7 @@
       ]
     },
     {
-      "uuid": "a2ad87d1-1615-4d83-aefd-204677b8dfd6",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_configure_client_ca",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_configure_client_ca",
       "evidence-group": [
@@ -2437,7 +2437,7 @@
       ]
     },
     {
-      "uuid": "66ca1224-0d8b-41c1-9409-f1bcd1bdae4a",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_disable_readonly_port",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_disable_readonly_port",
       "evidence-group": [
@@ -2495,7 +2495,7 @@
       ]
     },
     {
-      "uuid": "84ea8105-36ce-4488-ad4f-05b2ca732965",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_anonymous_auth",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_anonymous_auth",
       "evidence-group": [
@@ -2553,7 +2553,7 @@
       ]
     },
     {
-      "uuid": "cdea591b-2bc7-4274-8e96-f633c856d33d",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_enable_server_cert_rotation",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_enable_server_cert_rotation",
       "evidence-group": [
@@ -2611,7 +2611,7 @@
       ]
     },
     {
-      "uuid": "1bd17213-3951-4006-8d49-a65b78c63460",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_key",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_key",
       "evidence-group": [
@@ -2669,7 +2669,7 @@
       ]
     },
     {
-      "uuid": "2da774e9-0d55-44f3-82dc-78055e86e909",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_enable_streaming_connections",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_enable_streaming_connections",
       "evidence-group": [
@@ -2727,7 +2727,7 @@
       ]
     },
     {
-      "uuid": "4e3267f8-c4d8-4d38-b64e-e09e998b5a6b",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_authorization_mode",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_authorization_mode",
       "evidence-group": [
@@ -2785,7 +2785,7 @@
       ]
     },
     {
-      "uuid": "8ef70a71-8f29-48f8-83b9-66031cab19f7",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_configure_event_creation",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_configure_event_creation",
       "evidence-group": [
@@ -2843,7 +2843,7 @@
       ]
     },
     {
-      "uuid": "75181f76-30d6-48a1-bce1-29fedd4d5ab5",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_enable_client_cert_rotation",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_enable_client_cert_rotation",
       "evidence-group": [
@@ -2901,7 +2901,7 @@
       ]
     },
     {
-      "uuid": "8682700d-e9b3-401a-b2d3-79473162c0e6",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cert",
       "title": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cert",
       "evidence-group": [
@@ -2959,7 +2959,7 @@
       ]
     },
     {
-      "uuid": "cf32216c-e6f3-4a5e-80c7-61c9578778c1",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_ocp_allowed_registries_for_import",
       "title": "xccdf_org.ssgproject.content_rule_ocp_allowed_registries_for_import",
       "evidence-group": [
@@ -3017,7 +3017,7 @@
       ]
     },
     {
-      "uuid": "82d37590-ed26-4e5b-9fbd-ab20a43f7203",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_etcd_client_cert_auth",
       "title": "xccdf_org.ssgproject.content_rule_etcd_client_cert_auth",
       "evidence-group": [
@@ -3075,7 +3075,7 @@
       ]
     },
     {
-      "uuid": "946c8db2-1c8f-4047-a89e-b95e0e5620d5",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_etcd_peer_key_file",
       "title": "xccdf_org.ssgproject.content_rule_etcd_peer_key_file",
       "evidence-group": [
@@ -3133,7 +3133,7 @@
       ]
     },
     {
-      "uuid": "862f7167-c18d-4a17-995e-3abd18f02188",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_etcd_peer_cert_file",
       "title": "xccdf_org.ssgproject.content_rule_etcd_peer_cert_file",
       "evidence-group": [
@@ -3191,7 +3191,7 @@
       ]
     },
     {
-      "uuid": "ce68b074-16f9-4162-88e7-2a874ae9aa44",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_etcd_unique_ca",
       "title": "xccdf_org.ssgproject.content_rule_etcd_unique_ca",
       "evidence-group": [
@@ -3249,7 +3249,7 @@
       ]
     },
     {
-      "uuid": "7f32cc58-458d-4af4-a14b-39bdab35667b",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_etcd_peer_auto_tls",
       "title": "xccdf_org.ssgproject.content_rule_etcd_peer_auto_tls",
       "evidence-group": [
@@ -3307,7 +3307,7 @@
       ]
     },
     {
-      "uuid": "8f3d3a1d-87f5-4c7d-beaf-ae7b148b97ec",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_etcd_peer_client_cert_auth",
       "title": "xccdf_org.ssgproject.content_rule_etcd_peer_client_cert_auth",
       "evidence-group": [
@@ -3365,7 +3365,7 @@
       ]
     },
     {
-      "uuid": "df05ec4f-bc47-45a6-9651-2ce8dc8a517b",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_etcd_cert_file",
       "title": "xccdf_org.ssgproject.content_rule_etcd_cert_file",
       "evidence-group": [
@@ -3423,7 +3423,7 @@
       ]
     },
     {
-      "uuid": "0d9dd36a-6f80-4ea1-9864-0b18e026d321",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_etcd_auto_tls",
       "title": "xccdf_org.ssgproject.content_rule_etcd_auto_tls",
       "evidence-group": [
@@ -3481,7 +3481,7 @@
       ]
     },
     {
-      "uuid": "ff6c18ed-bdc9-4cb2-b041-b8dd2abd37cc",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_etcd_key_file",
       "title": "xccdf_org.ssgproject.content_rule_etcd_key_file",
       "evidence-group": [
@@ -3539,7 +3539,7 @@
       ]
     },
     {
-      "uuid": "bafbf8fd-b914-42e3-902f-aee5fab45c48",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_cni_conf",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_cni_conf",
       "evidence-group": [
@@ -3597,7 +3597,7 @@
       ]
     },
     {
-      "uuid": "6bf237aa-97a7-4e73-aad3-adee13edc4be",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_etcd_member",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_etcd_member",
       "evidence-group": [
@@ -3655,7 +3655,7 @@
       ]
     },
     {
-      "uuid": "d996ef7c-8744-4ea1-ab51-e56e7a73665f",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_etcd_member",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_etcd_member",
       "evidence-group": [
@@ -3713,7 +3713,7 @@
       ]
     },
     {
-      "uuid": "0f29cd3f-652d-40d6-90ca-247bfce709ac",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_kube_scheduler",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_kube_scheduler",
       "evidence-group": [
@@ -3771,7 +3771,7 @@
       ]
     },
     {
-      "uuid": "8840fb57-1a8f-4d33-ac7a-d80f68c5f67e",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver",
       "evidence-group": [
@@ -3829,7 +3829,7 @@
       ]
     },
     {
-      "uuid": "6d778f28-a6be-499c-802e-a0f45cf0fb8a",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver",
       "evidence-group": [
@@ -3887,7 +3887,7 @@
       ]
     },
     {
-      "uuid": "7104dec1-3e42-4ee0-b9f8-e5b4cf2f7e9d",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_openvswitch",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_openvswitch",
       "evidence-group": [
@@ -3945,7 +3945,7 @@
       ]
     },
     {
-      "uuid": "482b0e31-d2ce-4942-a087-af596c1d761e",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager",
       "evidence-group": [
@@ -4003,7 +4003,7 @@
       ]
     },
     {
-      "uuid": "d7b6f184-cfda-4abe-a52b-e525025cadc7",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_controller_manager_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_controller_manager_kubeconfig",
       "evidence-group": [
@@ -4061,7 +4061,7 @@
       ]
     },
     {
-      "uuid": "32483424-87b2-4bf5-b353-406cd8751af1",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_scheduler_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_scheduler_kubeconfig",
       "evidence-group": [
@@ -4119,7 +4119,7 @@
       ]
     },
     {
-      "uuid": "43dd361f-7dec-4a2a-a30d-239fe3e22416",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_openvswitch",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_openvswitch",
       "evidence-group": [
@@ -4177,7 +4177,7 @@
       ]
     },
     {
-      "uuid": "2c3b9717-75db-4da9-ac0a-fb61af500e18",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_var_lib_etcd",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_var_lib_etcd",
       "evidence-group": [
@@ -4235,7 +4235,7 @@
       ]
     },
     {
-      "uuid": "c8c4f959-73d4-4c2d-aee2-dbf9eb322192",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_var_lib_etcd",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_var_lib_etcd",
       "evidence-group": [
@@ -4293,7 +4293,7 @@
       ]
     },
     {
-      "uuid": "9fb4db10-5413-46c6-b162-e0dd5339eabf",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_controller_manager_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_controller_manager_kubeconfig",
       "evidence-group": [
@@ -4351,7 +4351,7 @@
       ]
     },
     {
-      "uuid": "8c6009ae-c342-422c-a5b8-2b1399366320",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_scheduler_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_scheduler_kubeconfig",
       "evidence-group": [
@@ -4409,7 +4409,7 @@
       ]
     },
     {
-      "uuid": "ae1e0bf3-96ec-4dad-8cd2-d92f0b9a8e76",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_kube_controller_manager",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_kube_controller_manager",
       "evidence-group": [
@@ -4467,7 +4467,7 @@
       ]
     },
     {
-      "uuid": "b6bd4dc7-ae61-4e89-9337-5e7c2c15cb00",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_kubeconfig",
       "evidence-group": [
@@ -4525,7 +4525,7 @@
       ]
     },
     {
-      "uuid": "d7ddbecd-81c0-4d9d-aa8d-cf3a2fc9e309",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_kube_scheduler",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_kube_scheduler",
       "evidence-group": [
@@ -4583,7 +4583,7 @@
       ]
     },
     {
-      "uuid": "3e9c0967-3585-4de0-8e6c-c907db03d3c7",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_kubeconfig",
       "evidence-group": [
@@ -4641,7 +4641,7 @@
       ]
     },
     {
-      "uuid": "3f537ebf-28b5-4843-87ef-e95eb52e83db",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_controller_manager",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_controller_manager",
       "evidence-group": [
@@ -4699,7 +4699,7 @@
       ]
     },
     {
-      "uuid": "9a1c3106-ad9a-4f34-a95e-2f0a8d52e362",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver",
       "evidence-group": [
@@ -4757,7 +4757,7 @@
       ]
     },
     {
-      "uuid": "5687e158-f66d-444d-9bef-424ed0e6e5d5",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_cni_conf",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_cni_conf",
       "evidence-group": [
@@ -4815,7 +4815,7 @@
       ]
     },
     {
-      "uuid": "451da959-043c-4bc2-9474-dcd67896ad90",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_kubeconfig",
       "evidence-group": [
@@ -4873,7 +4873,7 @@
       ]
     },
     {
-      "uuid": "e3dd5a8c-226a-4974-a433-ddcce823a8ae",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_scheduler",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_scheduler",
       "evidence-group": [
@@ -4931,7 +4931,7 @@
       ]
     },
     {
-      "uuid": "0189f915-a48f-4719-8742-0d11bfadd193",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_permissions_controller_manager_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_permissions_controller_manager_kubeconfig",
       "evidence-group": [
@@ -4989,7 +4989,7 @@
       ]
     },
     {
-      "uuid": "0c43347c-2070-425f-ba1e-eda23ab726a5",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_cni_conf",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_cni_conf",
       "evidence-group": [
@@ -5047,7 +5047,7 @@
       ]
     },
     {
-      "uuid": "f9480679-9ae5-43ae-9ff9-d62ad5d18c9c",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_openvswitch",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_openvswitch",
       "evidence-group": [
@@ -5105,7 +5105,7 @@
       ]
     },
     {
-      "uuid": "a37b9fca-3917-4814-a153-c6154476d781",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_groupowner_etcd_member",
       "title": "xccdf_org.ssgproject.content_rule_file_groupowner_etcd_member",
       "evidence-group": [
@@ -5163,7 +5163,7 @@
       ]
     },
     {
-      "uuid": "a0d3e6ab-9f9a-462f-9d30-28a2caed5d6a",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_file_owner_scheduler_kubeconfig",
       "title": "xccdf_org.ssgproject.content_rule_file_owner_scheduler_kubeconfig",
       "evidence-group": [
@@ -5221,7 +5221,7 @@
       ]
     },
     {
-      "uuid": "94206102-1e1b-4d6c-95fa-d5fb22b43c67",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_insecure_port",
       "title": "xccdf_org.ssgproject.content_rule_api_server_insecure_port",
       "evidence-group": [
@@ -5279,7 +5279,7 @@
       ]
     },
     {
-      "uuid": "d623012c-b6d0-43d9-b563-bc13eecf580d",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_tls_private_key",
       "title": "xccdf_org.ssgproject.content_rule_api_server_tls_private_key",
       "evidence-group": [
@@ -5337,7 +5337,7 @@
       ]
     },
     {
-      "uuid": "49c02da5-bff6-4500-94dd-c840c8968559",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_tls_cert",
       "title": "xccdf_org.ssgproject.content_rule_api_server_tls_cert",
       "evidence-group": [
@@ -5395,7 +5395,7 @@
       ]
     },
     {
-      "uuid": "6a20a101-d157-4b72-adb5-334dbf79ad40",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_client_ca",
       "title": "xccdf_org.ssgproject.content_rule_api_server_client_ca",
       "evidence-group": [
@@ -5453,7 +5453,7 @@
       ]
     },
     {
-      "uuid": "1994dc03-0849-471b-9249-6a33d5a41de0",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_audit_log_path",
       "title": "xccdf_org.ssgproject.content_rule_api_server_audit_log_path",
       "evidence-group": [
@@ -5511,7 +5511,7 @@
       ]
     },
     {
-      "uuid": "e9079ac8-7717-4024-824f-813c007ca61c",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_tls_cipher_suites",
       "title": "xccdf_org.ssgproject.content_rule_api_server_tls_cipher_suites",
       "evidence-group": [
@@ -5569,7 +5569,7 @@
       ]
     },
     {
-      "uuid": "c347d2ff-575f-43d3-9d86-73bfc48eaf60",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_EventRateLimit",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_EventRateLimit",
       "evidence-group": [
@@ -5627,7 +5627,7 @@
       ]
     },
     {
-      "uuid": "e588752c-e26a-4abe-9e4c-b306a3de4157",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_authorization_mode",
       "title": "xccdf_org.ssgproject.content_rule_api_server_authorization_mode",
       "evidence-group": [
@@ -5685,7 +5685,7 @@
       ]
     },
     {
-      "uuid": "46aaa85d-76a1-4b07-9a73-689f54b083e2",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxage",
       "title": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxage",
       "evidence-group": [
@@ -5743,7 +5743,7 @@
       ]
     },
     {
-      "uuid": "bc23c63e-394d-4119-acc4-e6725dead041",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_profiling",
       "title": "xccdf_org.ssgproject.content_rule_api_server_profiling",
       "evidence-group": [
@@ -5801,7 +5801,7 @@
       ]
     },
     {
-      "uuid": "a0463a48-e8cf-4798-8cd5-3f6fa79a5af0",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_ServiceAccount",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_ServiceAccount",
       "evidence-group": [
@@ -5859,7 +5859,7 @@
       ]
     },
     {
-      "uuid": "034d70fc-c34a-487b-aa3d-6b9d40159e72",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysAdmit",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysAdmit",
       "evidence-group": [
@@ -5917,7 +5917,7 @@
       ]
     },
     {
-      "uuid": "32eea07c-633f-483b-ac8f-bee306f70417",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_encryption_provider_cipher",
       "title": "xccdf_org.ssgproject.content_rule_api_server_encryption_provider_cipher",
       "evidence-group": [
@@ -5975,7 +5975,7 @@
       ]
     },
     {
-      "uuid": "a4fdb15e-120b-4954-9770-008eee04139b",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_token_auth",
       "title": "xccdf_org.ssgproject.content_rule_api_server_token_auth",
       "evidence-group": [
@@ -6033,7 +6033,7 @@
       ]
     },
     {
-      "uuid": "ebe3101c-37e1-4143-a40c-7741282aa800",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_anonymous_auth",
       "title": "xccdf_org.ssgproject.content_rule_api_server_anonymous_auth",
       "evidence-group": [
@@ -6091,7 +6091,7 @@
       ]
     },
     {
-      "uuid": "ebf6f544-1aae-4b5c-baf3-0f7ab33bebb7",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_etcd_ca",
       "title": "xccdf_org.ssgproject.content_rule_api_server_etcd_ca",
       "evidence-group": [
@@ -6149,7 +6149,7 @@
       ]
     },
     {
-      "uuid": "a3a1b77d-d87e-4b38-829a-c69437a50767",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_encryption_provider_config",
       "title": "xccdf_org.ssgproject.content_rule_api_server_encryption_provider_config",
       "evidence-group": [
@@ -6207,7 +6207,7 @@
       ]
     },
     {
-      "uuid": "11bf7227-b462-45a1-a145-ed880c429990",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_request_timeout",
       "title": "xccdf_org.ssgproject.content_rule_api_server_request_timeout",
       "evidence-group": [
@@ -6265,7 +6265,7 @@
       ]
     },
     {
-      "uuid": "8eca6a48-2477-4700-a23f-b6349dbd288b",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxsize",
       "title": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxsize",
       "evidence-group": [
@@ -6323,7 +6323,7 @@
       ]
     },
     {
-      "uuid": "e5b6cc7a-d0f0-4cf1-9e6f-85ca92be31d0",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NodeRestriction",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NodeRestriction",
       "evidence-group": [
@@ -6381,7 +6381,7 @@
       ]
     },
     {
-      "uuid": "ebed7ae5-37a0-467b-a46e-b96fcccf2c7b",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_SecurityContextDeny",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_SecurityContextDeny",
       "evidence-group": [
@@ -6439,7 +6439,7 @@
       ]
     },
     {
-      "uuid": "7711ec12-19e1-4e28-aa39-66c685415cae",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_PodSecurityPolicy",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_PodSecurityPolicy",
       "evidence-group": [
@@ -6497,7 +6497,7 @@
       ]
     },
     {
-      "uuid": "47916d5d-6c19-4d2d-98d9-ecc89d86efa7",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_basic_auth",
       "title": "xccdf_org.ssgproject.content_rule_api_server_basic_auth",
       "evidence-group": [
@@ -6555,7 +6555,7 @@
       ]
     },
     {
-      "uuid": "18995710-14c4-45b8-9f7a-ee7fb98f00c2",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_kubelet_client_key",
       "title": "xccdf_org.ssgproject.content_rule_api_server_kubelet_client_key",
       "evidence-group": [
@@ -6613,7 +6613,7 @@
       ]
     },
     {
-      "uuid": "64c63dcb-5593-4e7c-b702-91b0aea44bb3",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_service_account_public_key",
       "title": "xccdf_org.ssgproject.content_rule_api_server_service_account_public_key",
       "evidence-group": [
@@ -6671,7 +6671,7 @@
       ]
     },
     {
-      "uuid": "c52fbbc6-56a0-4064-a986-7bcf0216c3ee",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_etcd_key",
       "title": "xccdf_org.ssgproject.content_rule_api_server_etcd_key",
       "evidence-group": [
@@ -6729,7 +6729,7 @@
       ]
     },
     {
-      "uuid": "79696a81-1e89-4093-9e0b-5f8b70091a94",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysPullImages",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysPullImages",
       "evidence-group": [
@@ -6787,7 +6787,7 @@
       ]
     },
     {
-      "uuid": "d0d359a5-c024-446b-8539-c9ae80cc90c5",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_kubelet_client_cert",
       "title": "xccdf_org.ssgproject.content_rule_api_server_kubelet_client_cert",
       "evidence-group": [
@@ -6845,7 +6845,7 @@
       ]
     },
     {
-      "uuid": "97d7022e-ee0d-43ab-b231-5e64bb495379",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxbackup",
       "title": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxbackup",
       "evidence-group": [
@@ -6903,7 +6903,7 @@
       ]
     },
     {
-      "uuid": "4a75bd7d-caf0-4130-9a62-3d6e5b169e1f",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_kubelet_https",
       "title": "xccdf_org.ssgproject.content_rule_api_server_kubelet_https",
       "evidence-group": [
@@ -6961,7 +6961,7 @@
       ]
     },
     {
-      "uuid": "7c215c64-9639-44a2-b6eb-d8d89fb20941",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_etcd_cert",
       "title": "xccdf_org.ssgproject.content_rule_api_server_etcd_cert",
       "evidence-group": [
@@ -7019,7 +7019,7 @@
       ]
     },
     {
-      "uuid": "77627382-c004-46a1-9264-254c5f4e394e",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_insecure_bind_address",
       "title": "xccdf_org.ssgproject.content_rule_api_server_insecure_bind_address",
       "evidence-group": [
@@ -7077,7 +7077,7 @@
       ]
     },
     {
-      "uuid": "d26d8622-1f97-4a0e-9563-97c9cfe4059b",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_kubelet_certificate_authority",
       "title": "xccdf_org.ssgproject.content_rule_api_server_kubelet_certificate_authority",
       "evidence-group": [
@@ -7135,7 +7135,7 @@
       ]
     },
     {
-      "uuid": "6fd4dda1-1e28-4ee9-8eb6-5651ca5068d0",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NamespaceLifecycle",
       "title": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NamespaceLifecycle",
       "evidence-group": [
@@ -7193,7 +7193,7 @@
       ]
     },
     {
-      "uuid": "4f859376-279f-4799-8d47-87b857698492",
+      "uuid": "a8098c1a-f86e-11da-bd1a-00112444be1e",
       "description": "xccdf_org.ssgproject.content_rule_api_server_secure_port",
       "title": "xccdf_org.ssgproject.content_rule_api_server_secure_port",
       "evidence-group": [
