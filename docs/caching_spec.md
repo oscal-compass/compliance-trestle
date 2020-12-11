@@ -29,16 +29,16 @@ meeting the minimum requirements of the json schema.
 NIST defines many types of referential links within the OSCAL schema. Here trestle is interested in supporting a subset of these links. In particular these links are characterized specifically by the fact that they refer to 'upstream' OSCAL
 artifacts. The table below identifies the references covered by this document.
 
-| Schema                                    | Json path ( represents array or named keys)                      | Refers to            |
-| \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-| \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- | \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- |
-| profile              | profile.imports\[*\].href                                             | catalog or profile   |
-| SSP                  | system-security-plan.import-profile.href                            | profile              |
-| component-definition | component-definition.import-component-definition\[*\].href            | component-definition |
-| component-definition | component-definition.component\[*\].control-implementations\[\*\].source | catalog or profile   |
-| target-definition | target-definition.import-target-definition\[*\].href            | target-definition |
-| target-definition | target-definition.component\[\*\].control-implementations\[\*\].source | catalog or profile   |
-| assessment-plan      | assessment-plan.import-ssp.href                                     | ssp                  |
-| assessment-results   | assessment-results.import-ap.href                                   | assessment-plan      |
+Schema               | Json path ( represents array or named keys)                              | Refers to
+---------------------|--------------------------------------------------------------------------|------------------
+profile              | profile.imports\[*\].href                                                | catalog or profile
+SSP                  | system-security-plan.import-profile.href                                 | profile
+component-definition | component-definition.import-component-definition\[*\].href               | component-definition
+component-definition | component-definition.component\[*\].control-implementations\[\*\].source | catalog or profile
+target-definition    | target-definition.import-target-definition\[*\].href                     | target-definition
+target-definition    | target-definition.component\[\*\].control-implementations\[\*\].source   | catalog or profile
+assessment-plan      | assessment-plan.import-ssp.href                                          | ssp
+assessment-results   | assessment-results.import-ap.href                                        | assessment-plan
 
 It is worth noting that the profile definition is recursive. In some of the OSCAL schemas these objects are optional. For the purposes of trestle these references are considered mandatory and it is expected that trestle will error if fields
 are missing.
