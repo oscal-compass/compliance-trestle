@@ -23,6 +23,7 @@ data classes.
 Functionality here defines a base-model which all trestle oscal data models inherit
 from. This allows additional functionality to be easily inserted.
 
+I can write a comment in here and you can even edit on the same line.
 """
 
 import datetime
@@ -106,17 +107,14 @@ class OscalBaseModel(BaseModel):
 
         Args:
             stripped_fields: The fields to be removed from the current data class.
-            Note that stripped_fields or stripped_fields_alias can be provided but not both.
-            stripped_fields_aliases: The fields to be removed from the current data class provided by alias
-            (aka OSCAL 'hyphen-form' name.).
+            stripped_fields_aliases: The fields to be removed from the current data class provided by alias.
 
         Returns:
             Pydantic data class thta can be used to instanciate a model.
 
         Raises:
-            err.TrestleError: If user provided both stripped_fields and stripped_field_aliases or neither. Exactly one
-            should be provided.
-            err.TrestleError: If incorrect aliases or field names are provided.
+            TrestleError: If user provided both stripped_fields and stripped_field_aliases or neither.
+            TrestleError: If incorrect aliases or field names are provided.
         """
         if stripped_fields is not None and stripped_fields_aliases is not None:
             raise err.TrestleError('Either "stripped_fields" or "stripped_fields_aliases" need to be passed, not both.')
