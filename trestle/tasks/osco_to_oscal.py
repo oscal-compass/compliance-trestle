@@ -44,7 +44,7 @@ class OscoToOscal(TaskBase):
 
     def __init__(self, config_object: Optional[configparser.SectionProxy]) -> None:
         """
-        Initialize trestle task pass-fail.
+        Initialize trestle task osco-to-oscal.
 
         Attributes:
             config_object: Config section associated with the task.
@@ -135,7 +135,6 @@ class OscoToOscal(TaskBase):
                     logger.info(f'config_maps: {analysis["config_maps"]}')
                     logger.info(f'dispatched rules: {analysis["dispatched_rules"]}')
                     logger.info(f'result types: {analysis["result_types"]}')
-                # outcome, executed
                 return TaskOutcome('success')
             logger.error(f'config missing')
             return TaskOutcome('failure')
