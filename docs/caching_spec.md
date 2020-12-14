@@ -128,41 +128,44 @@ over http(s) are treated as absolute paths. Authorization / authentication is as
 Relative paths are setup assuming the they are with respect to the editing directory. Relative paths in the `dist` directory
 should be reworked to include `dist`.
 
-### HTTP(S)
+### HTTPS ONLY
 
-HTTP and HTTPS endpoints are supported for trestle. The simplest case is similar to this:
-`http(s)://sample.com/path/to/file.json` => `.trestle/cache/sample.com/path/to/file.json`
+HTTPS endpoints are supported for trestle. Unencrypted HTTP endpoints are not.
+
+The simplest case is similar to this:
+`https://sample.com/path/to/file.json` => `.trestle/cache/sample.com/path/to/file.json`
 
 For all workloads the http header application type *SHOULD* match the file type provided. Trestle *MAY* warn on inconsistencies,
 however, the file extension takes precedence.
 
 For endpoints where an extension is NOT provided
-`http(s)://sample.com/path/to/file`
+`https://sample.com/path/to/file`
 or
-`http(s)://sample.com/path/to/file/`
+`https://sample.com/path/to/file/`
 Trestle will:
 
 1. Infer file type from http headers
 1. write out the file to object.{filetype} file.
-1. If a user requests http(s)://sample.com/path/to/file/object.json\` trestle MUST warn the user of the risk of conflicts
+1. If a user requests https://sample.com/path/to/file/object.json\` trestle MUST warn the user of the risk of conflicts
    with automatically generated names.
 
 ### Authentication:
 
-HTTPS ONLY and NOT HTTP are supported for HTTP basic authentication. Attempting HTTP based authentication MUST cause
-errors. Credentials MUST NOT be stored in cleartext.
+As the caching supports HTTPS ONLY, there is support for HTTP basic authentication. Attempting HTTP based authentication MUST cause errors, as would attempting HTTP fetching in any case.
 
-NOT ALLOWED: `http(s)://username:password@sample.com/path/to/file/`
+Credentials MUST NOT be stored in cleartext.
+
+NOT ALLOWED: `https://username:password@sample.com/path/to/file/`
 
 Credentials MUST be referred to by moustache templates e.g.:
 
-`http(s)://{{username_var}}:{{password_var}}@sample.com/path/to/file/`
+`https://{{username_var}}:{{password_var}}@sample.com/path/to/file/`
 
 where the "moustache" templated variables refer to environmental variables in the user's environment.
 
 Support for non standard behaviour is supported on specific domains (see below).
 
-### Specific domains over http/https
+### Specific domains over https
 
 Given the requirement for raw source files users *may* have issues accurately accessing a resource on many domains for
 which they can get the raw form. This is also true on environments where 2-Factor Authentication may protect accessing
