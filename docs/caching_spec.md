@@ -43,7 +43,7 @@ assessment-results   | assessment-results.import-ap.href                        
 It is worth noting that the profile definition is recursive. In some of the OSCAL schemas these objects are optional. For the purposes of trestle these references are considered mandatory and it is expected that trestle will error if fields
 are missing.
 
-In particular while (say as an example) import-ssp is optional in assessment-plan, without it we cannot validate the control ids provided by the user are sensical.
+In particular while (say as an example) import-ssp is optional in assessment-plan, without it we cannot validate if the control ids provided by the user make sense.
 
 ## Trestle cache dir.
 
@@ -87,7 +87,7 @@ Note that `localhost` has special treatment to manage relative file references.
 
 The cache *MAY* live within version control system depending on desired behaviour. It is recommended that caches live
 within the VCS to allow end to end tracking. Keeping the cache within the VCS implies that callers of trestle MUST
-explicitly ask for the cache to be refereshed if required.
+explicitly ask for the cache to be refreshed if required.
 
 The cache MUST NOT reference files within the current trestle context.
 
@@ -134,7 +134,7 @@ HTTP and HTTPS endpoints are supported for trestle. The simplest case is similar
 `http(s)://sample.com/path/to/file.json` => `.trestle/cache/sample.com/path/to/file.json`
 
 For all workloads the http header application type *SHOULD* match the file type provided. Trestle *MAY* warn on inconsistencies,
-however, the file extension takes precidence.
+however, the file extension takes precedence.
 
 For endpoints where an extension is NOT provided
 `http(s)://sample.com/path/to/file`
@@ -154,13 +154,13 @@ errors. Credentials MUST NOT be stored in cleartext.
 
 NOT ALLOWED: `http(s)://username:password@sample.com/path/to/file/`
 
-Credentials MUST be referred to my moustache templates e.g.:
+Credentials MUST be referred to by moustache templates e.g.:
 
 `http(s)://{{username_var}}:{{password_var}}@sample.com/path/to/file/`
 
 where the "moustache" templated variables refer to environmental variables in the user's environment.
 
-Support for non standard behaviour is suported on specific domains (see below).
+Support for non standard behaviour is supported on specific domains (see below).
 
 ### Specific domains over http/https
 
