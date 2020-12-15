@@ -68,9 +68,6 @@ pip install -q -e ".[dev]" --upgrade --upgrade-strategy eager
 
 # Run Trestle CLI
 trestle -h
-
-# Perform validation on file to confirm no duplicate uuid values
-trestle validate -f path_to_file.yaml -m duplicates -i uuid
 ```
 
 ## Supported OSCAL elements and extensions

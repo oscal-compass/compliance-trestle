@@ -13,14 +13,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-trestle - A python library and command line utility for compliance.
-
-Trestle is a tool to which enables the creation and validation of
-documentation artifacts for compliance requirements. It leverages NIST's
-OSCAL (https://pages.nist.gov/OSCAL/documentation/) as a standard data
-format for interchange between tools & people and provides an
-opinionated approach to OSCAL adoption.
-"""
-
-__version__ = '0.4.0'
+"""Trestle tasks module. Designed for arbitrary actions that are not editing to be flexible for multiple usecases."""

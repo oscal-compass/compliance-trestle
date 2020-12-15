@@ -15,15 +15,19 @@
 # limitations under the License.
 """Trestle Init Command."""
 import argparse
+import logging
 import os
+import pathlib
 from shutil import copyfile
-from typing import Union
 
 from ilcli import Command  # type: ignore
 
 from pkg_resources import resource_filename
 
 import trestle.core.const as const
+import trestle.utils.log as log
+
+logger = logging.getLogger(__name__)
 
 
 class InitCmd(Command):
@@ -31,8 +35,9 @@ class InitCmd(Command):
 
     name = 'init'
 
-    def _run(self, args: argparse.ArgumentParser) -> Union[int, None]:
+    def _run(self, args: argparse.Namespace) -> int:
         """Create a trestle project in the current directory."""
+        log.set_log_level_from_args(args)
         dir_path = os.getcwd()
 
         try:
@@ -42,26 +47,27 @@ class InitCmd(Command):
             # Create config file
             self._copy_config_file()
 
-            self.out(f'Initialized trestle project successfully in {dir_path}')
+            logger.info(f'Initialized trestle project successfully in {dir_path}')
 
         except BaseException as err:
-            self.err(f'Initialization failed: {err}')
+            logger.error(f'Initialization failed: {err}')
             return 1
+        return 0
 
     def _create_directories(self) -> None:
         """Create the directory tree if it does not exist."""
         # Prepare directory list to be created
-        directory_list = [const.TRESTLE_CONFIG_DIR]
+        directory_list = [pathlib.Path(const.TRESTLE_CONFIG_DIR)]
         for model_dir in const.MODELTYPE_TO_MODELMODULE.keys():
-            directory_list.append(model_dir)
-            directory_list.append(os.path.join(const.TRESTLE_DIST_DIR, model_dir))
+            directory_list.append(pathlib.Path(model_dir))
+            directory_list.append(pathlib.Path(const.TRESTLE_DIST_DIR) / model_dir)
 
         # Create directories
         for directory in directory_list:
-            os.makedirs(name=directory, exist_ok=True)
+            directory.mkdir(parents=True, exist_ok=True)
 
     def _copy_config_file(self) -> None:
         """Copy the initial config.ini file to .trestle directory."""
         source_path = resource_filename('trestle.resources', const.TRESTLE_CONFIG_FILE)
-        destination_path = os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE)
+        destination_path = pathlib.Path(const.TRESTLE_CONFIG_DIR) / const.TRESTLE_CONFIG_FILE
         copyfile(source_path, destination_path)

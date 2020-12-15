@@ -37,18 +37,18 @@ For a list of the maintainers, see the [MAINTAINERS.md](MAINTAINERS.md) page.
 
 ### Merging and release workflow.
 
-`trestle` today is maintaing two protected workflow branches. The a trunk development branch `develop` which is the target
-for all enhancements and non critical features. `master` is used to track releases and allow for hotfixes.
+`trestle` today is maintaining two protected workflow branches. The a trunk development branch `develop` which is the target
+for all enhancements and non critical features. `main` is used to track releases and allow for hotfixes.
 
 Each merge into `develop` will be squashed into a single commit. This can either be performed on merge or via developers
 rebasing their commits into a single commit. As `trestle` has adopted [python semantic release](python-semantic-release.readthedocs.org)
-the rebase / squash merge commit MUST follow the [angular commit style](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines).
+the rebase / squash merge commit MUST follow the [angular commit style](https://github.com/angular/angular.js/blob/main/DEVELOPERS.md#-git-commit-guidelines).
 
-Merges from `develop` to `master` for release capture all of these commits for the changelog. The current objective is to
+Merges from `develop` to `main` for release capture all of these commits for the changelog. The current objective is to
 release once per sprint (2 weeks)
 
-Hotfixes *may* be merged directly into master when critical bugs are found. Each hotfix *must* be squashed when merging
-into master and MUST only be a commit of type `fix:` in angular style.
+Hotfixes *may* be merged directly into main when critical bugs are found. Each hotfix *must* be squashed when merging
+into main and MUST only be a commit of type `fix:` in angular style.
 
 ## Legal
 

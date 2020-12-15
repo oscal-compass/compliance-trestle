@@ -353,35 +353,6 @@ class Purpose(OscalBaseModel):
     __root__: str
 
 
-class SystemInventory(OscalBaseModel):
-    inventory_items: Dict[str, Any] = Field(..., alias='inventory-items')
-    remarks: Optional[Remarks] = None
-
-
-class Annotation(OscalBaseModel):
-    name: str = Field(
-        ...,
-        description='Identifying the purpose and intended use of the property, part or other object.',
-        title='Name',
-    )
-    uuid: Optional[
-        constr(
-            regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-        )
-    ] = Field(
-        None,
-        description='A RFC 4122 version 4 Universally Unique Identifier (UUID) for the containing object.',
-        title='Universally Unique Identifier',
-    )
-    ns: Optional[str] = Field(
-        None, description='A namespace qualifying the name.', title='Namespace'
-    )
-    value: Optional[str] = Field(
-        None, description='Indicates the value of the characteristic.', title='Value'
-    )
-    remarks: Optional[Remarks] = None
-
-
 class Protocol(OscalBaseModel):
     uuid: Optional[
         constr(
@@ -410,32 +381,6 @@ class Diagram(OscalBaseModel):
     properties: Optional[List[Prop]] = None
     links: Optional[List[Link]] = None
     caption: Optional[Caption] = None
-    remarks: Optional[Remarks] = None
-
-
-class AuthorizationBoundary(OscalBaseModel):
-    description: Description
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[List[Annotation]] = None
-    links: Optional[List[Link]] = None
-    diagrams: Optional[Dict[str, Diagram]] = None
-    remarks: Optional[Remarks] = None
-
-
-class LeveragedAuthorization(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A RFC 4122 version 4 Universally Unique Identifier (UUID) for the containing object.',
-        title='Universally Unique Identifier',
-    )
-    title: Title
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[List[Annotation]] = None
-    links: Optional[List[Link]] = None
-    party_uuid: PartyUuid = Field(..., alias='party-uuid')
-    date_authorized: DateAuthorized = Field(..., alias='date-authorized')
     remarks: Optional[Remarks] = None
 
 
@@ -482,37 +427,6 @@ class SetParameter(OscalBaseModel):
     value: Value
 
 
-class ResponsibleRole(OscalBaseModel):
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[List[Annotation]] = None
-    links: Optional[List[Link]] = None
-    party_uuids: Optional[List[PartyUuid]] = Field(None, alias='party-uuids')
-    remarks: Optional[Remarks] = None
-
-
-class ResponsibleParty(OscalBaseModel):
-    party_uuids: List[PartyUuid] = Field(..., alias='party-uuids')
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[List[Annotation]] = None
-    links: Optional[List[Link]] = None
-    remarks: Optional[Remarks] = None
-
-
-class Role(OscalBaseModel):
-    id: str = Field(
-        ...,
-        description='Unique identifier of the containing object',
-        title='Identifier',
-    )
-    title: Title
-    short_name: Optional[ShortName] = Field(None, alias='short-name')
-    desc: Optional[Desc] = None
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[List[Annotation]] = None
-    links: Optional[List[Link]] = None
-    remarks: Optional[Remarks] = None
-
-
 class Address(OscalBaseModel):
     type: Optional[str] = Field(None, description='Indicates the type of address.')
     postal_address: Optional[List[AddrLine]] = Field(None, alias='postal-address')
@@ -548,103 +462,27 @@ class Revision(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class Satisfied(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+class Annotation(OscalBaseModel):
+    name: str = Field(
         ...,
-        description='A RFC 4122 version 4 Universally Unique Identifier (UUID) for the containing object.',
-        title='Universally Unique Identifier',
+        description='Identifying the purpose and intended use of the property, part or other object.',
+        title='Name',
     )
-    responsibility_uuid: Optional[str] = Field(
+    uuid: Optional[
+        constr(
+            regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        )
+    ] = Field(
         None,
-        alias='responsibility-uuid',
-        description="Identifies a 'provided' assembly associated with this assembly.",
-        title='Provided UUID',
-    )
-    description: Description
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[Union[Annotation, conlist(Annotation, min_items=2)]] = None
-    links: Optional[List[Link]] = None
-    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[Remarks] = None
-
-
-class Inherited(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
         description='A RFC 4122 version 4 Universally Unique Identifier (UUID) for the containing object.',
         title='Universally Unique Identifier',
     )
-    provided_uuid: Optional[str] = Field(
-        None,
-        alias='provided-uuid',
-        description="Identifies a 'provided' assembly associated with this assembly.",
-        title='Provided UUID',
+    ns: Optional[str] = Field(
+        None, description='A namespace qualifying the name.', title='Namespace'
     )
-    description: Description
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[Union[Annotation, conlist(Annotation, min_items=2)]] = None
-    links: Optional[List[Link]] = None
-    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(None, alias='responsible-roles')
-
-
-class Provided(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A RFC 4122 version 4 Universally Unique Identifier (UUID) for the containing object.',
-        title='Universally Unique Identifier',
+    value: Optional[str] = Field(
+        None, description='Indicates the value of the characteristic.', title='Value'
     )
-    description: Description
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[Union[Annotation, conlist(Annotation, min_items=2)]] = None
-    links: Optional[List[Link]] = None
-    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[Remarks] = None
-
-
-class Responsibility(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A RFC 4122 version 4 Universally Unique Identifier (UUID) for the containing object.',
-        title='Universally Unique Identifier',
-    )
-    provided_uuid: Optional[str] = Field(
-        None,
-        alias='provided-uuid',
-        description="Identifies a 'provided' assembly associated with this assembly.",
-        title='Provided UUID',
-    )
-    description: Description
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[Union[Annotation, conlist(Annotation, min_items=2)]] = None
-    links: Optional[List[Link]] = None
-    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(None, alias='responsible-roles')
-    remarks: Optional[Remarks] = None
-
-
-class Component(OscalBaseModel):
-    component_type: str = Field(
-        ...,
-        alias='component-type',
-        description='A category describing the purpose of the component.',
-        title='Component Type',
-    )
-    title: Title
-    description: Description
-    purpose: Optional[Purpose] = None
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[List[Annotation]] = None
-    links: Optional[List[Link]] = None
-    status: Status
-    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(None, alias='responsible-roles')
-    protocols: Optional[List[Protocol]] = None
     remarks: Optional[Remarks] = None
 
 
@@ -733,64 +571,6 @@ class Location(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class Export(OscalBaseModel):
-    description: Optional[Description] = None
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[Union[Annotation, conlist(Annotation, min_items=2)]] = None
-    links: Optional[List[Link]] = None
-    provided_group: Optional[Union[Provided, conlist(Provided, min_items=2)]] = Field(
-        None, alias='provided-group'
-    )
-    responsibilities: Optional[Union[Responsibility, conlist(Responsibility, min_items=2)]] = None
-    remarks: Optional[Remarks] = None
-
-
-class ImplementedComponent(OscalBaseModel):
-    use: Optional[str] = Field(
-        None, description='The type of implementation', title='Implementation Use Type'
-    )
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[List[Annotation]] = None
-    links: Optional[List[Link]] = None
-    responsible_parties: Optional[Dict[str, ResponsibleParty]] = Field(
-        None, alias='responsible-parties'
-    )
-    remarks: Optional[Remarks] = None
-
-
-class InventoryItem(OscalBaseModel):
-    asset_id: str = Field(
-        ...,
-        alias='asset-id',
-        description='Organizational asset identifier that is unique in the context of the system. This may be a reference to the identifier used in an asset tracking system or a vulnerability scanning tool.',
-        title='Asset Identifier',
-    )
-    description: Description
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[List[Annotation]] = None
-    links: Optional[List[Link]] = None
-    responsible_parties: Optional[Dict[str, ResponsibleParty]] = Field(
-        None, alias='responsible-parties'
-    )
-    implemented_components: Optional[Dict[str, ImplementedComponent]] = Field(
-        None, alias='implemented-components'
-    )
-    remarks: Optional[Remarks] = None
-
-
-class SystemImplementation(OscalBaseModel):
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[List[Annotation]] = None
-    links: Optional[List[Link]] = None
-    leveraged_authorizations: Optional[List[LeveragedAuthorization]] = Field(
-        None, alias='leveraged-authorizations'
-    )
-    users: Dict[str, Any]
-    components: Optional[Dict[str, Component]] = None
-    system_inventory: Optional[SystemInventory] = Field(None, alias='system-inventory')
-    remarks: Optional[Remarks] = None
-
-
 class DataFlow(OscalBaseModel):
     description: Description
     properties: Optional[List[Prop]] = None
@@ -809,6 +589,63 @@ class NetworkArchitecture(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
+class AuthorizationBoundary(OscalBaseModel):
+    description: Description
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[List[Annotation]] = None
+    links: Optional[List[Link]] = None
+    diagrams: Optional[Dict[str, Diagram]] = None
+    remarks: Optional[Remarks] = None
+
+
+class LeveragedAuthorization(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A RFC 4122 version 4 Universally Unique Identifier (UUID) for the containing object.',
+        title='Universally Unique Identifier',
+    )
+    title: Title
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[List[Annotation]] = None
+    links: Optional[List[Link]] = None
+    party_uuid: PartyUuid = Field(..., alias='party-uuid')
+    date_authorized: DateAuthorized = Field(..., alias='date-authorized')
+    remarks: Optional[Remarks] = None
+
+
+class ResponsibleRole(OscalBaseModel):
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[List[Annotation]] = None
+    links: Optional[List[Link]] = None
+    party_uuids: Optional[List[PartyUuid]] = Field(None, alias='party-uuids')
+    remarks: Optional[Remarks] = None
+
+
+class ResponsibleParty(OscalBaseModel):
+    party_uuids: List[PartyUuid] = Field(..., alias='party-uuids')
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[List[Annotation]] = None
+    links: Optional[List[Link]] = None
+    remarks: Optional[Remarks] = None
+
+
+class Role(OscalBaseModel):
+    id: str = Field(
+        ...,
+        description='Unique identifier of the containing object',
+        title='Identifier',
+    )
+    title: Title
+    short_name: Optional[ShortName] = Field(None, alias='short-name')
+    desc: Optional[Desc] = None
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[List[Annotation]] = None
+    links: Optional[List[Link]] = None
+    remarks: Optional[Remarks] = None
+
+
 class Resource(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -824,6 +661,99 @@ class Resource(OscalBaseModel):
     citation: Optional[Citation] = None
     rlinks: Optional[List[Rlink]] = None
     attachments: Optional[List[Base64]] = None
+    remarks: Optional[Remarks] = None
+
+
+class Satisfied(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A RFC 4122 version 4 Universally Unique Identifier (UUID) for the containing object.',
+        title='Universally Unique Identifier',
+    )
+    responsibility_uuid: Optional[str] = Field(
+        None,
+        alias='responsibility-uuid',
+        description="Identifies a 'provided' assembly associated with this assembly.",
+        title='Provided UUID',
+    )
+    description: Description
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[Union[Annotation, conlist(Annotation, min_items=2)]] = None
+    links: Optional[List[Link]] = None
+    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(None, alias='responsible-roles')
+    remarks: Optional[Remarks] = None
+
+
+class Inherited(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A RFC 4122 version 4 Universally Unique Identifier (UUID) for the containing object.',
+        title='Universally Unique Identifier',
+    )
+    provided_uuid: Optional[str] = Field(
+        None,
+        alias='provided-uuid',
+        description="Identifies a 'provided' assembly associated with this assembly.",
+        title='Provided UUID',
+    )
+    description: Description
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[Union[Annotation, conlist(Annotation, min_items=2)]] = None
+    links: Optional[List[Link]] = None
+    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(None, alias='responsible-roles')
+
+
+class Provided(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A RFC 4122 version 4 Universally Unique Identifier (UUID) for the containing object.',
+        title='Universally Unique Identifier',
+    )
+    description: Description
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[Union[Annotation, conlist(Annotation, min_items=2)]] = None
+    links: Optional[List[Link]] = None
+    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(None, alias='responsible-roles')
+    remarks: Optional[Remarks] = None
+
+
+class Responsibility(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A RFC 4122 version 4 Universally Unique Identifier (UUID) for the containing object.',
+        title='Universally Unique Identifier',
+    )
+    provided_uuid: Optional[str] = Field(
+        None,
+        alias='provided-uuid',
+        description="Identifies a 'provided' assembly associated with this assembly.",
+        title='Provided UUID',
+    )
+    description: Description
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[Union[Annotation, conlist(Annotation, min_items=2)]] = None
+    links: Optional[List[Link]] = None
+    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(None, alias='responsible-roles')
+    remarks: Optional[Remarks] = None
+
+
+class Export(OscalBaseModel):
+    description: Optional[Description] = None
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[Union[Annotation, conlist(Annotation, min_items=2)]] = None
+    links: Optional[List[Link]] = None
+    provided_group: Optional[Union[Provided, conlist(Provided, min_items=2)]] = Field(
+        None, alias='provided-group'
+    )
+    responsibilities: Optional[Union[Responsibility, conlist(Responsibility, min_items=2)]] = None
     remarks: Optional[Remarks] = None
 
 
@@ -879,8 +809,60 @@ class ByComponent(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
+class Component(OscalBaseModel):
+    component_type: str = Field(
+        ...,
+        alias='component-type',
+        description='A category describing the purpose of the component.',
+        title='Component Type',
+    )
+    title: Title
+    description: Description
+    purpose: Optional[Purpose] = None
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[List[Annotation]] = None
+    links: Optional[List[Link]] = None
+    status: Status
+    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(None, alias='responsible-roles')
+    protocols: Optional[List[Protocol]] = None
+    remarks: Optional[Remarks] = None
+
+
 class BackMatter(OscalBaseModel):
     resources: Optional[List[Resource]] = None
+
+
+class ImplementedComponent(OscalBaseModel):
+    use: Optional[str] = Field(
+        None, description='The type of implementation', title='Implementation Use Type'
+    )
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[List[Annotation]] = None
+    links: Optional[List[Link]] = None
+    responsible_parties: Optional[Dict[str, ResponsibleParty]] = Field(
+        None, alias='responsible-parties'
+    )
+    remarks: Optional[Remarks] = None
+
+
+class InventoryItem(OscalBaseModel):
+    asset_id: str = Field(
+        ...,
+        alias='asset-id',
+        description='Organizational asset identifier that is unique in the context of the system. This may be a reference to the identifier used in an asset tracking system or a vulnerability scanning tool.',
+        title='Asset Identifier',
+    )
+    description: Description
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[List[Annotation]] = None
+    links: Optional[List[Link]] = None
+    responsible_parties: Optional[Dict[str, ResponsibleParty]] = Field(
+        None, alias='responsible-parties'
+    )
+    implemented_components: Optional[Dict[str, ImplementedComponent]] = Field(
+        None, alias='implemented-components'
+    )
+    remarks: Optional[Remarks] = None
 
 
 class Statement(OscalBaseModel):
@@ -896,6 +878,56 @@ class Statement(OscalBaseModel):
     links: Optional[List[Link]] = None
     responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(None, alias='responsible-roles')
     by_components: Optional[Dict[str, ByComponent]] = Field(None, alias='by-components')
+    remarks: Optional[Remarks] = None
+
+
+class SystemInventory(OscalBaseModel):
+    inventory_items: Dict[str, InventoryItem] = Field(..., alias='inventory-items')
+    remarks: Optional[Remarks] = None
+
+
+class SystemImplementation(OscalBaseModel):
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[List[Annotation]] = None
+    links: Optional[List[Link]] = None
+    leveraged_authorizations: Optional[List[LeveragedAuthorization]] = Field(
+        None, alias='leveraged-authorizations'
+    )
+    users: Dict[str, User]
+    components: Optional[Dict[str, Component]] = None
+    system_inventory: Optional[SystemInventory] = Field(None, alias='system-inventory')
+    remarks: Optional[Remarks] = None
+
+
+class SystemCharacteristics(OscalBaseModel):
+    system_ids: List[SystemId] = Field(..., alias='system-ids')
+    system_name: SystemName = Field(..., alias='system-name')
+    system_name_short: Optional[SystemNameShort] = Field(
+        None, alias='system-name-short'
+    )
+    description: Description
+    properties: Optional[List[Prop]] = None
+    annotations: Optional[List[Annotation]] = None
+    links: Optional[List[Link]] = None
+    date_authorized: Optional[DateAuthorized] = Field(None, alias='date-authorized')
+    security_sensitivity_level: SecuritySensitivityLevel = Field(
+        ..., alias='security-sensitivity-level'
+    )
+    system_information: SystemInformation = Field(..., alias='system-information')
+    security_impact_level: SecurityImpactLevel = Field(
+        ..., alias='security-impact-level'
+    )
+    status: Status
+    authorization_boundary: AuthorizationBoundary = Field(
+        ..., alias='authorization-boundary'
+    )
+    network_architecture: Optional[NetworkArchitecture] = Field(
+        None, alias='network-architecture'
+    )
+    data_flow: Optional[DataFlow] = Field(None, alias='data-flow')
+    responsible_parties: Optional[Dict[str, ResponsibleParty]] = Field(
+        None, alias='responsible-parties'
+    )
     remarks: Optional[Remarks] = None
 
 
@@ -930,38 +962,6 @@ class ControlImplementation(OscalBaseModel):
     implemented_requirements: List[ImplementedRequirement] = Field(
         ..., alias='implemented-requirements'
     )
-
-
-class SystemCharacteristics(OscalBaseModel):
-    system_ids: List[SystemId] = Field(..., alias='system-ids')
-    system_name: SystemName = Field(..., alias='system-name')
-    system_name_short: Optional[SystemNameShort] = Field(
-        None, alias='system-name-short'
-    )
-    description: Description
-    properties: Optional[List[Prop]] = None
-    annotations: Optional[List[Annotation]] = None
-    links: Optional[List[Link]] = None
-    date_authorized: Optional[DateAuthorized] = Field(None, alias='date-authorized')
-    security_sensitivity_level: SecuritySensitivityLevel = Field(
-        ..., alias='security-sensitivity-level'
-    )
-    system_information: SystemInformation = Field(..., alias='system-information')
-    security_impact_level: SecurityImpactLevel = Field(
-        ..., alias='security-impact-level'
-    )
-    status: Status
-    authorization_boundary: AuthorizationBoundary = Field(
-        ..., alias='authorization-boundary'
-    )
-    network_architecture: Optional[NetworkArchitecture] = Field(
-        None, alias='network-architecture'
-    )
-    data_flow: Optional[DataFlow] = Field(None, alias='data-flow')
-    responsible_parties: Optional[Dict[str, ResponsibleParty]] = Field(
-        None, alias='responsible-parties'
-    )
-    remarks: Optional[Remarks] = None
 
 
 class SystemSecurityPlan(OscalBaseModel):

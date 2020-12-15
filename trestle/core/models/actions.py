@@ -176,25 +176,15 @@ class WriteFileAction(WriteAction):
         if not isinstance(file_path, pathlib.Path):
             raise TrestleError('file_path should be of type pathlib.Path')
 
-        if not self._valid_file_extension(file_path, content_type):
-            raise TrestleError(
-                f'Invalid file type extension in path "{file_path}" for content type "{content_type.name}"'
-            )
+        inferred_content_type = FileContentType.to_content_type(file_path.suffix)
+        if inferred_content_type != content_type:
+            raise TrestleError(f'Mismatch between stated content type {content_type.name} and file path {file_path}')
 
         self._file_path = file_path
 
         # initialize super without writer for now
         # Note, execute and rollback sets the writer as appropriate
         super().__init__(None, element, content_type)
-
-    def _valid_file_extension(self, file_path: pathlib.Path, content_type: FileContentType) -> bool:
-        if content_type == FileContentType.JSON and file_path.suffix == '.json':
-            return True
-
-        if content_type == FileContentType.YAML and file_path.suffix == '.yaml':
-            return True
-
-        return False
 
     def execute(self) -> None:
         """Execute the action."""
@@ -252,7 +242,7 @@ class CreatePathAction(Action):
 
         super().__init__(ActionType.CREATE_PATH, True)
 
-    def get_trestle_project_root(self):
+    def get_trestle_project_root(self) -> pathlib.Path:
         """Return the trestle project root path."""
         return self._trestle_project_root
 
@@ -353,7 +343,7 @@ class RemovePathAction(Action):
 
         super().__init__(ActionType.REMOVE_PATH, True)
 
-    def get_trestle_project_root(self) -> pathlib.Path:
+    def get_trestle_project_root(self) -> Optional[pathlib.Path]:
         """Return the trestle project root path."""
         return self._trestle_project_root
 

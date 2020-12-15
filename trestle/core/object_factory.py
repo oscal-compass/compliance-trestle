@@ -13,14 +13,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-trestle - A python library and command line utility for compliance.
+"""Generic object factory."""
 
-Trestle is a tool to which enables the creation and validation of
-documentation artifacts for compliance requirements. It leverages NIST's
-OSCAL (https://pages.nist.gov/OSCAL/documentation/) as a standard data
-format for interchange between tools & people and provides an
-opinionated approach to OSCAL adoption.
-"""
+import argparse
+from typing import Any, Dict
 
-__version__ = '0.4.0'
+
+class ObjectFactory:
+    """Allow registration and creation of validators."""
+
+    def __init__(self) -> None:
+        """Initialize the objects dictionary as empty."""
+        self._objects: Dict[str, Any] = {}
+
+    def register_object(self, mode: str, obj: Any) -> None:
+        """Register the object."""
+        self._objects[mode] = obj
+
+    def get(self, args: argparse.Namespace) -> Any:
+        """Create the object from the args."""
+        return self._objects.get(args.mode)
