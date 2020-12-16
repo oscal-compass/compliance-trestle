@@ -59,7 +59,7 @@ def verify_file_content(file_path: pathlib.Path, model: OscalBaseModel):
 def ensure_trestle_config_dir(sub_dir: pathlib.Path):
     """Ensure that the sub_dir has trestle config dir."""
     trestle_dir = pathlib.Path.joinpath(sub_dir, const.TRESTLE_CONFIG_DIR)
-    trestle_dir.mkdir(exist_ok=True)
+    fs.ensure_directory(trestle_dir)
 
 
 def prepare_element_paths(base_dir, element_args) -> List[ElementPath]:
@@ -83,7 +83,7 @@ def prepare_trestle_project_dir(
     file_ext = FileContentType.to_file_extension(content_type)
     models_full_path = tmp_dir / models_dir_name / 'my_test_model'
     model_def_file = models_full_path / f'{model_alias}{file_ext}'
-    models_full_path.mkdir(exists_ok=True)
+    fs.ensure_directory(models_full_path)
     model_obj.oscal_write(model_def_file)
 
     return models_full_path, model_def_file

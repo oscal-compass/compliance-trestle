@@ -28,6 +28,7 @@ from tests import test_utils
 from trestle.cli import Trestle
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.target import TargetDefinition
+from trestle.utils import fs
 
 TEST_CONFIG: dict = {}
 
@@ -44,7 +45,7 @@ def tmp_dir(rand_str) -> pathlib.Path:
     """Return a path for a tmp directory."""
     tmp_dir = pathlib.Path.joinpath(test_utils.BASE_TMP_DIR, rand_str)
     assert tmp_dir.parent == test_utils.BASE_TMP_DIR
-    tmp_dir.mkdir(exist_ok=True)
+    fs.ensure_directory(tmp_dir)
     yield tmp_dir
 
     # tear down
