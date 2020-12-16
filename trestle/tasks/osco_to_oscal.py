@@ -98,7 +98,7 @@ class OscoToOscal(TaskBase):
             return TaskOutcome('simulated-failure')
         except Exception:
             traceback.print_exc()
-            return TaskOutcome('simulated-exception')
+            return TaskOutcome('simulated-failure')
 
     def execute(self) -> TaskOutcome:
         """Provide an actual outcome."""
@@ -124,7 +124,7 @@ class OscoToOscal(TaskBase):
                     if not overwrite:
                         if os.path.exists(ofile):
                             logger.error(f'file exists: {ofile}')
-                            return TaskOutcome('simulated-failure')
+                            return TaskOutcome('failure')
                     mfile = self._calculate_mfile(idir)
                     metadata = self._get_metadata(mfile)
                     logger.info(f'create: {ofile}')
@@ -140,7 +140,7 @@ class OscoToOscal(TaskBase):
             return TaskOutcome('failure')
         except Exception:
             traceback.print_exc()
-            return TaskOutcome('exception')
+            return TaskOutcome('failure')
     
     def _read_content(self, ifile):
         with open(ifile, 'r+') as fp:
@@ -174,6 +174,7 @@ class OscoToOscal(TaskBase):
         return mfile
     
     def _get_metadata(self, mfile):
+        """Get metadata, if it exists."""
         metadata = {}
         try:
             with open(mfile, "r") as fp:
