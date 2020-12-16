@@ -216,6 +216,7 @@ def sort_element_paths(element_paths: List[ElementPath]) -> List[ElementPath]:
 
 if __name__ == '__main__':
     os.chdir("/Users/nebula/workspace/compliance-trestle/tmp/tmp/catalogs/mycatalog")
+    
     type_, alias, instance = load_distributed.distributed_load(Path("/Users/nebula/workspace/compliance-trestle/tmp/tmp/catalogs/mycatalog/catalog.json"))
     plan = MergeCmd.merge(ElementPath('catalog.back-matter'))
     plan.simulate()

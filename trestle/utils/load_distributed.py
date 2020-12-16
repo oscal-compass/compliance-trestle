@@ -55,6 +55,8 @@ def distributed_load(file_path: Path, collection_type = None):
         for i in range(len(aliases_not_to_be_stripped)):
             alias = aliases_not_to_be_stripped[i]
             instance = instances_to_be_merged[i]
+            if hasattr(instance, "__dict__") and "__root__" in instance.__dict__:
+                instance = instance.__dict__["__root__"]
             primary_model_dict[alias] = instance
         merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(file_path.absolute(), aliases_not_to_be_stripped)
         merged_model_instance = merged_model_type(**primary_model_dict)
