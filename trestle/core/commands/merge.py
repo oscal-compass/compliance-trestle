@@ -215,8 +215,14 @@ def sort_element_paths(element_paths: List[ElementPath]) -> List[ElementPath]:
 
 
 if __name__ == '__main__':
-    os.chdir("/Users/nebula/workspace/compliance-trestle/tmp/tmp2/catalogs/mycatalog")
 
+    # from trestle.core.commands.split import SplitCmd
+    # import argparse
+    # args = argparse.Namespace(file='metadata.json', element='metadata.responsible-parties.*', verbose=2)
+    # os.chdir("/Users/nebula/workspace/compliance-trestle/tmp/tmp/catalogs/mycatalog/catalog")
+    # split = SplitCmd()._run(args)
+
+    os.chdir("/Users/nebula/workspace/compliance-trestle/tmp/tmp/catalogs/mycatalog")
     type_, alias, instance = load_distributed.distributed_load(Path("catalog.json"))
     plan = MergeCmd.merge(ElementPath('catalog.back-matter'))
     plan.simulate()

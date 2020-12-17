@@ -9,14 +9,20 @@ from trestle.utils import fs
 def distributed_load(file_path: Path, collection_type = None):
 
     # If the path contains a list type or dict type model
-    if collection_type is list or collection_type is dict:
+    if collection_type is list:
         aliases_not_to_be_stripped = []
         instances_to_be_merged: List[OscalBaseModel] = []
+        # TODO: FIXME: fs.get_stripped_contextual_model fails without absolute file path!!! FIX IT!!
         collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(file_path.absolute())
         
         for path in Path.iterdir(file_path):
-            model_type, model_alias = fs.get_stripped_contextual_model(path)
-            model_instance = model_type.oscal_read(path)
+            #model_type, model_alias = fs.get_stripped_contextual_model(path.absolute())
+            #model_instance = model_type.oscal_read(path)
+
+            ### ASSUMPTION HERE: if it is a directory, there's a file that can not be decomposed further.
+            if path.is_dir():
+                continue
+            model_type, model_alias, model_instance = distributed_load(path)
 
             instances_to_be_merged.append(model_instance)
             aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
@@ -25,6 +31,17 @@ def distributed_load(file_path: Path, collection_type = None):
         #return collection_model_type, collection_model_alias, collection_model_instance
         return collection_model_type, collection_model_alias, instances_to_be_merged
 
+    if collection_type is dict:
+        model_dict = {}
+        collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(file_path.absolute())
+        for path in Path.iterdir(file_path):
+           #model_type, model_alias = fs.get_stripped_contextual_model(path.absolute())
+           #model_instance = model_type.oscal_read(path)
+           model_type, model_alias, model_instance = distributed_load(path)
+           field_name = path.parts[-1].split('__')[0]
+           model_dict[field_name] = model_instance
+
+        return collection_model_type, collection_model_alias, model_dict
 
     # Get current model
     primary_model_type, primary_model_alias = fs.get_stripped_contextual_model(file_path.absolute())
@@ -33,7 +50,7 @@ def distributed_load(file_path: Path, collection_type = None):
     
     # Is model decomposed?
     file_dir = file_path.parent
-    decomposed_dir = file_dir / primary_model_alias.split('.')[-1]
+    decomposed_dir = file_dir / file_path.parts[-1].split(".")[0]
     if decomposed_dir.exists():
         aliases_not_to_be_stripped = []
         instances_to_be_merged: List[OscalBaseModel] = []
@@ -42,7 +59,7 @@ def distributed_load(file_path: Path, collection_type = None):
             if path.is_file():
                 model_type, model_alias, model_instance = distributed_load(path)
                 aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
-                instances_to_be_merged.append(model_instance)
+                instances_to_be_merged .append(model_instance)
             elif path.is_dir():
                 model_type, model_alias = fs.get_stripped_contextual_model(path.absolute())
                 if '__root__' in model_type.__fields__.keys() and utils.is_collection_field_type(model_type.__fields__['__root__'].outer_type_):
