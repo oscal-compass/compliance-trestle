@@ -58,6 +58,7 @@ class OscoToOscal(TaskBase):
         logger.info('input-dir = the path of the input directory comprising .yaml files.')
         logger.info('output-dir = the path of the output directory comprising synthesized .oscal files.')
         logger.info('output-overwrite = true [default] or false; replace existing output when true.')
+        logger.info('quiet = true or false [default]; display file creations and rules analysis when false.')
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
@@ -113,6 +114,7 @@ class OscoToOscal(TaskBase):
                     logger.error(f'config missing "output-dir"')
                     return TaskOutcome('failure')
                 overwrite = self._config.getboolean('output-overwrite', True)
+                quiet = self._config.getboolean('quiet', False)
                 os.makedirs(odir, exist_ok = True) 
                 for pfile in sorted(pathlib.Path(idir).iterdir()):
                     ifile = str(pfile)
@@ -127,14 +129,16 @@ class OscoToOscal(TaskBase):
                             return TaskOutcome('failure')
                     mfile = self._calculate_mfile(idir)
                     metadata = self._get_metadata(mfile)
-                    logger.info(f'create: {ofile}')
+                    if not quiet:
+                        logger.info(f'create: {ofile}')
                     idata = self._read_content(ifile)
                     odata, analysis = osco.get_observations(idata, metadata)
                     self._write_content(ofile, odata)
-                    logger.info(f'Rules Analysis:')
-                    logger.info(f'config_maps: {analysis["config_maps"]}')
-                    logger.info(f'dispatched rules: {analysis["dispatched_rules"]}')
-                    logger.info(f'result types: {analysis["result_types"]}')
+                    if not quiet:
+                        logger.info(f'Rules Analysis:')
+                        logger.info(f'config_maps: {analysis["config_maps"]}')
+                        logger.info(f'dispatched rules: {analysis["dispatched_rules"]}')
+                        logger.info(f'result types: {analysis["result_types"]}')
                 return TaskOutcome('success')
             logger.error(f'config missing')
             return TaskOutcome('failure')
