@@ -19,18 +19,20 @@ Trestle cache operations library.
 Allows for using uris to reference external directories and then expand.
 """
 
+import logging
 import pathlib
 import shutil
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Type
+from urllib.parse import urlparse
+
+from furl import furl
 
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.utils import log
 
-logger = log.get_logger()
-
+logger = logging.getLogger(__name__)
 
 class FetcherBase(ABC):
     """FetcherBase - base class for fetching remote oscal objects."""
@@ -54,9 +56,20 @@ class FetcherBase(ABC):
         self._fail_hard = fail_hard
         self._cache_only = cache_only
         self._trestle_cache_path = trestle_root / const.TRESTLE_CONFIG_DIR / 'cache'
+        self._config_path = trestle_root / const.TRESTLE_CONFIG_DIR / const.TRESTLE_CONFIG_FILE
 
         # ensure trestle cache directory exists.
         self._trestle_cache_path.mkdir(exist_ok=True)
+
+    # Eventually we will move the _update_cache impl in LocalFetcher
+    # to FetcherBase and it will call this abstract method _sync_cache
+    # which will then be implemented in each subclass...
+    # @abstractmethod
+    # def _sync_cache(self) -> None:
+    #     """Fetch a object from a remote source.
+
+    #     This contains the underlying logic to update the cache.
+    #     """
 
     @abstractmethod
     def _update_cache(self) -> None:
@@ -167,10 +180,54 @@ class GithubFetcher(HTTPSFetcher):
         cache_only: bool = False
     ) -> None:
         """Initialize github specific fetcher."""
+        logger.debug("Initializing GithubFetcher")
         super.__init__(uri, refresh, fail_hard, cache_only)
+        self._furl = furl(uri)
+        self._scheme = self._furl.scheme
+        self._username = self._furl.username
+        self._password = self._furl.password
+        self._host = self._furl.host
+        self._port = self._furl.port
+        self._path = self._furl.path.segments
+        self._query = self._furl.query.params
+        # Error checking...
+        if self._username is not None or self._password is not None:
+            raise TrestleError(f"Username/password authentication"
+                               f"is not supported for Github URIs {uri}")
+        if len(self._path) < 3:
+            raise TrestleError(f"Path in uri appears to be invalid {uri}")
+        if self._query.get("token") != None:
+            logger.warn(f"Token in uri will be ignored {uri}")
+        # Done error checking...
+        # To get the token first try the config file, then the env,
+        # with the env overriding config...
+        self._owner = self._path[0]
+        self._name = self._path[1]
+        ###########################
+        # Normalize uri to a root file.
+        uri = "/".join(["/"] + path[2:])
+
+        self._abs_path = pathlib.Path(uri).absolute()
+        localhost_cached_dir = self._trestle_cache_path / host / owner / name
+        localhost_cached_dir.mkdir(exist_ok=True)
+        self._inst_cache_path = localhost_cached_dir / self._abs_path
+
+
+    def _sync_cache(self) -> None:
+        pass
 
     def _update_cache(self) -> None:
-        pass
+        # Step one discover whether
+        if self._cache_only:
+            # Don't update if cache only.
+            return
+        if not self._inst_cache_path.exists() or self._refresh:
+            try:
+                self._sync_cache()
+            except Exception as e:
+                logger.error(f'Unable to update cache for {self._uri}')
+                logger.debug(e)
+                raise TrestleError(f'Cache update failure for {self._uri}')
 
 
 class FetcherFactory(object):
@@ -178,6 +235,7 @@ class FetcherFactory(object):
 
     def __init__(self) -> None:
         """Initialize fetcher factory."""
+        logger.debug('Initializing GithubFetcher')
         pass
 
     @classmethod
