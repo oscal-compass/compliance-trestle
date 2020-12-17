@@ -56,7 +56,7 @@ def test_simulate_no_overwrite(tmpdir):
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    assert len(os.listdir(str(tmpdir))) == 6
+    assert len(os.listdir(str(tmpdir))) == 1
     section['output-overwrite'] = 'false'
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.simulate()
@@ -94,7 +94,7 @@ def test_execute(tmpdir):
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    assert len(os.listdir(str(tmpdir))) == 6
+    assert len(os.listdir(str(tmpdir))) == 1
 
 def test_execute_no_config(tmpdir):
     """Test execute no config call."""
@@ -112,7 +112,7 @@ def test_execute_no_overwrite(tmpdir):
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    assert len(os.listdir(str(tmpdir))) == 6
+    assert len(os.listdir(str(tmpdir))) == 1
     section['output-overwrite'] = 'false'
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
