@@ -32,6 +32,12 @@ from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 
+<<<<<<< HEAD
+=======
+
+logger = logging.getLogger(__name__)
+>>>>>>> dfdf9b4fd661a2afb6d51054c587fd38671640f3
+
 logger = logging.getLogger(__name__)
 
 class FetcherBase(ABC):
@@ -55,9 +61,7 @@ class FetcherBase(ABC):
         self._refresh = refresh
         self._fail_hard = fail_hard
         self._cache_only = cache_only
-        self._trestle_cache_path = trestle_root / const.TRESTLE_CONFIG_DIR / 'cache'
-        self._config_path = trestle_root / const.TRESTLE_CONFIG_DIR / const.TRESTLE_CONFIG_FILE
-
+        self._trestle_cache_path: pathlib.Path = trestle_root / const.TRESTLE_CONFIG_DIR / 'cache'
         # ensure trestle cache directory exists.
         self._trestle_cache_path.mkdir(exist_ok=True)
 
@@ -105,7 +109,7 @@ class LocalFetcher(FetcherBase):
         cache_only: bool = False
     ) -> None:
         """Initialize local fetcher."""
-        super.__init__(uri, refresh, fail_hard, cache_only)
+        super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
         # Normalize uri to a root file.
         if 'file:///' == uri[0:8]:
             uri = uri[7:]
@@ -142,7 +146,7 @@ class HTTPSFetcher(FetcherBase):
         cache_only: bool = False
     ) -> None:
         """Initialize HTTPS fetcher."""
-        super.__init__(uri, refresh, fail_hard, cache_only)
+        super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
 
     def _update_cache(self) -> None:
         pass
@@ -162,7 +166,7 @@ class SFTPFetcher(FetcherBase):
         cache_only: bool = False
     ) -> None:
         """Initialize STFP fetcher."""
-        super.__init__(uri, refresh, fail_hard, cache_only)
+        super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
 
     def _update_cache(self) -> None:
         pass
@@ -181,7 +185,7 @@ class GithubFetcher(HTTPSFetcher):
     ) -> None:
         """Initialize github specific fetcher."""
         logger.debug("Initializing GithubFetcher")
-        super.__init__(uri, refresh, fail_hard, cache_only)
+        super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
         self._furl = furl(uri)
         self._scheme = self._furl.scheme
         self._username = self._furl.username
@@ -247,24 +251,24 @@ class FetcherFactory(object):
         fail_hard: bool = False,
         cache_only: bool = False
     ) -> FetcherBase:
-        """Return an instaciated fetcher object based on the uri."""
+        """Return an instantiated fetcher object based on the uri."""
         # Basic correctness test
         if len(uri) <= 9 or '/' not in uri:
             raise TrestleError(f'Unable to fetch uri as it appears to be invalid {uri}')
 
-        if uri[0] == '/' or 'file:///' == uri[0:8]:
+        if uri[0] == '/' or uri[0:3] == '../' or uri[0:2] == './' or 'file:///' == uri[0:8]:
             # Note assumption here is that relative paths are only supported within
             # trestle directories. This simplification is to ensure
-            return LocalFetcher(uri, refresh, fail_hard, cache_only)
-        elif 'stfp://' == uri[0:7]:
-            return SFTPFetcher(uri, refresh, fail_hard, cache_only)
+            return LocalFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
+        elif 'sftp://' == uri[0:7]:
+            return SFTPFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
         elif 'https://' == uri[0:8]:
             # Test for github uri assumption - must be first after basic auth (if it exists)
             cleaned = uri[8:]
             # tests for special scenarios
             if cleaned.split('@')[-1][0:7] == 'github.':
-                return GithubFetcher(uri, refresh, fail_hard, cache_only)
+                return GithubFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
             else:
-                return HTTPSFetcher(uri, refresh, fail_hard, cache_only)
+                return HTTPSFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
         else:
             raise TrestleError(f'Unable to fetch uri: {uri} as the uri did not match a suppported format.')
