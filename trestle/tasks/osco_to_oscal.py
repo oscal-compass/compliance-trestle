@@ -64,27 +64,28 @@ class OscoToOscal(TaskBase):
         """Provide a simulated outcome."""
         try:
             if self._config:
-                idir = self._config.get('input-dir')
+                idir = pathlib.Path(self._config.get('input-dir'))
                 if idir is None:
                     logger.error(f'config missing "input-dir"')
                     return TaskOutcome('simulated-failure')
-                odir = self._config.get('output-dir')
+                odir = pathlib.Path(self._config.get('output-dir'))
                 if odir is None:
                     logger.error(f'config missing "output-dir"')
                     return TaskOutcome('simulated-failure')
                 overwrite = self._config.getboolean('output-overwrite', True)
-                for pfile in sorted(pathlib.Path(idir).iterdir()):
-                    ifile = str(pfile)
-                    if ifile.endswith('oscal-metadata.yaml'):
+                for ifile in sorted(pathlib.Path(idir).iterdir()):
+                    parts = ifile.parts
+                    ifn = parts[len(parts)-1]
+                    if ifn.endswith('oscal-metadata.yaml'):
                         continue
-                    if ifile.endswith('oscal-metadata.yml'):
+                    if ifn.endswith('oscal-metadata.yml'):
                         continue
-                    ofile = self._calculate_ofile(ifile, odir)
+                    ofile = self._calculate_ofile(ifn, odir)
                     if not overwrite:
                         if os.path.exists(ofile):
                             logger.error(f'file exists: {ofile}')
                             return TaskOutcome('simulated-failure')
-                    mfile = self._calculate_mfile(idir)
+                    mfile = idir / 'oscal-metadata.yaml'
                     metadata = self._get_metadata(mfile)
                     logger.debug(f'create: {ofile}')
                     idata = self._read_content(ifile)
@@ -105,29 +106,30 @@ class OscoToOscal(TaskBase):
         """Provide an actual outcome."""
         try:
             if self._config:
-                idir = self._config.get('input-dir')
+                idir = pathlib.Path(self._config.get('input-dir'))
                 if idir is None:
                     logger.error(f'config missing "input-dir"')
                     return TaskOutcome('failure')
-                odir = self._config.get('output-dir')
+                odir = pathlib.Path(self._config.get('output-dir'))
                 if odir is None:
                     logger.error(f'config missing "output-dir"')
                     return TaskOutcome('failure')
                 overwrite = self._config.getboolean('output-overwrite', True)
                 quiet = self._config.getboolean('quiet', False)
                 os.makedirs(odir, exist_ok = True) 
-                for pfile in sorted(pathlib.Path(idir).iterdir()):
-                    ifile = str(pfile)
-                    if ifile.endswith('oscal-metadata.yaml'):
+                for ifile in sorted(pathlib.Path(idir).iterdir()):
+                    parts = ifile.parts
+                    ifn = parts[len(parts)-1]
+                    if ifn.endswith('oscal-metadata.yaml'):
                         continue
-                    if ifile.endswith('oscal-metadata.yml'):
+                    if ifn.endswith('oscal-metadata.yml'):
                         continue
-                    ofile = self._calculate_ofile(ifile, odir)
+                    ofile = self._calculate_ofile(ifn, odir)
                     if not overwrite:
                         if os.path.exists(ofile):
                             logger.error(f'file exists: {ofile}')
                             return TaskOutcome('failure')
-                    mfile = self._calculate_mfile(idir)
+                    mfile = idir / 'oscal-metadata.yaml'
                     metadata = self._get_metadata(mfile)
                     if not quiet:
                         logger.info(f'create: {ofile}')
@@ -161,21 +163,14 @@ class OscoToOscal(TaskBase):
         with open(ofile, 'w', encoding='utf-8') as fp:
             json.dump(content, fp, ensure_ascii=False, indent=2)
     
-    def _calculate_ofile(self, ifile, odir):
+    def _calculate_ofile(self, ifn, odir):
         """Synthesize output file path+name."""
-        ofile = ifile
-        ofile = ofile.rsplit('.yaml')[0]
-        ofile = ofile.rsplit('.yml')[0]
-        ofile += '.oscal'
-        if '/' in ofile:
-            ofile = ofile.rsplit('/',1)[1]
-        ofile = odir+'/'+ofile
+        ofn = ifn
+        ofn = ofn.rsplit('.yaml')[0]
+        ofn = ofn.rsplit('.yml')[0]
+        ofn += '.oscal'
+        ofile = pathlib.Path(odir, ofn)
         return ofile
-        
-    def _calculate_mfile(self, idir):
-        """Synthesize meta file path+name."""
-        mfile = idir+'/'+'oscal-metadata.yaml'
-        return mfile
     
     def _get_metadata(self, mfile):
         """Get metadata, if it exists."""

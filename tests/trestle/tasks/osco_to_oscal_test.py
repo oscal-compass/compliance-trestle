@@ -16,6 +16,7 @@
 
 import configparser
 import os
+import pathlib
 
 import trestle.tasks.osco_to_oscal as osco_to_oscal
 from trestle.tasks.base_task import TaskOutcome
@@ -23,7 +24,7 @@ from trestle.tasks.base_task import TaskOutcome
 def test_print_info(tmpdir):
     """Test print_info call."""
     config = configparser.ConfigParser()
-    config_path = 'tests/data/tasks/osco/demo-osco-to-oscal.config'
+    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
     tgt = osco_to_oscal.OscoToOscal(section)
@@ -33,7 +34,7 @@ def test_print_info(tmpdir):
 def test_simulate(tmpdir):
     """Test simulate call."""
     config = configparser.ConfigParser()
-    config_path = 'tests/data/tasks/osco/demo-osco-to-oscal.config'
+    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
     tgt = osco_to_oscal.OscoToOscal(section)
@@ -49,7 +50,7 @@ def test_simulate_no_config(tmpdir):
 def test_simulate_no_overwrite(tmpdir):
     """Test simulate no overwrite call."""
     config = configparser.ConfigParser()
-    config_path = 'tests/data/tasks/osco/demo-osco-to-oscal.config'
+    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
     section['output-dir'] = str(tmpdir)
@@ -65,7 +66,7 @@ def test_simulate_no_overwrite(tmpdir):
 def test_simulate_no_input_dir(tmpdir):
     """Test simulate with no input dir call."""
     config = configparser.ConfigParser()
-    config_path = 'tests/data/tasks/osco/demo-osco-to-oscal.config'
+    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
     config.read(config_path)
     config.remove_option('task.osco-to-oscal', 'input-dir')
     section = config['task.osco-to-oscal']
@@ -76,7 +77,7 @@ def test_simulate_no_input_dir(tmpdir):
 def test_simulate_no_ouput_dir(tmpdir):
     """Test simulate with no output dir call."""
     config = configparser.ConfigParser()
-    config_path = 'tests/data/tasks/osco/demo-osco-to-oscal.config'
+    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
     config.read(config_path)
     config.remove_option('task.osco-to-oscal', 'output-dir')
     section = config['task.osco-to-oscal']
@@ -87,7 +88,7 @@ def test_simulate_no_ouput_dir(tmpdir):
 def test_execute(tmpdir):
     """Test execute call."""
     config = configparser.ConfigParser()
-    config_path = 'tests/data/tasks/osco/demo-osco-to-oscal.config'
+    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
     section['output-dir'] = str(tmpdir)
@@ -105,7 +106,7 @@ def test_execute_no_config(tmpdir):
 def test_execute_no_overwrite(tmpdir):
     """Test execute no overwrite call."""
     config = configparser.ConfigParser()
-    config_path = 'tests/data/tasks/osco/demo-osco-to-oscal.config'
+    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
     section['output-dir'] = str(tmpdir)
@@ -121,7 +122,7 @@ def test_execute_no_overwrite(tmpdir):
 def test_execute_no_input_dir(tmpdir):
     """Test execute with no input dir call."""
     config = configparser.ConfigParser()
-    config_path = 'tests/data/tasks/osco/demo-osco-to-oscal.config'
+    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
     config.read(config_path)
     config.remove_option('task.osco-to-oscal', 'input-dir')
     section = config['task.osco-to-oscal']
@@ -132,7 +133,7 @@ def test_execute_no_input_dir(tmpdir):
 def test_execute_no_ouput_dir(tmpdir):
     """Test execute with no output dir call."""
     config = configparser.ConfigParser()
-    config_path = 'tests/data/tasks/osco/demo-osco-to-oscal.config'
+    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
     config.read(config_path)
     config.remove_option('task.osco-to-oscal', 'output-dir')
     section = config['task.osco-to-oscal']
