@@ -11,11 +11,36 @@
 # This script is normally called by gen_oscal.py when models are generated
 
 import re
+import string
 
 pattern1 = 'ies: Optional[Dict[str, Any]]'
 pattern2 = 's: Optional[Dict[str, Any]]'
 pattern3 = 's: Dict[str, Any]'
 special_lut = {'ParameterSetting': 'SetParameter'}
+plural_lut = {
+    'ResponsibleRoles': 'ResponsibleRole',
+    'ResponsibleParties': 'ResponsibleParty',
+    'Capabilities': 'Capability',
+    'Components': 'Component',
+    'ImplementedComponents': 'ImplementedComponent',
+    'InventoryItems': 'InventoryItem',
+    'AssessmentSubjects': 'AssessmentSubject',
+    'Users': 'User',
+    'Remarks': 'Remark',
+    'Tools': 'Tool',
+    'Statements': 'Statement',
+    'IncorporatesComponents': 'IncorporatesComponent',
+    'SetParameters': 'ParameterSetting',
+    'ParameterSettings': 'SetParameter',
+    'Diagrams': 'Diagram',
+    'ByComponents': 'ByComponent',
+    'Targets': 'Target',
+    'IncorporatesTargets': 'IncorporatesTarget',
+    'InformationTypeIds': 'InformationTypeId',
+    'EmailAddress': 'EmailStr',
+    'Annotations': 'Annotation'
+}
+
 # Class names with this substring are due to confusion in oscal that will go away.
 # For now delete the classes and convert the corresponding unions to conlist
 singleton_name = 'GroupItem'
@@ -64,9 +89,11 @@ class ClassText():
         self.lines.append(line)
 
     def add_ref_if_good(self, ref_name):
-        """Only add refs if the name isnt an anomolous singleton type."""
-        if ref_name.find(singleton_name) == -1:
-            self.refs.add(ref_name)
+        """Add refs after removing digits and/or singleton string."""
+        n = ref_name.find(singleton_name)
+        if n >= 0:
+            ref_name = ref_name[:n]
+        self.refs.add(ref_name.rstrip(string.digits))
 
     def add_ref_pattern(self, p, line):
         """Add new class names found based on pattern."""
@@ -96,6 +123,7 @@ class ClassText():
         # find objects in one or more bracket sets with possible first token and comma
         p = re.compile(r'\[(?:(.*),\s*)?((?:\[??[^\[]*?))\]')
         self.add_ref_pattern(p, line)
+        return line
 
     def get_linked_refs(self, class_text_list, known_refs):
         """Follow all refs to find their refs."""
@@ -144,6 +172,19 @@ class ClassText():
                 ro.latest_dep = n
         return ro
 
+    def is_good(self):
+        """Is this class on that should be retained in output."""
+        for line in self.lines:
+            if line.find('__root__: str') >= 0:
+                return False
+            if line.find('pass') >= 0:
+                return False
+            # mark any class with name ending in digits as bad
+            # later clean up all such refs in classes by removing digits
+        if self.name != self.name.rstrip(string.digits):
+            return False
+        return True
+
 
 def reorder(class_list):
     """Reorder the class list based on the location of its refs and deps."""
@@ -164,7 +205,8 @@ def reorder(class_list):
 
     # with full dependency info, now reorder the classes to remove forward refs
     did_swap = True
-    while did_swap:
+    loop_num = 0
+    while did_swap and loop_num < 1000:
         did_swap = False
         # find the relative placement of each class in list to its references and dependencies
         orders = []
@@ -180,26 +222,10 @@ def reorder(class_list):
             class_list.insert(i, ct)
             did_swap = True
             break
+        loop_num += 1
 
     # return reordered list of classes with no forward refs
     return class_list
-
-
-def get_cap_stem(s, clip):
-    """Extract stem part of plural form from first word on line."""
-    n = 0
-    while s[n] == ' ':
-        n += 1
-    cap = s[n].upper()
-    n += 1
-    while s[n + clip] != ':':
-        if s[n] == '_':
-            cap += s[n + 1].upper()
-            n += 2
-            continue
-        cap += s[n]
-        n += 1
-    return cap
 
 
 def fix_header(header, needs_conlist):
@@ -217,10 +243,36 @@ def fix_header(header, needs_conlist):
     return new_header
 
 
+def good_classes(class_list):
+    """Create the list of good classes from the full list."""
+    good = []
+    for c in class_list:
+        if c.is_good():
+            good.append(c)
+    return good
+
+
+def clean_classes(class_list):
+    """Clean all lines of text in each class for endings that should be removed."""
+    for j in range(len(class_list)):
+        cls = class_list[j]
+        for i in range(len(cls.lines)):
+            line = cls.lines[i]
+            line = line.replace(singleton_name, '')
+            for c2 in class_list:
+                cname = c2.name
+                pattern = cname + '[0-9]*'
+                line = re.sub(pattern, cname, line)
+                cls.lines[i] = line
+        class_list[j] = cls
+    return class_list
+
+
 def fix_file(fname):
     """Fix the Anys in this file and reorder to avoid forward dependencies."""
     all_classes = []
     header = []
+    forward_refs = []
 
     class_text = None
     done_header = False
@@ -230,7 +282,9 @@ def fix_file(fname):
     # Otherwise accumulate all class dependencies for reordering with no forward refs
     with open(fname, 'r') as infile:
         for r in infile.readlines():
-            if r.find(class_header) == 0:  # start of new class
+            if r.find('.update_forward_refs()') >= 0:
+                forward_refs.append(r)
+            elif r.find(class_header) == 0:  # start of new class
                 done_header = True
                 if class_text is not None:  # we are done with current class so add it
                     # prevent anomalous singletons from appearing in output
@@ -240,46 +294,30 @@ def fix_file(fname):
             else:
                 if not done_header:  # still in header
                     header.append(r.rstrip())
-                else:  # in body of class looking for Any's
-                    # first delete any singleton substrings if present
-                    r = r.replace(singleton_name, '')
-                    n1 = r.find(pattern1)
-                    n2 = r.find(pattern2)
-                    n3 = r.find(pattern3)
-                    if n1 != -1:  # ies plural
-                        tail = r[(n1 + len(pattern1)):]
-                        cap_singular = get_cap_stem(r, 3) + 'y'
-                        class_text.add_ref_if_good(cap_singular)
-                        r = r[:(n1 + len(pattern1) - 5)] + cap_singular + ']]' + tail
-                    elif n2 != -1:  # s plural
-                        tail = r[(n2 + len(pattern2)):]
-                        cap_singular = get_cap_stem(r, 1)
-                        if cap_singular in special_lut:
-                            cap_singular = special_lut[cap_singular]
-                        class_text.add_ref_if_good(cap_singular)
-                        r = r[:(n2 + len(pattern2) - 5)] + cap_singular + ']]' + tail
-                    elif n3 != -1:  # s plural
-                        tail = r[(n3 + len(pattern3)):]
-                        cap_singular = get_cap_stem(r, 1)
-                        if cap_singular in special_lut:
-                            cap_singular = special_lut[cap_singular]
-                        class_text.add_ref_if_good(cap_singular)
-                        r = r[:(n3 + 3)] + 'Dict[str, ' + cap_singular + ']' + tail
-                    else:
-                        # for a line that has no Any's, use regex to find referenced class names
-                        class_text.add_all_refs(r)
+                else:
                     # fix any line containing Union[A, A] to Union[A, conlist(A, min_items=2)]
-                    # this may now include Unions that previously involved the anomalous singletons
+                    # this may now include Unions that previously involved anomalous singletons
                     r = re.sub(r'Union\[([^,]*),\s*\1\]', r'Union[\1, conlist(\1, min_items=2)]', r)
                     if r.find(', conlist(') >= 0:
                         needs_conlist = True
+                    if r.find('Optional[Dict[str, ') >= 0:
+                        match = re.search(r'Optional\[Dict\[str, (.+?)\]\]', r)
+                        if match:
+                            plural = match.group(1)
+                            if plural != 'Any':
+                                r = r.replace(plural, plural_lut[plural])
                     # mark regex strings as raw
                     r = re.sub(r"(\s*regex\s*=\s*)\'(.*)", r"\1r'\2", r)
+                    class_text.add_all_refs(r)
                     class_text.add_line(r.rstrip())
 
     all_classes.append(class_text)  # don't forget final class
 
-    # reorder the classes to remove forward references
+    all_classes = good_classes(all_classes)
+
+    all_classes = clean_classes(all_classes)
+
+    # reorder the classes to remove forward references as much as possible
     all_classes = reorder(all_classes)
 
     header = fix_header(header, needs_conlist)
@@ -291,3 +329,4 @@ def fix_file(fname):
         out_file.writelines('\n'.join(header) + '\n')
         for c in all_classes:
             out_file.writelines('\n'.join(c.lines) + '\n')
+        out_file.writelines('\n'.join(forward_refs) + '\n')
