@@ -132,7 +132,7 @@ def store_file(file_path: pathlib.Path, delete_source: bool = False) -> None:
         raise AssertionError(f'Specified path "{file_path}" is not a file')
 
     trash_file_path = to_trash_file_path(file_path)
-    fs.ensure_directory(trash_file_path.parent)
+    trash_file_path.parent.mkdir(exist_ok=True, parents=True)
     copyfile(file_path, trash_file_path)
 
     if delete_source:
@@ -178,7 +178,7 @@ def recover_file(file_path: pathlib.Path, delete_trash: bool = False) -> None:
     if not trash_file_path.exists():
         raise AssertionError(f'Specified path "{file_path}" could not be found in trash')
 
-    fs.ensure_directory(file_path.parent)
+    file_path.parent.mkdir(exist_ok=True, parents=True)
     copyfile(trash_file_path, file_path)
 
     if delete_trash:

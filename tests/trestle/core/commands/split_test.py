@@ -18,6 +18,7 @@ import argparse
 import os
 import pathlib
 import sys
+from typing import Dict
 from unittest.mock import patch
 
 import pytest
@@ -36,10 +37,10 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.oscal import catalog as oscatalog
 from trestle.oscal import target as ostarget
-from trestle.utils import fs, trash
+from trestle.utils import trash
 
 
-def test_split_model(tmp_path, sample_target_def: ostarget.TargetDefinition):
+def test_split_model(tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDefinition) -> None:
     """Test for split_model method."""
     # Assume we are running a command like below
     # trestle split -f target-definition.yaml -e target-definition.metadata
@@ -76,7 +77,7 @@ def test_split_model(tmp_path, sample_target_def: ostarget.TargetDefinition):
     assert expected_plan == split_plan
 
 
-def test_split_chained_sub_models(tmp_path, sample_catalog: oscatalog.Catalog):
+def test_split_chained_sub_models(tmp_path: pathlib.Path, sample_catalog: oscatalog.Catalog) -> None:
     """Test for split_model method with chained sum models like catalog.metadata.parties.*."""
     # Assume we are running a command like below
     # trestle split -f catalog.json -e catalog.metadata.parties.*
@@ -129,7 +130,7 @@ def test_split_chained_sub_models(tmp_path, sample_catalog: oscatalog.Catalog):
     assert expected_plan == split_plan
 
 
-def test_subsequent_split_model(tmp_path, sample_target_def: ostarget.TargetDefinition):
+def test_subsequent_split_model(tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDefinition) -> None:
     """Test subsequent split of sub models."""
     # Assume we are running a command like below
     # trestle split -f target-definition.yaml -e target-definition.metadata
@@ -188,7 +189,7 @@ def test_subsequent_split_model(tmp_path, sample_target_def: ostarget.TargetDefi
     assert second_plan == split_plan
 
 
-def test_split_multi_level_dict(tmp_path, sample_target_def: ostarget.TargetDefinition):
+def test_split_multi_level_dict(tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDefinition) -> None:
     """Test for split_model method."""
     # Assume we are running a command like below
     # trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*
@@ -252,7 +253,7 @@ def test_split_multi_level_dict(tmp_path, sample_target_def: ostarget.TargetDefi
     assert expected_plan == split_plan
 
 
-def test_split_run(tmp_path, sample_target_def: ostarget.TargetDefinition):
+def test_split_run(tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDefinition) -> None:
     """Test split run."""
     # common variables
     target_def_dir: pathlib.Path = tmp_path / 'target-definitions' / 'mytarget'
@@ -268,7 +269,7 @@ def test_split_run(tmp_path, sample_target_def: ostarget.TargetDefinition):
         assert target_def_dir.joinpath('target-definition/targets').exists()
         assert target_def_dir.joinpath('target-definition/targets').is_dir()
 
-        targets: dict = Element(sample_target_def).get_at(ElementPath('target-definition.targets.*'))
+        targets: Dict = Element(sample_target_def).get_at(ElementPath('target-definition.targets.*'))
         for uuid in targets:
             target_file = target_def_dir / f'target-definition/targets/{uuid}{const.IDX_SEP}target.yaml'
             assert target_file.exists()
@@ -276,9 +277,9 @@ def test_split_run(tmp_path, sample_target_def: ostarget.TargetDefinition):
         assert trash.to_trash_file_path(target_def_file).exists()
 
     # prepare trestle project dir with the file
-    def prepare_target_def_file():
+    def prepare_target_def_file() -> None:
         test_utils.ensure_trestle_config_dir(tmp_path)
-        fs.ensure_directory(target_def_dir)
+        target_def_dir.mkdir(exist_ok=True, parents=True)
         sample_target_def.oscal_write(target_def_file)
 
     # test
@@ -306,12 +307,12 @@ def test_split_run(tmp_path, sample_target_def: ostarget.TargetDefinition):
     check_split_files()
 
 
-def test_split_run_failure(tmp_path, sample_target_def: ostarget.TargetDefinition):
+def test_split_run_failure(tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDefinition) -> None:
     """Test split run failure."""
     # prepare trestle project dir with the file
     target_def_dir: pathlib.Path = tmp_path / 'target-definitions' / 'mytarget'
     target_def_file: pathlib.Path = target_def_dir / 'target-definition.yaml'
-    fs.ensure_directory(target_def_dir)
+    target_def_dir.mkdir(exist_ok=True, parents=True)
     sample_target_def.oscal_write(target_def_file)
     invalid_file = target_def_dir / 'invalid.file'
     invalid_file.touch()

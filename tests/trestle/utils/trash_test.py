@@ -21,7 +21,7 @@ import pytest
 
 from tests import test_utils
 
-from trestle.utils import fs, trash
+from trestle.utils import trash
 
 
 def test_to_trash_dir_path(tmp_path: pathlib.Path):
@@ -30,7 +30,7 @@ def test_to_trash_dir_path(tmp_path: pathlib.Path):
     tmp_file.touch()
 
     data_dir: pathlib.Path = tmp_path / 'data'
-    fs.ensure_directory(data_dir)
+    data_dir.mkdir(exist_ok=True, parents=True)
     readme_file: pathlib.Path = data_dir / 'readme.md'
     readme_file.touch()
 
@@ -53,7 +53,7 @@ def test_to_trash_file_path(tmp_path: pathlib.Path):
     tmp_file.touch()
 
     data_dir: pathlib.Path = tmp_path / 'data'
-    fs.ensure_directory(data_dir)
+    data_dir.mkdir(exist_ok=True, parents=True)
     readme_file: pathlib.Path = data_dir / 'readme.md'
     readme_file.touch()
 
@@ -69,9 +69,9 @@ def test_to_trash_file_path(tmp_path: pathlib.Path):
 
 def test_to_trash_path(tmp_path: pathlib.Path):
     """Test to trash path function."""
-    data_dir: pathlib.Path = tmp_path / 'data'
-    fs.ensure_directory(data_dir)
-    readme_file: pathlib.Path = data_dir / 'readme.md'
+    data_dir = tmp_path / 'data'
+    data_dir.mkdir(exist_ok=True, parents=True)
+    readme_file = data_dir / 'readme.md'
     readme_file.touch()
 
     test_utils.ensure_trestle_config_dir(tmp_path)
@@ -89,7 +89,7 @@ def test_get_trash_root(tmp_path: pathlib.Path):
 
     test_utils.ensure_trestle_config_dir(tmp_path)
     trash_root = tmp_path / trash.TRESTLE_TRASH_DIR
-    fs.ensure_directory(trash_root)
+    trash_root.mkdir(exist_ok=True, parents=True)
 
     trash_file_path = trash.to_trash_file_path(readme_file)
     found_root = trash.get_trash_root(trash_file_path)
@@ -109,7 +109,7 @@ def test_to_origin_dir_path(tmp_path: pathlib.Path):
     with pytest.raises(AssertionError):
         trash.to_origin_dir_path(trash_dir_path)
 
-    fs.ensure_directory(tmp_path / trash.TRESTLE_TRASH_DIR)
+    (tmp_path / trash.TRESTLE_TRASH_DIR).mkdir(exist_ok=True, parents=True)
     origin_dir = trash.to_origin_dir_path(trash_dir_path)
     assert tmp_path.absolute() == origin_dir.absolute()
 
@@ -132,7 +132,7 @@ def test_to_origin_dir_path(tmp_path: pathlib.Path):
 def test_to_origin_file_path(tmp_path: pathlib.Path):
     """Test to origin file path function."""
     test_utils.ensure_trestle_config_dir(tmp_path)
-    fs.ensure_directory(tmp_path / trash.TRESTLE_TRASH_DIR)
+    (tmp_path / trash.TRESTLE_TRASH_DIR).mkdir(exist_ok=True, parents=True)
 
     tmp_file = tmp_path / 'temp_file.md'
     trash_file_path = trash.to_trash_file_path(tmp_file)
@@ -146,7 +146,7 @@ def test_to_origin_file_path(tmp_path: pathlib.Path):
 def test_to_origin_path(tmp_path: pathlib.Path):
     """Test to origin path function."""
     test_utils.ensure_trestle_config_dir(tmp_path)
-    fs.ensure_directory(tmp_path / trash.TRESTLE_TRASH_DIR)
+    (tmp_path / trash.TRESTLE_TRASH_DIR).mkdir(exist_ok=True, parents=True)
 
     tmp_file = tmp_path / 'temp_file.md'
     trash_file_path = trash.to_trash_file_path(tmp_file)
@@ -165,7 +165,7 @@ def test_trash_store_file(tmp_path: pathlib.Path):
 
     # trash a file
     data_dir: pathlib.Path = tmp_path / 'data'
-    fs.ensure_directory(data_dir)
+    data_dir.mkdir(exist_ok=True, parents=True)
     readme_file: pathlib.Path = data_dir / 'readme.md'
 
     # trash with deleting original
@@ -184,13 +184,13 @@ def test_trash_store_file(tmp_path: pathlib.Path):
     assert trash.to_trash_file_path(readme_file).exists()
 
 
-def test_trash_store_dir(tmp_path: pathlib.Path):
+def test_trash_store_dir(tmp_path: pathlib.Path) -> None:
     """Test moving whole directory to trash."""
     test_utils.ensure_trestle_config_dir(tmp_path)
 
     # trash whole directory
     data_dir: pathlib.Path = tmp_path / 'data'
-    fs.ensure_directory(data_dir)
+    data_dir.mkdir(exist_ok=True, parents=True)
     readme_file: pathlib.Path = data_dir / 'readme.md'
     readme_file.touch()
 
@@ -204,7 +204,7 @@ def test_trash_store_dir(tmp_path: pathlib.Path):
     assert trash.to_trash_file_path(readme_file).exists()
 
     # trash without deleting original
-    fs.ensure_directory(data_dir)
+    data_dir.mkdir(exist_ok=True, parents=True)
     readme_file.touch()
     trash.store_dir(data_dir, False)
     assert data_dir.exists()
@@ -213,11 +213,11 @@ def test_trash_store_dir(tmp_path: pathlib.Path):
     assert trash.to_trash_file_path(readme_file).exists()
 
 
-def test_trash_store(tmp_path):
+def test_trash_store(tmp_path: pathlib.Path) -> None:
     """Test trash store function."""
     test_utils.ensure_trestle_config_dir(tmp_path)
     data_dir: pathlib.Path = tmp_path / 'data'
-    fs.ensure_directory(data_dir)
+    data_dir.mkdir(exist_ok=True, parents=True)
     readme_file: pathlib.Path = data_dir / 'readme.md'
     readme_file.touch()
 
@@ -229,7 +229,7 @@ def test_trash_store(tmp_path):
     assert trash.to_trash_file_path(readme_file).exists()
 
     # trash whole directory
-    fs.ensure_directory(data_dir)
+    data_dir.mkdir(exist_ok=True, parents=True)
     readme_file.touch()
     trash.store(data_dir, True)
     assert data_dir.exists() is False
@@ -242,7 +242,7 @@ def test_trash_recover_dir(tmp_path):
     """Test recover trashed directory and contents."""
     test_utils.ensure_trestle_config_dir(tmp_path)
     data_dir: pathlib.Path = tmp_path / 'data'
-    fs.ensure_directory(data_dir)
+    data_dir.mkdir(exist_ok=True, parents=True)
     readme_file: pathlib.Path = data_dir / 'readme.md'
     readme_file.touch()
 
@@ -259,7 +259,7 @@ def test_trash_recover_file(tmp_path):
     """Test recover trashed file."""
     test_utils.ensure_trestle_config_dir(tmp_path)
     data_dir: pathlib.Path = tmp_path / 'data'
-    fs.ensure_directory(data_dir)
+    data_dir.mkdir(exist_ok=True, parents=True)
     readme_file: pathlib.Path = data_dir / 'readme.md'
     readme_file.touch()
 
@@ -276,7 +276,7 @@ def test_trash_recover(tmp_path):
     """Test recover trashed file or directory."""
     test_utils.ensure_trestle_config_dir(tmp_path)
     data_dir: pathlib.Path = tmp_path / 'data'
-    fs.ensure_directory(data_dir)
+    data_dir.mkdir(exist_ok=True, parents=True)
     readme_file: pathlib.Path = data_dir / 'readme.md'
     readme_file.touch()
 
