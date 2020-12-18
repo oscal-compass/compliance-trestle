@@ -345,8 +345,8 @@ def test_split_run_failure(tmp_path, sample_target_def: ostarget.TargetDefinitio
         'trestle', 'split', '-f', 'missing.yaml', '-e', 'target-definition.metadata, target-definition.targets.*'
     ]
     with patch.object(sys, 'argv', testargs):
-        with pytest.raises(TrestleError):
-            Trestle().run()
+        rc = Trestle().run()
+        assert rc > 0
 
     # check with incorrect file type
     testargs = [

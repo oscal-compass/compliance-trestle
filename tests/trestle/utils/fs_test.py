@@ -27,7 +27,7 @@ from trestle.oscal import catalog
 from trestle.utils import fs
 
 
-def test_ensure_directory(tmp_path):
+def test_ensure_directory(tmp_path: pathlib.Path) -> None:
     """Test ensure_directory function."""
     # Happy path
     fs.ensure_directory(tmp_path)
@@ -37,7 +37,7 @@ def test_ensure_directory(tmp_path):
         fs.ensure_directory(__file__)
 
 
-def test_should_ignore():
+def test_should_ignore() -> None:
     """Test should_ignore method."""
     assert fs.should_ignore('.test') is True
     assert fs.should_ignore('_test') is True
@@ -45,7 +45,7 @@ def test_should_ignore():
     assert fs.should_ignore('test') is False
 
 
-def test_is_valid_project_root(tmp_path):
+def test_is_valid_project_root(tmp_path: pathlib.Path) -> None:
     """Test is_valid_project_root method."""
     assert fs.is_valid_project_root(None) is False
     assert fs.is_valid_project_root('') is False
@@ -55,7 +55,7 @@ def test_is_valid_project_root(tmp_path):
     assert fs.is_valid_project_root(tmp_path) is True
 
 
-def test_has_parent_path(tmp_path):
+def test_has_parent_path(tmp_path: pathlib.Path) -> None:
     """Test has_parent_path method."""
     assert fs.has_parent_path(tmp_path, pathlib.Path('')) is False
     assert fs.has_parent_path(tmp_path, None) is False
