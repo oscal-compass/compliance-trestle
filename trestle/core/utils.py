@@ -18,14 +18,41 @@ import logging
 import warnings
 from typing import Any, List, Tuple, Type, no_type_check
 
-from datamodel_code_generator.parser.base import camel_to_snake, snake_to_upper_camel  # type: ignore
-
 from pydantic import BaseModel
 
 import trestle.core.const as const
 import trestle.core.err as err
 
 logger = logging.getLogger(__name__)
+
+
+def camel_to_snake(camel: str) -> str:
+    """Convert camel case to snake."""
+    if not camel:
+        return camel
+    snake = camel[0].lower()
+    for c in camel[1:]:
+        if c.isupper():
+            snake = snake + '_'
+        snake = snake + c.lower()
+    return snake
+
+
+def snake_to_upper_camel(snake: str) -> str:
+    """Convert snake to upper camel, ignoring start/end underscores."""
+    if not snake:
+        return snake
+    snake = snake.lower()
+    camel = ''
+    lift = True
+    for s in snake:
+        if s == '_':
+            lift = True
+            continue
+        if lift:
+            camel = camel + s.upper()
+            lift = False
+    return camel
 
 
 def get_elements_of_model_type(object_of_interest, type_of_interest):
