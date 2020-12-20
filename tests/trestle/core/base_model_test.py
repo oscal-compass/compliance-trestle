@@ -29,9 +29,9 @@ from trestle.core.base_model import OscalBaseModel
 from trestle.oscal.target import TargetDefinition
 
 
-def test_echo_tmpdir(tmpdir):
+def test_echo_tmp_path(tmp_path):
     """Testing pytest."""
-    print(tmpdir)  # noqa T001
+    print(tmp_path)  # noqa T001
     assert 1
 
 
@@ -271,19 +271,19 @@ def test_oscal_read():
     assert (len(str(target.metadata.title)) > 1)
 
 
-def test_oscal_write(tmpdir):
+def test_oscal_write(tmp_path):
     """Test Oscal write by repetitive operations."""
     path_target_definition = pathlib.Path('tests/data/json/sample-target-definition.json')
     assert (path_target_definition.exists())
 
     target = ostarget.TargetDefinition.oscal_read(path_target_definition)
 
-    temp_td_json = pathlib.Path(tmpdir) / 'target_test.json'
+    temp_td_json = pathlib.Path(tmp_path) / 'target_test.json'
     target.oscal_write(temp_td_json)
 
     target2 = ostarget.TargetDefinition.oscal_read(temp_td_json)
 
-    temp_td_yaml = pathlib.Path(tmpdir) / 'target_test.yaml'
+    temp_td_yaml = pathlib.Path(tmp_path) / 'target_test.yaml'
     target2.oscal_write(temp_td_yaml)
 
     ostarget.TargetDefinition.oscal_read(temp_td_yaml)

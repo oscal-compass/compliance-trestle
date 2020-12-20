@@ -14,12 +14,15 @@
 # limitations under the License.
 """Utilities for dealing with models."""
 
-from typing import Any, List
+from typing import Any, List, Type, TypeVar
 
 import pydantic
 
+# Generic type var
+TG = TypeVar('TG')
 
-# TODO: Improve typing.
+
+# TODO: Improve typing - this could potentially be done through type vars
 def find_values_by_name_generic(object_of_interest: Any, var_name: str) -> List[str]:
     """Traverse object and return list of the values in dicts, tuples associated with variable name."""
     loe = []
@@ -54,13 +57,13 @@ def find_values_by_name_generic(object_of_interest: Any, var_name: str) -> List[
     return loe
 
 
-def has_no_duplicate_values_generic(object_of_interest, var_name):
+def has_no_duplicate_values_generic(object_of_interest: Any, var_name: str) -> bool:
     """Determine if duplicate values of variable exist in object."""
     loe = find_values_by_name_generic(object_of_interest, var_name)
     return len(loe) == len(set(loe))
 
 
-def find_values_by_type(object_of_interest, type_of_interest):
+def find_values_by_type(object_of_interest: Any, type_of_interest: Type[TG]) -> List[TG]:
     """Traverse object and return list of values of specified type."""
     loe = []
     # looking for a dict or 2-element tuple containing specified variable name
@@ -90,7 +93,7 @@ def find_values_by_type(object_of_interest, type_of_interest):
     return loe
 
 
-def has_no_duplicate_values_by_type(object_of_interest, type_of_interest):
+def has_no_duplicate_values_by_type(object_of_interest: Any, type_of_interest: Type[TG]) -> bool:
     """Determine if duplicate values of type exist in object."""
     loe = find_values_by_type(object_of_interest, type_of_interest)
     n = len(loe)
@@ -102,7 +105,7 @@ def has_no_duplicate_values_by_type(object_of_interest, type_of_interest):
     return True
 
 
-def find_values_by_name(object_of_interest, name_of_interest):
+def find_values_by_name(object_of_interest: Any, name_of_interest: str) -> List[Any]:
     """Traverse object and return list of values of specified name."""
     loe = []
     if isinstance(object_of_interest, pydantic.BaseModel):
@@ -122,7 +125,7 @@ def find_values_by_name(object_of_interest, name_of_interest):
     return loe
 
 
-def has_no_duplicate_values_by_name(object_of_interest, name_of_interest):
+def has_no_duplicate_values_by_name(object_of_interest: Any, name_of_interest: str) -> bool:
     """Determine if duplicate values of type exist in object."""
     loe = find_values_by_name(object_of_interest, name_of_interest)
     return len(loe) == len(set(loe))
