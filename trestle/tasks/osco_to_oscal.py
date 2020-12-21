@@ -17,7 +17,6 @@
 
 import configparser
 import logging
-import os
 import json
 import pathlib
 import traceback
@@ -82,7 +81,7 @@ class OscoToOscal(TaskBase):
                         continue
                     ofile = self._calculate_ofile(ifn, odir)
                     if not overwrite:
-                        if os.path.exists(ofile):
+                        if ofile.exists():
                             logger.error(f'file exists: {ofile}')
                             return TaskOutcome('simulated-failure')
                     mfile = idir / 'oscal-metadata.yaml'
@@ -99,7 +98,7 @@ class OscoToOscal(TaskBase):
             logger.error(f'config missing')
             return TaskOutcome('simulated-failure')
         except Exception:
-            traceback.print_exc()
+            logger.error(traceback.format_exc())
             return TaskOutcome('simulated-failure')
 
     def execute(self) -> TaskOutcome:
@@ -116,7 +115,7 @@ class OscoToOscal(TaskBase):
                     return TaskOutcome('failure')
                 overwrite = self._config.getboolean('output-overwrite', True)
                 quiet = self._config.getboolean('quiet', False)
-                os.makedirs(odir, exist_ok = True) 
+                odir.mkdir(exist_ok=True, parents=True)
                 for ifile in sorted(pathlib.Path(idir).iterdir()):
                     parts = ifile.parts
                     ifn = parts[len(parts)-1]
@@ -126,7 +125,7 @@ class OscoToOscal(TaskBase):
                         continue
                     ofile = self._calculate_ofile(ifn, odir)
                     if not overwrite:
-                        if os.path.exists(ofile):
+                        if ofile.exists():
                             logger.error(f'file exists: {ofile}')
                             return TaskOutcome('failure')
                     mfile = idir / 'oscal-metadata.yaml'
@@ -145,7 +144,7 @@ class OscoToOscal(TaskBase):
             logger.error(f'config missing')
             return TaskOutcome('failure')
         except Exception:
-            traceback.print_exc()
+            logger.error(traceback.format_exc())
             return TaskOutcome('failure')
     
     def _read_content(self, ifile):
@@ -179,6 +178,6 @@ class OscoToOscal(TaskBase):
             with open(mfile, "r") as fp:
                 metadata = yaml.full_load(fp)
         except:
-            traceback.print_exc()
+            logger.debug(traceback.format_exc())
         return metadata
         
