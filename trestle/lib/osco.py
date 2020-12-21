@@ -35,8 +35,8 @@ def get_observations(idata, metadata):
     -----
     Sample metadata entry:
     -----
-    ssg-ocp4-ds-cis-10.221.139.104-pod:
-      locker: https://github.ibm.com/degenaro/evidence-locker
+    ssg-ocp4-ds-cis-111.222.333.444-pod:
+      locker: https://github.mycorp.com/degenaro/evidence-locker
       namespace: xccdf
       subject-references:
          component:
@@ -48,7 +48,7 @@ def get_observations(idata, metadata):
             type: inventory-item
             title: Pod
             properties:
-               target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm
+               target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
                cluster-name: ROKS-OpenSCAP-1
                cluster-type: openshift
                cluster-region: us-south
