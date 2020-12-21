@@ -362,26 +362,3 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
 
     return singular_alias
 
-
-def get_file_type(file_path : pathlib.Path):
-    '''Given a file path, figure out what type of file we are working with.'''
-    return FileContentType.to_content_type(file_path.suffix)
-
-
-def get_contextual_file_type():
-    '''Find out the contextual file type (JSON/YAML) from the current directory context'''
-    files = os.listdir()
-
-    for item in files:
-        cwd = os.getcwd()
-        file_path = pathlib.Path(item)
-        if file_path.is_dir():
-            os.chdir(file_path)
-            type = get_contextual_file_type()
-            if type is not None:
-                return type
-            os.chdir(cwd)
-        else:
-            return FileContentType.to_content_type(file_path.suffix)
-
-    return None

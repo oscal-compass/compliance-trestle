@@ -135,8 +135,3 @@ class AddCmd(Command):
         parent_element = parent_element.set_at(element_path, child_object)
 
         return update_action, parent_element
-
-if __name__ == '__main__':
-    import os
-    os.chdir("/Users/nebula/workspace/compliance-trestle/tmp/tmp/catalogs/mycatalog/catalog")
-    AddCmd()._run(None)

@@ -19,12 +19,13 @@ from pathlib import Path
 from typing import List
 
 import pytest
+import argparse
 
 from tests import test_utils
 
 import trestle.oscal.catalog as oscatalog
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.commands.merge import MergeCmd, sort_element_paths
+from trestle.core.commands.merge import MergeCmd
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
@@ -37,12 +38,11 @@ def test_merge_invalid_element_path():
     """Test to make sure each element in -e contains 2 parts at least."""
     cmd = MergeCmd()
     parser = cmd.parser
-    args = parser.parse_args(['-e', 'catalog'])
-
+    args = argparse.Namespace(verbose=1, element='catalog', list_available_elements=False)
     with pytest.raises(TrestleError):
         cmd._run(args)
 
-    args = parser.parse_args(['-e', 'catalog.metadata'])
+    args = argparse.Namespace(verbose=1, element='catalog.metadata', list_available_elements=False)
     cmd._run(args)
 
 
@@ -236,28 +236,3 @@ def test_merge_expanded_metadata_into_catalog(tmp_dir):
 
     # Assert the generated plan matches the expected plan'
     assert generated_plan == expected_plan
-
-
-def test_sort_element_paths(tmp_dir, sample_catalog: oscatalog.Catalog) -> None:
-    """Test sorting of element paths for merging purposes."""
-    content_type = FileContentType.JSON
-
-    catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
-        content_type,
-        sample_catalog,
-        test_utils.CATALOGS_DIR)
-
-    element_str = (
-        'catalog.metadata.responsible-parties.*'
-        # 'catalog.metadata.roles,'
-        # 'catalog.metadata,'
-        # 'catalog.metadata.*,'
-        # 'catalog.metadata.parties.*,'
-        # 'catalog.controls,'
-        # 'catalog.metadata.responsible-parties'
-    )
-
-    element_paths: List[ElementPath] = test_utils.prepare_element_paths(catalog_dir, element_str.split(','))
-
-    sorted_element_path = sort_element_paths(element_paths)

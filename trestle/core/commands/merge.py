@@ -21,6 +21,7 @@ import os
 
 from ilcli import Command  # type: ignore
 
+import trestle.core.err as err
 from trestle.core import const, utils
 from trestle.core.commands import cmd_utils
 from trestle.core.models.actions import CreatePathAction, WriteFileAction, RemovePathAction
@@ -42,7 +43,7 @@ class MergeCmd(Command):
         self.add_argument(
             f'-{const.ARG_ELEMENT_SHORT}',
             f'--{const.ARG_ELEMENT}',
-            help=f'Comma-separated list of {const.ARG_DESC_ELEMENT}(s) to be merged.',
+            help=f'{const.ARG_DESC_ELEMENT}(s) to be merged.',
         )
 
         self.add_argument(
@@ -76,41 +77,63 @@ class MergeCmd(Command):
 
         """1. Load desination model into a stripped model"""
         # Load destination model
-        destination_model_type, destination_model_alias = fs.get_stripped_contextual_model()
+        # destination_model_type, destination_model_alias = fs.get_stripped_contextual_model()
+        destination_model_alias = element_path_list[-2]
         # Destination model filename
-        destination_model_filename = Path(f'{utils.classname_to_alias(destination_model_type.__name__, "json")}.json')
+        destination_model_filename = Path(f'{utils.classname_to_alias(destination_model_alias, "json")}.json')
+        destination_model_type, _ = fs.get_stripped_contextual_model(destination_model_filename.absolute())
         
         destination_model_object = destination_model_type.oscal_read(destination_model_filename)
+        
+        """1.5. If target is wildcard, load distributed destrination model and replace destination model."""
+        # Handle WILDCARD '*' match. Return plan to load the destination model, with it's distributed attributes
+        if target_model_alias == '*':
+            merged_model_type, merged_model_alias, merged_model_instance = load_distributed.load_distributed(destination_model_filename)
+            plan = Plan()
+            reset_destination_action = CreatePathAction(destination_model_filename.absolute(), clear_content=True)
+            write_destination_action = WriteFileAction(
+            destination_model_filename, Element(merged_model_instance), content_type=FileContentType.JSON)
+
+            plan: Plan = Plan()
+            plan.add_action(reset_destination_action)
+            plan.add_action(write_destination_action)
+            return plan
 
         # Get destination model without the target field stripped
         merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(
             destination_model_filename.absolute(),
             aliases_not_to_be_stripped=[target_model_alias])
 
-        """2. Is target model decomposed"""
-
-        """# 3. If YES, merge recursively first - destination model is the previous target model,
-         new target model is each of the decomposed models"""
-
-
-        """4. Insert target model into destination model, could be stripped"""
-        
-        target_model_type = utils.get_target_model(element_path_list, merged_model_type)
+        """2. Load Target model. Target model could be stripped"""
+        try:
+            target_model_type = utils.get_target_model(element_path_list, merged_model_type)
+        except Exception as e:
+            raise err.TrestleError(f'Target model not found. Possibly merge of the elements not allowed at this point. {str(e)}')
         # target_model filename
         if (Path(os.getcwd()) / destination_model_alias).exists():
-            target_model_filename = Path(os.getcwd()) / destination_model_alias / f'{target_model_alias}.json'
+            target_model_path = f'{os.getcwd()}/{destination_model_alias}/{target_model_alias}'
         else:
-            target_model_filename = Path(f'{target_model_alias}.json')
-        target_model_object = target_model_type.oscal_read(target_model_filename)
+            target_model_path = target_model_alias
+
+        if (Path(f'{target_model_path}.json')).exists():
+            target_model_filename = Path(f'{target_model_path}.json')
+            _, _, target_model_object = load_distributed.load_distributed(target_model_filename)
+        else:
+            target_model_filename = Path(target_model_path)
+            collection_type = target_model_type.__origin__
+            _, _, target_model_object = load_distributed.load_distributed(target_model_filename, collection_type)
+
+        if hasattr(target_model_object, "__dict__") and "__root__" in target_model_object.__dict__:
+            target_model_object = target_model_object.__dict__["__root__"]
         
 
-        # Insert destination model into merged model
+        """3. Insert target model into destination model."""
         merged_dict = destination_model_object.__dict__
         merged_dict[target_model_alias] = target_model_object
         merged_model_object = merged_model_type(**merged_dict)
         merged_destination_element = Element(merged_model_object)
 
-        """5. Create action  plan"""
+        """4. Create action  plan"""
         reset_destination_action = CreatePathAction(destination_model_filename.absolute(), clear_content=True)
         write_destination_action = WriteFileAction(
             destination_model_filename, merged_destination_element, content_type=FileContentType.JSON)
@@ -120,6 +143,8 @@ class MergeCmd(Command):
         plan.add_action(reset_destination_action)
         plan.add_action(write_destination_action)
         plan.add_action(delete_target_action)
+
+        # TODO: Destination model directory is empty or already merged? Then clean up.
 
         return plan
 
@@ -209,12 +234,7 @@ class MergeCmd(Command):
             self.out(f"{element} (merges all files/subdirectories under {source_path} into \'{destination_path}\')")
 
 
-def sort_element_paths(element_paths: List[ElementPath]) -> List[ElementPath]:
-    """Sort list of element paths for merge purposes."""
-    raise NotImplementedError()
-
-
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
     # from trestle.core.commands.split import SplitCmd
     # import argparse
@@ -222,9 +242,11 @@ if __name__ == '__main__':
     # os.chdir("/Users/nebula/workspace/compliance-trestle/tmp/tmp/catalogs/mycatalog/catalog")
     # split = SplitCmd()._run(args)
 
-    os.chdir("/Users/nebula/workspace/compliance-trestle/tmp/tmp/catalogs/mycatalog")
-    type_, alias, instance = load_distributed.distributed_load(Path("catalog.json"))
-    plan = MergeCmd.merge(ElementPath('catalog.back-matter'))
-    plan.simulate()
-    plan.execute()
+    #os.chdir("/Users/nebula/workspace/compliance-trestle/tmp/tmp/catalogs/mycatalog")
+    #type_, alias, instance = load_distributed.distributed_load(Path("catalog.json"))
+
+    # os.chdir("/Users/nebula/workspace/compliance-trestle/tmp/tmp3/catalogs/mycatalog/")
+    # plan = MergeCmd.merge(ElementPath('catalog.*'))
+    # plan.simulate()
+    # plan.execute()
 
