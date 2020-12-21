@@ -7,7 +7,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -31,7 +31,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -47,7 +47,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -65,7 +65,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -89,7 +89,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -105,7 +105,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -123,7 +123,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -147,7 +147,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -163,7 +163,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -181,7 +181,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -205,7 +205,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -221,7 +221,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -239,7 +239,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -263,7 +263,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -279,7 +279,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -297,7 +297,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -321,7 +321,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -337,7 +337,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -355,7 +355,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -379,7 +379,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -395,7 +395,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -413,7 +413,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -437,7 +437,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -453,7 +453,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -471,7 +471,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -495,7 +495,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -511,7 +511,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -529,7 +529,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -553,7 +553,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -569,7 +569,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -587,7 +587,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -611,7 +611,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -627,7 +627,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -645,7 +645,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -669,7 +669,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -685,7 +685,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -703,7 +703,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -727,7 +727,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -743,7 +743,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -761,7 +761,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -785,7 +785,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -801,7 +801,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -819,7 +819,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -843,7 +843,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -859,7 +859,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -877,7 +877,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -901,7 +901,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -917,7 +917,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -935,7 +935,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -959,7 +959,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -975,7 +975,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -993,7 +993,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1017,7 +1017,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1033,7 +1033,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1051,7 +1051,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1075,7 +1075,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1091,7 +1091,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1109,7 +1109,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1133,7 +1133,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1149,7 +1149,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1167,7 +1167,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1191,7 +1191,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1207,7 +1207,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1225,7 +1225,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1249,7 +1249,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1265,7 +1265,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1283,7 +1283,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1307,7 +1307,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1323,7 +1323,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1341,7 +1341,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1365,7 +1365,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1381,7 +1381,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1399,7 +1399,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1423,7 +1423,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1439,7 +1439,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1457,7 +1457,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1481,7 +1481,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1497,7 +1497,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1515,7 +1515,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1539,7 +1539,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1555,7 +1555,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1573,7 +1573,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1597,7 +1597,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1613,7 +1613,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1631,7 +1631,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1655,7 +1655,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1671,7 +1671,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1689,7 +1689,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1713,7 +1713,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1729,7 +1729,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1747,7 +1747,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1771,7 +1771,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1787,7 +1787,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1805,7 +1805,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1829,7 +1829,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1845,7 +1845,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1863,7 +1863,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1887,7 +1887,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1903,7 +1903,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1921,7 +1921,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -1945,7 +1945,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -1961,7 +1961,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -1979,7 +1979,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2003,7 +2003,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2019,7 +2019,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2037,7 +2037,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2061,7 +2061,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2077,7 +2077,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2095,7 +2095,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2119,7 +2119,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2135,7 +2135,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2153,7 +2153,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2177,7 +2177,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2193,7 +2193,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2211,7 +2211,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2235,7 +2235,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2251,7 +2251,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2269,7 +2269,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2293,7 +2293,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2309,7 +2309,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2327,7 +2327,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2351,7 +2351,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2367,7 +2367,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2385,7 +2385,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2409,7 +2409,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2425,7 +2425,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2443,7 +2443,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2467,7 +2467,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2483,7 +2483,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2501,7 +2501,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2525,7 +2525,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2541,7 +2541,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2559,7 +2559,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2583,7 +2583,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2599,7 +2599,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2617,7 +2617,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2641,7 +2641,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2657,7 +2657,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2675,7 +2675,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2699,7 +2699,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2715,7 +2715,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2733,7 +2733,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2757,7 +2757,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2773,7 +2773,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2791,7 +2791,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2815,7 +2815,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2831,7 +2831,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2849,7 +2849,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2873,7 +2873,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2889,7 +2889,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2907,7 +2907,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2931,7 +2931,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -2947,7 +2947,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -2965,7 +2965,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -2989,7 +2989,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3005,7 +3005,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3023,7 +3023,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3047,7 +3047,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3063,7 +3063,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3081,7 +3081,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3105,7 +3105,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3121,7 +3121,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3139,7 +3139,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3163,7 +3163,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3179,7 +3179,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3197,7 +3197,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3221,7 +3221,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3237,7 +3237,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3255,7 +3255,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3279,7 +3279,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3295,7 +3295,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3313,7 +3313,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3337,7 +3337,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3353,7 +3353,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3371,7 +3371,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3395,7 +3395,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3411,7 +3411,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3429,7 +3429,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3453,7 +3453,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3469,7 +3469,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3487,7 +3487,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3511,7 +3511,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3527,7 +3527,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3545,7 +3545,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3569,7 +3569,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3585,7 +3585,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3603,7 +3603,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3627,7 +3627,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3643,7 +3643,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3661,7 +3661,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3685,7 +3685,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3701,7 +3701,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3719,7 +3719,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3743,7 +3743,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3759,7 +3759,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3777,7 +3777,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3801,7 +3801,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3817,7 +3817,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3835,7 +3835,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3859,7 +3859,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3875,7 +3875,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3893,7 +3893,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3917,7 +3917,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3933,7 +3933,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -3951,7 +3951,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -3975,7 +3975,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -3991,7 +3991,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4009,7 +4009,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4033,7 +4033,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4049,7 +4049,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4067,7 +4067,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4091,7 +4091,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4107,7 +4107,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4125,7 +4125,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4149,7 +4149,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4165,7 +4165,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4183,7 +4183,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4207,7 +4207,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4223,7 +4223,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4241,7 +4241,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4265,7 +4265,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4281,7 +4281,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4299,7 +4299,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4323,7 +4323,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4339,7 +4339,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4357,7 +4357,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4381,7 +4381,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4397,7 +4397,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4415,7 +4415,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4439,7 +4439,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4455,7 +4455,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4473,7 +4473,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4497,7 +4497,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4513,7 +4513,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4531,7 +4531,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4555,7 +4555,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4571,7 +4571,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4589,7 +4589,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4613,7 +4613,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4629,7 +4629,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4647,7 +4647,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4671,7 +4671,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4687,7 +4687,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4705,7 +4705,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4729,7 +4729,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4745,7 +4745,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4763,7 +4763,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4787,7 +4787,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4803,7 +4803,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4821,7 +4821,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4845,7 +4845,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4861,7 +4861,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4879,7 +4879,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4903,7 +4903,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4919,7 +4919,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4937,7 +4937,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -4961,7 +4961,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -4977,7 +4977,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -4995,7 +4995,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5019,7 +5019,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5035,7 +5035,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5053,7 +5053,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5077,7 +5077,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5093,7 +5093,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5111,7 +5111,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5135,7 +5135,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5151,7 +5151,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5169,7 +5169,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5193,7 +5193,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5209,7 +5209,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5227,7 +5227,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5251,7 +5251,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5267,7 +5267,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5285,7 +5285,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5309,7 +5309,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5325,7 +5325,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5343,7 +5343,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5367,7 +5367,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5383,7 +5383,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5401,7 +5401,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5425,7 +5425,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5441,7 +5441,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5459,7 +5459,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5483,7 +5483,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5499,7 +5499,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5517,7 +5517,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5541,7 +5541,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5557,7 +5557,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5575,7 +5575,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5599,7 +5599,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5615,7 +5615,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5633,7 +5633,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5657,7 +5657,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5673,7 +5673,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5691,7 +5691,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5715,7 +5715,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5731,7 +5731,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5749,7 +5749,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5773,7 +5773,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5789,7 +5789,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5807,7 +5807,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5831,7 +5831,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5847,7 +5847,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5865,7 +5865,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5889,7 +5889,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5905,7 +5905,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5923,7 +5923,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -5947,7 +5947,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -5963,7 +5963,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -5981,7 +5981,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6005,7 +6005,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6021,7 +6021,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6039,7 +6039,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6063,7 +6063,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6079,7 +6079,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6097,7 +6097,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6121,7 +6121,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6137,7 +6137,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6155,7 +6155,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6179,7 +6179,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6195,7 +6195,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6213,7 +6213,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6237,7 +6237,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6253,7 +6253,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6271,7 +6271,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6295,7 +6295,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6311,7 +6311,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6329,7 +6329,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6353,7 +6353,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6369,7 +6369,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6387,7 +6387,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6411,7 +6411,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6427,7 +6427,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6445,7 +6445,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6469,7 +6469,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6485,7 +6485,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6503,7 +6503,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6527,7 +6527,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6543,7 +6543,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6561,7 +6561,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6585,7 +6585,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6601,7 +6601,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6619,7 +6619,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6643,7 +6643,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6659,7 +6659,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6677,7 +6677,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6701,7 +6701,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6717,7 +6717,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6735,7 +6735,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6759,7 +6759,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6775,7 +6775,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6793,7 +6793,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6817,7 +6817,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6833,7 +6833,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6851,7 +6851,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6875,7 +6875,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6891,7 +6891,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6909,7 +6909,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6933,7 +6933,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -6949,7 +6949,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -6967,7 +6967,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -6991,7 +6991,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -7007,7 +7007,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -7025,7 +7025,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -7049,7 +7049,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -7065,7 +7065,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -7083,7 +7083,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -7107,7 +7107,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -7123,7 +7123,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -7141,7 +7141,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -7165,7 +7165,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -7181,7 +7181,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"
@@ -7199,7 +7199,7 @@
       "evidence-group": [
         {
           "description": "Evidence location.",
-          "href": "https://github.ibm.com/degenaro/evidence-locker",
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
           "properties": [
             {
               "ns": "xccdf",
@@ -7223,7 +7223,7 @@
               "ns": "xccdf",
               "class": "target",
               "name": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm"
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
@@ -7239,7 +7239,7 @@
           "type": "inventory-item",
           "title": "Pod",
           "properties": {
-            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm",
+            "target": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
             "cluster-name": "ROKS-OpenSCAP-1",
             "cluster-type": "openshift",
             "cluster-region": "us-south"

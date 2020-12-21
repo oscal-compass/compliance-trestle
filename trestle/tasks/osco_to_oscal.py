@@ -167,7 +167,7 @@ class OscoToOscal(TaskBase):
         ofn = ifn
         ofn = ofn.rsplit('.yaml')[0]
         ofn = ofn.rsplit('.yml')[0]
-        ofn += '.oscal'
+        ofn += '-oscal.json'
         ofile = pathlib.Path(odir, ofn)
         return ofile
     

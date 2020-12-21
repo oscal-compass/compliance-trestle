@@ -33,28 +33,28 @@ mock_uuid4_value = uuid.UUID('a8098c1a-f86e-11da-bd1a-00112444be1e')
 
 def test_function_osco_get_observations(tmpdir):
     """Test OSCO to OSCAL transformation."""
-    idata = _load_yaml(stem_in, 'ssg-ocp4-ds-cis-10.221.139.104-pod.yaml')
+    idata = _load_yaml(stem_in, 'ssg-ocp4-ds-cis-111.222.333.444-pod.yaml')
     metadata = _load_yaml(stem_in, 'oscal-metadata.yaml')
     with patch('uuid.uuid4') as mock_uuid4:
         mock_uuid4.return_value = mock_uuid4_value
         odata, analysis = osco.get_observations(idata, metadata)
-    expected = _load_json(stem_out, 'ssg-ocp4-ds-cis-10.221.139.104-pod.oscal')
-    tfile = tmpdir / 'ssg-ocp4-ds-cis-10.221.139.104-pod.oscal'
+    expected = _load_json(stem_out, 'osco-pod-oscal.json')
+    tfile = tmpdir / 'osco-pod-oscal.json'
     _save_json(tfile, odata)
-    actual = _load_json(tmpdir, 'ssg-ocp4-ds-cis-10.221.139.104-pod.oscal')
+    actual = _load_json(tmpdir, 'osco-pod-oscal.json')
     assert actual == expected
 
 
 def test_class_osco_rules(tmpdir):
     """Test class osco.Rules."""
-    idata = _load_yaml(stem_in, 'ssg-ocp4-ds-cis-10.221.139.104-pod.yaml')
+    idata = _load_yaml(stem_in, 'ssg-ocp4-ds-cis-111.222.333.444-pod.yaml')
     rules = osco.Rules(idata)
     assert len(rules.instances) == 125
     assert len(rules.benchmark) == 2
     assert rules.benchmark['href'] == '/content/ssg-ocp4-ds.xml'
     assert rules.benchmark['id'] == 'xccdf_org.ssgproject.content_benchmark_OCP-4'
     assert len(rules.metadata) == 2
-    assert rules.metadata['name'] == 'ssg-ocp4-ds-cis-10.221.139.104-pod'
+    assert rules.metadata['name'] == 'ssg-ocp4-ds-cis-111.222.333.444-pod'
     assert rules.metadata['namespace'] == 'openshift-compliance'
     assert len(rules.analysis) == 3
     assert rules.analysis['config_maps'] == ['ssg-ocp4-ds']
@@ -68,7 +68,7 @@ def test_class_osco_rules(tmpdir):
 
 def test_class_osco_observations(tmpdir):
     """Test class osco.Observations."""
-    idata = _load_yaml(stem_in, 'ssg-ocp4-ds-cis-10.221.139.104-pod.yaml')
+    idata = _load_yaml(stem_in, 'ssg-ocp4-ds-cis-111.222.333.444-pod.yaml')
     rules = osco.Rules(idata)
     metadata = _load_yaml(stem_in, 'oscal-metadata.yaml')
     with patch('uuid.uuid4') as mock_uuid4:
@@ -82,7 +82,7 @@ def test_class_osco_observations(tmpdir):
     assert instance['title'] == 'xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd'
     assert len(instance['evidence-group']) == 1
     assert instance['evidence-group'][0]['description'] == 'Evidence location.'
-    assert instance['evidence-group'][0]['href'] == 'https://github.ibm.com/degenaro/evidence-locker'
+    assert instance['evidence-group'][0]['href'] == 'https://github.mycorp.com/degenaro/evidence-locker'
     assert len(instance['evidence-group'][0]['properties']) == 4
     assert instance['evidence-group'][0]['properties'][0]['ns'] == 'xccdf'
     assert instance['evidence-group'][0]['properties'][0]['class'] == 'id'
@@ -101,7 +101,7 @@ def test_class_osco_observations(tmpdir):
     assert instance['evidence-group'][0]['properties'][3]['class'] == 'target'
     assert instance['evidence-group'][0]['properties'][3]['name'] == 'target'
     assert instance['evidence-group'][0]['properties'][3][
-        'value'] == 'kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm'
+        'value'] == 'kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp'
     assert len(instance['subject-references']) == 2
     assert instance['subject-references'][0]['uuid-ref'] == '56666738-0f9a-4e38-9aac-c0fad00a5821'
     assert instance['subject-references'][0]['type'] == 'component'
@@ -111,7 +111,7 @@ def test_class_osco_observations(tmpdir):
     assert instance['subject-references'][1]['title'] == 'Pod'
     assert len(instance['subject-references'][1]['properties']) == 4
     assert instance['subject-references'][1]['properties'][
-        'target'] == 'kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.ibm'
+        'target'] == 'kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp'
     assert instance['subject-references'][1]['properties']['cluster-name'] == 'ROKS-OpenSCAP-1'
     assert instance['subject-references'][1]['properties']['cluster-type'] == 'openshift'
     assert instance['subject-references'][1]['properties']['cluster-region'] == 'us-south'
