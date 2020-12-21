@@ -17,6 +17,7 @@
 import argparse
 import logging
 import pathlib
+from typing import List
 
 from ilcli import Command  # type: ignore
 
@@ -39,7 +40,7 @@ class AddCmd(Command):
 
     name = 'add'
 
-    def _init_arguments(self):
+    def _init_arguments(self) -> None:
         self.add_argument(
             f'-{const.ARG_FILE_SHORT}',
             f'--{const.ARG_FILE}',
@@ -62,9 +63,9 @@ class AddCmd(Command):
         """
         log.set_log_level_from_args(args)
         try:
-            args = args.__dict__
+            args_dict = args.__dict__
 
-            file_path = pathlib.Path(args[const.ARG_FILE])
+            file_path = pathlib.Path(args_dict[const.ARG_FILE])
 
             # Get parent model and then load json into parent model
             parent_model, parent_alias = fs.get_stripped_contextual_model(file_path.absolute())
@@ -75,7 +76,7 @@ class AddCmd(Command):
             add_plan = Plan()
 
             # Do _add for each element_path specified in args
-            element_paths: list[str] = args[const.ARG_ELEMENT].split(',')
+            element_paths: List[str] = args_dict[const.ARG_ELEMENT].split(',')
             for elm_path_str in element_paths:
                 element_path = ElementPath(elm_path_str)
                 update_action, parent_element = self.add(element_path, parent_model, parent_element)

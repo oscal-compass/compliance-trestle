@@ -33,7 +33,7 @@ from trestle.oscal.catalog import BackMatter, Catalog
 from trestle.utils.fs import get_stripped_contextual_model
 
 
-def test_add(tmp_dir, sample_catalog_minimal):
+def test_add(tmp_path, sample_catalog_minimal):
     """Test AddCmd.add() method for trestle add."""
     # expected catalog after first add of Role
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_roles.json')
@@ -50,7 +50,7 @@ def test_add(tmp_dir, sample_catalog_minimal):
     content_type = FileContentType.JSON
 
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
+        tmp_path,
         content_type,
         sample_catalog_minimal,
         test_utils.CATALOGS_DIR
@@ -83,12 +83,12 @@ def test_add(tmp_dir, sample_catalog_minimal):
     assert actual_update_action3 == expected_update_action_3
 
 
-def test_add_failure(tmp_dir, sample_catalog_minimal):
+def test_add_failure(tmp_path, sample_catalog_minimal):
     """Test AddCmd.add() method for trestle add."""
     content_type = FileContentType.JSON
 
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
+        tmp_path,
         content_type,
         sample_catalog_minimal,
         test_utils.CATALOGS_DIR
@@ -126,7 +126,7 @@ def test_run_failure():
         assert e.value.code == 2
 
 
-def test_run(tmp_dir, sample_catalog_minimal):
+def test_run(tmp_path, sample_catalog_minimal):
     """Test _run for AddCmd."""
     # expected catalog after add of Responsible-Party
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_roles_double_rp.json')
@@ -135,7 +135,7 @@ def test_run(tmp_dir, sample_catalog_minimal):
     content_type = FileContentType.YAML
 
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
+        tmp_path,
         content_type,
         sample_catalog_minimal,
         test_utils.CATALOGS_DIR
@@ -157,12 +157,12 @@ def test_run(tmp_dir, sample_catalog_minimal):
     assert expected_catalog_roles2_rp == actual_catalog
 
 
-def test_striped_model(tmp_dir, sample_catalog_minimal):
+def test_striped_model(tmp_path, sample_catalog_minimal):
     """Test _run for AddCmd for stripped model."""
     cwd = os.getcwd()
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
+        tmp_path,
         content_type,
         sample_catalog_minimal,
         test_utils.CATALOGS_DIR

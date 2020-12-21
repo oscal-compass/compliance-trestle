@@ -64,6 +64,9 @@ class SplitCmd(Command):
             return 1
 
         file_path = pathlib.Path(args_raw[const.ARG_FILE])
+        if not file_path.exists():
+            logger.error(f'File {file_path} does not exist.')
+            return 1
         content_type = FileContentType.to_content_type(file_path.suffix)
 
         # find the base directory of the file
