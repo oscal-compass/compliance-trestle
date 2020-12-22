@@ -34,7 +34,7 @@ from trestle.utils import fs
 from trestle.utils.load_distributed import load_distributed
 
 
-def test_merge_invalid_element_path():
+def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir):
     """Test to make sure each element in -e contains 2 parts at least."""
     cmd = MergeCmd()
     args = argparse.Namespace(verbose=1, element='catalog', list_available_elements=False)
@@ -42,6 +42,17 @@ def test_merge_invalid_element_path():
         cmd._run(args)
 
     args = argparse.Namespace(verbose=1, element='catalog.metadata', list_available_elements=False)
+    test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
+    test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
+    catalogs_dir = Path('catalogs/')
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+    catalog_dir = mycatalog_dir / 'catalog'
+
+    # Copy files from test/data/split_merge/step4
+    shutil.rmtree(catalogs_dir)
+    shutil.copytree(test_data_source, catalogs_dir)
+
+    os.chdir(mycatalog_dir)
     cmd._run(args)
 
 
@@ -167,3 +178,51 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir):
 
     # Assert the generated plan matches the expected plan'
     assert generated_plan == expected_plan
+
+
+def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
+    """Test '$mycatalog$ trestle merge -e catalog.*' when metadata and catalog is already split."""
+    # Assume we are running a command like below
+    # trestle merge -e catalog.back-matter
+    content_type = FileContentType.JSON
+    fext = FileContentType.to_file_extension(content_type)
+
+    # prepare trestle project dir with the file
+    test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
+
+    test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
+    catalogs_dir = Path('catalogs/')
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+    catalog_dir = mycatalog_dir / 'catalog'
+
+    # Copy files from test/data/split_merge/step4
+    shutil.rmtree(catalogs_dir)
+    shutil.copytree(test_data_source, catalogs_dir)
+
+    # Change directory to mycatalog_dir
+    os.chdir(mycatalog_dir)
+    catalog_file = Path(f'catalog{fext}')
+    catalog_dir = Path('catalog/')
+
+    assert catalog_file.exists()
+
+    # Read files
+
+    # Create hand-crafter merge plan
+    expected_plan: Plan = Plan()
+
+    reset_destination_action = CreatePathAction(catalog_file.absolute(), clear_content=True)
+    expected_plan.add_action(reset_destination_action)
+
+    _, _, merged_catalog_instance = load_distributed(catalog_file)
+
+    element = Element(merged_catalog_instance)
+    write_destination_action = WriteFileAction(catalog_file, element, content_type=content_type)
+    expected_plan.add_action(write_destination_action)
+
+    # Call merged()
+    generated_plan = MergeCmd.merge(ElementPath('catalog.*'))
+
+    # Assert the generated plan matches the expected plan'
+    assert generated_plan == expected_plan
+
