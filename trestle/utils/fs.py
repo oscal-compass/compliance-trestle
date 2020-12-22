@@ -18,7 +18,7 @@
 import json
 import logging
 import pathlib
-from typing import Any, Dict, List, Optional, Tuple, Type, cast
+from typing import Any, Dict, Optional, Tuple, Type, cast
 
 from pydantic import create_model
 
@@ -161,8 +161,7 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBase
     return model_type, full_alias
 
 
-def get_stripped_contextual_model(path: pathlib.Path = None,
-                                  aliases_not_to_be_stripped: List[str] = None) -> Tuple[OscalBaseModel, str]:
+def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[Type[OscalBaseModel], str]:
     """
     Get the stripped contextual model class and alias based on the contextual path.
 
@@ -172,8 +171,6 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
     """
     if path is None:
         path = pathlib.Path.cwd()
-    if aliases_not_to_be_stripped is None:
-        aliases_not_to_be_stripped = []
 
     singular_model_type, model_alias = get_contextual_model_type(path)
 
@@ -197,8 +194,7 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
     if split_subdir.exists():
         for f in split_subdir.iterdir():
             alias = extract_alias(f)
-            if alias not in aliases_not_to_be_stripped:
-                aliases_to_be_stripped.add(alias)
+            aliases_to_be_stripped.add(alias)
 
     if len(aliases_to_be_stripped) > 0:
         model_type = singular_model_type.create_stripped_model_type(
@@ -325,10 +321,10 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
             model_type = model_type.alias_to_field_map()[path_parts[i]].outer_type_
         model_types.append(model_type)
 
-    last_alias = path_parts[-1]
     if not utils.is_collection_field_type(model_type):
         raise err.TrestleError('Not a valid generic collection model.')
 
+    last_alias = path_parts[-1]
     parent_model_type = model_types[-2]
     singular_alias = utils.classname_to_alias(
         utils.get_inner_type(parent_model_type.alias_to_field_map()[last_alias].outer_type_).__name__, 'json'
