@@ -22,7 +22,6 @@ import pytest
 
 import trestle.core.base_model as ospydantic
 import trestle.core.err as err
-import trestle.core.parser as p
 import trestle.oscal.catalog as oscatalog
 import trestle.oscal.target as ostarget
 from trestle.core.base_model import OscalBaseModel
@@ -68,13 +67,6 @@ def test_is_oscal_base() -> None:
     catalog = simple_catalog()
 
     assert (isinstance(catalog, ospydantic.OscalBaseModel))
-
-
-def test_wrapper_is_oscal_base() -> None:
-    """Test a wrapped class is still a instance of OscalBaseModel."""
-    catalog = simple_catalog()
-    wrapped_catalog = p.wrap_for_output(catalog)
-    assert (isinstance(wrapped_catalog, ospydantic.OscalBaseModel))
 
 
 def test_no_timezone_exception() -> None:

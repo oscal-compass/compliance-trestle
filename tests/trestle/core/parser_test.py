@@ -16,13 +16,9 @@
 """Tests for models module."""
 
 import pathlib
-from datetime import datetime
-from uuid import uuid4
 
 from trestle.core import const
 from trestle.core import parser
-from trestle.oscal import catalog
-from trestle.oscal import target
 
 import yaml
 
@@ -36,7 +32,7 @@ def test_parse_dict() -> None:
 
     with open(pathlib.Path.joinpath(yaml_path, file_name), 'r', encoding=encoding) as f:
         data = yaml.load(f, yaml.FullLoader)
-        target = parser.parse_dict(data['target-definition'], 'trestle.oscal.target.TargetDefinition')
+        target = parser._parse_dict(data['target-definition'], 'trestle.oscal.target.TargetDefinition')
         assert target is not None
 
 
@@ -105,76 +101,3 @@ def test_parse_file() -> None:
         target = parser.parse_file(pathlib.Path.joinpath(yaml_path, file_name), model_name=test['model_name'])
 
         assert type(target).__name__ == test['expected']
-
-
-def test_class_to_oscal_json() -> None:
-    """Pydantic makes classes in PascalCase. All Oscal names are in lowercase-hyphenated."""
-    class_name_1 = 'Catalog'
-    oscal_name_1 = 'catalog'
-    class_name_2 = 'ComponentDefinition'
-    oscal_name_2 = 'component-definition'
-    class_name_3 = 'SecurityImpactLevel'
-    oscal_name_3 = 'security-impact-level'
-
-    assert (oscal_name_1 == parser.class_to_oscal(class_name_1, 'json'))
-    assert (oscal_name_2 == parser.class_to_oscal(class_name_2, 'json'))
-    assert (oscal_name_3 == parser.class_to_oscal(class_name_3, 'json'))
-
-
-def test_class_to_oscal_field() -> None:
-    """Pydantic makes classes in PascalCase. All Oscal names are in lowercase-hyphenated."""
-    class_name_1 = 'Catalog'
-    oscal_name_1 = 'catalog'
-    class_name_2 = 'ComponentDefinition'
-    oscal_name_2 = 'component_definition'
-    class_name_3 = 'SecurityImpactLevel'
-    oscal_name_3 = 'security_impact_level'
-
-    assert (oscal_name_1 == parser.class_to_oscal(class_name_1, 'field'))
-    assert (oscal_name_2 == parser.class_to_oscal(class_name_2, 'field'))
-    assert (oscal_name_3 == parser.class_to_oscal(class_name_3, 'field'))
-
-
-def test_wrap_for_output() -> None:
-    """Test that an output object is wrapped and contains the appropriate content."""
-    m = catalog.Metadata(
-        **{
-            'title': 'my cool catalog', 'last-modified': datetime.now(), 'version': '0.0.1', 'oscal-version': '1.0.0'
-        }
-    )
-
-    c = catalog.Catalog(metadata=m, uuid=str(uuid4()))
-
-    wrapped = parser.wrap_for_output(c)
-    assert (wrapped.catalog.metadata.title == c.metadata.title)
-
-    # Test with target definition
-    t_m = target.Metadata(
-        **{
-            'title': 'my cool target definition',
-            'last-modified': datetime.now(),
-            'version': '0.0.1',
-            'oscal-version': '1.0.0'
-        }
-    )
-
-    t = target.TargetDefinition(metadata=t_m)
-    wrapped = parser.wrap_for_output(t)
-    assert (wrapped.target_definition.metadata.title == t.metadata.title)
-
-
-def test_wrap_for_input() -> None:
-    """Test input for object that has a hyphen it it's name."""
-    json_path = pathlib.Path('tests/data/json/sample-target-definition.json')
-    parser.wrap_for_input(target.TargetDefinition).parse_file(json_path).target_definition
-
-
-def test_pascal_case_split() -> None:
-    """Test whether PascalCase objects are getting split correctly."""
-    one = 'One'
-    two = 'TwoTwo'
-    three = 'ThreeThreeThree'
-    assert (len(parser.pascal_case_split(one)) == 1)
-    assert (len(parser.pascal_case_split(two)) == 2)
-    assert (len(parser.pascal_case_split(three)) == 3)
-    # TODO: Add negative test cases.
