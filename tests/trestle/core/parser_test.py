@@ -30,7 +30,7 @@ yaml_path = pathlib.Path('tests/data/yaml/')
 encoding = 'utf8'
 
 
-def test_parse_dict():
+def test_parse_dict() -> None:
     """Test parse_dict."""
     file_name = 'good_target.yaml'
 
@@ -40,7 +40,7 @@ def test_parse_dict():
         assert target is not None
 
 
-def test_to_class_name():
+def test_to_class_name() -> None:
     """Test to_class_name."""
     tests = [
         {
@@ -57,7 +57,7 @@ def test_to_class_name():
         assert parser.to_class_name(test['name']) == test['expected']
 
 
-def test_to_full_model_name():
+def test_to_full_model_name() -> None:
     """Test to_full_model_name."""
     tests = [
         {
@@ -89,7 +89,7 @@ def test_to_full_model_name():
         assert model_name == test['expected']
 
 
-def test_parse_file():
+def test_parse_file() -> None:
     """Test parse_file."""
     file_name = 'good_target.yaml'
 
@@ -107,7 +107,7 @@ def test_parse_file():
         assert type(target).__name__ == test['expected']
 
 
-def test_class_to_oscal_json():
+def test_class_to_oscal_json() -> None:
     """Pydantic makes classes in PascalCase. All Oscal names are in lowercase-hyphenated."""
     class_name_1 = 'Catalog'
     oscal_name_1 = 'catalog'
@@ -121,7 +121,7 @@ def test_class_to_oscal_json():
     assert (oscal_name_3 == parser.class_to_oscal(class_name_3, 'json'))
 
 
-def test_class_to_oscal_field():
+def test_class_to_oscal_field() -> None:
     """Pydantic makes classes in PascalCase. All Oscal names are in lowercase-hyphenated."""
     class_name_1 = 'Catalog'
     oscal_name_1 = 'catalog'
@@ -135,7 +135,7 @@ def test_class_to_oscal_field():
     assert (oscal_name_3 == parser.class_to_oscal(class_name_3, 'field'))
 
 
-def test_wrap_for_output():
+def test_wrap_for_output() -> None:
     """Test that an output object is wrapped and contains the appropriate content."""
     m = catalog.Metadata(
         **{
@@ -163,13 +163,13 @@ def test_wrap_for_output():
     assert (wrapped.target_definition.metadata.title == t.metadata.title)
 
 
-def test_wrap_for_input():
+def test_wrap_for_input() -> None:
     """Test input for object that has a hyphen it it's name."""
     json_path = pathlib.Path('tests/data/json/sample-target-definition.json')
     parser.wrap_for_input(target.TargetDefinition).parse_file(json_path).target_definition
 
 
-def test_pascal_case_split():
+def test_pascal_case_split() -> None:
     """Test whether PascalCase objects are getting split correctly."""
     one = 'One'
     two = 'TwoTwo'

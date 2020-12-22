@@ -30,7 +30,7 @@ encoding = 'utf8'
 loader = yaml.Loader
 
 
-def test_yaml_load():
+def test_yaml_load() -> None:
     """Test yaml load."""
     # happy path
     read_file = (yaml_path / 'good_simple.yaml').open('r', encoding=encoding)
@@ -43,7 +43,7 @@ def test_yaml_load():
         obj = yaml.load(read_file, Loader=loader)
 
 
-def test_yaml_dump(tmp_path):
+def test_yaml_dump(tmp_path: pathlib.Path) -> None:
     """Test yaml load and dump."""
     target_name = 'good_target.yaml'
     tmp_path = pathlib.Path(tmp_path)
@@ -63,7 +63,7 @@ def test_yaml_dump(tmp_path):
     assert saved_target == target
 
 
-def test_oscal_model(tmp_path):
+def test_oscal_model(tmp_path: pathlib.Path) -> None:
     """Test pydantic oscal model."""
     good_target_name = 'good_target.yaml'
     tmp_path = pathlib.Path(tmp_path)

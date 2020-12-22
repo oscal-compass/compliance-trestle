@@ -24,7 +24,7 @@ from tests import test_utils
 from trestle.utils import trash
 
 
-def test_to_trash_dir_path(tmp_path: pathlib.Path):
+def test_to_trash_dir_path(tmp_path: pathlib.Path) -> None:
     """Test to_trash_dir_path method."""
     tmp_file: pathlib.Path = tmp_path / 'tmp_file.md'
     tmp_file.touch()
@@ -47,7 +47,7 @@ def test_to_trash_dir_path(tmp_path: pathlib.Path):
     assert trash.to_trash_dir_path(data_dir).parent.name == pathlib.Path(trash.TRESTLE_TRASH_DIR).name
 
 
-def test_to_trash_file_path(tmp_path: pathlib.Path):
+def test_to_trash_file_path(tmp_path: pathlib.Path) -> None:
     """Test to_trash_file_path method."""
     tmp_file: pathlib.Path = tmp_path / 'tmp_file.md'
     tmp_file.touch()
@@ -67,7 +67,7 @@ def test_to_trash_file_path(tmp_path: pathlib.Path):
     assert trash.to_trash_file_path(readme_file).parent.name == f'data{trash.TRESTLE_TRASH_DIR_EXT}'
 
 
-def test_to_trash_path(tmp_path: pathlib.Path):
+def test_to_trash_path(tmp_path: pathlib.Path) -> None:
     """Test to trash path function."""
     data_dir = tmp_path / 'data'
     data_dir.mkdir(exist_ok=True, parents=True)
@@ -80,7 +80,7 @@ def test_to_trash_path(tmp_path: pathlib.Path):
     assert trash.to_trash_dir_path(readme_file.parent) == trash.to_trash_path(readme_file.parent)
 
 
-def test_get_trash_root(tmp_path: pathlib.Path):
+def test_get_trash_root(tmp_path: pathlib.Path) -> None:
     """Test get trash root function."""
     assert trash.get_trash_root(pathlib.Path('')) is None
 
@@ -96,7 +96,7 @@ def test_get_trash_root(tmp_path: pathlib.Path):
     assert trash_root.absolute() == found_root.absolute()
 
 
-def test_to_origin_dir_path(tmp_path: pathlib.Path):
+def test_to_origin_dir_path(tmp_path: pathlib.Path) -> None:
     """Test to origin dir path function."""
     # invalid trestle project would error
     with pytest.raises(AssertionError):
@@ -129,7 +129,7 @@ def test_to_origin_dir_path(tmp_path: pathlib.Path):
         trash.to_origin_dir_path(trash_file_path)
 
 
-def test_to_origin_file_path(tmp_path: pathlib.Path):
+def test_to_origin_file_path(tmp_path: pathlib.Path) -> None:
     """Test to origin file path function."""
     test_utils.ensure_trestle_config_dir(tmp_path)
     (tmp_path / trash.TRESTLE_TRASH_DIR).mkdir(exist_ok=True, parents=True)
@@ -143,7 +143,7 @@ def test_to_origin_file_path(tmp_path: pathlib.Path):
         trash.to_origin_file_path(tmp_file)
 
 
-def test_to_origin_path(tmp_path: pathlib.Path):
+def test_to_origin_path(tmp_path: pathlib.Path) -> None:
     """Test to origin path function."""
     test_utils.ensure_trestle_config_dir(tmp_path)
     (tmp_path / trash.TRESTLE_TRASH_DIR).mkdir(exist_ok=True, parents=True)
@@ -159,7 +159,7 @@ def test_to_origin_path(tmp_path: pathlib.Path):
     assert data_dir.absolute() == origin_dir.absolute()
 
 
-def test_trash_store_file(tmp_path: pathlib.Path):
+def test_trash_store_file(tmp_path: pathlib.Path) -> None:
     """Test moving file to trash."""
     test_utils.ensure_trestle_config_dir(tmp_path)
 
@@ -238,7 +238,7 @@ def test_trash_store(tmp_path: pathlib.Path) -> None:
     assert trash.to_trash_file_path(readme_file).exists()
 
 
-def test_trash_recover_dir(tmp_path):
+def test_trash_recover_dir(tmp_path) -> None:
     """Test recover trashed directory and contents."""
     test_utils.ensure_trestle_config_dir(tmp_path)
     data_dir: pathlib.Path = tmp_path / 'data'
@@ -255,7 +255,7 @@ def test_trash_recover_dir(tmp_path):
     assert readme_file.exists()
 
 
-def test_trash_recover_file(tmp_path):
+def test_trash_recover_file(tmp_path) -> None:
     """Test recover trashed file."""
     test_utils.ensure_trestle_config_dir(tmp_path)
     data_dir: pathlib.Path = tmp_path / 'data'
@@ -272,7 +272,7 @@ def test_trash_recover_file(tmp_path):
     assert readme_file.exists()
 
 
-def test_trash_recover(tmp_path):
+def test_trash_recover(tmp_path) -> None:
     """Test recover trashed file or directory."""
     test_utils.ensure_trestle_config_dir(tmp_path)
     data_dir: pathlib.Path = tmp_path / 'data'
