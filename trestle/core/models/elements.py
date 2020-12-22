@@ -44,9 +44,12 @@ class ElementPath:
 
         It assumes the element path contains oscal field alias with hyphens only
         """
+        self._children_paths: List['ElementPath'] = []
         if isinstance(parent_path, str):
             parent_path = ElementPath(parent_path)
         self._parent_path = parent_path
+        if self.get_parent() is not None:
+            self._parent_path.add_child_path(self)
 
         self._path: List[str] = self._parse(element_path)
 
@@ -93,6 +96,14 @@ class ElementPath:
         It can be None or a valid ElementPath
         """
         return self._parent_path
+
+    def add_child_path(self, child_path: 'ElementPath') -> None:
+        """Add a child_path to this element path."""
+        self._children_paths.append(child_path)
+
+    def get_children_paths(self) -> List['ElementPath']:
+        """Return all the children paths for this element."""
+        return self._children_paths
 
     def get_first(self) -> str:
         """Return the first part of the path."""

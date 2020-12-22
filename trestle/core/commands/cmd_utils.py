@@ -69,7 +69,7 @@ def parse_element_arg(element_arg: str, contextual_mode: bool = True) -> List[El
 
     # search for wildcards and create paths with its parent path
     path_parts = element_arg.split(ElementPath.PATH_SEPARATOR)
-    if len(path_parts) <= 0:
+    if len(path_parts) <= 1:
         raise TrestleError(f'Invalid element path "{element_arg}" without any path separator')
 
     prev_element_path = None
