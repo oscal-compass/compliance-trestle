@@ -319,6 +319,8 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
     model_type = model_types[0]
     for i in range(1, len(path_parts)):
         if utils.is_collection_field_type(model_type):
+            if i == len(path_parts) - 1 and path_parts[i] == '*':
+                break
             model_type = utils.get_inner_type(model_type)
             i = i + 1
         else:
@@ -326,6 +328,8 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
         model_types.append(model_type)
 
     last_alias = path_parts[-1]
+    if last_alias == '*':
+        last_alias = path_parts[-2]
     if not utils.is_collection_field_type(model_type):
         raise err.TrestleError('Not a valid generic collection model.')
 

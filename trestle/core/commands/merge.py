@@ -89,7 +89,7 @@ class MergeCmd(Command):
             write_destination_action = WriteFileAction(
                 destination_model_filename, Element(merged_model_instance), content_type=FileContentType.JSON
             )
-            # TODO : This will work, if RemovePathAction can take 
+            # TODO : This will work, if RemovePathAction can take
             # directyory delete_target_action = RemovePathAction(Path(merged_model_alias))
             plan: Plan = Plan()
             plan.add_action(reset_destination_action)

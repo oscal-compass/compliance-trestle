@@ -46,7 +46,6 @@ def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir):
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
     catalogs_dir = Path('catalogs/')
     mycatalog_dir = catalogs_dir / 'mycatalog'
-    catalog_dir = mycatalog_dir / 'catalog'
 
     # Copy files from test/data/split_merge/step4
     shutil.rmtree(catalogs_dir)
@@ -193,7 +192,6 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
     catalogs_dir = Path('catalogs/')
     mycatalog_dir = catalogs_dir / 'mycatalog'
-    catalog_dir = mycatalog_dir / 'catalog'
 
     # Copy files from test/data/split_merge/step4
     shutil.rmtree(catalogs_dir)
@@ -202,7 +200,6 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     # Change directory to mycatalog_dir
     os.chdir(mycatalog_dir)
     catalog_file = Path(f'catalog{fext}')
-    catalog_dir = Path('catalog/')
 
     assert catalog_file.exists()
 
@@ -225,4 +222,3 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
 
     # Assert the generated plan matches the expected plan'
     assert generated_plan == expected_plan
-
