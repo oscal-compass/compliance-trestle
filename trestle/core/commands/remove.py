@@ -147,12 +147,12 @@ class RemoveCmd(Command):
         if deleting_element is not None:
             # The element already exists
             if type(deleting_element) is list:
-                logger.warn(
+                logger.warning(
                     'Warning: trestle remove does not support removing elements of a list: '
                     'this removes the entire list'
                 )
             elif type(deleting_element) is dict:
-                logger.warn(
+                logger.warning(
                     'Warning: trestle remove does not support removing dict elements: '
                     'this removes the entire dict element'
                 )
