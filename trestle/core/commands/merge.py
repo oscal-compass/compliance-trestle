@@ -17,13 +17,11 @@
 
 import os
 from pathlib import Path
-from typing import Set, Type
 
 from ilcli import Command  # type: ignore
 
 import trestle.core.err as err
 from trestle.core import const, utils
-from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
@@ -41,14 +39,8 @@ class MergeCmd(Command):
         self.add_argument(
             f'-{const.ARG_ELEMENT_SHORT}',
             f'--{const.ARG_ELEMENT}',
-            help=f'{const.ARG_DESC_ELEMENT}(s) to be merged.',
-        )
-
-        self.add_argument(
-            '-l',
-            '--list-available-elements',
-            action='store_true',
-            help='Comma-separated list of paths of properties that can be merged.'
+            help=f'{const.ARG_DESC_ELEMENT}(s) to be merged. The last element is merged into the second last element.',
+            required=True
         )
 
     def _run(self, args) -> None:
@@ -145,88 +137,3 @@ class MergeCmd(Command):
         # TODO: Destination model directory is empty or already merged? Then clean up.
 
         return plan
-
-    def _list_available_elements(self) -> None:
-        """List element paths that can be merged from the current context."""
-        current_model, current_alias = fs.get_contextual_model_type(Path.cwd())
-
-        current_filename = f'{current_alias}.json'
-
-        self._list_options_for_merge(Path.cwd(), current_alias, current_model, current_filename)
-
-    def _list_options_for_merge(
-        self,
-        cwd: Path,
-        current_alias: str,
-        current_model: Type[OscalBaseModel],
-        current_filename: str,
-        initial_path: Path = None,
-        visited_elements: Set[str] = None
-    ):
-        """List paths that can be used in the -e option for the merge operation."""
-        if initial_path is None:
-            initial_path = cwd
-        if visited_elements is None:
-            visited_elements = set()
-
-        path_sep = '.' if current_alias else ''
-
-        # List options for merge
-        if not utils.is_collection_field_type(current_model):
-
-            malias = current_alias.split('.')[-1]
-            if cwd.is_dir() and malias != fs.extract_alias(cwd):
-                split_subdir = cwd / malias
-            else:
-                split_subdir = cwd.parent / cwd.with_suffix('').name
-
-            # Go through each file or subdirectory in the cwd
-            fields_by_alias = current_model.alias_to_field_map()
-            for filepath in Path.iterdir(split_subdir):
-                if filepath.is_file() and cwd == initial_path:
-                    continue
-
-                alias = filepath.with_suffix('').name
-                if alias in fields_by_alias:
-                    visited_element = f'{current_alias}{path_sep}{alias}'
-                    if visited_element not in visited_elements:
-                        visited_elements.add(visited_element)
-                        self.out(f"{visited_element} (merges \'{filepath.name}\' into \'{cwd / current_filename}\')")
-
-                    # If it is subdirectory, call this function recursively
-                    if Path.is_dir(filepath):
-                        self._list_options_for_merge(
-                            filepath,
-                            f'{current_alias}{path_sep}{alias}',
-                            fields_by_alias[alias].outer_type_,
-                            f'{alias}.json',
-                            initial_path=initial_path,
-                            visited_elements=visited_elements
-                        )
-        else:
-            # List merge option for collection at the base level
-            destination_dir = cwd.parent if len(initial_path.parts) < len(cwd.parts) else cwd
-            destination = destination_dir / current_filename
-            visited_element = f'{current_alias}{path_sep}{const.ELEMENT_WILDCARD}'
-            if visited_element not in visited_elements:
-                visited_elements.add(visited_element)
-                self.out(f"{visited_element} (merges all files/subdirectories under {cwd} into \'{destination}\')")
-
-            # Go through each subdirectory in the collection and look for nested merge options
-            singular_alias = fs.get_singular_alias(current_alias, False)
-            singular_model = utils.get_inner_type(current_model)
-            for filename in sorted(cwd.glob(f'*{const.IDX_SEP}{singular_alias}')):
-                if Path.is_dir(filename):
-                    self._list_options_for_merge(
-                        filename,  # f'{current_alias}{path_sep}*',
-                        f'{current_alias}{path_sep}{singular_alias}',
-                        singular_model,
-                        f'{singular_alias}.json',
-                        initial_path=initial_path,
-                        visited_elements=visited_elements
-                    )
-
-    def _print_merge_option(self, visited_elements, element, source_path, destination_path) -> None:
-        if element not in visited_elements:
-            visited_elements.add(element)
-            self.out(f"{element} (merges all files/subdirectories under {source_path} into \'{destination_path}\')")
