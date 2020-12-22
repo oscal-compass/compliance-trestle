@@ -19,13 +19,10 @@ import os
 import shutil
 from pathlib import Path
 
-import pytest
-
 from tests import test_utils
 
 import trestle.oscal.catalog as oscatalog
 from trestle.core.commands.merge import MergeCmd
-from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
@@ -37,11 +34,10 @@ from trestle.utils.load_distributed import load_distributed
 def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir):
     """Test to make sure each element in -e contains 2 parts at least."""
     cmd = MergeCmd()
-    args = argparse.Namespace(verbose=1, element='catalog', list_available_elements=False)
-    with pytest.raises(TrestleError):
-        cmd._run(args)
+    args = argparse.Namespace(verbose=1, element='catalog')
+    assert cmd._run(args) == 1
 
-    args = argparse.Namespace(verbose=1, element='catalog.metadata', list_available_elements=False)
+    args = argparse.Namespace(verbose=1, element='catalog.metadata')
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
     catalogs_dir = Path('catalogs/')
@@ -52,7 +48,7 @@ def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir):
     shutil.copytree(test_data_source, catalogs_dir)
 
     os.chdir(mycatalog_dir)
-    cmd._run(args)
+    assert cmd._run(args) == 0
 
 
 def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
@@ -222,3 +218,23 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
 
     # Assert the generated plan matches the expected plan'
     assert generated_plan == expected_plan
+
+
+def test_bad_merge(testdata_dir, tmp_trestle_dir):
+    """Test a bad merge element path."""
+    # prepare trestle project dir with the file
+    test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
+
+    test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
+
+    catalogs_dir = Path('catalogs/')
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+
+    # Copy files from test/data/split_merge/step4
+    shutil.rmtree(catalogs_dir)
+    shutil.copytree(test_data_source, catalogs_dir)
+
+    os.chdir(mycatalog_dir)
+    cmd = MergeCmd()
+    args = argparse.Namespace(verbose=1, element='catalog.roles')
+    assert cmd._run(args) == 1

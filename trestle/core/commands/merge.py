@@ -15,6 +15,7 @@
 # limitations under the License.
 """Trestle Merge Command."""
 
+import logging
 import os
 from pathlib import Path
 
@@ -28,6 +29,8 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs, load_distributed
 from trestle.utils import log
+
+logger = logging.getLogger(__name__)
 
 
 class MergeCmd(Command):
@@ -46,14 +49,16 @@ class MergeCmd(Command):
     def _run(self, args) -> None:
         """Merge elements into the parent oscal model."""
         log.set_log_level_from_args(args)
-        if args.list_available_elements:
-            self._list_available_elements()
-        elif args.element:
+        try:
             # FIXME: Handle multiple element paths: element_paths = args.element.split(',')
             plan = self.merge(ElementPath(args.element))
 
             plan.simulate()
             plan.execute()
+        except BaseException as err:
+            logger.error(f'Merge failed: {err}')
+            return 1
+        return 0
 
     @classmethod
     def merge(cls, element_path: ElementPath) -> Plan:
