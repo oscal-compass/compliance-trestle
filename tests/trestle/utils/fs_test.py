@@ -327,15 +327,6 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_catalog()
 
-    stripped_catalog = fs.get_stripped_contextual_model(
-        mycatalog_dir / 'catalog.json', aliases_not_to_be_stripped=['groups', 'back-matter']
-    )
-    alias_to_field_map = stripped_catalog[0].alias_to_field_map()
-    assert 'uuid' in alias_to_field_map
-    assert 'metadata' not in alias_to_field_map
-    assert 'back-matter' in alias_to_field_map
-    assert 'groups' in alias_to_field_map
-
     def check_stripped_metadata():
         assert 'title' in alias_to_field_map
         assert 'published' in alias_to_field_map
@@ -407,7 +398,8 @@ def test_get_singular_alias() -> None:
         fs.get_singular_alias(alias_path='')
 
     assert 'responsible-party' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties')
-    assert 'responsible-party' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*')
+    with pytest.raises(TrestleError):
+        fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*')
     assert 'prop' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*.properties')
 
     assert 'role' == fs.get_singular_alias(alias_path='catalog.metadata.roles')
@@ -453,9 +445,8 @@ def test_contextual_get_singular_alias(tmp_path: pathlib.Path) -> None:
         fs.get_singular_alias('metadata.roles', contextual_mode=False)
     alias = fs.get_singular_alias('metadata.roles', contextual_mode=True)
     assert alias == 'role'
-    assert 'responsible-party' == fs.get_singular_alias(
-        alias_path='metadata.responsible-parties.*', contextual_mode=True
-    )
+    with pytest.raises(TrestleError):
+        fs.get_singular_alias(alias_path='metadata.responsible-parties.*', contextual_mode=True)
     assert 'prop' == fs.get_singular_alias(alias_path='metadata.responsible-parties.*.properties', contextual_mode=True)
 
     os.chdir(groups_dir)
