@@ -106,12 +106,14 @@ class MergeCmd(Command):
             raise err.TrestleError(
                 f'Target model not found. Possibly merge of the elements not allowed at this point. {str(e)}'
             )
-        # target_model filename
+        # target_model filename - depends whether destination model is decomposed or not
         if (Path(os.getcwd()) / destination_model_alias).exists():
             target_model_path = f'{os.getcwd()}/{destination_model_alias}/{target_model_alias}'
         else:
             target_model_path = target_model_alias
 
+        # if target model is a file then handle file. If file doesn't exist, handle the directory,
+        # but in this case it's a list or a dict collection type
         if (Path(f'{target_model_path}.json')).exists():
             target_model_filename = Path(f'{target_model_path}.json')
             _, _, target_model_object = load_distributed.load_distributed(target_model_filename)
