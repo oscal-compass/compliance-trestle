@@ -15,8 +15,7 @@
 """Utilities for dealing with models."""
 import importlib
 import logging
-import warnings
-from typing import Any, List, Tuple, Type, TypeVar, no_type_check
+from typing import Any, Dict, List, Tuple, Type, TypeVar, Union, no_type_check
 
 from datamodel_code_generator.parser.base import camel_to_snake, snake_to_upper_camel  # type: ignore
 
@@ -24,6 +23,8 @@ from pydantic import BaseModel
 
 import trestle.core.const as const
 import trestle.core.err as err
+
+import typing_extensions
 
 logger = logging.getLogger(__name__)
 
@@ -89,13 +90,6 @@ def camel_to_dash(name: str) -> str:
     return camel_to_snake(name).replace('_', '-')
 
 
-def pascal_case_split(pascal_str: str) -> List[str]:
-    """Parse a pascal case string (e.g. a ClassName) and return a list of strings."""
-    warnings.warn('trestle.utils.pascal_case_split function is deprecated', DeprecationWarning)
-    start_idx = [i for i, e in enumerate(pascal_str) if e.isupper()] + [len(pascal_str)]
-    return [pascal_str[x:y] for x, y in zip(start_idx, start_idx[1:])]
-
-
 @no_type_check
 def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
     """Get the root model class and alias based on the module."""
@@ -112,21 +106,43 @@ def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
 
 
 # FIXME: Typing issues here
-def is_collection_field_type(field_type: Any) -> bool:
-    """Check if model type is a generic collection model such as a typed list or a typed dict."""
-    if hasattr(field_type, '__origin__') and hasattr(field_type, '__args__') and (list in field_type.mro()
-                                                                                  or dict in field_type.mro()):
-        return True
+# I'm still not sure whether this type is correct or not.
+def is_collection_field_type(field_type: Union[Type[Any], List[Any], Dict[str, Any]]) -> bool:
+    """Check whether a type hint is a collection type as used by OSCAL.
 
+    Specifiically this is whether the type is a list or string.
+
+    Args:
+        field_type: A type or a type alias of a field typically as served via pydantic introspection
+
+    Returns:
+        Status if if it is a list or dict return type as used by oscal.
+    """
+    # Retrieves type from a type annotation
+    origin_type = typing_extensions.get_origin(field_type)
+    #
+    if origin_type in [list, dict]:
+        return True
     return False
 
 
-def get_inner_type(collection_field_type) -> Type[Any]:
-    """Get the inner model in a generic collection model such as a List or a Dict."""
-    if is_collection_field_type(collection_field_type):
-        return collection_field_type.__args__[-1]
-    else:
-        raise err.TrestleError('Model type is not a Dict or List')
+def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, TG]]]) -> Type[TG]:
+    """Get the inner model in a generic collection model such as a List or a Dict.
+
+    For a dict the return type is of the value and not the key.
+
+    Args:
+        collection_field_type: Provided type annotation from a pydantic object
+
+    Returns:
+        The desired type.
+    """
+    try:
+        types = typing_extensions.get_args(collection_field_type)[-1]
+        return types
+    except Exception as e:
+        logger.debug(e)
+        raise err.TrestleError('Model type is not a Dict or List') from e
 
 
 def get_cwm(contextual_path: List[str]) -> str:
@@ -144,7 +160,7 @@ def get_cwm(contextual_path: List[str]) -> str:
     return ''
 
 
-def get_target_model(element_path_parts: List[str], current_model: BaseModel) -> BaseModel:
+def get_target_model(element_path_parts: List[str], current_model: Type[BaseModel]) -> Type[BaseModel]:
     """Get the target model from the parts of a Element Path.
 
     Takes as input a list, containing parts of an ElementPath as str and expressed in aliases,
@@ -157,7 +173,7 @@ def get_target_model(element_path_parts: List[str], current_model: BaseModel) ->
             if is_collection_field_type(current_model):
                 # Return the model class inside the collection
                 # FIXME: From a typing perspective this is wrong.
-                current_model = get_inner_type(current_model)
+                current_model = get_inner_type(current_model)  #
             else:
                 current_model = current_model.alias_to_field_map()[element_path_parts[index]].outer_type_
         return current_model

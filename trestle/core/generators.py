@@ -17,7 +17,7 @@ import logging
 import uuid
 from datetime import date, datetime
 from enum import Enum
-from typing import Any, Optional, Type, Union
+from typing import Dict, List, Optional, Type, TypeVar, Union, cast
 
 import pydantic.networks
 from pydantic import BaseModel
@@ -28,7 +28,10 @@ import trestle.core.utils as utils
 import trestle.oscal.ssp
 from trestle.core.base_model import OscalBaseModel
 
+import typing_extensions
 logger = logging.getLogger(__name__)
+
+TG = TypeVar('TG', bound=OscalBaseModel)
 
 
 def generate_sample_value_by_type(
@@ -71,15 +74,17 @@ def generate_sample_value_by_type(
         raise err.TrestleError('Fatal: Bad type in model')
 
 
-def generate_sample_model(model: Type[Any]) -> OscalBaseModel:
+def generate_sample_model(model: Union[Type[TG], List[TG], Dict[str, TG]]) -> TG:
     """Given a model class, generate an object of that class with sample values."""
-    # FIXME: Should be in separate generator module as it inherits EVERYTHING
+    # TODO: The typing here is very generic - which may cause some pain. It may be more appropriate to create a wrapper
+    # Function for the to level execution. This would imply restructuring some other parts of the code.
+
     model_type = model
-    if utils.is_collection_field_type(model):
-        model_type = model.__origin__
-        model = utils.get_inner_type(model)
-    else:
-        model = model
+    # This block normalizes model type down to
+    if utils.is_collection_field_type(model):  # type: ignore
+        model_type = typing_extensions.get_origin(model)  # type: ignore
+        model = utils.get_inner_type(model)  # type: ignore
+    model = cast(TG, model)  # type: ignore
 
     model_dict = {}
 

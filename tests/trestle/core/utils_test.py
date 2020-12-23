@@ -30,7 +30,7 @@ import trestle.oscal.ssp as ssp
 import trestle.oscal.target as target
 
 
-def load_good_catalog():
+def load_good_catalog() -> catalog.Catalog:
     """Load nist 800-53 as a catalog example."""
     good_sample_path = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
 
@@ -38,7 +38,7 @@ def load_good_catalog():
     return catalog.Catalog.oscal_read(good_sample_path)
 
 
-def test_get_elements():
+def test_get_elements() -> None:
     """Test getting flat list of elements."""
     good_sample = load_good_catalog()
 
@@ -54,7 +54,7 @@ def test_get_elements():
     assert (len(group_list) >= 2)
 
 
-def test_is_collection_field_type():
+def test_is_collection_field_type() -> None:
     """Test for checking whether the type of a field in an OscalBaseModel object is a collection field."""
     good_catalog = load_good_catalog()
 
@@ -86,7 +86,7 @@ def test_is_collection_field_type():
     assert mutils.is_collection_field_type(postal_address_field.type_) is False  # AddrLine
 
 
-def test_get_inner_type():
+def test_get_inner_type() -> None:
     """Test retrievel of inner type of a model field representing a collection."""
     good_catalog = load_good_catalog()
 
@@ -118,7 +118,7 @@ def test_get_inner_type():
     assert responsible_party_type == catalog.ResponsibleParty
 
 
-def test_get_root_model():
+def test_get_root_model() -> None:
     """Test looking for the root model of a trestle oscal module."""
     with pytest.raises(err.TrestleError):
         mutils.get_root_model('invalid')
@@ -143,7 +143,7 @@ def test_get_root_model():
         assert model_alias == key
 
 
-def test_classname_to_alias():
+def test_classname_to_alias() -> None:
     """Test conversion of class name to alias."""
     module_name = catalog.Catalog.__module__
 
@@ -188,7 +188,7 @@ def test_alias_to_classname() -> None:
         assert mutils.alias_to_classname('target-definition', 'invalid') == 'TargetDefinition'
 
 
-def test_get_target_model():
+def test_get_target_model() -> None:
     """Test utils method get_target_model."""
     assert mutils.is_collection_field_type(
         mutils.get_target_model(['catalog', 'metadata', 'roles'], catalog.Catalog)
