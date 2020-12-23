@@ -162,7 +162,7 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBase
 
 
 def get_stripped_contextual_model(path: pathlib.Path = None,
-                                  aliases_not_to_be_stripped: List[str] = None) -> Tuple[OscalBaseModel, str]:
+                                  aliases_not_to_be_stripped: List[str] = None) -> Tuple[Type[OscalBaseModel], str]:
     """
     Get the stripped contextual model class and alias based on the contextual path.
 

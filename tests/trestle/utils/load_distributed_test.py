@@ -24,7 +24,7 @@ from tests import test_utils
 
 from trestle.oscal.catalog import Catalog, ResponsibleParty, Role
 from trestle.utils import fs
-from trestle.utils.load_distributed import load_dict, load_distributed, load_list
+from trestle.utils.load_distributed import _load_dict, _load_list, load_distributed
 
 
 def test_load_list(testdata_dir, tmp_trestle_dir):
@@ -42,7 +42,7 @@ def test_load_list(testdata_dir, tmp_trestle_dir):
     shutil.rmtree(catalogs_dir)
     shutil.copytree(test_data_source, catalogs_dir)
 
-    actual_model_type, actual_model_alias, actual_roles = load_list(catalog_dir / 'metadata' / 'roles')
+    actual_model_type, actual_model_alias, actual_roles = _load_list(catalog_dir / 'metadata' / 'roles')
 
     expected_roles = [
         Role.oscal_read(catalog_dir / 'metadata/roles/00000__role.json'),
@@ -71,7 +71,7 @@ def test_load_list_group(testdata_dir, tmp_trestle_dir):
     shutil.rmtree(catalogs_dir)
     shutil.copytree(test_data_source, catalogs_dir)
 
-    actual_model_type, actual_model_alias, actual_groups = load_list(catalog_dir / 'groups')
+    actual_model_type, actual_model_alias, actual_groups = _load_list(catalog_dir / 'groups')
 
     # load_list is expected to return a list of array, instead of an instance of Groups class
     expected_groups = (actual_model_type.oscal_read(testdata_dir / 'split_merge/load_distributed/groups.json')).__root__
@@ -94,7 +94,7 @@ def test_load_dict(testdata_dir, tmp_trestle_dir):
     shutil.rmtree(catalogs_dir)
     shutil.copytree(test_data_source, catalogs_dir)
 
-    actual_model_type, actual_model_alias, actual_model_instance = load_dict(
+    actual_model_type, actual_model_alias, actual_model_instance = _load_dict(
         catalog_dir / 'metadata/responsible-parties')
 
     expexted_model_instance = {

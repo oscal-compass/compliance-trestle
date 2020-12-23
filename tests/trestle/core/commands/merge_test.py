@@ -34,9 +34,12 @@ from trestle.utils.load_distributed import load_distributed
 
 
 def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir):
-    """Test to make sure each element in -e contains 2 parts at least."""
+    """Test to make sure each element in -e contains 2 parts at least, and no chained element paths."""
     cmd = MergeCmd()
     args = argparse.Namespace(verbose=1, element='catalog')
+    assert cmd._run(args) == 1
+
+    args = argparse.Namespace(verbose=1, element='catalog.metadata,catalog.metadata.roles')
     assert cmd._run(args) == 1
 
     args = argparse.Namespace(verbose=1, element='catalog.metadata')

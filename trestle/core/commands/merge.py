@@ -21,8 +21,8 @@ from pathlib import Path
 
 from ilcli import Command  # type: ignore
 
-import trestle.core.err as err
 from trestle.core import const, utils
+from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
@@ -50,9 +50,11 @@ class MergeCmd(Command):
         """Merge elements into the parent oscal model."""
         log.set_log_level_from_args(args)
         try:
-            # FIXME: Handle multiple element paths: element_paths = args.element.split(',')
-            plan = self.merge(ElementPath(args.element))
+            # Handle multiple element paths: element_paths = args.element.split(',')
+            if len(args.element.split(',')) > 1:
+                raise TrestleError('Trestle merge -e/-element currently takes only 1 element.')
 
+            plan = self.merge(ElementPath(args.element))
             plan.simulate()
             plan.execute()
         except BaseException as err:
@@ -101,7 +103,7 @@ class MergeCmd(Command):
         try:
             target_model_type = utils.get_target_model(element_path_list, merged_model_type)
         except Exception as e:
-            raise err.TrestleError(
+            raise TrestleError(
                 f'Target model not found. Possibly merge of the elements not allowed at this point. {str(e)}'
             )
         # target_model filename - depends whether destination model is decomposed or not
@@ -125,7 +127,7 @@ class MergeCmd(Command):
         """3. Insert target model into destination model."""
         merged_dict = destination_model_object.__dict__
         merged_dict[target_model_alias] = target_model_object
-        merged_model_object = merged_model_type(**merged_dict)
+        merged_model_object = merged_model_type(**merged_dict)  # type: ignore
         merged_destination_element = Element(merged_model_object)
         """4. Create action  plan"""
         reset_destination_action = CreatePathAction(destination_model_filename.absolute(), clear_content=True)
