@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle Merge Command."""
-
+import argparse
 import logging
 import os
 from pathlib import Path
@@ -38,7 +38,7 @@ class MergeCmd(Command):
 
     name = 'merge'
 
-    def _init_arguments(self):
+    def _init_arguments(self) -> None:
         self.add_argument(
             f'-{const.ARG_ELEMENT_SHORT}',
             f'--{const.ARG_ELEMENT}',
@@ -46,7 +46,7 @@ class MergeCmd(Command):
             required=True
         )
 
-    def _run(self, args) -> None:
+    def _run(self, args: argparse.Namespace) -> int:
         """Merge elements into the parent oscal model."""
         log.set_log_level_from_args(args)
         try:

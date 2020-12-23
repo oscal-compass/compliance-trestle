@@ -16,14 +16,14 @@
 """Module to load distributed model."""
 
 from pathlib import Path
-from typing import List
+from typing import Any, Dict, List, Tuple, Type, Union
 
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.utils import fs
 
 
-def load_list(filepath):
+def load_list(filepath: Path) -> Tuple[OscalBaseModel, str, List[OscalBaseModel]]:
     """Given path to a directory of list(array) models, load the distributed models."""
     aliases_not_to_be_stripped = []
     instances_to_be_merged: List[OscalBaseModel] = []
@@ -43,9 +43,9 @@ def load_list(filepath):
     return collection_model_type, collection_model_alias, instances_to_be_merged
 
 
-def load_dict(filepath):
+def load_dict(filepath: Path) -> Tuple[OscalBaseModel, str, Dict[str, OscalBaseModel]]:
     """Given path to a directory of additionalProperty(dict) models, load the distributed models."""
-    model_dict = {}
+    model_dict: Dict[str, OscalBaseModel] = {}
     collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(filepath.absolute())
     for path in Path.iterdir(filepath):
         model_type, model_alias, model_instance = load_distributed(path)
@@ -55,7 +55,10 @@ def load_dict(filepath):
     return collection_model_type, collection_model_alias, model_dict
 
 
-def load_distributed(file_path: Path, collection_type=None):
+def load_distributed(
+    file_path: Path,
+    collection_type: Type[Any] = None
+) -> Tuple[OscalBaseModel, str, Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]]:
     """
     Given path to a model, load the model.
 
