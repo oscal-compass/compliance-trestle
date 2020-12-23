@@ -81,7 +81,7 @@ def generate_model_flat(full_name, out_full_name):
         print(f'Error calling datamodel-codegen for file {full_name} error {error}')
     else:
         print('fix the python')
-        #shutil.copy(new_py, new_py + 'b4fix.py')
+        shutil.copy(new_py, new_py + 'b4fix.py')
         fix_file(new_py)
         print('done')
 

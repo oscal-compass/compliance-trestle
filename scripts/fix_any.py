@@ -21,7 +21,7 @@ plural_lut = {
     'ResponsibleRoles': 'ResponsibleRole',
     'ResponsibleParties': 'ResponsibleParty',
     'Capabilities': 'Capability',
-    'Components': 'Component',
+    'Components': 'DefinedComponent',
     'ImplementedComponents': 'ImplementedComponent',
     'InventoryItems': 'InventoryItem',
     'AssessmentSubjects': 'AssessmentSubject',
