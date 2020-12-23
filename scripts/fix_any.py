@@ -26,7 +26,6 @@ plural_lut = {
     'InventoryItems': 'InventoryItem',
     'AssessmentSubjects': 'AssessmentSubject',
     'Users': 'User',
-    'Remarks': 'Remark',
     'Tools': 'Tool',
     'Statements': 'Statement',
     'IncorporatesComponents': 'IncorporatesComponent',
@@ -37,13 +36,16 @@ plural_lut = {
     'Targets': 'Target',
     'IncorporatesTargets': 'IncorporatesTarget',
     'InformationTypeIds': 'InformationTypeId',
-    'EmailAddress': 'EmailStr',
-    'Annotations': 'Annotation'
+    'EmailAddresses': 'EmailStr',
+    'Annotations': 'Annotation',
+    'Objectives': 'Objective',
+    'Controls': 'Control'
 }
 
 # Class names with this substring are due to confusion in oscal that will go away.
 # For now delete the classes and convert the corresponding unions to conlist
-singleton_name = 'GroupItem'
+singleton_suffixes = ['GroupItem', 'Item']
+singleton_prefixes = ['Include', 'Exclude']
 class_header = 'class '
 license_header = (
     '# -*- mode:python; coding:utf-8 -*-\n'
@@ -90,9 +92,15 @@ class ClassText():
 
     def add_ref_if_good(self, ref_name):
         """Add refs after removing digits and/or singleton string."""
-        n = ref_name.find(singleton_name)
-        if n >= 0:
-            ref_name = ref_name[:n]
+        for suffix in singleton_suffixes:
+            n = ref_name.find(suffix)
+            if n > 0:
+                ref_name = ref_name[:n]
+                break
+        for prefix in singleton_prefixes:
+            n = ref_name.find(prefix)
+            if n == 0 and ref_name != prefix:
+                ref_name = ref_name[len(prefix):]
         self.refs.add(ref_name.rstrip(string.digits))
 
     def add_ref_pattern(self, p, line):
@@ -118,10 +126,12 @@ class ClassText():
     def add_all_refs(self, line):
         """Find all refd class names found in line and add to references."""
         # find lone strings with no brackets
+        if line.find('Include') >= 0:
+            x = 7
         p = re.compile(r'.*\:\s*([^\s\[\]]+).*')
         self.add_ref_pattern(p, line)
         # find objects in one or more bracket sets with possible first token and comma
-        p = re.compile(r'\[(?:(.*),\s*)?((?:\[??[^\[]*?))\]')
+        p = re.compile(r'.*\[(?:(.*),\s*)?((?:\[??[^\[]*?))\]')
         self.add_ref_pattern(p, line)
         return line
 
@@ -174,13 +184,17 @@ class ClassText():
 
     def is_good(self):
         """Is this class on that should be retained in output."""
-        for line in self.lines:
-            if line.find('__root__: str') >= 0:
-                return False
-            if line.find('pass') >= 0:
-                return False
-            # mark any class with name ending in digits as bad
-            # later clean up all such refs in classes by removing digits
+        #for line in self.lines:
+        #    if line.find('__root__: str') >= 0:
+        #        return False
+        #    if line.find('pass') >= 0:
+        #        return False
+        #    # mark any class with name ending in digits as bad
+        #    # later clean up all such refs in classes by removing digits
+        if not self.name:
+            return False
+        if self.name.find('min_items') >= 0:
+            return False
         if self.name != self.name.rstrip(string.digits):
             return False
         return True
@@ -256,16 +270,39 @@ def clean_classes(class_list):
     """Clean all lines of text in each class for endings that should be removed."""
     for j in range(len(class_list)):
         cls = class_list[j]
-        for i in range(len(cls.lines)):
-            line = cls.lines[i]
-            line = line.replace(singleton_name, '')
-            for c2 in class_list:
-                cname = c2.name
-                pattern = cname + '[0-9]*'
-                line = re.sub(pattern, cname, line)
+        for singleton in singleton_suffixes + singleton_prefixes:
+            if cls.name != singleton:
+                cls.name = cls.name.replace(singleton, '')
+            for i in range(len(cls.lines)):
+                line = cls.lines[i]
+                if line.find('class ') != 0:
+                    if line.find(f'[{singleton}]') == -1:
+                        line = line.replace(singleton, '')
+                for c2 in class_list:
+                    cname = c2.name
+                    pattern = cname + '[0-9]*'
+                    line = re.sub(pattern, cname, line)
                 cls.lines[i] = line
         class_list[j] = cls
     return class_list
+
+def fix_bad_minitems(class_list):
+    for j in range(len(class_list)):
+        cls = class_list[j]
+        for i in range(len(cls.lines)):
+            line = cls.lines[i]
+            neq = line.find("= Field(None")
+            if neq > 0 and line.find(cls.name) >= 0:
+                cls.lines[i] = line[:neq] + '= None'
+        class_list[j] = cls
+    return class_list
+
+def get_name_list(class_list):
+    names = []
+    for c in class_list:
+        names.append(c.name)
+    names.sort()
+    x = 7
 
 
 def fix_file(fname):
@@ -288,8 +325,17 @@ def fix_file(fname):
                 done_header = True
                 if class_text is not None:  # we are done with current class so add it
                     # prevent anomalous singletons from appearing in output
-                    if class_text.name.find(singleton_name) == -1:
-                        all_classes.append(class_text)
+                    #is_singleton = False
+
+                    for singleton in singleton_prefixes + singleton_suffixes:
+                        if class_text.name.find(singleton) >= 0 and class_text.name != singleton:
+                            class_text.name = class_text.name.replace(singleton, '')
+                            for i in range(len(class_text.lines)):
+                                class_text.lines[i] = class_text.lines[i].replace(singleton, '')
+                    #        is_singleton = True
+                    #        break
+                    #if not is_singleton:
+                    all_classes.append(class_text)
                 class_text = ClassText(r)
             else:
                 if not done_header:  # still in header
@@ -313,12 +359,22 @@ def fix_file(fname):
 
     all_classes.append(class_text)  # don't forget final class
 
+    get_name_list(all_classes)
+
     all_classes = good_classes(all_classes)
+
+    get_name_list(all_classes)
 
     all_classes = clean_classes(all_classes)
 
+    get_name_list(all_classes)
+
+    all_classes = fix_bad_minitems(all_classes)
+
     # reorder the classes to remove forward references as much as possible
     all_classes = reorder(all_classes)
+
+    get_name_list(all_classes)
 
     header = fix_header(header, needs_conlist)
 
@@ -327,6 +383,13 @@ def fix_file(fname):
         out_file.write('# modified by fix_any.py\n')
         out_file.write(license_header)
         out_file.writelines('\n'.join(header) + '\n')
+        classes_written = set()
         for c in all_classes:
-            out_file.writelines('\n'.join(c.lines) + '\n')
+            if c.name == "Include":
+                x = 7
+            if c.name not in classes_written:
+                out_file.writelines('\n'.join(c.lines) + '\n')
+                classes_written.add(c.name)
+            else:
+                print('remove duplicate class ', c.name)
         out_file.writelines('\n'.join(forward_refs) + '\n')

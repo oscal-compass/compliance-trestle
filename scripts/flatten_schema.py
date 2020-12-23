@@ -39,57 +39,72 @@ class FlattenSchema():
         assert s.find(pref_string) == 0
         return s[len(pref_string):]
 
-    def _replace_ref(self, d, ref_root):
+    def _replace_ref(self, d, ref_set):
         """Input is known to be ref: /definitions/bar so just return replacement def from def_list."""
         ref_name = FlattenSchema._get_ref_name(d[self._ref_str])
-        if ref_name == ref_root or ref_name == 'part':  # part needs special handling for catalog and ssp
-            return d, False
+        if ref_name in ref_set:  # name is already on the stack so stop now and don't recurse
+            return d, ref_set, False
+        # this is a new reference so return the body of the definition and add its name as a reference
         self._refd.add(ref_name)
-        return self._find_ref(ref_name), True
+        ref_set.add(ref_name)
+        return self._find_ref(ref_name), ref_set, True
 
-    def _replace_refs(self, obj, ref_root):
+    def _replace_refs(self, obj, ref_set):
         """Given an object recurse into it replacing any found ref: defs with what is in def_list."""
         if type(obj) == dict:
+            # first check if it is a simple $ref line and replace it directly
             if len(obj.items()) == 1 and obj.get(self._ref_str, None) is not None:
-                return self._replace_ref(obj, ref_root)
+                return self._replace_ref(obj, ref_set)
             new_dict = {}
             dirty = False
             for key, val in obj.items():
-                new_dict[key], changed = self._replace_refs(val, ref_root)
-                if changed:
-                    dirty = True
-            return new_dict, dirty
+                if key in ref_set:
+                    new_dict[key] = val
+                else:
+                    ref_set.add(key)
+                    new_dict[key], ref_set, changed = self._replace_refs(val, ref_set)
+                    if changed:
+                        dirty = True
+            return new_dict, ref_set, dirty
         elif type(obj) == str:
-            return obj, False
+            return obj, ref_set, False
         elif type(obj) == list:
             n_list = len(obj)
             changed = False
             dirty = False
             for i in range(n_list):
-                obj[i], changed = self._replace_refs(obj[i], ref_root)
+                obj[i], ref_set, changed = self._replace_refs(obj[i], ref_set)
                 if changed:
                     dirty = True
-            return obj, dirty
+            return obj, ref_set, dirty
         elif type(obj) == tuple:
-            new_val, changed = self._replace_refs(obj[1], ref_root)
-            if changed:
-                return (obj[0], new_val), True
-        return obj, False
+            new_val, ref_set, changed = self._replace_refs(obj[1], ref_set)
+            return (obj[0], new_val), ref_set, changed
+        if hasattr(obj, '__iter__'):
+            print('missed iterable type: ', type(obj))
+        return obj, ref_set, False
 
     def _replace_schema_refs(self, schema):
+        """Expand each definition with repeated iterations over the list with recursion into each."""
         self._def_list = list(schema['definitions'].items())
         n_defs = len(self._def_list)
+        fixed = [False] * n_defs
         dirty = True
         while dirty:
             dirty = False
             for i in range(n_defs):
-                self._def_list[i], changed = self._replace_refs(self._def_list[i], self._def_list[i][0])
+                changed = False
+                if not fixed[i]:
+                    if self._def_list[i][0] == 'assessment-plan':
+                        x = 7
+                    self._def_list[i], _, changed = self._replace_refs(self._def_list[i], {self._def_list[i][0]})
+                    if not changed:  # mark it fixed and don't revisit
+                        fixed[i] = True
             if changed:
                 dirty = True
         new_dict = {}
         for tup in self._def_list:
-            if tup[0] not in self._refd:
-                new_dict[tup[0]] = tup[1]
+            new_dict[tup[0]] = tup[1]
         schema['definitions'] = new_dict
         return schema
 
@@ -104,14 +119,27 @@ class FlattenSchema():
         with open(tmp_name, 'w') as f:
             json.dump(flat_schema, f, indent=4)
 
+        needed_refs = set()
+        ref_str = '"$ref": "#/definitions/'
+        with open(tmp_name, 'r') as fin:
+            for line in fin.readlines():
+                nref = line.find(ref_str)
+                if nref >= 0:
+                    new_ref = line[(nref + len(ref_str)):].strip()
+                    needed_refs.add(new_ref)
+
         out_lines = []
         with open(tmp_name, 'r') as fin:
             for line in fin.readlines():
                 skipit = False
-                if line.find('#/definitions/') >= 0:
-                    for cname in self._refd:
-                        if line.find(f'#/definitions/{cname}') >= 0:
-                            skipit = True
+                if line.find('"$id": "#/definitions/') >= 0:
+                    if line.find('provided'):
+                        x = 7
+                    skipit = True
+                    for cname in needed_refs:
+                        # skip any definitions
+                        if line.find(f'"$id": "#/definitions/{cname}') >= 0:
+                            skipit = False
                             break
                 if not skipit:
                     out_lines.append(line)

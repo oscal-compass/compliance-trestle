@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Script to generate python models from oscal using datamodel-code-generator."""
+import shutil
 import re
 import sys
 from pathlib import Path
@@ -80,6 +81,7 @@ def generate_model_flat(full_name, out_full_name):
         print(f'Error calling datamodel-codegen for file {full_name} error {error}')
     else:
         print('fix the python')
+        shutil.copy(new_py, new_py + 'b4fix.py')
         fix_file(new_py)
         print('done')
 
@@ -100,6 +102,7 @@ def generate_models():
 
     in_dir = Path('nist-source/json/schema')
     for full_name in in_dir.glob('oscal_*_schema.json'):
+    #for full_name in in_dir.glob('oscal_ssp_schema.json'):
         file_name = str(full_name.name)
         try:
             obj = re.search('oscal_(.+?)_schema.json', file_name).group(1)
