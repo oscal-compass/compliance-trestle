@@ -86,11 +86,11 @@ class MergeCmd(Command):
             write_destination_action = WriteFileAction(
                 destination_model_filename, Element(merged_model_instance), content_type=FileContentType.JSON
             )
-            # TODO : This will work, if RemovePathAction can take
-            # directyory delete_target_action = RemovePathAction(Path(merged_model_alias))
+            delete_target_action = RemovePathAction(Path(merged_model_alias).absolute())
             plan: Plan = Plan()
             plan.add_action(reset_destination_action)
             plan.add_action(write_destination_action)
+            plan.add_action(delete_target_action)
             return plan
 
         # Get destination model without the target field stripped

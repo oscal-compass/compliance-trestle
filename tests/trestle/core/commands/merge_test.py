@@ -19,6 +19,8 @@ import os
 import shutil
 from pathlib import Path
 
+from dictdiffer import diff
+
 from tests import test_utils
 
 import trestle.oscal.catalog as oscatalog
@@ -212,6 +214,8 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     element = Element(merged_catalog_instance)
     write_destination_action = WriteFileAction(catalog_file, element, content_type=content_type)
     expected_plan.add_action(write_destination_action)
+    delete_element_action = RemovePathAction(Path('catalog').absolute())
+    expected_plan.add_action(delete_element_action)
 
     # Call merged()
     generated_plan = MergeCmd.merge(ElementPath('catalog.*'))
@@ -238,3 +242,70 @@ def test_bad_merge(testdata_dir, tmp_trestle_dir):
     cmd = MergeCmd()
     args = argparse.Namespace(verbose=1, element='catalog.roles')
     assert cmd._run(args) == 1
+
+
+def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
+    """Test '$mycatalog$ trestle merge -e metadata.roles'."""
+    # Assume we are running a command like below
+    # trestle merge -e catalog.back-matter
+    content_type = FileContentType.JSON
+    fext = FileContentType.to_file_extension(content_type)
+
+    # prepare trestle project dir with the file
+    test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
+
+    test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
+
+    catalogs_dir = Path('catalogs/')
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+    catalog_dir = mycatalog_dir / 'catalog'
+
+    # Copy files from test/data/split_merge/step4
+    shutil.rmtree(catalogs_dir)
+    shutil.copytree(test_data_source, catalogs_dir)
+
+    os.chdir(mycatalog_dir)
+    catalog_dir = Path('catalog/')
+    os.chdir(catalog_dir)
+    metadata_dir = Path('metadata/')
+    metadata_file = Path(f'metadata{fext}')
+    roles_dir = metadata_dir / 'roles'
+
+    # Read files
+
+    # The destination file/model needs to be loaded in a stripped model
+    stripped_metadata_type, _ = fs.get_stripped_contextual_model(metadata_file.absolute())
+    stripped_metadata = stripped_metadata_type.oscal_read(metadata_file)
+
+    # Back-matter model needs to be complete and if it is decomposed, needs to be merged recursively first
+    roles = [
+        oscatalog.Role.oscal_read(roles_dir / '00001__role.json'),
+        oscatalog.Role.oscal_read(roles_dir / '00000__role.json')
+    ]
+
+    # Back-matter needs to be inserted in a stripped Catalog that does NOT exclude the back-matter fields
+
+    merged_metadata_type, merged_metadata_alias = fs.get_stripped_contextual_model(
+        metadata_file.absolute(), aliases_not_to_be_stripped=['roles'])
+    merged_dict = stripped_metadata.__dict__
+    merged_dict['roles'] = roles
+    merged_metadata = merged_metadata_type(**merged_dict)
+
+    element = Element(merged_metadata, merged_metadata_alias)
+
+    # Create hand-crafter merge plan
+    reset_destination_action = CreatePathAction(metadata_file.absolute(), clear_content=True)
+    write_destination_action = WriteFileAction(metadata_file, element, content_type=content_type)
+    delete_element_action = RemovePathAction(roles_dir.absolute())
+
+    expected_plan: Plan = Plan()
+    expected_plan.add_action(reset_destination_action)
+    expected_plan.add_action(write_destination_action)
+    expected_plan.add_action(delete_element_action)
+
+    # Call merged()
+
+    generated_plan = MergeCmd.merge(ElementPath('metadata.roles'))
+
+    # Assert the generated plan matches the expected plan'
+    assert len(list(diff(generated_plan, expected_plan))) == 0
