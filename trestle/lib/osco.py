@@ -23,17 +23,17 @@ from xml.etree import ElementTree
 logger = logging.getLogger(__name__)
 
 
-def get_observations(idata, metadata):
+def get_observations(idata, oscal_metadata):
     """
     Transform OSCO yaml to NIST OSCAL json with statistics.
 
     Required ```idata``` is dict representation of OSCO yaml.
-    Optional ```metadata``` helps more completely formulate each observation.
+    Optional ```oscal_metadata``` helps more completely formulate each observation.
 
     Returned ```odata``` comprises list of OSCAL-like Assessment Results observations.
     Returned ```analysis``` comprises dict of statistics.
     -----
-    Sample metadata entry:
+    Sample oscal_metadata entry:
     -----
     ssg-ocp4-ds-cis-111.222.333.444-pod:
       locker: https://github.mycorp.com/degenaro/evidence-locker
@@ -55,7 +55,7 @@ def get_observations(idata, metadata):
     -----
     """
     rules = Rules(idata)
-    observations = Observations(rules, metadata)
+    observations = Observations(rules, oscal_metadata)
     odata = {'observations': observations.instances}
     return odata, rules.analysis
 
@@ -63,13 +63,13 @@ def get_observations(idata, metadata):
 class Observations():
     """Create and accumulate list of OSCAL-like Observations."""
 
-    def __init__(self, rules, metadata):
+    def __init__(self, rules, oscal_metadata):
         """Initialize given specified args."""
         # List of observations.
         self._instances = []
         # Transform each rule+result into an observation.
         for rule in rules.instances:
-            observation = self._create_observation(rule, metadata)
+            observation = self._create_observation(rule, oscal_metadata)
             self._instances.append(observation)
 
     @property
@@ -77,35 +77,34 @@ class Observations():
         """Get the list of observations."""
         return self._instances
 
-    def _create_observation(self, rule, metadata):
+    def _create_observation(self, rule, oscal_metadata):
         observation = {}
         observation['uuid'] = str(uuid.uuid4())
         observation['description'] = rule['idref']
         observation['title'] = rule['idref']
-        observation['evidence-group'] = self._create_evidence_group(rule, metadata)
-        subject_references = self._create_subject_references(rule, metadata)
+        observation['evidence-group'] = self._create_evidence_group(rule, oscal_metadata)
+        subject_references = self._create_subject_references(rule, oscal_metadata)
         if subject_references is not None:
             observation['subject-references'] = subject_references
-        observation['observation-methods'] = self._create_observation_methods(rule, metadata)
+        observation['observation-methods'] = self._create_observation_methods(rule, oscal_metadata)
         return observation
 
-    def _create_evidence_group(self, rule, metadata):
-        evidence = self._create_evidence(rule, metadata)
+    def _create_evidence_group(self, rule, oscal_metadata):
+        evidence = self._create_evidence(rule, oscal_metadata)
         evidence_group = [evidence]
         return evidence_group
 
-    def _create_evidence(self, rule, metadata):
+    def _create_evidence(self, rule, oscal_metadata):
         evidence = {}
         name = rule['name']
-        entry = metadata[name]
+        entry = self._get_entry(oscal_metadata, name)
+        ns = None
         if entry is not None:
             if 'locker' in entry:
                 evidence['description'] = 'Evidence location.'
                 evidence['href'] = entry['locker']
             if 'namespace' in entry:
                 ns = entry['namespace']
-            else:
-                ns = None
         p1 = self._create_property(ns, 'id', 'rule', rule['idref'])
         p2 = self._create_property(ns, 'timestamp', 'time', rule['time'])
         p3 = self._create_property(ns, 'result', 'result', rule['result_type'])
@@ -113,6 +112,13 @@ class Observations():
         properties = [p1, p2, p3, p4]
         evidence['properties'] = properties
         return evidence
+
+    def _get_entry(self, oscal_metadata, name):
+        entry = None
+        if oscal_metadata is not None:
+            if name in oscal_metadata:
+                entry = oscal_metadata[name]
+        return entry
 
     def _create_property(self, ns, classification, name, value):
         prop = {}
@@ -123,11 +129,11 @@ class Observations():
         prop['value'] = value
         return prop
 
-    def _create_subject_references(self, rule, metadata):
+    def _create_subject_references(self, rule, oscal_metadata):
         subject_references = None
         try:
             name = rule['name']
-            entry = metadata[name]
+            entry = self._get_entry(oscal_metadata, name)
             if entry is not None:
                 component = entry['subject-references']['component']
                 inventory_item = entry['subject-references']['inventory-item']
@@ -136,7 +142,7 @@ class Observations():
             logger.debug('missing or invalid subject references')
         return subject_references
 
-    def _create_observation_methods(self, rule, metadata):
+    def _create_observation_methods(self, rule, oscal_metadata):
         observation_methods = ['TEST-AUTOMATED']
         return observation_methods
 

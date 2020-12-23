@@ -27,6 +27,7 @@ def test_print_info(tmpdir):
     config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
+    section['output-dir'] = str(tmpdir)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.print_info()
     assert retval is None
@@ -37,6 +38,7 @@ def test_simulate(tmpdir):
     config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
+    section['output-dir'] = str(tmpdir)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
@@ -59,6 +61,7 @@ def test_simulate_no_overwrite(tmpdir):
     assert retval == TaskOutcome.SUCCESS
     assert len(os.listdir(str(tmpdir))) == 1
     section['output-overwrite'] = 'false'
+    section['output-dir'] = str(tmpdir)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_FAILURE
@@ -70,9 +73,22 @@ def test_simulate_no_input_dir(tmpdir):
     config.read(config_path)
     config.remove_option('task.osco-to-oscal', 'input-dir')
     section = config['task.osco-to-oscal']
+    section['output-dir'] = str(tmpdir)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_FAILURE
+
+def test_simulate_no_oscal_metadata_file(tmpdir):
+    """Test simulate with no metadata file call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
+    config.read(config_path)
+    section = config['task.osco-to-oscal']
+    section['input-metadata'] = 'non-existant.yaml'
+    section['output-dir'] = str(tmpdir)
+    tgt = osco_to_oscal.OscoToOscal(section)
+    retval = tgt.simulate()
+    assert retval == TaskOutcome.SIM_SUCCESS
 
 def test_simulate_no_ouput_dir(tmpdir):
     """Test simulate with no output dir call."""
@@ -115,6 +131,7 @@ def test_execute_no_overwrite(tmpdir):
     assert retval == TaskOutcome.SUCCESS
     assert len(os.listdir(str(tmpdir))) == 1
     section['output-overwrite'] = 'false'
+    section['output-dir'] = str(tmpdir)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
@@ -126,9 +143,22 @@ def test_execute_no_input_dir(tmpdir):
     config.read(config_path)
     config.remove_option('task.osco-to-oscal', 'input-dir')
     section = config['task.osco-to-oscal']
+    section['output-dir'] = str(tmpdir)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
+
+def test_execute_no_oscal_metadata_file(tmpdir):
+    """Test execute with no metadata file call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
+    config.read(config_path)
+    section = config['task.osco-to-oscal']
+    section['input-metadata'] = 'non-existant.yaml'
+    section['output-dir'] = str(tmpdir)
+    tgt = osco_to_oscal.OscoToOscal(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
 
 def test_execute_no_ouput_dir(tmpdir):
     """Test execute with no output dir call."""

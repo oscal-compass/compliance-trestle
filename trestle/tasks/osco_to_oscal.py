@@ -55,97 +55,132 @@ class OscoToOscal(TaskBase):
         logger.info(f'Help information for {self.name} task.')
         logger.info('Configuration flags sit under [task.osco-to-oscal].')
         logger.info('input-dir = the path of the input directory comprising .yaml files.')
-        logger.info('output-dir = the path of the output directory comprising synthesized .oscal files.')
+        logger.info('input-metadata = the name of the input directory metadata .yaml file, default = oscal-metadata.yaml.')
+        logger.info('output-dir = the path of the output directory comprising synthesized OSCAL .json files.')
         logger.info('output-overwrite = true [default] or false; replace existing output when true.')
         logger.info('quiet = true or false [default]; display file creations and rules analysis when false.')
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
-        try:
-            if self._config:
-                idir = pathlib.Path(self._config.get('input-dir'))
-                if idir is None:
-                    logger.error(f'config missing "input-dir"')
-                    return TaskOutcome('simulated-failure')
-                odir = pathlib.Path(self._config.get('output-dir'))
-                if odir is None:
-                    logger.error(f'config missing "output-dir"')
-                    return TaskOutcome('simulated-failure')
-                overwrite = self._config.getboolean('output-overwrite', True)
-                for ifile in sorted(pathlib.Path(idir).iterdir()):
-                    parts = ifile.parts
-                    ifn = parts[len(parts)-1]
-                    if ifn.endswith('oscal-metadata.yaml'):
+        if self._config:
+            # initialize
+            metadata = {}
+            # process config
+            idir = self._config.get('input-dir')
+            if idir is None:
+                logger.error(f'[simluate] config missing "input-dir"')
+                return TaskOutcome('simulated-failure')
+            ipth = pathlib.Path(idir)
+            odir = self._config.get('output-dir')
+            if odir is None:
+                logger.error(f'[simluate] config missing "output-dir"')
+                return TaskOutcome('simulated-failure')
+            imeta = self._config.get('input-metadata', 'oscal-metadata.yaml')
+            opth = pathlib.Path(odir)
+            overwrite = self._config.getboolean('output-overwrite', True)
+            quiet = self._config.getboolean('quiet', False)
+            # insure output folder exists
+            opth.mkdir(exist_ok=True, parents=True)
+            # fetch enhancing oscal metadata
+            mfile = ipth / imeta
+            metadata = self._get_metadata(mfile, metadata)
+            # examine each file in the input folder
+            for ifile in sorted(ipth.iterdir()):
+                # skip enhancing oscal metadata
+                if ifile.name == imeta:
+                    continue
+                # ignore non-yaml files
+                if ifile.suffix != '.yml':
+                    if ifile.suffix != '.yaml':
+                        logger.debug(f'[simluate] skipping {ifile.name}')
                         continue
-                    if ifn.endswith('oscal-metadata.yml'):
-                        continue
-                    ofile = self._calculate_ofile(ifn, odir)
-                    if not overwrite:
-                        if ofile.exists():
-                            logger.error(f'file exists: {ofile}')
-                            return TaskOutcome('simulated-failure')
-                    mfile = idir / 'oscal-metadata.yaml'
-                    metadata = self._get_metadata(mfile)
-                    logger.debug(f'create: {ofile}')
-                    idata = self._read_content(ifile)
-                    odata, analysis = osco.get_observations(idata, metadata)
-                    self._write_content(ofile, odata, True)
-                    logger.debug(f'Rules Analysis:')
-                    logger.debug(f'config_maps: {analysis["config_maps"]}')
-                    logger.debug(f'dispatched rules: {analysis["dispatched_rules"]}')
-                    logger.debug(f'result types: {analysis["result_types"]}')
-                return TaskOutcome('simulated-success')
-            logger.error(f'config missing')
-            return TaskOutcome('simulated-failure')
-        except Exception:
-            logger.error(traceback.format_exc())
-            return TaskOutcome('simulated-failure')
+                # calculate the output file, including path
+                ofile = self._calculate_ofile(ifile.name, opth)
+                # only allow writing output file if either:
+                # a) it does not already exist, or
+                # b) output-overwrite flag is True
+                if not overwrite:
+                    if ofile.exists():
+                        logger.error(f'simluate: file exists: {ofile}')
+                        return TaskOutcome('simulated-failure')
+                if not quiet:
+                    logger.debug(f'[simluate]  create {ofile}')
+                # fetch the contents of the subject OSCO .yaml/.yml file
+                idata = self._read_content(ifile)
+                # create the OSCAL .json file from the OSCO and the optional osco-metadata files
+                odata, analysis = osco.get_observations(idata, metadata)
+                # write the OSCAL to the output file
+                self._write_content(ofile, odata, True)
+                # display analysis
+                if not quiet:
+                    logger.debug(f'[simluate] Rules Analysis:')
+                    logger.debug(f'[simluate] config_maps: {analysis["config_maps"]}')
+                    logger.debug(f'[simluate] dispatched rules: {analysis["dispatched_rules"]}')
+                    logger.debug(f'[simluate] result types: {analysis["result_types"]}')
+            return TaskOutcome('simulated-success')
+        logger.error(f'config missing')
+        return TaskOutcome('simulated-failure')
 
     def execute(self) -> TaskOutcome:
         """Provide an actual outcome."""
-        try:
-            if self._config:
-                idir = pathlib.Path(self._config.get('input-dir'))
-                if idir is None:
-                    logger.error(f'config missing "input-dir"')
-                    return TaskOutcome('failure')
-                odir = pathlib.Path(self._config.get('output-dir'))
-                if odir is None:
-                    logger.error(f'config missing "output-dir"')
-                    return TaskOutcome('failure')
-                overwrite = self._config.getboolean('output-overwrite', True)
-                quiet = self._config.getboolean('quiet', False)
-                odir.mkdir(exist_ok=True, parents=True)
-                for ifile in sorted(pathlib.Path(idir).iterdir()):
-                    parts = ifile.parts
-                    ifn = parts[len(parts)-1]
-                    if ifn.endswith('oscal-metadata.yaml'):
+        if self._config:
+            # initialize
+            metadata = {}
+            # process config
+            idir = self._config.get('input-dir')
+            if idir is None:
+                logger.error(f'config missing "input-dir"')
+                return TaskOutcome('failure')
+            ipth = pathlib.Path(idir)
+            odir = self._config.get('output-dir')
+            if odir is None:
+                logger.error(f'config missing "output-dir"')
+                return TaskOutcome('failure')
+            imeta = self._config.get('input-metadata', 'oscal-metadata.yaml')
+            opth = pathlib.Path(odir)
+            overwrite = self._config.getboolean('output-overwrite', True)
+            quiet = self._config.getboolean('quiet', False)
+            # insure output folder exists
+            opth.mkdir(exist_ok=True, parents=True)
+            # fetch enhancing oscal metadata
+            mfile = ipth / imeta
+            metadata = self._get_metadata(mfile, metadata)
+            # examine each file in the input folder
+            for ifile in sorted(ipth.iterdir()):
+                # skip enhancing oscal metadata
+                if ifile.name == imeta:
+                    continue
+                # ignore non-yaml files
+                if ifile.suffix != '.yml':
+                    if ifile.suffix != '.yaml':
+                        logger.debug(f'skipping {ifile.name}')
                         continue
-                    if ifn.endswith('oscal-metadata.yml'):
-                        continue
-                    ofile = self._calculate_ofile(ifn, odir)
-                    if not overwrite:
-                        if ofile.exists():
-                            logger.error(f'file exists: {ofile}')
-                            return TaskOutcome('failure')
-                    mfile = idir / 'oscal-metadata.yaml'
-                    metadata = self._get_metadata(mfile)
-                    if not quiet:
-                        logger.info(f'create: {ofile}')
-                    idata = self._read_content(ifile)
-                    odata, analysis = osco.get_observations(idata, metadata)
-                    self._write_content(ofile, odata)
-                    if not quiet:
-                        logger.info(f'Rules Analysis:')
-                        logger.info(f'config_maps: {analysis["config_maps"]}')
-                        logger.info(f'dispatched rules: {analysis["dispatched_rules"]}')
-                        logger.info(f'result types: {analysis["result_types"]}')
-                return TaskOutcome('success')
-            logger.error(f'config missing')
-            return TaskOutcome('failure')
-        except Exception:
-            logger.error(traceback.format_exc())
-            return TaskOutcome('failure')
+                # calculate the output file, including path
+                ofile = self._calculate_ofile(ifile.name, opth)
+                # only allow writing output file if either:
+                # a) it does not already exist, or
+                # b) output-overwrite flag is True
+                if not overwrite:
+                    if ofile.exists():
+                        logger.error(f'file exists: {ofile}')
+                        return TaskOutcome('failure')
+                if not quiet:
+                    logger.info(f'create: {ofile}')
+                # fetch the contents of the subject OSCO .yaml/.yml file
+                idata = self._read_content(ifile)
+                # create the OSCAL .json file from the OSCO and the optional osco-metadata files
+                odata, analysis = osco.get_observations(idata, metadata)
+                # write the OSCAL to the output file
+                self._write_content(ofile, odata)
+                # display analysis
+                if not quiet:
+                    logger.info(f'Rules Analysis:')
+                    logger.info(f'config_maps: {analysis["config_maps"]}')
+                    logger.info(f'dispatched rules: {analysis["dispatched_rules"]}')
+                    logger.info(f'result types: {analysis["result_types"]}')
+            return TaskOutcome('success')
+        logger.error(f'config missing')
+        return TaskOutcome('failure')
     
     def _read_content(self, ifile):
         with open(ifile, 'r+') as fp:
@@ -162,18 +197,18 @@ class OscoToOscal(TaskBase):
         with open(ofile, 'w', encoding='utf-8') as fp:
             json.dump(content, fp, ensure_ascii=False, indent=2)
     
-    def _calculate_ofile(self, ifn, odir):
+    def _calculate_ofile(self, ifn, opth):
         """Synthesize output file path+name."""
         ofn = ifn
         ofn = ofn.rsplit('.yaml')[0]
         ofn = ofn.rsplit('.yml')[0]
         ofn += '-oscal.json'
-        ofile = pathlib.Path(odir, ofn)
+        ofile = opth / ofn
         return ofile
     
-    def _get_metadata(self, mfile):
+    def _get_metadata(self, mfile, default_metadata):
         """Get metadata, if it exists."""
-        metadata = {}
+        metadata = default_metadata
         try:
             with open(mfile, "r") as fp:
                 metadata = yaml.full_load(fp)
