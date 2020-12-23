@@ -59,7 +59,7 @@ def generate_sample_value_by_type(
         # not do so it fails to generate.
         if 'uuid' == field_name:
             return str(uuid.uuid4())
-        elif parent_model == trestle.oscal.ssp.DateAuthorized:
+        elif field_name == 'date_authorized':
             return date.today().isoformat()
         return '00000000-0000-4000-8000-000000000000'
     elif issubclass(type_, Enum):
