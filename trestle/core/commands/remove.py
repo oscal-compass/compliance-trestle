@@ -41,7 +41,7 @@ class RemoveCmd(Command):
 
     name = 'remove'
 
-    def _init_arguments(self):
+    def _init_arguments(self) -> None:
         self.add_argument(
             f'-{const.ARG_FILE_SHORT}',
             f'--{const.ARG_FILE}',

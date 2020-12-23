@@ -121,14 +121,11 @@ def to_full_model_name(root_key: str, name: str = None) -> Optional[str]:
     return None
 
 
-def parse_file(file_name: pathlib.Path, model_name: str) -> OscalBaseModel:
+def parse_file(file_name: pathlib.Path, model_name: Optional[str]) -> OscalBaseModel:
     """Load an oscal file from the file system where the oscal model type is not known.
 
-    Typically `OSCA
-
-    Argument:
-        model_name: it should be of the form <module>.<class>
-                    <class> should be a Pydantic class that supports `parse_obj` method
+    Args:
+        model_name: it should be of the form <module>.<class> which is derived from OscalBaseModel:
     """
     if file_name is None:
         raise TrestleError('file_name is required')

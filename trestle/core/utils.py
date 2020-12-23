@@ -15,7 +15,6 @@
 """Utilities for dealing with models."""
 import importlib
 import logging
-import warnings
 from typing import Any, Dict, List, Tuple, Type, TypeVar, Union, no_type_check
 
 from datamodel_code_generator.parser.base import camel_to_snake, snake_to_upper_camel  # type: ignore
@@ -91,13 +90,6 @@ def camel_to_dash(name: str) -> str:
     return camel_to_snake(name).replace('_', '-')
 
 
-def pascal_case_split(pascal_str: str) -> List[str]:
-    """Parse a pascal case string (e.g. a ClassName) and return a list of strings."""
-    warnings.warn('trestle.utils.pascal_case_split function is deprecated', DeprecationWarning)
-    start_idx = [i for i, e in enumerate(pascal_str) if e.isupper()] + [len(pascal_str)]
-    return [pascal_str[x:y] for x, y in zip(start_idx, start_idx[1:])]
-
-
 @no_type_check
 def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
     """Get the root model class and alias based on the module."""
@@ -115,7 +107,7 @@ def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
 
 # FIXME: Typing issues here
 # I'm still not sure whether this type is correct or not.
-def is_collection_field_type(field_type: Type[Any]) -> bool:
+def is_collection_field_type(field_type: Union[Type[Any], List[Any], Dict[str, Any]]) -> bool:
     """Check whether a type hint is a collection type as used by OSCAL.
 
     Specifiically this is whether the type is a list or string.
