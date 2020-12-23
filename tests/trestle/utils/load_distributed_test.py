@@ -56,6 +56,29 @@ def test_load_list(testdata_dir, tmp_trestle_dir):
     assert test_utils.list_unordered_equal(actual_roles, expected_roles)
 
 
+def test_load_list_group(testdata_dir, tmp_trestle_dir):
+    """Test more complicated list loading."""
+    # prepare trestle project dir with the file
+    test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
+
+    test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
+
+    catalogs_dir = Path('catalogs/')
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+    catalog_dir = mycatalog_dir / 'catalog'
+
+    # Copy files from test/data/split_merge/step4
+    shutil.rmtree(catalogs_dir)
+    shutil.copytree(test_data_source, catalogs_dir)
+
+    actual_model_type, actual_model_alias, actual_groups = load_list(catalog_dir / 'groups')
+
+    # load_list is expected to return a list of array, instead of an instance of Groups class
+    expected_groups = (actual_model_type.oscal_read(testdata_dir / 'split_merge/load_distributed/groups.json')).__root__
+
+    assert actual_groups == expected_groups
+
+
 def test_load_dict(testdata_dir, tmp_trestle_dir):
     """Test loading of distributed dict."""
     # prepare trestle project dir with the file

@@ -30,7 +30,7 @@ def load_list(filepath: Path) -> Tuple[OscalBaseModel, str, List[OscalBaseModel]
     # TODO: FIXME: fs.get_stripped_contextual_model fails without absolute file path!!! FIX IT!!
     collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(filepath.absolute())
 
-    for path in Path.iterdir(filepath):
+    for path in sorted(Path.iterdir(filepath)):
 
         # ASSUMPTION HERE: if it is a directory, there's a file that can not be decomposed further.
         if path.is_dir():
@@ -47,7 +47,7 @@ def load_dict(filepath: Path) -> Tuple[OscalBaseModel, str, Dict[str, OscalBaseM
     """Given path to a directory of additionalProperty(dict) models, load the distributed models."""
     model_dict: Dict[str, OscalBaseModel] = {}
     collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(filepath.absolute())
-    for path in Path.iterdir(filepath):
+    for path in sorted(Path.iterdir(filepath)):
         model_type, model_alias, model_instance = load_distributed(path)
         field_name = path.parts[-1].split('__')[0]
         model_dict[field_name] = model_instance
@@ -85,7 +85,7 @@ def load_distributed(
         aliases_not_to_be_stripped = []
         instances_to_be_merged: List[OscalBaseModel] = []
 
-        for path in Path.iterdir(decomposed_dir):
+        for path in sorted(Path.iterdir(decomposed_dir)):
 
             if path.is_file():
                 model_type, model_alias, model_instance = load_distributed(path)
