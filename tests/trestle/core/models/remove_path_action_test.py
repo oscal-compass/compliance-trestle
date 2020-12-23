@@ -23,21 +23,21 @@ from tests import test_utils
 
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import RemovePathAction
-from trestle.utils import fs, trash
+from trestle.utils import trash
 
 
-def test_remove_path_file(tmp_dir: pathlib.Path):
+def test_remove_path_file(tmp_path: pathlib.Path) -> None:
     """Test remove path with content clear option."""
-    tmp_data_dir = tmp_dir.joinpath('data')
+    tmp_data_dir = tmp_path.joinpath('data')
     tmp_data_file = tmp_data_dir.joinpath('readme.md')
-    fs.ensure_directory(tmp_data_dir)
+    tmp_data_dir.mkdir(exist_ok=True, parents=True)
 
     # not a valid trestle project should error in constructor
     with pytest.raises(TrestleError):
         rpa = RemovePathAction(tmp_data_file)
 
     # create trestle project
-    test_utils.ensure_trestle_config_dir(tmp_dir)
+    test_utils.ensure_trestle_config_dir(tmp_path)
     rpa = RemovePathAction(tmp_data_file)
 
     # missing file should error
@@ -86,10 +86,10 @@ def test_remove_path_file(tmp_dir: pathlib.Path):
     assert tmp_data_dir.exists()
 
 
-def test_remove_path_magic_methods(tmp_dir):
+def test_remove_path_magic_methods(tmp_path):
     """Test remove path magic methods."""
-    tmp_data_dir = tmp_dir.joinpath('data')
-    test_utils.ensure_trestle_config_dir(tmp_dir)
+    tmp_data_dir = tmp_path.joinpath('data')
+    test_utils.ensure_trestle_config_dir(tmp_path)
     rpa = RemovePathAction(tmp_data_dir)
 
     action_desc = rpa.to_string()

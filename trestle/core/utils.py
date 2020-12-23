@@ -16,7 +16,7 @@
 import importlib
 import logging
 import warnings
-from typing import Any, List, Tuple, Type, no_type_check
+from typing import Any, List, Tuple, Type, TypeVar, no_type_check
 
 from pydantic import BaseModel
 
@@ -25,6 +25,8 @@ import trestle.core.err as err
 
 logger = logging.getLogger(__name__)
 
+# Generic typevar
+TG = TypeVar('TG')
 
 def camel_to_snake(camel: str) -> str:
     """Convert camel case to snake."""
@@ -135,7 +137,8 @@ def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
         raise err.TrestleError('Invalid module')
 
 
-def is_collection_field_type(field_type) -> bool:
+# FIXME: Typing issues here
+def is_collection_field_type(field_type: Any) -> bool:
     """Check if model type is a generic collection model such as a typed list or a typed dict."""
     if hasattr(field_type, '__origin__') and hasattr(field_type, '__args__') and (list in field_type.mro()
                                                                                   or dict in field_type.mro()):

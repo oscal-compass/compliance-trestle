@@ -47,8 +47,6 @@ ARG_ELEMENT_SHORT = 'e'
 ARG_DESC_FILE = 'Path of the file'
 ARG_DESC_ELEMENT = 'Path of the element in the OSCAL model'
 
-TMP_DIR_NAME = '__tmp_dir'
-
 # Index separater for naming directories representing collection properties
 IDX_SEP = '__'
 

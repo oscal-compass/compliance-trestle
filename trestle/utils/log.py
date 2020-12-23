@@ -41,7 +41,7 @@ class SpecificLevelFilter(logging.Filter):
         return log_record.levelno <= self._level
 
 
-def set_global_logging_levels(level: int = logging.INFO):
+def set_global_logging_levels(level: int = logging.INFO) -> None:
     """Initialise logging.
 
     Should only be invoked by the CLI classes or similar.
@@ -71,7 +71,7 @@ def set_global_logging_levels(level: int = logging.INFO):
     _logger.addHandler(console_debug_handler)
 
 
-def set_log_level_from_args(args: argparse.Namespace):
+def set_log_level_from_args(args: argparse.Namespace) -> None:
     """Vanity function to automatically set log levels based on verbosity flags."""
     if args.verbose > 0:
         set_global_logging_levels(logging.DEBUG)
