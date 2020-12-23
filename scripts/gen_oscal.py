@@ -68,12 +68,12 @@ def generate_model_flat(full_name, out_full_name):
     """Generate a single model with datamodel-codegen."""
     print(f'generate flattened and fixed model: {full_name} -> {out_full_name}')
     print('flatten schema')
-    fs = FlattenSchema()
-    new_json = out_full_name + '_flat.json'
+    #fs = FlattenSchema()
+    #new_json = out_full_name + '_flat.json'
     new_py = out_full_name
-    fs.replace_refs(full_name, new_json)
+    #fs.replace_refs(full_name, new_json)
     print('convert to python')
-    args = ['datamodel-codegen', '--input-file-type', 'jsonschema', '--input', new_json, '--base-class',
+    args = ['datamodel-codegen', '--input-file-type', 'jsonschema', '--input', full_name, '--base-class',
             'trestle.core.base_model.OscalBaseModel', '--output', new_py]
     try:
         check_call(args)
@@ -81,14 +81,14 @@ def generate_model_flat(full_name, out_full_name):
         print(f'Error calling datamodel-codegen for file {full_name} error {error}')
     else:
         print('fix the python')
-        shutil.copy(new_py, new_py + 'b4fix.py')
+        #shutil.copy(new_py, new_py + 'b4fix.py')
         fix_file(new_py)
         print('done')
 
 
 def generate_multi_models(full_name, out_full_name):
     """Generate multiple output models for debugging."""
-    generate_model(str(full_name), str(out_full_name))
+    #generate_model(str(full_name), str(out_full_name))
     generate_model_flat(str(full_name), str(out_full_name))
 
 
@@ -119,7 +119,7 @@ def generate_models():
 
 def main():
     """Load git and generate models."""
-    load_git()
+    #load_git()
     generate_models()
 
 

@@ -85,6 +85,7 @@ class ClassText():
         self.refs = set()
         self.full_refs = set()
         self.found_all_links = False
+        self.is_self_ref = False
 
     def add_line(self, line):
         """Add new line to class text."""
@@ -152,7 +153,9 @@ class ClassText():
     def find_direct_refs(self, class_names_list):
         """Find direct refs without recursion."""
         for ref in self.refs:
-            if ref in class_names_list:
+            if ref == self.name:
+                self.is_self_ref = True
+            if ref in class_names_list and not ref == self.name:
                 self.full_refs.add(ref)
         if len(self.full_refs) == 0:
             self.found_all_links = True
@@ -200,6 +203,22 @@ class ClassText():
         return True
 
 
+def find_forward_refs(class_list, orders):
+    forward_names = set()
+    for c in class_list:
+        if c.is_self_ref:
+            forward_names.add(c.name)
+    for i in range(len(orders)):
+        if orders[i].earliest_ref < i:
+            forward_names.add(class_list[i].name)
+
+    forward_refs = []
+    for c in class_list:
+        if c.name in forward_names:
+            forward_refs.append(f'{c.name}.update_forward_refs()')
+    return forward_refs
+
+
 def reorder(class_list):
     """Reorder the class list based on the location of its refs and deps."""
     # build list of all class names defined in file
@@ -220,10 +239,11 @@ def reorder(class_list):
     # with full dependency info, now reorder the classes to remove forward refs
     did_swap = True
     loop_num = 0
+    orders = None
     while did_swap and loop_num < 1000:
         did_swap = False
-        # find the relative placement of each class in list to its references and dependencies
         orders = []
+        # find the relative placement of each class in list to its references and dependencies
         for c in class_list:
             ro = c.find_order(class_list)
             orders.append(ro)
@@ -237,9 +257,13 @@ def reorder(class_list):
             did_swap = True
             break
         loop_num += 1
+    print(loop_num)
+    if did_swap:
+        print('LIMIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    forward_refs = find_forward_refs(class_list, orders)
 
     # return reordered list of classes with no forward refs
-    return class_list
+    return class_list, forward_refs
 
 
 def fix_header(header, needs_conlist):
@@ -293,6 +317,8 @@ def fix_bad_minitems(class_list):
             line = cls.lines[i]
             neq = line.find("= Field(None")
             if neq > 0 and line.find(cls.name) >= 0:
+                cls.lines[i] = line[:neq] + '= None'
+            if neq > 0 and line.find('List[Base64]') >= 0:
                 cls.lines[i] = line[:neq] + '= None'
         class_list[j] = cls
     return class_list
@@ -372,7 +398,8 @@ def fix_file(fname):
     all_classes = fix_bad_minitems(all_classes)
 
     # reorder the classes to remove forward references as much as possible
-    all_classes = reorder(all_classes)
+    # then find any required forward refs and replace the original list with the new ones
+    all_classes, forward_refs = reorder(all_classes)
 
     get_name_list(all_classes)
 
