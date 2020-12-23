@@ -19,8 +19,6 @@ import os
 import shutil
 from pathlib import Path
 
-from dictdiffer import diff
-
 from tests import test_utils
 
 import trestle.oscal.catalog as oscatalog
@@ -242,4 +240,3 @@ def test_bad_merge(testdata_dir, tmp_trestle_dir):
     cmd = MergeCmd()
     args = argparse.Namespace(verbose=1, element='catalog.roles')
     assert cmd._run(args) == 1
-
