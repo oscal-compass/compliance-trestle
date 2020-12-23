@@ -327,31 +327,31 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_catalog()
 
-    def check_stripped_metadata():
-        assert 'title' in alias_to_field_map
-        assert 'published' in alias_to_field_map
-        assert 'last-modified' in alias_to_field_map
-        assert 'version' in alias_to_field_map
-        assert 'oscal-version' in alias_to_field_map
-        assert 'revision-history' in alias_to_field_map
-        assert 'document-ids' in alias_to_field_map
-        assert 'links' in alias_to_field_map
-        assert 'locations' in alias_to_field_map
-        assert 'parties' in alias_to_field_map
-        assert 'remarks' in alias_to_field_map
+    def check_stripped_metadata(a2f_map) -> None:
+        assert 'title' in a2f_map
+        assert 'published' in a2f_map
+        assert 'last-modified' in a2f_map
+        assert 'version' in a2f_map
+        assert 'oscal-version' in a2f_map
+        assert 'revision-history' in a2f_map
+        assert 'document-ids' in a2f_map
+        assert 'links' in a2f_map
+        assert 'locations' in a2f_map
+        assert 'parties' in a2f_map
+        assert 'remarks' in a2f_map
         assert 'roles' not in alias_to_field_map
-        assert 'responsible-properties' not in alias_to_field_map
-        assert 'properties' not in alias_to_field_map
+        assert 'responsible-properties' not in a2f_map
+        assert 'properties' not in a2f_map
 
     catalog_dir = mycatalog_dir / 'catalog'
     metadata_dir = catalog_dir / 'metadata'
     stripped_catalog = fs.get_stripped_contextual_model(metadata_dir)
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
-    check_stripped_metadata()
+    check_stripped_metadata(alias_to_field_map)
 
     stripped_catalog = fs.get_stripped_contextual_model(catalog_dir / 'metadata.json')
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
-    check_stripped_metadata()
+    check_stripped_metadata(alias_to_field_map)
 
     groups_dir = catalog_dir / 'groups'
     stripped_catalog = fs.get_stripped_contextual_model(groups_dir)
@@ -360,6 +360,7 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
     assert stripped_catalog[1] == 'catalog.groups'
 
     def check_stripped_group() -> None:
+        # FIXME: violates scoped separation for no good reason.
         assert 'id' in alias_to_field_map
         assert 'class' in alias_to_field_map
         assert 'title' in alias_to_field_map
