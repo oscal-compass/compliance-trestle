@@ -47,7 +47,7 @@ TLO = TypeVar(
     assessment_plan.AssessmentPlan,
     assessment_results.AssessmentResults,
     catalog.Catalog,
-    component.Component,
+    component.ComponentDefinition,
     poam.PlanOfActionAndMilestones,
     profile.Profile,
     ssp.SystemSecurityPlan,

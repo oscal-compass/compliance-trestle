@@ -44,7 +44,7 @@ def is_valid_uuid(val: Any) -> bool:
         return False
 
 
-def test_get_sample_value_by_type():
+def test_get_sample_value_by_type() -> None:
     """Test get_sample_value_by_type function."""
     assert type(gens.generate_sample_value_by_type(datetime, '')) == datetime
     assert gens.generate_sample_value_by_type(bool, '') is False
@@ -66,7 +66,7 @@ def test_get_sample_value_by_type():
         gens.generate_sample_value_by_type(list, 'uuid')
 
 
-def test_generate_sample_model():
+def test_generate_sample_model() -> None:
     """Test utils method generate_sample_model."""
     # Create the expected catalog first
     expected_ctlg_dict = {
@@ -108,7 +108,7 @@ def test_generate_sample_model():
     assert expected_rp_dict == actual_rp_dict
 
 
-def test_get_all_sample_models():
+def test_get_all_sample_models() -> None:
     """Test we can get all models which exist."""
     pkgpath = os.path.dirname(oscal.__file__)
     for _, name, _ in pkgutil.iter_modules([pkgpath]):
