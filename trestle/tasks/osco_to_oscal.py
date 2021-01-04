@@ -53,18 +53,25 @@ class OscoToOscal(TaskBase):
     def print_info(self) -> None:
         """Print the help string."""
         logger.info(f'Help information for {self.name} task.')
-        logger.info('Configuration flags sit under [task.osco-to-oscal].')
-        logger.info('input-dir = the path of the input directory comprising .yaml files.')
-        logger.info('input-metadata = the name of the input directory metadata .yaml file, default = oscal-metadata.yaml.')
-        logger.info('output-dir = the path of the output directory comprising synthesized OSCAL .json files.')
-        logger.info('output-overwrite = true [default] or false; replace existing output when true.')
-        logger.info('quiet = true or false [default]; display file creations and rules analysis when false.')
+        logger.info('')
+        logger.info('Purpose: Transform OpenShift Compliance Operator (OSCO) produced .yaml files into Open Security Controls Assessment Language (OSCAL) .json partial results files.')
+        logger.info('')
+        logger.info('Configuration flags sit under [task.osco-to-oscal]:')
+        logger.info('  input-dir = (required) the path of the input directory comprising osco .yaml files.')
+        logger.info('  input-metadata = (optional) the name of the input directory metadata .yaml file, default = oscal-metadata.yaml.')
+        logger.info('  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.')
+        logger.info('  output-overwrite = (optional) true [default] or false; replace existing output when true.')
+        logger.info('  quiet = (optional) true or false [default]; display file creations and rules analysis when false.')
+        logger.info('')
+        logger.info('Operation: All the .yaml files in the input-dir are processed, each producing a corresponding .json output-dir file.')
+        logger.info('The exception is the input-metadata .yaml file which, if present, is used to augment all produced .json output directory files.')
+        logger.info('')
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
         if self._config:
             # initialize
-            metadata = {}
+            default_metadata = {}
             # process config
             idir = self._config.get('input-dir')
             if idir is None:
@@ -83,7 +90,9 @@ class OscoToOscal(TaskBase):
             opth.mkdir(exist_ok=True, parents=True)
             # fetch enhancing oscal metadata
             mfile = ipth / imeta
-            metadata = self._get_metadata(mfile, metadata)
+            metadata = self._get_metadata(mfile, default_metadata)
+            if len(metadata) == 0:
+                logger.debug(f'no metadata: {imeta}.')
             # examine each file in the input folder
             for ifile in sorted(ipth.iterdir()):
                 # skip enhancing oscal metadata
@@ -125,7 +134,7 @@ class OscoToOscal(TaskBase):
         """Provide an actual outcome."""
         if self._config:
             # initialize
-            metadata = {}
+            default_metadata = {}
             # process config
             idir = self._config.get('input-dir')
             if idir is None:
@@ -144,7 +153,9 @@ class OscoToOscal(TaskBase):
             opth.mkdir(exist_ok=True, parents=True)
             # fetch enhancing oscal metadata
             mfile = ipth / imeta
-            metadata = self._get_metadata(mfile, metadata)
+            metadata = self._get_metadata(mfile, default_metadata)
+            if len(metadata) == 0:
+                logger.info(f'no metadata: {imeta}.')
             # examine each file in the input folder
             for ifile in sorted(ipth.iterdir()):
                 # skip enhancing oscal metadata
