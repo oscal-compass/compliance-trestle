@@ -36,7 +36,7 @@ code-typing:
 	mypy --pretty trestle
 
 test::
-	python -m pytest --cov trestle tests --cov-report=xml --exitfirst --random-order
+	python -m pytest --cov trestle tests --cov-report=xml --exitfirst
 
 test-verbose:
 	python -m pytest --cov trestle tests -v --cov-report=term-missing --cov-report=html:cov_html --exitfirst

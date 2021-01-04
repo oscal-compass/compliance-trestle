@@ -86,3 +86,14 @@ def prepare_trestle_project_dir(
     model_obj.oscal_write(model_def_file)
 
     return models_full_path, model_def_file
+
+
+def list_unordered_equal(list1, list2):
+    """Given 2 lists, check if the items in both the lists are same, regardless of order."""
+    list1 = list(list1)  # make a mutable copy
+    try:
+        for elem in list2:
+            list1.remove(elem)
+    except ValueError:
+        return False
+    return not list1

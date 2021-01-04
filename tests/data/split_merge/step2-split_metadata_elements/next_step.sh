@@ -14,3 +14,21 @@ trestle split -e 'roles.*' -e 'esponsible-parties.*'
 # OR
 trestle split -e 'roles.*'
 trestle split -e 'responsible-parties.*'
+
+
+REVERSE:
+    trestle merge -e 'roles.*,responsible-parties.*'
+
+or
+
+cd $TRESTLE_BASEDIR/catalogs/mycatalog/catalog
+    trestle merge -e 'metadata.roles.*,metadata.responsible-parties.*'
+which is different from:
+    trestle merge -e 'metadata.roles,metadata.responsible-parties'
+
+or
+
+cd $TRESTLE_BASEDIR/catalogs/mycatalog
+    trestle merge -e 'catalog.metadata.roles.*,catalog.metadata.responsible-parties.*'
+which is different from:
+    trestle merge -e 'catalog.metadata.roles,catalog.metadata.responsible-parties'
