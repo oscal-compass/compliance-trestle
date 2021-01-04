@@ -18,12 +18,13 @@ import base64
 import bz2
 import logging
 import uuid
+from typing import Any, Dict, List
 from xml.etree import ElementTree
 
 logger = logging.getLogger(__name__)
 
 
-def get_observations(idata, oscal_metadata):
+def get_observations(idata: Dict, oscal_metadata: Dict) -> (Dict, Dict):
     """
     Transform OSCO yaml to NIST OSCAL json with statistics.
 
@@ -63,7 +64,7 @@ def get_observations(idata, oscal_metadata):
 class Observations():
     """Create and accumulate list of OSCAL-like Observations."""
 
-    def __init__(self, rules, oscal_metadata):
+    def __init__(self, rules: List, oscal_metadata: Dict) -> Any:
         """Initialize given specified args."""
         # List of observations.
         self._instances = []
@@ -73,7 +74,7 @@ class Observations():
             self._instances.append(observation)
 
     @property
-    def instances(self):
+    def instances(self) -> List:
         """Get the list of observations."""
         return self._instances
 
@@ -150,7 +151,7 @@ class Observations():
 class Rules():
     """Create and accumulate list of rule + result pairs with associated metadata."""
 
-    def __init__(self, content):
+    def __init__(self, content: Dict) -> Any:
         """Initialize given specified args."""
         # List of extracted rules.
         self._instances = []
@@ -168,22 +169,22 @@ class Rules():
         self._extract_rules()
 
     @property
-    def instances(self):
+    def instances(self) -> List:
         """Get the list of rules."""
         return self._instances
 
     @property
-    def benchmark(self):
+    def benchmark(self) -> Dict:
         """Get the benchmark info."""
         return self._benchmark
 
     @property
-    def metadata(self):
+    def metadata(self) -> Dict:
         """Get the metadata info."""
         return self._metadata
 
     @property
-    def analysis(self):
+    def analysis(self) -> Dict:
         """Get the analysis info."""
         logger.debug('Rules Analysis:')
         logger.debug(f'config_maps: {self._config_maps}')
