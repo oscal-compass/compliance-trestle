@@ -255,7 +255,7 @@ This command allows users to import existing OSCAL files so that they can be man
                 │   └── controls
                 │       ├── 00000__control.json
                 │       └── 00001__control.json
-                ├── 00001__group
+                ├── 00001__group.json
                 └── 00001__group
                     └── controls
                         ├── 00000__control.json

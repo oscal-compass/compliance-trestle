@@ -399,8 +399,7 @@ def test_get_singular_alias() -> None:
         fs.get_singular_alias(alias_path='')
 
     assert 'responsible-party' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties')
-    with pytest.raises(TrestleError):
-        fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*')
+    assert 'responsible-party' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*')
     assert 'prop' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*.properties')
 
     assert 'role' == fs.get_singular_alias(alias_path='catalog.metadata.roles')
@@ -446,8 +445,9 @@ def test_contextual_get_singular_alias(tmp_path: pathlib.Path) -> None:
         fs.get_singular_alias('metadata.roles', contextual_mode=False)
     alias = fs.get_singular_alias('metadata.roles', contextual_mode=True)
     assert alias == 'role'
-    with pytest.raises(TrestleError):
-        fs.get_singular_alias(alias_path='metadata.responsible-parties.*', contextual_mode=True)
+    assert 'responsible-party' == fs.get_singular_alias(
+        alias_path='metadata.responsible-parties.*', contextual_mode=True
+    )
     assert 'prop' == fs.get_singular_alias(alias_path='metadata.responsible-parties.*.properties', contextual_mode=True)
 
     os.chdir(groups_dir)
