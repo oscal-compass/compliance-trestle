@@ -847,7 +847,7 @@ class Merge(OscalBaseModel):
 
 
 class Modify(OscalBaseModel):
-    set_parameters: Optional[Dict[str, ParameterSetting]] = Field(
+    set_parameters: Optional[Dict[str, SetParameter]] = Field(
         None, alias='set-parameters'
     )
     alters: Optional[List[Alter]] = Field(None, min_items=1)

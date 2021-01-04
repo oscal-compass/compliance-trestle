@@ -29,11 +29,11 @@ plural_lut = {
     'Tools': 'Tool',
     'Statements': 'Statement',
     'IncorporatesComponents': 'IncorporatesComponent',
-    'SetParameters': 'ParameterSetting',
+    'SetParameters': 'SetParameter',
     'ParameterSettings': 'SetParameter',
     'Diagrams': 'Diagram',
     'ByComponents': 'ByComponent',
-    'Targets': 'Target',
+    'Targets': 'DefinedTarget',
     'IncorporatesTargets': 'IncorporatesTarget',
     'InformationTypeIds': 'InformationTypeId',
     'EmailAddresses': 'EmailStr',
@@ -310,6 +310,7 @@ def clean_classes(class_list):
         class_list[j] = cls
     return class_list
 
+
 def fix_bad_minitems(class_list):
     for j in range(len(class_list)):
         cls = class_list[j]
@@ -322,6 +323,7 @@ def fix_bad_minitems(class_list):
                 cls.lines[i] = line[:neq] + '= None'
         class_list[j] = cls
     return class_list
+
 
 def get_name_list(class_list):
     names = []

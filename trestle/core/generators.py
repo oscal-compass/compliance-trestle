@@ -20,8 +20,7 @@ from enum import Enum
 from typing import Dict, List, Optional, Type, TypeVar, Union, cast
 
 import pydantic.networks
-from pydantic import BaseModel
-from pydantic import ConstrainedStr
+from pydantic import BaseModel, ConstrainedStr, types
 
 import trestle.core.err as err
 import trestle.core.utils as utils
@@ -37,7 +36,6 @@ TG = TypeVar('TG', bound=OscalBaseModel)
 def generate_sample_value_by_type(
     type_: type,
     field_name: str,
-    parent_model: Optional[Type[OscalBaseModel]] = None
 ) -> Union[datetime, bool, int, str, float, Enum]:
     """Given a type, return sample value.
 
@@ -71,15 +69,19 @@ def generate_sample_value_by_type(
         # TODO: Cleanup: this should be usable from a url.. but it's not inuitive.
         return pydantic.networks.AnyUrl('https://sample.com/replaceme.html', scheme='http', host='sample.com')
     else:
-        raise err.TrestleError('Fatal: Bad type in model')
+        raise err.TrestleError(f'Fatal: Bad type in model {type_}')
 
 
 def generate_sample_model(model: Union[Type[TG], List[TG], Dict[str, TG]]) -> TG:
     """Given a model class, generate an object of that class with sample values."""
+    # FIXME: Typing is wrong.
     # TODO: The typing here is very generic - which may cause some pain. It may be more appropriate to create a wrapper
     # Function for the to level execution. This would imply restructuring some other parts of the code.
 
     model_type = model
+    if getattr(model_type, '__name__', None) == 'ConstrainedListValue':
+        model = List[model_type.item_type]
+        model_type = model
     # This block normalizes model type down to
     if utils.is_collection_field_type(model):  # type: ignore
         model_type = typing_extensions.get_origin(model)  # type: ignore
@@ -96,11 +98,13 @@ def generate_sample_model(model: Union[Type[TG], List[TG], Dict[str, TG]]) -> TG
             outer_type = outer_type.__args__[0]
         if model.__fields__[field].required:
             """ FIXME: This type_ could be a List or a Dict """
-            if utils.is_collection_field_type(outer_type) or issubclass(outer_type, BaseModel):
+            if utils.is_collection_field_type(outer_type) or issubclass(
+                    outer_type, BaseModel) or outer_type.__name__ == 'ConstrainedListValue':
                 model_dict[field] = generate_sample_model(outer_type)
             else:
-                model_dict[field] = generate_sample_value_by_type(outer_type, field, model)
-    if model_type is list:
+                model_dict[field] = generate_sample_value_by_type(outer_type, field)
+    # Note: this assumes list constrains in oscal are always 1 as a minimum size. if two this may still fail.
+    if model_type is list or model_type.__name__ == 'ConstrainedListValue':
         return [model(**model_dict)]
     elif model_type is dict:
         return {'REPLACE_ME': model(**model_dict)}

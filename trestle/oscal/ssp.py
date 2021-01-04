@@ -1090,6 +1090,85 @@ class Export(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
+class ByComponent(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A globally unique identifier that can be used to reference this by-component entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        title='By-Component Universally Unique Identifier',
+    )
+    description: str = Field(
+        ...,
+        description='An implementation statement that describes how a control or a control statement is implemented within the referenced system component.',
+        title='Control Implementation Description',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    parameter_settings: Optional[Dict[str, SetParameter]] = Field(
+        None, alias='parameter-settings'
+    )
+    export: Optional[Export] = Field(
+        None,
+        description='Identifies content intended for external consumption, such as with leveraged organizations.',
+        title='Export',
+    )
+    inherited: Optional[List[Inherited]] = Field(None, min_items=1)
+    satisfied: Optional[List[Satisfied]] = Field(None, min_items=1)
+    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
+        None, alias='responsible-roles'
+    )
+    remarks: Optional[Remarks] = None
+
+
+class Statement(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A globally unique identifier that can be used to reference this control statement entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        title='Control Statement Reference Universally Unique Identifier',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    by_components: Optional[Dict[str, ByComponent]] = Field(
+        None, alias='by-components'
+    )
+    remarks: Optional[Remarks] = None
+
+
+class ImplementedRequirement(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A globally unique identifier that can be used to reference this control requirement entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        title='Control Requirement Universally Unique Identifier',
+    )
+    control_id: str = Field(
+        ...,
+        alias='control-id',
+        description='A reference to a control identifier.',
+        title='Control Identifier Reference',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    parameter_settings: Optional[Dict[str, SetParameter]] = Field(
+        None, alias='parameter-settings'
+    )
+    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
+        None, alias='responsible-roles'
+    )
+    by_components: Optional[Dict[str, ByComponent]] = Field(
+        None, alias='by-components'
+    )
+    statements: Optional[Dict[str, Statement]] = None
+    remarks: Optional[Remarks] = None
+
+
 class SystemImplementation(OscalBaseModel):
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
@@ -1189,89 +1268,6 @@ class SystemCharacteristics(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class BackMatter(OscalBaseModel):
-    resources: Optional[List[Resource]] = Field(None, min_items=1)
-
-
-class ByComponent(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A globally unique identifier that can be used to reference this by-component entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
-        title='By-Component Universally Unique Identifier',
-    )
-    description: str = Field(
-        ...,
-        description='An implementation statement that describes how a control or a control statement is implemented within the referenced system component.',
-        title='Control Implementation Description',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    parameter_settings: Optional[Dict[str, SetParameter]] = Field(
-        None, alias='parameter-settings'
-    )
-    export: Optional[Export] = Field(
-        None,
-        description='Identifies content intended for external consumption, such as with leveraged organizations.',
-        title='Export',
-    )
-    inherited: Optional[List[Inherited]] = Field(None, min_items=1)
-    satisfied: Optional[List[Satisfied]] = Field(None, min_items=1)
-    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    remarks: Optional[Remarks] = None
-
-
-class Statement(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A globally unique identifier that can be used to reference this control statement entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
-        title='Control Statement Reference Universally Unique Identifier',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    by_components: Optional[Dict[str, ByComponent]] = Field(
-        None, alias='by-components'
-    )
-    remarks: Optional[Remarks] = None
-
-
-class ImplementedRequirement(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A globally unique identifier that can be used to reference this control requirement entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
-        title='Control Requirement Universally Unique Identifier',
-    )
-    control_id: str = Field(
-        ...,
-        alias='control-id',
-        description='A reference to a control identifier.',
-        title='Control Identifier Reference',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    parameter_settings: Optional[Dict[str, SetParameter]] = Field(
-        None, alias='parameter-settings'
-    )
-    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    by_components: Optional[Dict[str, ByComponent]] = Field(
-        None, alias='by-components'
-    )
-    statements: Optional[Dict[str, Statement]] = None
-    remarks: Optional[Remarks] = None
-
-
 class ControlImplementation(OscalBaseModel):
     description: str = Field(
         ...,
@@ -1281,6 +1277,10 @@ class ControlImplementation(OscalBaseModel):
     implemented_requirements: List[ImplementedRequirement] = Field(
         ..., alias='implemented-requirements', min_items=1
     )
+
+
+class BackMatter(OscalBaseModel):
+    resources: Optional[List[Resource]] = Field(None, min_items=1)
 
 
 class SystemSecurityPlan(OscalBaseModel):

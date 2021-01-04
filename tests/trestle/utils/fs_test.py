@@ -328,6 +328,7 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
     check_stripped_catalog()
 
     def check_stripped_metadata(a2f_map) -> None:
+        # FIXME: negative testing here is suspect.
         assert 'title' in a2f_map
         assert 'published' in a2f_map
         assert 'last-modified' in a2f_map
@@ -365,7 +366,7 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
         assert 'class' in alias_to_field_map
         assert 'title' in alias_to_field_map
         assert 'parameters' in alias_to_field_map
-        assert 'properties' in alias_to_field_map
+        assert 'props' in alias_to_field_map
         assert 'annotations' in alias_to_field_map
         assert 'links' in alias_to_field_map
         assert 'parts' in alias_to_field_map
@@ -401,10 +402,10 @@ def test_get_singular_alias() -> None:
     assert 'responsible-party' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties')
     with pytest.raises(TrestleError):
         fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*')
-    assert 'prop' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*.properties')
+    assert 'property' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*.props')
 
     assert 'role' == fs.get_singular_alias(alias_path='catalog.metadata.roles')
-    assert 'prop' == fs.get_singular_alias(alias_path='catalog.metadata.properties')
+    assert 'property' == fs.get_singular_alias(alias_path='catalog.metadata.props')
 
     with pytest.raises(TrestleError):
         fs.get_singular_alias(alias_path='target-definition.targets.target-control-implementations')

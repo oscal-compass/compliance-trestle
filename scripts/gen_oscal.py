@@ -114,13 +114,14 @@ def generate_models():
         out_fname = oscal_name + '.py'
         out_full_name = out_dir / out_fname
         generate_multi_models(full_name, out_full_name)
-    generate_multi_models('3rd-party-schema-documents/IBM_target_schema.json', str(out_dir / 'target.py'))
+    generate_multi_models('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', str(out_dir / 'target.py'))
 
 
 def main():
     """Load git and generate models."""
-    #load_git()
+    load_git()
     generate_models()
+    print('DONE')
 
 
 if __name__ == '__main__':

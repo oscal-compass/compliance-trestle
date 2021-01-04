@@ -203,15 +203,6 @@ def test_multiple_variable_strip() -> None:
 
 def test_copy_to() -> None:
     """Test the copy to functionality."""
-    # Root variable copy too
-    catalog_title = oscatalog.Title.parse_obj('my_fun_title')
-
-    target_description = catalog_title.copy_to(ostarget.Description)
-
-    assert (target_description == catalog_title)
-
-    target_title = catalog_title.copy_to(ostarget.Title)
-    assert (target_title == catalog_title)
 
     # Complex variable
     c_m = oscatalog.Metadata(
@@ -224,6 +215,7 @@ def test_copy_to() -> None:
     )
 
     target_metadata = c_m.copy_to(ostarget.Metadata)
+    print('hello')
     assert (target_metadata.title == c_m.title)
     # Non matching object
     with pytest.raises(Exception):

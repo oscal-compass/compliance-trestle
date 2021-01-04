@@ -20,7 +20,7 @@ import pkgutil
 import sys
 import uuid
 from datetime import date, datetime
-from typing import Any
+from typing import Any, Dict, List
 
 import pydantic.networks
 from pydantic import ConstrainedStr, typing
@@ -53,10 +53,9 @@ def test_get_sample_value_by_type() -> None:
     assert gens.generate_sample_value_by_type(float, '') == 0.0
     assert gens.generate_sample_value_by_type(ConstrainedStr, '') == '00000000-0000-4000-8000-000000000000'
     uuid_ = gens.generate_sample_value_by_type(ConstrainedStr, 'uuid')
-    assert gens.generate_sample_value_by_type(ssp.SecuritySensitivityLevel, '') == ssp.SecuritySensitivityLevel('low')
+    assert gens.generate_sample_value_by_type(ssp.Type, '') == ssp.Type('person')
     assert is_valid_uuid(uuid_) and str(uuid_) != '00000000-0000-4000-8000-000000000000'
-    assert gens.generate_sample_value_by_type(ConstrainedStr, 'anything',
-                                              ssp.DateAuthorized) == date.today().isoformat()
+    assert gens.generate_sample_value_by_type(ConstrainedStr, 'date_authorized') == date.today().isoformat()
     assert gens.generate_sample_value_by_type(pydantic.networks.EmailStr,
                                               'anything') == pydantic.networks.EmailStr('dummy@sample.com')
     assert gens.generate_sample_value_by_type(pydantic.networks.AnyUrl, 'anything') == pydantic.networks.AnyUrl(
@@ -87,14 +86,15 @@ def test_generate_sample_model() -> None:
     assert is_valid_uuid(actual_ctlg.uuid)
     actual_ctlg.uuid = expected_ctlg.uuid
     # Check if last-modified datetime is of type datetime, and then equate in actual and expected
-    assert type(actual_ctlg.metadata.last_modified) is catalog.LastModified
+    assert type(actual_ctlg.metadata) is catalog.Metadata
+    assert type(actual_ctlg.metadata.last_modified) is datetime
     actual_ctlg.metadata.last_modified = expected_ctlg.metadata.last_modified
     # Check that expected generated catalog is now same a actual catalog
     assert expected_ctlg == actual_ctlg
 
     # Test list type models
     expected_role = catalog.Role(**{'id': 'REPLACE_ME', 'title': 'REPLACE_ME'})
-    list_role = gens.generate_sample_model(typing.List[catalog.Role])
+    list_role = gens.generate_sample_model(List[catalog.Role])
     assert type(list_role) is list
     actual_role = list_role[0]
     assert expected_role == actual_role
@@ -103,7 +103,7 @@ def test_generate_sample_model() -> None:
     expected_rp = {'party-uuids': ['00000000-0000-4000-8000-000000000000']}
     expected_rp = catalog.ResponsibleParty(**expected_rp)
     expected_rp_dict = {'REPLACE_ME': expected_rp}
-    actual_rp_dict = gens.generate_sample_model(typing.Dict[str, catalog.ResponsibleParty])
+    actual_rp_dict = gens.generate_sample_model(Dict[str, catalog.ResponsibleParty])
     assert type(actual_rp_dict) is dict
     assert expected_rp_dict == actual_rp_dict
 

@@ -14,10 +14,11 @@
 # limitations under the License.
 """Utilities for dealing with models."""
 import importlib
+import inspect
 import logging
 from typing import Any, Dict, List, Tuple, Type, TypeVar, Union, no_type_check
 
-from pydantic import BaseModel
+from pydantic import BaseModel, types
 
 import trestle.core.const as const
 import trestle.core.err as err
@@ -28,6 +29,7 @@ logger = logging.getLogger(__name__)
 
 # Generic typevar
 TG = TypeVar('TG')
+
 
 def camel_to_snake(camel: str) -> str:
     """Convert camel case to snake."""
@@ -146,7 +148,7 @@ def is_collection_field_type(field_type: Union[Type[Any], List[Any], Dict[str, A
     """
     # Retrieves type from a type annotation
     origin_type = typing_extensions.get_origin(field_type)
-    #
+    # Note the second part of this expression is a specific test for pydantic which is using some internal hacks
     if origin_type in [list, dict]:
         return True
     return False
@@ -164,6 +166,7 @@ def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, T
         The desired type.
     """
     try:
+        # Deal with constrained list locally first
         types = typing_extensions.get_args(collection_field_type)[-1]
         return types
     except Exception as e:

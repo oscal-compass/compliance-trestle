@@ -705,7 +705,7 @@ class ImplementedRequirement(OscalBaseModel):
     responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
         None, alias='responsible-roles'
     )
-    set_parameters: Optional[Dict[str, ParameterSetting]] = Field(
+    set_parameters: Optional[Dict[str, SetParameter]] = Field(
         None, alias='set-parameters'
     )
     statements: Optional[Dict[str, Statement]] = None
