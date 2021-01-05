@@ -57,6 +57,8 @@ def snake_to_upper_camel(snake: str) -> str:
         if lift:
             camel = camel + s.upper()
             lift = False
+        else:
+            camel = camel + s
     return camel
 
 

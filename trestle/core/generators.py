@@ -52,14 +52,22 @@ def generate_sample_value_by_type(
         return 'REPLACE_ME'
     elif type_ is float:
         return 0.00
-    elif issubclass(type_, ConstrainedStr) or 'ConstrainedStr' in str(type):
+    elif issubclass(type_, ConstrainedStr) or 'ConstrainedStr' in type_.__name__:
         # This code here is messy. we need to meet a set of constraints. If we do
-        # not do so it fails to generate.
+        # TODO: explore whether there is a
         if 'uuid' == field_name:
             return str(uuid.uuid4())
         elif field_name == 'date_authorized':
             return date.today().isoformat()
         return '00000000-0000-4000-8000-000000000000'
+    elif 'ConstrainedIntValue' in type_.__name__:
+        # create an int value as close to the floor as possible does not test upper bound
+        multiple = type_.multiple_of or 1  # default to every integer
+        floor = type_.ge or type_.gt + 1 or 0  # default to 0
+        if floor % multiple == 0:
+            return floor
+        else:
+            return (floor + 1) * multiple
     elif issubclass(type_, Enum):
         # keys and values diverge due to hypens in oscal names
         return type_(list(type_.__members__.values())[0])

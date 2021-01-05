@@ -20,11 +20,24 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
 from trestle.core.base_model import OscalBaseModel
 
+class Base64(OscalBaseModel):
+    filename: Optional[str] = Field(
+        None,
+        description='Name of the file before it was encoded as Base64 to be embedded in a resource. This is the name that will be assigned to the file when the file is decoded.',
+        title='File Name',
+    )
+    media_type: Optional[str] = Field(
+        None,
+        alias='media-type',
+        description='Describes the media type of the linked resource',
+        title='Media type',
+    )
+    value: str
 
 class ParameterGuideline(OscalBaseModel):
     prose: str = Field(
