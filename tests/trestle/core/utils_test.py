@@ -218,7 +218,7 @@ def test_get_target_model() -> None:
         ['catalog', 'metadata', 'responsible-parties', 'creator'], catalog.Catalog
     ) is catalog.ResponsibleParty
 
-    assert mutils.get_target_model(['catalog', 'metadata', 'title'], catalog.Catalog) is catalog.Title
+    assert mutils.get_target_model(['catalog', 'metadata'], catalog.Catalog) is catalog.Metadata
 
     with pytest.raises(err.TrestleError):
         mutils.get_target_model(['catalog', 'metadata', 'bad_element'], catalog.Catalog)
