@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
 from trestle.core.base_model import OscalBaseModel
@@ -1628,6 +1628,13 @@ class Activity(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
+class AssessmentAssets(OscalBaseModel):
+    components: Optional[Dict[str, DefinedComponent]] = None
+    assessment_platforms: List[AssessmentPlatform] = Field(
+        ..., alias='assessment-platforms', min_items=1
+    )
+
+
 class Observation(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -1655,13 +1662,6 @@ class Observation(OscalBaseModel):
         None, alias='relevant-evidence', min_items=1
     )
     remarks: Optional[Remarks] = None
-
-
-class AssessmentAssets(OscalBaseModel):
-    components: Optional[Dict[str, DefinedComponent]] = None
-    assessment_platforms: List[AssessmentPlatform] = Field(
-        ..., alias='assessment-platforms', min_items=1
-    )
 
 
 class LocalDefinitions(OscalBaseModel):
