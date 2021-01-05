@@ -94,20 +94,28 @@ def generate_sample_model(model: Union[Type[TG], List[TG], Dict[str, TG]]) -> TG
     model = cast(TG, model)  # type: ignore
 
     model_dict = {}
-
-    for field in model.__fields__:
-        outer_type = model.__fields__[field].outer_type_
-        # Check for unions. This is awkward due to allow support for python 3.7
-        # It also does not inspect for which union we want. Should be removable with oscal 1.0.0
-        if utils.get_origin(outer_type) == Union:
-            outer_type = outer_type.__args__[0]
-        if model.__fields__[field].required:
-            """ FIXME: This type_ could be a List or a Dict """
-            if utils.is_collection_field_type(outer_type) or issubclass(outer_type, OscalBaseModel):
-                model_dict[field] = generate_sample_model(outer_type)
-            else:
-                model_dict[field] = generate_sample_value_by_type(outer_type, field)
-    # Note: this assumes list constrains in oscal are always 1 as a minimum size. if two this may still fail.
+    # this block is needed to avoid situations where an inbuilt is inside a list / dict.
+    if issubclass(model, OscalBaseModel):
+        for field in model.__fields__:
+            outer_type = model.__fields__[field].outer_type_
+            # Check for unions. This is awkward due to allow support for python 3.7
+            # It also does not inspect for which union we want. Should be removable with oscal 1.0.0
+            if utils.get_origin(outer_type) == Union:
+                outer_type = outer_type.__args__[0]
+            if model.__fields__[field].required:
+                """ FIXME: This type_ could be a List or a Dict """
+                if utils.is_collection_field_type(outer_type) or issubclass(outer_type, OscalBaseModel):
+                    model_dict[field] = generate_sample_model(outer_type)
+                else:
+                    model_dict[field] = generate_sample_value_by_type(outer_type, field)
+        # Note: this assumes list constrains in oscal are always 1 as a minimum size. if two this may still fail.
+    else:
+        # There is set of circumstances where a m
+        if model_type is list:
+            return [generate_sample_value_by_type(model, '')]
+        elif model_type is dict:
+            return {'REPLACE_ME': generate_sample_value_by_type(model, '')}
+        err.TrestleError('Unhandled collection type.')
     if model_type is list:
         return [model(**model_dict)]
     elif model_type is dict:
