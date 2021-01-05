@@ -68,7 +68,12 @@ def test_get_sample_value_by_type() -> None:
 
 def test_generate_sample_with_conint() -> None:
     """Generate a sample model where it is known to contain conint fields."""
-    gen_at_freq = gens.generate_sample_model(ap.AtFrequency)
+    gens.generate_sample_model(ap.AtFrequency)
+
+
+def test_generate_sample_with_list_primitives() -> None:
+    """A switch is required to handle cases where the inner object of a list is not a OscalBaseModel."""
+    gens.generate_sample_model(ap.Observation)
 
 
 def test_generate_sample_model() -> None:
