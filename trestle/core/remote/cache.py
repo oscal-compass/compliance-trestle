@@ -99,15 +99,18 @@ class LocalFetcher(FetcherBase):
         path = pathlib.Path(uri).absolute()
         self._abs_path = path
         localhost_cached_dir = self._trestle_cache_path / 'localhost'
-        localhost_cached_dir.mkdir(exist_ok=True)
-        self._inst_cache_path = localhost_cached_dir / path
+        if 'file:///' == uri[0:8] or '/' == uri[0]:
+            localhost_cached_dir = localhost_cached_dir / '__abs__' / '__root__'
+        localhost_cached_dir = localhost_cached_dir / pathlib.Path(path.parent.__str__()[1:])
+        localhost_cached_dir.mkdir(parents=True, exist_ok=True)
+        self._inst_cache_path = localhost_cached_dir
 
     def _update_cache(self) -> None:
         # Step one discover whether
         if self._cache_only:
             # Don't update if cache only.
             return
-        if not self._inst_cache_path.exists() or self._refresh:
+        if self._inst_cache_path.exists() and self._refresh:
             try:
                 shutil.copy(self._abs_path, self._inst_cache_path)
             except Exception as e:
