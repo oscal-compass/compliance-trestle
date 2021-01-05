@@ -25,20 +25,6 @@ from typing import Any, Dict, List, Optional
 from pydantic import AnyUrl, EmailStr, Extra, Field, constr
 from trestle.core.base_model import OscalBaseModel
 
-class Base64(OscalBaseModel):
-    filename: Optional[str] = Field(
-        None,
-        description='Name of the file before it was encoded as Base64 to be embedded in a resource. This is the name that will be assigned to the file when the file is decoded.',
-        title='File Name',
-    )
-    media_type: Optional[str] = Field(
-        None,
-        alias='media-type',
-        description='Describes the media type of the linked resource',
-        title='Media type',
-    )
-    value: str
-
 
 class ParameterGuideline(OscalBaseModel):
     prose: str = Field(
@@ -69,13 +55,6 @@ class DocumentId(OscalBaseModel):
         title='Document Identification Scheme',
     )
     identifier: str
-
-
-class ResponsibleParties(OscalBaseModel):
-    pass
-
-    class Config:
-        extra = Extra.allow
 
 
 class Address(OscalBaseModel):
@@ -158,6 +137,21 @@ class RoleId(OscalBaseModel):
     __root__: str = Field(
         ..., description='A reference to the roles served by the user.'
     )
+
+
+class Base64(OscalBaseModel):
+    filename: Optional[str] = Field(
+        None,
+        description='Name of the file before it was encoded as Base64 to be embedded in a resource. This is the name that will be assigned to the file when the file is decoded.',
+        title='File Name',
+    )
+    media_type: Optional[str] = Field(
+        None,
+        alias='media-type',
+        description='Specifies a media type as defined by the Internet Assigned Numbers Authority (IANA) Media Types Registry.',
+        title='Media Type',
+    )
+    value: str
 
 
 class Property(OscalBaseModel):

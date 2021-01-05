@@ -25,19 +25,6 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
 from trestle.core.base_model import OscalBaseModel
 
-class Base64(OscalBaseModel):
-    filename: Optional[str] = Field(
-        None,
-        description='Name of the file before it was encoded as Base64 to be embedded in a resource. This is the name that will be assigned to the file when the file is decoded.',
-        title='File Name',
-    )
-    media_type: Optional[str] = Field(
-        None,
-        alias='media-type',
-        description='Describes the media type of the linked resource',
-        title='Media type',
-    )
-    value: str
 
 class ParameterGuideline(OscalBaseModel):
     prose: str = Field(
@@ -68,13 +55,6 @@ class DocumentId(OscalBaseModel):
         title='Document Identification Scheme',
     )
     identifier: str
-
-
-class ResponsibleParties(OscalBaseModel):
-    pass
-
-    class Config:
-        extra = Extra.allow
 
 
 class Address(OscalBaseModel):
@@ -159,6 +139,21 @@ class RoleId(OscalBaseModel):
     )
 
 
+class Base64(OscalBaseModel):
+    filename: Optional[str] = Field(
+        None,
+        description='Name of the file before it was encoded as Base64 to be embedded in a resource. This is the name that will be assigned to the file when the file is decoded.',
+        title='File Name',
+    )
+    media_type: Optional[str] = Field(
+        None,
+        alias='media-type',
+        description='Specifies a media type as defined by the Internet Assigned Numbers Authority (IANA) Media Types Registry.',
+        title='Media Type',
+    )
+    value: str
+
+
 class Property(OscalBaseModel):
     uuid: Optional[
         constr(
@@ -235,13 +230,6 @@ class State(Enum):
 class Status(OscalBaseModel):
     state: State = Field(..., description='The operational status.', title='State')
     remarks: Optional[Remarks] = None
-
-
-class ResponsibleRoles(OscalBaseModel):
-    pass
-
-    class Config:
-        extra = Extra.allow
 
 
 class Transport(Enum):
@@ -387,13 +375,6 @@ class SelectObjectiveById(OscalBaseModel):
     )
 
 
-class Components(OscalBaseModel):
-    pass
-
-    class Config:
-        extra = Extra.allow
-
-
 class ThreatId(OscalBaseModel):
     system: AnyUrl = Field(
         ...,
@@ -440,13 +421,6 @@ class RiskStatus(OscalBaseModel):
     __root__: str = Field(
         ..., description='Describes the status of the associated risk.'
     )
-
-
-class Users(OscalBaseModel):
-    pass
-
-    class Config:
-        extra = Extra.allow
 
 
 class AuthorizedPrivilege(OscalBaseModel):
@@ -1642,7 +1616,7 @@ class Activity(OscalBaseModel):
 
 
 class AssessmentAssets(OscalBaseModel):
-    components: Optional[Dict[str, DefinedComponent]] = None
+    components: Optional[Dict[str, SystemComponent]] = None
     assessment_platforms: List[AssessmentPlatform] = Field(
         ..., alias='assessment-platforms', min_items=1
     )
@@ -1678,11 +1652,11 @@ class Observation(OscalBaseModel):
 
 
 class LocalDefinitions(OscalBaseModel):
-    components: Optional[Dict[str, DefinedComponent]] = None
+    components: Optional[Dict[str, SystemComponent]] = None
     inventory_items: Optional[List[Inventory]] = Field(
         None, alias='inventory-items', min_items=1
     )
-    users: Optional[Dict[str, User]] = None
+    users: Optional[Dict[str, SystemUser]] = None
     add_objectives_and_methods: Optional[List[LocalObjective]] = Field(
         None, alias='add-objectives-and-methods', min_items=1
     )

@@ -51,27 +51,22 @@ def load_git():
 
 def generate_model(full_name, out_full_name):
     """Generate a single model with datamodel-codegen."""
-    new_py = out_full_name + '_orig.py'
-    print(f'generate model straight from orig json with no fixes: {full_name} -> {new_py}')
-    print('convert to python')
-    args = ['datamodel-codegen', '--input-file-type', 'jsonschema', '--input', full_name, '--base-class',
-            'trestle.core.base_model.OscalBaseModel', '--output', new_py]
+    print(f'generate python model and apply fix_any: {str(full_name)} -> {str(out_full_name)}')
+    args = ['datamodel-codegen', '--input-file-type', 'jsonschema', '--input', str(full_name), '--base-class',
+            'trestle.core.base_model.OscalBaseModel', '--output', str(out_full_name)]
     try:
         check_call(args)
     except CalledProcessError as error:
         print(f'Error calling datamodel-codegen for file {full_name} error {error}')
     else:
-        print('done')
+        fix_file(str(out_full_name))
 
 
 def generate_model_flat(full_name, out_full_name):
-    """Generate a single model with datamodel-codegen."""
+    """Generate a single model with datamodel-codegen after first flattening the file."""
     print(f'generate flattened and fixed model: {full_name} -> {out_full_name}')
     print('flatten schema')
-    #fs = FlattenSchema()
-    #new_json = out_full_name + '_flat.json'
     new_py = out_full_name
-    #fs.replace_refs(full_name, new_json)
     print('convert to python')
     args = ['datamodel-codegen', '--input-file-type', 'jsonschema', '--input', full_name, '--base-class',
             'trestle.core.base_model.OscalBaseModel', '--output', new_py]
@@ -88,7 +83,7 @@ def generate_model_flat(full_name, out_full_name):
 
 def generate_multi_models(full_name, out_full_name):
     """Generate multiple output models for debugging."""
-    #generate_model(str(full_name), str(out_full_name))
+    generate_model(str(full_name), str(out_full_name))
     generate_model_flat(str(full_name), str(out_full_name))
 
 
@@ -102,7 +97,6 @@ def generate_models():
 
     in_dir = Path('nist-source/json/schema')
     for full_name in in_dir.glob('oscal_*_schema.json'):
-    #for full_name in in_dir.glob('oscal_ssp_schema.json'):
         file_name = str(full_name.name)
         try:
             obj = re.search('oscal_(.+?)_schema.json', file_name).group(1)
@@ -113,8 +107,8 @@ def generate_models():
         oscal_name = obj.replace('-', '_')
         out_fname = oscal_name + '.py'
         out_full_name = out_dir / out_fname
-        generate_multi_models(full_name, out_full_name)
-    generate_multi_models('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', str(out_dir / 'target.py'))
+        generate_model(full_name, out_full_name)
+    generate_model('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', str(out_dir / 'target.py'))
 
 
 def main():
