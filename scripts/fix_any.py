@@ -4,12 +4,14 @@
 # The script changes the Any's appropriately from the plural form of the needed
 #   class to the singular form using a manually curated lookup table.
 # It also finds all references in a class to classes it depends on, using regex.
-# It then reorders the classes so there are no forwards required.
-# The reordering is rigorous and checked by following all referenced classes and their dependencies.
+# It then reorders the classes so there are minimal forwards required.
 # This script is normally called by gen_oscal.py when models are generated
 
 import re
 import string
+
+# these plurals need to be fixed in Dict even when non-optional
+special_plurals = ['Users', 'Components']
 
 plural_lut = {
     'Annotations': 'Annotation',
@@ -41,6 +43,7 @@ plural_lut = {
 # For now delete the classes and convert the corresponding unions to conlist
 singleton_suffixes = ['GroupItem', 'Item']
 singleton_prefixes = ['Include', 'Exclude']
+numbered_classes = ['Base64']
 class_header = 'class '
 license_header = (
     '# -*- mode:python; coding:utf-8 -*-\n'
@@ -186,16 +189,21 @@ class ClassText():
     def is_good(self):
         """Is this class on that should be retained in output."""
         for line in self.lines:
+            # for now leave __root__ files since some are still needed
             # if line.find('__root__: str') >= 0:
             #    return False
+            #
+            # But remove all pass files
             if line.find('pass') >= 0:
                 return False
         if not self.name:
             return False
         if self.name.find('min_items') >= 0:
             return False
-        if self.name == 'Base64':
+        # classes like Base64 are ok
+        if self.name in numbered_classes:
             return True
+        # but any class ending with digit is assumed bad
         if self.name != self.name.rstrip(string.digits):
             return False
         return True
@@ -255,9 +263,8 @@ def reorder(class_list):
             did_swap = True
             break
         loop_num += 1
-    print(loop_num)
     if did_swap:
-        print('LIMIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        print('Excess iteration in reordering!')
     forward_refs = find_forward_refs(class_list, orders)
 
     # return reordered list of classes with no forward refs
@@ -268,8 +275,7 @@ def fix_header(header, needs_conlist):
     """Fix imports and remove timestamp from header."""
     new_header = []
     for r in header:
-        # block import of Any - should not be needed
-        # Any is needed for biblio
+        # Any is needed for biblio so still need to import it
         # r = re.sub(' Any, ', ' ', r)
         if r.find(' timestamp: ') >= 0:
             continue
@@ -324,14 +330,6 @@ def fix_bad_minitems(class_list):
     return class_list
 
 
-def get_name_list(class_list):
-    names = []
-    for c in class_list:
-        names.append(c.name)
-    names.sort()
-    x = 7
-
-
 def fix_file(fname):
     """Fix the Anys in this file and reorder to avoid forward dependencies."""
     all_classes = []
@@ -352,16 +350,11 @@ def fix_file(fname):
                 done_header = True
                 if class_text is not None:  # we are done with current class so add it
                     # prevent anomalous singletons from appearing in output
-                    #is_singleton = False
-
                     for singleton in singleton_prefixes + singleton_suffixes:
                         if class_text.name.find(singleton) >= 0 and class_text.name != singleton:
                             class_text.name = class_text.name.replace(singleton, '')
                             for i in range(len(class_text.lines)):
                                 class_text.lines[i] = class_text.lines[i].replace(singleton, '')
-                    #        is_singleton = True
-                    #        break
-                    #if not is_singleton:
                     all_classes.append(class_text)
                 class_text = ClassText(r)
             else:
@@ -379,6 +372,9 @@ def fix_file(fname):
                             plural = match.group(1)
                             if plural != 'Any':
                                 r = r.replace(plural, plural_lut[plural])
+                    for special in special_plurals:
+                        if r.find(f'Dict[str, {special}]') >= 0:
+                            r = r.replace(special, plural_lut[special])
                     # mark regex strings as raw
                     r = re.sub(r"(\s*regex\s*=\s*)\'(.*)", r"\1r'\2", r)
                     class_text.add_all_refs(r)
@@ -386,23 +382,15 @@ def fix_file(fname):
 
     all_classes.append(class_text)  # don't forget final class
 
-    get_name_list(all_classes)
-
     all_classes = good_classes(all_classes)
 
-    get_name_list(all_classes)
-
     all_classes = clean_classes(all_classes)
-
-    get_name_list(all_classes)
 
     all_classes = fix_bad_minitems(all_classes)
 
     # reorder the classes to remove forward references as much as possible
     # then find any required forward refs and replace the original list with the new ones
     all_classes, forward_refs = reorder(all_classes)
-
-    get_name_list(all_classes)
 
     header = fix_header(header, needs_conlist)
 
@@ -413,11 +401,7 @@ def fix_file(fname):
         out_file.writelines('\n'.join(header) + '\n')
         classes_written = set()
         for c in all_classes:
-            if c.name == "Include":
-                x = 7
             if c.name not in classes_written:
                 out_file.writelines('\n'.join(c.lines) + '\n')
                 classes_written.add(c.name)
-            else:
-                print('remove duplicate class ', c.name)
         out_file.writelines('\n'.join(forward_refs) + '\n')

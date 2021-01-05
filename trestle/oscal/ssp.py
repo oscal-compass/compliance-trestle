@@ -25,19 +25,6 @@ from typing import Any, Dict, List, Optional
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
 from trestle.core.base_model import OscalBaseModel
 
-class Base64(OscalBaseModel):
-    filename: Optional[str] = Field(
-        None,
-        description='Name of the file before it was encoded as Base64 to be embedded in a resource. This is the name that will be assigned to the file when the file is decoded.',
-        title='File Name',
-    )
-    media_type: Optional[str] = Field(
-        None,
-        alias='media-type',
-        description='Describes the media type of the linked resource',
-        title='Media type',
-    )
-    value: str
 
 class DocumentId(OscalBaseModel):
     scheme: AnyUrl = Field(
@@ -46,13 +33,6 @@ class DocumentId(OscalBaseModel):
         title='Document Identification Scheme',
     )
     identifier: str
-
-
-class ResponsibleParties(OscalBaseModel):
-    pass
-
-    class Config:
-        extra = Extra.allow
 
 
 class Address(OscalBaseModel):
@@ -137,6 +117,21 @@ class RoleId(OscalBaseModel):
     )
 
 
+class Base64(OscalBaseModel):
+    filename: Optional[str] = Field(
+        None,
+        description='Name of the file before it was encoded as Base64 to be embedded in a resource. This is the name that will be assigned to the file when the file is decoded.',
+        title='File Name',
+    )
+    media_type: Optional[str] = Field(
+        None,
+        alias='media-type',
+        description='Specifies a media type as defined by the Internet Assigned Numbers Authority (IANA) Media Types Registry.',
+        title='Media Type',
+    )
+    value: str
+
+
 class Property(OscalBaseModel):
     uuid: Optional[
         constr(
@@ -213,13 +208,6 @@ class State(Enum):
 class Status(OscalBaseModel):
     state: State = Field(..., description='The operational status.', title='State')
     remarks: Optional[Remarks] = None
-
-
-class ResponsibleRoles(OscalBaseModel):
-    pass
-
-    class Config:
-        extra = Extra.allow
 
 
 class Transport(Enum):
@@ -303,48 +291,6 @@ class SecurityImpactLevel(OscalBaseModel):
         description='A target-level of availability for the system, based on the sensitivity of information within the system.',
         title='Security Objective: Availability',
     )
-
-
-class Diagrams(OscalBaseModel):
-    pass
-
-    class Config:
-        extra = Extra.allow
-
-
-class Users(OscalBaseModel):
-    pass
-
-    class Config:
-        extra = Extra.allow
-
-
-class Components(OscalBaseModel):
-    pass
-
-    class Config:
-        extra = Extra.allow
-
-
-class ParameterSettings(OscalBaseModel):
-    pass
-
-    class Config:
-        extra = Extra.allow
-
-
-class ByComponents(OscalBaseModel):
-    pass
-
-    class Config:
-        extra = Extra.allow
-
-
-class Statements(OscalBaseModel):
-    pass
-
-    class Config:
-        extra = Extra.allow
 
 
 class Rlink(OscalBaseModel):
@@ -1110,8 +1056,8 @@ class SystemImplementation(OscalBaseModel):
     leveraged_authorizations: Optional[List[LeveragedAuthorization]] = Field(
         None, alias='leveraged-authorizations', min_items=1
     )
-    users: Dict[str, Users]
-    components: Dict[str, Components]
+    users: Dict[str, SystemUser]
+    components: Dict[str, SystemComponent]
     inventory_items: Optional[List[Inventory]] = Field(
         None, alias='inventory-items', min_items=1
     )
