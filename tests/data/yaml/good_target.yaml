@@ -40,72 +40,6 @@ target-definition:
           - name: XCCDF_rule
             value: xccdf_org.ssgproject.content_rule_api_server_token_auth
           uuid: 00f2f9fb-2256-4fed-9c0a-02f63fb332e6
-        - control-id: IA-5 (1)
-          description: IA-5 (1)
-          props:
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_basic_auth
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_token_auth
-          uuid: 5fd97336-1dc3-4652-8a3e-6e5021f14546
-        - control-id: IA-2 (1)
-          description: IA-2 (1)
-          props:
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_kubelet_client_key
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_kubelet_certificate_authority
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_kubelet_client_cert
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_tls_cipher_suites
-          uuid: 4aaf266e-f3ad-4593-9aad-bb359f4b2e56
-        - control-id: AU-3
-          description: AU-3
-          props:
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_request_timeout
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_audit_log_path
-          uuid: 3afcd3d5-9ae5-44f4-a8a7-709bfc53620a
-        - control-id: AU-12
-          description: AU-12
-          props:
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_audit_log_path
-          uuid: e55defa2-a63e-4da0-b1b9-f1e3ec7ba065
-        - control-id: AU-4
-          description: AU-4
-          props:
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_audit_log_maxbackup
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_audit_log_maxsize
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_audit_log_maxage
-          uuid: 16124724-8c81-4696-a42a-0ccb9896fed5
-        - control-id: SC-39
-          description: SC-39
-          props:
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_EventRateLimit
-          uuid: f7ad85ce-ccb5-4944-9b00-53bd0cfff34a
-        - control-id: SI-16
-          description: SI-16
-          props:
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_EventRateLimit
-          uuid: ac3d1885-bb3c-4642-b8cc-619779f17766
-        - control-id: AC-3
-          description: AC-3
-          props:
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_file_permissions_worker_ca
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_etcd_peer_client_cert_auth
-          - name: XCCDF_rule
-            value: xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysPullImages
-          uuid: e5f8a604-31a3-419c-9d7b-222ce2dca080
         links:
         - href: https://quay.io/repository/complianceascode/ocp4
           media-type: scap_org.open-scap_collection_from_xccdf_ssg-ocp4-xccdf-1.2.xml
@@ -134,7 +68,7 @@ target-definition:
         uuid: daca7f77-a2eb-433c-aec2-999c185671dd
       title: Red Hat OpenShift Kubernetes
       type: Software
-    89cfe7a7-ce6b-4699-aa7b-2f5739c72001:
+
       description: RedHat Enterprise Linux 7.8
       target-control-implementations:
       - description: Compliance Operator SCAP guide for RedHat OpenShift Kubernetes
