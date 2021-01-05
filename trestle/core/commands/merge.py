@@ -119,7 +119,7 @@ class MergeCmd(Command):
             _, _, target_model_object = load_distributed.load_distributed(target_model_filename)
         else:
             target_model_filename = Path(target_model_path)
-            collection_type = target_model_type.__origin__
+            collection_type = utils.get_origin(target_model_type)
             _, _, target_model_object = load_distributed.load_distributed(target_model_filename, collection_type)
 
         if hasattr(target_model_object, '__dict__') and '__root__' in target_model_object.__dict__:

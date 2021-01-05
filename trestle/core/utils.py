@@ -16,7 +16,7 @@
 import importlib
 import inspect
 import logging
-from typing import Any, Dict, List, Tuple, Type, TypeVar, Union, no_type_check
+from typing import Any, Dict, List, Tuple, Type, TypeVar, Union, no_type_check, Optional
 
 from pydantic import BaseModel, types
 
@@ -57,6 +57,8 @@ def snake_to_upper_camel(snake: str) -> str:
         if lift:
             camel = camel + s.upper()
             lift = False
+        else:
+            camel = camel + s
     return camel
 
 
@@ -133,12 +135,22 @@ def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
         raise err.TrestleError('Invalid module')
 
 
+def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
+    """Generalized and robust get_origin function.
+    
+    This function is derived from work by pydantic, however, avoids complications 
+    from various python versions.
+    """
+    # This executes a fallback that allows a list to be generated from a constrained list.
+    return typing_extensions.get_origin(field_type) or getattr(field_type, '__origin__', None)
+
+
 # FIXME: Typing issues here
 # I'm still not sure whether this type is correct or not.
-def is_collection_field_type(field_type: Union[Type[Any], List[Any], Dict[str, Any]]) -> bool:
+def is_collection_field_type(field_type: Type[Any]) -> bool:
     """Check whether a type hint is a collection type as used by OSCAL.
 
-    Specifiically this is whether the type is a list or string.
+    Specifically this is whether the type is a list or string.
 
     Args:
         field_type: A type or a type alias of a field typically as served via pydantic introspection
@@ -147,8 +159,7 @@ def is_collection_field_type(field_type: Union[Type[Any], List[Any], Dict[str, A
         Status if if it is a list or dict return type as used by oscal.
     """
     # Retrieves type from a type annotation
-    origin_type = typing_extensions.get_origin(field_type)
-    # Note the second part of this expression is a specific test for pydantic which is using some internal hacks
+    origin_type = get_origin(field_type)
     if origin_type in [list, dict]:
         return True
     return False
@@ -166,9 +177,10 @@ def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, T
         The desired type.
     """
     try:
-        # Deal with constrained list locally first
-        types = typing_extensions.get_args(collection_field_type)[-1]
-        return types
+        # Pydantic special cases ust be dealt with here:
+        if getattr(collection_field_type, '__name__', None) == 'ConstrainedListValue':
+            return collection_field_type.item_type  # type: ignore
+        return typing_extensions.get_args(collection_field_type)[-1]
     except Exception as e:
         logger.debug(e)
         raise err.TrestleError('Model type is not a Dict or List') from e

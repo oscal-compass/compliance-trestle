@@ -79,9 +79,9 @@ def test_is_collection_field_type() -> None:
     assert mutils.is_collection_field_type(responsible_parties_field.type_) is False  # ResponsibleParty
 
     assert mutils.is_collection_field_type(
-        type(good_catalog.metadata.parties[0].addresses[0].postal_address)
+        type(good_catalog.metadata.parties[0].addresses[0].addr_lines)
     ) is False  # list
-    postal_address_field = catalog.Address.alias_to_field_map()['postal-address']
+    postal_address_field = catalog.Address.alias_to_field_map()['addr-lines']
     assert mutils.is_collection_field_type(postal_address_field.outer_type_) is True  # List[AddrLine]
     assert mutils.is_collection_field_type(postal_address_field.type_) is False  # AddrLine
 
@@ -164,12 +164,12 @@ def test_classname_to_alias() -> None:
     json_alias = mutils.classname_to_alias(full_classname, 'field')
     assert json_alias == 'responsible_party'
 
-    short_classname = catalog.Prop.__name__
+    short_classname = catalog.Property.__name__
     full_classname = f'{module_name}.{short_classname}'
     json_alias = mutils.classname_to_alias(short_classname, 'json')
-    assert json_alias == 'prop'
+    assert json_alias == 'property'
     json_alias = mutils.classname_to_alias(full_classname, 'field')
-    assert json_alias == 'prop'
+    assert json_alias == 'property'
 
     short_classname = catalog.MemberOfOrganization.__name__
     full_classname = f'{module_name}.{short_classname}'
@@ -177,6 +177,11 @@ def test_classname_to_alias() -> None:
     assert json_alias == 'member-of-organization'
     json_alias = mutils.classname_to_alias(full_classname, 'field')
     assert json_alias == 'member_of_organization'
+
+
+def test_snake_to_upper_camel() -> None:
+    cammeled = mutils.snake_to_upper_camel('target_definition')
+    assert cammeled == 'TargetDefinition'
 
 
 def test_alias_to_classname() -> None:

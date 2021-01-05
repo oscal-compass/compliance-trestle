@@ -25,6 +25,19 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
 from trestle.core.base_model import OscalBaseModel
 
+class Base64(OscalBaseModel):
+    filename: Optional[str] = Field(
+        None,
+        description='Name of the file before it was encoded as Base64 to be embedded in a resource. This is the name that will be assigned to the file when the file is decoded.',
+        title='File Name',
+    )
+    media_type: Optional[str] = Field(
+        None,
+        alias='media-type',
+        description='Describes the media type of the linked resource',
+        title='Media type',
+    )
+    value: str
 
 class ParameterGuideline(OscalBaseModel):
     prose: str = Field(
@@ -1628,6 +1641,13 @@ class Activity(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
+class AssessmentAssets(OscalBaseModel):
+    components: Optional[Dict[str, DefinedComponent]] = None
+    assessment_platforms: List[AssessmentPlatform] = Field(
+        ..., alias='assessment-platforms', min_items=1
+    )
+
+
 class Observation(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -1655,13 +1675,6 @@ class Observation(OscalBaseModel):
         None, alias='relevant-evidence', min_items=1
     )
     remarks: Optional[Remarks] = None
-
-
-class AssessmentAssets(OscalBaseModel):
-    components: Optional[Dict[str, DefinedComponent]] = None
-    assessment_platforms: List[AssessmentPlatform] = Field(
-        ..., alias='assessment-platforms', min_items=1
-    )
 
 
 class LocalDefinitions(OscalBaseModel):

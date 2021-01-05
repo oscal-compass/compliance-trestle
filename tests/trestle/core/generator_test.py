@@ -30,6 +30,7 @@ import pytest
 import trestle.core.err as err
 import trestle.core.generators as gens
 import trestle.oscal as oscal
+import trestle.oscal.assessment_plan as ap
 import trestle.oscal.catalog as catalog
 import trestle.oscal.ssp as ssp
 from trestle.core.base_model import OscalBaseModel
@@ -63,6 +64,11 @@ def test_get_sample_value_by_type() -> None:
     )
     with pytest.raises(err.TrestleError):
         gens.generate_sample_value_by_type(list, 'uuid')
+
+
+def test_generate_sample_with_conint() -> None:
+    """Generate a sample model where it is known to contain conint fields."""
+    gen_at_freq = gens.generate_sample_model(ap.AtFrequency)
 
 
 def test_generate_sample_model() -> None:

@@ -20,7 +20,7 @@ from enum import Enum
 from typing import Dict, List, Optional, Type, TypeVar, Union, cast
 
 import pydantic.networks
-from pydantic import BaseModel, ConstrainedStr, types
+from pydantic import ConstrainedStr, types
 
 import trestle.core.err as err
 import trestle.core.utils as utils
@@ -52,14 +52,22 @@ def generate_sample_value_by_type(
         return 'REPLACE_ME'
     elif type_ is float:
         return 0.00
-    elif issubclass(type_, ConstrainedStr) or 'ConstrainedStr' in str(type):
+    elif issubclass(type_, ConstrainedStr) or 'ConstrainedStr' in type_.__name__:
         # This code here is messy. we need to meet a set of constraints. If we do
-        # not do so it fails to generate.
+        # TODO: explore whether there is a
         if 'uuid' == field_name:
             return str(uuid.uuid4())
         elif field_name == 'date_authorized':
             return date.today().isoformat()
         return '00000000-0000-4000-8000-000000000000'
+    elif 'ConstrainedIntValue' in type_.__name__:
+        # create an int value as close to the floor as possible does not test upper bound
+        multiple = type_.multiple_of or 1  # default to every integer
+        floor = type_.ge or type_.gt + 1 or 0  # default to 0
+        if floor % multiple == 0:
+            return floor
+        else:
+            return (floor + 1) * multiple
     elif issubclass(type_, Enum):
         # keys and values diverge due to hypens in oscal names
         return type_(list(type_.__members__.values())[0])
@@ -79,12 +87,9 @@ def generate_sample_model(model: Union[Type[TG], List[TG], Dict[str, TG]]) -> TG
     # Function for the to level execution. This would imply restructuring some other parts of the code.
 
     model_type = model
-    if getattr(model_type, '__name__', None) == 'ConstrainedListValue':
-        model = List[model_type.item_type]
-        model_type = model
     # This block normalizes model type down to
     if utils.is_collection_field_type(model):  # type: ignore
-        model_type = typing_extensions.get_origin(model)  # type: ignore
+        model_type = utils.get_origin(model)  # type: ignore
         model = utils.get_inner_type(model)  # type: ignore
     model = cast(TG, model)  # type: ignore
 
@@ -94,17 +99,16 @@ def generate_sample_model(model: Union[Type[TG], List[TG], Dict[str, TG]]) -> TG
         outer_type = model.__fields__[field].outer_type_
         # Check for unions. This is awkward due to allow support for python 3.7
         # It also does not inspect for which union we want. Should be removable with oscal 1.0.0
-        if getattr(outer_type, '__origin__', None) == Union:
+        if utils.get_origin(outer_type) == Union:
             outer_type = outer_type.__args__[0]
         if model.__fields__[field].required:
             """ FIXME: This type_ could be a List or a Dict """
-            if utils.is_collection_field_type(outer_type) or issubclass(
-                    outer_type, BaseModel) or outer_type.__name__ == 'ConstrainedListValue':
+            if utils.is_collection_field_type(outer_type) or issubclass(outer_type, OscalBaseModel):
                 model_dict[field] = generate_sample_model(outer_type)
             else:
                 model_dict[field] = generate_sample_value_by_type(outer_type, field)
     # Note: this assumes list constrains in oscal are always 1 as a minimum size. if two this may still fail.
-    if model_type is list or model_type.__name__ == 'ConstrainedListValue':
+    if model_type is list:
         return [model(**model_dict)]
     elif model_type is dict:
         return {'REPLACE_ME': model(**model_dict)}
