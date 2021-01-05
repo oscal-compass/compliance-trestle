@@ -16,7 +16,6 @@ import string
 pattern1 = 'ies: Optional[Dict[str, Any]]'
 pattern2 = 's: Optional[Dict[str, Any]]'
 pattern3 = 's: Dict[str, Any]'
-special_lut = {'ParameterSetting': 'SetParameter'}
 plural_lut = {
     'ResponsibleRoles': 'ResponsibleRole',
     'ResponsibleParties': 'ResponsibleParty',
@@ -93,6 +92,9 @@ class ClassText():
 
     def add_ref_if_good(self, ref_name):
         """Add refs after removing digits and/or singleton string."""
+        if ref_name == 'Base64':
+            self.refs.add(ref_name)
+            return
         for suffix in singleton_suffixes:
             n = ref_name.find(suffix)
             if n > 0:
@@ -198,6 +200,8 @@ class ClassText():
             return False
         if self.name.find('min_items') >= 0:
             return False
+        if self.name == 'Base64':
+            return True
         if self.name != self.name.rstrip(string.digits):
             return False
         return True
@@ -271,7 +275,8 @@ def fix_header(header, needs_conlist):
     new_header = []
     for r in header:
         # block import of Any - should not be needed
-        r = re.sub(' Any, ', ' ', r)
+        # Any is needed for biblio
+        # r = re.sub(' Any, ', ' ', r)
         if r.find(' timestamp: ') >= 0:
             continue
         if needs_conlist:
