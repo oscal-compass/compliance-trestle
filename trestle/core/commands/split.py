@@ -114,15 +114,6 @@ class SplitCmd(Command):
         return actions
 
     @classmethod
-    def get_sub_model_dir(cls, base_dir: pathlib.Path, sub_model: OscalBaseModel, dir_prefix: str) -> pathlib.Path:
-        """Get the directory path for the given model."""
-        model_type = utils.classname_to_alias(type(sub_model).__name__, 'json')
-        dir_name = f'{dir_prefix}{const.IDX_SEP}{model_type}'
-        sub_model_dir = base_dir / dir_name
-
-        return sub_model_dir
-
-    @classmethod
     def split_model_at_path_chain(
         cls,
         model_obj: OscalBaseModel,

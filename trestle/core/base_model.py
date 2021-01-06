@@ -213,7 +213,7 @@ class OscalBaseModel(BaseModel):
         """
         Copy operation that explicilty does type conversion.
 
-        Input parameter is a class of type OscalBaseModel NOT a a class isntance.
+        Input parameter is a class of type OscalBaseModel NOT a a class instance.
         """
         logger.debug('Copy to started')
 

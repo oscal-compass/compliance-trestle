@@ -19,7 +19,6 @@ from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union, no_ty
 
 from pydantic import BaseModel
 
-import trestle.core.const as const
 import trestle.core.err as err
 
 import typing_extensions
@@ -185,21 +184,6 @@ def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, T
         raise err.TrestleError('Model type is not a Dict or List') from e
 
 
-def get_cwm(contextual_path: List[str]) -> str:
-    """
-    Get current working module name based on the contextual path.
-
-    If the directory the user is running the trestle command from is not a source folder of a model type, this function
-    will not return anything. Otherwise, it will return the module representing the context.
-    """
-    if len(contextual_path) > 1:
-        plural_model_type = contextual_path[1]
-        model_type_module_name = const.MODELTYPE_TO_MODELMODULE[plural_model_type]
-        return model_type_module_name
-
-    return ''
-
-
 def get_target_model(element_path_parts: List[str], current_model: Type[BaseModel]) -> Type[BaseModel]:
     """Get the target model from the parts of a Element Path.
 
@@ -213,7 +197,7 @@ def get_target_model(element_path_parts: List[str], current_model: Type[BaseMode
             if is_collection_field_type(current_model):
                 # Return the model class inside the collection
                 # FIXME: From a typing perspective this is wrong.
-                current_model = get_inner_type(current_model)  #
+                current_model = get_inner_type(current_model)
             else:
                 current_model = current_model.alias_to_field_map()[element_path_parts[index]].outer_type_
         return current_model
