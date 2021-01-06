@@ -1,0 +1,43 @@
+{
+    "control": {
+        "id": "pm-2",
+        "class": "SP800-53",
+        "title": "Information Security Program Leadership Role",
+        "props": [
+            {
+                "name": "label",
+                "value": "PM-2"
+            },
+            {
+                "name": "sort-id",
+                "value": "pm-02"
+            }
+        ],
+        "links": [
+            {
+                "href": "#81c44706-0227-4258-a920-620a4d259990",
+                "rel": "reference"
+            },
+            {
+                "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
+                "rel": "reference"
+            },
+            {
+                "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
+                "rel": "reference"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pm-2_smt",
+                "name": "statement",
+                "prose": "Appoint a senior agency information security officer with the mission and resources to coordinate, develop, implement, and maintain an organization-wide information security program."
+            },
+            {
+                "id": "pm-2_gdn",
+                "name": "guidance",
+                "prose": "The senior agency information security officer is an organizational official. For federal agencies (as defined by applicable laws, executive orders, regulations, directives, policies, and standards), this official is the senior agency information security officer. Organizations may also refer to this official as the senior information security officer or chief information security officer."
+            }
+        ]
+    }
+}

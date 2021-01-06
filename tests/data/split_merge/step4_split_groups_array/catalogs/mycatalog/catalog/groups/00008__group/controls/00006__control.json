@@ -1,0 +1,53 @@
+{
+    "control": {
+        "id": "ma-7",
+        "class": "SP800-53",
+        "title": "Field Maintenance",
+        "params": [
+            {
+                "id": "ma-7_prm_1",
+                "label": "organization-defined systems or system components"
+            },
+            {
+                "id": "ma-7_prm_2",
+                "label": "organization-defined trusted maintenance facilities"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "MA-7"
+            },
+            {
+                "name": "sort-id",
+                "value": "ma-07"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ma-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-5",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ma-7_smt",
+                "name": "statement",
+                "prose": "Restrict or prohibit field maintenance on {{ ma-7_prm_1 }} to {{ ma-7_prm_2 }}."
+            },
+            {
+                "id": "ma-7_gdn",
+                "name": "guidance",
+                "prose": "Field maintenance is the type of maintenance conducted on a system or system component after the system or component has been deployed to a specific site (i.e., operational environment). In certain instances, field maintenance (i.e., local maintenance at the site) may not be executed with the same degree of rigor or with the same quality control checks as depot maintenance. For critical systems designated as such by the organization, it may be necessary to restrict or prohibit field maintenance at the local site and require that such maintenance be conducted in trusted facilities with additional controls."
+            }
+        ]
+    }
+}

@@ -1,0 +1,410 @@
+{
+    "control": {
+        "id": "sc-8",
+        "class": "SP800-53",
+        "title": "Transmission Confidentiality and Integrity",
+        "params": [
+            {
+                "id": "sc-8_prm_1",
+                "select": {
+                    "how-many": "one or more",
+                    "choice": [
+                        "confidentiality",
+                        "integrity"
+                    ]
+                }
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-8"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-08"
+            }
+        ],
+        "links": [
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#736d6310-e403-4b57-a79d-9967970c66d7",
+                "rel": "reference"
+            },
+            {
+                "href": "#7537638e-2837-407d-844b-40fb3fafdd99",
+                "rel": "reference"
+            },
+            {
+                "href": "#d4d7c760-2907-403b-8b2a-767ca5370ecd",
+                "rel": "reference"
+            },
+            {
+                "href": "#fe209006-bfd4-4033-a79a-9fee1adaf372",
+                "rel": "reference"
+            },
+            {
+                "href": "#6bc4d137-aece-42a8-8081-9ecb1ebe9fb4",
+                "rel": "reference"
+            },
+            {
+                "href": "#1c71b420-2bd9-4e52-9fc8-390f58b85b59",
+                "rel": "reference"
+            },
+            {
+                "href": "#4c501da5-9d79-4cb6-ba80-97260e1ce327",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-18",
+                "rel": "related"
+            },
+            {
+                "href": "#au-10",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-9",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-16",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-20",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-23",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-28",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-8_smt",
+                "name": "statement",
+                "prose": "Protect the {{ sc-8_prm_1 }} of transmitted information."
+            },
+            {
+                "id": "sc-8_gdn",
+                "name": "guidance",
+                "prose": "Protecting the confidentiality and integrity of transmitted information applies to internal and external networks as well as any system components that can transmit information, including servers, notebook computers, desktop computers, mobile devices, printers, copiers, scanners, facsimile machines, and radios. Unprotected communication paths are exposed to the possibility of interception and modification. Protecting the confidentiality and integrity of information can be accomplished by physical or logical means. Physical protection can be achieved by using protected distribution systems. A protected distribution system is a wireline or fiber-optics telecommunications system that includes terminals and adequate electromagnetic, acoustical, electrical, and physical controls to permit its use for the unencrypted transmission of classified information. Logical protection can be achieved by employing encryption techniques.\n\nOrganizations that rely on commercial providers who offer transmission services as commodity services rather than as fully dedicated services may find it difficult to obtain the necessary assurances regarding the implementation of needed controls for transmission confidentiality and integrity. In such situations, organizations determine what types of confidentiality or integrity services are available in standard, commercial telecommunications service packages. If it is not feasible to obtain the necessary controls and assurances of control effectiveness through appropriate contracting vehicles, organizations can implement appropriate compensating controls."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-8.1",
+                "class": "SP800-53-enhancement",
+                "title": "Cryptographic Protection",
+                "params": [
+                    {
+                        "id": "sc-8.1_prm_1",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                "prevent unauthorized disclosure of information",
+                                "detect changes to information"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-8(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-08.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-8.1_smt",
+                        "name": "statement",
+                        "prose": "Implement cryptographic mechanisms to {{ sc-8.1_prm_1 }} during transmission."
+                    },
+                    {
+                        "id": "sc-8.1_gdn",
+                        "name": "guidance",
+                        "prose": "Encryption protects information from unauthorized disclosure and modification during transmission. Cryptographic mechanisms that protect the confidentiality and integrity of information during transmission include TLS and IPSec. Cryptographic mechanisms used to protect information integrity include cryptographic hash functions that have applications in digital signatures, checksums, and message authentication codes."
+                    }
+                ]
+            },
+            {
+                "id": "sc-8.2",
+                "class": "SP800-53-enhancement",
+                "title": "Pre- and Post-transmission Handling",
+                "params": [
+                    {
+                        "id": "sc-8.2_prm_1",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                "confidentiality",
+                                "integrity"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-8(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-08.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-8.2_smt",
+                        "name": "statement",
+                        "prose": "Maintain the {{ sc-8.2_prm_1 }} of information during preparation for transmission and during reception."
+                    },
+                    {
+                        "id": "sc-8.2_gdn",
+                        "name": "guidance",
+                        "prose": "Information can be unintentionally or maliciously disclosed or modified during preparation for transmission or during reception, including during aggregation, at protocol transformation points, and during packing and unpacking. Such unauthorized disclosures or modifications compromise the confidentiality or integrity of the information."
+                    }
+                ]
+            },
+            {
+                "id": "sc-8.3",
+                "class": "SP800-53-enhancement",
+                "title": "Cryptographic Protection for Message Externals",
+                "params": [
+                    {
+                        "id": "sc-8.3_prm_1",
+                        "label": "organization-defined alternative physical controls"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-8(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-08.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-8.3_smt",
+                        "name": "statement",
+                        "prose": "Implement cryptographic mechanisms to protect message externals unless otherwise protected by {{ sc-8.3_prm_1 }}."
+                    },
+                    {
+                        "id": "sc-8.3_gdn",
+                        "name": "guidance",
+                        "prose": "Cryptographic protection for message externals addresses protection from the unauthorized disclosure of information. Message externals include message headers and routing information. Cryptographic protection prevents the exploitation of message externals and applies to internal and external networks or links that may be visible to individuals who are not authorized users. Header and routing information is sometimes transmitted in clear text (i.e., unencrypted) because the information is not identified by organizations as having significant value or because encrypting the information can result in lower network performance or higher costs. Alternative physical controls include protected distribution systems."
+                    }
+                ]
+            },
+            {
+                "id": "sc-8.4",
+                "class": "SP800-53-enhancement",
+                "title": "Conceal or Randomize Communications",
+                "params": [
+                    {
+                        "id": "sc-8.4_prm_1",
+                        "label": "organization-defined alternative physical controls"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-8(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-08.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-8.4_smt",
+                        "name": "statement",
+                        "prose": "Implement cryptographic mechanisms to conceal or randomize communication patterns unless otherwise protected by {{ sc-8.4_prm_1 }}."
+                    },
+                    {
+                        "id": "sc-8.4_gdn",
+                        "name": "guidance",
+                        "prose": "Concealing or randomizing communication patterns addresses protection from unauthorized disclosure of information. Communication patterns include frequency, periods, predictability, and amount. Changes to communications patterns can reveal information with intelligence value, especially when combined with other available information related to the mission and business functions of the organization. Concealing or randomizing communications prevents the derivation of intelligence based on communications patterns and applies to both internal and external networks or links that may be visible to individuals who are not authorized users. Encrypting the links and transmitting in continuous, fixed, or random patterns prevents the derivation of intelligence from the system communications patterns. Alternative physical controls include protected distribution systems."
+                    }
+                ]
+            },
+            {
+                "id": "sc-8.5",
+                "class": "SP800-53-enhancement",
+                "title": "Protected Distribution System",
+                "params": [
+                    {
+                        "id": "sc-8.5_prm_1",
+                        "label": "organization-defined protected distribution system"
+                    },
+                    {
+                        "id": "sc-8.5_prm_2",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                "prevent unauthorized disclosure of information",
+                                "detect changes to information"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-8(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-08.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#736d6310-e403-4b57-a79d-9967970c66d7",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#7537638e-2837-407d-844b-40fb3fafdd99",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#d4d7c760-2907-403b-8b2a-767ca5370ecd",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#fe209006-bfd4-4033-a79a-9fee1adaf372",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#6bc4d137-aece-42a8-8081-9ecb1ebe9fb4",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#1c71b420-2bd9-4e52-9fc8-390f58b85b59",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#4c501da5-9d79-4cb6-ba80-97260e1ce327",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-8.5_smt",
+                        "name": "statement",
+                        "prose": "Implement {{ sc-8.5_prm_1 }} to {{ sc-8.5_prm_2 }} during transmission."
+                    },
+                    {
+                        "id": "sc-8.5_gdn",
+                        "name": "guidance",
+                        "prose": "The purpose of a protected distribution system is to deter, detect, and/or make difficult physical access to the communication lines that carry national security information."
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "control": {
+        "id": "sc-33",
+        "class": "SP800-53",
+        "title": "Transmission Preparation Integrity",
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-33"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-33"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#sc-8",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

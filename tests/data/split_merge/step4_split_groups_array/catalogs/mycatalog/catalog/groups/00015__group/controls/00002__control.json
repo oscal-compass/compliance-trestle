@@ -1,0 +1,525 @@
+{
+    "control": {
+        "id": "ra-3",
+        "class": "SP800-53",
+        "title": "Risk Assessment",
+        "params": [
+            {
+                "id": "ra-3_prm_1",
+                "select": {
+                    "choice": [
+                        "security and privacy plans",
+                        "risk assessment report",
+                        " {{ ra-3_prm_2 }} "
+                    ]
+                }
+            },
+            {
+                "id": "ra-3_prm_2",
+                "depends-on": "ra-3_prm_1",
+                "label": "organization-defined document"
+            },
+            {
+                "id": "ra-3_prm_3",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "ra-3_prm_4",
+                "label": "organization-defined personnel or roles"
+            },
+            {
+                "id": "ra-3_prm_5",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "RA-3"
+            },
+            {
+                "name": "sort-id",
+                "value": "ra-03"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                "rel": "reference"
+            },
+            {
+                "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
+                "rel": "reference"
+            },
+            {
+                "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                "rel": "reference"
+            },
+            {
+                "href": "#4c501da5-9d79-4cb6-ba80-97260e1ce327",
+                "rel": "reference"
+            },
+            {
+                "href": "#98d415ca-7281-4064-9931-0c366637e324",
+                "rel": "reference"
+            },
+            {
+                "href": "#38ff38f0-1366-4f50-a4c9-26a39aacee16",
+                "rel": "reference"
+            },
+            {
+                "href": "#ca-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-4",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-13",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-5",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-18",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-10",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-11",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-28",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-38",
+                "rel": "related"
+            },
+            {
+                "href": "#si-12",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ra-3_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ra-3_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Conduct a risk assessment, including:",
+                        "parts": [
+                            {
+                                "id": "ra-3_smt.a.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Identifying threats to and vulnerabilities in the system;"
+                            },
+                            {
+                                "id": "ra-3_smt.a.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "Determining the likelihood and magnitude of harm from unauthorized access, use, disclosure, disruption, modification, or destruction of the system, the information it processes, stores, or transmits, and any related information; and"
+                            },
+                            {
+                                "id": "ra-3_smt.a.3",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": "Determining the likelihood and impact of adverse effects on individuals arising from the processing of personally identifiable information;"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ra-3_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Integrate risk assessment results and risk management decisions from the organization and mission or business process perspectives with system-level risk assessments;"
+                    },
+                    {
+                        "id": "ra-3_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Document risk assessment results in {{ ra-3_prm_1 }};"
+                    },
+                    {
+                        "id": "ra-3_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Review risk assessment results {{ ra-3_prm_3 }};"
+                    },
+                    {
+                        "id": "ra-3_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Disseminate risk assessment results to {{ ra-3_prm_4 }}; and"
+                    },
+                    {
+                        "id": "ra-3_smt.f",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "f."
+                            }
+                        ],
+                        "prose": "Update the risk assessment {{ ra-3_prm_5 }} or when there are significant changes to the system, its environment of operation, or other conditions that may impact the security or privacy state of the system."
+                    }
+                ]
+            },
+            {
+                "id": "ra-3_gdn",
+                "name": "guidance",
+                "prose": "Risk assessments consider threats, vulnerabilities, likelihood, and impact to organizational operations and assets, individuals, other organizations, and the Nation. Risk assessments also consider risk from external parties, including contractors who operate systems on behalf of the organization, individuals who access organizational systems, service providers, and outsourcing entities.\n\nOrganizations can conduct risk assessments at all three levels in the risk management hierarchy (i.e., organization level, mission/business process level, or information system level) and at any stage in the system development life cycle. Risk assessments can also be conducted at various steps in the Risk Management Framework, including preparation, categorization, control selection, control implementation, control assessment, authorization, and control monitoring. Risk assessment is an ongoing activity carried out throughout the system development life cycle.\n\nRisk assessments can also address information related to the system, including system design, the intended use of the system, testing results, and supply chain-related information or artifacts. Risk assessments can play an important role in control selection processes, particularly during the application of tailoring guidance and in the earliest phases of capability determination."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ra-3.1",
+                "class": "SP800-53-enhancement",
+                "title": "Supply Chain Risk Assessment",
+                "params": [
+                    {
+                        "id": "ra-3.1_prm_1",
+                        "label": "organization-defined systems, system components, and system services"
+                    },
+                    {
+                        "id": "ra-3.1_prm_2",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-3(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-03.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-3",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ra-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ra-9",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pm-17",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pm-30",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sr-2",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ra-3.1_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ra-3.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Assess supply chain risks associated with {{ ra-3.1_prm_1 }}; and"
+                            },
+                            {
+                                "id": "ra-3.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Update the supply chain risk assessment {{ ra-3.1_prm_2 }}, when there are significant changes to the relevant supply chain, or when changes to the system, environments of operation, or other conditions may necessitate a change in the supply chain."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ra-3.1_gdn",
+                        "name": "guidance",
+                        "prose": "Supply chain-related events include disruption, use of defective components, insertion of counterfeits, theft, malicious development practices, improper delivery practices, and insertion of malicious code. These events can have a significant impact on the confidentiality, integrity, or availability of a system and its information and, therefore, can also adversely impact organizational operations (including mission, functions, image, or reputation), organizational assets, individuals, other organizations, and the Nation. The supply chain-related events may be unintentional or malicious and can occur at any point during the system life cycle. An analysis of supply chain risk can help an organization identify systems or components for which additional supply chain risk mitigations are required."
+                    }
+                ]
+            },
+            {
+                "id": "ra-3.2",
+                "class": "SP800-53-enhancement",
+                "title": "Use of All-source Intelligence",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-3(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-03.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ra-3.2_smt",
+                        "name": "statement",
+                        "prose": "Use all-source intelligence to assist in the analysis of risk."
+                    },
+                    {
+                        "id": "ra-3.2_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations employ all-source intelligence to inform engineering, acquisition, and risk management decisions. All-source intelligence consists of information derived from all available sources, including publicly available or open-source information, measurement and signature intelligence, human intelligence, signals intelligence, and imagery intelligence. All-source intelligence is used to analyze the risk of vulnerabilities (both intentional and unintentional) from development, manufacturing, and delivery processes, people, and the environment. The risk analysis may be performed on suppliers at multiple tiers in the supply chain sufficient to manage risks. Organizations may develop agreements to share all-source intelligence information or resulting decisions with other organizations, as appropriate."
+                    }
+                ]
+            },
+            {
+                "id": "ra-3.3",
+                "class": "SP800-53-enhancement",
+                "title": "Dynamic Threat Awareness",
+                "params": [
+                    {
+                        "id": "ra-3.3_prm_1",
+                        "label": "organization-defined means"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-3(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-03.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-3",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#at-2",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ra-3.3_smt",
+                        "name": "statement",
+                        "prose": "Determine the current cyber threat environment on an ongoing basis using {{ ra-3.3_prm_1 }}."
+                    },
+                    {
+                        "id": "ra-3.3_gdn",
+                        "name": "guidance",
+                        "prose": "The threat awareness information that is gathered feeds into the organization\u2019s information security operations to ensure that procedures are updated in response to the changing threat environment. For example, at higher threat levels, organizations may change the privilege or authentication thresholds required to perform certain operations."
+                    }
+                ]
+            },
+            {
+                "id": "ra-3.4",
+                "class": "SP800-53-enhancement",
+                "title": "Predictive Cyber Analytics",
+                "params": [
+                    {
+                        "id": "ra-3.4_prm_1",
+                        "label": "organization-defined systems or system components"
+                    },
+                    {
+                        "id": "ra-3.4_prm_2",
+                        "label": "organization-defined advanced automation and analytics capabilities"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-3(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-03.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-3",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#4c501da5-9d79-4cb6-ba80-97260e1ce327",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#98d415ca-7281-4064-9931-0c366637e324",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#38ff38f0-1366-4f50-a4c9-26a39aacee16",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ra-3.4_smt",
+                        "name": "statement",
+                        "prose": "Employ the following advanced automation and analytics capabilities to predict and identify risks to {{ ra-3.4_prm_1 }}: {{ ra-3.4_prm_2 }}."
+                    },
+                    {
+                        "id": "ra-3.4_gdn",
+                        "name": "guidance",
+                        "prose": "A properly resourced Security Operations Center (SOC) or Computer Incident Response Team (CIRT) may be overwhelmed by the volume of information generated by the proliferation of security tools and appliances unless it employs advanced automation and analytics to analyze the data. Advanced automation and analytics capabilities are typically supported by artificial intelligence concepts, including machine learning. Examples include Automated Threat Discovery and Response (which includes broad-based collection, context-based analysis, and adaptive response capabilities), automated workflow operations, and machine assisted decision tools. Note, however, that sophisticated adversaries may be able to extract information related to analytic parameters and retrain the machine learning to classify malicious activity as benign. Accordingly, machine learning is augmented by human monitoring to ensure that sophisticated adversaries are not able to conceal their activities."
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,944 @@
+{
+    "control": {
+        "id": "si-7",
+        "class": "SP800-53",
+        "title": "Software, Firmware, and Information Integrity",
+        "params": [
+            {
+                "id": "si-7_prm_1",
+                "label": "organization-defined software, firmware, and information"
+            },
+            {
+                "id": "si-7_prm_2",
+                "label": "organization-defined actions"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SI-7"
+            },
+            {
+                "name": "sort-id",
+                "value": "si-07"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#eea3c092-42ed-4382-a6f4-1adadef01b9d",
+                "rel": "reference"
+            },
+            {
+                "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
+                "rel": "reference"
+            },
+            {
+                "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
+                "rel": "reference"
+            },
+            {
+                "href": "#4895b4cd-34c5-4667-bf8a-27d443c12047",
+                "rel": "reference"
+            },
+            {
+                "href": "#e47ee630-9cbc-4133-880e-e013f83ccd51",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-3",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-7",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-13",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-28",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-37",
+                "rel": "related"
+            },
+            {
+                "href": "#si-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-6",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-11",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "si-7_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "si-7_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Employ integrity verification tools to detect unauthorized changes to the following software, firmware, and information: {{ si-7_prm_1 }}; and"
+                    },
+                    {
+                        "id": "si-7_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Take the following actions when unauthorized changes to the software, firmware, and information are detected: {{ si-7_prm_2 }}."
+                    }
+                ]
+            },
+            {
+                "id": "si-7_gdn",
+                "name": "guidance",
+                "prose": "Unauthorized changes to software, firmware, and information can occur due to errors or malicious activity. Software includes operating systems (with key internal components, such as kernels or drivers), middleware, and applications. Firmware interfaces include Unified Extensible Firmware Interface (UEFI) and Basic Input/Output System (BIOS). Information includes personally identifiable information and metadata that contains security and privacy attributes associated with information. Integrity-checking mechanisms\u2014including parity checks, cyclical redundancy checks, cryptographic hashes, and associated tools\u2014can automatically monitor the integrity of systems and hosted applications."
+            }
+        ],
+        "controls": [
+            {
+                "id": "si-7.1",
+                "class": "SP800-53-enhancement",
+                "title": "Integrity Checks",
+                "params": [
+                    {
+                        "id": "si-7.1_prm_1",
+                        "label": "organization-defined software, firmware, and information"
+                    },
+                    {
+                        "id": "si-7.1_prm_2",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                "at startup",
+                                "at {{ si-7.1_prm_3 }} ",
+                                " {{ si-7.1_prm_4 }} "
+                            ]
+                        }
+                    },
+                    {
+                        "id": "si-7.1_prm_3",
+                        "depends-on": "si-7.1_prm_2",
+                        "label": "organization-defined transitional states or security-relevant events"
+                    },
+                    {
+                        "id": "si-7.1_prm_4",
+                        "depends-on": "si-7.1_prm_2",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-7.1_smt",
+                        "name": "statement",
+                        "prose": "Perform an integrity check of {{ si-7.1_prm_1 }} {{ si-7.1_prm_2 }}."
+                    },
+                    {
+                        "id": "si-7.1_gdn",
+                        "name": "guidance",
+                        "prose": "Security-relevant events include the identification of new threats to which organizational systems are susceptible and the installation of new hardware, software, or firmware. Transitional states include system startup, restart, shutdown, and abort."
+                    }
+                ]
+            },
+            {
+                "id": "si-7.2",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Notifications of Integrity Violations",
+                "params": [
+                    {
+                        "id": "si-7.2_prm_1",
+                        "label": "organization-defined personnel or roles"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-7.2_smt",
+                        "name": "statement",
+                        "prose": "Employ automated tools that provide notification to {{ si-7.2_prm_1 }} upon discovering discrepancies during integrity verification."
+                    },
+                    {
+                        "id": "si-7.2_gdn",
+                        "name": "guidance",
+                        "prose": "The employment of automated tools to report system and information integrity violations and to notify organizational personnel in a timely matter is essential to effective risk response. Personnel with an interest in system and information integrity violations include mission and business owners, system owners, senior agency information security official, senior agency official for privacy, system administrators, software developers, systems integrators, information security officers, and privacy officers."
+                    }
+                ]
+            },
+            {
+                "id": "si-7.3",
+                "class": "SP800-53-enhancement",
+                "title": "Centrally Managed Integrity Tools",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-8",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-7.3_smt",
+                        "name": "statement",
+                        "prose": "Employ centrally managed integrity verification tools."
+                    },
+                    {
+                        "id": "si-7.3_gdn",
+                        "name": "guidance",
+                        "prose": "Centrally managed integrity verification tools provides greater consistency in the application of such tools and can facilitate more comprehensive coverage of integrity verification actions."
+                    }
+                ]
+            },
+            {
+                "id": "si-7.4",
+                "class": "SP800-53-enhancement",
+                "title": "Tamper-evident Packaging",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.04"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-9",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "si-7.5",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Response to Integrity Violations",
+                "params": [
+                    {
+                        "id": "si-7.5_prm_1",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                "shut the system down",
+                                "restart the system",
+                                "implement {{ si-7.5_prm_2 }} "
+                            ]
+                        }
+                    },
+                    {
+                        "id": "si-7.5_prm_2",
+                        "depends-on": "si-7.5_prm_1",
+                        "label": "organization-defined controls"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-7.5_smt",
+                        "name": "statement",
+                        "prose": "Automatically {{ si-7.5_prm_1 }} when integrity violations are discovered."
+                    },
+                    {
+                        "id": "si-7.5_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations may define different integrity-checking responses by type of information, specific information, or a combination of both. Types of information include firmware, software, and user data. Specific information includes boot firmware for certain types of machines. The automatic implementation of controls within organizational systems includes reversing the changes, halting the system, or triggering audit alerts when unauthorized modifications to critical security files occur."
+                    }
+                ]
+            },
+            {
+                "id": "si-7.6",
+                "class": "SP800-53-enhancement",
+                "title": "Cryptographic Protection",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-7.6_smt",
+                        "name": "statement",
+                        "prose": "Implement cryptographic mechanisms to detect unauthorized changes to software, firmware, and information."
+                    },
+                    {
+                        "id": "si-7.6_gdn",
+                        "name": "guidance",
+                        "prose": "Cryptographic mechanisms used to protect integrity include digital signatures and the computation and application of signed hashes using asymmetric cryptography, protecting the confidentiality of the key used to generate the hash, and using the public key to verify the hash information. Organizations that employ cryptographic mechanisms also consider cryptographic key management solutions."
+                    }
+                ]
+            },
+            {
+                "id": "si-7.7",
+                "class": "SP800-53-enhancement",
+                "title": "Integration of Detection and Response",
+                "params": [
+                    {
+                        "id": "si-7.7_prm_1",
+                        "label": "organization-defined security-relevant changes to the system"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ir-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ir-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-7.7_smt",
+                        "name": "statement",
+                        "prose": "Incorporate the detection of the following unauthorized changes into the organizational incident response capability: {{ si-7.7_prm_1 }}."
+                    },
+                    {
+                        "id": "si-7.7_gdn",
+                        "name": "guidance",
+                        "prose": "Integrating detection and response helps to ensure that detected events are tracked, monitored, corrected, and available for historical purposes. Maintaining historical records is important for being able to identify and discern adversary actions over an extended time period and for possible legal actions. Security-relevant changes include unauthorized changes to established configuration settings or the unauthorized elevation of system privileges."
+                    }
+                ]
+            },
+            {
+                "id": "si-7.8",
+                "class": "SP800-53-enhancement",
+                "title": "Auditing Capability for Significant Events",
+                "params": [
+                    {
+                        "id": "si-7.8_prm_1",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                "generate an audit record",
+                                "alert current user",
+                                "alert {{ si-7.8_prm_2 }} ",
+                                " {{ si-7.8_prm_3 }} "
+                            ]
+                        }
+                    },
+                    {
+                        "id": "si-7.8_prm_2",
+                        "depends-on": "si-7.8_prm_1",
+                        "label": "organization-defined personnel or roles"
+                    },
+                    {
+                        "id": "si-7.8_prm_3",
+                        "depends-on": "si-7.8_prm_1",
+                        "label": "organization-defined other actions"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-12",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-7.8_smt",
+                        "name": "statement",
+                        "prose": "Upon detection of a potential integrity violation, provide the capability to audit the event and initiate the following actions: {{ si-7.8_prm_1 }}."
+                    },
+                    {
+                        "id": "si-7.8_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations select response actions based on types of software, specific software, or information for which there are potential integrity violations."
+                    }
+                ]
+            },
+            {
+                "id": "si-7.9",
+                "class": "SP800-53-enhancement",
+                "title": "Verify Boot Process",
+                "params": [
+                    {
+                        "id": "si-7.9_prm_1",
+                        "label": "organization-defined system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.09"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#si-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-7.9_smt",
+                        "name": "statement",
+                        "prose": "Verify the integrity of the boot process of the following system components: {{ si-7.9_prm_1 }}."
+                    },
+                    {
+                        "id": "si-7.9_gdn",
+                        "name": "guidance",
+                        "prose": "Ensuring the integrity of boot processes is critical to starting system components in known, trustworthy states.\u00a0Integrity verification mechanisms provide a level of assurance that only trusted code is executed during boot processes."
+                    }
+                ]
+            },
+            {
+                "id": "si-7.10",
+                "class": "SP800-53-enhancement",
+                "title": "Protection of Boot Firmware",
+                "params": [
+                    {
+                        "id": "si-7.10_prm_1",
+                        "label": "organization-defined system components"
+                    },
+                    {
+                        "id": "si-7.10_prm_2",
+                        "label": "organization-defined mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(10)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.10"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#si-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-7.10_smt",
+                        "name": "statement",
+                        "prose": "Implement the following mechanisms to protect the integrity of boot firmware in {{ si-7.10_prm_1 }}: {{ si-7.10_prm_2 }}."
+                    },
+                    {
+                        "id": "si-7.10_gdn",
+                        "name": "guidance",
+                        "prose": "Unauthorized modifications to boot firmware may indicate a sophisticated, targeted attack. These types of targeted attacks can result in a permanent denial of service or a persistent malicious code presence. These situations can occur if the firmware is corrupted or if the malicious code is embedded within the firmware. System components can protect the integrity of boot firmware in organizational systems by verifying the integrity and authenticity of all updates to the firmware prior to applying changes to the system component and preventing unauthorized processes from modifying the boot firmware."
+                    }
+                ]
+            },
+            {
+                "id": "si-7.11",
+                "class": "SP800-53-enhancement",
+                "title": "Confined Environments with Limited Privileges",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(11)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.11"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-7.6",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "si-7.12",
+                "class": "SP800-53-enhancement",
+                "title": "Integrity Verification",
+                "params": [
+                    {
+                        "id": "si-7.12_prm_1",
+                        "label": "organization-defined user-installed software"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(12)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.12"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-11",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-7.12_smt",
+                        "name": "statement",
+                        "prose": "Require that the integrity of the following user-installed software be verified prior to execution: {{ si-7.12_prm_1 }}."
+                    },
+                    {
+                        "id": "si-7.12_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations verify the integrity of user-installed software prior to execution to reduce the likelihood of executing malicious code or programs that contains errors from unauthorized modifications. Organizations consider the practicality of approaches to verifying software integrity, including the availability of trustworthy checksums from software developers and vendors."
+                    }
+                ]
+            },
+            {
+                "id": "si-7.13",
+                "class": "SP800-53-enhancement",
+                "title": "Code Execution in Protected Environments",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(13)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.13"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-7.7",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "si-7.14",
+                "class": "SP800-53-enhancement",
+                "title": "Binary or Machine Executable Code",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(14)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.14"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-7.8",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "si-7.15",
+                "class": "SP800-53-enhancement",
+                "title": "Code Authentication",
+                "params": [
+                    {
+                        "id": "si-7.15_prm_1",
+                        "label": "organization-defined software or firmware components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(15)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.15"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-7.15_smt",
+                        "name": "statement",
+                        "prose": "Implement cryptographic mechanisms to authenticate the following software or firmware components prior to installation: {{ si-7.15_prm_1 }}."
+                    },
+                    {
+                        "id": "si-7.15_gdn",
+                        "name": "guidance",
+                        "prose": "Cryptographic authentication includes verifying that software or firmware components have been digitally signed using certificates recognized and approved by organizations. Code signing is an effective method to protect against malicious code. Organizations that employ cryptographic mechanisms also consider cryptographic key management solutions."
+                    }
+                ]
+            },
+            {
+                "id": "si-7.16",
+                "class": "SP800-53-enhancement",
+                "title": "Time Limit on Process Execution Without Supervision",
+                "params": [
+                    {
+                        "id": "si-7.16_prm_1",
+                        "label": "organization-defined time period"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(16)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.16"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-7.16_smt",
+                        "name": "statement",
+                        "prose": "Prohibit processes from executing without supervision for more than {{ si-7.16_prm_1 }}."
+                    },
+                    {
+                        "id": "si-7.16_gdn",
+                        "name": "guidance",
+                        "prose": "Placing a time limit on process execution without supervision is intended to apply to processes for which typical or normal execution periods can be determined and situations in which organizations exceed such periods. Supervision includes timers on operating systems, automated responses, and manual oversight and response when system process anomalies occur."
+                    }
+                ]
+            },
+            {
+                "id": "si-7.17",
+                "class": "SP800-53-enhancement",
+                "title": "Runtime Application Self-protection",
+                "params": [
+                    {
+                        "id": "si-7.17_prm_1",
+                        "label": "organization-defined controls"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-7(17)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-07.17"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#eea3c092-42ed-4382-a6f4-1adadef01b9d",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#4895b4cd-34c5-4667-bf8a-27d443c12047",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e47ee630-9cbc-4133-880e-e013f83ccd51",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#si-16",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-7.17_smt",
+                        "name": "statement",
+                        "prose": "Implement {{ si-7.17_prm_1 }} for application self-protection at runtime."
+                    },
+                    {
+                        "id": "si-7.17_gdn",
+                        "name": "guidance",
+                        "prose": "Runtime application self-protection employs runtime\u00a0instrumentation\u00a0to detect and block\u00a0the exploitation of software vulnerabilities\u00a0by taking advantage of information from the software in execution. Runtime exploit prevention differs from traditional perimeter-based protections such as\u00a0guards and firewalls which can only detect and block attacks by using network information without contextual awareness. Runtime application self-protection technology can reduce the susceptibility of software to attacks by monitoring its inputs and blocking those inputs that could allow attacks. It can also help protect the runtime environment from unwanted changes and tampering. When a threat is detected, runtime application self-protection technology can prevent exploitation and take other actions (e.g., sending a warning message to the user, terminating the user's session, terminating the application, or sending an alert to organizational personnel). Runtime application self-protection solutions can be deployed in either a monitor or protection mode."
+                    }
+                ]
+            }
+        ]
+    }
+}

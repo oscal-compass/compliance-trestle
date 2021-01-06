@@ -1,0 +1,412 @@
+{
+    "control": {
+        "id": "sa-12",
+        "class": "SP800-53",
+        "title": "Supply Chain Protection",
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-12"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-12"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#sr",
+                "rel": "incorporated-into"
+            }
+        ],
+        "controls": [
+            {
+                "id": "sa-12.1",
+                "class": "SP800-53-enhancement",
+                "title": "Acquisition Strategies / Tools / Methods",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-5",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.2",
+                "class": "SP800-53-enhancement",
+                "title": "Supplier Reviews",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.02"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-6",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.3",
+                "class": "SP800-53-enhancement",
+                "title": "Trusted Shipping and Warehousing",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.03"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-3",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.4",
+                "class": "SP800-53-enhancement",
+                "title": "Diversity of Suppliers",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.04"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-3.1",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.5",
+                "class": "SP800-53-enhancement",
+                "title": "Limitation of Harm",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.05"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-3.2",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.6",
+                "class": "SP800-53-enhancement",
+                "title": "Minimizing Procurement Time",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.06"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-5.1",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.7",
+                "class": "SP800-53-enhancement",
+                "title": "Assessments Prior to Selection / Acceptance / Update",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.07"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-5.2",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.8",
+                "class": "SP800-53-enhancement",
+                "title": "Use of All-source Intelligence",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.08"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-3.2",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.9",
+                "class": "SP800-53-enhancement",
+                "title": "Operations Security",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.09"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-7",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.10",
+                "class": "SP800-53-enhancement",
+                "title": "Validate as Genuine and Not Altered",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(10)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.10"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-4.3",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.11",
+                "class": "SP800-53-enhancement",
+                "title": "Penetration Testing / Analysis of Elements, Processes, and Actors",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(11)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.11"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-6.1",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.12",
+                "class": "SP800-53-enhancement",
+                "title": "Inter-organizational Agreements",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(12)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.12"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-8",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.13",
+                "class": "SP800-53-enhancement",
+                "title": "Critical Information System Components",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(13)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.13"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-6",
+                        "rel": "incorporated-into"
+                    },
+                    {
+                        "href": "#ra-9",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.14",
+                "class": "SP800-53-enhancement",
+                "title": "Identity and Traceability",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(14)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.14"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-4.1",
+                        "rel": "incorporated-into"
+                    },
+                    {
+                        "href": "#sr-4.2",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-12.15",
+                "class": "SP800-53-enhancement",
+                "title": "Processes to Address Weaknesses or Deficiencies",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-12(15)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-12.15"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-3",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            }
+        ]
+    }
+}

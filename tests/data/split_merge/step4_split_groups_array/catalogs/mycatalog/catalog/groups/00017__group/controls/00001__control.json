@@ -1,0 +1,135 @@
+{
+    "control": {
+        "id": "sc-2",
+        "class": "SP800-53",
+        "title": "Separation of System and User Functionality",
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-2"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-02"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-22",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-32",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-39",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-2_smt",
+                "name": "statement",
+                "prose": "Separate user functionality, including user interface services, from system management functionality."
+            },
+            {
+                "id": "sc-2_gdn",
+                "name": "guidance",
+                "prose": "System management functionality includes functions that are necessary to administer databases, network components, workstations, or servers. These functions typically require privileged user access. The separation of user functions from system management functions is physical or logical. Organizations may separate system management functions from user functions by using different computers, instances of operating systems, central processing units, or network addresses; by employing virtualization techniques; or some combination of these or other methods. Separation of system management functions from user functions includes web administrative interfaces that employ separate authentication methods for users of any other system resources. Separation of system and user functions may include isolating administrative interfaces on different domains and with additional access controls. The separation of system and user functionality can be achieved by applying the systems security engineering design principles in [SA-8](#sa-8), including [SA-8(1)](#sa-8.1), [SA-8(3)](#sa-8.3), [SA-8(4)](#sa-8.4), [SA-8(10)](#sa-8.10), [SA-8(12)](#sa-8.12), [SA-8(13)](#sa-8.13), [SA-8(14)](#sa-8.14), and [SA-8(18)](#sa-8.18)."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-2.1",
+                "class": "SP800-53-enhancement",
+                "title": "Interfaces for Non-privileged Users",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-2(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-02.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-2",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-2.1_smt",
+                        "name": "statement",
+                        "prose": "Prevent the presentation of system management functionality at interfaces to non-privileged users."
+                    },
+                    {
+                        "id": "sc-2.1_gdn",
+                        "name": "guidance",
+                        "prose": "Preventing the presentation of system management functionality at interfaces to non-privileged users ensures that system administration options, including administrator privileges, are not available to the general user population. Restricting user access also prohibits the use of the grey-out option commonly used to eliminate accessibility to such information. One potential solution is to withhold system administration options until users establish sessions with administrator privileges."
+                    }
+                ]
+            },
+            {
+                "id": "sc-2.2",
+                "class": "SP800-53-enhancement",
+                "title": "Disassociability",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-2(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-02.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-2.2_smt",
+                        "name": "statement",
+                        "prose": "Store state information from applications and software separately."
+                    },
+                    {
+                        "id": "sc-2.2_gdn",
+                        "name": "guidance",
+                        "prose": "If a system is compromised, storing applications and software separately from state information about users\u2019 interactions with an application may better protect individuals\u2019 privacy."
+                    }
+                ]
+            }
+        ]
+    }
+}

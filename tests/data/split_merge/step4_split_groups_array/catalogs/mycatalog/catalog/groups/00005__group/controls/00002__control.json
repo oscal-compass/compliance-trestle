@@ -1,0 +1,219 @@
+{
+    "control": {
+        "id": "cp-3",
+        "class": "SP800-53",
+        "title": "Contingency Training",
+        "params": [
+            {
+                "id": "cp-3_prm_1",
+                "label": "organization-defined time period"
+            },
+            {
+                "id": "cp-3_prm_2",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "cp-3_prm_3",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "cp-3_prm_4",
+                "label": "organization-defined events"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CP-3"
+            },
+            {
+                "name": "sort-id",
+                "value": "cp-03"
+            }
+        ],
+        "links": [
+            {
+                "href": "#511f6832-23ca-49a3-8c0f-ce493373cab8",
+                "rel": "reference"
+            },
+            {
+                "href": "#at-2",
+                "rel": "related"
+            },
+            {
+                "href": "#at-3",
+                "rel": "related"
+            },
+            {
+                "href": "#at-4",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-9",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cp-3_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "cp-3_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Provide contingency training to system users consistent with assigned roles and responsibilities:",
+                        "parts": [
+                            {
+                                "id": "cp-3_smt.a.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Within {{ cp-3_prm_1 }} of assuming a contingency role or responsibility;"
+                            },
+                            {
+                                "id": "cp-3_smt.a.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "When required by system changes; and"
+                            },
+                            {
+                                "id": "cp-3_smt.a.3",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": " {{ cp-3_prm_2 }} thereafter; and"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "cp-3_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Review and update contingency training content {{ cp-3_prm_3 }} and following {{ cp-3_prm_4 }}."
+                    }
+                ]
+            },
+            {
+                "id": "cp-3_gdn",
+                "name": "guidance",
+                "prose": "Contingency training provided by organizations is linked to the assigned roles and responsibilities of organizational personnel to ensure that the appropriate content and level of detail is included in such training. For example, some individuals may only need to know when and where to report for duty during contingency operations and if normal duties are affected; system administrators\u00a0may require\u00a0additional training on how to establish systems at alternate processing and storage sites; and organizational officials may receive more specific training on how to conduct mission-essential functions in designated off-site locations and how to establish communications with other governmental entities for purposes of coordination on contingency-related activities. Training for contingency roles or responsibilities reflects the specific continuity requirements in the contingency plan. Events that may precipitate an update to contingency training content include, but are not limited to, contingency plan testing or an actual contingency (lessons learned), assessment or audit findings, security or privacy incidents, or changes in laws, executive orders, directives, regulations, policies, standards, and guidelines. At the discretion of the organization, participation in a contingency plan test or exercise, including lessons learned sessions subsequent to the test or exercise, may satisfy contingency plan training requirements."
+            }
+        ],
+        "controls": [
+            {
+                "id": "cp-3.1",
+                "class": "SP800-53-enhancement",
+                "title": "Simulated Events",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-3(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-03.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-3.1_smt",
+                        "name": "statement",
+                        "prose": "Incorporate simulated events into contingency training to facilitate effective response by personnel in crisis situations."
+                    },
+                    {
+                        "id": "cp-3.1_gdn",
+                        "name": "guidance",
+                        "prose": "The use of simulated events creates an environment for personnel to experience actual threat events, including cyber-attacks that disable websites, ransomware attacks that encrypt organizational data on servers, hurricanes that damage or destroy organizational facilities, or hardware or software failures."
+                    }
+                ]
+            },
+            {
+                "id": "cp-3.2",
+                "class": "SP800-53-enhancement",
+                "title": "Mechanisms Used in Training Environments",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-3(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-03.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-3",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#511f6832-23ca-49a3-8c0f-ce493373cab8",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-3.2_smt",
+                        "name": "statement",
+                        "prose": "Employ mechanisms used in operations to provide a more thorough and realistic contingency training environment."
+                    },
+                    {
+                        "id": "cp-3.2_gdn",
+                        "name": "guidance",
+                        "prose": "Operational mechanisms refer to processes that have been established to accomplish an organizational goal or a system that supports a particular organizational mission or business objective. Actual mission and business processes, systems, and/or facilities may be used to generate simulated events and enhance the realism of simulated events during contingency training."
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,267 @@
+{
+    "control": {
+        "id": "pl-4",
+        "class": "SP800-53",
+        "title": "Rules of Behavior",
+        "params": [
+            {
+                "id": "pl-4_prm_1",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "pl-4_prm_2",
+                "select": {
+                    "how-many": "one or more",
+                    "choice": [
+                        " {{ pl-4_prm_3 }} ",
+                        "when the rules are revised or updated"
+                    ]
+                }
+            },
+            {
+                "id": "pl-4_prm_3",
+                "depends-on": "pl-4_prm_2",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PL-4"
+            },
+            {
+                "name": "sort-id",
+                "value": "pl-04"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#30eb758a-2707-4bca-90ad-949a74d4eb16",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-9",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-18",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-19",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-20",
+                "rel": "related"
+            },
+            {
+                "href": "#at-2",
+                "rel": "related"
+            },
+            {
+                "href": "#at-3",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-11",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-5",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-5",
+                "rel": "related"
+            },
+            {
+                "href": "#si-12",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pl-4_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "pl-4_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Establish and provide to individuals requiring access to the system, the rules that describe their responsibilities and expected behavior for information and system usage, security, and privacy;"
+                    },
+                    {
+                        "id": "pl-4_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Receive a documented acknowledgment from such individuals, indicating that they have read, understand, and agree to abide by the rules of behavior, before authorizing access to information and the system;"
+                    },
+                    {
+                        "id": "pl-4_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Review and update the rules of behavior {{ pl-4_prm_1 }}; and"
+                    },
+                    {
+                        "id": "pl-4_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Require individuals who have acknowledged a previous version of the rules of behavior to read and re-acknowledge {{ pl-4_prm_2 }}."
+                    }
+                ]
+            },
+            {
+                "id": "pl-4_gdn",
+                "name": "guidance",
+                "prose": "Rules of behavior represent a type of access agreement for organizational users. Other types of access agreements include nondisclosure agreements, conflict-of-interest agreements, and acceptable use agreements (see [PS-6](#ps-6)). Organizations consider rules of behavior based on individual user roles and responsibilities and differentiate between rules that apply to privileged users and rules that apply to general users. Establishing rules of behavior for some types of non-organizational users, including individuals who receive information from federal systems, is often not feasible given the large number of such users and the limited nature of their interactions with the systems. Rules of behavior for organizational and non-organizational users can also be established in [AC-8](#ac-8). The related controls section provides a list of controls that are relevant to organizational rules of behavior. [PL-4b](#pl-4_smt.b), the documented acknowledgment portion of the control, may be satisfied by the literacy training and awareness and role-based training programs conducted by organizations if such training includes rules of behavior. Documented acknowledgements for rules of behavior include electronic or physical signatures and electronic agreement check boxes or radio buttons."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pl-4.1",
+                "class": "SP800-53-enhancement",
+                "title": "Social Media and External Site/application Usage Restrictions",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PL-4(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pl-04.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pl-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#30eb758a-2707-4bca-90ad-949a74d4eb16",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#ac-22",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pl-4.1_smt",
+                        "name": "statement",
+                        "prose": "Include in the rules of behavior, restrictions on:",
+                        "parts": [
+                            {
+                                "id": "pl-4.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Use of social media, social networking sites, and external sites/applications;"
+                            },
+                            {
+                                "id": "pl-4.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Posting organizational information on public websites; and"
+                            },
+                            {
+                                "id": "pl-4.1_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Use of organization-provided identifiers (e.g., email\u00a0addresses) and authentication secrets (e.g., passwords) for creating accounts on external sites/applications."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "pl-4.1_gdn",
+                        "name": "guidance",
+                        "prose": "Social media, social networking, and external site/application usage restrictions address rules of behavior related to the use of social media, social networking, and external sites when organizational personnel are using such sites for official duties or in the conduct of official business, when organizational information is involved in social media and social networking transactions, and when personnel access social media and networking sites from organizational systems. Organizations also address specific rules that prevent unauthorized entities from obtaining non-public organizational information from social media and networking sites either directly or through inference. Non-public information includes personally identifiable information and system account information."
+                    }
+                ]
+            }
+        ]
+    }
+}

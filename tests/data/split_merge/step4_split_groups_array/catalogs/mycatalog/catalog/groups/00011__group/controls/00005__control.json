@@ -1,0 +1,27 @@
+{
+    "control": {
+        "id": "pl-6",
+        "class": "SP800-53",
+        "title": "Security-related Activity Planning",
+        "props": [
+            {
+                "name": "label",
+                "value": "PL-6"
+            },
+            {
+                "name": "sort-id",
+                "value": "pl-06"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#pl-2",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

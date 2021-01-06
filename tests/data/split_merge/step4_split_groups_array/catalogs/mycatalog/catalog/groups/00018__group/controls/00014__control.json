@@ -1,0 +1,49 @@
+{
+    "control": {
+        "id": "si-15",
+        "class": "SP800-53",
+        "title": "Information Output Filtering",
+        "params": [
+            {
+                "id": "si-15_prm_1",
+                "label": "organization-defined software programs and/or applications"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SI-15"
+            },
+            {
+                "name": "sort-id",
+                "value": "si-15"
+            }
+        ],
+        "links": [
+            {
+                "href": "#si-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            },
+            {
+                "href": "#si-11",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "si-15_smt",
+                "name": "statement",
+                "prose": "Validate information output from the following software programs and/or applications to ensure that the information is consistent with the expected content: {{ si-15_prm_1 }}."
+            },
+            {
+                "id": "si-15_gdn",
+                "name": "guidance",
+                "prose": "Certain types of attacks, including SQL injections, produce output results that are unexpected or inconsistent with the output results that would be expected from software programs or applications. Information output filtering focuses on detecting extraneous content, preventing such extraneous content from being displayed, and then alerting monitoring tools that anomalous behavior has been discovered."
+            }
+        ]
+    }
+}

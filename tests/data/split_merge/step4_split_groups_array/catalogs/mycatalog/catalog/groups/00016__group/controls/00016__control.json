@@ -1,0 +1,728 @@
+{
+    "control": {
+        "id": "sa-17",
+        "class": "SP800-53",
+        "title": "Developer Security and Privacy Architecture and Design",
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-17"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-17"
+            }
+        ],
+        "links": [
+            {
+                "href": "#87087451-2af5-43d4-88c1-d66ad850f614",
+                "rel": "reference"
+            },
+            {
+                "href": "#4452efc0-e79e-47b8-aa30-b54f3ef61c2f",
+                "rel": "reference"
+            },
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#pl-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sa-17_smt",
+                "name": "statement",
+                "prose": "Require the developer of the system, system component, or system service to produce a design specification and security and privacy architecture that:",
+                "parts": [
+                    {
+                        "id": "sa-17_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Is consistent with the organization\u2019s security and privacy architecture that is an integral part the organization\u2019s enterprise architecture;"
+                    },
+                    {
+                        "id": "sa-17_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Accurately and completely describes the required security and privacy functionality, and the allocation of controls among physical and logical components; and"
+                    },
+                    {
+                        "id": "sa-17_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Expresses how individual security and privacy functions, mechanisms, and services work together to provide required security and privacy capabilities and a unified approach to protection."
+                    }
+                ]
+            },
+            {
+                "id": "sa-17_gdn",
+                "name": "guidance",
+                "prose": "Developer security and privacy architecture and design are directed at external developers, although they could also be applied to internal (in-house) development. In contrast, [PL-8](#pl-8) is directed at internal developers to ensure that organizations develop a security and privacy architecture that is integrated with the enterprise architecture. The distinction between SA-17 and [PL-8](#pl-8) is especially important when organizations outsource the development of systems, system components, or system services and when there is a requirement to demonstrate consistency with the enterprise architecture and security and privacy architecture of the organization. [ISO 15408-2](#87087451-2af5-43d4-88c1-d66ad850f614), [ISO 15408-3](#4452efc0-e79e-47b8-aa30-b54f3ef61c2f), and [SP 800-160-1](#e3cc0520-a366-4fc9-abc2-5272db7e3564) provide information on security architecture and design, including formal policy models, security-relevant components, formal and informal correspondence, conceptually simple design, and structuring for least privilege and testing."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sa-17.1",
+                "class": "SP800-53-enhancement",
+                "title": "Formal Policy Model",
+                "params": [
+                    {
+                        "id": "sa-17.1_prm_1",
+                        "label": "organization-defined elements of organizational security and privacy policy"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-17(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-17.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-25",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-17.1_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to:",
+                        "parts": [
+                            {
+                                "id": "sa-17.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Produce, as an integral part of the development process, a formal policy model describing the {{ sa-17.1_prm_1 }} to be enforced; and"
+                            },
+                            {
+                                "id": "sa-17.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Prove that the formal policy model is internally consistent and sufficient to enforce the defined elements of the organizational security and privacy policy when implemented."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sa-17.1_gdn",
+                        "name": "guidance",
+                        "prose": "Formal models describe specific behaviors or security and privacy policies using formal languages, thus enabling the correctness of those behaviors and policies to be formally proven. Not all components of systems can be modeled. Generally, formal specifications are scoped to the behaviors or policies of interest, such as nondiscretionary access control policies. Organizations choose the formal modeling language and approach based on the nature of the behaviors and policies to be described and the available tools."
+                    }
+                ]
+            },
+            {
+                "id": "sa-17.2",
+                "class": "SP800-53-enhancement",
+                "title": "Security-relevant Components",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-17(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-17.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-25",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-17.2_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to:",
+                        "parts": [
+                            {
+                                "id": "sa-17.2_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Define security-relevant hardware, software, and firmware; and"
+                            },
+                            {
+                                "id": "sa-17.2_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Provide a rationale that the definition for security-relevant hardware, software, and firmware is complete."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sa-17.2_gdn",
+                        "name": "guidance",
+                        "prose": "The security-relevant hardware, software, and firmware represent the portion of the system, component, or service that is trusted to perform correctly to maintain required security properties."
+                    }
+                ]
+            },
+            {
+                "id": "sa-17.3",
+                "class": "SP800-53-enhancement",
+                "title": "Formal Correspondence",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-17(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-17.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-25",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-17.3_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to:",
+                        "parts": [
+                            {
+                                "id": "sa-17.3_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Produce, as an integral part of the development process, a formal top-level specification that specifies the interfaces to security-relevant hardware, software, and firmware in terms of exceptions, error messages, and effects;"
+                            },
+                            {
+                                "id": "sa-17.3_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Show via proof to the extent feasible with additional informal demonstration as necessary, that the formal top-level specification is consistent with the formal policy model;"
+                            },
+                            {
+                                "id": "sa-17.3_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Show via informal demonstration, that the formal top-level specification completely covers the interfaces to security-relevant hardware, software, and firmware;"
+                            },
+                            {
+                                "id": "sa-17.3_smt.d",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(d)"
+                                    }
+                                ],
+                                "prose": "Show that the formal top-level specification is an accurate description of the implemented security-relevant hardware, software, and firmware; and"
+                            },
+                            {
+                                "id": "sa-17.3_smt.e",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(e)"
+                                    }
+                                ],
+                                "prose": "Describe the security-relevant hardware, software, and firmware mechanisms not addressed in the formal top-level specification but strictly internal to the security-relevant hardware, software, and firmware."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sa-17.3_gdn",
+                        "name": "guidance",
+                        "prose": "Correspondence is an important part of the assurance gained through modeling. It demonstrates that the implementation is an accurate transformation of the model, and that any additional code or implementation details that are present have no impact on the behaviors or policies being modeled. Formal methods can be used to show that the high-level security properties are satisfied by the formal system description, and that the formal system description is correctly implemented by a description of some lower level, including a hardware description. Consistency between the formal top-level specification and the formal policy models is generally not amenable to being fully proven. Therefore, a combination of formal and informal methods may be needed to demonstrate such consistency. Consistency between the formal top-level specification and the actual implementation may require the use of an informal demonstration due to limitations on the applicability of formal methods to prove that the specification accurately reflects the implementation. Hardware, software, and firmware mechanisms internal to security-relevant components include mapping registers and direct memory input and output."
+                    }
+                ]
+            },
+            {
+                "id": "sa-17.4",
+                "class": "SP800-53-enhancement",
+                "title": "Informal Correspondence",
+                "params": [
+                    {
+                        "id": "sa-17.4_prm_1",
+                        "select": {
+                            "choice": [
+                                "informal demonstration",
+                                "convincing argument with formal methods as feasible"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-17(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-17.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-25",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-17.4_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to:",
+                        "parts": [
+                            {
+                                "id": "sa-17.4_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Produce, as an integral part of the development process, an informal descriptive top-level specification that specifies the interfaces to security-relevant hardware, software, and firmware in terms of exceptions, error messages, and effects;"
+                            },
+                            {
+                                "id": "sa-17.4_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Show via {{ sa-17.4_prm_1 }} that the descriptive top-level specification is consistent with the formal policy model;"
+                            },
+                            {
+                                "id": "sa-17.4_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Show via informal demonstration, that the descriptive top-level specification completely covers the interfaces to security-relevant hardware, software, and firmware;"
+                            },
+                            {
+                                "id": "sa-17.4_smt.d",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(d)"
+                                    }
+                                ],
+                                "prose": "Show that the descriptive top-level specification is an accurate description of the interfaces to security-relevant hardware, software, and firmware; and"
+                            },
+                            {
+                                "id": "sa-17.4_smt.e",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(e)"
+                                    }
+                                ],
+                                "prose": "Describe the security-relevant hardware, software, and firmware mechanisms not addressed in the descriptive top-level specification but strictly internal to the security-relevant hardware, software, and firmware."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sa-17.4_gdn",
+                        "name": "guidance",
+                        "prose": "Correspondence is an important part of the assurance gained through modeling. It demonstrates that the implementation is an accurate transformation of the model, and that additional code or implementation detail has no impact on the behaviors or policies being modeled. Consistency between the descriptive top-level specification (i.e., high-level/low-level design) and the formal policy model is generally not amenable to being fully proven. Therefore, a combination of formal and informal methods may be needed to show such consistency. Hardware, software, and firmware mechanisms strictly internal to security-relevant hardware, software, and firmware include mapping registers and direct memory input and output."
+                    }
+                ]
+            },
+            {
+                "id": "sa-17.5",
+                "class": "SP800-53-enhancement",
+                "title": "Conceptually Simple Design",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-17(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-17.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-25",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-17.5_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to:",
+                        "parts": [
+                            {
+                                "id": "sa-17.5_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Design and structure the security-relevant hardware, software, and firmware to use a complete, conceptually simple protection mechanism with precisely defined semantics; and"
+                            },
+                            {
+                                "id": "sa-17.5_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Internally structure the security-relevant hardware, software, and firmware with specific regard for this mechanism."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sa-17.5_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of reduced complexity states that the system design is as simple and small as possible (see [SA-8(7)](#sa-8.7)). A small and simple design is easier to understand and analyze and is also less prone to error (see [AC-25](#ac-25), [SA-8(13)](#sa-8.13)). The principle of reduced complexity applies to any aspect of a system, but it has particular importance for security due to the various analyses performed to obtain evidence about the emergent security property of the system. For such analyses to be successful, a small and simple design is essential. Application of the principle of reduced complexity contributes to the ability of system developers to understand the correctness and completeness of system security functions and facilitates the identification of potential vulnerabilities. The corollary of reduced complexity states that the simplicity of the system is directly related to the number of vulnerabilities it will contain. That is, simpler systems contain fewer vulnerabilities. An important benefit of reduced complexity is that it is easier to understand whether the security policy has been captured in the system design and that fewer vulnerabilities are likely to be introduced during engineering development. An additional benefit is that any such conclusion about correctness, completeness, and existence of vulnerabilities can be reached with a higher degree of assurance in contrast to conclusions reached in situations where the system design is inherently more complex."
+                    }
+                ]
+            },
+            {
+                "id": "sa-17.6",
+                "class": "SP800-53-enhancement",
+                "title": "Structure for Testing",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-17(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-17.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sa-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-11",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-17.6_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to structure security-relevant hardware, software, and firmware to facilitate testing."
+                    },
+                    {
+                        "id": "sa-17.6_gdn",
+                        "name": "guidance",
+                        "prose": "Applying the security design principles in [SP 800-160-1](#e3cc0520-a366-4fc9-abc2-5272db7e3564) promotes complete, consistent, and comprehensive testing and evaluation of systems, system components, and services. The thoroughness of such testing contributes to the evidence produced to generate an effective assurance case or argument as to the trustworthiness of the system, system component, or service."
+                    }
+                ]
+            },
+            {
+                "id": "sa-17.7",
+                "class": "SP800-53-enhancement",
+                "title": "Structure for Least Privilege",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-17(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-17.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-8",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-17.7_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to structure security-relevant hardware, software, and firmware to facilitate controlling access with least privilege."
+                    },
+                    {
+                        "id": "sa-17.7_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of least privilege states that each component is allocated sufficient privileges to accomplish its specified functions but no more (see [SA-8(14)](#sa-8.14)). Applying the principle of least privilege limits the scope of the component\u2019s actions, which has two desirable effects. First, the security impact of a failure, corruption, or misuse of the system component results in a minimized security impact. Second, the security analysis of the component is simplified. Least privilege is a pervasive principle that is reflected in all aspects of the secure system design. Interfaces used to invoke component capability are available to only certain subsets of the user population, and component design supports a sufficiently fine granularity of privilege decomposition. For example, in the case of an audit mechanism, there may be an interface for the audit manager, who configures the audit settings; an interface for the audit operator, who ensures that audit data is safely collected and stored; and, finally, yet another interface for the audit reviewer, who only has a need to view the audit data that has been collected but no need to perform operations on that data.\n\nIn addition to its manifestations at the system interface, least privilege can be used as a guiding principle for the internal structure of the system itself. One aspect of internal least privilege is to construct modules so that only the elements encapsulated by the module are directly operated upon by the functions within the module. Elements external to a module that may be affected by the module\u2019s operation are indirectly accessed through interaction (e.g., via a function call) with the module that contains those elements. Another aspect of internal least privilege is that the scope of a given module or component includes only those system elements that are necessary for its functionality, and the access modes to the elements (e.g., read, write) are minimal."
+                    }
+                ]
+            },
+            {
+                "id": "sa-17.8",
+                "class": "SP800-53-enhancement",
+                "title": "Orchestration",
+                "params": [
+                    {
+                        "id": "sa-17.8_prm_1",
+                        "label": "organization-defined critical systems or system components"
+                    },
+                    {
+                        "id": "sa-17.8_prm_2",
+                        "label": "organization-defined capabilities, by system or component"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-17(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-17.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-17",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-17.8_smt",
+                        "name": "statement",
+                        "prose": "Design {{ sa-17.8_prm_1 }} with coordinated behavior to implement the following capabilities: {{ sa-17.8_prm_2 }}."
+                    },
+                    {
+                        "id": "sa-17.8_gdn",
+                        "name": "guidance",
+                        "prose": "Security resources that are distributed, located at different layers or in different system elements, or are implemented to support different aspects of trustworthiness can interact in unforeseen or incorrect ways. Adverse consequences can include cascading failures, interference, or coverage gaps. Coordination of the behavior of security resources (e.g., by ensuring that one patch is installed across all resources before making a configuration change that assumes that the patch is propagated) can avert such negative interactions."
+                    }
+                ]
+            },
+            {
+                "id": "sa-17.9",
+                "class": "SP800-53-enhancement",
+                "title": "Design Diversity",
+                "params": [
+                    {
+                        "id": "sa-17.9_prm_1",
+                        "label": "organization-defined critical systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-17(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-17.09"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#87087451-2af5-43d4-88c1-d66ad850f614",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#4452efc0-e79e-47b8-aa30-b54f3ef61c2f",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-17.9_smt",
+                        "name": "statement",
+                        "prose": "Use different designs for {{ sa-17.9_prm_1 }} to satisfy a common set of requirements or to provide equivalent functionality."
+                    },
+                    {
+                        "id": "sa-17.9_gdn",
+                        "name": "guidance",
+                        "prose": "Design diversity is achieved by supplying the same requirements specification to multiple developers, each of whom is responsible for developing a variant of the system or system component that meets the requirements. Variants can be in software design, in hardware design, or in both hardware and a software design. Differences in the designs of the variants can result from developer experience (e.g., prior use of a design pattern), design style (e.g., when decomposing a required function into smaller tasks, determining what constitutes a separate task and how far to decompose tasks into sub-tasks), selection of libraries to incorporate into the variant, and the development environment (e.g., different design tools make some design patterns easier to visualize). Hardware design diversity includes making different decisions about what information to keep in analog form and what information to convert to digital form, transmitting the same information at different times, and introducing delays in sampling (temporal diversity). Design diversity is commonly used to support fault tolerance."
+                    }
+                ]
+            }
+        ]
+    }
+}

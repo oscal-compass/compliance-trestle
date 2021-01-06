@@ -1,0 +1,45 @@
+{
+    "control": {
+        "id": "ac-10",
+        "class": "SP800-53",
+        "title": "Concurrent Session Control",
+        "params": [
+            {
+                "id": "ac-10_prm_1",
+                "label": "organization-defined account and/or account type"
+            },
+            {
+                "id": "ac-10_prm_2",
+                "label": "organization-defined number"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-10"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-10"
+            }
+        ],
+        "links": [
+            {
+                "href": "#sc-23",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-10_smt",
+                "name": "statement",
+                "prose": "Limit the number of concurrent sessions for each {{ ac-10_prm_1 }} to {{ ac-10_prm_2 }}."
+            },
+            {
+                "id": "ac-10_gdn",
+                "name": "guidance",
+                "prose": "Organizations may define the maximum number of concurrent sessions for system accounts globally, by account type, by account, or any combination thereof. For example, organizations may limit the number of concurrent sessions for system administrators or other individuals working in particularly sensitive domains or mission-critical applications. Concurrent session control addresses concurrent sessions for system accounts. It does not, however, address concurrent sessions by single users via multiple system accounts."
+            }
+        ]
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "control": {
+        "id": "cp-5",
+        "class": "SP800-53",
+        "title": "Contingency Plan Update",
+        "props": [
+            {
+                "name": "label",
+                "value": "CP-5"
+            },
+            {
+                "name": "sort-id",
+                "value": "cp-05"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#cp-2",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

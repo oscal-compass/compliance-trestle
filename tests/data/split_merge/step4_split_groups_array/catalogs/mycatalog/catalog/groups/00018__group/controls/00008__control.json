@@ -1,0 +1,39 @@
+{
+    "control": {
+        "id": "si-9",
+        "class": "SP800-53",
+        "title": "Information Input Restrictions",
+        "props": [
+            {
+                "name": "label",
+                "value": "SI-9"
+            },
+            {
+                "name": "sort-id",
+                "value": "si-09"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-2",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#ac-5",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}
