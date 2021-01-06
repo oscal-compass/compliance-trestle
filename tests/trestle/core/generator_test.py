@@ -23,7 +23,7 @@ from datetime import date, datetime
 from typing import Any, Dict, List
 
 import pydantic.networks
-from pydantic import ConstrainedStr, typing
+from pydantic import ConstrainedStr
 
 import pytest
 

@@ -37,7 +37,7 @@ def test_has_no_duplicate_values_generic() -> None:
     # test with valid pydantic target
     good_target_path = yaml_path / 'good_target.yaml'
     good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
-    loe = validator_helper.find_values_by_name(good_target, 'uuid')
+    validator_helper.find_values_by_name(good_target, 'uuid')
     assert validator_helper.has_no_duplicate_values_by_name(good_target, 'uuid')
 
     # test with pydantic target containing duplicates

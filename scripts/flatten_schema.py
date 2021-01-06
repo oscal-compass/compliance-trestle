@@ -15,7 +15,12 @@
 # limitations under the License.
 """Script to remove references in json schema to simplify work done by datamodel-generator."""
 import json
+import logging
 import os
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.addHandler(logging.StreamHandler())
 
 
 class FlattenSchema():
@@ -81,7 +86,7 @@ class FlattenSchema():
             new_val, ref_set, changed = self._replace_refs(obj[1], ref_set)
             return (obj[0], new_val), ref_set, changed
         if hasattr(obj, '__iter__'):
-            print('missed iterable type: ', type(obj))
+            logger.info('missed iterable type: ', type(obj))
         return obj, ref_set, False
 
     def _replace_schema_refs(self, schema):
@@ -95,8 +100,6 @@ class FlattenSchema():
             for i in range(n_defs):
                 changed = False
                 if not fixed[i]:
-                    if self._def_list[i][0] == 'assessment-plan':
-                        x = 7
                     self._def_list[i], _, changed = self._replace_refs(self._def_list[i], {self._def_list[i][0]})
                     if not changed:  # mark it fixed and don't revisit
                         fixed[i] = True
@@ -133,8 +136,6 @@ class FlattenSchema():
             for line in fin.readlines():
                 skipit = False
                 if line.find('"$id": "#/definitions/') >= 0:
-                    if line.find('provided'):
-                        x = 7
                     skipit = True
                     for cname in needed_refs:
                         # skip any definitions
