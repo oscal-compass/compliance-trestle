@@ -194,7 +194,7 @@ class FetcherFactory(object):
     ) -> FetcherBase:
         """Return an instantiated fetcher object based on the uri."""
         # Basic correctness test
-        if len(uri) <= 9 or '/' not in uri:
+        if len(uri) <= 9 or ( '/' not in uri and 'C:\\' not in uri ) :
             raise TrestleError(f'Unable to fetch uri as it appears to be invalid {uri}')
 
         if uri[0] == '/' or uri[0:3] == '../' or uri[0:2] == './' or 'file:///' == uri[0:8]:
@@ -211,5 +211,7 @@ class FetcherFactory(object):
                 return GithubFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
             else:
                 return HTTPSFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
+        elif 'C:\\' == uri[0:3]:
+            return LocalFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
         else:
             raise TrestleError(f'Unable to fetch uri: {uri} as the uri did not match a suppported format.')

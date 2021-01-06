@@ -37,7 +37,10 @@ def test_github_fetcher():
 def test_local_fetcher(tmp_trestle_dir):
     """Test the local fetcher."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = f'{tmp_trestle_dir.dirname}/{rand_str}.json'
+    if 'C:\\' == tmp_trestle_dir.__str__()[0:3]:
+        catalog_file = f'{tmp_trestle_dir.dirname}\{rand_str}.json'
+    else:
+        catalog_file = f'{tmp_trestle_dir.dirname}/{rand_str}.json'
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)
