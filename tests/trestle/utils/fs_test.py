@@ -15,7 +15,7 @@
 
 import os
 import pathlib
-from typing import Dict, List
+from typing import Dict
 
 import pytest
 
@@ -203,8 +203,8 @@ def test_load_file(tmp_path: pathlib.Path) -> None:
 
 
 def test_get_contextual_model_type(tmp_path: pathlib.Path) -> None:
-    import trestle.core.utils as cutils
     """Test get model type and alias based on filesystem context."""
+    import trestle.core.utils as cutils
     with pytest.raises(TrestleError):
         fs.get_contextual_model_type(tmp_path / 'invalidpath')
 
@@ -233,7 +233,7 @@ def test_get_contextual_model_type(tmp_path: pathlib.Path) -> None:
     assert fs.get_contextual_model_type(catalog_dir / 'metadata.yaml') == (catalog.Metadata, 'catalog.metadata')
     assert fs.get_contextual_model_type(metadata_dir) == (catalog.Metadata, 'catalog.metadata')
     # The line below is no longer possible to execute in many situations due to the constrained lists
-    # assert fs.get_contextual_model_type(roles_dir) == (List[catalog.Role], 'catalog.metadata.roles')
+    # assert fs.get_contextual_model_type(roles_dir) == (List[catalog.Role], 'catalog.metadata.roles') # noqa: E800
     (type_, element) = fs.get_contextual_model_type(roles_dir)
     assert cutils.get_origin(type_) == list
     assert element == 'catalog.metadata.roles'
@@ -268,7 +268,7 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path) -> None:
     directories = [
         mycatalog_dir / 'catalog' / 'metadata' / 'roles',
         mycatalog_dir / 'catalog' / 'metadata' / 'responsible-parties',
-        mycatalog_dir / 'catalog' / 'metadata' / 'properties',
+        mycatalog_dir / 'catalog' / 'metadata' / 'props',
         mycatalog_dir / 'catalog' / 'groups' / f'00000{IDX_SEP}group' / 'controls'
     ]
 
@@ -281,7 +281,7 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path) -> None:
         mycatalog_dir / 'catalog' / 'metadata.json',
         mycatalog_dir / 'catalog' / 'metadata' / 'roles' / f'00000{IDX_SEP}role.json',
         mycatalog_dir / 'catalog' / 'metadata' / 'responsible-parties' / f'creator{IDX_SEP}responsible-party.json',
-        mycatalog_dir / 'catalog' / 'metadata' / 'properties' / f'00000{IDX_SEP}prop.json',
+        mycatalog_dir / 'catalog' / 'metadata' / 'props' / f'00000{IDX_SEP}property.json',
         mycatalog_dir / 'catalog' / 'groups' / f'00000{IDX_SEP}group.json',
         mycatalog_dir / 'catalog' / 'groups' / f'00000{IDX_SEP}group' / 'controls' / f'00000{IDX_SEP}control.json',
     ]
@@ -336,13 +336,12 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
     check_stripped_catalog()
 
     def check_stripped_metadata(a2f_map) -> None:
-        # FIXME: negative testing here is suspect.
         assert 'title' in a2f_map
         assert 'published' in a2f_map
         assert 'last-modified' in a2f_map
         assert 'version' in a2f_map
         assert 'oscal-version' in a2f_map
-        assert 'revision-history' in a2f_map
+        assert 'revisions' in a2f_map
         assert 'document-ids' in a2f_map
         assert 'links' in a2f_map
         assert 'locations' in a2f_map
@@ -350,7 +349,7 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
         assert 'remarks' in a2f_map
         assert 'roles' not in alias_to_field_map
         assert 'responsible-properties' not in a2f_map
-        assert 'properties' not in a2f_map
+        assert 'props' not in a2f_map
 
     catalog_dir = mycatalog_dir / 'catalog'
     metadata_dir = catalog_dir / 'metadata'
@@ -369,11 +368,10 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
     assert stripped_catalog[1] == 'catalog.groups'
 
     def check_stripped_group() -> None:
-        # FIXME: violates scoped separation for no good reason.
         assert 'id' in alias_to_field_map
         assert 'class' in alias_to_field_map
         assert 'title' in alias_to_field_map
-        assert 'parameters' in alias_to_field_map
+        assert 'params' in alias_to_field_map
         assert 'props' in alias_to_field_map
         assert 'annotations' in alias_to_field_map
         assert 'links' in alias_to_field_map
@@ -457,7 +455,7 @@ def test_contextual_get_singular_alias(tmp_path: pathlib.Path) -> None:
     assert 'responsible-party' == fs.get_singular_alias(
         alias_path='metadata.responsible-parties.*', contextual_mode=True
     )
-    assert 'prop' == fs.get_singular_alias(alias_path='metadata.responsible-parties.*.properties', contextual_mode=True)
+    assert 'property' == fs.get_singular_alias(alias_path='metadata.responsible-parties.*.props', contextual_mode=True)
 
     os.chdir(groups_dir)
     assert 'control' == fs.get_singular_alias(alias_path='groups.*.controls.*.controls', contextual_mode=True)
