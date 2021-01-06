@@ -15,5 +15,5 @@
 # limitations under the License.
 
 #TODO: Ensure this is automatically updated successfully.
-OSCAL_VERSION = 'v1.0.0-milestone3'
+OSCAL_VERSION = '1.0.0rc1'
 
