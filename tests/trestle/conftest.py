@@ -92,7 +92,7 @@ def sample_target_def():
 @pytest.fixture(scope='function')
 def sample_catalog():
     """Return a valid catalog object."""
-    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'good_catalog.json')
+    file_path = pathlib.Path.joinpath(test_utils.JSON_NIST_DATA_PATH, test_utils.JSON_NIST_CATALOG_NAME)
     catalog_obj = Catalog.oscal_read(file_path)
     return catalog_obj
 
