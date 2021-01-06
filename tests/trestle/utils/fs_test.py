@@ -203,6 +203,7 @@ def test_load_file(tmp_path: pathlib.Path) -> None:
 
 
 def test_get_contextual_model_type(tmp_path: pathlib.Path) -> None:
+    import trestle.core.utils as cutils
     """Test get model type and alias based on filesystem context."""
     import trestle.core.utils as cutils
     with pytest.raises(TrestleError):
