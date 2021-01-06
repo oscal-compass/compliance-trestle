@@ -102,14 +102,14 @@ def test_parse_element_arg(tmp_path):
 
     element_arg = 'target-definition.targets.*.target-control-implementations'
     p1 = ElementPath('target-definition.targets.*')
-    p2 = ElementPath('target.target-control-implementations', parent_path=p1)
+    p2 = ElementPath('defined-target.target-control-implementations', parent_path=p1)
     expected_paths = [p1, p2]
     element_paths = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths
 
     element_arg = 'target-definition.targets.*.target-control-implementations.*'
     p1 = ElementPath('target-definition.targets.*')
-    p2 = ElementPath('target.target-control-implementations.*', parent_path=p1)
+    p2 = ElementPath('defined-target.target-control-implementations.*', parent_path=p1)
     expected_paths = [p1, p2]
     element_paths = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths

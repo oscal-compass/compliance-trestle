@@ -14,20 +14,19 @@
 # limitations under the License.
 """Capabilities to allow the generation of various oscal objects."""
 import logging
+import math
 import uuid
 from datetime import date, datetime
 from enum import Enum
-from typing import Dict, List, Optional, Type, TypeVar, Union, cast
+from typing import Dict, List, Type, TypeVar, Union, cast
 
 import pydantic.networks
-from pydantic import ConstrainedStr, types
+from pydantic import ConstrainedStr
 
 import trestle.core.err as err
 import trestle.core.utils as utils
-import trestle.oscal.ssp
 from trestle.core.base_model import OscalBaseModel
 
-import typing_extensions
 logger = logging.getLogger(__name__)
 
 TG = TypeVar('TG', bound=OscalBaseModel)
@@ -64,7 +63,7 @@ def generate_sample_value_by_type(
         # create an int value as close to the floor as possible does not test upper bound
         multiple = type_.multiple_of or 1  # default to every integer
         floor = type_.ge or type_.gt + 1 or 0  # default to 0
-        if floor % multiple == 0:
+        if math.remainder(floor, multiple) == 0:
             return floor
         else:
             return (floor + 1) * multiple

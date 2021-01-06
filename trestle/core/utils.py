@@ -14,11 +14,10 @@
 # limitations under the License.
 """Utilities for dealing with models."""
 import importlib
-import inspect
 import logging
-from typing import Any, Dict, List, Tuple, Type, TypeVar, Union, no_type_check, Optional
+from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union, no_type_check
 
-from pydantic import BaseModel, types
+from pydantic import BaseModel
 
 import trestle.core.const as const
 import trestle.core.err as err
@@ -137,8 +136,8 @@ def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
 
 def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
     """Generalized and robust get_origin function.
-    
-    This function is derived from work by pydantic, however, avoids complications 
+
+    This function is derived from work by pydantic, however, avoids complications
     from various python versions.
     """
     # This executes a fallback that allows a list to be generated from a constrained list.
