@@ -1,0 +1,67 @@
+{
+    "control": {
+        "id": "cm-13",
+        "class": "SP800-53",
+        "title": "Data Action Mapping",
+        "props": [
+            {
+                "name": "label",
+                "value": "CM-13"
+            },
+            {
+                "name": "sort-id",
+                "value": "cm-13"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-4",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-12",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-5",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-27",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cm-13_smt",
+                "name": "statement",
+                "prose": "Develop and document a map of system data actions."
+            },
+            {
+                "id": "cm-13_gdn",
+                "name": "guidance",
+                "prose": "Data actions are system operations that process personally identifiable information. The processing of such information encompasses the full information life cycle, which includes collection, generation, transformation, use, disclosure, retention, and disposal. A map of system data actions includes discrete data actions, elements of personally identifiable information being processed in the data actions, system components involved in the data actions, and the owners or operators of the system components. Understanding what personally identifiable information is being processed (e.g., the sensitivity of the personally identifiable information), how personally identifiable information is being processed (e.g., if the data action is visible to the individual or is processed in another part of the system), and by whom (e.g., individuals may have different privacy perceptions based on the entity that is processing the personally identifiable information) provides a number of contextual factors that are important to assessing the degree of privacy risk created by the system. Data maps can be illustrated in different ways, and the level of detail may vary based on the mission and business needs of the organization. The data map may be an overlay of any system design artifact that the organization is using. The development of this map may necessitate coordination between the privacy and security programs regarding the covered data actions and the components that are identified as part of the system."
+            }
+        ]
+    }
+}

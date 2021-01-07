@@ -1,0 +1,1684 @@
+{
+    "control": {
+        "id": "sa-8",
+        "class": "SP800-53",
+        "title": "Security and Privacy Engineering Principles",
+        "params": [
+            {
+                "id": "sa-8_prm_1",
+                "label": "organization-defined systems security and privacy engineering principles"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-8"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-08"
+            }
+        ],
+        "links": [
+            {
+                "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
+                "rel": "reference"
+            },
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
+                "rel": "reference"
+            },
+            {
+                "href": "#599fb53d-5041-444e-a7fe-640d6d30ad05",
+                "rel": "reference"
+            },
+            {
+                "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
+                "rel": "reference"
+            },
+            {
+                "href": "#a21aef46-7330-48a0-b2e1-c5bb8b2dd11d",
+                "rel": "reference"
+            },
+            {
+                "href": "#e72fde0b-6fc2-497e-a9db-d8fce5a11b8a",
+                "rel": "reference"
+            },
+            {
+                "href": "#9be5d661-421f-41ad-854e-86f98b811891",
+                "rel": "reference"
+            },
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#98d415ca-7281-4064-9931-0c366637e324",
+                "rel": "reference"
+            },
+            {
+                "href": "#pl-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-15",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-17",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-20",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-32",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-39",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-5",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sa-8_smt",
+                "name": "statement",
+                "prose": "Apply the following systems security and privacy engineering principles in the specification, design, development, implementation, and modification of the system and system components: {{ sa-8_prm_1 }}."
+            },
+            {
+                "id": "sa-8_gdn",
+                "name": "guidance",
+                "prose": "Systems security and privacy engineering principles are closely related to and implemented throughout the system development life cycle (see [SA-3](#sa-3)). Organizations can apply systems security and privacy engineering principles to new systems under development or to systems undergoing upgrades. For existing systems, organizations apply systems security and privacy engineering principles to system upgrades and modifications to the extent feasible, given the current state of hardware, software, and firmware components within those systems.\n\nThe application of systems security and privacy engineering principles helps organizations develop trustworthy, secure, and resilient systems and reduces the susceptibility to disruptions, hazards, threats, and the creation of privacy problems for individuals. Examples of system security engineering principles include: developing layered protections; establishing security and privacy policies, architecture, and controls as the foundation for design and development; incorporating security and privacy requirements into the system development life cycle; delineating physical and logical security boundaries; ensuring that developers are trained on how to build secure software; tailoring controls to meet organizational needs; and performing threat modeling to identify use cases, threat agents, attack vectors and patterns, design patterns, and compensating controls needed to mitigate risk.\n\nOrganizations that apply systems security and privacy engineering concepts and principles can facilitate the development of trustworthy, secure systems, system components, and system services; reduce risk to acceptable levels; and make informed risk management decisions. System security engineering principles can also be used to protect against certain supply chain risks, including incorporating tamper-resistant hardware into a design."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sa-8.1",
+                "class": "SP800-53-enhancement",
+                "title": "Clear Abstractions",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.1_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of clear abstractions."
+                    },
+                    {
+                        "id": "sa-8.1_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of clear abstractions states that a system has simple, well-defined interfaces and functions that provide a consistent and intuitive view of the data and how the data is managed. The clarity, simplicity, necessity, and sufficiency of the system interfaces\u2014 combined with a precise definition of their functional behavior\u2014promotes ease of analysis, inspection, and testing as well as the correct and secure use of the system. The clarity of an abstraction is subjective. Examples that reflect the application of this principle include avoidance of redundant, unused interfaces; information hiding; and avoidance of semantic overloading of interfaces or their parameters. Information hiding (i.e., representation-independent programming), is a design discipline used to ensure that the internal representation of information in one system component is not visible to another system component invoking or calling the first component, such that the published abstraction is not influenced by how the data may be managed internally."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.2",
+                "class": "SP800-53-enhancement",
+                "title": "Least Common Mechanism",
+                "params": [
+                    {
+                        "id": "sa-8.2_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.2_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of least common mechanism in {{ sa-8.2_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.2_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of least common mechanism states that the amount of mechanism common to more than one user and depended on by all users is minimized [POPEK74](#79453f84-26a4-4995-8257-d32d37aefea3). Mechanism minimization implies that different components of a system refrain from using the same mechanism to access a system resource. Every shared mechanism (especially a mechanism involving shared variables) represents a potential information path between users and is designed with care to ensure that it does not unintentionally compromise security [SALTZER75](#c9495d6e-ef64-4090-8509-e58c3b9009ff). Implementing the principle of least common mechanism helps to reduce the adverse consequences of sharing the system state among different programs. A single program that corrupts a shared state (including shared variables) has the potential to corrupt other programs that are dependent on the state. The principle of least common mechanism also supports the principle of simplicity of design and addresses the issue of covert storage channels [LAMPSON73](#d1cdab13-4218-400d-91a9-c3818dfa5ec8)."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.3",
+                "class": "SP800-53-enhancement",
+                "title": "Modularity and Layering",
+                "params": [
+                    {
+                        "id": "sa-8.3_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.3_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principles of modularity and layering in {{ sa-8.3_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.3_gdn",
+                        "name": "guidance",
+                        "prose": "The principles of modularity and layering are fundamental across system engineering disciplines. Modularity and layering derived from functional decomposition are effective in managing system complexity by making it possible to comprehend the structure of the system. Modular decomposition, or refinement in system design, is challenging and resists general statements of principle. Modularity serves to isolate functions and related data structures into well-defined logical units. Layering allows the relationships of these units to be better understood so that dependencies are clear and undesired complexity can be avoided. The security design principle of modularity extends functional modularity to include considerations based on trust, trustworthiness, privilege, and security policy. Security-informed modular decomposition includes the allocation of policies to systems in a network, separation of system applications into processes with distinct address spaces, allocation of system policies to layers, and separation of processes into subjects with distinct privileges based on hardware-supported privilege domains."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.4",
+                "class": "SP800-53-enhancement",
+                "title": "Partially Ordered Dependencies",
+                "params": [
+                    {
+                        "id": "sa-8.4_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.4_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of partially ordered dependencies in {{ sa-8.4_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.4_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of partially ordered dependencies states that the synchronization, calling, and other dependencies in the system are partially ordered. A fundamental concept in system design is layering, whereby the system is organized into well-defined, functionally related modules or components. The layers are linearly ordered with respect to inter-layer dependencies, such that higher layers are dependent on lower layers. While providing functionality to higher layers, some layers can be self-contained and not dependent on lower layers. While a partial ordering of all functions in a given system may not be possible, if circular dependencies are constrained to occur within layers, the inherent problems of circularity can be more easily managed. Partially ordered dependencies and system layering contribute significantly to the simplicity and coherency of the system design. Partially ordered dependencies also facilitate system testing and analysis."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.5",
+                "class": "SP800-53-enhancement",
+                "title": "Efficiently Mediated Access",
+                "params": [
+                    {
+                        "id": "sa-8.5_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-25",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.5_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of efficiently mediated access in {{ sa-8.5_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.5_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of efficiently mediated access states that policy enforcement mechanisms utilize the least common mechanism available while satisfying stakeholder requirements within expressed constraints. The mediation of access to system resources (i.e., CPU, memory, devices, communication ports, services, infrastructure, data, and information) is often the predominant security function of secure systems. It also enables the realization of protections for the capability provided to stakeholders by the system. Mediation of resource access can result in performance bottlenecks if the system is not designed correctly. For example, by using hardware mechanisms, efficiently mediated access can be achieved. Once access to a low-level resource such as memory has been obtained, hardware protection mechanisms can ensure that out-of-bounds access does not occur."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.6",
+                "class": "SP800-53-enhancement",
+                "title": "Minimized Sharing",
+                "params": [
+                    {
+                        "id": "sa-8.6_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-31",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.6_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of minimized sharing in {{ sa-8.6_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.6_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of minimized sharing states that no computer resource is shared between system components (e.g., subjects, processes, functions) unless it is absolutely necessary to do so. Minimized sharing helps to simplify system design and implementation. In order to protect user-domain resources from arbitrary active entities, no resource is shared unless that sharing has been explicitly requested and granted. The need for resource sharing can be motivated by the design principle of least common mechanism in the case of internal entities or driven by stakeholder requirements. However, internal sharing is carefully designed to avoid performance and covert storage and timing channel problems. Sharing via common mechanism can increase the susceptibility of data and information to unauthorized access, disclosure, use, or modification and can adversely affect the inherent capability provided by the system. To minimize sharing induced by common mechanisms, such mechanisms can be designed to be reentrant or virtualized to preserve separation. Moreover, the use of global data to share information is carefully scrutinized. The lack of encapsulation may obfuscate relationships among the sharing entities."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.7",
+                "class": "SP800-53-enhancement",
+                "title": "Reduced Complexity",
+                "params": [
+                    {
+                        "id": "sa-8.7_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.7_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of reduced complexity in {{ sa-8.7_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.7_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of reduced complexity states that the system design is as simple and small as possible. A small and simple design is more understandable, more analyzable, and less prone to error. The reduced complexity principle applies to any aspect of a system, but it has particular importance for security due to the various analyses performed to obtain evidence about the emergent security property of the system. For such analyses to be successful, a small and simple design is essential. Application of the principle of reduced complexity contributes to the ability of system developers to understand the correctness and completeness of system security functions. It also facilitates the identification of potential vulnerabilities. The corollary of reduced complexity states that the simplicity of the system is directly related to the number of vulnerabilities it will contain; that is, simpler systems contain fewer vulnerabilities. An benefit of reduced complexity is that it is easier to understand whether the intended security policy has been captured in the system design and that fewer vulnerabilities are likely to be introduced during engineering development. An additional benefit is that any such conclusion about correctness, completeness, and the existence of vulnerabilities can be reached with a higher degree of assurance in contrast to conclusions reached in situations where the system design is inherently more complex. Transitioning from older technologies to newer technologies (e.g., transitioning from IPv4 to IPv6) may require implementing the older and newer technologies simultaneously during the transition period. This may result in a temporary increase in system complexity during the transition."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.8",
+                "class": "SP800-53-enhancement",
+                "title": "Secure Evolvability",
+                "params": [
+                    {
+                        "id": "sa-8.8_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.8_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of secure evolvability in {{ sa-8.8_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.8_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of secure evolvability states that a system is developed to facilitate the maintenance of its security properties when there are changes to the system\u2019s structure, interfaces, interconnections (i.e., system architecture), functionality, or configuration (i.e., security policy enforcement). Changes include a new, enhanced, or upgraded system capability; maintenance and sustainment activities; and reconfiguration. Although it is not possible to plan for every aspect of system evolution, system upgrades and changes can be anticipated by analyses of mission or business strategic direction, anticipated changes in the threat environment, and anticipated maintenance and sustainment needs. It is unrealistic to expect that complex systems remain secure in contexts not envisioned during development, whether such contexts are related to the operational environment or to usage. A system may be secure in some new contexts, but there is no guarantee that its emergent behavior will always be secure. It is easier to build trustworthiness into a system from the outset, and it follows that the sustainment of system trustworthiness requires planning for change as opposed to adapting in an ad hoc or non-methodical manner. The benefits of this principle include reduced vendor life cycle costs, reduced cost of ownership, improved system security, more effective management of security risk, and less risk uncertainty."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.9",
+                "class": "SP800-53-enhancement",
+                "title": "Trusted Components",
+                "params": [
+                    {
+                        "id": "sa-8.9_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.09"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.9_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of trusted components in {{ sa-8.9_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.9_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of trusted components states that a component is trustworthy to at least a level commensurate with the security dependencies it supports (i.e., how much it is trusted to perform its security functions by other components). This principle enables the composition of components such that trustworthiness is not inadvertently diminished and the trust is not consequently misplaced. Ultimately, this principle demands some metric by which the trust in a component and the trustworthiness of a component can be measured on the same abstract scale. The principle of trusted components is particularly relevant when considering systems and components in which there are complex chains of trust dependencies. A trust dependency is also referred to as a trust relationship and there may be chains of trust relationships.\n\nThe principle of trusted components also applies to a compound component that consists of subcomponents (e.g., a subsystem), which may have varying levels of trustworthiness. The conservative assumption is that the trustworthiness of a compound component is that of its least trustworthy subcomponent. It may be possible to provide a security engineering rationale that the trustworthiness of a particular compound component is greater than the conservative assumption. However, any such rationale reflects logical reasoning based on a clear statement of the trustworthiness objectives as well as relevant and credible evidence. The trustworthiness of a compound component is not the same as increased application of defense-in-depth layering within the component or a replication of components. Defense-in-depth techniques do not increase the trustworthiness of the whole above that of the least trustworthy component."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.10",
+                "class": "SP800-53-enhancement",
+                "title": "Hierarchical Trust",
+                "params": [
+                    {
+                        "id": "sa-8.10_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(10)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.10"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.10_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of hierarchical trust in {{ sa-8.10_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.10_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of hierarchical trust for components builds on the principle of trusted components and states that the security dependencies in a system will form a partial ordering if they preserve the principle of trusted components. The partial ordering provides the basis for trustworthiness reasoning or an assurance case (assurance argument) when composing a secure system from heterogeneously trustworthy components. To analyze a system composed of heterogeneously trustworthy components for its trustworthiness, it is essential to eliminate circular dependencies with regard to the trustworthiness. If a more trustworthy component located in a lower layer of the system were to depend on a less trustworthy component in a higher layer, this would, in effect, put the components in the same \"less trustworthy\" equivalence class per the principle of trusted components. Trust relationships, or chains of trust, can have various manifestations. For example, the root certificate of a certificate hierarchy is the most trusted node in the hierarchy, whereas the leaves in the hierarchy may be the least trustworthy nodes. Another example occurs in a layered high-assurance system where the security kernel (including the hardware base), which is located at the lowest layer of the system, is the most trustworthy component. The principle of hierarchical trust, however, does not prohibit the use of overly trustworthy components. There may be cases in a system of low trustworthiness where it is reasonable to employ a highly trustworthy component rather than one that is less trustworthy (e.g., due to availability or other cost-benefit driver). For such a case, any dependency of the highly trustworthy component upon a less trustworthy component does not degrade the trustworthiness of the resulting low-trust system."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.11",
+                "class": "SP800-53-enhancement",
+                "title": "Inverse Modification Threshold",
+                "params": [
+                    {
+                        "id": "sa-8.11_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(11)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.11"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.11_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of inverse modification threshold in {{ sa-8.11_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.11_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of inverse modification threshold builds on the principle of trusted components and the principle of hierarchical trust and states that the degree of protection provided to a component is commensurate with its trustworthiness. As the trust placed in a component increases, the protection against unauthorized modification of the component also increases to the same degree. Protection from unauthorized modification can come in the form of the component\u2019s own self-protection and innate trustworthiness, or it can come from the protections afforded to the component from other elements or attributes of the security architecture (to include protections in the environment of operation)."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.12",
+                "class": "SP800-53-enhancement",
+                "title": "Hierarchical Protection",
+                "params": [
+                    {
+                        "id": "sa-8.12_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(12)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.12"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.12_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of hierarchical protection in {{ sa-8.12_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.12_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of hierarchical protection states that a component need not be protected from more trustworthy components. In the degenerate case of the most trusted component, it protects itself from all other components. For example, if an operating system kernel is deemed the most trustworthy component in a system, then it protects itself from all untrusted applications it supports, but the applications, conversely, do not need to protect themselves from the kernel. The trustworthiness of users is a consideration for applying the principle of hierarchical protection. A trusted system need not protect itself from an equally trustworthy user, reflecting use of untrusted systems in \"system high\" environments where users are highly trustworthy and where other protections are put in place to bound and protect the \"system high\" execution environment."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.13",
+                "class": "SP800-53-enhancement",
+                "title": "Minimized Security Elements",
+                "params": [
+                    {
+                        "id": "sa-8.13_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(13)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.13"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.13_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of minimized security elements in {{ sa-8.13_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.13_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of minimized security elements states that the system does not have extraneous trusted components. The principle of minimized security elements has two aspects: the overall cost of security analysis and the complexity of security analysis. Trusted components are generally costlier to construct and implement, owing to the increased rigor of development processes. Trusted components require greater security analysis to qualify their trustworthiness. Thus, to reduce the cost and decrease the complexity of the security analysis, a system contains as few trustworthy components as possible. The analysis of the interaction of trusted components with other components of the system is one of the most important aspects of system security verification. If the interactions between components are unnecessarily complex, the security of the system will also be more difficult to ascertain than one whose internal trust relationships are simple and elegantly constructed. In general, fewer trusted components result in fewer internal trust relationships and a simpler system."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.14",
+                "class": "SP800-53-enhancement",
+                "title": "Least Privilege",
+                "params": [
+                    {
+                        "id": "sa-8.14_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(14)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.14"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cm-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.14_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of least privilege in {{ sa-8.14_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.14_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of least privilege states that each system component is allocated sufficient privileges to accomplish its specified functions but no more. Applying the principle of least privilege limits the scope of the component\u2019s actions, which has two desirable effects: the security impact of a failure, corruption, or misuse of the component will have a minimized security impact, and the security analysis of the component will be simplified. Least privilege is a pervasive principle that is reflected in all aspects of the secure system design. Interfaces used to invoke component capability are available to only certain subsets of the user population, and component design supports a sufficiently fine granularity of privilege decomposition. For example, in the case of an audit mechanism, there may be an interface for the audit manager, who configures the audit settings; an interface for the audit operator, who ensures that audit data is safely collected and stored; and, finally, yet another interface for the audit reviewer, who only has need to view the audit data that has been collected but no need to perform operations on that data.\n\nIn addition to its manifestations at the system interface, least privilege can be used as a guiding principle for the internal structure of the system itself. One aspect of internal least privilege is to construct modules so that only the elements encapsulated by the module are directly operated on by the functions within the module. Elements external to a module that may be affected by the module\u2019s operation are indirectly accessed through interaction (e.g., via a function call) with the module that contains those elements. Another aspect of internal least privilege is that the scope of a given module or component includes only those system elements that are necessary for its functionality and that the access modes for the elements (e.g., read, write) are minimal."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.15",
+                "class": "SP800-53-enhancement",
+                "title": "Predicate Permission",
+                "params": [
+                    {
+                        "id": "sa-8.15_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(15)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.15"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.15_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of predicate permission in {{ sa-8.15_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.15_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of predicate permission states that system designers consider requiring multiple authorized entities to provide consent before a highly critical operation or access to highly sensitive data, information, or resources is allowed to proceed. [SALTZER75](#c9495d6e-ef64-4090-8509-e58c3b9009ff) originally named predicate permission the separation of privilege. It is also equivalent to separation of duty. The division of privilege among multiple parties decreases the likelihood of abuse and provides the safeguard that no single accident, deception, or breach of trust is sufficient to enable an unrecoverable action that can lead to significantly damaging effects. The design options for such a mechanism may require simultaneous action (e.g., the firing of a nuclear weapon requires two different authorized individuals to give the correct command within a small time window) or a sequence of operations where each successive action is enabled by some prior action, but no single individual is able to enable more than one action."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.16",
+                "class": "SP800-53-enhancement",
+                "title": "Self-reliant Trustworthiness",
+                "params": [
+                    {
+                        "id": "sa-8.16_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(16)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.16"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.16_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of self-reliant trustworthiness in {{ sa-8.16_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.16_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of self-reliant trustworthiness states that systems minimize their reliance on other systems for their own trustworthiness. A system is trustworthy by default, and any connection to an external entity is used to supplement its function. If a system were required to maintain a connection with another external entity in order to maintain its trustworthiness, then that system would be vulnerable to malicious and non-malicious threats that could result in the loss or degradation of that connection. The benefit of the principle of self-reliant trustworthiness is that the isolation of a system will make it less vulnerable to attack. A corollary to this principle relates to the ability of the system (or system component) to operate in isolation and then resynchronize with other components when it is rejoined with them."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.17",
+                "class": "SP800-53-enhancement",
+                "title": "Secure Distributed Composition",
+                "params": [
+                    {
+                        "id": "sa-8.17_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(17)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.17"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.17_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of secure distributed composition in {{ sa-8.17_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.17_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of secure distributed composition states that the composition of distributed components that enforce the same system security policy result in a system that enforces that policy at least as well as the individual components do. Many of the design principles for secure systems deal with how components can or should interact. The need to create or enable a capability from the composition of distributed components can magnify the relevancy of these principles. In particular, the translation of security policy from a stand-alone to a distributed system or a system-of-systems can have unexpected or emergent results. Communication protocols and distributed data consistency mechanisms help to ensure consistent policy enforcement across a distributed system. To ensure a system-wide level of assurance of correct policy enforcement, the security architecture of a distributed composite system is thoroughly analyzed."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.18",
+                "class": "SP800-53-enhancement",
+                "title": "Trusted Communications Channels",
+                "params": [
+                    {
+                        "id": "sa-8.18_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(18)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.18"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.18_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of trusted communications channels in {{ sa-8.18_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.18_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of trusted communication channels states that when composing a system where there is a potential threat to communications between components (i.e., the interconnections between components), each communication channel is trustworthy to a level commensurate with the security dependencies it supports (i.e., how much it is trusted by other components to perform its security functions). Trusted communication channels are achieved by a combination of restricting access to the communication channel (to ensure an acceptable match in the trustworthiness of the endpoints involved in the communication) and employing end-to-end protections for the data transmitted over the communication channel (to protect against interception and modification and to further increase the assurance of proper end-to-end communication)."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.19",
+                "class": "SP800-53-enhancement",
+                "title": "Continuous Protection",
+                "params": [
+                    {
+                        "id": "sa-8.19_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(19)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.19"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-25",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.19_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of continuous protection in {{ sa-8.19_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.19_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of continuous protection states that components and data used to enforce the security policy have uninterrupted protection that is consistent with the security policy and the security architecture assumptions. No assurances that the system can provide the confidentiality, integrity, availability, and privacy protections for its design capability can be made if there are gaps in the protection. Any assurances about the ability to secure a delivered capability require that data and information are continuously protected. That is, there are no periods during which data and information are left unprotected while under control of the system (i.e., during the creation, storage, processing, or communication of the data and information, as well as during system initialization, execution, failure, interruption, and shutdown). Continuous protection requires adherence to the precepts of the reference monitor concept (i.e., every request is validated by the reference monitor; the reference monitor is able to protect itself from tampering; and sufficient assurance of the correctness and completeness of the mechanism can be ascertained from analysis and testing) and the principle of secure failure and recovery (i.e., preservation of a secure state during error, fault, failure, and successful attack; preservation of a secure state during recovery to normal, degraded, or alternative operational modes).\n\nContinuous protection also applies to systems designed to operate in varying configurations, including those that deliver full operational capability and degraded-mode configurations that deliver partial operational capability. The continuous protection principle requires that changes to the system security policies be traceable to the operational need that drives the configuration and be verifiable (i.e., it is possible to verify that the proposed changes will not put the system into an insecure state). Insufficient traceability and verification may lead to inconsistent states or protection discontinuities due to the complex or undecidable nature of the problem. The use of pre-verified configuration definitions that reflect the new security policy enables analysis to determine that a transition from old to new policies is essentially atomic and that any residual effects from the old policy are guaranteed to not conflict with the new policy. The ability to demonstrate continuous protection is rooted in the clear articulation of life cycle protection needs as stakeholder security requirements."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.20",
+                "class": "SP800-53-enhancement",
+                "title": "Secure Metadata Management",
+                "params": [
+                    {
+                        "id": "sa-8.20_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(20)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.20"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.20_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of secure metadata management in {{ sa-8.20_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.20_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of secure metadata management states that metadata are \"first class\" objects with respect to security policy when the policy requires either complete protection of information or that the security subsystem be self-protecting. The principle of secure metadata management is driven by the recognition that a system, subsystem, or component cannot achieve self-protection unless it protects the data it relies on for correct execution. Data is generally not interpreted by the system that stores it. It may have semantic value (i.e., it comprises information) to users and programs that process the data. In contrast, metadata is information about data, such as a file name or the date when the file was created. Metadata is bound to the target data that it describes in a way that the system can interpret, but it need not be stored inside of or proximate to its target data. There may be metadata whose target is itself metadata (e.g., the classification level or impact level of a file name), including self-referential metadata.\n\nThe apparent secondary nature of metadata can lead to neglect of its legitimate need for protection, resulting in a violation of the security policy that includes the exfiltration of information. A particular concern associated with insufficient protections for metadata is associated with multilevel secure (MLS) systems. MLS systems mediate access by a subject to an object based on relative sensitivity levels. It follows that all subjects and objects in the scope of control of the MLS system are either directly labeled or indirectly attributed with sensitivity levels. The corollary of labeled metadata for MLS systems states that objects containing metadata are labeled. As with protection needs assessments for data, attention is given to ensure that the confidentiality and integrity protections are individually assessed, specified, and allocated to metadata, as would be done for mission, business, and system data."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.21",
+                "class": "SP800-53-enhancement",
+                "title": "Self-analysis",
+                "params": [
+                    {
+                        "id": "sa-8.21_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(21)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.21"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ca-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.21_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of self-analysis in {{ sa-8.21_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.21_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of self-analysis states that a system component is able to assess its internal state and functionality to a limited extent at various stages of execution, and that this self-analysis capability is commensurate with the level of trustworthiness invested in the system. At the system level, self-analysis can be achieved through hierarchical assessments of trustworthiness established in a bottom-up fashion. In this approach, the lower-level components check for data integrity and correct functionality (to a limited extent) of higher-level components. For example, trusted boot sequences involve a trusted lower-level component that attests to the trustworthiness of the next higher-level components so that a transitive chain of trust can be established. At the root, a component attests to itself, which usually involves an axiomatic or environmentally enforced assumption about its integrity. Results of the self-analyses can be used to guard against externally induced errors, internal malfunction, or transient errors. By following this principle, some simple malfunctions or errors can be detected without allowing the effects of the error or malfunction to propagate outside of the component. Further, the self-test can be used to attest to the configuration of the component, detecting any potential conflicts in configuration with respect to the expected configuration."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.22",
+                "class": "SP800-53-enhancement",
+                "title": "Accountability and Traceability",
+                "params": [
+                    {
+                        "id": "sa-8.22_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(22)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.22"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-9",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-10",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ir-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.22_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of accountability and traceability in {{ sa-8.22_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.22_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of accountability and traceability states that it is possible to trace security-relevant actions (i.e., subject-object interactions) to the entity on whose behalf the action is being taken. The principle of accountability and traceability requires a trustworthy infrastructure that can record details about actions that affect system security (e.g., an audit subsystem). To record the details about actions, the system is able to uniquely identify the entity on whose behalf the action is being carried out and also record the relevant sequence of actions that are carried out. The accountability policy also requires that audit trail itself be protected from unauthorized access and modification. The principle of least privilege assists in tracing the actions to particular entities, as it increases the granularity of accountability. Associating specific actions with system entities, and ultimately with users, and making the audit trail secure against unauthorized access and modifications provide non-repudiation because once an action is recorded, it is not possible to change the audit trail. Another important function that accountability and traceability serves is in the routine and forensic analysis of events associated with the violation of security policy. Analysis of audit logs may provide additional information that may be helpful in determining the path or component that allowed the violation of the security policy and the actions of individuals associated with the violation of the security policy."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.23",
+                "class": "SP800-53-enhancement",
+                "title": "Secure Defaults",
+                "params": [
+                    {
+                        "id": "sa-8.23_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(23)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.23"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cm-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.23_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of secure defaults in {{ sa-8.23_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.23_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of secure defaults states that the default configuration of a system (including its constituent subsystems, components, and mechanisms) reflects a restrictive and conservative enforcement of security policy. The principle of secure defaults applies to the initial (i.e., default) configuration of a system as well as to the security engineering and design of access control and other security functions that follow a \"deny unless explicitly authorized\" strategy. The initial configuration aspect of this principle requires that any \"as shipped\" configuration of a system, subsystem, or system component does not aid in the violation of the security policy and can prevent the system from operating in the default configuration for those cases where the security policy itself requires configuration by the operational user.\n\nRestrictive defaults mean that the system will operate \"as-shipped\" with adequate self-protection and be able to prevent security breaches before the intended security policy and system configuration is established. In cases where the protection provided by the \"as-shipped\" product is inadequate, stakeholders assess the risk of using it prior to establishing a secure initial state. Adherence to the principle of secure defaults guarantees that a system is established in a secure state upon successfully completing initialization. In situations where the system fails to complete initialization, either it will perform a requested operation using secure defaults or it will not perform the operation. Refer to the principles of continuous protection and secure failure and recovery that parallel this principle to provide the ability to detect and recover from failure.\n\nThe security engineering approach to this principle states that security mechanisms deny requests unless the request is found to be well-formed and consistent with the security policy. The insecure alternative is to allow a request unless it is shown to be inconsistent with the policy. In a large system, the conditions that are satisfied to grant a request that is denied by default are often far more compact and complete than those that would need to be checked in order to deny a request that is granted by default."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.24",
+                "class": "SP800-53-enhancement",
+                "title": "Secure Failure and Recovery",
+                "params": [
+                    {
+                        "id": "sa-8.24_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(24)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.24"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cp-10",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cp-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-7",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-24",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.24_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of secure failure and recovery in {{ sa-8.24_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.24_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of secure failure and recovery states that neither a failure in a system function or mechanism nor any recovery action in response to failure leads to a violation of security policy. The principle of secure failure and recovery parallels the principle of continuous protection to ensure that a system is capable of detecting (within limits) actual and impending failure at any stage of its operation (i.e., initialization, normal operation, shutdown, and maintenance) and to take appropriate steps to ensure that security policies are not violated. In addition, when specified, the system is capable of recovering from impending or actual failure to resume normal, degraded, or alternative secure operations while ensuring that a secure state is maintained such that security policies are not violated.\n\nFailure is a condition in which the behavior of a component deviates from its specified or expected behavior for an explicitly documented input. Once a failed security function is detected, the system may reconfigure itself to circumvent the failed component while maintaining security and provide all or part of the functionality of the original system, or it may completely shut itself down to prevent any further violation of security policies. For this to occur, the reconfiguration functions of the system are designed to ensure continuous enforcement of security policy during the various phases of reconfiguration.\n\nAnother technique that can be used to recover from failures is to perform a rollback to a secure state (which may be the initial state) and then either shutdown or replace the service or component that failed such that secure operations may resume. Failure of a component may or may not be detectable to the components using it. The principle of secure failure indicates that components fail in a state that denies rather than grants access. For example, a nominally \"atomic\" operation interrupted before completion does not violate security policy and is designed to handle interruption events by employing higher-level atomicity and rollback mechanisms (e.g., transactions). If a service is being used, its atomicity properties are well-documented and characterized so that the component availing itself of that service can detect and handle interruption events appropriately. For example, a system is designed to gracefully respond to disconnection and support resynchronization and data consistency after disconnection.\n\nFailure protection strategies that employ replication of policy enforcement mechanisms, sometimes called defense in depth, can allow the system to continue in a secure state even when one mechanism has failed to protect the system. If the mechanisms are similar, however, the additional protection may be illusory, as the adversary can simply attack in series. Similarly, in a networked system, breaking the security on one system or service may enable an attacker to do the same on other similar replicated systems and services. By employing multiple protection mechanisms whose features are significantly different, the possibility of attack replication or repetition can be reduced. Analyses are conducted to weigh the costs and benefits of such redundancy techniques against increased resource usage and adverse effects on the overall system performance. Additional analyses are conducted as the complexity of these mechanisms increases, as could be the case for dynamic behaviors. Increased complexity generally reduces trustworthiness. When a resource cannot be continuously protected, it is critical to detect and repair any security breaches before the resource is once again used in a secure context."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.25",
+                "class": "SP800-53-enhancement",
+                "title": "Economic Security",
+                "params": [
+                    {
+                        "id": "sa-8.25_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(25)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.25"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ra-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.25_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of economic security in {{ sa-8.25_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.25_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of economic security states that security mechanisms are not costlier than the potential damage that could occur from a security breach. This is the security-relevant form of the cost-benefit analyses used in risk management. The cost assumptions of cost-benefit analysis prevent the system designer from incorporating security mechanisms of greater strength than necessary, where strength of mechanism is proportional to cost. The principle of economic security also requires analysis of the benefits of assurance relative to the cost of that assurance in terms of the effort expended to obtain relevant and credible evidence as well as the necessary analyses to assess and draw trustworthiness and risk conclusions from the evidence."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.26",
+                "class": "SP800-53-enhancement",
+                "title": "Performance Security",
+                "params": [
+                    {
+                        "id": "sa-8.26_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(26)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.26"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.26_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of performance security in {{ sa-8.26_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.26_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of performance security states that security mechanisms are constructed so that they do not degrade system performance unnecessarily. Stakeholder and system design requirements for performance and security are precisely articulated and prioritized. For the system implementation to meet its design requirements and be found acceptable to stakeholders (i.e., validation against stakeholder requirements), the designers adhere to the specified constraints that capability performance needs place on protection needs. The overall impact of computationally intensive security services (e.g., cryptography) are assessed and demonstrated to pose no significant impact to higher-priority performance considerations or are deemed to provide an acceptable trade-off of performance for trustworthy protection. The trade-off considerations include less computationally intensive security services unless they are unavailable or insufficient. The insufficiency of a security service is determined by functional capability and strength of mechanism. The strength of mechanism is selected with respect to security requirements, performance-critical overhead issues (e.g., cryptographic key management), and an assessment of the capability of the threat.\n\nThe principle of performance security leads to the incorporation of features that help in the enforcement of security policy but incur minimum overhead, such as low-level hardware mechanisms upon which higher-level services can be built. Such low-level mechanisms are usually very specific, have very limited functionality, and are optimized for performance. For example, once access rights to a portion of memory is granted, many systems use hardware mechanisms to ensure that all further accesses involve the correct memory address and access mode. Application of this principle reinforces the need to design security into the system from the ground up and to incorporate simple mechanisms at the lower layers that can be used as building blocks for higher-level mechanisms."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.27",
+                "class": "SP800-53-enhancement",
+                "title": "Human Factored Security",
+                "params": [
+                    {
+                        "id": "sa-8.27_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(27)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.27"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.27_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of human factored security in {{ sa-8.27_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.27_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of human factored security states that the user interface for security functions and supporting services is intuitive, user-friendly, and provides feedback for user actions that affect such policy and its enforcement. The mechanisms that enforce security policy are not intrusive to the user and are designed not to degrade user efficiency. Security policy enforcement mechanisms also provide the user with meaningful, clear, and relevant feedback and warnings when insecure choices are being made. Particular attention is given to interfaces through which personnel responsible for system administration and operation configure and set up the security policies. Ideally, these personnel are able to understand the impact of their choices. Personnel with system administrative and operational responsibilities are able to configure systems before start-up and administer them during runtime with confidence that their intent is correctly mapped to the system\u2019s mechanisms. Security services, functions, and mechanisms do not impede or unnecessarily complicate the intended use of the system. There is a trade-off between system usability and the strictness necessary for security policy enforcement. If security mechanisms are frustrating or difficult to use, then users may disable them, avoid them, or use them in ways inconsistent with the security requirements and protection needs that the mechanisms were designed to satisfy."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.28",
+                "class": "SP800-53-enhancement",
+                "title": "Acceptable Security",
+                "params": [
+                    {
+                        "id": "sa-8.28_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(28)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.28"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.28_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of acceptable security in {{ sa-8.28_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.28_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of acceptable security requires that the level of privacy and performance that the system provides is consistent with the users\u2019 expectations. The perception of personal privacy may affect user behavior, morale, and effectiveness. Based on the organizational privacy policy and the system design, users should be able to restrict their actions to protect their privacy. When systems fail to provide intuitive interfaces or meet privacy and performance expectations, users may either choose to completely avoid the system or use it in ways that may be inefficient or even insecure."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.29",
+                "class": "SP800-53-enhancement",
+                "title": "Repeatable and Documented Procedures",
+                "params": [
+                    {
+                        "id": "sa-8.29_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(29)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.29"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-1",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-1",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-10",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-11",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-15",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-17",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-1",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-1",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.29_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of repeatable and documented procedures in {{ sa-8.29_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.29_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of repeatable and documented procedures states that the techniques and methods employed to construct a system component permit the same component to be completely and correctly reconstructed at a later time. Repeatable and documented procedures support the development of a component that is identical to the component created earlier, which may be in widespread use. In the case of other system artifacts (e.g., documentation and testing results), repeatability supports consistency and the ability to inspect the artifacts. Repeatable and documented procedures can be introduced at various stages within the system development life cycle and contribute to the ability to evaluate assurance claims for the system. Examples include systematic procedures for code development and review, procedures for the configuration management of development tools and system artifacts, and procedures for system delivery."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.30",
+                "class": "SP800-53-enhancement",
+                "title": "Procedural Rigor",
+                "params": [
+                    {
+                        "id": "sa-8.30_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(30)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.30"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.30_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of procedural rigor in {{ sa-8.30_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.30_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of procedural rigor states that the rigor of a system life cycle process is commensurate with its intended trustworthiness. Procedural rigor defines the scope, depth, and detail of the system life cycle procedures. Rigorous system life cycle procedures contribute to the assurance that the system is correct and free of unintended functionality in several ways. First, the procedures impose checks and balances on the life cycle process such that the introduction of unspecified functionality is prevented.\n\nSecond, rigorous procedures applied to systems security engineering activities that produce specifications and other system design documents contribute to the ability to understand the system as it has been built rather than trusting that the component, as implemented, is the authoritative (and potentially misleading) specification.\n\nFinally, modifications to an existing system component are easier when there are detailed specifications that describe its current design instead of studying source code or schematics to try to understand how it works. Procedural rigor helps ensure that security functional and assurance requirements have been satisfied, and it contributes to a better-informed basis for the determination of trustworthiness and risk posture. Procedural rigor is commensurate with the degree of assurance desired for the system. If the required trustworthiness of the system is low, a high level of procedural rigor may add unnecessary cost, whereas when high trustworthiness is critical, the cost of high procedural rigor is merited."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.31",
+                "class": "SP800-53-enhancement",
+                "title": "Secure System Modification",
+                "params": [
+                    {
+                        "id": "sa-8.31_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(31)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.31"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cm-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.31_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of secure system modification in {{ sa-8.31_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.31_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of secure system modification states that system modification maintains system security with respect to the security requirements and risk tolerance of stakeholders. Upgrades or modifications to systems can transform secure systems into systems that are not secure. The procedures for system modification ensure that if the system is to maintain its trustworthiness, the same rigor that was applied to its initial development is applied to any system changes. Because modifications can affect the ability of the system to maintain its secure state, a careful security analysis of the modification is needed prior to its implementation and deployment. This principle parallels the principle of secure evolvability."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.32",
+                "class": "SP800-53-enhancement",
+                "title": "Sufficient Documentation",
+                "params": [
+                    {
+                        "id": "sa-8.32_prm_1",
+                        "label": "organization-defined systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(32)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.32"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#at-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#at-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.32_smt",
+                        "name": "statement",
+                        "prose": "Implement the security design principle of sufficient documentation in {{ sa-8.32_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.32_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of sufficient documentation states that organizational personnel with responsibilities to interact with the system are provided with adequate documentation and other information such that the personnel contribute to rather than detract from system security. Despite attempts to comply with principles such as human factored security and acceptable security, systems are inherently complex, and the design intent for the use of security mechanisms and the ramifications of the misuse or misconfiguration of security mechanisms are not always intuitively obvious. Uninformed and insufficiently trained users can introduce vulnerabilities due to errors of omission and commission. The availability of documentation and training can help to ensure a knowledgeable cadre of personnel, all of whom have a critical role in the achievement of principles such as continuous protection. Documentation is written clearly and supported by training that provides security awareness and understanding of security-relevant responsibilities."
+                    }
+                ]
+            },
+            {
+                "id": "sa-8.33",
+                "class": "SP800-53-enhancement",
+                "title": "Minimization",
+                "params": [
+                    {
+                        "id": "sa-8.33_prm_1",
+                        "label": "organization-defined processes"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-8(33)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-08.33"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#599fb53d-5041-444e-a7fe-640d6d30ad05",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#a21aef46-7330-48a0-b2e1-c5bb8b2dd11d",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e72fde0b-6fc2-497e-a9db-d8fce5a11b8a",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#9be5d661-421f-41ad-854e-86f98b811891",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#98d415ca-7281-4064-9931-0c366637e324",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#pe-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pm-25",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-42",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-12",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-8.33_smt",
+                        "name": "statement",
+                        "prose": "Implement the privacy principle of minimization using {{ sa-8.33_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-8.33_gdn",
+                        "name": "guidance",
+                        "prose": "The principle of minimization states that organizations should only process personally identifiable information that is directly relevant and necessary to accomplish an authorized purpose and should only maintain personally identifiable information for as long as is necessary to accomplish the purpose. Organizations have processes in place, consistent with applicable laws and policies, to implement the principle of minimization."
+                    }
+                ]
+            }
+        ]
+    }
+}

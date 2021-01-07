@@ -1,0 +1,196 @@
+{
+    "control": {
+        "id": "ac-21",
+        "class": "SP800-53",
+        "title": "Information Sharing",
+        "params": [
+            {
+                "id": "ac-21_prm_1",
+                "label": "organization-defined information sharing circumstances where user discretion is required"
+            },
+            {
+                "id": "ac-21_prm_2",
+                "label": "organization-defined automated mechanisms or manual processes"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-21"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-21"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#9ef4b43c-42a4-4316-87dc-ffaf528bc05c",
+                "rel": "reference"
+            },
+            {
+                "href": "#98d415ca-7281-4064-9931-0c366637e324",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-16",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-15",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-21_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ac-21_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Enable authorized users to determine whether access authorizations assigned to a sharing partner match the information\u2019s access and use restrictions for {{ ac-21_prm_1 }}; and"
+                    },
+                    {
+                        "id": "ac-21_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Employ {{ ac-21_prm_2 }} to assist users in making information sharing and collaboration decisions."
+                    }
+                ]
+            },
+            {
+                "id": "ac-21_gdn",
+                "name": "guidance",
+                "prose": "Information sharing applies to information that may be restricted in some manner based on some formal or administrative determination. Examples of such information include, contract-sensitive information, classified information related to special access programs or compartments, privileged information, proprietary information, and personally identifiable information. Security and privacy risk assessments as well as applicable laws, regulations, and policies can provide useful inputs to these determinations. Depending on the circumstances, sharing partners may be defined at the individual, group, or organizational level. Information may be defined by content, type, security category, or special access program or compartment. Access restrictions may include non-disclosure agreements (NDA). Information flow techniques and security attributes may be used to provide automated assistance to users making sharing and collaboration decisions."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ac-21.1",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Decision Support",
+                "params": [
+                    {
+                        "id": "ac-21.1_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-21(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-21.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-21",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-21.1_smt",
+                        "name": "statement",
+                        "prose": "Employ {{ ac-21.1_prm_1 }} to enforce information-sharing decisions by authorized users based on access authorizations of sharing partners and access restrictions on information to be shared."
+                    },
+                    {
+                        "id": "ac-21.1_gdn",
+                        "name": "guidance",
+                        "prose": "Automated mechanisms are used to enforce information sharing decisions."
+                    }
+                ]
+            },
+            {
+                "id": "ac-21.2",
+                "class": "SP800-53-enhancement",
+                "title": "Information Search and Retrieval",
+                "params": [
+                    {
+                        "id": "ac-21.2_prm_1",
+                        "label": "organization-defined information sharing restrictions"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-21(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-21.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-21",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#9ef4b43c-42a4-4316-87dc-ffaf528bc05c",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#98d415ca-7281-4064-9931-0c366637e324",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-21.2_smt",
+                        "name": "statement",
+                        "prose": "Implement information search and retrieval services that enforce {{ ac-21.2_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-21.2_gdn",
+                        "name": "guidance",
+                        "prose": "Information search and retrieval services identify information system resources relevant to an information need."
+                    }
+                ]
+            }
+        ]
+    }
+}

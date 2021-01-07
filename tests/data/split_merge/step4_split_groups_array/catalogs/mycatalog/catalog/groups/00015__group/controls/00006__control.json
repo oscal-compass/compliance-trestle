@@ -1,0 +1,83 @@
+{
+    "control": {
+        "id": "ra-7",
+        "class": "SP800-53",
+        "title": "Risk Response",
+        "props": [
+            {
+                "name": "label",
+                "value": "RA-7"
+            },
+            {
+                "name": "sort-id",
+                "value": "ra-07"
+            }
+        ],
+        "links": [
+            {
+                "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
+                "rel": "reference"
+            },
+            {
+                "href": "#599fb53d-5041-444e-a7fe-640d6d30ad05",
+                "rel": "reference"
+            },
+            {
+                "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                "rel": "reference"
+            },
+            {
+                "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
+                "rel": "reference"
+            },
+            {
+                "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
+                "rel": "reference"
+            },
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#ca-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-28",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-2",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ra-7_smt",
+                "name": "statement",
+                "prose": "Respond to findings from security and privacy assessments, monitoring, and audits in accordance with organizational risk tolerance."
+            },
+            {
+                "id": "ra-7_gdn",
+                "name": "guidance",
+                "prose": "Organizations have many options for responding to risk including mitigating risk by implementing new controls or strengthening existing controls, accepting risk with appropriate justification or rationale, sharing or transferring risk, or avoiding risk. The risk tolerance of the organization influences risk response decisions and actions. Risk response addresses the need to determine an appropriate response to risk before generating a plan of action and milestones entry. For example, the response may be to accept risk or reject risk, or it may be possible to mitigate the risk immediately so that a plan of action and milestones entry is not needed. However, if the risk response is to mitigate the risk, and the mitigation cannot be completed immediately, a plan of action and milestones entry is generated."
+            }
+        ]
+    }
+}

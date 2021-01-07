@@ -1,0 +1,258 @@
+{
+    "control": {
+        "id": "sc-3",
+        "class": "SP800-53",
+        "title": "Security Function Isolation",
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-3"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-03"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-25",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-15",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-17",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-32",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-39",
+                "rel": "related"
+            },
+            {
+                "href": "#si-16",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-3_smt",
+                "name": "statement",
+                "prose": "Isolate security functions from nonsecurity functions."
+            },
+            {
+                "id": "sc-3_gdn",
+                "name": "guidance",
+                "prose": "Security functions are isolated from nonsecurity functions by means of an isolation boundary implemented within a system via partitions and domains. The isolation boundary controls access to and protects the integrity of the hardware, software, and firmware that perform system security functions. Systems implement code separation in many ways, such as through the provision of security kernels via processor rings or processor modes. For non-kernel code, security function isolation is often achieved through file system protections that protect the code on disk and address space protections that protect executing code. Systems can restrict access to security functions using access control mechanisms and by implementing least privilege capabilities. While the ideal is for all code within the defined security function isolation boundary to only contain security-relevant code, it is sometimes necessary to include nonsecurity functions as an exception. The isolation of security functions from nonsecurity functions can be achieved by applying the systems security engineering design principles in [SA-8](#sa-8), including [SA-8(1)](#sa-8.1), [SA-8(3)](#sa-8.3), [SA-8(4)](#sa-8.4), [SA-8(10)](#sa-8.10), [SA-8(12)](#sa-8.12), [SA-8(13)](#sa-8.13), [SA-8(14)](#sa-8.14), and [SA-8(18)](#sa-8.18)."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-3.1",
+                "class": "SP800-53-enhancement",
+                "title": "Hardware Separation",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-3(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-03.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-3.1_smt",
+                        "name": "statement",
+                        "prose": "Employ hardware separation mechanisms to implement security function isolation."
+                    },
+                    {
+                        "id": "sc-3.1_gdn",
+                        "name": "guidance",
+                        "prose": "Hardware separation mechanisms include hardware ring architectures that are implemented within microprocessors and hardware-enforced address segmentation used to support logically distinct storage objects with separate attributes (i.e., readable, writeable)."
+                    }
+                ]
+            },
+            {
+                "id": "sc-3.2",
+                "class": "SP800-53-enhancement",
+                "title": "Access and Flow Control Functions",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-3(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-03.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-3.2_smt",
+                        "name": "statement",
+                        "prose": "Isolate security functions enforcing access and information flow control from nonsecurity functions and from other security functions."
+                    },
+                    {
+                        "id": "sc-3.2_gdn",
+                        "name": "guidance",
+                        "prose": "Security function isolation occurs because of implementation. The functions can still be scanned and monitored. Security functions that are potentially isolated from access and flow control enforcement functions include auditing, intrusion detection, and malicious code protection functions."
+                    }
+                ]
+            },
+            {
+                "id": "sc-3.3",
+                "class": "SP800-53-enhancement",
+                "title": "Minimize Nonsecurity Functionality",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-3(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-03.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-3.3_smt",
+                        "name": "statement",
+                        "prose": "Minimize the number of nonsecurity functions included within the isolation boundary containing security functions."
+                    },
+                    {
+                        "id": "sc-3.3_gdn",
+                        "name": "guidance",
+                        "prose": "Where it is not feasible to achieve strict isolation of nonsecurity functions from security functions, it is necessary to take actions to minimize nonsecurity-relevant functions within the security function boundary. Nonsecurity functions contained within the isolation boundary are considered security-relevant because errors or malicious code in the software can directly impact the security functions of systems. The fundamental design objective is that the specific portions of systems that provide information security are of minimal size and complexity. Minimizing the number of nonsecurity functions in the security-relevant system components allows designers and implementers to focus only on those functions which are necessary to provide the desired security capability (typically access enforcement). By minimizing the nonsecurity functions within the isolation boundaries, the amount of code that is trusted to enforce security policies is significantly reduced, thus contributing to understandability."
+                    }
+                ]
+            },
+            {
+                "id": "sc-3.4",
+                "class": "SP800-53-enhancement",
+                "title": "Module Coupling and Cohesiveness",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-3(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-03.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-3.4_smt",
+                        "name": "statement",
+                        "prose": "Implement security functions as largely independent modules that maximize internal cohesiveness within modules and minimize coupling between modules."
+                    },
+                    {
+                        "id": "sc-3.4_gdn",
+                        "name": "guidance",
+                        "prose": "The reduction of inter-module interactions helps to constrain security functions and manage complexity. The concepts of coupling and cohesion are important with respect to modularity in software design. Coupling refers to the dependencies that one module has on other modules. Cohesion refers to the relationship between functions within a module. Best practices in software engineering and systems security engineering rely on layering, minimization, and modular decomposition to reduce and manage complexity. This produces software modules that are highly cohesive and loosely coupled."
+                    }
+                ]
+            },
+            {
+                "id": "sc-3.5",
+                "class": "SP800-53-enhancement",
+                "title": "Layered Structures",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-3(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-03.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-3.5_smt",
+                        "name": "statement",
+                        "prose": "Implement security functions as a layered structure minimizing interactions between layers of the design and avoiding any dependence by lower layers on the functionality or correctness of higher layers."
+                    },
+                    {
+                        "id": "sc-3.5_gdn",
+                        "name": "guidance",
+                        "prose": "The implementation of layered structures with minimized interactions among security functions and non-looping layers (i.e., lower-layer functions do not depend on higher-layer functions) enables the isolation of security functions and the management of complexity."
+                    }
+                ]
+            }
+        ]
+    }
+}

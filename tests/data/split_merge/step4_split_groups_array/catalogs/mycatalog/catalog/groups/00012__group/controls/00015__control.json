@@ -1,0 +1,74 @@
+{
+    "control": {
+        "id": "pm-16",
+        "class": "SP800-53",
+        "title": "Threat Awareness Program",
+        "props": [
+            {
+                "name": "label",
+                "value": "PM-16"
+            },
+            {
+                "name": "sort-id",
+                "value": "pm-16"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-12",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pm-16_smt",
+                "name": "statement",
+                "prose": "Implement a threat awareness program that includes a cross-organization information-sharing capability for threat intelligence."
+            },
+            {
+                "id": "pm-16_gdn",
+                "name": "guidance",
+                "prose": "Because of the constantly changing and increasing sophistication of adversaries, especially the advanced persistent threat (APT), it may be more likely that adversaries can successfully breach or compromise organizational systems. One of the best techniques to address this concern is for organizations to share threat information, including threat events (i.e., tactics, techniques, and procedures) that organizations have experienced, mitigations that organizations have found are effective against certain types of threats, and threat intelligence (i.e., indications and warnings about threats). Threat information sharing may be bilateral or multilateral. Bilateral threat sharing includes government-to-commercial and government-to-government cooperatives. Multilateral threat sharing includes organizations taking part in threat-sharing consortia. Threat information may require special agreements and protection, or it may be freely shared."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pm-16.1",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Means for Sharing Threat Intelligence",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PM-16(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pm-16.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pm-16",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pm-16.1_smt",
+                        "name": "statement",
+                        "prose": "Employ automated mechanisms to maximize the effectiveness of sharing threat intelligence information."
+                    },
+                    {
+                        "id": "pm-16.1_gdn",
+                        "name": "guidance",
+                        "prose": "To maximize the effectiveness of monitoring, it is important to know what threat observables and indicators the sensors need to be searching for. By using well-established frameworks, services, and automated tools, organizations improve their ability to rapidly share and feed the relevant threat detection signatures into monitoring tools."
+                    }
+                ]
+            }
+        ]
+    }
+}

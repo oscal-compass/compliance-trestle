@@ -1,0 +1,54 @@
+{
+    "control": {
+        "id": "sa-14",
+        "class": "SP800-53",
+        "title": "Criticality Analysis",
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-14"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-14"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ra-9",
+                "rel": "incorporated-into"
+            }
+        ],
+        "controls": [
+            {
+                "id": "sa-14.1",
+                "class": "SP800-53-enhancement",
+                "title": "Critical Components with No Viable Alternative Sourcing",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-14(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-14.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-20",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "control": {
+        "id": "at-6",
+        "class": "SP800-53",
+        "title": "Training Feedback",
+        "params": [
+            {
+                "id": "at-6_prm_1",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "at-6_prm_2",
+                "label": "organization-defined personnel"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AT-6"
+            },
+            {
+                "name": "sort-id",
+                "value": "at-06"
+            }
+        ],
+        "parts": [
+            {
+                "id": "at-6_smt",
+                "name": "statement",
+                "prose": "Provide feedback on organizational training results to the following personnel {{ at-6_prm_1 }}: {{ at-6_prm_2 }}."
+            },
+            {
+                "id": "at-6_gdn",
+                "name": "guidance",
+                "prose": "Training feedback includes awareness training results and role-based training results. Training results, especially failures of personnel in critical roles, can be indicative of a potentially serious problem. Therefore, it is important that senior managers are made aware of such situations so that they can take appropriate response actions. Training feedback supports the assessment and update of organization training described in [AT-2b](#at-2_smt.b) and [AT-3b](#at-3_smt.b)."
+            }
+        ]
+    }
+}

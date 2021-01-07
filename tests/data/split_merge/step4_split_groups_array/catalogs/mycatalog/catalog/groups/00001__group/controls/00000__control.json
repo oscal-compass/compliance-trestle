@@ -3,7 +3,7 @@
         "id": "at-1",
         "class": "SP800-53",
         "title": "Policy and Procedures",
-        "parameters": [
+        "params": [
             {
                 "id": "at-1_prm_1",
                 "label": "organization-defined personnel or roles"
@@ -12,7 +12,7 @@
                 "id": "at-1_prm_2",
                 "select": {
                     "how-many": "one or more",
-                    "alternatives": [
+                    "choice": [
                         "organization-level",
                         "mission/business process-level",
                         "system-level"
@@ -29,64 +29,63 @@
             },
             {
                 "id": "at-1_prm_5",
+                "label": "organization-defined events"
+            },
+            {
+                "id": "at-1_prm_6",
                 "label": "organization-defined frequency"
+            },
+            {
+                "id": "at-1_prm_7",
+                "label": "organization-defined events"
             }
         ],
-        "properties": [
+        "props": [
             {
                 "name": "label",
                 "value": "AT-1"
             },
             {
                 "name": "sort-id",
-                "value": "AT-01"
+                "value": "at-01"
             }
         ],
         "links": [
             {
-                "href": "#a646d45d-775f-4887-86d3-5a00ffbc4090",
-                "rel": "reference",
-                "text": "[OMB A-130]"
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
             },
             {
-                "href": "#12702585-0c72-43c9-9185-a76a59f74233",
-                "rel": "reference",
-                "text": "[SP 800-12]"
+                "href": "#c7ac44e8-10db-4b64-b2b9-9e32ec1efed0",
+                "rel": "reference"
             },
             {
-                "href": "#1d9f757b-00d5-4db1-b15b-0ad641c6df7c",
-                "rel": "reference",
-                "text": "[SP 800-30]"
+                "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                "rel": "reference"
             },
             {
-                "href": "#451e9636-402e-4c27-b3f5-e0e50f957f27",
-                "rel": "reference",
-                "text": "[SP 800-39]"
+                "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
+                "rel": "reference"
             },
             {
-                "href": "#2e29c363-d5be-47ba-92f5-f8a58a69b65e",
-                "rel": "reference",
-                "text": "[SP 800-50]"
+                "href": "#511f6832-23ca-49a3-8c0f-ce493373cab8",
+                "rel": "reference"
             },
             {
-                "href": "#9183bd83-170e-4701-b32c-97e08ef8bedb",
-                "rel": "reference",
-                "text": "[SP 800-100]"
+                "href": "#4c0ec2ee-a0d6-428a-9043-4504bc3ade6f",
+                "rel": "reference"
             },
             {
                 "href": "#pm-9",
-                "rel": "related",
-                "text": "PM-9"
+                "rel": "related"
             },
             {
                 "href": "#ps-8",
-                "rel": "related",
-                "text": "PS-8"
+                "rel": "related"
             },
             {
                 "href": "#si-12",
-                "rel": "related",
-                "text": "SI-12"
+                "rel": "related"
             }
         ],
         "parts": [
@@ -97,7 +96,7 @@
                     {
                         "id": "at-1_smt.a",
                         "name": "item",
-                        "properties": [
+                        "props": [
                             {
                                 "name": "label",
                                 "value": "a."
@@ -108,18 +107,18 @@
                             {
                                 "id": "at-1_smt.a.1",
                                 "name": "item",
-                                "properties": [
+                                "props": [
                                     {
                                         "name": "label",
                                         "value": "1."
                                     }
                                 ],
-                                "prose": "\n                     {{ at-1_prm_2 }} awareness and training policy that:",
+                                "prose": " {{ at-1_prm_2 }} awareness and training policy that:",
                                 "parts": [
                                     {
                                         "id": "at-1_smt.a.1.a",
                                         "name": "item",
-                                        "properties": [
+                                        "props": [
                                             {
                                                 "name": "label",
                                                 "value": "(a)"
@@ -130,7 +129,7 @@
                                     {
                                         "id": "at-1_smt.a.1.b",
                                         "name": "item",
-                                        "properties": [
+                                        "props": [
                                             {
                                                 "name": "label",
                                                 "value": "(b)"
@@ -143,7 +142,7 @@
                             {
                                 "id": "at-1_smt.a.2",
                                 "name": "item",
-                                "properties": [
+                                "props": [
                                     {
                                         "name": "label",
                                         "value": "2."
@@ -156,7 +155,7 @@
                     {
                         "id": "at-1_smt.b",
                         "name": "item",
-                        "properties": [
+                        "props": [
                             {
                                 "name": "label",
                                 "value": "b."
@@ -167,7 +166,7 @@
                     {
                         "id": "at-1_smt.c",
                         "name": "item",
-                        "properties": [
+                        "props": [
                             {
                                 "name": "label",
                                 "value": "c."
@@ -178,24 +177,24 @@
                             {
                                 "id": "at-1_smt.c.1",
                                 "name": "item",
-                                "properties": [
+                                "props": [
                                     {
                                         "name": "label",
                                         "value": "1."
                                     }
                                 ],
-                                "prose": "Policy {{ at-1_prm_4 }}; and"
+                                "prose": "Policy {{ at-1_prm_4 }} and following {{ at-1_prm_5 }}; and"
                             },
                             {
                                 "id": "at-1_smt.c.2",
                                 "name": "item",
-                                "properties": [
+                                "props": [
                                     {
                                         "name": "label",
                                         "value": "2."
                                     }
                                 ],
-                                "prose": "Procedures {{ at-1_prm_5 }}."
+                                "prose": "Procedures {{ at-1_prm_6 }} and following {{ at-1_prm_7 }}."
                             }
                         ]
                     }
@@ -204,7 +203,7 @@
             {
                 "id": "at-1_gdn",
                 "name": "guidance",
-                "prose": "This control addresses policy and procedures for the controls in the AT family implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. Policies and procedures help provide security and privacy assurance. Therefore, it is important that security and privacy programs collaborate on their development. Security and privacy program policies and procedures at the organization level are preferable, in general, and may obviate the need for system-specific policies and procedures. The policy can be included as part of the general security and privacy policy or can be represented by multiple policies reflecting the complex nature of organizations. Procedures can be established for security and privacy programs and for systems, if needed. Procedures describe how the policies or controls are implemented and can be directed at the individual or role that is the object of the procedure. Procedures can be documented in system security and privacy plans or in one or more separate documents. Restating controls does not constitute an organizational policy or procedure."
+                "prose": "Awareness and training policy and procedures address the controls in the AT family that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. Policies and procedures contribute to security and privacy assurance. Therefore, it is important that security and privacy programs collaborate on the development of awareness and training policy and procedures. Security and privacy program policies and procedures at the organization level are preferable, in general, and may obviate the need for mission- or system-specific policies and procedures. The policy can be included as part of the general security and privacy policy or be represented by multiple policies that reflect the complex nature of organizations. Procedures can be established for security and privacy programs, for mission or business processes, and for systems, if needed. Procedures describe how the policies or controls are implemented and can be directed at the individual or role that is the object of the procedure. Procedures can be documented in system security and privacy plans or in one or more separate documents. Events that may precipitate an update to awareness and training policy and procedures include assessment or audit findings, security or privacy incidents, or changes in applicable laws, executive orders, directives, regulations, policies, standards, and guidelines. Simply restating controls does not constitute an organizational policy or procedure."
             }
         ]
     }

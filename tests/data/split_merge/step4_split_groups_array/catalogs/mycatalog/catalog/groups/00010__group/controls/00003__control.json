@@ -1,0 +1,81 @@
+{
+    "control": {
+        "id": "pe-4",
+        "class": "SP800-53",
+        "title": "Access Control for Transmission",
+        "params": [
+            {
+                "id": "pe-4_prm_1",
+                "label": "organization-defined system distribution and transmission lines"
+            },
+            {
+                "id": "pe-4_prm_2",
+                "label": "organization-defined security controls"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PE-4"
+            },
+            {
+                "name": "sort-id",
+                "value": "pe-04"
+            }
+        ],
+        "links": [
+            {
+                "href": "#at-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-4",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-5",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pe-4_smt",
+                "name": "statement",
+                "prose": "Control physical access to {{ pe-4_prm_1 }} within organizational facilities using {{ pe-4_prm_2 }}."
+            },
+            {
+                "id": "pe-4_gdn",
+                "name": "guidance",
+                "prose": "Security controls applied to system distribution and transmission lines prevent accidental damage, disruption, and physical tampering. Such controls may also be necessary to prevent eavesdropping or modification of unencrypted transmissions. Security controls used to control physical access to system distribution and transmission lines include disconnected or locked spare jacks, locked wiring closets, protection of cabling by conduit or cable trays, and wiretapping sensors."
+            }
+        ]
+    }
+}

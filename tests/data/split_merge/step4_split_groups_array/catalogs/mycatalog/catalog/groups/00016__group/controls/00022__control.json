@@ -1,0 +1,64 @@
+{
+    "control": {
+        "id": "sa-23",
+        "class": "SP800-53",
+        "title": "Specialization",
+        "params": [
+            {
+                "id": "sa-23_prm_1",
+                "select": {
+                    "how-many": "one or more",
+                    "choice": [
+                        "design modification",
+                        "augmentation",
+                        "reconfiguration"
+                    ]
+                }
+            },
+            {
+                "id": "sa-23_prm_2",
+                "label": "organization-defined systems or system components"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-23"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-23"
+            }
+        ],
+        "links": [
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#61ccf0f4-d3e7-42db-9796-ce6cb1c85989",
+                "rel": "reference"
+            },
+            {
+                "href": "#ra-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sa-23_smt",
+                "name": "statement",
+                "prose": "Employ {{ sa-23_prm_1 }} on {{ sa-23_prm_2 }} supporting mission essential services or functions to increase the trustworthiness in those systems or components."
+            },
+            {
+                "id": "sa-23_gdn",
+                "name": "guidance",
+                "prose": "It is often necessary for a system or system component that supports mission-essential services or functions to be enhanced to maximize the trustworthiness of the resource. Sometimes this enhancement is done at the design level. In other instances, it is done post-design, either through modifications of the system in question or by augmenting the system with additional components. For example, supplemental authentication or non-repudiation functions may be added to the system to enhance the identity of critical resources to other resources that depend on the organization-defined resources."
+            }
+        ]
+    }
+}

@@ -1,0 +1,205 @@
+{
+    "control": {
+        "id": "ac-9",
+        "class": "SP800-53",
+        "title": "Previous Logon Notification",
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-9"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-09"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-7",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-4",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-9_smt",
+                "name": "statement",
+                "prose": "Notify the user, upon successful logon to the system, of the date and time of the last logon."
+            },
+            {
+                "id": "ac-9_gdn",
+                "name": "guidance",
+                "prose": "Previous logon notification is applicable to system access via human user interfaces and access to systems that occurs in other types of architectures. Information about the last successful logon allows the user to recognize if the date and time provided is not consistent with the user\u2019s last access."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ac-9.1",
+                "class": "SP800-53-enhancement",
+                "title": "Unsuccessful Logons",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-9(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-09.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-9",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-9.1_smt",
+                        "name": "statement",
+                        "prose": "Notify the user, upon successful logon, of the number of unsuccessful logon attempts since the last successful logon."
+                    },
+                    {
+                        "id": "ac-9.1_gdn",
+                        "name": "guidance",
+                        "prose": "Information about the number of unsuccessful logon attempts since the last successful logon allows the user to recognize if the number of unsuccessful logon attempts is consistent with the user\u2019s actual logon attempts."
+                    }
+                ]
+            },
+            {
+                "id": "ac-9.2",
+                "class": "SP800-53-enhancement",
+                "title": "Successful and Unsuccessful Logons",
+                "params": [
+                    {
+                        "id": "ac-9.2_prm_1",
+                        "select": {
+                            "choice": [
+                                "successful logons",
+                                "unsuccessful logon attempts",
+                                "both"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "ac-9.2_prm_2",
+                        "label": "organization-defined time period"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-9(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-09.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-9",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-9.2_smt",
+                        "name": "statement",
+                        "prose": "Notify the user, upon successful logon, of the number of {{ ac-9.2_prm_1 }} during {{ ac-9.2_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-9.2_gdn",
+                        "name": "guidance",
+                        "prose": "Information about the number of successful and unsuccessful logon attempts within a specified time period allows the user to recognize if the number and type of logon attempts are consistent with the user\u2019s actual logon attempts."
+                    }
+                ]
+            },
+            {
+                "id": "ac-9.3",
+                "class": "SP800-53-enhancement",
+                "title": "Notification of Account Changes",
+                "params": [
+                    {
+                        "id": "ac-9.3_prm_1",
+                        "label": "organization-defined security-related characteristics or parameters of the user\u2019s account"
+                    },
+                    {
+                        "id": "ac-9.3_prm_2",
+                        "label": "organization-defined time period"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-9(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-09.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-9",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-9.3_smt",
+                        "name": "statement",
+                        "prose": "Notify the user, upon successful logon, of changes to {{ ac-9.3_prm_1 }} during {{ ac-9.3_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-9.3_gdn",
+                        "name": "guidance",
+                        "prose": "Information about changes to security-related account characteristics within a specified time period allows users to recognize if changes were made without their knowledge."
+                    }
+                ]
+            },
+            {
+                "id": "ac-9.4",
+                "class": "SP800-53-enhancement",
+                "title": "Additional Logon Information",
+                "params": [
+                    {
+                        "id": "ac-9.4_prm_1",
+                        "label": "organization-defined additional information"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-9(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-09.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-9",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-9.4_smt",
+                        "name": "statement",
+                        "prose": "Notify the user, upon successful logon, of the following additional information: {{ ac-9.4_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-9.4_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations can specify additional information to be provided to users upon logon, including the location of the last logon. User location is defined as information that can be determined by systems, such as Internet Protocol (IP) addresses from which network logons occurred, notifications of local logons, or device identifiers."
+                    }
+                ]
+            }
+        ]
+    }
+}

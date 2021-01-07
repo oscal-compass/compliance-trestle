@@ -1,0 +1,61 @@
+{
+    "control": {
+        "id": "cp-12",
+        "class": "SP800-53",
+        "title": "Safe Mode",
+        "params": [
+            {
+                "id": "cp-12_prm_1",
+                "label": "organization-defined conditions"
+            },
+            {
+                "id": "cp-12_prm_2",
+                "label": "organization-defined restrictions of safe mode of operation"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CP-12"
+            },
+            {
+                "name": "sort-id",
+                "value": "cp-12"
+            }
+        ],
+        "links": [
+            {
+                "href": "#cm-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-24",
+                "rel": "related"
+            },
+            {
+                "href": "#si-13",
+                "rel": "related"
+            },
+            {
+                "href": "#si-17",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cp-12_smt",
+                "name": "statement",
+                "prose": "When {{ cp-12_prm_1 }} are detected, enter a safe mode of operation with {{ cp-12_prm_2 }}."
+            },
+            {
+                "id": "cp-12_gdn",
+                "name": "guidance",
+                "prose": "For systems that support critical mission and business functions\u2014including military operations, civilian space operations, nuclear power plant operations, and air traffic control operations (especially real-time operational environments)\u2014organizations can identify certain conditions under which those systems revert to a predefined safe mode of operation. The safe mode of operation, which can be activated either automatically or manually, restricts the operations that systems can execute when those conditions are encountered. Restriction includes allowing only selected functions to execute that can be carried out under limited power or with reduced communications bandwidth."
+            }
+        ]
+    }
+}

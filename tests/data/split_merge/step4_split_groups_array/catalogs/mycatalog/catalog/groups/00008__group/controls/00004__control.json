@@ -1,0 +1,377 @@
+{
+    "control": {
+        "id": "ma-5",
+        "class": "SP800-53",
+        "title": "Maintenance Personnel",
+        "props": [
+            {
+                "name": "label",
+                "value": "MA-5"
+            },
+            {
+                "name": "sort-id",
+                "value": "ma-05"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ma-5_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ma-5_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Establish a process for maintenance personnel authorization and maintain a list of authorized maintenance organizations or personnel;"
+                    },
+                    {
+                        "id": "ma-5_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Verify that non-escorted personnel performing maintenance on the system possess the required access authorizations; and"
+                    },
+                    {
+                        "id": "ma-5_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Designate organizational personnel with required access authorizations and technical competence to supervise the maintenance activities of personnel who do not possess the required access authorizations."
+                    }
+                ]
+            },
+            {
+                "id": "ma-5_gdn",
+                "name": "guidance",
+                "prose": "Maintenance personnel refers to individuals who perform hardware or software maintenance on organizational systems, while [PE-2](#pe-2) addresses physical access for individuals whose maintenance duties place them within the physical protection perimeter of the systems. Technical competence of supervising individuals relates to the maintenance performed on the systems, while having required access authorizations refers to maintenance on and near the systems. Individuals not previously identified as authorized maintenance personnel\u2014such as information technology manufacturers, vendors, systems integrators, and consultants\u2014may require privileged access to organizational systems, such as when they are required to conduct maintenance activities with little or no notice. Based on organizational assessments of risk, organizations may issue temporary credentials to these individuals. Temporary credentials may be for one-time use or for very limited time periods."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ma-5.1",
+                "class": "SP800-53-enhancement",
+                "title": "Individuals Without Appropriate Access",
+                "params": [
+                    {
+                        "id": "ma-5.1_prm_1",
+                        "label": "organization-defined alternate controls"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-5(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-05.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#mp-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pl-2",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-5.1_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ma-5.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Implement procedures for the use of maintenance personnel that lack appropriate security clearances or are not U.S. citizens, that include the following requirements:",
+                                "parts": [
+                                    {
+                                        "id": "ma-5.1_smt.a.1",
+                                        "name": "item",
+                                        "props": [
+                                            {
+                                                "name": "label",
+                                                "value": "(1)"
+                                            }
+                                        ],
+                                        "prose": "Maintenance personnel who do not have needed access authorizations, clearances, or formal access approvals are escorted and supervised during the performance of maintenance and diagnostic activities on the system by approved organizational personnel who are fully cleared, have appropriate access authorizations, and are technically qualified; and"
+                                    },
+                                    {
+                                        "id": "ma-5.1_smt.a.2",
+                                        "name": "item",
+                                        "props": [
+                                            {
+                                                "name": "label",
+                                                "value": "(2)"
+                                            }
+                                        ],
+                                        "prose": "Prior to initiating maintenance or diagnostic activities by personnel who do not have needed access authorizations, clearances or formal access approvals, all volatile information storage components within the system are sanitized and all nonvolatile storage media are removed or physically disconnected from the system and secured; and"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "ma-5.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Develop and implement {{ ma-5.1_prm_1 }} in the event a system component cannot be sanitized, removed, or disconnected from the system."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ma-5.1_gdn",
+                        "name": "guidance",
+                        "prose": "Procedures for individuals who lack appropriate security clearances or who are not U.S. citizens are intended to deny visual and electronic access to classified or controlled unclassified information contained on organizational systems. Procedures for the use of maintenance personnel can be documented in security plans for the systems."
+                    }
+                ]
+            },
+            {
+                "id": "ma-5.2",
+                "class": "SP800-53-enhancement",
+                "title": "Security Clearances for Classified Systems",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-5(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-05.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ps-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-5.2_smt",
+                        "name": "statement",
+                        "prose": "Verify that personnel performing maintenance and diagnostic activities on a system processing, storing, or transmitting classified information possess security clearances and formal access approvals for at least the highest classification level and for compartments of information on the system."
+                    },
+                    {
+                        "id": "ma-5.2_gdn",
+                        "name": "guidance",
+                        "prose": "Personnel who conduct maintenance on organizational systems may be exposed to classified information during the course of their maintenance activities. To mitigate the inherent risk of such exposure, organizations use maintenance personnel that are cleared (i.e., possess security clearances) to the classification level of the information stored on the system."
+                    }
+                ]
+            },
+            {
+                "id": "ma-5.3",
+                "class": "SP800-53-enhancement",
+                "title": "Citizenship Requirements for Classified Systems",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-5(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-05.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ps-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-5.3_smt",
+                        "name": "statement",
+                        "prose": "Verify that personnel performing maintenance and diagnostic activities on a system processing, storing, or transmitting classified information are U.S. citizens."
+                    },
+                    {
+                        "id": "ma-5.3_gdn",
+                        "name": "guidance",
+                        "prose": "Personnel who conduct maintenance on organizational systems may be exposed to classified information during the course of their maintenance activities. If access to classified information on organizational systems is restricted to U.S. citizens, the same restriction is applied to personnel performing maintenance on those systems."
+                    }
+                ]
+            },
+            {
+                "id": "ma-5.4",
+                "class": "SP800-53-enhancement",
+                "title": "Foreign Nationals",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-5(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-05.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ps-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-5.4_smt",
+                        "name": "statement",
+                        "prose": "Ensure that:",
+                        "parts": [
+                            {
+                                "id": "ma-5.4_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Foreign nationals with appropriate security clearances are used to conduct maintenance and diagnostic activities on classified systems only when the systems are jointly owned and operated by the United States and foreign allied governments, or owned and operated solely by foreign allied governments; and"
+                            },
+                            {
+                                "id": "ma-5.4_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Approvals, consents, and detailed operational conditions regarding the use of foreign nationals to conduct maintenance and diagnostic activities on classified systems are fully documented within Memoranda of Agreements."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ma-5.4_gdn",
+                        "name": "guidance",
+                        "prose": "Personnel who conduct maintenance and diagnostic activities on organizational systems may be exposed to classified information. If non-U.S. citizens are permitted to perform maintenance and diagnostics activities on classified systems, then additional vetting is required to ensure agreements and restrictions are not being violated."
+                    }
+                ]
+            },
+            {
+                "id": "ma-5.5",
+                "class": "SP800-53-enhancement",
+                "title": "Non-system Maintenance",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-5(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-05.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-5",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-5.5_smt",
+                        "name": "statement",
+                        "prose": "Ensure that non-escorted personnel performing maintenance activities not directly associated with the system but in the physical proximity of the system, have required access authorizations."
+                    },
+                    {
+                        "id": "ma-5.5_gdn",
+                        "name": "guidance",
+                        "prose": "Personnel who perform maintenance activities in other capacities not directly related to the system include physical plant personnel and custodial personnel."
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -34,7 +34,7 @@ from trestle.core.models.plans import Plan
 from trestle.oscal.catalog import Catalog
 
 
-def test_remove(tmp_dir, sample_catalog_minimal):
+def test_remove(tmp_path, sample_catalog_minimal):
     """Test RemoveCmd.remove() method for trestle remove: removing Roles and Responsible-Parties."""
     # 1. Remove responsible-parties
     # Note: minimal catalog does have responsible-parties but doesn't have Roles.
@@ -93,7 +93,7 @@ def test_remove(tmp_dir, sample_catalog_minimal):
     assert catalog_without_roles == actual_catalog_removed_roles
 
 
-def test_remove_failure(tmp_dir, sample_catalog_minimal):
+def test_remove_failure(tmp_path, sample_catalog_minimal):
     """Test failure of RemoveCmd.remove() method for trestle remove."""
     # Note: minimal catalog does have responsible-parties but doesn't have Roles.
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog.json')
@@ -122,7 +122,7 @@ def test_remove_failure(tmp_dir, sample_catalog_minimal):
         AssertionError()
 
 
-def test_run_failure_switches(tmp_dir, sample_catalog_minimal):
+def test_run_failure_switches(tmp_path, sample_catalog_minimal):
     """Test failure of _run on bad switches for RemoveCmd."""
     # 1. Missing --file argument.
     testargs = ['trestle', 'remove', '-e', 'catalog.metadata.roles']
@@ -141,12 +141,12 @@ def test_run_failure_switches(tmp_dir, sample_catalog_minimal):
         assert e.value.code == 2
 
 
-def test_run_failure_nonexistent_element(tmp_dir, sample_catalog_minimal):
+def test_run_failure_nonexistent_element(tmp_path, sample_catalog_minimal):
     """Test failure of _run on RemoveCmd in specifying nonexistent element for removal."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
+        tmp_path,
         content_type,
         sample_catalog_minimal,
         test_utils.CATALOGS_DIR
@@ -159,12 +159,12 @@ def test_run_failure_nonexistent_element(tmp_dir, sample_catalog_minimal):
         assert exitcode == 1
 
 
-def test_run_failure_wildcard(tmp_dir, sample_catalog_minimal):
+def test_run_failure_wildcard(tmp_path, sample_catalog_minimal):
     """Test failure of _run on RemoveCmd in specifying wildcard in element for removal."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
+        tmp_path,
         content_type,
         sample_catalog_minimal,
         test_utils.CATALOGS_DIR
@@ -175,12 +175,12 @@ def test_run_failure_wildcard(tmp_dir, sample_catalog_minimal):
         assert exitcode == 1
 
 
-def test_run_failure_required_element(tmp_dir, sample_catalog_minimal):
+def test_run_failure_required_element(tmp_path, sample_catalog_minimal):
     """Test failure of _run on RemoveCmd in specifying a required element for removal."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
+        tmp_path,
         content_type,
         sample_catalog_minimal,
         test_utils.CATALOGS_DIR
@@ -192,12 +192,12 @@ def test_run_failure_required_element(tmp_dir, sample_catalog_minimal):
         assert exitcode == 1
 
 
-def test_run_failure_project_not_found(tmp_dir, sample_catalog_minimal):
+def test_run_failure_project_not_found(tmp_path, sample_catalog_minimal):
     """Test failure of _run on RemoveCmd in specifying file in non-initialized location."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
+        tmp_path,
         content_type,
         sample_catalog_minimal,
         test_utils.CATALOGS_DIR
@@ -209,12 +209,12 @@ def test_run_failure_project_not_found(tmp_dir, sample_catalog_minimal):
         assert exitcode == 1
 
 
-def test_run_failure_filenotfounderror(tmp_dir, sample_catalog_minimal):
+def test_run_failure_filenotfounderror(tmp_path, sample_catalog_minimal):
     """Test failure of _run on RemoveCmd in specifying a nonexistent file."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
+        tmp_path,
         content_type,
         sample_catalog_minimal,
         test_utils.CATALOGS_DIR
@@ -229,12 +229,12 @@ def test_run_failure_filenotfounderror(tmp_dir, sample_catalog_minimal):
         assert exitcode == 1
 
 
-def test_run_failure_plan_execute(tmp_dir, sample_catalog_minimal):
+def test_run_failure_plan_execute(tmp_path, sample_catalog_minimal):
     """Test failure plan execute() in _run on RemoveCmd."""
     # Create a temporary file as a valid arg for trestle remove:
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
+        tmp_path,
         content_type,
         sample_catalog_minimal,
         test_utils.CATALOGS_DIR
@@ -249,7 +249,7 @@ def test_run_failure_plan_execute(tmp_dir, sample_catalog_minimal):
                 assert exitcode == 1
 
 
-def test_run(tmp_dir, sample_catalog_minimal):
+def test_run(tmp_path, sample_catalog_minimal):
     """Test _run for RemoveCmd."""
     # 1. Test trestle remove for one element.
     # expected catalog after remove of Responsible-Party
@@ -260,7 +260,7 @@ def test_run(tmp_dir, sample_catalog_minimal):
 
     # Create a temporary file with responsible-parties to be removed.
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
+        tmp_path,
         content_type,
         sample_catalog_minimal,
         test_utils.CATALOGS_DIR
@@ -281,7 +281,7 @@ def test_run(tmp_dir, sample_catalog_minimal):
 
     # Create a temporary file with Roles and Responsible-Parties to be removed.
     catalog_def_dir, catalog_def_file_2 = test_utils.prepare_trestle_project_dir(
-        tmp_dir,
+        tmp_path,
         content_type,
         catalog_with_roles_responsible_parties,
         test_utils.CATALOGS_DIR

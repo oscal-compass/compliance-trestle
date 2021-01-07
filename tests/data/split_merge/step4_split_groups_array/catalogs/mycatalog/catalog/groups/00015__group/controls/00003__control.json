@@ -1,0 +1,27 @@
+{
+    "control": {
+        "id": "ra-4",
+        "class": "SP800-53",
+        "title": "Risk Assessment Update",
+        "props": [
+            {
+                "name": "label",
+                "value": "RA-4"
+            },
+            {
+                "name": "sort-id",
+                "value": "ra-04"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ra-3",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

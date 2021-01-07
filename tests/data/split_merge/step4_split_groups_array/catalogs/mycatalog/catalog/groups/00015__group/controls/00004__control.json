@@ -1,0 +1,698 @@
+{
+    "control": {
+        "id": "ra-5",
+        "class": "SP800-53",
+        "title": "Vulnerability Monitoring and Scanning",
+        "params": [
+            {
+                "id": "ra-5_prm_1",
+                "label": "organization-defined frequency and/or randomly in accordance with organization-defined process"
+            },
+            {
+                "id": "ra-5_prm_2",
+                "label": "organization-defined response times"
+            },
+            {
+                "id": "ra-5_prm_3",
+                "label": "organization-defined personnel or roles"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "RA-5"
+            },
+            {
+                "name": "sort-id",
+                "value": "ra-05"
+            }
+        ],
+        "links": [
+            {
+                "href": "#8df72805-2e5c-4731-a73e-81db0f0318d0",
+                "rel": "reference"
+            },
+            {
+                "href": "#155f941a-cba9-4afd-9ca6-5d040d697ba9",
+                "rel": "reference"
+            },
+            {
+                "href": "#a21aef46-7330-48a0-b2e1-c5bb8b2dd11d",
+                "rel": "reference"
+            },
+            {
+                "href": "#4895b4cd-34c5-4667-bf8a-27d443c12047",
+                "rel": "reference"
+            },
+            {
+                "href": "#122177fa-c4ed-485d-8345-3082c0fb9a06",
+                "rel": "reference"
+            },
+            {
+                "href": "#8016d2ed-d30f-4416-9c45-0f42c7aa3232",
+                "rel": "reference"
+            },
+            {
+                "href": "#aa5d04e0-6090-4e17-84d4-b9963d55fc2c",
+                "rel": "reference"
+            },
+            {
+                "href": "#d2ebec9b-f868-4ee1-a2bd-0b2282aed248",
+                "rel": "reference"
+            },
+            {
+                "href": "#4c501da5-9d79-4cb6-ba80-97260e1ce327",
+                "rel": "reference"
+            },
+            {
+                "href": "#ca-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-8",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-4",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-11",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-15",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-38",
+                "rel": "related"
+            },
+            {
+                "href": "#si-2",
+                "rel": "related"
+            },
+            {
+                "href": "#si-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-11",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ra-5_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ra-5_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Monitor and scan for vulnerabilities in the system and hosted applications {{ ra-5_prm_1 }} and when new vulnerabilities potentially affecting the system are identified and reported;"
+                    },
+                    {
+                        "id": "ra-5_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Employ vulnerability monitoring tools and techniques that facilitate interoperability among tools and automate parts of the vulnerability management process by using standards for:",
+                        "parts": [
+                            {
+                                "id": "ra-5_smt.b.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Enumerating platforms, software flaws, and improper configurations;"
+                            },
+                            {
+                                "id": "ra-5_smt.b.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "Formatting checklists and test procedures; and"
+                            },
+                            {
+                                "id": "ra-5_smt.b.3",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": "Measuring vulnerability impact;"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ra-5_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Analyze vulnerability scan reports and results from vulnerability monitoring;"
+                    },
+                    {
+                        "id": "ra-5_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Remediate legitimate vulnerabilities {{ ra-5_prm_2 }} in accordance with an organizational assessment of risk;"
+                    },
+                    {
+                        "id": "ra-5_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Share information obtained from the vulnerability monitoring process and control assessments with {{ ra-5_prm_3 }} to help eliminate similar vulnerabilities in other systems; and"
+                    },
+                    {
+                        "id": "ra-5_smt.f",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "f."
+                            }
+                        ],
+                        "prose": "Employ vulnerability monitoring tools that include the capability to readily update the vulnerabilities to be scanned."
+                    }
+                ]
+            },
+            {
+                "id": "ra-5_gdn",
+                "name": "guidance",
+                "prose": "Security categorization of information and systems guides the frequency and comprehensiveness of vulnerability monitoring (including scans). Organizations determine the required vulnerability monitoring for system components, ensuring that the potential sources of vulnerabilities\u2014such as infrastructure components (e.g., switches, routers, guards, sensors), networked printers, scanners, and copiers\u2014are not overlooked. The capability to readily update vulnerability monitoring tools as new vulnerabilities are discovered and announced and as new scanning methods are developed helps to ensure that new vulnerabilities are not missed by employed vulnerability monitoring tools. The vulnerability monitoring tool update process helps to ensure that potential vulnerabilities in the system are identified and addressed as quickly as possible. Vulnerability monitoring and analyses for custom software may require additional approaches, such as static analysis, dynamic analysis, binary analysis, or a hybrid of the three approaches. Organizations can use these analysis approaches in source code reviews and in a variety of tools, including web-based application scanners, static analysis tools, and binary analyzers.\n\nVulnerability monitoring includes scanning for patch levels; scanning for functions, ports, protocols, and services that should not be accessible to users or devices; and scanning for flow control mechanisms that are improperly configured or operating incorrectly. Vulnerability monitoring may also include continuous vulnerability monitoring tools that use instrumentation to continuously analyze components. Instrumentation-based tools may improve accuracy and may be run throughout an organization without scanning. Vulnerability monitoring tools that facilitate interoperability include tools that are Security Content Automated Protocol (SCAP)-validated. Thus, organizations consider using scanning tools that express vulnerabilities in the Common Vulnerabilities and Exposures (CVE) naming convention and that employ the Open Vulnerability Assessment Language (OVAL) to determine the presence of vulnerabilities. Sources for vulnerability information include the Common Weakness Enumeration (CWE) listing and the National Vulnerability Database (NVD). Control assessments, such as red team exercises, provide additional sources of potential vulnerabilities for which to scan. Organizations also consider using scanning tools that express vulnerability impact by the Common Vulnerability Scoring System (CVSS).\n\nVulnerability monitoring includes a channel and process for receiving reports of security vulnerabilities from the public at-large. Vulnerability disclosure programs can be as simple as publishing a monitored email address or web form that can receive reports, including notification authorizing good-faith research and disclosure of security vulnerabilities. Organizations generally expect that such research is happening with or without their authorization and can use public vulnerability disclosure channels to increase the likelihood that discovered vulnerabilities are reported directly to the organization for remediation.\n\nOrganizations may also employ the use of financial incentives (also known as \"bug bounties\") to further encourage external security researchers to report discovered vulnerabilities. Bug bounty programs can be tailored to the organization\u2019s needs. Bounties can be operated indefinitely or over a defined period of time and can be offered to the general public or to a curated group. Organizations may run public and private bounties simultaneously and could choose to offer partially credentialed access to certain participants in order to evaluate security vulnerabilities from privileged vantage points."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ra-5.1",
+                "class": "SP800-53-enhancement",
+                "title": "Update Tool Capability",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-5(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-05.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-5",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ra-5.2",
+                "class": "SP800-53-enhancement",
+                "title": "Update Vulnerabilities to Be Scanned",
+                "params": [
+                    {
+                        "id": "ra-5.2_prm_1",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                " {{ ra-5.2_prm_2 }} ",
+                                "prior to a new scan",
+                                "when new vulnerabilities are identified and reported"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "ra-5.2_prm_2",
+                        "depends-on": "ra-5.2_prm_1",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-5(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-05.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#si-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ra-5.2_smt",
+                        "name": "statement",
+                        "prose": "Update the system vulnerabilities to be scanned {{ ra-5.2_prm_1 }}."
+                    },
+                    {
+                        "id": "ra-5.2_gdn",
+                        "name": "guidance",
+                        "prose": "Due to the complexity of modern software, systems, and other factors, new vulnerabilities are discovered on a regular basis. It is important that newly discovered vulnerabilities are added to the list of vulnerabilities to be scanned to ensure that the organization can take steps to mitigate those vulnerabilities in a timely manner."
+                    }
+                ]
+            },
+            {
+                "id": "ra-5.3",
+                "class": "SP800-53-enhancement",
+                "title": "Breadth and Depth of Coverage",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-5(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-05.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-5",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ra-5.3_smt",
+                        "name": "statement",
+                        "prose": "Define the breadth and depth of vulnerability scanning coverage."
+                    },
+                    {
+                        "id": "ra-5.3_gdn",
+                        "name": "guidance",
+                        "prose": "The breadth of vulnerability scanning coverage can be expressed as a percentage of components within the system, by the particular types of systems, by the criticality of systems, or by the number of vulnerabilities to be checked. Conversely, the depth of vulnerability scanning coverage can be expressed as the level of the system design that the organization intends to monitor (e.g., component, module, subsystem, element). Organizations can determine the sufficiency of vulnerability scanning coverage with regard to its risk tolerance and other factors. Scanning tools and how the tools are configured may affect the depth and coverage. Multiple scanning tools may be needed to achieve the desired depth and coverage. [SP 800-53A](#a21aef46-7330-48a0-b2e1-c5bb8b2dd11d) provides additional information on the breadth and depth of coverage."
+                    }
+                ]
+            },
+            {
+                "id": "ra-5.4",
+                "class": "SP800-53-enhancement",
+                "title": "Discoverable Information",
+                "params": [
+                    {
+                        "id": "ra-5.4_prm_1",
+                        "label": "organization-defined corrective actions"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-5(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-05.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-13",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-26",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ra-5.4_smt",
+                        "name": "statement",
+                        "prose": "Determine information about the system that is discoverable and take {{ ra-5.4_prm_1 }}."
+                    },
+                    {
+                        "id": "ra-5.4_gdn",
+                        "name": "guidance",
+                        "prose": "Discoverable information includes information that adversaries could obtain without compromising or breaching the system, such as by collecting information that the system is exposing or by conducting extensive web searches. Corrective actions include notifying appropriate organizational personnel, removing designated information, or changing the system to make the designated information less relevant or attractive to adversaries. This enhancement excludes intentionally discoverable information that may be part of a decoy capability (e.g., honeypots, honeynets, or deception nets) deployed by the organization."
+                    }
+                ]
+            },
+            {
+                "id": "ra-5.5",
+                "class": "SP800-53-enhancement",
+                "title": "Privileged Access",
+                "params": [
+                    {
+                        "id": "ra-5.5_prm_1",
+                        "label": "organization-defined system components"
+                    },
+                    {
+                        "id": "ra-5.5_prm_2",
+                        "label": "organization-defined vulnerability scanning activities"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-5(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-05.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-5",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ra-5.5_smt",
+                        "name": "statement",
+                        "prose": "Implement privileged access authorization to {{ ra-5.5_prm_1 }} for {{ ra-5.5_prm_2 }}."
+                    },
+                    {
+                        "id": "ra-5.5_gdn",
+                        "name": "guidance",
+                        "prose": "In certain situations, the nature of the vulnerability scanning may be more intrusive, or the system component that is the subject of the scanning may contain classified or controlled unclassified information, such as personally identifiable information. Privileged access authorization to selected system components facilitates more thorough vulnerability scanning and protects the sensitive nature of such scanning."
+                    }
+                ]
+            },
+            {
+                "id": "ra-5.6",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Trend Analyses",
+                "params": [
+                    {
+                        "id": "ra-5.6_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-5(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-05.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-5",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ra-5.6_smt",
+                        "name": "statement",
+                        "prose": "Compare the results of multiple vulnerability scans using {{ ra-5.6_prm_1 }}."
+                    },
+                    {
+                        "id": "ra-5.6_gdn",
+                        "name": "guidance",
+                        "prose": "Using automated mechanisms to analyze multiple vulnerability scans over time can help determine trends in system vulnerabilities and identify patterns of attack."
+                    }
+                ]
+            },
+            {
+                "id": "ra-5.7",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Detection and Notification of Unauthorized Components",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-5(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-05.07"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-8",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ra-5.8",
+                "class": "SP800-53-enhancement",
+                "title": "Review Historic Audit Logs",
+                "params": [
+                    {
+                        "id": "ra-5.8_prm_1",
+                        "label": "organization-defined system"
+                    },
+                    {
+                        "id": "ra-5.8_prm_2",
+                        "label": "organization-defined time period"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-5(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-05.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-11",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ra-5.8_smt",
+                        "name": "statement",
+                        "prose": "Review historic audit logs to determine if a vulnerability identified in a {{ ra-5.8_prm_1 }} has been previously exploited within an {{ ra-5.8_prm_2 }}."
+                    },
+                    {
+                        "id": "ra-5.8_gdn",
+                        "name": "guidance",
+                        "prose": "Reviewing historic audit logs to determine if a recently detected vulnerability in a system has been previously exploited by an adversary can provide important information for forensic analyses. Such analyses can help identify, for example, the extent of a previous intrusion, the trade craft employed during the attack, organizational information exfiltrated or modified, mission or business capabilities affected, and the duration of the attack."
+                    }
+                ]
+            },
+            {
+                "id": "ra-5.9",
+                "class": "SP800-53-enhancement",
+                "title": "Penetration Testing and Analyses",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-5(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-05.09"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ca-8",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ra-5.10",
+                "class": "SP800-53-enhancement",
+                "title": "Correlate Scanning Information",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-5(10)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-05.10"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-5",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ra-5.10_smt",
+                        "name": "statement",
+                        "prose": "Correlate the output from vulnerability scanning tools to determine the presence of multi-vulnerability and multi-hop attack vectors."
+                    },
+                    {
+                        "id": "ra-5.10_gdn",
+                        "name": "guidance",
+                        "prose": "An attack vector is a path or means by which an adversary can gain access to a system in order to deliver malicious code or exfiltrate information. Organizations can use attack trees to show how hostile activities by adversaries interact and combine to produce adverse impacts or negative consequences to systems and organizations. Such information, together with correlated data from vulnerability scanning tools, can provide greater clarity regarding multi-vulnerability and multi-hop attack vectors. The correlation of vulnerability scanning information is especially important when organizations are transitioning from older technologies to newer technologies (e.g., transitioning from IPv4 to IPv6 network protocols). During such transitions, some system components may inadvertently be unmanaged and create opportunities for adversary exploitation."
+                    }
+                ]
+            },
+            {
+                "id": "ra-5.11",
+                "class": "SP800-53-enhancement",
+                "title": "Public Disclosure Program",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-5(11)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-05.11"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#8df72805-2e5c-4731-a73e-81db0f0318d0",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#155f941a-cba9-4afd-9ca6-5d040d697ba9",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#a21aef46-7330-48a0-b2e1-c5bb8b2dd11d",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#4895b4cd-34c5-4667-bf8a-27d443c12047",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#122177fa-c4ed-485d-8345-3082c0fb9a06",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#8016d2ed-d30f-4416-9c45-0f42c7aa3232",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#aa5d04e0-6090-4e17-84d4-b9963d55fc2c",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#d2ebec9b-f868-4ee1-a2bd-0b2282aed248",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#4c501da5-9d79-4cb6-ba80-97260e1ce327",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ra-5.11_smt",
+                        "name": "statement",
+                        "prose": "Establish a public reporting channel for receiving reports of vulnerabilities in organizational systems and system components."
+                    },
+                    {
+                        "id": "ra-5.11_gdn",
+                        "name": "guidance",
+                        "prose": "The reporting channel is publicly discoverable and contains clear language authorizing good-faith research and the disclosure of vulnerabilities to the organization. The organization does not condition its authorization on an expectation of indefinite non-disclosure to the public by the reporting entity but may request a specific time period to properly remediate the vulnerability."
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,246 @@
+{
+    "control": {
+        "id": "pm-30",
+        "class": "SP800-53",
+        "title": "Supply Chain Risk Management Strategy",
+        "params": [
+            {
+                "id": "pm-30_prm_1",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PM-30"
+            },
+            {
+                "name": "sort-id",
+                "value": "pm-30"
+            }
+        ],
+        "links": [
+            {
+                "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
+                "rel": "reference"
+            },
+            {
+                "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
+                "rel": "reference"
+            },
+            {
+                "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
+                "rel": "reference"
+            },
+            {
+                "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
+                "rel": "reference"
+            },
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#206a3284-6a7e-423c-8ea9-25b22542541d",
+                "rel": "reference"
+            },
+            {
+                "href": "#863caf2a-978a-4260-9e8d-4a8929bce40c",
+                "rel": "reference"
+            },
+            {
+                "href": "#15a95e24-65b6-4686-bc18-90855a10457d",
+                "rel": "reference"
+            },
+            {
+                "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                "rel": "reference"
+            },
+            {
+                "href": "#38ff38f0-1366-4f50-a4c9-26a39aacee16",
+                "rel": "reference"
+            },
+            {
+                "href": "#cm-10",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-1",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-6",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-11",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pm-30_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "pm-30_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Develop an organization-wide strategy for managing supply chain risks associated with the development, acquisition, maintenance, and disposal of systems, system components, and system services;",
+                        "parts": [
+                            {
+                                "id": "pm-30_smt.a.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Implement the supply chain risk management strategy consistently across the organization; and",
+                                "parts": [
+                                    {
+                                        "id": "pm-30_smt.a.1.a",
+                                        "name": "item",
+                                        "props": [
+                                            {
+                                                "name": "label",
+                                                "value": "(a)"
+                                            }
+                                        ],
+                                        "prose": "Review and update the supply chain risk management strategy on {{ pm-30_prm_1 }} or as required, to address organizational changes."
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "pm-30_gdn",
+                "name": "guidance",
+                "prose": "An organization-wide supply chain risk management strategy includes an unambiguous expression of the supply chain risk appetite and tolerance for the organization, acceptable supply chain risk mitigation strategies or controls, a process for consistently evaluating and monitoring supply chain risk, approaches for implementing and communicating the supply chain risk management strategy, and the associated roles and responsibilities. Supply chain risk management includes considerations of the security and privacy risks associated with the development, acquisition, maintenance, and disposal of systems, system components, and system services. The supply chain risk management strategy can be incorporated into the organization\u2019s overarching risk management strategy and can guide and inform supply chain policies and system-level supply chain risk management plans. In addition, the use of a risk executive function can facilitate a consistent, organization-wide application of the supply chain risk management strategy. The supply chain risk management strategy is implemented at the organization and mission/business levels, whereas the supply chain risk management plan (see [SR-2](#sr-2)) is implemented at the system level."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pm-30.1",
+                "class": "SP800-53-enhancement",
+                "title": "Suppliers of Critical or Mission-essential Items",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PM-30(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pm-30.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pm-30",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#206a3284-6a7e-423c-8ea9-25b22542541d",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#863caf2a-978a-4260-9e8d-4a8929bce40c",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#15a95e24-65b6-4686-bc18-90855a10457d",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#38ff38f0-1366-4f50-a4c9-26a39aacee16",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#ra-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sr-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pm-30.1_smt",
+                        "name": "statement",
+                        "prose": "Identify, prioritize, and assess suppliers of critical or mission-essential technologies, products, and services."
+                    },
+                    {
+                        "id": "pm-30.1_gdn",
+                        "name": "guidance",
+                        "prose": "The identification and prioritization of suppliers of critical or mission-essential technologies, products, and services is paramount to the mission/business success of organizations. The assessment of suppliers is conducted using supplier reviews (see [SR-6](#sr-6)) and supply chain risk assessment processes (see [RA-3(1)](#ra-3.1)). An analysis of supply chain risk can help an organization identify systems or components for which additional supply chain risk mitigations are required."
+                    }
+                ]
+            }
+        ]
+    }
+}

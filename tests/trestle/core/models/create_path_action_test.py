@@ -25,15 +25,15 @@ from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction
 
 
-def test_create_path_execute(tmp_dir: pathlib.Path):
+def test_create_path_execute(tmp_path: pathlib.Path):
     """Test create path execute."""
-    tmp_data_dir = tmp_dir.joinpath('data')
+    tmp_data_dir = tmp_path.joinpath('data')
 
     with pytest.raises(TrestleError):
         # no trestle project should error
         cpa = CreatePathAction(tmp_data_dir)
 
-    test_utils.ensure_trestle_config_dir(tmp_dir)
+    test_utils.ensure_trestle_config_dir(tmp_path)
 
     with pytest.raises(TrestleError):
         # invalid sub_path type should error
@@ -53,7 +53,7 @@ def test_create_path_execute(tmp_dir: pathlib.Path):
     # create directories and a file
     tmp_data_dir_file = tmp_data_dir.joinpath('readme.md')
     cpa = CreatePathAction(tmp_data_dir_file)
-    assert cpa.get_trestle_project_root() == tmp_dir
+    assert cpa.get_trestle_project_root() == tmp_path
 
     assert tmp_data_dir.exists() is False
     assert tmp_data_dir_file.exists() is False
@@ -67,13 +67,13 @@ def test_create_path_execute(tmp_dir: pathlib.Path):
     assert tmp_data_dir_file.exists() is False
 
 
-def test_create_path_with_content_clear_option(tmp_dir: pathlib.Path):
+def test_create_path_with_content_clear_option(tmp_path: pathlib.Path):
     """Test create path with content clear option."""
     # create trestle project
-    test_utils.ensure_trestle_config_dir(tmp_dir)
+    test_utils.ensure_trestle_config_dir(tmp_path)
 
     # create directories and a file
-    tmp_data_dir = tmp_dir.joinpath('data')
+    tmp_data_dir = tmp_path.joinpath('data')
     tmp_data_dir_file = tmp_data_dir.joinpath('readme.md')
     cpa = CreatePathAction(tmp_data_dir_file)
     cpa.execute()
@@ -116,7 +116,7 @@ def test_create_path_with_content_clear_option(tmp_dir: pathlib.Path):
         fp.readline()
 
     # clearing content on direction should have no effect of the flag
-    tmp_data_dir2 = tmp_dir / 'data2'
+    tmp_data_dir2 = tmp_path / 'data2'
     tmp_data_dir2.mkdir()
     cpa = CreatePathAction(tmp_data_dir2, clear_content=True)
     cpa.execute()
@@ -126,10 +126,10 @@ def test_create_path_with_content_clear_option(tmp_dir: pathlib.Path):
     assert tmp_data_dir2.exists()
 
 
-def test_create_path_magic_methods(tmp_dir):
+def test_create_path_magic_methods(tmp_path):
     """Test create path magic methods."""
-    tmp_data_dir = tmp_dir.joinpath('data')
-    test_utils.ensure_trestle_config_dir(tmp_dir)
+    tmp_data_dir = tmp_path.joinpath('data')
+    test_utils.ensure_trestle_config_dir(tmp_path)
     cpa = CreatePathAction(tmp_data_dir)
 
     action_desc = cpa.to_string()

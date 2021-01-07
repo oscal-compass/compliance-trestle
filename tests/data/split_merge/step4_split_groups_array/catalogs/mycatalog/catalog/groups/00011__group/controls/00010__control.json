@@ -1,0 +1,91 @@
+{
+    "control": {
+        "id": "pl-11",
+        "class": "SP800-53",
+        "title": "Baseline Tailoring",
+        "props": [
+            {
+                "name": "label",
+                "value": "PL-11"
+            },
+            {
+                "name": "sort-id",
+                "value": "pl-11"
+            }
+        ],
+        "links": [
+            {
+                "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
+                "rel": "reference"
+            },
+            {
+                "href": "#599fb53d-5041-444e-a7fe-640d6d30ad05",
+                "rel": "reference"
+            },
+            {
+                "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                "rel": "reference"
+            },
+            {
+                "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
+                "rel": "reference"
+            },
+            {
+                "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
+                "rel": "reference"
+            },
+            {
+                "href": "#46d9e201-840e-440e-987c-2c773333c752",
+                "rel": "reference"
+            },
+            {
+                "href": "#e72fde0b-6fc2-497e-a9db-d8fce5a11b8a",
+                "rel": "reference"
+            },
+            {
+                "href": "#9be5d661-421f-41ad-854e-86f98b811891",
+                "rel": "reference"
+            },
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#4e4fbc93-333d-45e6-a875-de36b878b6b9",
+                "rel": "reference"
+            },
+            {
+                "href": "#pl-10",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pl-11_smt",
+                "name": "statement",
+                "prose": "Tailor the selected control baseline by applying specified tailoring actions."
+            },
+            {
+                "id": "pl-11_gdn",
+                "name": "guidance",
+                "prose": "The concept of tailoring allows organizations to specialize or customize a set of baseline controls by applying a defined set of tailoring actions. Tailoring actions facilitate such specialization and customization by allowing organizations to develop security and privacy plans that reflect their specific mission and business functions, the environments where their systems operate, the threats and vulnerabilities that can affect their systems, and any other conditions or situations that can impact their mission or business success. Tailoring guidance is provided in [SP 800-53B](#46d9e201-840e-440e-987c-2c773333c752). Tailoring a control baseline is accomplished by identifying and designating common controls, applying scoping considerations, selecting compensating controls, assigning values to control parameters, supplementing the control baseline with additional controls as needed, and providing information for control implementation. The general tailoring actions in [SP 800-53B](#46d9e201-840e-440e-987c-2c773333c752) can be supplemented with additional actions based on the needs of organizations. Tailoring actions can be applied to the baselines in [SP 800-53B](#46d9e201-840e-440e-987c-2c773333c752) in accordance with the security and privacy requirements from [FISMA](#0c67b2a9-bede-43d2-b86d-5f35b8be36e9) and [PRIVACT](#18e71fec-c6fd-475a-925a-5d8495cf8455). Alternatively, other communities of interest adopting different control baselines can apply the tailoring actions in [SP 800-53B](#46d9e201-840e-440e-987c-2c773333c752) to specialize or customize the controls that represent the specific needs and concerns of those entities."
+            }
+        ]
+    }
+}
