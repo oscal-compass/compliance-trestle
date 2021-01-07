@@ -1,0 +1,55 @@
+{
+    "control": {
+        "id": "ia-7",
+        "class": "SP800-53",
+        "title": "Cryptographic Module Authentication",
+        "props": [
+            {
+                "name": "label",
+                "value": "IA-7"
+            },
+            {
+                "name": "sort-id",
+                "value": "ia-07"
+            }
+        ],
+        "links": [
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-13",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ia-7_smt",
+                "name": "statement",
+                "prose": "Implement mechanisms for authentication to a cryptographic module that meet the requirements of applicable laws, executive orders, directives, policies, regulations, standards, and guidelines for such authentication."
+            },
+            {
+                "id": "ia-7_gdn",
+                "name": "guidance",
+                "prose": "Authentication mechanisms may be required within a cryptographic module to authenticate an operator accessing the module and to verify that the operator is authorized to assume the requested role and perform services within that role."
+            }
+        ]
+    }
+}

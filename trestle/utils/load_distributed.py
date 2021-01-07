@@ -111,7 +111,7 @@ def load_distributed(
                 if '__root__' in model_type.__fields__.keys() and utils.is_collection_field_type(
                         model_type.__fields__['__root__'].outer_type_):
                     # This directory is a decomposed List or Dict
-                    collection_type = model_type.__fields__['__root__'].outer_type_.__origin__
+                    collection_type = utils.get_origin(model_type.__fields__['__root__'].outer_type_)
                     model_type, model_alias, model_instance = load_distributed(path, collection_type)
                     aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
                     instances_to_be_merged.append(model_instance)

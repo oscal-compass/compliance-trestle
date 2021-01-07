@@ -28,6 +28,8 @@ from trestle.core.models.file_content_type import FileContentType
 BASE_TMP_DIR = pathlib.Path('tests/__tmp_path')
 YAML_TEST_DATA_PATH = pathlib.Path('tests/data/yaml/')
 JSON_TEST_DATA_PATH = pathlib.Path('tests/data/json/')
+JSON_NIST_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/')
+JSON_NIST_CATALOG_NAME = 'NIST_SP-800-53_rev4_catalog.json'
 
 TARGET_DEFS_DIR = 'target-definitions'
 CATALOGS_DIR = 'catalogs'

@@ -1,0 +1,105 @@
+{
+    "control": {
+        "id": "ia-9",
+        "class": "SP800-53",
+        "title": "Service Identification and Authentication",
+        "params": [
+            {
+                "id": "ia-9_prm_1",
+                "label": "organization-defined system services and applications"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "IA-9"
+            },
+            {
+                "name": "sort-id",
+                "value": "ia-09"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ia-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ia-9_smt",
+                "name": "statement",
+                "prose": "Uniquely identify and authenticate {{ ia-9_prm_1 }} before establishing communications with devices, users, or other services or applications."
+            },
+            {
+                "id": "ia-9_gdn",
+                "name": "guidance",
+                "prose": "Services that may require identification and authentication include web applications using digital certificates or services or applications that query a database. Identification and authentication methods for system services and applications include information or code signing, provenance graphs, and electronic signatures that indicate the sources of services. Decisions regarding the validity of identification and authentication claims can be made by services separate from the services acting on those decisions. This can occur in distributed system architectures. In such situations, the identification and authentication decisions (instead of actual identifiers and authentication data) are provided to the services that need to act on those decisions."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ia-9.1",
+                "class": "SP800-53-enhancement",
+                "title": "Information Exchange",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-9(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-09.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-9",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ia-9.2",
+                "class": "SP800-53-enhancement",
+                "title": "Transmission of Decisions",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-9(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-09.02"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-9",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            }
+        ]
+    }
+}

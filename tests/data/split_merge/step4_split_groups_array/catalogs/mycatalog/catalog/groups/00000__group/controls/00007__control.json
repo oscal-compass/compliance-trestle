@@ -1,0 +1,168 @@
+{
+    "control": {
+        "id": "ac-8",
+        "class": "SP800-53",
+        "title": "System Use Notification",
+        "params": [
+            {
+                "id": "ac-8_prm_1",
+                "label": "organization-defined system use notification message or banner"
+            },
+            {
+                "id": "ac-8_prm_2",
+                "label": "organization-defined conditions"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-8"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-08"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-14",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-4",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-8_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ac-8_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Display {{ ac-8_prm_1 }} to users before granting access to the system that provides privacy and security notices consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines and state that:",
+                        "parts": [
+                            {
+                                "id": "ac-8_smt.a.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Users are accessing a U.S. Government system;"
+                            },
+                            {
+                                "id": "ac-8_smt.a.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "System usage may be monitored, recorded, and subject to audit;"
+                            },
+                            {
+                                "id": "ac-8_smt.a.3",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": "Unauthorized use of the system is prohibited and subject to criminal and civil penalties; and"
+                            },
+                            {
+                                "id": "ac-8_smt.a.4",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "4."
+                                    }
+                                ],
+                                "prose": "Use of the system indicates consent to monitoring and recording;"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ac-8_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Retain the notification message or banner on the screen until users acknowledge the usage conditions and take explicit actions to log on to or further access the system; and"
+                    },
+                    {
+                        "id": "ac-8_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "For publicly accessible systems:",
+                        "parts": [
+                            {
+                                "id": "ac-8_smt.c.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Display system use information {{ ac-8_prm_2 }}, before granting further access to the publicly accessible system;"
+                            },
+                            {
+                                "id": "ac-8_smt.c.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "Display references, if any, to monitoring, recording, or auditing that are consistent with privacy accommodations for such systems that generally prohibit those activities; and"
+                            },
+                            {
+                                "id": "ac-8_smt.c.3",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": "Include a description of the authorized uses of the system."
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "ac-8_gdn",
+                "name": "guidance",
+                "prose": "System use notifications can be implemented using messages or warning banners displayed before individuals log in to systems. System use notifications are used only for access via logon interfaces with human users. Notifications are not required when human interfaces do not exist. Based on an assessment of risk, organizations consider whether or not a secondary system use notification is needed to access applications or other system resources after the initial network logon. Organizations consider system use notification messages or banners displayed in multiple languages based on organizational needs and the demographics of system users. Organizations consult with the privacy office for input regarding privacy messaging and the Office of the General Counsel or organizational equivalent for legal review and approval of warning banner content."
+            }
+        ]
+    }
+}

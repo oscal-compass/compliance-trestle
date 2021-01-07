@@ -94,25 +94,20 @@ def test_element_set_at(sample_target_def: target.TargetDefinition):
         }
     )
 
-    title: target.Title = target.Title(__root__='TEST')
-
     parties: List[target.Party] = []
     parties.append(
         target.Party(**{
-            'uuid': 'ff47836c-877c-4007-bbf3-c9d9bd805000', 'party-name': 'TEST1', 'type': 'organization'
+            'uuid': 'ff47836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST1', 'type': 'organization'
         })
     )
     parties.append(
         target.Party(**{
-            'uuid': 'ee88836c-877c-4007-bbf3-c9d9bd805000', 'party-name': 'TEST2', 'type': 'organization'
+            'uuid': 'ee88836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST2', 'type': 'organization'
         })
     )
 
     assert element.set_at(ElementPath('target-definition.metadata'),
                           metadata).get_at(ElementPath('target-definition.metadata')) == metadata
-
-    assert element.set_at(ElementPath('target-definition.metadata.title'),
-                          title).get_at(ElementPath('target-definition.metadata.title')) == title
 
     assert element.set_at(ElementPath('target-definition.metadata.parties'),
                           parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
@@ -129,7 +124,7 @@ def test_element_set_at(sample_target_def: target.TargetDefinition):
                           parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
 
     with pytest.raises(TrestleError):
-        assert element.set_at(ElementPath('target-definition.metadata.title'),
+        assert element.set_at(ElementPath('target-definition.metadata'),
                               parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
 
     # wildcard requires it to be an OscalBaseModel or list

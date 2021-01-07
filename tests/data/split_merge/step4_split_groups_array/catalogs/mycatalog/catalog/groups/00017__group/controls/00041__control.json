@@ -1,0 +1,320 @@
+{
+    "control": {
+        "id": "sc-42",
+        "class": "SP800-53",
+        "title": "Sensor Capability and Data",
+        "params": [
+            {
+                "id": "sc-42_prm_1",
+                "select": {
+                    "how-many": "one or more",
+                    "choice": [
+                        "the use of devices possessing {{ sc-42_prm_2 }} in {{ sc-42_prm_3 }} ",
+                        "the remote activation of environmental sensing capabilities on organizational systems or system components with the following exceptions: {{ sc-42_prm_4 }} "
+                    ]
+                }
+            },
+            {
+                "id": "sc-42_prm_2",
+                "depends-on": "sc-42_prm_1",
+                "label": "organization-defined environmental sensing capabilities"
+            },
+            {
+                "id": "sc-42_prm_3",
+                "depends-on": "sc-42_prm_1",
+                "label": "organization-defined facilities, areas, or systems"
+            },
+            {
+                "id": "sc-42_prm_4",
+                "depends-on": "sc-42_prm_1",
+                "label": "organization-defined exceptions where remote activation of sensors is allowed"
+            },
+            {
+                "id": "sc-42_prm_5",
+                "label": "organization-defined class of users"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-42"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-42"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#0f66be67-85e7-4ca6-bd19-39453e9f4394",
+                "rel": "reference"
+            },
+            {
+                "href": "#sc-15",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-42_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "sc-42_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Prohibit {{ sc-42_prm_1 }}; and"
+                    },
+                    {
+                        "id": "sc-42_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Provide an explicit indication of sensor use to {{ sc-42_prm_5 }}."
+                    }
+                ]
+            },
+            {
+                "id": "sc-42_gdn",
+                "name": "guidance",
+                "prose": "Sensor capability and data applies to types of systems or system components characterized as mobile devices, such as cellular telephones, smart phones, and tablets. Mobile devices often include sensors that can collect and record data regarding the environment where the system is in use. Sensors that are embedded within mobile devices include microphones, cameras, Global Positioning System (GPS) mechanisms, and accelerometers. While the sensors on mobiles devices provide an important function, if activated covertly, such devices can potentially provide a means for adversaries to learn valuable information about individuals and organizations. For example, remotely activating the GPS function on a mobile device could provide an adversary with the ability to track the movements of an individual. Organizations may prohibit individuals from bringing cellular telephones or digital cameras into certain designated facilities or controlled areas within facilities where classified information is stored or sensitive conversations are taking place."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-42.1",
+                "class": "SP800-53-enhancement",
+                "title": "Reporting to Authorized Individuals or Roles",
+                "params": [
+                    {
+                        "id": "sc-42.1_prm_1",
+                        "label": "organization-defined sensors"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-42(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-42.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-42",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-42.1_smt",
+                        "name": "statement",
+                        "prose": "Verify that the system is configured so that data or information collected by the {{ sc-42.1_prm_1 }} is only reported to authorized individuals or roles."
+                    },
+                    {
+                        "id": "sc-42.1_gdn",
+                        "name": "guidance",
+                        "prose": "In situations where sensors are activated by authorized individuals, it is still possible that the data or information collected by the sensors will be sent to unauthorized entities."
+                    }
+                ]
+            },
+            {
+                "id": "sc-42.2",
+                "class": "SP800-53-enhancement",
+                "title": "Authorized Use",
+                "params": [
+                    {
+                        "id": "sc-42.2_prm_1",
+                        "label": "organization-defined sensors"
+                    },
+                    {
+                        "id": "sc-42.2_prm_2",
+                        "label": "organization-defined measures"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-42(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-42.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-42",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pt-2",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-42.2_smt",
+                        "name": "statement",
+                        "prose": "Employ the following measures so that data or information collected by {{ sc-42.2_prm_1 }} is only used for authorized purposes: {{ sc-42.2_prm_2 }}."
+                    },
+                    {
+                        "id": "sc-42.2_gdn",
+                        "name": "guidance",
+                        "prose": "Information collected by sensors for a specific authorized purpose could be misused for some unauthorized purpose. For example, GPS sensors that are used to support traffic navigation could be misused to track the movements of individuals. Measures to mitigate such activities include additional training to help ensure that authorized individuals do not abuse their authority and, in the case where sensor data is maintained by external parties, contractual restrictions on the use of such data."
+                    }
+                ]
+            },
+            {
+                "id": "sc-42.3",
+                "class": "SP800-53-enhancement",
+                "title": "Prohibit Use of Devices",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-42(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-42.03"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-42",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sc-42.4",
+                "class": "SP800-53-enhancement",
+                "title": "Notice of Collection",
+                "params": [
+                    {
+                        "id": "sc-42.4_prm_1",
+                        "label": "organization-defined sensors"
+                    },
+                    {
+                        "id": "sc-42.4_prm_2",
+                        "label": "organization-defined measures"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-42(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-42.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-42",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pt-1",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pt-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pt-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-42.4_smt",
+                        "name": "statement",
+                        "prose": "Employ the following measures to facilitate an individual\u2019s awareness that personally identifiable information is being collected by {{ sc-42.4_prm_1 }}: {{ sc-42.4_prm_2 }}."
+                    },
+                    {
+                        "id": "sc-42.4_gdn",
+                        "name": "guidance",
+                        "prose": "Awareness that organizational sensors are collecting data enables individuals to more effectively engage in managing their privacy. Measures can include conventional written notices and sensor configurations that make individuals directly or indirectly aware through other devices that the sensor is collecting information. The usability and efficacy of the notice are important considerations."
+                    }
+                ]
+            },
+            {
+                "id": "sc-42.5",
+                "class": "SP800-53-enhancement",
+                "title": "Collection Minimization",
+                "params": [
+                    {
+                        "id": "sc-42.5_prm_1",
+                        "label": "organization-defined sensors"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-42(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-42.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-42",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#0f66be67-85e7-4ca6-bd19-39453e9f4394",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#sa-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-12",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-42.5_smt",
+                        "name": "statement",
+                        "prose": "Employ {{ sc-42.5_prm_1 }} that are configured to minimize the collection of information about individuals that is not needed."
+                    },
+                    {
+                        "id": "sc-42.5_gdn",
+                        "name": "guidance",
+                        "prose": "Although policies to control for authorized use can be applied to information once it is collected, minimizing the collection of information that is not needed mitigates privacy risk at the system entry point and mitigates the risk of policy control failures. Sensor configurations include the obscuring of human features, such as blurring or pixelating flesh tones."
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -257,26 +257,6 @@ def load_file(file_name: pathlib.Path) -> Dict[str, Any]:
             raise TrestleError(f'Invalid file extension "{file_name.suffix}"')
 
 
-def find_node(data: Dict[Any, Any], key: str, depth: int = 0, max_depth: int = 1, instance_type: type = list):
-    """Find a node of an instance_type in the data recursively."""
-    # TODO: Properly annotate with yield output typing as shown here:
-    # https://stackoverflow.com/questions/38419654/proper-type-annotation-of-python-functions-with-yield
-    if depth > max_depth:
-        return
-
-    if key in data and isinstance(data[key], instance_type):
-        yield data[key]
-
-    for _, v in data.items():
-        if isinstance(v, dict):
-            for i in find_node(v, key, depth + 1, max_depth, instance_type):
-                yield i
-        elif isinstance(v, list):
-            for item in v:
-                for i in find_node(item, key, depth + 1, max_depth, instance_type):
-                    yield i
-
-
 def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
     """
     Get the alias in the singular form from a jsonpath.

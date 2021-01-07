@@ -1,0 +1,21 @@
+{
+    "control": {
+        "id": "sc-19",
+        "class": "SP800-53",
+        "title": "Voice Over Internet Protocol",
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-19"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-19"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ]
+    }
+}

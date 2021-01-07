@@ -271,7 +271,7 @@ def test_split_run(tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDef
 
         targets: Dict = Element(sample_target_def).get_at(ElementPath('target-definition.targets.*'))
         for uuid in targets:
-            target_file = target_def_dir / f'target-definition/targets/{uuid}{const.IDX_SEP}target.yaml'
+            target_file = target_def_dir / f'target-definition/targets/{uuid}{const.IDX_SEP}defined-target.yaml'
             assert target_file.exists()
 
         assert trash.to_trash_file_path(target_def_file).exists()

@@ -1,0 +1,31 @@
+{
+    "control": {
+        "id": "sa-7",
+        "class": "SP800-53",
+        "title": "User-installed Software",
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-7"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-07"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#cm-11",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#si-7",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

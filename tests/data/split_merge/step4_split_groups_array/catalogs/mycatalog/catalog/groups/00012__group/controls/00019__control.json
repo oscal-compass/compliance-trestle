@@ -1,0 +1,184 @@
+{
+    "control": {
+        "id": "pm-20",
+        "class": "SP800-53",
+        "title": "Dissemination of Privacy Program Information",
+        "props": [
+            {
+                "name": "label",
+                "value": "PM-20"
+            },
+            {
+                "name": "sort-id",
+                "value": "pm-20"
+            }
+        ],
+        "links": [
+            {
+                "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
+                "rel": "reference"
+            },
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#206a3284-6a7e-423c-8ea9-25b22542541d",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-19",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-5",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-6",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pm-20_smt",
+                "name": "statement",
+                "prose": "Maintain a central resource webpage on the organization\u2019s principal public website that serves as a central source of information about the organization\u2019s privacy program and that:",
+                "parts": [
+                    {
+                        "id": "pm-20_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Ensures that the public has access to information about organizational privacy activities and can communicate with its senior agency official for privacy;"
+                    },
+                    {
+                        "id": "pm-20_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Ensures that organizational privacy practices and reports are publicly available; and"
+                    },
+                    {
+                        "id": "pm-20_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Employs publicly facing email addresses and/or phone lines to enable the public to provide feedback and/or direct questions to privacy offices regarding privacy practices."
+                    }
+                ]
+            },
+            {
+                "id": "pm-20_gdn",
+                "name": "guidance",
+                "prose": "For federal agencies, the webpage is located at www.[agency].gov/privacy. Federal agencies include public privacy impact assessments, system of records notices, computer matching notices and agreements, [PRIVACT](#18e71fec-c6fd-475a-925a-5d8495cf8455) exemption and implementation rules, privacy reports, privacy policies, instructions for individuals making an access or amendment request, email addresses for questions/complaints, blogs, and periodic publications."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pm-20.1",
+                "class": "SP800-53-enhancement",
+                "title": "Privacy Policies on Websites, Applications, and Digital Services",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PM-20(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pm-20.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pm-20",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#206a3284-6a7e-423c-8ea9-25b22542541d",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pm-20.1_smt",
+                        "name": "statement",
+                        "prose": "Develop and post privacy policies on all external-facing websites, mobile applications, and other digital services, that:",
+                        "parts": [
+                            {
+                                "id": "pm-20.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Are written in plain language and organized in a way that is easy to understand and navigate;"
+                            },
+                            {
+                                "id": "pm-20.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Provide information needed by the public to make an informed decision about whether and how to interact with the organization; and"
+                            },
+                            {
+                                "id": "pm-20.1_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Are updated whenever the organization makes a substantive change to the practices it describes and includes a time/date stamp to inform the public of the date of the most recent changes."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "pm-20.1_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations post privacy policies on all external-facing websites, mobile applications, and other digital services. Organizations post a link to the relevant privacy policy on any known, major entry points to the website, application, or digital service. In addition, organizations provide a link to the privacy policy on any webpage that collects personally identifiable information. Organizations may be subject to applicable laws, executive orders, directives, regulations, or policies that require the provision of specific information to the public. Organizational personnel consult with the senior agency official for privacy and legal counsel regarding such requirements."
+                    }
+                ]
+            }
+        ]
+    }
+}

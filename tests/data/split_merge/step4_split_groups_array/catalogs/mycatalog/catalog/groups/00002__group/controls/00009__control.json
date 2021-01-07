@@ -1,0 +1,403 @@
+{
+    "control": {
+        "id": "au-10",
+        "class": "SP800-53",
+        "title": "Non-repudiation",
+        "params": [
+            {
+                "id": "au-10_prm_1",
+                "label": "organization-defined actions to be covered by non-repudiation"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AU-10"
+            },
+            {
+                "name": "sort-id",
+                "value": "au-10"
+            }
+        ],
+        "links": [
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#eea3c092-42ed-4382-a6f4-1adadef01b9d",
+                "rel": "reference"
+            },
+            {
+                "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
+                "rel": "reference"
+            },
+            {
+                "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
+                "rel": "reference"
+            },
+            {
+                "href": "#1c71b420-2bd9-4e52-9fc8-390f58b85b59",
+                "rel": "reference"
+            },
+            {
+                "href": "#au-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-13",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-16",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-17",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-23",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "au-10_smt",
+                "name": "statement",
+                "prose": "Provide irrefutable evidence that an individual (or process acting on behalf of an individual) has performed {{ au-10_prm_1 }}."
+            },
+            {
+                "id": "au-10_gdn",
+                "name": "guidance",
+                "prose": "Types of individual actions covered by non-repudiation include creating information, sending and receiving messages, and approving information. Non-repudiation protects against claims by authors of not having authored certain documents, senders of not having transmitted messages, receivers of not having received messages, and signatories of not having signed documents. Non-repudiation services can be used to determine if information originated from an individual or if an individual took specific actions (e.g., sending an email, signing a contract, approving a procurement request, or receiving specific information). Organizations obtain non-repudiation services by employing various techniques or mechanisms, including digital signatures and digital message receipts."
+            }
+        ],
+        "controls": [
+            {
+                "id": "au-10.1",
+                "class": "SP800-53-enhancement",
+                "title": "Association of Identities",
+                "params": [
+                    {
+                        "id": "au-10.1_prm_1",
+                        "label": "organization-defined strength of binding"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AU-10(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "au-10.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#au-10",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-16",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "au-10.1_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "au-10.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Bind the identity of the information producer with the information to {{ au-10.1_prm_1 }}; and"
+                            },
+                            {
+                                "id": "au-10.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Provide the means for authorized individuals to determine the identity of the producer of the information."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "au-10.1_gdn",
+                        "name": "guidance",
+                        "prose": "Binding identities to the information supports audit requirements that provide organizational personnel with the means to identify who produced specific information in the event of an information transfer. Organizations determine and approve the strength of attribute binding between the information producer and the information based on the security category of the information and other relevant risk factors."
+                    }
+                ]
+            },
+            {
+                "id": "au-10.2",
+                "class": "SP800-53-enhancement",
+                "title": "Validate Binding of Information Producer Identity",
+                "params": [
+                    {
+                        "id": "au-10.2_prm_1",
+                        "label": "organization-defined frequency"
+                    },
+                    {
+                        "id": "au-10.2_prm_2",
+                        "label": "organization-defined actions"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AU-10(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "au-10.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#au-10",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-16",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "au-10.2_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "au-10.2_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Validate the binding of the information producer identity to the information at {{ au-10.2_prm_1 }}; and"
+                            },
+                            {
+                                "id": "au-10.2_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Perform {{ au-10.2_prm_2 }} in the event of a validation error."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "au-10.2_gdn",
+                        "name": "guidance",
+                        "prose": "Validating the binding of the information producer identity to the information prevents the modification of information between production and review. The validation of bindings can be achieved by, for example, using cryptographic checksums. Organizations determine if validations are in response to user requests or generated automatically."
+                    }
+                ]
+            },
+            {
+                "id": "au-10.3",
+                "class": "SP800-53-enhancement",
+                "title": "Chain of Custody",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AU-10(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "au-10.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#au-10",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-16",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "au-10.3_smt",
+                        "name": "statement",
+                        "prose": "Maintain reviewer or releaser credentials within the established chain of custody for information reviewed or released."
+                    },
+                    {
+                        "id": "au-10.3_gdn",
+                        "name": "guidance",
+                        "prose": "Chain of custody is a process that tracks the movement of evidence through its collection, safeguarding, and analysis life cycle by documenting each individual who handled the evidence, the date and time the evidence was collected or transferred, and the purpose for the transfer. If the reviewer is a human or if the review function is automated but separate from the release or transfer function, the system associates the identity of the reviewer of the information to be released with the information and the information label. In the case of human reviews, maintaining the credentials of reviewers or releasers provides the organization with the means to identify who reviewed and released the information. In the case of automated reviews, it ensures that only approved review functions are used."
+                    }
+                ]
+            },
+            {
+                "id": "au-10.4",
+                "class": "SP800-53-enhancement",
+                "title": "Validate Binding of Information Reviewer Identity",
+                "params": [
+                    {
+                        "id": "au-10.4_prm_1",
+                        "label": "organization-defined security domains"
+                    },
+                    {
+                        "id": "au-10.4_prm_2",
+                        "label": "organization-defined actions"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AU-10(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "au-10.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#au-10",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-16",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "au-10.4_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "au-10.4_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Validate the binding of the information reviewer identity to the information at the transfer or release points prior to release or transfer between {{ au-10.4_prm_1 }}; and"
+                            },
+                            {
+                                "id": "au-10.4_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Perform {{ au-10.4_prm_2 }} in the event of a validation error."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "au-10.4_gdn",
+                        "name": "guidance",
+                        "prose": "Validating the binding of the information reviewer identity to the information at transfer or release points prevents the unauthorized modification of information between review and the transfer or release. The validation of bindings can be achieved by using cryptographic checksums. Organizations determine if validations are in response to user requests or generated automatically."
+                    }
+                ]
+            },
+            {
+                "id": "au-10.5",
+                "class": "SP800-53-enhancement",
+                "title": "Digital Signatures",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AU-10(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "au-10.05"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "incorporated-into"
+                    },
+                    {
+                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#eea3c092-42ed-4382-a6f4-1adadef01b9d",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#1c71b420-2bd9-4e52-9fc8-390f58b85b59",
+                        "rel": "reference"
+                    }
+                ]
+            }
+        ]
+    }
+}

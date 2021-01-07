@@ -1,0 +1,57 @@
+{
+    "control": {
+        "id": "sa-16",
+        "class": "SP800-53",
+        "title": "Developer-provided Training",
+        "params": [
+            {
+                "id": "sa-16_prm_1",
+                "label": "organization-defined training"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-16"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-16"
+            }
+        ],
+        "links": [
+            {
+                "href": "#at-2",
+                "rel": "related"
+            },
+            {
+                "href": "#at-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-5",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sa-16_smt",
+                "name": "statement",
+                "prose": "Require the developer of the system, system component, or system service to provide the following training on the correct use and operation of the implemented security and privacy functions, controls, and/or mechanisms: {{ sa-16_prm_1 }}."
+            },
+            {
+                "id": "sa-16_gdn",
+                "name": "guidance",
+                "prose": "Developer-provided training applies to external and internal (in-house) developers. Training personnel is essential to ensuring the effectiveness of the controls implemented within organizational systems. Types of training include web-based and computer-based training, classroom-style training, and hands-on training (including micro-training). Organizations can also request training materials from developers to conduct in-house training or offer self-training to organizational personnel. Organizations determine the type of training necessary and may require different types of training for different security and privacy functions, controls, and mechanisms."
+            }
+        ]
+    }
+}

@@ -1,0 +1,65 @@
+{
+    "control": {
+        "id": "sc-6",
+        "class": "SP800-53",
+        "title": "Resource Availability",
+        "params": [
+            {
+                "id": "sc-6_prm_1",
+                "label": "organization-defined resources"
+            },
+            {
+                "id": "sc-6_prm_2",
+                "select": {
+                    "how-many": "one or more",
+                    "choice": [
+                        "priority",
+                        "quota",
+                        " {{ sc-6_prm_3 }} "
+                    ]
+                }
+            },
+            {
+                "id": "sc-6_prm_3",
+                "depends-on": "sc-6_prm_2",
+                "label": "organization-defined controls"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-6"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-06"
+            }
+        ],
+        "links": [
+            {
+                "href": "#047b041a-b4b0-4537-ab2d-2b36283eeda0",
+                "rel": "reference"
+            },
+            {
+                "href": "#4f42ee6e-86cc-403b-a51f-76c2b4f81b54",
+                "rel": "reference"
+            },
+            {
+                "href": "#sc-5",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-6_smt",
+                "name": "statement",
+                "prose": "Protect the availability of resources by allocating {{ sc-6_prm_1 }} by {{ sc-6_prm_2 }}."
+            },
+            {
+                "id": "sc-6_gdn",
+                "name": "guidance",
+                "prose": "Priority protection prevents lower-priority processes from delaying or interfering with the system that services higher-priority processes. Quotas prevent users or processes from obtaining more than predetermined amounts of resources."
+            }
+        ]
+    }
+}

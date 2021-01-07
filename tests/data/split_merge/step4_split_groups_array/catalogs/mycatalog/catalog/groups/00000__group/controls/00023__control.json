@@ -1,0 +1,162 @@
+{
+    "control": {
+        "id": "ac-24",
+        "class": "SP800-53",
+        "title": "Access Control Decisions",
+        "params": [
+            {
+                "id": "ac-24_prm_1",
+                "select": {
+                    "choice": [
+                        "Establish procedures",
+                        "Implement mechanisms"
+                    ]
+                }
+            },
+            {
+                "id": "ac-24_prm_2",
+                "label": "organization-defined access control decisions"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-24"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-24"
+            }
+        ],
+        "links": [
+            {
+                "href": "#2956e175-f674-43f4-b1b9-e074ad9fc39c",
+                "rel": "reference"
+            },
+            {
+                "href": "#388a3aa2-5d85-4bad-b8a3-77db80d63c4f",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-24_smt",
+                "name": "statement",
+                "prose": " {{ ac-24_prm_1 }} to ensure {{ ac-24_prm_2 }} are applied to each access request prior to access enforcement."
+            },
+            {
+                "id": "ac-24_gdn",
+                "name": "guidance",
+                "prose": "Access control decisions (also known as authorization decisions) occur when authorization information is applied to specific accesses. In contrast, access enforcement occurs when systems enforce access control decisions. While it is common to have access control decisions and access enforcement implemented by the same entity, it is not required, and it is not always an optimal implementation choice. For some architectures and distributed systems, different entities may make access control decisions and enforce access."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ac-24.1",
+                "class": "SP800-53-enhancement",
+                "title": "Transmit Access Authorization Information",
+                "params": [
+                    {
+                        "id": "ac-24.1_prm_1",
+                        "label": "organization-defined access authorization information"
+                    },
+                    {
+                        "id": "ac-24.1_prm_2",
+                        "label": "organization-defined controls"
+                    },
+                    {
+                        "id": "ac-24.1_prm_3",
+                        "label": "organization-defined systems"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-24(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-24.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-24",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-10",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-24.1_smt",
+                        "name": "statement",
+                        "prose": "Transmit {{ ac-24.1_prm_1 }} using {{ ac-24.1_prm_2 }} to {{ ac-24.1_prm_3 }} that enforce access control decisions."
+                    },
+                    {
+                        "id": "ac-24.1_gdn",
+                        "name": "guidance",
+                        "prose": "Authorization processes and access control decisions may occur in separate parts of systems or in separate systems. In such instances, authorization information is transmitted securely (e.g., using cryptographic mechanisms) so that timely access control decisions can be enforced at the appropriate locations. To support the access control decisions, it may be necessary to transmit as part of the access authorization information supporting security and privacy attributes. This is because in distributed systems, there are various access control decisions that need to be made, and different entities make these decisions in a serial fashion, each requiring those attributes to make the decisions. Protecting access authorization information ensures that such information cannot be altered, spoofed, or compromised during transmission."
+                    }
+                ]
+            },
+            {
+                "id": "ac-24.2",
+                "class": "SP800-53-enhancement",
+                "title": "No User or Process Identity",
+                "params": [
+                    {
+                        "id": "ac-24.2_prm_1",
+                        "label": "organization-defined security or privacy attributes"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-24(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-24.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-24",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#2956e175-f674-43f4-b1b9-e074ad9fc39c",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#388a3aa2-5d85-4bad-b8a3-77db80d63c4f",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-24.2_smt",
+                        "name": "statement",
+                        "prose": "Enforce access control decisions based on {{ ac-24.2_prm_1 }} that do not include the identity of the user or process acting on behalf of the user."
+                    },
+                    {
+                        "id": "ac-24.2_gdn",
+                        "name": "guidance",
+                        "prose": "In certain situations, it is important that access control decisions can be made without information regarding the identity of the users issuing the requests. These are generally instances where preserving individual privacy is of paramount importance. In other situations, user identification information is simply not needed for access control decisions, and especially in the case of distributed systems, transmitting such information with the needed degree of assurance may be very expensive or difficult to accomplish. MAC, RBAC, ABAC, and label-based control policies, for example, might not include user identity as an attribute."
+                    }
+                ]
+            }
+        ]
+    }
+}
