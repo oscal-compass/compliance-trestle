@@ -127,7 +127,7 @@ def parse_file(file_name: pathlib.Path, model_name: Optional[str]) -> OscalBaseM
 
     Args:
         file_name: File path
-        model_name: it should be of the form <module>.<class> which is derived from OscalBaseModel
+        model_name: it should be of the form module.class which is derived from OscalBaseModel
     """
     if file_name is None:
         raise TrestleError('file_name is required')
