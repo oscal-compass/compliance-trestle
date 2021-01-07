@@ -1,0 +1,1538 @@
+{
+    "control": {
+        "id": "ac-4",
+        "class": "SP800-53",
+        "title": "Information Flow Enforcement",
+        "params": [
+            {
+                "id": "ac-4_prm_1",
+                "label": "organization-defined information flow control policies"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-4"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-04"
+            }
+        ],
+        "links": [
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#2956e175-f674-43f4-b1b9-e074ad9fc39c",
+                "rel": "reference"
+            },
+            {
+                "href": "#388a3aa2-5d85-4bad-b8a3-77db80d63c4f",
+                "rel": "reference"
+            },
+            {
+                "href": "#a2590922-82f3-4277-83c0-ca5bee06dba4",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-16",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-19",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-21",
+                "rel": "related"
+            },
+            {
+                "href": "#au-10",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-7",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-24",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-17",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-16",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-31",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-4_smt",
+                "name": "statement",
+                "prose": "Enforce approved authorizations for controlling the flow of information within the system and between connected systems based on {{ ac-4_prm_1 }}."
+            },
+            {
+                "id": "ac-4_gdn",
+                "name": "guidance",
+                "prose": "Information flow control regulates where information can travel within a system and between systems (in contrast to who is allowed to access the information) and without regard to subsequent accesses to that information. Flow control restrictions include blocking external traffic that claims to be from within the organization, keeping export-controlled information from being transmitted in the clear to the Internet, restricting web requests that are not from the internal web proxy server, and limiting information transfers between organizations based on data structures and content. Transferring information between organizations may require an agreement specifying how the information flow is enforced (see [CA-3](#ca-3)). Transferring information between systems in different security or privacy domains with different security or privacy policies introduces the risk that such transfers violate one or more domain security or privacy policies. In such situations, information owners/stewards provide guidance at designated policy enforcement points between connected systems. Organizations consider mandating specific architectural solutions to enforce specific security and privacy policies. Enforcement includes prohibiting information transfers between connected systems (i.e., allowing access only), verifying write permissions before accepting information from another security or privacy domain or connected system, employing hardware mechanisms to enforce one-way information flows, and implementing trustworthy regrading mechanisms to reassign security or privacy attributes and labels.\n\nOrganizations commonly employ information flow control policies and enforcement mechanisms to control the flow of information between designated sources and destinations within systems and between connected systems. Flow control is based on the characteristics of the information and/or the information path. Enforcement occurs, for example, in boundary protection devices that employ rule sets or establish configuration settings that restrict system services, provide a packet-filtering capability based on header information, or provide a message-filtering capability based on message content. Organizations also consider the trustworthiness of filtering and/or inspection mechanisms (i.e., hardware, firmware, and software components) that are critical to information flow enforcement. Control enhancements 3 through 32 primarily address cross-domain solution needs that focus on more advanced filtering techniques, in-depth analysis, and stronger flow enforcement mechanisms implemented in cross-domain products, such as high-assurance guards. Such capabilities are generally not available in commercial off-the-shelf products. Information flow enforcement also applies to control plane traffic (e.g., routing and DNS)."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ac-4.1",
+                "class": "SP800-53-enhancement",
+                "title": "Object Security and Privacy Attributes",
+                "params": [
+                    {
+                        "id": "ac-4.1_prm_1",
+                        "label": "organization-defined security and privacy attributes"
+                    },
+                    {
+                        "id": "ac-4.1_prm_2",
+                        "label": "organization-defined information, source, and destination objects"
+                    },
+                    {
+                        "id": "ac-4.1_prm_3",
+                        "label": "organization-defined information flow control policies"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.1_smt",
+                        "name": "statement",
+                        "prose": "Use {{ ac-4.1_prm_1 }} associated with {{ ac-4.1_prm_2 }} to enforce {{ ac-4.1_prm_3 }} as a basis for flow control decisions."
+                    },
+                    {
+                        "id": "ac-4.1_gdn",
+                        "name": "guidance",
+                        "prose": "Information flow enforcement mechanisms compare security and privacy attributes associated with information (i.e., data content and structure) and source and destination objects and respond appropriately when the enforcement mechanisms encounter information flows not explicitly allowed by information flow policies. For example, an information object labeled Secret would be allowed to flow to a destination object labeled Secret, but an information object labeled Top Secret would not be allowed to flow to a destination object labeled Secret. A dataset of personally identifiable information may be tagged with restrictions against combining with other types of datasets and, thus, would not be allowed to flow to the restricted dataset. Security and privacy attributes can also include source and destination addresses employed in traffic filter firewalls. Flow enforcement using explicit security or privacy attributes can be used, for example, to control the release of certain types of information."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.2",
+                "class": "SP800-53-enhancement",
+                "title": "Processing Domains",
+                "params": [
+                    {
+                        "id": "ac-4.2_prm_1",
+                        "label": "organization-defined information flow control policies"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-39",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.2_smt",
+                        "name": "statement",
+                        "prose": "Use protected processing domains to enforce {{ ac-4.2_prm_1 }} as a basis for flow control decisions."
+                    },
+                    {
+                        "id": "ac-4.2_gdn",
+                        "name": "guidance",
+                        "prose": "Protected processing domains within systems are processing spaces that have controlled interactions with other processing spaces, enabling control of information flows between these spaces and to/from information objects. A protected processing domain can be provided, for example, by implementing domain and type enforcement. In domain and type enforcement, system processes are assigned to domains, information is identified by types, and information flows are controlled based on allowed information accesses (i.e., determined by domain and type), allowed signaling among domains, and allowed process transitions to other domains."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.3",
+                "class": "SP800-53-enhancement",
+                "title": "Dynamic Information Flow Control",
+                "params": [
+                    {
+                        "id": "ac-4.3_prm_1",
+                        "label": "organization-defined information flow control policies"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#si-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.3_smt",
+                        "name": "statement",
+                        "prose": "Enforce {{ ac-4.3_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-4.3_gdn",
+                        "name": "guidance",
+                        "prose": "Organizational policies regarding dynamic information flow control include allowing or disallowing information flows based on changing conditions or mission or operational considerations. Changing conditions include changes in risk tolerance due to changes in the immediacy of mission or business needs, changes in the threat environment, and detection of potentially harmful or adverse events."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.4",
+                "class": "SP800-53-enhancement",
+                "title": "Flow Control of Encrypted Information",
+                "params": [
+                    {
+                        "id": "ac-4.4_prm_1",
+                        "label": "organization-defined information flow control mechanisms"
+                    },
+                    {
+                        "id": "ac-4.4_prm_2",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                "decrypting the information",
+                                "blocking the flow of the encrypted information",
+                                "terminating communications sessions attempting to pass encrypted information",
+                                " {{ ac-4.4_prm_3 }} "
+                            ]
+                        }
+                    },
+                    {
+                        "id": "ac-4.4_prm_3",
+                        "depends-on": "ac-4.4_prm_2",
+                        "label": "organization-defined procedure or method"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#si-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.4_smt",
+                        "name": "statement",
+                        "prose": "Prevent encrypted information from bypassing {{ ac-4.4_prm_1 }} by {{ ac-4.4_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-4.4_gdn",
+                        "name": "guidance",
+                        "prose": "Flow control mechanisms include content checking, security policy filters, and data type identifiers. The term encryption is extended to cover encoded data not recognized by filtering mechanisms."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.5",
+                "class": "SP800-53-enhancement",
+                "title": "Embedded Data Types",
+                "params": [
+                    {
+                        "id": "ac-4.5_prm_1",
+                        "label": "organization-defined limitations"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.5_smt",
+                        "name": "statement",
+                        "prose": "Enforce {{ ac-4.5_prm_1 }} on embedding data types within other data types."
+                    },
+                    {
+                        "id": "ac-4.5_gdn",
+                        "name": "guidance",
+                        "prose": "Embedding data types within other data types may result in reduced flow control effectiveness. Data type embedding includes inserting files as objects within other files and using compressed or archived data types that may include multiple embedded data types. Limitations on data type embedding consider the levels of embedding and prohibit levels of data type embedding that are beyond the capability of the inspection tools."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.6",
+                "class": "SP800-53-enhancement",
+                "title": "Metadata",
+                "params": [
+                    {
+                        "id": "ac-4.6_prm_1",
+                        "label": "organization-defined metadata"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-16",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.6_smt",
+                        "name": "statement",
+                        "prose": "Enforce information flow control based on {{ ac-4.6_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-4.6_gdn",
+                        "name": "guidance",
+                        "prose": "Metadata is information that describes the characteristics of data. Metadata can include structural metadata describing data structures or descriptive metadata describing data content. Enforcement of allowed information flows based on metadata enables simpler and more effective flow control. Organizations consider the trustworthiness of metadata regarding data accuracy (i.e., knowledge that the metadata values are correct with respect to the data), data integrity (i.e., protecting against unauthorized changes to metadata tags), and the binding of metadata to the data payload (i.e., employing sufficiently strong binding techniques with appropriate assurance)."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.7",
+                "class": "SP800-53-enhancement",
+                "title": "One-way Flow Mechanisms",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.7_smt",
+                        "name": "statement",
+                        "prose": "Enforce one-way information flows through hardware-based flow control mechanisms."
+                    },
+                    {
+                        "id": "ac-4.7_gdn",
+                        "name": "guidance",
+                        "prose": "One-way flow mechanisms may also be referred to as a unidirectional network, unidirectional security gateway, or data diode. One-way flow mechanisms can be used to prevent data from being exported from a higher impact or classified domain or system while permitting data from a lower impact or unclassified domain or system to be imported."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.8",
+                "class": "SP800-53-enhancement",
+                "title": "Security and Privacy Policy Filters",
+                "params": [
+                    {
+                        "id": "ac-4.8_prm_1",
+                        "label": "organization-defined security or privacy policy filters"
+                    },
+                    {
+                        "id": "ac-4.8_prm_2",
+                        "label": "organization-defined information flows"
+                    },
+                    {
+                        "id": "ac-4.8_prm_3",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                "Block",
+                                "Strip",
+                                "Modify",
+                                "Quarantine"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "ac-4.8_prm_4",
+                        "label": "organization-defined security or privacy policy"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.8_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ac-4.8_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Enforce information flow control using {{ ac-4.8_prm_1 }} as a basis for flow control decisions for {{ ac-4.8_prm_2 }}; and"
+                            },
+                            {
+                                "id": "ac-4.8_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": " {{ ac-4.8_prm_3 }} data after a filter processing failure in accordance with {{ ac-4.8_prm_4 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ac-4.8_gdn",
+                        "name": "guidance",
+                        "prose": "Organization-defined security or privacy policy filters can address data structures and content. For example, security or privacy policy filters for data structures can check for maximum file lengths, maximum field sizes, and data/file types (for structured and unstructured data). Security or privacy policy filters for data content can check for specific words, enumerated values or data value ranges, and hidden content. Structured data permits the interpretation of data content by applications. Unstructured data refers to digital information without a data structure or with a data structure that does not facilitate the development of rule sets to address the impact or classification level of the information conveyed by the data or the flow enforcement decisions. Unstructured data consists of bitmap objects that are inherently non-language-based (i.e., image, video, or audio files) and textual objects that are based on written or printed languages. Organizations can implement more than one security or privacy policy filter to meet information flow control objectives."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.9",
+                "class": "SP800-53-enhancement",
+                "title": "Human Reviews",
+                "params": [
+                    {
+                        "id": "ac-4.9_prm_1",
+                        "label": "organization-defined information flows"
+                    },
+                    {
+                        "id": "ac-4.9_prm_2",
+                        "label": "organization-defined conditions"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.09"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.9_smt",
+                        "name": "statement",
+                        "prose": "Enforce the use of human reviews for {{ ac-4.9_prm_1 }} under the following conditions: {{ ac-4.9_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-4.9_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations define security or privacy policy filters for all situations where automated flow control decisions are possible. When a fully automated flow control decision is not possible, then a human review may be employed in lieu of or as a complement to automated security or privacy policy filtering. Human reviews may also be employed as deemed necessary by organizations."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.10",
+                "class": "SP800-53-enhancement",
+                "title": "Enable and Disable Security or Privacy Policy Filters",
+                "params": [
+                    {
+                        "id": "ac-4.10_prm_1",
+                        "label": "organization-defined security or privacy policy filters"
+                    },
+                    {
+                        "id": "ac-4.10_prm_2",
+                        "label": "organization-defined conditions"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(10)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.10"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.10_smt",
+                        "name": "statement",
+                        "prose": "Provide the capability for privileged administrators to enable and disable {{ ac-4.10_prm_1 }} under the following conditions: {{ ac-4.10_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-4.10_gdn",
+                        "name": "guidance",
+                        "prose": "For example, as allowed by the system authorization, administrators can enable security or privacy policy filters to accommodate approved data types. Administrators also have the capability to select the filters that are executed on a specific data flow based on the type of data that is being transferred, the source and destination security domains, and other security or privacy relevant features, as needed."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.11",
+                "class": "SP800-53-enhancement",
+                "title": "Configuration of Security or Privacy Policy Filters",
+                "params": [
+                    {
+                        "id": "ac-4.11_prm_1",
+                        "label": "organization-defined security or privacy policy filters"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(11)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.11"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.11_smt",
+                        "name": "statement",
+                        "prose": "Provide the capability for privileged administrators to configure {{ ac-4.11_prm_1 }} to support different security or privacy policies."
+                    },
+                    {
+                        "id": "ac-4.11_gdn",
+                        "name": "guidance",
+                        "prose": "Documentation contains detailed information for configuring security or privacy policy filters. For example, administrators can configure security or privacy policy filters to include the list of inappropriate words that security or privacy policy mechanisms check in accordance with the definitions provided by organizations."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.12",
+                "class": "SP800-53-enhancement",
+                "title": "Data Type Identifiers",
+                "params": [
+                    {
+                        "id": "ac-4.12_prm_1",
+                        "label": "organization-defined data type identifiers"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(12)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.12"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.12_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, use {{ ac-4.12_prm_1 }} to validate data essential for information flow decisions."
+                    },
+                    {
+                        "id": "ac-4.12_gdn",
+                        "name": "guidance",
+                        "prose": "Data type identifiers include filenames, file types, file signatures or tokens, and multiple internal file signatures or tokens. Systems only allow transfer of data that is compliant with data type format specifications. Identification and validation of data types is based on defined specifications associated with each allowed data format. The filename and number alone are not used for data type identification. Content is validated syntactically and semantically against its specification to ensure that it is the proper data type."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.13",
+                "class": "SP800-53-enhancement",
+                "title": "Decomposition into Policy-relevant Subcomponents",
+                "params": [
+                    {
+                        "id": "ac-4.13_prm_1",
+                        "label": "organization-defined policy-relevant subcomponents"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(13)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.13"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.13_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, decompose information into {{ ac-4.13_prm_1 }} for submission to policy enforcement mechanisms."
+                    },
+                    {
+                        "id": "ac-4.13_gdn",
+                        "name": "guidance",
+                        "prose": "Decomposing information into policy-relevant subcomponents prior to information transfer facilitates policy decisions on source, destination, certificates, classification, attachments, and other security- or privacy-related component differentiators. Policy enforcement mechanisms apply filtering, inspection, and/or sanitization rules to the policy-relevant subcomponents of information to facilitate flow enforcement prior to transferring such information to different security domains."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.14",
+                "class": "SP800-53-enhancement",
+                "title": "Security or Privacy Policy Filter Constraints",
+                "params": [
+                    {
+                        "id": "ac-4.14_prm_1",
+                        "label": "organization-defined security or privacy policy filters"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(14)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.14"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.14_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, implement {{ ac-4.14_prm_1 }} requiring fully enumerated formats that restrict data structure and content."
+                    },
+                    {
+                        "id": "ac-4.14_gdn",
+                        "name": "guidance",
+                        "prose": "Data structure and content restrictions reduce the range of potential malicious or unsanctioned content in cross-domain transactions. Security or privacy policy filters that restrict data structures include restricting file sizes and field lengths. Data content policy filters include encoding formats for character sets, restricting character data fields to only contain alpha-numeric characters, prohibiting special characters, and validating schema structures."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.15",
+                "class": "SP800-53-enhancement",
+                "title": "Detection of Unsanctioned Information",
+                "params": [
+                    {
+                        "id": "ac-4.15_prm_1",
+                        "label": "organization-defined unsanctioned information"
+                    },
+                    {
+                        "id": "ac-4.15_prm_2",
+                        "label": "organization-defined security or privacy policy"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(15)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.15"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#si-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.15_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, examine the information for the presence of {{ ac-4.15_prm_1 }} and prohibit the transfer of such information in accordance with the {{ ac-4.15_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-4.15_gdn",
+                        "name": "guidance",
+                        "prose": "Unsanctioned information includes malicious code, information that is inappropriate for release from the source network, or executable code that could disrupt or harm the services or systems on the destination network."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.16",
+                "class": "SP800-53-enhancement",
+                "title": "Information Transfers on Interconnected Systems",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(16)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.16"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.17",
+                "class": "SP800-53-enhancement",
+                "title": "Domain Authentication",
+                "params": [
+                    {
+                        "id": "ac-4.17_prm_1",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                "organization",
+                                "system",
+                                "application",
+                                "service",
+                                "individual"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(17)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.17"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ia-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-9",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.17_smt",
+                        "name": "statement",
+                        "prose": "Uniquely identify and authenticate source and destination points by {{ ac-4.17_prm_1 }} for information transfer."
+                    },
+                    {
+                        "id": "ac-4.17_gdn",
+                        "name": "guidance",
+                        "prose": "Attribution is a critical component of a security and privacy concept of operations. The ability to identify source and destination points for information flowing within systems allows the forensic reconstruction of events and encourages policy compliance by attributing policy violations to specific organizations or individuals. Successful domain authentication requires that system labels distinguish among systems, organizations, and individuals involved in preparing, sending, receiving, or disseminating information. Attribution also allows organizations to better maintain the lineage of personally identifiable information processing as it flows through systems and can facilitate consent tracking, as well as correction, deletion, or access requests from individuals."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.18",
+                "class": "SP800-53-enhancement",
+                "title": "Security Attribute Binding",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(18)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.18"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-16",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.19",
+                "class": "SP800-53-enhancement",
+                "title": "Validation of Metadata",
+                "params": [
+                    {
+                        "id": "ac-4.19_prm_1",
+                        "label": "organization-defined security or privacy policy filters"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(19)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.19"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.19_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, implement {{ ac-4.19_prm_1 }} on metadata."
+                    },
+                    {
+                        "id": "ac-4.19_gdn",
+                        "name": "guidance",
+                        "prose": "All information (including metadata and the data to which the metadata applies) is subject to filtering and inspection. Some organizations distinguish between metadata and data payloads (i.e., only the data to which the metadata is bound). Other organizations do not make such distinctions and consider metadata and the data to which the metadata applies to be part of the payload."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.20",
+                "class": "SP800-53-enhancement",
+                "title": "Approved Solutions",
+                "params": [
+                    {
+                        "id": "ac-4.20_prm_1",
+                        "label": "organization-defined solutions in approved configurations"
+                    },
+                    {
+                        "id": "ac-4.20_prm_2",
+                        "label": "organization-defined information"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(20)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.20"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.20_smt",
+                        "name": "statement",
+                        "prose": "Employ {{ ac-4.20_prm_1 }} to control the flow of {{ ac-4.20_prm_2 }} across security domains."
+                    },
+                    {
+                        "id": "ac-4.20_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations define approved solutions and configurations in cross-domain policies and guidance in accordance with the types of information flows across classification boundaries. The National Security Agency (NSA) National Cross Domain Strategy and Management Office provides a listing of approved cross-domain solutions. Contact [ncdsmo@nsa.gov](mailto:ncdsmo@nsa.gov) for more information."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.21",
+                "class": "SP800-53-enhancement",
+                "title": "Physical or Logical Separation of Information Flows",
+                "params": [
+                    {
+                        "id": "ac-4.21_prm_1",
+                        "label": "organization-defined mechanisms and/or techniques"
+                    },
+                    {
+                        "id": "ac-4.21_prm_2",
+                        "label": "organization-defined required separations by types of information"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(21)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.21"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-32",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.21_smt",
+                        "name": "statement",
+                        "prose": "Separate information flows logically or physically using {{ ac-4.21_prm_1 }} to accomplish {{ ac-4.21_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-4.21_gdn",
+                        "name": "guidance",
+                        "prose": "Enforcing the separation of information flows associated with defined types of data can enhance protection by ensuring that information is not commingled while in transit and by enabling flow control by transmission paths that are not otherwise achievable. Types of separable information include inbound and outbound communications traffic, service requests and responses, and information of differing security impact or classification levels."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.22",
+                "class": "SP800-53-enhancement",
+                "title": "Access Only",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(22)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.22"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.22_smt",
+                        "name": "statement",
+                        "prose": "Provide access from a single device to computing platforms, applications, or data residing in multiple different security domains, while preventing information flow between the different security domains."
+                    },
+                    {
+                        "id": "ac-4.22_gdn",
+                        "name": "guidance",
+                        "prose": "The system provides a capability for users to access each connected security domain without providing any mechanisms to allow users to transfer data or information between the different security domains. An example of an access-only solution is a terminal that provides a user access to information with different security classifications while assuredly keeping the information separate."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.23",
+                "class": "SP800-53-enhancement",
+                "title": "Modify Non-releasable Information",
+                "params": [
+                    {
+                        "id": "ac-4.23_prm_1",
+                        "label": "organization-defined modification action"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(23)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.23"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.23_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, modify non-releasable information by implementing {{ ac-4.23_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-4.23_gdn",
+                        "name": "guidance",
+                        "prose": "Modifying non-releasable information can help prevent a data spill or attack when information is transferred across security domains. Modification actions include masking, permutation, alteration, removal, or redaction."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.24",
+                "class": "SP800-53-enhancement",
+                "title": "Internal Normalized Format",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(24)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.24"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.24_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, parse incoming data into an internal normalized format and regenerate the data to be consistent with its intended specification."
+                    },
+                    {
+                        "id": "ac-4.24_gdn",
+                        "name": "guidance",
+                        "prose": "Converting data into normalized forms is one of most of effective mechanisms to stop malicious attacks and large classes of data exfiltration."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.25",
+                "class": "SP800-53-enhancement",
+                "title": "Data Sanitization",
+                "params": [
+                    {
+                        "id": "ac-4.25_prm_1",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                "delivery of malicious content, command and control of malicious code, malicious code augmentation, and steganography encoded data",
+                                "spillage of sensitive information"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "ac-4.25_prm_2",
+                        "label": "organization-defined policy"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(25)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.25"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#mp-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.25_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, sanitize data to minimize {{ ac-4.25_prm_1 }} in accordance with {{ ac-4.25_prm_2 }}]."
+                    },
+                    {
+                        "id": "ac-4.25_gdn",
+                        "name": "guidance",
+                        "prose": "Data sanitization is the process of irreversibly removing or destroying data stored on a memory device (e.g., hard drives, flash memory/solid state drives, mobile devices, CDs, and DVDs) or in hard copy form."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.26",
+                "class": "SP800-53-enhancement",
+                "title": "Audit Filtering Actions",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(26)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.26"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-12",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.26_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, record and audit content filtering actions and results for the information being filtered."
+                    },
+                    {
+                        "id": "ac-4.26_gdn",
+                        "name": "guidance",
+                        "prose": "Content filtering is the process of inspecting information as it traverses a cross-domain solution and determines if the information meets a predefined policy. Content filtering actions and the results of filtering actions are recorded for individual messages to ensure that the correct filter actions were applied. Content filter reports are used to assist in troubleshooting actions by, for example, determining why message content was modified and/or why it failed the filtering process. Audit events are defined in [AU-2](#au-2). Audit records are generated in [AU-12](#au-12)."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.27",
+                "class": "SP800-53-enhancement",
+                "title": "Redundant/independent Filtering Mechanisms",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(27)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.27"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.27_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, implement content filtering solutions that provide redundant and independent filtering mechanisms for each data type."
+                    },
+                    {
+                        "id": "ac-4.27_gdn",
+                        "name": "guidance",
+                        "prose": "Content filtering is the process of inspecting information as it traverses a cross-domain solution and determines if the information meets a predefined policy. Redundant and independent content filtering eliminates a single point of failure filtering system. Independence is defined as the implementation of a content filter that uses a different code base and supporting libraries (e.g., two JPEG filters using different vendors\u2019 JPEG libraries) and multiple, independent system processes."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.28",
+                "class": "SP800-53-enhancement",
+                "title": "Linear Filter Pipelines",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(28)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.28"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.28_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, implement a linear content filter pipeline that is enforced with discretionary and mandatory access controls."
+                    },
+                    {
+                        "id": "ac-4.28_gdn",
+                        "name": "guidance",
+                        "prose": "Content filtering is the process of inspecting information as it traverses a cross-domain solution and determines if the information meets a predefined policy. The use of linear content filter pipelines ensures that filter processes are non-bypassable and always invoked. In general, the use of parallel filtering architectures for content filtering of a single data type introduces bypass and non-invocation issues."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.29",
+                "class": "SP800-53-enhancement",
+                "title": "Filter Orchestration Engines",
+                "params": [
+                    {
+                        "id": "ac-4.29_prm_1",
+                        "label": "organization-defined policy"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(29)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.29"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.29_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, employ content filter orchestration engines to ensure that:",
+                        "parts": [
+                            {
+                                "id": "ac-4.29_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Content filtering mechanisms successfully complete execution without errors; and"
+                            },
+                            {
+                                "id": "ac-4.29_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Content filtering actions occur in the correct order and comply with {{ ac-4.29_prm_1 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ac-4.29_gdn",
+                        "name": "guidance",
+                        "prose": "Content filtering is the process of inspecting information as it traverses a cross-domain solution and determines if the information meets a predefined security policy. An orchestration engine coordinates the sequencing of activities (manual and automated) in a content filtering process. Errors are defined as either anomalous actions or unexpected termination of the content filter process. This is not the same as a filter failing content due to non-compliance with policy. Content filter reports are a commonly used mechanism to ensure that expected filtering actions are completed successfully."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.30",
+                "class": "SP800-53-enhancement",
+                "title": "Filter Mechanisms Using Multiple Processes",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(30)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.30"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.30_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, implement content filtering mechanisms using multiple processes."
+                    },
+                    {
+                        "id": "ac-4.30_gdn",
+                        "name": "guidance",
+                        "prose": "The use of multiple processes to implement content filtering mechanisms reduces the likelihood of a single point of failure."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.31",
+                "class": "SP800-53-enhancement",
+                "title": "Failed Content Transfer Prevention",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(31)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.31"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.31_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, prevent the transfer of failed content to the receiving domain."
+                    },
+                    {
+                        "id": "ac-4.31_gdn",
+                        "name": "guidance",
+                        "prose": "Content that failed filtering checks can corrupt the system if transferred to the receiving domain."
+                    }
+                ]
+            },
+            {
+                "id": "ac-4.32",
+                "class": "SP800-53-enhancement",
+                "title": "Process Requirements for Information Transfer",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-4(32)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-04.32"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#2956e175-f674-43f4-b1b9-e074ad9fc39c",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#388a3aa2-5d85-4bad-b8a3-77db80d63c4f",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#a2590922-82f3-4277-83c0-ca5bee06dba4",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-4.32_smt",
+                        "name": "statement",
+                        "prose": "When transferring information between different security domains, the process that transfers information between filter pipelines:",
+                        "parts": [
+                            {
+                                "id": "ac-4.32_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Does not filter message content;"
+                            },
+                            {
+                                "id": "ac-4.32_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Validates filtering metadata;"
+                            },
+                            {
+                                "id": "ac-4.32_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Ensures the content associated with the filtering metadata has successfully completed filtering; and"
+                            },
+                            {
+                                "id": "ac-4.32_smt.d",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(d)"
+                                    }
+                                ],
+                                "prose": "Transfers the content to the destination filter pipeline."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ac-4.32_gdn",
+                        "name": "guidance",
+                        "prose": "The processes transferring information between filter pipelines have minimum complexity and functionality to provide assurance that the processes operate correctly."
+                    }
+                ]
+            }
+        ]
+    }
+}

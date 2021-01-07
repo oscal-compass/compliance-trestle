@@ -1,0 +1,27 @@
+{
+    "control": {
+        "id": "pl-3",
+        "class": "SP800-53",
+        "title": "System Security Plan Update",
+        "props": [
+            {
+                "name": "label",
+                "value": "PL-3"
+            },
+            {
+                "name": "sort-id",
+                "value": "pl-03"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#pl-2",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

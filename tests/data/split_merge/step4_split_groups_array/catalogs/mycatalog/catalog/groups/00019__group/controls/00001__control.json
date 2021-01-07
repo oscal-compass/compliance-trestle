@@ -1,0 +1,244 @@
+{
+    "control": {
+        "id": "sr-2",
+        "class": "SP800-53",
+        "title": "Supply Chain Risk Management Plan",
+        "params": [
+            {
+                "id": "sr-2_prm_1",
+                "label": "organization-defined systems, system components, or system services"
+            },
+            {
+                "id": "sr-2_prm_2",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SR-2"
+            },
+            {
+                "name": "sort-id",
+                "value": "sr-02"
+            }
+        ],
+        "links": [
+            {
+                "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
+                "rel": "reference"
+            },
+            {
+                "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
+                "rel": "reference"
+            },
+            {
+                "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
+                "rel": "reference"
+            },
+            {
+                "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                "rel": "reference"
+            },
+            {
+                "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
+                "rel": "reference"
+            },
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                "rel": "reference"
+            },
+            {
+                "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
+                "rel": "reference"
+            },
+            {
+                "href": "#38ff38f0-1366-4f50-a4c9-26a39aacee16",
+                "rel": "reference"
+            },
+            {
+                "href": "#ca-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-6",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-16",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-30",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sr-2_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "sr-2_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Develop a plan for managing supply chain risks associated with the research and development, design, manufacturing, acquisition, delivery, integration, operations and maintenance, and disposal of the following systems, system components or system services: {{ sr-2_prm_1 }};"
+                    },
+                    {
+                        "id": "sr-2_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Review and update the supply chain risk management plan {{ sr-2_prm_2 }} or as required, to address threat, organizational or environmental changes; and"
+                    },
+                    {
+                        "id": "sr-2_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Protect the supply chain risk management plan from unauthorized disclosure and modification."
+                    }
+                ]
+            },
+            {
+                "id": "sr-2_gdn",
+                "name": "guidance",
+                "prose": "The dependence on products, systems, and services from external providers, as well as the nature of the relationships with those providers, present an increasing level of risk to an organization. Threat actions that may increase security or privacy risks include unauthorized production, the insertion or use of counterfeits, tampering, theft, insertion of malicious software and hardware, and poor manufacturing and development practices in the supply chain. Supply chain risks can be endemic or systemic within a system element or component, a system, an organization, a sector, or the Nation. Managing supply chain risk is a complex, multifaceted undertaking that requires a coordinated effort across an organization to build trust relationships and communicate with internal and external stakeholders. Supply chain risk management (SCRM) activities include\u00a0identifying and assessing risks, determining appropriate risk response actions, developing SCRM plans to document response actions, and monitoring performance against plans. The SCRM plan (at the system-level) is implementation specific, providing policy implementation, requirements, constraints and implications. It can either be stand-alone, or incorporated into system security and privacy plans. The SCRM plan addresses managing, implementation, and monitoring of SCRM controls and the development/sustainment of systems across the SDLC to support mission and business functions.\n\nBecause supply chains can differ significantly across and within organizations, SCRM plans are tailored to the individual program, organizational, and operational contexts. Tailored SCRM plans provide the basis for determining whether a technology, service, system component, or system is fit for purpose, and as such, the controls need to be tailored accordingly. Tailored SCRM plans help organizations focus their resources on the most critical mission and business functions based on mission and business requirements and their risk environment. Supply chain risk management plans include an expression of the supply chain risk tolerance for the organization, acceptable supply chain risk mitigation strategies or controls, a process for consistently evaluating and monitoring supply chain risk, approaches for implementing and communicating the plan, a description of and justification for supply chain risk mitigation measures taken, and associated roles and responsibilities. Finally, supply chain risk management plans address requirements for developing trustworthy, secure, privacy-protective, and resilient system components and systems, including the application of the security design principles implemented as part of life cycle-based systems security engineering processes (see [SA-8](#sa-8))."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sr-2.1",
+                "class": "SP800-53-enhancement",
+                "title": "Establish Scrm Team",
+                "params": [
+                    {
+                        "id": "sr-2.1_prm_1",
+                        "label": "organization-defined personnel, roles, and responsibilities"
+                    },
+                    {
+                        "id": "sr-2.1_prm_2",
+                        "label": "organization-defined supply chain risk management activities"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SR-2(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sr-02.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-2",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#38ff38f0-1366-4f50-a4c9-26a39aacee16",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sr-2.1_smt",
+                        "name": "statement",
+                        "prose": "Establish a supply chain risk management team consisting of {{ sr-2.1_prm_1 }} to lead and support the following SCRM activities: {{ sr-2.1_prm_2 }}."
+                    },
+                    {
+                        "id": "sr-2.1_gdn",
+                        "name": "guidance",
+                        "prose": "To implement supply chain risk management plans, organizations establish a coordinated, team-based approach to identify and assess supply chain risks and manage these risks by using programmatic and technical mitigation techniques. The team approach enables organizations to conduct an analysis of their supply chain, communicate with internal and external partners or stakeholders, and gain broad consensus regarding the appropriate resources for SCRM. The SCRM team consists of organizational personnel with diverse roles and responsibilities for leading and supporting SCRM activities, including risk executive, information technology, contracting, information security, privacy, mission or business, legal, supply chain and logistics, acquisition, business continuity, and other relevant functions. Members of the SCRM team are involved in various aspects of the SDLC and, collectively, have an awareness of and provide expertise in acquisition processes, legal practices, vulnerabilities, threats, and attack vectors, as well as an understanding of the technical aspects and dependencies of systems. The SCRM team can be an extension of the security and privacy risk management processes or be included as part of an organizational risk management team."
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "control": {
+        "id": "sa-13",
+        "class": "SP800-53",
+        "title": "Trustworthiness",
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-13"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-13"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#sa-8",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

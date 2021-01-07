@@ -1,0 +1,343 @@
+{
+    "control": {
+        "id": "cp-7",
+        "class": "SP800-53",
+        "title": "Alternate Processing Site",
+        "params": [
+            {
+                "id": "cp-7_prm_1",
+                "label": "organization-defined system operations"
+            },
+            {
+                "id": "cp-7_prm_2",
+                "label": "organization-defined time period consistent with recovery time and recovery point objectives"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CP-7"
+            },
+            {
+                "name": "sort-id",
+                "value": "cp-07"
+            }
+        ],
+        "links": [
+            {
+                "href": "#bc39f179-c735-4da2-b7a7-b2b622119755",
+                "rel": "reference"
+            },
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-8",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-10",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-6",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-11",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-12",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-17",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-36",
+                "rel": "related"
+            },
+            {
+                "href": "#si-13",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cp-7_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "cp-7_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Establish an alternate processing site, including necessary agreements to permit the transfer and resumption of {{ cp-7_prm_1 }} for essential mission and business functions within {{ cp-7_prm_2 }} when the primary processing capabilities are unavailable;"
+                    },
+                    {
+                        "id": "cp-7_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Make available at the alternate processing site, the equipment and supplies required to transfer and resume operations or put contracts in place to support delivery to the site within the organization-defined time period for transfer and resumption; and"
+                    },
+                    {
+                        "id": "cp-7_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Provide controls at the alternate processing site that are equivalent to those at the primary site."
+                    }
+                ]
+            },
+            {
+                "id": "cp-7_gdn",
+                "name": "guidance",
+                "prose": "Alternate processing sites are geographically distinct from primary processing sites and provide processing capability if the primary processing site is not available. The alternate processing capability may be addressed using a physical processing site or other alternatives, such as failover to a cloud-based service provider or other internally or externally provided processing service. Geographically distributed architectures that support contingency requirements may also be considered alternate processing sites. Controls that are covered by alternate processing site agreements include the environmental conditions at alternate sites, access rules, physical and environmental protection requirements, and the coordination for the transfer and assignment of personnel. Requirements are allocated to alternate processing sites that reflect the requirements in contingency plans to maintain essential mission and business functions despite disruption, compromise, or failure in organizational systems."
+            }
+        ],
+        "controls": [
+            {
+                "id": "cp-7.1",
+                "class": "SP800-53-enhancement",
+                "title": "Separation from Primary Site",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-7(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-07.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ra-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-7.1_smt",
+                        "name": "statement",
+                        "prose": "Identify an alternate processing site that is sufficiently separated from the primary processing site to reduce susceptibility to the same threats."
+                    },
+                    {
+                        "id": "cp-7.1_gdn",
+                        "name": "guidance",
+                        "prose": "Threats that affect alternate processing sites are defined in organizational assessments of risk and include natural disasters, structural failures, hostile attacks, and errors of omission or commission. Organizations determine what is considered a sufficient degree of separation between primary and alternate processing sites based on the types of threats that are of concern. For threats such as hostile attacks, the degree of separation between sites is less relevant."
+                    }
+                ]
+            },
+            {
+                "id": "cp-7.2",
+                "class": "SP800-53-enhancement",
+                "title": "Accessibility",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-7(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-07.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ra-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-7.2_smt",
+                        "name": "statement",
+                        "prose": "Identify potential accessibility problems to alternate processing sites in the event of an area-wide disruption or disaster and outlines explicit mitigation actions."
+                    },
+                    {
+                        "id": "cp-7.2_gdn",
+                        "name": "guidance",
+                        "prose": "Area-wide disruptions refer to those types of disruptions that are broad in geographic scope with such determinations made by organizations based on organizational assessments of risk."
+                    }
+                ]
+            },
+            {
+                "id": "cp-7.3",
+                "class": "SP800-53-enhancement",
+                "title": "Priority of Service",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-7(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-07.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-7",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-7.3_smt",
+                        "name": "statement",
+                        "prose": "Develop alternate processing site agreements that contain priority-of-service provisions in accordance with availability requirements (including recovery time objectives)."
+                    },
+                    {
+                        "id": "cp-7.3_gdn",
+                        "name": "guidance",
+                        "prose": "Priority of service agreements refer to negotiated agreements with service providers that ensure that organizations receive priority treatment consistent with their availability requirements and the availability of information resources for logical alternate processing and/or at the physical alternate processing site. Organizations establish recovery time objectives as part of contingency planning."
+                    }
+                ]
+            },
+            {
+                "id": "cp-7.4",
+                "class": "SP800-53-enhancement",
+                "title": "Preparation for Use",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-7(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-07.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cm-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cp-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-7.4_smt",
+                        "name": "statement",
+                        "prose": "Prepare the alternate processing site so that the site can serve as the operational site supporting essential mission and business functions."
+                    },
+                    {
+                        "id": "cp-7.4_gdn",
+                        "name": "guidance",
+                        "prose": "Site preparation includes establishing configuration settings for systems at the alternate processing site consistent with the requirements for such settings at the primary site and ensuring that essential supplies and logistical considerations are in place."
+                    }
+                ]
+            },
+            {
+                "id": "cp-7.5",
+                "class": "SP800-53-enhancement",
+                "title": "Equivalent Information Security Safeguards",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-7(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-07.05"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-7",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "cp-7.6",
+                "class": "SP800-53-enhancement",
+                "title": "Inability to Return to Primary Site",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-7(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-07.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#bc39f179-c735-4da2-b7a7-b2b622119755",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-7.6_smt",
+                        "name": "statement",
+                        "prose": "Plan and prepare for circumstances that preclude returning to the primary processing site."
+                    },
+                    {
+                        "id": "cp-7.6_gdn",
+                        "name": "guidance",
+                        "prose": "There may be situations that preclude an organization from returning to the primary processing site such as if a natural disaster (e.g., flood or a hurricane) damaged or destroyed a facility and it was determined that rebuilding in the same location was not prudent."
+                    }
+                ]
+            }
+        ]
+    }
+}

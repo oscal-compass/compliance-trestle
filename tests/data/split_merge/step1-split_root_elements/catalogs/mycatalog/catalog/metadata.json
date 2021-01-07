@@ -1,25 +1,23 @@
 {
     "metadata": {
-        "title": "NIST Special Publication 800-53: Security and Privacy Controls for Federal Information\n         Systems and Organizations, Revision 5 Final Public Draft",
-        "last-modified": "2020-03-16T13:24:48.516-04:00",
+        "title": "NIST Special Publication 800-53 Revision 5: Security and Privacy Controls for Federal Information Systems and Organizations",
+        "last-modified": "2020-12-20T19:47:48.623+00:00",
         "version": "Revision 5",
-        "oscal-version": "1.0.0-Milestone3",
-        "properties": [
+        "oscal-version": "1.0.0-rc1",
+        "props": [
             {
                 "name": "keywords",
-                "value": "assurance, availability, computer security, confidentiality, control,\n         cybersecurity, FISMA, information security, information system, integrity, personally\n         identifiable information, Privacy Act, privacy controls, privacy functions, privacy\n         requirements, Risk Management Framework, security controls, security functions, security\n         requirements, system, system security"
+                "value": "assurance; availability; computer security; confidentiality; control; cybersecurity; FISMA; information security; information system; integrity; personally identifiable information; Privacy Act; privacy controls; privacy functions; privacy requirements; Risk Management Framework; security controls; security functions; security requirements; system; system security."
             }
         ],
         "links": [
             {
-                "href": "#90ec1671-8dcf-4bcf-8efe-ac6d06a806f0",
-                "rel": "alternate",
-                "text": "NIST publication (PDF)"
+                "href": "#c3397cc9-83c6-4459-adb2-836739dc1b94",
+                "rel": "alternate"
             },
             {
-                "href": "#abe434a3-7630-4138-8699-2ab8c7a9aa6c",
-                "rel": "canonical",
-                "text": "NIST publication via DOI lookup"
+                "href": "#f7cf488d-bc64-4a91-a994-810e153ee481",
+                "rel": "canonical"
             }
         ],
         "roles": [
@@ -34,12 +32,15 @@
         ],
         "parties": [
             {
-                "uuid": "d2cd65bd-2123-4dd9-afb2-c7564f3251c2",
+                "uuid": "41a93829-b76b-43ec-b9e7-250553511549",
                 "type": "organization",
-                "party-name": "Joint Task Force, Interagency Working Group",
+                "name": "Joint Task Force, Interagency Working Group",
+                "email-addresses": [
+                    "sec-cert@nist.gov"
+                ],
                 "addresses": [
                     {
-                        "postal-address": [
+                        "addr-lines": [
                             "National Institute of Standards and Technology",
                             "Attn: Computer Security Division",
                             "Information Technology Laboratory",
@@ -49,21 +50,18 @@
                         "state": "MD",
                         "postal-code": "20899-8930"
                     }
-                ],
-                "email-addresses": [
-                    "sec-cert@nist.gov"
                 ]
             }
         ],
         "responsible-parties": {
             "creator": {
                 "party-uuids": [
-                    "4ae7292e-6d8e-4735-86ea-11047c575e87"
+                    "41a93829-b76b-43ec-b9e7-250553511549"
                 ]
             },
             "contact": {
                 "party-uuids": [
-                    "4ae7292e-6d8e-4735-86ea-11047c575e87"
+                    "41a93829-b76b-43ec-b9e7-250553511549"
                 ]
             }
         }

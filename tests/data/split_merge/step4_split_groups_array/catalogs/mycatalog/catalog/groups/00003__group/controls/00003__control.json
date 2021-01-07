@@ -1,0 +1,27 @@
+{
+    "control": {
+        "id": "ca-4",
+        "class": "SP800-53",
+        "title": "Security Certification",
+        "props": [
+            {
+                "name": "label",
+                "value": "CA-4"
+            },
+            {
+                "name": "sort-id",
+                "value": "ca-04"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ca-2",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

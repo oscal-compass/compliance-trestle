@@ -1,0 +1,372 @@
+{
+    "control": {
+        "id": "ia-12",
+        "class": "SP800-53",
+        "title": "Identity Proofing",
+        "props": [
+            {
+                "name": "label",
+                "value": "IA-12"
+            },
+            {
+                "name": "sort-id",
+                "value": "ia-12"
+            }
+        ],
+        "links": [
+            {
+                "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
+                "rel": "reference"
+            },
+            {
+                "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
+                "rel": "reference"
+            },
+            {
+                "href": "#9099ed2c-922a-493d-bcb4-d896192243ff",
+                "rel": "reference"
+            },
+            {
+                "href": "#10963761-58fc-4b20-b3d6-b44a54daba03",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-1",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ia-12_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ia-12_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Identity proof users that require accounts for logical access to systems based on appropriate identity assurance level requirements as specified in applicable standards and guidelines;"
+                    },
+                    {
+                        "id": "ia-12_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Resolve user identities to a unique individual; and"
+                    },
+                    {
+                        "id": "ia-12_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Collect, validate, and verify identity evidence."
+                    }
+                ]
+            },
+            {
+                "id": "ia-12_gdn",
+                "name": "guidance",
+                "prose": "Identity proofing is the process of collecting, validating, and verifying a user\u2019s identity information for the purposes of establishing credentials for accessing a system. Identity proofing is intended to mitigate threats to the registration of users and the establishment of their accounts. Standards and guidelines specifying identity assurance levels for identity proofing include [SP 800-63-3](#737513fa-6758-403f-831d-5ddab5e23cb3) and [SP 800-63A](#9099ed2c-922a-493d-bcb4-d896192243ff). Organizations may be subject to laws, executive orders, directives, regulations, or policies that address the collection of identity evidence. Organizational personnel consult with the senior agency official for privacy and legal counsel regarding such requirements."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ia-12.1",
+                "class": "SP800-53-enhancement",
+                "title": "Supervisor Authorization",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-12(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-12.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-12",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-12.1_smt",
+                        "name": "statement",
+                        "prose": "Require that the registration process to receive an account for logical access includes supervisor or sponsor authorization."
+                    },
+                    {
+                        "id": "ia-12.1_gdn",
+                        "name": "guidance",
+                        "prose": "Including supervisor or sponsor authorization as part of the registration process provides an additional level of scrutiny to ensure that the user\u2019s management chain is aware of the account, the account is essential to carry out organizational missions and functions, and the user\u2019s privileges are appropriate for the anticipated responsibilities and authorities within the organization."
+                    }
+                ]
+            },
+            {
+                "id": "ia-12.2",
+                "class": "SP800-53-enhancement",
+                "title": "Identity Evidence",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-12(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-12.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-12",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-12.2_smt",
+                        "name": "statement",
+                        "prose": "Require evidence of individual identification be presented to the registration authority."
+                    },
+                    {
+                        "id": "ia-12.2_gdn",
+                        "name": "guidance",
+                        "prose": "Identity evidence, such as documentary evidence or a combination of documents and biometrics, reduces the likelihood of individuals using fraudulent identification to establish an identity or at least increases the work factor of potential adversaries. The forms of acceptable evidence are consistent with the risks to the systems, roles, and privileges associated with the user\u2019s account."
+                    }
+                ]
+            },
+            {
+                "id": "ia-12.3",
+                "class": "SP800-53-enhancement",
+                "title": "Identity Evidence Validation and Verification",
+                "params": [
+                    {
+                        "id": "ia-12.3_prm_1",
+                        "label": "organizational defined methods of validation and verification"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-12(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-12.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-12",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-12.3_smt",
+                        "name": "statement",
+                        "prose": "Require that the presented identity evidence be validated and verified through {{ ia-12.3_prm_1 }}."
+                    },
+                    {
+                        "id": "ia-12.3_gdn",
+                        "name": "guidance",
+                        "prose": "Validation and verification of identity evidence increases the assurance that accounts and identifiers are being established for the correct user and authenticators are being bound to that user. Validation refers to the process of confirming that the evidence is genuine and authentic, and the data contained in the evidence is correct, current, and related to an individual. Verification confirms and establishes a linkage between the claimed identity and the actual existence of the user presenting the evidence. Acceptable methods for validating and verifying identity evidence are consistent with the risks to the systems, roles, and privileges associated with the users account."
+                    }
+                ]
+            },
+            {
+                "id": "ia-12.4",
+                "class": "SP800-53-enhancement",
+                "title": "In-person Validation and Verification",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-12(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-12.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-12",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-12.4_smt",
+                        "name": "statement",
+                        "prose": "Require that the validation and verification of identity evidence be conducted in person before a designated registration authority."
+                    },
+                    {
+                        "id": "ia-12.4_gdn",
+                        "name": "guidance",
+                        "prose": "In-person proofing reduces the likelihood of fraudulent credentials being issued because it requires the physical presence of individuals, the presentation of physical identity documents, and actual face-to-face interactions with designated registration authorities."
+                    }
+                ]
+            },
+            {
+                "id": "ia-12.5",
+                "class": "SP800-53-enhancement",
+                "title": "Address Confirmation",
+                "params": [
+                    {
+                        "id": "ia-12.5_prm_1",
+                        "select": {
+                            "choice": [
+                                "registration code",
+                                "notice of proofing"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-12(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-12.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-12",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ia-12",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-12.5_smt",
+                        "name": "statement",
+                        "prose": "Require that a {{ ia-12.5_prm_1 }} be delivered through an out-of-band channel to verify the users address (physical or digital) of record."
+                    },
+                    {
+                        "id": "ia-12.5_gdn",
+                        "name": "guidance",
+                        "prose": "To make it more difficult for adversaries to pose as legitimate users during the identity proofing process, organizations can use out-of-band methods to ensure that the individual associated with an address of record is the same individual that participated in the registration. Confirmation can take the form of a temporary enrollment code or a notice of proofing. The delivery address for these artifacts is obtained from records and not self-asserted by the user. The address can include a physical or digital address. A home address is an example of a physical address. Email addresses and telephone numbers are examples of digital addresses."
+                    }
+                ]
+            },
+            {
+                "id": "ia-12.6",
+                "class": "SP800-53-enhancement",
+                "title": "Accept Externally-proofed Identities",
+                "params": [
+                    {
+                        "id": "ia-12.6_prm_1",
+                        "label": "organization-defined identity assurance level"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-12(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-12.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-12",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#9099ed2c-922a-493d-bcb4-d896192243ff",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#10963761-58fc-4b20-b3d6-b44a54daba03",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#ia-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-8",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-12.6_smt",
+                        "name": "statement",
+                        "prose": "Accept externally-proofed identities at {{ ia-12.6_prm_1 }}."
+                    },
+                    {
+                        "id": "ia-12.6_gdn",
+                        "name": "guidance",
+                        "prose": "To limit unnecessary re-proofing of identities, particularly of non-PIV users, organizations accept proofing conducted at a commensurate level of assurance by other agencies or organizations. Proofing is consistent with organizational security policy and the identity assurance level appropriate for the system, application, or information accessed. Accepting externally-proofed identities is a fundamental component of managing federated identities across agencies and organizations."
+                    }
+                ]
+            }
+        ]
+    }
+}

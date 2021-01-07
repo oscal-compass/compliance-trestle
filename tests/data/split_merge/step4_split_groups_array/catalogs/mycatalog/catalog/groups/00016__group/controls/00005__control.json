@@ -1,0 +1,31 @@
+{
+    "control": {
+        "id": "sa-6",
+        "class": "SP800-53",
+        "title": "Software Usage Restrictions",
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-6"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-06"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#cm-10",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#si-7",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

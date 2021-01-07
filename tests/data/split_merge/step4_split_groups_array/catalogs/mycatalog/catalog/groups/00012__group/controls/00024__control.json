@@ -1,0 +1,102 @@
+{
+    "control": {
+        "id": "pm-25",
+        "class": "SP800-53",
+        "title": "Minimization of Personally Identifiable Information Used in Testing, Training, and Research",
+        "params": [
+            {
+                "id": "pm-25_prm_1",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PM-25"
+            },
+            {
+                "name": "sort-id",
+                "value": "pm-25"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#pm-23",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pm-25_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "pm-25_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Develop, document, and implement policies and procedures that address the use of personally identifiable information for internal testing, training, and research;"
+                    },
+                    {
+                        "id": "pm-25_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Limit or minimize the amount of personally identifiable information used for internal testing, training, and research purposes;"
+                    },
+                    {
+                        "id": "pm-25_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Authorize the use of personally identifiable information when such information is required for internal testing, training, and research; and"
+                    },
+                    {
+                        "id": "pm-25_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Review and update policies and procedures {{ pm-25_prm_1 }}."
+                    }
+                ]
+            },
+            {
+                "id": "pm-25_gdn",
+                "name": "guidance",
+                "prose": "The use of personally identifiable information in testing, research, and training increases the risk of unauthorized disclosure or misuse of such information. Organizations consult with the senior agency official for privacy and/or legal counsel to ensure that the use of personally identifiable information in testing, training, and research is compatible with the original purpose for which it was collected. When possible, organizations use placeholder data to avoid exposure of personally identifiable information when conducting testing, training, and research."
+            }
+        ]
+    }
+}

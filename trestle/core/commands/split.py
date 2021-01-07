@@ -64,6 +64,9 @@ class SplitCmd(Command):
             return 1
 
         file_path = pathlib.Path(args_raw[const.ARG_FILE])
+        if not file_path.exists():
+            logger.error(f'File {file_path} does not exist.')
+            return 1
         content_type = FileContentType.to_content_type(file_path.suffix)
 
         # find the base directory of the file
@@ -109,15 +112,6 @@ class SplitCmd(Command):
         actions.append(CreatePathAction(sub_model_file))
         actions.append(WriteFileAction(sub_model_file, Element(sub_model_item, model_type), content_type))
         return actions
-
-    @classmethod
-    def get_sub_model_dir(cls, base_dir: pathlib.Path, sub_model: OscalBaseModel, dir_prefix: str) -> pathlib.Path:
-        """Get the directory path for the given model."""
-        model_type = utils.classname_to_alias(type(sub_model).__name__, 'json')
-        dir_name = f'{dir_prefix}{const.IDX_SEP}{model_type}'
-        sub_model_dir = base_dir / dir_name
-
-        return sub_model_dir
 
     @classmethod
     def split_model_at_path_chain(

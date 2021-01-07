@@ -1,0 +1,27 @@
+{
+    "control": {
+        "id": "at-5",
+        "class": "SP800-53",
+        "title": "Contacts with Security Groups and Associations",
+        "props": [
+            {
+                "name": "label",
+                "value": "AT-5"
+            },
+            {
+                "name": "sort-id",
+                "value": "at-05"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#pm-15",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

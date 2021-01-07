@@ -12,15 +12,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Dynamic Model Parser."""
+"""Model parsing for use when models themselves must be infered and are not known.
+
+Under most use cases trestle.core.base_model.OscalBaseModel provides functionality for loading Oscal models from files.
+However, under some circumstances are unknown. Use of functionality in this module should be avoided and inspected
+when used as to it's appropriateness.
+"""
 
 import importlib
 import logging
 import pathlib
-import warnings
-from typing import Any, Dict, List, Optional, Type, cast
-
-from pydantic import Field, create_model
+from typing import Any, Dict, Optional
 
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
@@ -30,14 +32,19 @@ from trestle.utils import fs
 logger = logging.getLogger(__name__)
 
 
-def parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
+def _parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
     """Load a model from the data dict.
 
-    Argument:
-        model_name: it should be of the form module.class
-                    class should be a Pydantic class that supports `parse_obj` method
+    This functionality is provided for situations when the OSCAL data type is not known ahead of time. Here the model
+    has been loaded into memory using json loads or similar and passed as a dict.
+
+    Args:
+        data: Oscal data loaded into memory in a dictionary with the `root key` removed.
+        model_name: it should be of the form <module>.<class> from trestle.oscal.* modules
+
+    Returns:
+        The oscal model of the desired model.
     """
-    warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     if data is None:
         raise TrestleError('data name is required')
 
@@ -68,7 +75,6 @@ def root_key(data: Dict[str, Any]) -> str:
 
 def to_class_name(name: str) -> str:
     """Convert to pascal class name."""
-    warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     if name.find('-') != -1:
         parts = name.split('-')
 
@@ -85,7 +91,6 @@ def to_class_name(name: str) -> str:
 
 def to_full_model_name(root_key: str, name: str = None) -> Optional[str]:
     """Find model name from the root_key in the file."""
-    warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
     try:
         # process root key and extract model name
         module_name = root_key.lower()
@@ -116,14 +121,14 @@ def to_full_model_name(root_key: str, name: str = None) -> Optional[str]:
     return None
 
 
-def parse_file(file_name: pathlib.Path, model_name: str) -> OscalBaseModel:
-    """Load a model from the file.
-
-    Argument:
-        model_name: it should be of the form module.class
-                    class should be a Pydantic class that supports `parse_obj` method
+def parse_file(file_name: pathlib.Path, model_name: Optional[str]) -> OscalBaseModel:
     """
-    warnings.warn('trestle.parser functions are deprecated', DeprecationWarning)
+    Load an oscal file from the file system where the oscal model type is not known.
+
+    Args:
+        file_name: File path
+        model_name: it should be of the form <module>.<class> which is derived from OscalBaseModel
+    """
     if file_name is None:
         raise TrestleError('file_name is required')
 
@@ -131,66 +136,4 @@ def parse_file(file_name: pathlib.Path, model_name: str) -> OscalBaseModel:
     rkey = root_key(data)
     if model_name is None:
         model_name = to_full_model_name(rkey)
-    return parse_dict(data[rkey], model_name)
-
-
-def wrap_for_output(model: OscalBaseModel) -> OscalBaseModel:
-    """Dynamically wrap for output a class such that the correct string is provided."""
-    warnings.warn(
-        'trestle.parser functions are deprecated. wrap_for_output built into OSCALBaseModel.', DeprecationWarning
-    )
-    # TODO: Refactor based on next method.
-    class_name = model.__class__.__name__
-    # It would be nice to pass through the description but I can't seem to and
-    # it does not affect the output
-    dynamic_passer = {}
-    dynamic_passer[class_to_oscal(class_name, 'field')] = (
-        model.__class__,
-        Field(model, title=class_to_oscal(class_name, 'field'), alias=class_to_oscal(class_name, 'json'))
-    )
-    wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_passer)  # type: ignore
-    # Default behaviour is strange here.
-    wrapped_model = wrapper_model(**{class_to_oscal(class_name, 'json'): model})
-    wrapped_model = cast(OscalBaseModel, wrapped_model)
-    return wrapped_model
-
-
-def wrap_for_input(raw_class: Type[OscalBaseModel]) -> Type[OscalBaseModel]:
-    """In this instance we are wrapping an actual OSCAL class not an instance."""
-    warnings.warn(
-        'trestle.parser functions are deprecated. wrap_for_input built ito OscalBaseModel', DeprecationWarning
-    )
-    # TODO: Check behaviour is fine when no
-    class_name = raw_class.__name__
-    dynamic_passer = {}
-    dynamic_passer[class_to_oscal(
-        class_name, 'field'
-    )] = (raw_class, Field(..., title=class_to_oscal(class_name, 'json'), alias=class_to_oscal(class_name, 'json')))
-    wrapper_model = create_model('Wrapped' + class_name, __base__=OscalBaseModel, **dynamic_passer)  # type: ignore
-    wrapper_model = cast(Type[OscalBaseModel], wrapper_model)
-    return wrapper_model
-
-
-def class_to_oscal(class_name: str, mode: str) -> str:
-    """
-    Return oscal json or field element name based on class name.
-
-    This is applicable when asking for a singular element.
-    """
-    warnings.warn('trestle.parser functions are deprecated. class_to_oscal now contained in utils', DeprecationWarning)
-    parts = pascal_case_split(class_name)
-    if mode == 'json':
-        return '-'.join(map(str.lower, parts))
-    elif mode == 'field':
-        return '_'.join(map(str.lower, parts))
-    else:
-        raise TrestleError('Bad option')
-
-
-def pascal_case_split(pascal_str: str) -> List[str]:
-    """Parse a pascal case string (e.g. a ClassName) and return a list of strings."""
-    warnings.warn(
-        'trestle.parser functions are deprecated. pascal_case_split now contained in utils', DeprecationWarning
-    )
-    start_idx = [i for i, e in enumerate(pascal_str) if e.isupper()] + [len(pascal_str)]
-    return [pascal_str[x:y] for x, y in zip(start_idx, start_idx[1:])]
+    return _parse_dict(data[rkey], model_name)

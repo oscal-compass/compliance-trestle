@@ -1,0 +1,89 @@
+{
+    "control": {
+        "id": "sr-8",
+        "class": "SP800-53",
+        "title": "Notification Agreements",
+        "params": [
+            {
+                "id": "sr-8_prm_1",
+                "select": {
+                    "how-many": "one or more",
+                    "choice": [
+                        "notification of supply chain compromises",
+                        "results of assessments or audits",
+                        " {{ sr-8_prm_2 }} "
+                    ]
+                }
+            },
+            {
+                "id": "sr-8_prm_2",
+                "depends-on": "sr-8_prm_1",
+                "label": "organization-defined information"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SR-8"
+            },
+            {
+                "name": "sort-id",
+                "value": "sr-08"
+            }
+        ],
+        "links": [
+            {
+                "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
+                "rel": "reference"
+            },
+            {
+                "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
+                "rel": "reference"
+            },
+            {
+                "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
+                "rel": "reference"
+            },
+            {
+                "href": "#863caf2a-978a-4260-9e8d-4a8929bce40c",
+                "rel": "reference"
+            },
+            {
+                "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                "rel": "reference"
+            },
+            {
+                "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                "rel": "reference"
+            },
+            {
+                "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
+                "rel": "reference"
+            },
+            {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sr-8_smt",
+                "name": "statement",
+                "prose": "Establish agreements and procedures with entities involved in the supply chain for the system, system component, or system service for the {{ sr-8_prm_1 }}."
+            },
+            {
+                "id": "sr-8_gdn",
+                "name": "guidance",
+                "prose": "The establishment of agreements and procedures facilitates communications among supply chain entities. Early notification of compromises and potential compromises in the supply chain that can potentially adversely affect or have adversely affected organizational systems or system components is essential for organizations to effectively respond to such incidents. The results of assessments or audits may include open-source information that contributed to a decision or result and could be used to help the supply chain entity resolve a concern or improve its processes."
+            }
+        ]
+    }
+}

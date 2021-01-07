@@ -29,21 +29,21 @@ meeting the minimum requirements of the json schema.
 NIST defines many types of referential links within the OSCAL schema. Here trestle is interested in supporting a subset of these links. In particular these links are characterized specifically by the fact that they refer to 'upstream' OSCAL
 artifacts. The table below identifies the references covered by this document.
 
-| Schema                                    | Json path ( represents array or named keys)                      | Refers to            |
-| \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-| \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- | \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- |
-| profile              | profile.imports\[*\].href                                             | catalog or profile   |
-| SSP                  | system-security-plan.import-profile.href                            | profile              |
-| component-definition | component-definition.import-component-definition\[*\].href            | component-definition |
-| component-definition | component-definition.component\[*\].control-implementations\[\*\].source | catalog or profile   |
-| target-definition | target-definition.import-target-definition\[*\].href            | target-definition |
-| target-definition | target-definition.component\[\*\].control-implementations\[\*\].source | catalog or profile   |
-| assessment-plan      | assessment-plan.import-ssp.href                                     | ssp                  |
-| assessment-results   | assessment-results.import-ap.href                                   | assessment-plan      |
+| Schema               | Json path ( represents array or named keys)                               | Refers to            |
+| -------------------- | ------------------------------------------------------------------------- | -------------------- |
+| profile              | profile.imports\[\*\].href                                                | catalog or profile   |
+| SSP                  | system-security-plan.import-profile.href                                  | profile              |
+| component-definition | component-definition.import-component-definition\[\*\].href               | component-definition |
+| component-definition | component-definition.component\[\*\].control-implementations\[\*\].source | catalog or profile   |
+| target-definition    | target-definition.import-target-definition\[\*\].href                     | target-definition    |
+| target-definition    | target-definition.component\[\*\].control-implementations\[\*\].source    | catalog or profile   |
+| assessment-plan      | assessment-plan.import-ssp.href                                           | ssp                  |
+| assessment-results   | assessment-results.import-ap.href                                         | assessment-plan      |
 
 It is worth noting that the profile definition is recursive. In some of the OSCAL schemas these objects are optional. For the purposes of trestle these references are considered mandatory and it is expected that trestle will error if fields
 are missing.
 
-In particular while (say as an example) import-ssp is optional in assessment-plan, without it we cannot validate the control ids provided by the user are sensical.
+In particular while (say as an example) import-ssp is optional in assessment-plan, without it we cannot validate if the control ids provided by the user make sense.
 
 ## Trestle cache dir.
 
@@ -87,7 +87,7 @@ Note that `localhost` has special treatment to manage relative file references.
 
 The cache *MAY* live within version control system depending on desired behaviour. It is recommended that caches live
 within the VCS to allow end to end tracking. Keeping the cache within the VCS implies that callers of trestle MUST
-explicitly ask for the cache to be refereshed if required.
+explicitly ask for the cache to be refreshed if required.
 
 The cache MUST NOT reference files within the current trestle context.
 
@@ -128,41 +128,44 @@ over http(s) are treated as absolute paths. Authorization / authentication is as
 Relative paths are setup assuming the they are with respect to the editing directory. Relative paths in the `dist` directory
 should be reworked to include `dist`.
 
-### HTTP(S)
+### HTTPS ONLY
 
-HTTP and HTTPS endpoints are supported for trestle. The simplest case is similar to this:
-`http(s)://sample.com/path/to/file.json` => `.trestle/cache/sample.com/path/to/file.json`
+HTTPS endpoints are supported for trestle. Unencrypted HTTP endpoints are not.
+
+The simplest case is similar to this:
+`https://sample.com/path/to/file.json` => `.trestle/cache/sample.com/path/to/file.json`
 
 For all workloads the http header application type *SHOULD* match the file type provided. Trestle *MAY* warn on inconsistencies,
-however, the file extension takes precidence.
+however, the file extension takes precedence.
 
 For endpoints where an extension is NOT provided
-`http(s)://sample.com/path/to/file`
+`https://sample.com/path/to/file`
 or
-`http(s)://sample.com/path/to/file/`
+`https://sample.com/path/to/file/`
 Trestle will:
 
 1. Infer file type from http headers
 1. write out the file to object.{filetype} file.
-1. If a user requests http(s)://sample.com/path/to/file/object.json\` trestle MUST warn the user of the risk of conflicts
+1. If a user requests https://sample.com/path/to/file/object.json\` trestle MUST warn the user of the risk of conflicts
    with automatically generated names.
 
 ### Authentication:
 
-HTTPS ONLY and NOT HTTP are supported for HTTP basic authentication. Attempting HTTP based authentication MUST cause
-errors. Credentials MUST NOT be stored in cleartext.
+As the caching supports HTTPS ONLY, there is support for HTTP basic authentication. Attempting HTTP based authentication MUST cause errors, as would attempting HTTP fetching in any case.
 
-NOT ALLOWED: `http(s)://username:password@sample.com/path/to/file/`
+Credentials MUST NOT be stored in cleartext.
 
-Credentials MUST be referred to my moustache templates e.g.:
+NOT ALLOWED: `https://username:password@sample.com/path/to/file/`
 
-`http(s)://{{username_var}}:{{password_var}}@sample.com/path/to/file/`
+Credentials MUST be referred to by moustache templates e.g.:
+
+`https://{{username_var}}:{{password_var}}@sample.com/path/to/file/`
 
 where the "moustache" templated variables refer to environmental variables in the user's environment.
 
-Support for non standard behaviour is suported on specific domains (see below).
+Support for non standard behaviour is supported on specific domains (see below).
 
-### Specific domains over http/https
+### Specific domains over https
 
 Given the requirement for raw source files users *may* have issues accurately accessing a resource on many domains for
 which they can get the raw form. This is also true on environments where 2-Factor Authentication may protect accessing

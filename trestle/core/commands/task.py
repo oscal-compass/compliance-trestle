@@ -97,7 +97,7 @@ class TaskCmd(Command):
             if section_label in global_config.sections():
                 config_section = global_config[section_label]
             else:
-                logger.warn(
+                logger.warning(
                     f'Config file was not configured with the appropriate section for the task: "[{section_label}]"'
                 )
 

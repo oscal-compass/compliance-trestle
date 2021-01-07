@@ -1,0 +1,109 @@
+{
+    "control": {
+        "id": "sc-4",
+        "class": "SP800-53",
+        "title": "Information in Shared System Resources",
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-4"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-04"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-4_smt",
+                "name": "statement",
+                "prose": "Prevent unauthorized and unintended information transfer via shared system resources."
+            },
+            {
+                "id": "sc-4_gdn",
+                "name": "guidance",
+                "prose": "Preventing unauthorized and unintended information transfer via shared system resources stops information produced by the actions of prior users or roles (or the actions of processes acting on behalf of prior users or roles) from being available to current users or roles (or current processes acting on behalf of current users or roles) that obtain access to shared system resources after those resources have been released back to the system. Information in shared system resources also applies to encrypted representations of information. In other contexts, control of information in shared system resources is referred to as object reuse and residual information protection. Information in shared system resources does not address information remanence, which refers to the residual representation of data that has been nominally deleted; covert channels (including storage and timing channels), where shared system resources are manipulated to violate information flow restrictions; or components within systems for which there are only single users or roles."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-4.1",
+                "class": "SP800-53-enhancement",
+                "title": "Security Levels",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-4(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-04.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-4",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sc-4.2",
+                "class": "SP800-53-enhancement",
+                "title": "Multilevel or Periods Processing",
+                "params": [
+                    {
+                        "id": "sc-4.2_prm_1",
+                        "label": "organization-defined procedures"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-4(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-04.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-4.2_smt",
+                        "name": "statement",
+                        "prose": "Prevent unauthorized information transfer via shared resources in accordance with {{ sc-4.2_prm_1 }} when system processing explicitly switches between different information classification levels or security categories."
+                    },
+                    {
+                        "id": "sc-4.2_gdn",
+                        "name": "guidance",
+                        "prose": "Changes in processing levels can occur during multilevel or periods processing with information at different classification levels or security categories. It can also occur during serial reuse of hardware components at different classification levels. Organization-defined procedures can include approved sanitization processes for electronically stored information."
+                    }
+                ]
+            }
+        ]
+    }
+}

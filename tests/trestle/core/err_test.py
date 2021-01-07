@@ -18,7 +18,7 @@
 from trestle.core.err import TrestleError, TrestleNotFoundError
 
 
-def test_trestle_error():
+def test_trestle_error() -> None:
     """Test trestle error."""
     msg = 'Custom error'
     try:
@@ -27,7 +27,7 @@ def test_trestle_error():
         assert err.msg == msg
 
 
-def test_trestle_not_found_error():
+def test_trestle_not_found_error() -> None:
     """Test trestle not found error."""
     msg = 'Custom not found error'
     try:

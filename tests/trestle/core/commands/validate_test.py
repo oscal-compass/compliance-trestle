@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for cli module command validate."""
-
+import pathlib
 import shutil
 import sys
 from unittest.mock import patch
@@ -27,22 +27,21 @@ from trestle import cli
 from trestle.core import utils
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import target as ostarget
-from trestle.utils import fs
 
 
-def test_target_dups(tmp_dir) -> None:
+def test_target_dups(tmp_path: pathlib.Path) -> None:
     """Test model validation."""
     content_type = FileContentType.YAML
     models_dir_name = test_utils.TARGET_DEFS_DIR
     model_ref = ostarget.TargetDefinition
 
-    test_utils.ensure_trestle_config_dir(tmp_dir)
+    test_utils.ensure_trestle_config_dir(tmp_path)
 
     file_ext = FileContentType.to_file_extension(content_type)
-    models_full_path = tmp_dir / models_dir_name / 'my_test_model'
+    models_full_path = tmp_path / models_dir_name / 'my_test_model'
     model_alias = utils.classname_to_alias(model_ref.__name__, 'json')
     model_def_file = models_full_path / f'{model_alias}{file_ext}'
-    fs.ensure_directory(models_full_path)
+    models_full_path.mkdir(exist_ok=True, parents=True)
 
     shutil.copyfile('tests/data/yaml/good_target.yaml', model_def_file)
 

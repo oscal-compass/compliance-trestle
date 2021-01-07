@@ -11,3 +11,9 @@ trestle split -e 'catalog.metadata,catalog.groups,catalog.back-matter'
 trestle split -l
 # which is the same as
 trestle split --list-available-elements
+
+
+REVERSE: 
+    trestle merge -e 'catalog.metadata,catalog.groups,catalog.back-matter'
+    or
+    trestle merge -e 'catalog.*'

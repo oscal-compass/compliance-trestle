@@ -290,6 +290,7 @@ class OscalBaseModel(BaseModel):
 
         Returns:
             Opportunistic copy of the data into the new model type.
+
         """
         logger.debug('Copy to started')
         # FIXME: This needs to be tested. Unsure of behavior.

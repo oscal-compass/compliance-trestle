@@ -1,0 +1,27 @@
+{
+    "control": {
+        "id": "sc-9",
+        "class": "SP800-53",
+        "title": "Transmission Confidentiality",
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-9"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-09"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#sc-8",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}
