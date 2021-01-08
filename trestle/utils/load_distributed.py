@@ -72,7 +72,7 @@ def load_distributed(
 
     Returns:
         Tuple[Type[OscalBaseModel], str, Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]]: Return
-            a tuple of Model Type (e.g. <class 'trestle.oscal.catalog.Catalog'>), Model Alias (e.g. 'catalog.metadata'),
+            a tuple of Model Type (e.g. class 'trestle.oscal.catalog.Catalog'), Model Alias (e.g. 'catalog.metadata'),
             and Instance of the Model. If the model is decomposed/split/distributed, the instance of the model contains
             the decomposed models loaded recursively.
     """

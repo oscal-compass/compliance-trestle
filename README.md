@@ -1,4 +1,4 @@
-# Compliance-trestle aka trestle
+# Compliance-trestle a.k.a. `trestle`
 
 [![OS Compatibility][platform-badge]](#prerequisites)
 [![Python Compatibility][python-badge]][python]
@@ -101,7 +101,7 @@ Our project welcomes external contributions. Please consult [CONTRIBUTING.md](CO
 ## License & Authors
 
 If you would like to see the detailed LICENSE click [here](LICENSE).
-Consult [MAINTAINERS](MAINTAINERS.md) for a list of authors.
+Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](MAINTAINERS.md) for the core team.
 
 ```text
 # Copyright (c) 2020 IBM Corp. All rights reserved.

@@ -41,7 +41,7 @@ For a list of the maintainers, see the [MAINTAINERS.md](MAINTAINERS.md) page.
 for all enhancements and non critical features. `main` is used to track releases and allow for hotfixes.
 
 Each merge into `develop` will be squashed into a single commit. This can either be performed on merge or via developers
-rebasing their commits into a single commit. As `trestle` has adopted [python semantic release](python-semantic-release.readthedocs.org)
+rebasing their commits into a single commit. As `trestle` has adopted [python semantic release](https://python-semantic-release.readthedocs.org)
 the rebase / squash merge commit MUST follow the [angular commit style](https://github.com/angular/angular.js/blob/main/DEVELOPERS.md#-git-commit-guidelines).
 
 Merges from `develop` to `main` for release capture all of these commits for the changelog. The current objective is to

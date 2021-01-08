@@ -1,6 +1,6 @@
 # Developing for the trestle documentation website
 
-This page describes the developing for the trestle website.
+This page describes the developing for the trestle (website) which is deploye
 
 ## Build system and local testing of the website.
 
@@ -8,6 +8,11 @@ Trestle has adopted the `mkdocs` system to generate this website using a small n
 website can be viewed locally from a clone of the `compliance-trestle` repo by running `make docs-site` in the root
 directory bringing the website up at `https://localhost:8000`. If you experience issues run `make develop` to ensure the
 appropriate markdown extensions are in your python environment.
+
+`make docs-site` performs two actions:
+
+- Runs the custom automation script `scripts/website_automation.py`
+- Serves the website on localhost.
 
 All documentation assets are stored within the `./docs` folder. The exception being `mkdocs.yml` which configures the
 documentation tree. Before opening a PR users should ensure:
