@@ -85,7 +85,7 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     steps:
-      uses: tukasz/direct-merge-action@master
+    - uses: tukasz/direct-merge-action@master
       with:
         GITHUB_TOKEN: ${{ secrets.ADMIN_PAT }}
         source-branch: master
