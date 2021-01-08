@@ -10,7 +10,7 @@
 - \[ \] I have updated the documentation accordingly.
 - \[ \] I have added tests to cover my changes.
 - \[ \] All new and existing tests passed.
-- \[ \] All commits are signed.
+- \[ \] All commits are signed-off.
 
 <!---
 ## Pull requests instructions
