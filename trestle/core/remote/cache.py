@@ -104,10 +104,11 @@ class LocalFetcher(FetcherBase):
         # Use the uri's path.parent to set a cache location
         cache_location_string = path.parent.__str__()
         # Remove the drive letter for Windows/DOS paths:
-        if re.match('[a-zA-Z]:',uri):
+        if re.match('[a-zA-Z]:', uri):
             cache_location_string = re.sub('[a-zA-Z]:', '', path.parent.__str__())
         # Locte first non-slash character as the root subdirectory to start with:
-        cache_location_string_relative = cache_location_string[re.search('[a-z-A-Z0-9]', cache_location_string).span()[0]:]
+        non_slash_start = re.search('[a-z-A-Z0-9]', cache_location_string).span()[0]
+        cache_location_string_relative = cache_location_string[non_slash_start:]
         localhost_cached_dir = localhost_cached_dir / pathlib.Path(cache_location_string_relative)
         localhost_cached_dir.mkdir(parents=True, exist_ok=True)
         self._inst_cache_path = localhost_cached_dir
