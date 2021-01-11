@@ -25,6 +25,7 @@ from tests import test_utils
 
 import trestle.oscal.catalog as oscatalog
 from trestle.core.commands.merge import MergeCmd
+from trestle.core.commands.split import SplitCmd
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
@@ -312,3 +313,48 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
 
     # Assert the generated plan matches the expected plan'
     assert len(list(diff(generated_plan, expected_plan))) == 0
+
+
+def test_split_merge(testdata_dir, tmp_trestle_dir):
+    """Test merging data that has been split using the split command- to ensure symmetry."""
+    # trestle split -f catalog.json -e catalog.groups.*.controls.*
+
+    # prepare trestle project dir with the file
+    test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
+
+    test_data_source = testdata_dir / 'split_merge/step0-merged_catalog/catalogs'
+
+    catalogs_dir = Path('catalogs/')
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+
+    # Copy files from test/data/split_merge/step4
+    shutil.rmtree(catalogs_dir)
+    shutil.copytree(test_data_source, catalogs_dir)
+
+    os.chdir(mycatalog_dir)
+    catalog_file = Path('catalog.json')
+
+    # Read and store the catalog before split
+    stripped_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.absolute())
+    pre_split_catalog = stripped_catalog_type.oscal_read(catalog_file)
+    assert 'groups' in pre_split_catalog.__fields__.keys()
+
+    # Split the catalog
+    args = argparse.Namespace(name='split', file='catalog.json', verbose=1, element='catalog.groups.*.controls.*')
+    split = SplitCmd()._run(args)
+
+    assert split == 0
+
+    interim_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.absolute())
+    interim_catalog = interim_catalog_type.oscal_read(catalog_file.absolute())
+    assert 'groups' not in interim_catalog.__fields__.keys()
+
+    # Merge everything back into the catalog
+    # Equivalent to trestle merge -e catalog.*
+    args = argparse.Namespace(name='merge', element='catalog.*', verbose=1)
+    MergeCmd()._run(args)
+
+    # Check both the catalogs are the same.
+    post_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.absolute())
+    post_merge_catalog = post_catalog_type.oscal_read(catalog_file)
+    assert post_merge_catalog == pre_split_catalog
