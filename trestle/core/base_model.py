@@ -184,16 +184,13 @@ class OscalBaseModel(BaseModel):
 
         Args:
             stripped_fields: The fields to be removed from the current data class.
-            Note that stripped_fields or stripped_fields_alias can be provided but not both.
-            stripped_fields_aliases: The fields to be removed from the current data class provided by alias
-            (aka OSCAL 'hyphen-form' name.).
+            stripped_fields_aliases: The fields to be removed from the current data class provided by alias.
 
         Returns:
             The current datamodel with the fields provided removed in a derivate (run time created) data model.
 
         Raises:
-            err.TrestleError: If user provided both stripped_fields and stripped_field_aliases or neither. Exactly one
-            should be provided.
+            err.TrestleError: If user provided both stripped_fields and stripped_field_aliases or neither.
             err.TrestleError: If incorrect aliases or field names are provided.
         """
         # stripped class type
@@ -213,7 +210,7 @@ class OscalBaseModel(BaseModel):
 
         return stripped_instance
 
-    def oscal_write(self, path: pathlib.Path, minimize_json: bool = False) -> None:
+    def oscal_write(self, path: pathlib.Path) -> None:
         """
         Write out a pydantic data model in an oscal friendly way.
 
@@ -223,8 +220,6 @@ class OscalBaseModel(BaseModel):
 
         Args:
             path: The output file location for the oscal object.
-
-            mimimize_json: If using json format flag for whether json is minimized or not
 
         Raises:
             err.TrestleError: If a unknown file extension is provided.

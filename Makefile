@@ -48,8 +48,12 @@ release::
 gen-oscal::
 	python ./scripts/gen_oscal.py
 
-docs-automation:
+docs-automation::
 	python ./scripts/website_automation.py
 
-docs-site: docs-automation
+docs-validate::
+	mkdocs build -c -s
+	rm -rf site
+
+docs-serve: docs-automation
 	mkdocs serve	

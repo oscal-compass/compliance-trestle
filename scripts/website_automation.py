@@ -36,7 +36,7 @@ def update_mkdocs_meta(path: pathlib.Path, module_list: List[Any]) -> None:
     for index in range(len(nav)):
         if 'Reference' in nav[index].keys():
             nav[index]['Reference'] = []
-            nav[index]['Reference'].append({'Overview': 'api_reference/overview.md'})
+            nav[index]['Reference'].append({'Overview': 'api_overview.md'})
             nav[index]['Reference'].append({'trestle': module_list})
 
     yaml_structure['nav'] = nav
@@ -69,7 +69,7 @@ def create_module_markdowns(base_path: pathlib.Path, base_module: str, dump_loca
     return module_arr
 
 
-def md_license(original: pathlib.Path, md_ed_license: pathlib.Path):
+def md_txt(original: pathlib.Path, md_ed_license: pathlib.Path):
     """Convert the apache license into a markdown file by wrapping the content in a text escape block."""
     assert original.exists()
     orig_data = original.open('r').read()
@@ -84,4 +84,5 @@ if __name__ == '__main__':
     structer = create_module_markdowns(pathlib.Path('trestle'), 'trestle', pathlib.Path('docs/api_reference'))
     update_mkdocs_meta(pathlib.Path('mkdocs.yml'), structer)
     # Ensure single source of truth for license file
-    md_license(pathlib.Path('license'), pathlib.Path('docs/license.md'))
+    md_txt(pathlib.Path('license'), pathlib.Path('docs/license.md'))
+    md_txt(pathlib.Path('DCO1.1.txt'), pathlib.Path('docs/contributing/DCO.md'))

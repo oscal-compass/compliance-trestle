@@ -18,9 +18,10 @@ nav:
   - Overview: contributing/mkdocs_contributing.md
   - Contributors: https://github.com/IBM/compliance-trestle/graphs/contributors
   - Maintainers: maintainers.md
-  - documentation website: contributing/website.md
+  - Documentation website: contributing/website.md
+  - Developer Certificate of Originality: contributing/DCO.md
 - Reference:
-  - Overview: api_reference/overview.md
+  - Overview: api_overview.md
   - trestle:
     - tasks:
       - base_task: api_reference/trestle.tasks.base_task.md

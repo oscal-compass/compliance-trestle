@@ -7,13 +7,13 @@ To contribute code or documentation, please submit a [pull request](https://gith
 
 A good way to familiarize yourself with the codebase and contribution process is
 to look for and tackle low-hanging fruit in the [issue tracker](https://github.com/IBM/compliance-trestle/issues).
-Before embarking on a more ambitious contribution, please quickly [get in touch](MAINTAINERS.md) with us.
+Before embarking on a more ambitious contribution, please quickly [get in touch](https://ibm.github.io/compliance-trestle/maintainers/) with us.
 
 **Note: We appreciate your effort, and want to avoid a situation where a contribution
 requires extensive rework (by you or by us), sits in backlog for a long time, or
 cannot be accepted at all!**
 
-We have also adopted [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
+We have also adopted [Contributor Covenant Code of Conduct](https://ibm.github.io/compliance-trestle/contributing/mkdocs_contributing/).
 
 ### Proposing new features
 
@@ -33,7 +33,7 @@ The project maintainers use LGTM (Looks Good To Me) in comments on the code
 review to indicate acceptance. A change requires LGTMs from one of the
 maintainers of each component affected.
 
-For a list of the maintainers, see the [MAINTAINERS.md](MAINTAINERS.md) page.
+For a list of the maintainers, see the [MAINTAINERS.md](https://ibm.github.io/compliance-trestle/maintainers/) page.
 
 ### Merging and release workflow.
 
@@ -84,7 +84,7 @@ e.g.
 
 We have tried to make it as easy as possible to make contributions. This
 applies to how we handle the legal aspects of contribution. We use the
-same approach - the [Developer's Certificate of Origin 1.1 (DCO)](DCO1.1.txt) - that the Linux® Kernel [community](https://elinux.org/Developer_Certificate_Of_Origin)
+same approach - the [Developer's Certificate of Origin 1.1 (DCO)](https://ibm.github.io/compliance-trestle/contributing/DCO.md) - that the Linux® Kernel [community](https://elinux.org/Developer_Certificate_Of_Origin)
 uses to manage code contributions.
 
 We simply ask that when submitting a patch for review, the developer
