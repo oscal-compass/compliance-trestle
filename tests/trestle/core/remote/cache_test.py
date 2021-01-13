@@ -16,10 +16,13 @@
 """Testing for cache functionality."""
 
 import pathlib
+import pytest
 import random
 import string
+from unittest.mock import patch
 
 from trestle.core import generators
+from trestle.core.err import TrestleError
 from trestle.core.remote import cache
 from trestle.oscal.catalog import Catalog
 
@@ -44,6 +47,35 @@ def test_local_fetcher(tmp_trestle_dir):
     fetcher._refresh = True
     fetcher._update_cache()
     assert fetcher._inst_cache_path.exists()
+
+
+def test_sftp_fetcher(tmp_trestle_dir):
+    """Test the local fetcher."""
+    uri = 'sftp://usernamepassword@some.host/path/to/file.json'
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    catalog_file = pathlib.Path(tmp_trestle_dir / f'{rand_str}.json').__str__()
+    catalog_data = generators.generate_sample_model(Catalog)
+    catalog_data.oscal_write(pathlib.Path(catalog_file))
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    # with patch('trestle.core.remote.cache.SFTPFetcher._update_cache') as sftp_update_cache_mock:
+    #     sftp_update_cache_mock.return_value = None
+    #     try:
+    #         fetcher._update_cache()
+    #     except:
+    #         AssertionError()
+    try:
+        fetcher._update_cache()
+    except:
+        AssertionError()
+
+
+def test_fetcher_bad_uri(tmp_trestle_dir):
+    """Test fetcher factory with bad URI."""
+    for uri in ['', 'https://', 'sftp://', '..', 'sftp://blah.com']:
+        with pytest.raises(TrestleError):
+            fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
 
 
 def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:

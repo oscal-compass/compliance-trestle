@@ -20,12 +20,13 @@ Allows for using uris to reference external directories and then expand.
 """
 
 import logging
+import paramiko
 import pathlib
 import re
 import shutil
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Type
-
+from urllib import parse
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
@@ -161,8 +162,37 @@ class SFTPFetcher(FetcherBase):
     ) -> None:
         """Initialize STFP fetcher."""
         super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
+        # Is this a valid uri, however? Username and password are optional, of course.
+        u = parse.urlparse(self._uri)
+        if u.scheme != 'sftp' or u.hostname == '' or u.path == '':
+            logger.error(f'Bad sftp URI {self._uri}')
+            raise TrestleError(f'Cache update failure for {self._uri}')
 
     def _update_cache(self) -> None:
+        if self._cache_only:
+            # Don't update if cache only.
+            return
+
+        # Normalize sftp uri to a root file.
+        u = parse.urlparse(self._uri)
+        localhost_cached_dir = self._trestle_cache_path / u.hostname
+        localhost_cached_dir = localhost_cached_dir / pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0]:]).parent
+        try:
+            localhost_cached_dir.mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+                logger.error(f'Error creating cache directory {localhost_cached_dir} for {self._uri}')
+                logger.debug(e)
+                raise TrestleError(f'Cache update failure for {self._uri}')
+            
+        self._inst_cache_path = localhost_cached_dir
+
+        if self._inst_cache_path.exists() and self._refresh:
+            try:
+                pass
+            except Exception as e:
+                logger.error(f'Unable to update cache for {self._uri}')
+                logger.debug(e)
+                raise TrestleError(f'Cache update failure for {self._uri}')
         pass
 
 
