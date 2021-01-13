@@ -268,6 +268,10 @@ class SplitCmd(Command):
         if strip_root:
             stripped_field_alias.append(element_path.get_element_name())
             stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
+            # If it's an empty model after stripping the fields, don't create path and don't write
+            if set(model_obj.__fields__.keys()) == set(stripped_field_alias):
+                return path_chain_end
+
             if root_file_name != '':
                 root_file = base_dir / root_file_name
             else:
@@ -324,6 +328,9 @@ class SplitCmd(Command):
 
         # strip the root model object and add a WriteAction
         stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
+        # If it's an empty model after stripping the fields, don't create path and don't write
+        if set(model_obj.__fields__.keys()) == set(stripped_field_alias):
+            return split_plan
         if root_file_name != '':
             root_file = base_dir / root_file_name
         else:
