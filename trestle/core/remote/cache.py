@@ -164,9 +164,18 @@ class SFTPFetcher(FetcherBase):
         super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
         # Is this a valid uri, however? Username and password are optional, of course.
         u = parse.urlparse(self._uri)
-        if u.scheme != 'sftp' or u.hostname == '' or u.path == '':
-            logger.error(f'Bad sftp URI {self._uri}')
-            raise TrestleError(f'Cache update failure for {self._uri}')
+        if u.scheme != 'sftp':
+            logger.error(f'Malformed URI with broken URL scheme {self._uri}')
+            raise TrestleError(f'Cache request for invalid input URI scheme {self._uri}')
+        if not u.hostname:
+            logger.error(f'Malformed URI, cannot parse hostname in URL {self._uri}')
+            raise TrestleError(f'Cache request for invalid input URI: missing hostname {self._uri}')
+        if not u.path:
+            logger.error(f'Malformed URI, cannot parse path in URL {self._uri}')
+            raise TrestleError(f'Cache request for invalid input URI: missing file path {self._uri}')
+        if u.password and not u.username:
+            logger.error(f'Malformed URI, password found but username missing in URL {self._uri}')
+            raise TrestleError(f'Cache request for invalid input URI: password found but username missing {self._uri}')
 
     def _update_cache(self) -> None:
         if self._cache_only:
@@ -176,6 +185,7 @@ class SFTPFetcher(FetcherBase):
         # Normalize sftp uri to a root file.
         u = parse.urlparse(self._uri)
         localhost_cached_dir = self._trestle_cache_path / u.hostname
+        # Skip any number of back- or forward slashes preceding the url path (u.path)
         localhost_cached_dir = localhost_cached_dir / pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0]:]).parent
         try:
             localhost_cached_dir.mkdir(parents=True, exist_ok=True)
@@ -242,13 +252,19 @@ class FetcherFactory(object):
         elif 'sftp://' == uri[0:7]:
             return SFTPFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
         elif 'https://' == uri[0:8]:
-            # Test for github uri assumption - must be first after basic auth (if it exists)
-            cleaned = uri[8:]
-            # tests for special scenarios
-            if cleaned.split('@')[-1][0:7] == 'github.':
-                return GithubFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
+            # Check for valid URL:
+            u = parse.urlparse(uri)
+            if u.hostname:
+                # Test for github uri assumption - must be first after basic auth (if it exists)
+                cleaned = uri[8:]
+                # tests for special scenarios
+                if cleaned.split('@')[-1][0:7] == 'github.':
+                    return GithubFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
+                else:
+                    return HTTPSFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
             else:
-                return HTTPSFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
+                logger.error(f'Malformed URI, cannot parse hostname in URL {uri}')
+                raise TrestleError(f'Cache request for input URI: cannot find hostname {uri}')
         elif 'C:\\' == uri[0:3]:
             return LocalFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
         else:
