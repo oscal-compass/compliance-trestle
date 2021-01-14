@@ -43,7 +43,7 @@ def _parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
         model_name: it should be of the form <module>.<class> from trestle.oscal.* modules
 
     Returns:
-        The oscal s
+        The oscal model of the desired model.
     """
     if data is None:
         raise TrestleError('data name is required')
@@ -122,10 +122,12 @@ def to_full_model_name(root_key: str, name: str = None) -> Optional[str]:
 
 
 def parse_file(file_name: pathlib.Path, model_name: Optional[str]) -> OscalBaseModel:
-    """Load an oscal file from the file system where the oscal model type is not known.
+    """
+    Load an oscal file from the file system where the oscal model type is not known.
 
     Args:
-        model_name: it should be of the form <module>.<class> which is derived from OscalBaseModel:
+        file_name: File path
+        model_name: it should be of the form module.class which is derived from OscalBaseModel
     """
     if file_name is None:
         raise TrestleError('file_name is required')

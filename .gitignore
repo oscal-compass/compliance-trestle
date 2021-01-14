@@ -31,4 +31,6 @@ tmp
 
 .coverage
 coverage.xml
+cov_html
 
+site

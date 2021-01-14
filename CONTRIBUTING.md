@@ -7,13 +7,13 @@ To contribute code or documentation, please submit a [pull request](https://gith
 
 A good way to familiarize yourself with the codebase and contribution process is
 to look for and tackle low-hanging fruit in the [issue tracker](https://github.com/IBM/compliance-trestle/issues).
-Before embarking on a more ambitious contribution, please quickly [get in touch](MAINTAINERS.md) with us.
+Before embarking on a more ambitious contribution, please quickly [get in touch](https://ibm.github.io/compliance-trestle/maintainers/) with us.
 
 **Note: We appreciate your effort, and want to avoid a situation where a contribution
 requires extensive rework (by you or by us), sits in backlog for a long time, or
 cannot be accepted at all!**
 
-We have also adopted [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
+We have also adopted [Contributor Covenant Code of Conduct](https://ibm.github.io/compliance-trestle/contributing/mkdocs_contributing/).
 
 ### Proposing new features
 
@@ -33,7 +33,7 @@ The project maintainers use LGTM (Looks Good To Me) in comments on the code
 review to indicate acceptance. A change requires LGTMs from one of the
 maintainers of each component affected.
 
-For a list of the maintainers, see the [MAINTAINERS.md](MAINTAINERS.md) page.
+For a list of the maintainers, see the [MAINTAINERS.md](https://ibm.github.io/compliance-trestle/maintainers/) page.
 
 ### Merging and release workflow.
 
@@ -41,7 +41,7 @@ For a list of the maintainers, see the [MAINTAINERS.md](MAINTAINERS.md) page.
 for all enhancements and non critical features. `main` is used to track releases and allow for hotfixes.
 
 Each merge into `develop` will be squashed into a single commit. This can either be performed on merge or via developers
-rebasing their commits into a single commit. As `trestle` has adopted [python semantic release](python-semantic-release.readthedocs.org)
+rebasing their commits into a single commit. As `trestle` has adopted [python semantic release](https://python-semantic-release.readthedocs.org)
 the rebase / squash merge commit MUST follow the [angular commit style](https://github.com/angular/angular.js/blob/main/DEVELOPERS.md#-git-commit-guidelines).
 
 Merges from `develop` to `main` for release capture all of these commits for the changelog. The current objective is to
@@ -49,6 +49,16 @@ release once per sprint (2 weeks)
 
 Hotfixes *may* be merged directly into main when critical bugs are found. Each hotfix *must* be squashed when merging
 into main and MUST only be a commit of type `fix:` in angular style.
+
+## Typing, docstrings and documentation
+
+`trestle` has a goal of using [PEP 484](https://www.python.org/dev/peps/pep-0484/) type annotations where possible / practical.
+The devops process does not _strictly_ enforce typing, however, the expectation is that type coverage is added for new
+commits with a focus on quality over quantity (e.g. don't add `Any` everywhere just to meet coverage requirements).
+
+`mkbuild` is used to generate the [trestle documenation site](https://ibm.github.io/compliance-trestle). The `mkbuild`
+website includes an API reference section generated from the code. Docstrings within the code are expected to follow
+[google style docstrings](https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html).
 
 ## Legal
 
@@ -74,7 +84,7 @@ e.g.
 
 We have tried to make it as easy as possible to make contributions. This
 applies to how we handle the legal aspects of contribution. We use the
-same approach - the [Developer's Certificate of Origin 1.1 (DCO)](DCO1.1.txt) - that the Linux® Kernel [community](https://elinux.org/Developer_Certificate_Of_Origin)
+same approach - the [Developer's Certificate of Origin 1.1 (DCO)](https://ibm.github.io/compliance-trestle/contributing/DCO.md) - that the Linux® Kernel [community](https://elinux.org/Developer_Certificate_Of_Origin)
 uses to manage code contributions.
 
 We simply ask that when submitting a patch for review, the developer

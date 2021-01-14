@@ -1,4 +1,4 @@
-# Compliance-trestle a.k.a. `trestle`
+# Compliance-trestle (also known as  `trestle`)
 
 [![OS Compatibility][platform-badge]](#prerequisites)
 [![Python Compatibility][python-badge]][python]
@@ -96,12 +96,12 @@ Users needing to import XML OSCAL artifacts are recommended to look at NIST's XM
 
 ## Contributing to Trestle
 
-Our project welcomes external contributions. Please consult [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
+Our project welcomes external contributions. Please consult [contributing](contributing/overview) to get started.
 
 ## License & Authors
 
 If you would like to see the detailed LICENSE click [here](LICENSE).
-Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](MAINTAINERS.md) for the core team.
+Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](maintainers) for the core team.
 
 ```text
 # Copyright (c) 2020 IBM Corp. All rights reserved.
