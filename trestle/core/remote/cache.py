@@ -165,9 +165,6 @@ class SFTPFetcher(FetcherBase):
         super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
         # Is this a valid uri, however? Username and password are optional, of course.
         u = parse.urlparse(self._uri)
-        if u.scheme != 'sftp':
-            logger.error(f'Malformed URI with broken URL scheme {self._uri}')
-            raise TrestleError(f'Cache request for invalid input URI scheme {self._uri}')
         if not u.hostname:
             logger.error(f'Malformed URI, cannot parse hostname in URL {self._uri}')
             raise TrestleError(f'Cache request for invalid input URI: missing hostname {self._uri}')

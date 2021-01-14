@@ -51,6 +51,45 @@ def test_local_fetcher(tmp_trestle_dir):
     assert fetcher._inst_cache_path.exists()
 
 
+def test_sftp_fetcher_init_mkdir_fails(tmp_trestle_dir):
+    """Test the local fetcher."""
+    uri = 'sftp://some.host//path/to/test.json'
+    with patch('pathlib.Path.mkdir') as trestle_mkdir_mock:
+        trestle_mkdir_mock.side_effect = err.TrestleError('init_mkdir_error')
+        with patch('pathlib.Path.mkdir') as cache_mkdir_mock:
+            cache_mkdir_mock.side_effect = err.TrestleError('init_mkdir_error')
+            try:
+                fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+            except Exception:
+                AssertionError()
+            else:
+                assert True
+
+
+def test_sftp_fetcher_mkdir_cache_fails(tmp_trestle_dir):
+    """Test the local fetcher."""
+    uri = 'sftp://some.host//path/to/test.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with patch('paramiko.SSHClient.load_system_host_keys') as ssh_load_keys_mock:
+        ssh_load_keys_mock.return_value = None
+        with patch('paramiko.SSHClient.connect') as ssh_connect_mock:
+            ssh_connect_mock.return_value = None
+            with patch('paramiko.SSHClient.open_sftp') as sftp_open_mock:
+                sftp_open_mock.return_value = None
+                with patch('paramiko.sftp_client.SFTPClient.get') as sftp_get_mock:
+                    sftp_get_mock.return_value = None
+                    with patch('pathlib.Path.mkdir') as cache_mkdir_mock:
+                        cache_mkdir_mock.side_effect = err.TrestleError('cache_mkdir_error')
+                        try:
+                            fetcher._update_cache()
+                        except Exception:
+                            AssertionError()
+                        else:
+                            assert True
+
+
 def test_sftp_fetcher(tmp_trestle_dir):
     """Test the local fetcher."""
     uri = 'sftp://some.host//path/to/test.json'
