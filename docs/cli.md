@@ -256,27 +256,12 @@ In the near future, `trestle split` should be smart enough to figure out which j
 ## `trestle merge`
 
 The trestle merge command is the reversal of `trestle split`. This command allows users to reverse the decomposition of a trestle model by aggregating subcomponents scattered across multiple files or directories into the parent JSON/YAML file.
+To merge a model, you have to first change working directory to the root model component directory that you want to merge a sub-component model into.
+The following option is required:
 
-The following options are currently supported:
+- `-e or --elements`: specifies the properties (JSON/YAML path) that will be merged, relative to the current working directory. This must contain at least 2 elements, where the last element is the model/sub-component to be merged into the second from last component.
 
-- `-f or --file`: this option specifies the file/directory paths of the files and/or directories containing the elements that will be merged.
-- `-d or --destination`: specifies the parent JSON/YAML file in which all the properties from the files/directories passed in via the `-f` option will be merge into.
-
-As an example, a command such as:
-
-> `$TRESTLE_BASEDIR/catalogs/nist800-53/catalog$ trestle merge -f uuid.json,metadata.json,groups.json,back-matter.json -d ../catalog.json`
-
-would merge the properties inside each of the files passed in via the `-f` option to the destination file specified with the `-d` option.
-
-In the near future, trestle merge should be smart enough to figure out which json files contain the elemenets that you want to be merged as well as the destination file that the elements should be placed into. In that case, both `-f` option and `-d` would be deprecated and the commands would look like:
-
-> `$TRESTLE_BASEDIR/catalogs/nist800-53/catalog$ trestle merge -e uuid,metadata,groups,back-matter`
-
-The only required option would be:
-
-- `-e or --elements`: specifies the properties (JSON/YAML path) that will be merged. In the command `trestle merge -e uuid,metadata,groups,back-matter`, the properties `uuid` from `uuid.json`, `metadata` from `metadata.json`, `groups` property from `groups.json` or `groups` directory, and `back-matter` property from `back-matter.json` would all be moved/merged into `../catalog.json`.
-  In order to determine which elements the user can merge at the level the command is being executed, the following command can be used:
-  `trestle merge -l` which would be the same as `trestle merge --list-available-elements`
+For example, in the command `trestle merge -e catalog.metadata`, executed in the same directory where `catalog.json` or splitted `catalog` directory exists, the property `metadata` from `metadata.json` or `metadata.yaml` would be moved/merged into `catalog.json`. If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into `metadata`, before merging `metadata` subcomponent into `catalog.json`. To specify merging every sub-component split from a component, `.*` can be used. For example, `trestle merge -e catalog.*` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`. 
 
 ## `trestle assemble`
 
