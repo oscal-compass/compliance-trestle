@@ -19,6 +19,7 @@ Trestle cache operations library.
 Allows for using uris to reference external directories and then expand.
 """
 
+import getpass
 import logging
 import paramiko
 import pathlib
@@ -177,13 +178,6 @@ class SFTPFetcher(FetcherBase):
             logger.error(f'Malformed URI, password found but username missing in URL {self._uri}')
             raise TrestleError(f'Cache request for invalid input URI: password found but username missing {self._uri}')
 
-    def _update_cache(self) -> None:
-        if self._cache_only:
-            # Don't update if cache only.
-            return
-
-        # Normalize sftp uri to a root file.
-        u = parse.urlparse(self._uri)
         localhost_cached_dir = self._trestle_cache_path / u.hostname
         # Skip any number of back- or forward slashes preceding the url path (u.path)
         localhost_cached_dir = localhost_cached_dir / pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0]:]).parent
@@ -193,17 +187,57 @@ class SFTPFetcher(FetcherBase):
                 logger.error(f'Error creating cache directory {localhost_cached_dir} for {self._uri}')
                 logger.debug(e)
                 raise TrestleError(f'Cache update failure for {self._uri}')
-            
         self._inst_cache_path = localhost_cached_dir
 
+    def _update_cache(self) -> None:
+        if self._cache_only:
+            # Don't update if cache only.
+            return
+
+        u = parse.urlparse(self._uri)
         if self._inst_cache_path.exists() and self._refresh:
+            client = paramiko.SSHClient()
+            client.load_system_host_keys()
+            username = getpass.getuser() if not u.username else u.username
+            if u.password:
+                try:
+                    client.connect(
+                        u.hostname,
+                        username = username,
+                        password = u.password,
+                        port = 22 if not u.port else u.port,
+                    )
+                except Exception as e:
+                    logger.error(f'Error connecting SSH for {username}@{u.hostname}')
+                    logger.debug(e)
+                    raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
+            else:
+                try:
+                    client.connect(
+                        u.hostname,
+                        username = username,
+                        port = 22 if not u.port else u.port,
+                        allow_agent = True
+                    )
+                except Exception as e:
+                    logger.error(f'Error connecting SSH for {username}@{u.hostname}')
+                    logger.debug(e)
+                    raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
+
             try:
-                pass
+                sftp_client = client.open_sftp()
             except Exception as e:
-                logger.error(f'Unable to update cache for {self._uri}')
+                logger.error(f'Error opening sftp session for {username}@{u.hostname}')
+                logger.debug(e)
+                raise TrestleError(f'Cache update failure to open sftp for {username}@{u.hostname}')
+
+            localpath = self._inst_cache_path / pathlib.Path(u.path).name
+            try:
+                sftp_client.get(remotepath=u.path[1:], localpath=(localpath.__str__()))
+            except Exception as e:
+                logger.error(f'Error getting remote resource {self._uri} into cache {localpath}')
                 logger.debug(e)
                 raise TrestleError(f'Cache update failure for {self._uri}')
-        pass
 
 
 class GithubFetcher(HTTPSFetcher):
