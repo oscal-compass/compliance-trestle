@@ -252,9 +252,6 @@ def load_file(file_name: pathlib.Path) -> Dict[str, Any]:
             return yaml.load(f, yaml.FullLoader)
         elif content_type == FileContentType.JSON:
             return json.load(f)
-        else:
-            logger.debug(f'Invalid file extension "{file_name.suffix}" in load')
-            raise TrestleError(f'Invalid file extension "{file_name.suffix}"')
 
 
 def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:

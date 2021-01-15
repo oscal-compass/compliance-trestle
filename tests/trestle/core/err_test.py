@@ -15,7 +15,7 @@
 # limitations under the License.
 """Tests for exceptions module."""
 
-from trestle.core.err import TrestleError, TrestleNotFoundError
+from trestle.core.err import TrestleError, TrestleNotFoundError, TrestleValidationError
 
 
 def test_trestle_error() -> None:
@@ -33,5 +33,15 @@ def test_trestle_not_found_error() -> None:
     try:
         raise TrestleNotFoundError(msg)
     except TrestleNotFoundError as err:
+        assert str(err) == msg
+        assert err.msg == msg
+
+
+def test_trestle_validation_error() -> None:
+    """Test trestle not found error."""
+    msg = 'Custom validation error'
+    try:
+        raise TrestleValidationError(msg)
+    except TrestleValidationError as err:
         assert str(err) == msg
         assert err.msg == msg
