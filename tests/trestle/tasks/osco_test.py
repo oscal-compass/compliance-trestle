@@ -32,7 +32,7 @@ stem_out = pathlib.Path('tests/data/tasks/osco/output')
 mock_uuid4_value = uuid.UUID('d4cf7a88-cea7-4667-9924-8d278dc843df')
 
 
-def test_function_osco_get_observations(tmpdir):
+def test_function_osco_get_observations(tmp_path):
     """Test OSCO to OSCAL transformation."""
     idata = _load_yaml(stem_in, 'ssg-ocp4-ds-cis-111.222.333.444-pod.yaml')
     metadata = _load_yaml(stem_in, 'oscal-metadata.yaml')
@@ -40,15 +40,13 @@ def test_function_osco_get_observations(tmpdir):
         mock_uuid4.return_value = mock_uuid4_value
         observations, analysis = osco.get_observations(idata, metadata)
     expected = _load_json(stem_out, 'osco-pod-oscal.json')
-    tfile = tmpdir / 'osco-pod-oscal.json'
-    import pathlib
-    p = pathlib.Path(tfile)
-    observations.oscal_write(p)
-    actual = _load_json(tmpdir, 'osco-pod-oscal.json')
+    tfile = tmp_path / 'osco-pod-oscal.json'
+    observations.oscal_write(tfile)
+    actual = _load_json(tmp_path, 'osco-pod-oscal.json')
     assert actual == expected
 
 
-def test_class_osco_rules(tmpdir):
+def test_class_osco_rules(tmp_path):
     """Test class osco.Rules."""
     idata = _load_yaml(stem_in, 'ssg-ocp4-ds-cis-111.222.333.444-pod.yaml')
     rules = osco.Rules(idata)
@@ -56,9 +54,9 @@ def test_class_osco_rules(tmpdir):
     assert len(rules.benchmark) == 2
     assert rules.benchmark['href'] == '/content/ssg-ocp4-ds.xml'
     assert rules.benchmark['id'] == 'xccdf_org.ssgproject.content_benchmark_OCP-4'
-    assert len(rules.metadata) == 2
-    assert rules.metadata['name'] == 'ssg-ocp4-ds-cis-111.222.333.444-pod'
-    assert rules.metadata['namespace'] == 'openshift-compliance'
+    assert len(rules.rule_metadata) == 2
+    assert rules.rule_metadata['name'] == 'ssg-ocp4-ds-cis-111.222.333.444-pod'
+    assert rules.rule_metadata['namespace'] == 'openshift-compliance'
     assert len(rules.analysis) == 3
     assert rules.analysis['config_maps'] == ['ssg-ocp4-ds']
     assert rules.analysis['dispatched_rules'] == 125
@@ -69,43 +67,43 @@ def test_class_osco_rules(tmpdir):
     assert rules.analysis['result_types']['pass'] == 12
 
 
-def test_class_osco_rules_none(tmpdir):
+def test_class_osco_rules_none(tmp_path):
     """Test class osco.Rules when None."""
     rules = osco.Rules(None)
     assert len(rules.instances) == 0
 
 
-def test_class_osco_rules_empty(tmpdir):
+def test_class_osco_rules_empty(tmp_path):
     """Test class osco.Rules when empty."""
     rules = osco.Rules({})
     assert len(rules.instances) == 0
 
 
-def test_class_osco_rules_kind(tmpdir):
+def test_class_osco_rules_kind(tmp_path):
     """Test class osco.Rules when no kind==Config."""
     rules = osco.Rules({'kind': 'notConfigMap'})
     assert len(rules.instances) == 0
 
 
-def test_class_osco_rules_no_results(tmpdir):
+def test_class_osco_rules_no_results(tmp_path):
     """Test class osco.Rules when no results."""
     rules = osco.Rules({'kind': 'ConfigMap', 'data': {'not-results': ''}})
     assert len(rules.instances) == 0
 
 
-def test_class_osco_rules_no_metadata(tmpdir):
+def test_class_osco_rules_no_metadata(tmp_path):
     """Test class osco.Rules when no metadata."""
     idata = _load_yaml(stem_in_no_metadata, 'ssg-ocp4-ds-cis-111.222.333.444-pod.yaml')
     rules = osco.Rules(idata)
     assert len(rules.instances) == 125
 
 
-def test_class_osco_rules_compressed(tmpdir):
+def test_class_osco_rules_compressed(tmp_path):
     """Test class osco.Rules when compressed."""
     ipath = stem_in / 'ssg-ocp4-ds-cis-111.222.333.444-pod.yaml'
-    opath = tmpdir / 'ssg-ocp4-ds-cis-111.222.333.444-pod.yaml'
+    opath = tmp_path / 'ssg-ocp4-ds-cis-111.222.333.444-pod.yaml'
     make_compressed(ipath, opath)
-    idata = _load_yaml(tmpdir, 'ssg-ocp4-ds-cis-111.222.333.444-pod.yaml')
+    idata = _load_yaml(tmp_path, 'ssg-ocp4-ds-cis-111.222.333.444-pod.yaml')
     rules = osco.Rules(idata)
     assert len(rules.instances) == 125
 

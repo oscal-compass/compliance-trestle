@@ -20,11 +20,10 @@ import logging
 import json
 import pathlib
 import traceback
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 import yaml
 
-from trestle.oscal.assessment_results_partial import AssessmentResultsPartial
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.utils import osco
@@ -139,9 +138,9 @@ class OscoToOscal(TaskBase):
                 # fetch the contents of the subject OSCO .yaml/.yml file
                 idata = self._read_content(ifile)
                 # create the OSCAL .json file from the OSCO and the optional osco-metadata files
-                odata, analysis = osco.get_observations(idata, metadata)
+                observations, analysis = osco.get_observations(idata, metadata)
                 # write the OSCAL to the output file
-                self._write_content(ofile, odata, True)
+                self._write_content(ofile, observations, True)
                 # display analysis
                 if not quiet:
                     logger.debug(f'[simluate] Rules Analysis:')
@@ -225,7 +224,7 @@ class OscoToOscal(TaskBase):
         logger.debug('========== </content> ==========')
         return content
 
-    def _write_content(self, ofile: pathlib.Path, observations: AssessmentResultsPartial, simulate:bool=False) -> None:
+    def _write_content(self, ofile: pathlib.Path, observations: osco.AssessmentResultsPartial, simulate:bool=False) -> None:
         """Write the contents of a json file."""
         if simulate:
             return
@@ -240,7 +239,7 @@ class OscoToOscal(TaskBase):
         ofile = opth / ofn
         return ofile
     
-    def _get_metadata(self, mfile: pathlib.Path, default_metadata: Dict) -> Dict:
+    def _get_metadata(self, mfile: pathlib.Path, default_metadata: osco.t_metadata) -> osco.t_metadata:
         """Get metadata, if it exists."""
         metadata = default_metadata
         try:
