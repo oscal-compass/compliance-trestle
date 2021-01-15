@@ -14,12 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle command related utilities."""
-from typing import Any, Dict, List
+from typing import List
 
 from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.core.models.elements import Element, ElementPath
+from trestle.core.models.elements import ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
 
@@ -107,21 +107,6 @@ def parse_element_arg(element_arg: str, contextual_mode: bool = True) -> List[El
         raise TrestleError(f'Invalid element path "{element_arg}" without any path separator')
 
     return element_paths
-
-
-def get_dir_base_file_element(item, name: str) -> Element:
-    """Get an wrapped element for the base file in a split directory.
-
-    If the item is a list, it will return a dict like `{"name": []`
-    If the item is a dict, it will return a dict like `{"name": {}}`
-    """
-    base_model: Dict[str, Any] = {}
-    if isinstance(item, list):
-        base_model[name] = []
-    else:
-        base_model[name] = {}
-
-    return Element(base_model)
 
 
 def to_model_file_name(model_obj: OscalBaseModel, file_prefix: str, content_type: FileContentType) -> str:
