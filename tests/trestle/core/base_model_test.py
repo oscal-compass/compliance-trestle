@@ -23,6 +23,8 @@ import pytest
 import trestle.core.base_model as ospydantic
 import trestle.core.err as err
 import trestle.oscal.catalog as oscatalog
+import trestle.oscal.component as component
+import trestle.oscal.poam as poam
 import trestle.oscal.target as ostarget
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal.target import TargetDefinition
@@ -218,6 +220,13 @@ def test_copy_to() -> None:
     # Non matching object
     with pytest.raises(Exception):
         c_m.copy_to(ostarget.Target)
+
+    # Testing of root fields. This is is subject to change.
+    # component.Remarks (type str)
+    # poam.ParameterValue (type str)
+    # note the testing conducntio
+    remark = component.Remarks(__root__='hello')
+    _ = remark.copy_to(poam.ParameterValue)
 
 
 def test_copy_from() -> None:
