@@ -42,6 +42,9 @@ def test_plan_execution(tmp_path, sample_target_def: target.TargetDefinition):
     split_plan.add_action(
         WriteFileAction(metadata_yaml, Element(sample_target_def.metadata, 'target-definition'), content_type)
     )
+    # Test stringing a plan
+    stringed = str(split_plan)
+    assert len(stringed) > 0
 
     target_files: List[pathlib.Path] = []
     for tid, t in sample_target_def.targets.items():
