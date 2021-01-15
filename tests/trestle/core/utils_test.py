@@ -185,6 +185,18 @@ def test_snake_to_upper_camel() -> None:
     assert cammeled == 'TargetDefinition'
     cammeled = mutils.snake_to_upper_camel('control')
     assert cammeled == 'Control'
+    cammeled = mutils.snake_to_upper_camel('')
+    assert cammeled == ''
+
+
+def test_camel_to_snake() -> None:
+    """Ensure camel to snake behaves correctly."""
+    snaked = mutils.camel_to_snake('TargetDefinition')
+    assert snaked == 'target_definition'
+    snaked = mutils.camel_to_snake('Control')
+    assert snaked == 'control'
+    snaked = mutils.camel_to_snake('')
+    assert snaked == ''
 
 
 def test_alias_to_classname() -> None:
