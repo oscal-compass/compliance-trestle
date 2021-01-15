@@ -132,7 +132,7 @@ def test_stripped_model() -> None:
     """Test whether model is can be stripped when acting as an intstance function."""
     catalog = simple_catalog()
 
-    stripped_catalog_object = catalog.create_stripped_model_type(['metadata'])
+    stripped_catalog_object = catalog.create_stripped_model_type(stripped_fields=['metadata'])
 
     # TODO: Need to check best practice here
     if 'metadata' in stripped_catalog_object.__fields__.keys():
@@ -149,7 +149,7 @@ def test_stripped_model() -> None:
 
 def test_stripping_model_class() -> None:
     """Test as a class variable."""
-    stripped_catalog_object = oscatalog.Catalog.create_stripped_model_type(['metadata'])
+    stripped_catalog_object = oscatalog.Catalog.create_stripped_model_type(stripped_fields=['metadata'])
     if 'metadata' in stripped_catalog_object.__fields__.keys():
         raise Exception('Test failure')
 
@@ -160,6 +160,18 @@ def test_stripping_model_class() -> None:
     sc_instance = stripped_catalog_object(uuid=str(uuid4()))
     if 'metadata' in sc_instance.__fields__.keys():
         raise Exception('Test failure')
+
+
+def test_stripped_model_type_failure() -> None:
+    """Test for user failure conditions."""
+    with pytest.raises(err.TrestleError):
+        a = oscatalog.Catalog.create_stripped_model_type(
+            stripped_fields=['metadata'], stripped_fields_aliases=['groups']
+        )
+        assert a is not None
+    with pytest.raises(err.TrestleError):
+        a = oscatalog.Catalog.create_stripped_model_type(stripped_fields=None)
+        assert a is not None
 
 
 def test_stripped_instance(sample_target_def: OscalBaseModel) -> None:
@@ -218,8 +230,8 @@ def test_copy_to() -> None:
     target_metadata = c_m.copy_to(ostarget.Metadata)
     assert (target_metadata.title == c_m.title)
     # Non matching object
-    with pytest.raises(Exception):
-        c_m.copy_to(ostarget.Target)
+    with pytest.raises(err.TrestleError):
+        c_m.copy_to(ostarget.DefinedTarget)
 
     # Testing of root fields. This is is subject to change.
     # component.Remarks (type str)
@@ -279,6 +291,9 @@ def test_oscal_write(tmp_path: pathlib.Path) -> None:
     target2.oscal_write(temp_td_yaml)
 
     ostarget.TargetDefinition.oscal_read(temp_td_yaml)
+    # test failure
+    with pytest.raises(err.TrestleError):
+        target2.oscal_write(tmp_path / 'target.borked')
 
 
 def test_get_field_value(sample_target_def: TargetDefinition) -> None:

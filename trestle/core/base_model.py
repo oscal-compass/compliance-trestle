@@ -242,8 +242,6 @@ class OscalBaseModel(BaseModel):
             yaml.dump(yaml.safe_load(wrapped_model.json(exclude_none=True, by_alias=True)), write_file)
         elif content_type == FileContentType.JSON:
             write_file.write(wrapped_model.json(exclude_none=True, by_alias=True, indent=2))
-        else:
-            raise err.TrestleError('Unknown file type')
 
     @classmethod
     def oscal_read(cls, path: pathlib.Path) -> 'OscalBaseModel':
@@ -270,8 +268,6 @@ class OscalBaseModel(BaseModel):
                 json_loads=cls.__config__.json_loads,
             )
             return cls.parse_obj(obj[alias])
-        else:
-            raise err.TrestleError('Unknown file type')
 
     def copy_to(self, new_oscal_type: Type['OscalBaseModel']) -> 'OscalBaseModel':
         """
