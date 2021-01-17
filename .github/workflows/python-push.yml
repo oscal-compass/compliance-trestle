@@ -84,12 +84,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy
     # Temporary hack: allow develop as well as master to deploy docs.
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/main'
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
         fetch-depth: 0
+        token: ${{ secrets.ADMIN_PAT }} 
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       # This is deliberately not using a custom credential as it relies on native github actions token to have push rights.
