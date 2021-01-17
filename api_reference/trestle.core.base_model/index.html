@@ -1,0 +1,2528 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for compliance-trestle package.">
+      
+      
+      
+      
+        <link rel="canonical" href="https://compliance-trestle.github.io/api_reference/trestle.core.base_model/">
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.5">
+    
+    
+      
+        <title>base_model - Compliance Trestle</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.15aa0b43.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.75751829.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#009485">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="purple">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#trestle.core.base_model" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://compliance-trestle.github.io" title="Compliance Trestle" class="md-header-nav__button md-logo" aria-label="Compliance Trestle">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Compliance Trestle
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              base_model
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/IBM/compliance-trestle/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://compliance-trestle.github.io" title="Compliance Trestle" class="md-nav__button md-logo" aria-label="Compliance Trestle">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Compliance Trestle
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/IBM/compliance-trestle/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        Trestle cli
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mkdocs_code_of_conduct/" class="md-nav__link">
+        Code of Conduct
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" >
+      
+      <label class="md-nav__link" for="nav-4">
+        Contributing
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Contributing" data-md-level="1">
+        <label class="md-nav__title" for="nav-4">
+          <span class="md-nav__icon md-icon"></span>
+          Contributing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/mkdocs_contributing/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/IBM/compliance-trestle/graphs/contributors" class="md-nav__link">
+        Contributors
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/" class="md-nav__link">
+        Maintainers
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/website/" class="md-nav__link">
+        Documentation website
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/DCO/" class="md-nav__link">
+        Developer Certificate of Originality
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" checked>
+      
+      <label class="md-nav__link" for="nav-5">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="nav-5">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2" type="checkbox" id="nav-5-2" checked>
+      
+      <label class="md-nav__link" for="nav-5-2">
+        trestle
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="trestle" data-md-level="2">
+        <label class="md-nav__title" for="nav-5-2">
+          <span class="md-nav__icon md-icon"></span>
+          trestle
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2-1" type="checkbox" id="nav-5-2-1" >
+      
+      <label class="md-nav__link" for="nav-5-2-1">
+        tasks
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+        <label class="md-nav__title" for="nav-5-2-1">
+          <span class="md-nav__icon md-icon"></span>
+          tasks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.base_task/" class="md-nav__link">
+        base_task
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.transform/" class="md-nav__link">
+        transform
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2-2" type="checkbox" id="nav-5-2-2" checked>
+      
+      <label class="md-nav__link" for="nav-5-2-2">
+        core
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="core" data-md-level="3">
+        <label class="md-nav__title" for="nav-5-2-2">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.validator_helper/" class="md-nav__link">
+        validator_helper
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2-2-2" type="checkbox" id="nav-5-2-2-2" >
+      
+      <label class="md-nav__link" for="nav-5-2-2-2">
+        models
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="models" data-md-level="4">
+        <label class="md-nav__title" for="nav-5-2-2-2">
+          <span class="md-nav__icon md-icon"></span>
+          models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.interfaces/" class="md-nav__link">
+        interfaces
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.elements/" class="md-nav__link">
+        elements
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.actions/" class="md-nav__link">
+        actions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.plans/" class="md-nav__link">
+        plans
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.file_content_type/" class="md-nav__link">
+        file_content_type
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          base_model
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        base_model
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#trestle.core.base_model" class="md-nav__link">
+    base_model
+  </a>
+  
+    <nav class="md-nav" aria-label="base_model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.logger" class="md-nav__link">
+    logger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel" class="md-nav__link">
+    OscalBaseModel
+  </a>
+  
+    <nav class="md-nav" aria-label="OscalBaseModel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#classes_1" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.Config" class="md-nav__link">
+    Config
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.alias_to_field_map" class="md-nav__link">
+    alias_to_field_map()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.copy_from" class="md-nav__link">
+    copy_from()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.copy_to" class="md-nav__link">
+    copy_to()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.create_stripped_model_type" class="md-nav__link">
+    create_stripped_model_type()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.get_field_by_alias" class="md-nav__link">
+    get_field_by_alias()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.get_field_value" class="md-nav__link">
+    get_field_value()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.get_field_value_by_alias" class="md-nav__link">
+    get_field_value_by_alias()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.oscal_read" class="md-nav__link">
+    oscal_read()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.oscal_write" class="md-nav__link">
+    oscal_write()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.stripped_instance" class="md-nav__link">
+    stripped_instance()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.robust_datetime_serialization" class="md-nav__link">
+    robust_datetime_serialization()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.duplicates_validator/" class="md-nav__link">
+        duplicates_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.generators/" class="md-nav__link">
+        generators
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.parser/" class="md-nav__link">
+        parser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2-2-8" type="checkbox" id="nav-5-2-2-8" >
+      
+      <label class="md-nav__link" for="nav-5-2-2-8">
+        commands
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="commands" data-md-level="4">
+        <label class="md-nav__title" for="nav-5-2-2-8">
+          <span class="md-nav__icon md-icon"></span>
+          commands
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.task/" class="md-nav__link">
+        task
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.cmd_utils/" class="md-nav__link">
+        cmd_utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.add/" class="md-nav__link">
+        add
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.create/" class="md-nav__link">
+        create
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.replicate/" class="md-nav__link">
+        replicate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.remove/" class="md-nav__link">
+        remove
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.assemble/" class="md-nav__link">
+        assemble
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.validate/" class="md-nav__link">
+        validate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.import_/" class="md-nav__link">
+        import_
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.init/" class="md-nav__link">
+        init
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.object_factory/" class="md-nav__link">
+        object_factory
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.err/" class="md-nav__link">
+        err
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.const/" class="md-nav__link">
+        const
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.validator_factory/" class="md-nav__link">
+        validator_factory
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2-3" type="checkbox" id="nav-5-2-3" >
+      
+      <label class="md-nav__link" for="nav-5-2-3">
+        utils
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="utils" data-md-level="3">
+        <label class="md-nav__title" for="nav-5-2-3">
+          <span class="md-nav__icon md-icon"></span>
+          utils
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.utils.log/" class="md-nav__link">
+        log
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.utils.load_distributed/" class="md-nav__link">
+        load_distributed
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.utils.trash/" class="md-nav__link">
+        trash
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.utils.fs/" class="md-nav__link">
+        fs
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2-4" type="checkbox" id="nav-5-2-4" >
+      
+      <label class="md-nav__link" for="nav-5-2-4">
+        oscal
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="oscal" data-md-level="3">
+        <label class="md-nav__title" for="nav-5-2-4">
+          <span class="md-nav__icon md-icon"></span>
+          oscal
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.catalog/" class="md-nav__link">
+        catalog
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.poam/" class="md-nav__link">
+        poam
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.profile/" class="md-nav__link">
+        profile
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.target/" class="md-nav__link">
+        target
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.ssp/" class="md-nav__link">
+        ssp
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.component/" class="md-nav__link">
+        component
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.assessment_plan/" class="md-nav__link">
+        assessment_plan
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.cli/" class="md-nav__link">
+        cli
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#trestle.core.base_model" class="md-nav__link">
+    base_model
+  </a>
+  
+    <nav class="md-nav" aria-label="base_model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.logger" class="md-nav__link">
+    logger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel" class="md-nav__link">
+    OscalBaseModel
+  </a>
+  
+    <nav class="md-nav" aria-label="OscalBaseModel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#classes_1" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.Config" class="md-nav__link">
+    Config
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.alias_to_field_map" class="md-nav__link">
+    alias_to_field_map()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.copy_from" class="md-nav__link">
+    copy_from()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.copy_to" class="md-nav__link">
+    copy_to()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.create_stripped_model_type" class="md-nav__link">
+    create_stripped_model_type()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.get_field_by_alias" class="md-nav__link">
+    get_field_by_alias()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.get_field_value" class="md-nav__link">
+    get_field_value()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.get_field_value_by_alias" class="md-nav__link">
+    get_field_value_by_alias()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.oscal_read" class="md-nav__link">
+    oscal_read()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.oscal_write" class="md-nav__link">
+    oscal_write()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.stripped_instance" class="md-nav__link">
+    stripped_instance()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.robust_datetime_serialization" class="md-nav__link">
+    robust_datetime_serialization()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/IBM/compliance-trestle/edit/master/docs/api_reference/trestle.core.base_model.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  <h1>base_model</h1>
+                
+                <div class="doc doc-object doc-module">
+<h2 class="doc doc-heading" id="trestle.core.base_model">
+
+        <code>trestle.core.base_model</code>
+
+
+
+      <a class="headerlink" href="#trestle.core.base_model" title="Permanent link">¤</a></h2>
+<div class="doc doc-contents first">
+<p>Pydantic base model for use within trestle project and associated configuration.</p>
+<p>The heart of the current OSCAL model within trestle is based on pydantic
+(<a href="https://pydantic-docs.helpmanual.io/">https://pydantic-docs.helpmanual.io/</a>) which itself is a veneer on-top of python
+data classes.</p>
+<p>Functionality here defines a base-model which all trestle oscal data models inherit
+from. This allows additional functionality to be easily inserted.</p>
+<p>I can write a comment in here and you can even edit on the same line.</p>
+<div class="doc doc-children">
+<div class="doc doc-object doc-attribute">
+<h4 class="doc doc-heading" id="trestle.core.base_model.logger">
+
+<code class="highlight language-python"><span class="n">logger</span></code>
+
+
+      <a class="headerlink" href="#trestle.core.base_model.logger" title="Permanent link">¤</a></h4>
+<div class="doc doc-contents ">
+
+    </div>
+</div>
+<h3 id="classes">Classes<a class="headerlink" href="#classes" title="Permanent link">¤</a></h3>
+<div class="doc doc-object doc-class">
+<h4 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel">
+
+        <code>OscalBaseModel</code>
+
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-pydantic-model"><code>pydantic-model</code></small>
+  </span>
+
+      <a class="headerlink" href="#trestle.core.base_model.OscalBaseModel" title="Permanent link">¤</a></h4>
+<div class="doc doc-contents ">
+<p>Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.</p>
+<p>This BaseModel provides two types of functionality:
+1. Overrides default configuation of the pydantic library with behaviours required for trestle
+2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.</p>
+<div class="doc doc-children">
+<h5 id="classes_1">Classes<a class="headerlink" href="#classes_1" title="Permanent link">¤</a></h5>
+<div class="doc doc-object doc-class">
+<h6 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel.Config">
+
+        <code>Config</code>
+
+
+
+      <a class="headerlink" href="#trestle.core.base_model.OscalBaseModel.Config" title="Permanent link">¤</a></h6>
+<div class="doc doc-contents ">
+<p>Overriding configuration class for pydantic base model, for use with OSCAL data classes.</p>
+<div class="doc doc-children">
+<div class="doc doc-object doc-attribute">
+
+
+
+      <h8 class="doc doc-heading" data-toc-label="allow_population_by_field_name" id="trestle.core.base_model.OscalBaseModel.Config.allow_population_by_field_name">
+
+<code class="highlight language-python"><span class="n">allow_population_by_field_name</span></code>
+
+
+      </h8>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+</div>
+<div class="doc doc-object doc-attribute">
+
+
+
+      <h8 class="doc doc-heading" data-toc-label="extra" id="trestle.core.base_model.OscalBaseModel.Config.extra">
+
+<code class="highlight language-python"><span class="n">extra</span></code>
+
+
+      </h8>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+</div>
+<div class="doc doc-object doc-attribute">
+
+
+
+      <h8 class="doc doc-heading" data-toc-label="json_encoders" id="trestle.core.base_model.OscalBaseModel.Config.json_encoders">
+
+<code class="highlight language-python"><span class="n">json_encoders</span></code>
+
+
+      </h8>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+</div>
+<div class="doc doc-object doc-attribute">
+
+
+
+      <h8 class="doc doc-heading" data-toc-label="validate_assignment" id="trestle.core.base_model.OscalBaseModel.Config.validate_assignment">
+
+<code class="highlight language-python"><span class="n">validate_assignment</span></code>
+
+
+      </h8>
+
+
+    <div class="doc doc-contents ">
+
+    </div>
+</div>
+</div>
+</div>
+</div>
+<h5 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">¤</a></h5>
+<div class="doc doc-object doc-method">
+<h6 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel.alias_to_field_map">
+
+<code class="highlight language-python"><span class="n">alias_to_field_map</span><span class="p">()</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+      <a class="headerlink" href="#trestle.core.base_model.OscalBaseModel.alias_to_field_map" title="Permanent link">¤</a></h6>
+<div class="doc doc-contents ">
+<p>Create a map from field alias to field.</p>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Dict[str, pydantic.fields.ModelField]</code></td>
+<td>
+<p>A dict which has key's of aliases and Fields as values.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">alias_to_field_map</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ModelField</span><span class="p">]:</span>
+    <span class="sd">"""Create a map from field alias to field.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A dict which has key's of aliases and Fields as values.</span>
+<span class="sd">    """</span>
+    <span class="n">alias_to_field</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ModelField</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">alias_to_field</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">alias</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+
+    <span class="k">return</span> <span class="n">alias_to_field</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h6 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel.copy_from">
+
+<code class="highlight language-python"><span class="n">copy_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">existing_oscal_object</span><span class="p">)</span></code>
+
+
+      <a class="headerlink" href="#trestle.core.base_model.OscalBaseModel.copy_from" title="Permanent link">¤</a></h6>
+<div class="doc doc-contents ">
+<p>Copy operation that implicitly does type conversion.</p>
+<p>Typically would
+be used to set an attribute, however, does not need to be.</p>
+<p>Deals with two scenarios:
+1) Casting across oscal models of equivalent type. The purpose if this
+is to cross class spaces.</p>
+<p>2) The same as above where the item is an array style object which does
+not correctly serialize to a dict.</p>
+<p>3) if the from and 'to' objects are root schema elements the copy operation
+will copy the root element to the value.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>existing_oscal_object</code></td>
+<td><code>OscalBaseModel</code></td>
+<td>
+<p>The oscal object where fields are copied from.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">copy_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">existing_oscal_object</span><span class="p">:</span> <span class="s1">'OscalBaseModel'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    Copy operation that implicitly does type conversion.</span>
+
+<span class="sd">    Typically would</span>
+<span class="sd">    be used to set an attribute, however, does not need to be.</span>
+
+<span class="sd">    Deals with two scenarios:</span>
+<span class="sd">    1) Casting across oscal models of equivalent type. The purpose if this</span>
+<span class="sd">    is to cross class spaces.</span>
+
+<span class="sd">    2) The same as above where the item is an array style object which does</span>
+<span class="sd">    not correctly serialize to a dict.</span>
+
+<span class="sd">    3) if the from and 'to' objects are root schema elements the copy operation</span>
+<span class="sd">    will copy the root element to the value.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        existing_oscal_object: The oscal object where fields are copied from.</span>
+
+<span class="sd">    """</span>
+    <span class="n">recast_object</span> <span class="o">=</span> <span class="n">existing_oscal_object</span><span class="o">.</span><span class="n">copy_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+    <span class="c1"># This is a sanity check</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">recast_object</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">raw_field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">raw_field</span><span class="p">]</span> <span class="o">=</span> <span class="n">recast_object</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">raw_field</span><span class="p">]</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h6 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel.copy_to">
+
+<code class="highlight language-python"><span class="n">copy_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_oscal_type</span><span class="p">)</span></code>
+
+
+      <a class="headerlink" href="#trestle.core.base_model.OscalBaseModel.copy_to" title="Permanent link">¤</a></h6>
+<div class="doc doc-contents ">
+<p>Opportunistic copy operation between similar types of data classes.</p>
+<p>Due to the way in which oscal is constructed we get a set of similar / the same definition across various
+oscal models. Due to the lack of guarantees that they are the same we cannot easily 'collapse' the mode.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>new_oscal_type</code></td>
+<td><code>Type[OscalBaseModel]</code></td>
+<td>
+<p>The desired type of oscal model</p>
+</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OscalBaseModel</code></td>
+<td>
+<p>Opportunistic copy of the data into the new model type.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">copy_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_oscal_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'OscalBaseModel'</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">'OscalBaseModel'</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    Opportunistic copy operation between similar types of data classes.</span>
+
+<span class="sd">    Due to the way in which oscal is constructed we get a set of similar / the same definition across various</span>
+<span class="sd">    oscal models. Due to the lack of guarantees that they are the same we cannot easily 'collapse' the mode.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        new_oscal_type: The desired type of oscal model</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Opportunistic copy of the data into the new model type.</span>
+
+<span class="sd">    """</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">'Copy to started'</span><span class="p">)</span>
+    <span class="c1"># FIXME: This needs to be tested. Unsure of behavior.</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="n">new_oscal_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">'Dict based copy too '</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_oscal_type</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="s1">'__root__'</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fields__</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__fields__</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="s1">'__root__'</span> <span class="ow">in</span> <span class="n">new_oscal_type</span><span class="o">.</span><span class="n">__fields__</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_oscal_type</span><span class="o">.</span><span class="n">__fields__</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">'Root element based copy too'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_oscal_type</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__root__</span><span class="p">)</span>
+
+    <span class="c1"># bad place here.</span>
+    <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">'Provided inconsistent classes.'</span><span class="p">)</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h6 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel.create_stripped_model_type">
+
+<code class="highlight language-python"><span class="n">create_stripped_model_type</span><span class="p">(</span><span class="n">stripped_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stripped_fields_aliases</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+      <a class="headerlink" href="#trestle.core.base_model.OscalBaseModel.create_stripped_model_type" title="Permanent link">¤</a></h6>
+<div class="doc doc-contents ">
+<p>Create a pydantic model, which is derived from the current model, but missing certain fields.</p>
+<p>OSCAL mandates a 'strict' schema (e.g. unless otherwise stated no additional fields), and certain fields
+are mandatory. Given this the corresponding dataclasses are also strict. Workflows with trestle require missing
+mandatory fields. This allows creation of derivative models missing certain fields.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stripped_fields</code></td>
+<td><code>Optional[List[str]]</code></td>
+<td>
+<p>The fields to be removed from the current data class.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>stripped_fields_aliases</code></td>
+<td><code>Optional[List[str]]</code></td>
+<td>
+<p>The fields to be removed from the current data class provided by alias.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Type[OscalBaseModel]</code></td>
+<td>
+<p>Pydantic data class thta can be used to instanciate a model.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TrestleError</code></td>
+<td>
+<p>If user provided both stripped_fields and stripped_field_aliases or neither.</p>
+</td>
+</tr>
+<tr>
+<td><code>TrestleError</code></td>
+<td>
+<p>If incorrect aliases or field names are provided.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">create_stripped_model_type</span><span class="p">(</span>
+    <span class="bp">cls</span><span class="p">,</span>
+    <span class="n">stripped_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">stripped_fields_aliases</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'OscalBaseModel'</span><span class="p">]:</span>
+    <span class="sd">"""Create a pydantic model, which is derived from the current model, but missing certain fields.</span>
+
+<span class="sd">    OSCAL mandates a 'strict' schema (e.g. unless otherwise stated no additional fields), and certain fields</span>
+<span class="sd">    are mandatory. Given this the corresponding dataclasses are also strict. Workflows with trestle require missing</span>
+<span class="sd">    mandatory fields. This allows creation of derivative models missing certain fields.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        stripped_fields: The fields to be removed from the current data class.</span>
+<span class="sd">        stripped_fields_aliases: The fields to be removed from the current data class provided by alias.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Pydantic data class thta can be used to instanciate a model.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TrestleError: If user provided both stripped_fields and stripped_field_aliases or neither.</span>
+<span class="sd">        TrestleError: If incorrect aliases or field names are provided.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">stripped_fields</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stripped_fields_aliases</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">'Either "stripped_fields" or "stripped_fields_aliases" need to be passed, not both.'</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">stripped_fields</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stripped_fields_aliases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">'Exactly one of "stripped_fields" or "stripped_fields_aliases" must be provided'</span><span class="p">)</span>
+
+    <span class="c1"># create alias to field_name mapping</span>
+    <span class="n">excluded_fields</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">stripped_fields</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">excluded_fields</span> <span class="o">=</span> <span class="n">stripped_fields</span>
+    <span class="k">elif</span> <span class="n">stripped_fields_aliases</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">alias_to_field</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">alias_to_field_map</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">excluded_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">alias_to_field</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">stripped_fields_aliases</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Field </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1"> does not exists in the model'</span><span class="p">)</span>
+
+    <span class="n">current_fields</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__fields__</span>
+    <span class="n">new_fields_for_model</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># Build field list</span>
+    <span class="k">for</span> <span class="n">current_mfield</span> <span class="ow">in</span> <span class="n">current_fields</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">current_mfield</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">excluded_fields</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="c1"># Validate name in the field</span>
+        <span class="c1"># Cehcke behaviour with an alias</span>
+        <span class="k">if</span> <span class="n">current_mfield</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
+            <span class="n">new_fields_for_model</span><span class="p">[</span>
+                <span class="n">current_mfield</span><span class="o">.</span><span class="n">name</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">outer_type_</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">alias</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_fields_for_model</span><span class="p">[</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">Optional</span><span class="p">[</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">outer_type_</span><span class="p">],</span>
+                <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="n">current_mfield</span><span class="o">.</span><span class="n">alias</span><span class="p">)</span>
+            <span class="p">)</span>
+    <span class="n">new_model</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">__base__</span><span class="o">=</span><span class="n">OscalBaseModel</span><span class="p">,</span> <span class="o">**</span><span class="n">new_fields_for_model</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="c1"># TODO: This typing cast should NOT be necessary. Potentially fixable with a fix to pydantic. Issue #175</span>
+    <span class="n">new_model</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">],</span> <span class="n">new_model</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_model</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h6 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel.get_field_by_alias">
+
+<code class="highlight language-python"><span class="n">get_field_by_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_alias</span><span class="p">)</span></code>
+
+
+      <a class="headerlink" href="#trestle.core.base_model.OscalBaseModel.get_field_by_alias" title="Permanent link">¤</a></h6>
+<div class="doc doc-contents ">
+<p>Convert field alias to a field.</p>
+<details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">get_field_by_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">"""Convert field alias to a field."""</span>
+    <span class="n">attr_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alias_to_field_map</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field_alias</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">attr_field</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h6 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel.get_field_value">
+
+<code class="highlight language-python"><span class="n">get_field_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name_or_alias</span><span class="p">)</span></code>
+
+
+      <a class="headerlink" href="#trestle.core.base_model.OscalBaseModel.get_field_value" title="Permanent link">¤</a></h6>
+<div class="doc doc-contents ">
+<p>Get attribute value by field alias or field name.</p>
+<details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">get_field_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name_or_alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">"""Get attribute value by field alias or field name."""</span>
+    <span class="c1"># FIXME: This is not called and should be removed. There is no point and it esacpes typing.</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name_or_alias</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name_or_alias</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_field_value_by_alias</span><span class="p">(</span><span class="n">field_name_or_alias</span><span class="p">)</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h6 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel.get_field_value_by_alias">
+
+<code class="highlight language-python"><span class="n">get_field_value_by_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_alias</span><span class="p">)</span></code>
+
+
+      <a class="headerlink" href="#trestle.core.base_model.OscalBaseModel.get_field_value_by_alias" title="Permanent link">¤</a></h6>
+<div class="doc doc-contents ">
+<p>Get attribute value by field alias.</p>
+<details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">get_field_value_by_alias</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">"""Get attribute value by field alias."""</span>
+    <span class="c1"># TODO: can this be restricted beyond Any easily.</span>
+    <span class="n">attr_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_field_by_alias</span><span class="p">(</span><span class="n">attr_alias</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr_field</span><span class="p">,</span> <span class="n">ModelField</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">None</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h6 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel.oscal_read">
+
+<code class="highlight language-python"><span class="n">oscal_read</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+      <a class="headerlink" href="#trestle.core.base_model.OscalBaseModel.oscal_read" title="Permanent link">¤</a></h6>
+<div class="doc doc-contents ">
+<p>Read OSCAL objects.</p>
+<p>Handles the fact OSCAL wrap's top level elements and also deals with both yaml and json.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td><code>Path</code></td>
+<td>
+<p>The path of the oscal object to read.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OscalBaseModel</code></td>
+<td>
+<p>The oscal object read into trestle oscal models.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">oscal_read</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'OscalBaseModel'</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    Read OSCAL objects.</span>
+
+<span class="sd">    Handles the fact OSCAL wrap's top level elements and also deals with both yaml and json.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: The path of the oscal object to read.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The oscal object read into trestle oscal models.</span>
+<span class="sd">    """</span>
+    <span class="c1"># Create the wrapper model.</span>
+    <span class="n">alias</span> <span class="o">=</span> <span class="n">classname_to_alias</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">'json'</span><span class="p">)</span>
+
+    <span class="n">content_type</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_content_type</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">content_type</span> <span class="o">==</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">YAML</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">())[</span><span class="n">alias</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">content_type</span> <span class="o">==</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span><span class="p">:</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">load_file</span><span class="p">(</span>
+            <span class="n">path</span><span class="p">,</span>
+            <span class="n">json_loads</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">__config__</span><span class="o">.</span><span class="n">json_loads</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">alias</span><span class="p">])</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h6 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel.oscal_write">
+
+<code class="highlight language-python"><span class="n">oscal_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></code>
+
+
+      <a class="headerlink" href="#trestle.core.base_model.OscalBaseModel.oscal_write" title="Permanent link">¤</a></h6>
+<div class="doc doc-contents ">
+<p>Write out a pydantic data model in an oscal friendly way.</p>
+<p>OSCAL schema mandates that top level elements are wrapped in a singular
+json/yaml field. This function handles both json and yaml output as well
+as formatting of the json.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td><code>Path</code></td>
+<td>
+<p>The output file location for the oscal object.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>err.TrestleError</code></td>
+<td>
+<p>If a unknown file extension is provided.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">oscal_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">"""</span>
+<span class="sd">    Write out a pydantic data model in an oscal friendly way.</span>
+
+<span class="sd">    OSCAL schema mandates that top level elements are wrapped in a singular</span>
+<span class="sd">    json/yaml field. This function handles both json and yaml output as well</span>
+<span class="sd">    as formatting of the json.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: The output file location for the oscal object.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        err.TrestleError: If a unknown file extension is provided.</span>
+<span class="sd">    """</span>
+    <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="c1"># It would be nice to pass through the description but I can't seem to and</span>
+    <span class="c1"># it does not affect the output</span>
+    <span class="n">dynamic_parser</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">dynamic_parser</span><span class="p">[</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="s1">'field'</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+        <span class="n">Field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="s1">'field'</span><span class="p">),</span> <span class="n">alias</span><span class="o">=</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="s1">'json'</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="n">wrapper_model</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">__base__</span><span class="o">=</span><span class="n">OscalBaseModel</span><span class="p">,</span> <span class="o">**</span><span class="n">dynamic_parser</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+    <span class="c1"># Default behaviour is strange here.</span>
+    <span class="n">wrapped_model</span> <span class="o">=</span> <span class="n">wrapper_model</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="s1">'json'</span><span class="p">):</span> <span class="bp">self</span><span class="p">})</span>
+    <span class="c1">#</span>
+    <span class="n">content_type</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_content_type</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
+    <span class="n">write_file</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">content_type</span> <span class="o">==</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">YAML</span><span class="p">:</span>
+        <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">wrapped_model</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span> <span class="n">write_file</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">content_type</span> <span class="o">==</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span><span class="p">:</span>
+        <span class="n">write_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">wrapped_model</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-method">
+<h6 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel.stripped_instance">
+
+<code class="highlight language-python"><span class="n">stripped_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stripped_fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stripped_fields_aliases</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+      <a class="headerlink" href="#trestle.core.base_model.OscalBaseModel.stripped_instance" title="Permanent link">¤</a></h6>
+<div class="doc doc-contents ">
+<p>Return a new model instance with the specified fields being stripped.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stripped_fields</code></td>
+<td><code>List[str]</code></td>
+<td>
+<p>The fields to be removed from the current data class.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+<tr>
+<td><code>stripped_fields_aliases</code></td>
+<td><code>List[str]</code></td>
+<td>
+<p>The fields to be removed from the current data class provided by alias.</p>
+</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OscalBaseModel</code></td>
+<td>
+<p>The current datamodel with the fields provided removed in a derivate (run time created) data model.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>err.TrestleError</code></td>
+<td>
+<p>If user provided both stripped_fields and stripped_field_aliases or neither.</p>
+</td>
+</tr>
+<tr>
+<td><code>err.TrestleError</code></td>
+<td>
+<p>If incorrect aliases or field names are provided.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">stripped_instance</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span> <span class="n">stripped_fields</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stripped_fields_aliases</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'OscalBaseModel'</span><span class="p">:</span>
+    <span class="sd">"""Return a new model instance with the specified fields being stripped.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        stripped_fields: The fields to be removed from the current data class.</span>
+<span class="sd">        stripped_fields_aliases: The fields to be removed from the current data class provided by alias.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The current datamodel with the fields provided removed in a derivate (run time created) data model.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        err.TrestleError: If user provided both stripped_fields and stripped_field_aliases or neither.</span>
+<span class="sd">        err.TrestleError: If incorrect aliases or field names are provided.</span>
+<span class="sd">    """</span>
+    <span class="c1"># stripped class type</span>
+    <span class="n">stripped_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_stripped_model_type</span><span class="p">(</span>
+        <span class="n">stripped_fields</span><span class="o">=</span><span class="n">stripped_fields</span><span class="p">,</span> <span class="n">stripped_fields_aliases</span><span class="o">=</span><span class="n">stripped_fields_aliases</span>
+    <span class="p">)</span>
+
+    <span class="c1"># remaining values</span>
+    <span class="n">remaining_values</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fields__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">stripped_class</span><span class="o">.</span><span class="n">__fields__</span><span class="p">:</span>
+            <span class="n">remaining_values</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="c1"># create stripped model instance</span>
+    <span class="c1"># TODO: Not sure if we can avoid type escapes here</span>
+    <span class="n">stripped_instance</span> <span class="o">=</span> <span class="n">stripped_class</span><span class="p">(</span><span class="o">**</span><span class="n">remaining_values</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="k">return</span> <span class="n">stripped_instance</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">¤</a></h3>
+<div class="doc doc-object doc-function">
+<h4 class="doc doc-heading" id="trestle.core.base_model.robust_datetime_serialization">
+
+<code class="highlight language-python"><span class="n">robust_datetime_serialization</span><span class="p">(</span><span class="n">input_dt</span><span class="p">)</span></code>
+
+
+      <a class="headerlink" href="#trestle.core.base_model.robust_datetime_serialization" title="Permanent link">¤</a></h4>
+<div class="doc doc-contents ">
+<p>Return a nicely formatted string for in a format compatible with OSCAL specifications.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input_dt</code></td>
+<td><code>datetime</code></td>
+<td>
+<p>Input datetime to convert to a string.</p>
+</td>
+<td><em>required</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>str</code></td>
+<td>
+<p>String in isoformat to the millisecond enforcing that timezone offset is provided.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TrestleError</code></td>
+<td>
+<p>Error is raised if datetime object does not contain sufficient timezone information.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">robust_datetime_serialization</span><span class="p">(</span><span class="n">input_dt</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">"""Return a nicely formatted string for in a format compatible with OSCAL specifications.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_dt: Input datetime to convert to a string.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        String in isoformat to the millisecond enforcing that timezone offset is provided.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TrestleError: Error is raised if datetime object does not contain sufficient timezone information.</span>
+<span class="sd">    """</span>
+    <span class="c1"># fail if the input datetime is not aware - ie it has no associated timezone</span>
+    <span class="k">if</span> <span class="n">input_dt</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">'Missing timezone in datetime'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">input_dt</span><span class="o">.</span><span class="n">tzinfo</span><span class="o">.</span><span class="n">utcoffset</span><span class="p">(</span><span class="n">input_dt</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">'Missing utcoffset in datetime'</span><span class="p">)</span>
+
+    <span class="c1"># use this leave in original timezone rather than utc</span>
+    <span class="c1"># return input_dt.astimezone().isoformat(timespec='milliseconds')  noqa: E800</span>
+
+    <span class="c1"># force it to be utc</span>
+    <span class="k">return</span> <span class="n">input_dt</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(</span><span class="n">timespec</span><span class="o">=</span><span class="s1">'milliseconds'</span><span class="p">)</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>handler: python</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../trestle.core.models.file_content_type/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                file_content_type
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../trestle.core.duplicates_validator/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                duplicates_validator
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.93c04032.min.js"></script>
+      <script src="../../assets/javascripts/bundle.83e5331e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.8c7e0a7e.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

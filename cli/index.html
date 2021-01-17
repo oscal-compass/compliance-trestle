@@ -1,0 +1,1709 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for compliance-trestle package.">
+      
+      
+      
+      
+        <link rel="canonical" href="https://compliance-trestle.github.io/cli/">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.5">
+    
+    
+      
+        <title>Trestle cli - Compliance Trestle</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.15aa0b43.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.75751829.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#009485">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../css/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="purple">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#trestle-cli" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://compliance-trestle.github.io" title="Compliance Trestle" class="md-header-nav__button md-logo" aria-label="Compliance Trestle">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Compliance Trestle
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Trestle cli
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/IBM/compliance-trestle/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://compliance-trestle.github.io" title="Compliance Trestle" class="md-nav__button md-logo" aria-label="Compliance Trestle">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Compliance Trestle
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/IBM/compliance-trestle/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Trestle cli
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Trestle cli
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview-usecases" class="md-nav__link">
+    Overview &amp; Usecases
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opinionated-directory-structure" class="md-nav__link">
+    Opinionated directory structure
+  </a>
+  
+    <nav class="md-nav" aria-label="Opinionated directory structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#support-for-subdivided-document-structures" class="md-nav__link">
+    Support for subdivided document structures
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-init" class="md-nav__link">
+    trestle init
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-create" class="md-nav__link">
+    trestle create
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-import" class="md-nav__link">
+    trestle import
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-replicate" class="md-nav__link">
+    trestle replicate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-split" class="md-nav__link">
+    trestle split
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-merge" class="md-nav__link">
+    trestle merge
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-assemble" class="md-nav__link">
+    trestle assemble
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-add" class="md-nav__link">
+    trestle add
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-remove" class="md-nav__link">
+    trestle remove
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-validate" class="md-nav__link">
+    trestle validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-tasks" class="md-nav__link">
+    trestle tasks
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mkdocs_code_of_conduct/" class="md-nav__link">
+        Code of Conduct
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" >
+      
+      <label class="md-nav__link" for="nav-4">
+        Contributing
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Contributing" data-md-level="1">
+        <label class="md-nav__title" for="nav-4">
+          <span class="md-nav__icon md-icon"></span>
+          Contributing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/mkdocs_contributing/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/IBM/compliance-trestle/graphs/contributors" class="md-nav__link">
+        Contributors
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../maintainers/" class="md-nav__link">
+        Maintainers
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/website/" class="md-nav__link">
+        Documentation website
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/DCO/" class="md-nav__link">
+        Developer Certificate of Originality
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5" >
+      
+      <label class="md-nav__link" for="nav-5">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="nav-5">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2" type="checkbox" id="nav-5-2" >
+      
+      <label class="md-nav__link" for="nav-5-2">
+        trestle
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="trestle" data-md-level="2">
+        <label class="md-nav__title" for="nav-5-2">
+          <span class="md-nav__icon md-icon"></span>
+          trestle
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2-1" type="checkbox" id="nav-5-2-1" >
+      
+      <label class="md-nav__link" for="nav-5-2-1">
+        tasks
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+        <label class="md-nav__title" for="nav-5-2-1">
+          <span class="md-nav__icon md-icon"></span>
+          tasks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.base_task/" class="md-nav__link">
+        base_task
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.transform/" class="md-nav__link">
+        transform
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2-2" type="checkbox" id="nav-5-2-2" >
+      
+      <label class="md-nav__link" for="nav-5-2-2">
+        core
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="core" data-md-level="3">
+        <label class="md-nav__title" for="nav-5-2-2">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.validator_helper/" class="md-nav__link">
+        validator_helper
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2-2-2" type="checkbox" id="nav-5-2-2-2" >
+      
+      <label class="md-nav__link" for="nav-5-2-2-2">
+        models
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="models" data-md-level="4">
+        <label class="md-nav__title" for="nav-5-2-2-2">
+          <span class="md-nav__icon md-icon"></span>
+          models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.interfaces/" class="md-nav__link">
+        interfaces
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.elements/" class="md-nav__link">
+        elements
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.actions/" class="md-nav__link">
+        actions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.plans/" class="md-nav__link">
+        plans
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.file_content_type/" class="md-nav__link">
+        file_content_type
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.base_model/" class="md-nav__link">
+        base_model
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.duplicates_validator/" class="md-nav__link">
+        duplicates_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.generators/" class="md-nav__link">
+        generators
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.parser/" class="md-nav__link">
+        parser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2-2-8" type="checkbox" id="nav-5-2-2-8" >
+      
+      <label class="md-nav__link" for="nav-5-2-2-8">
+        commands
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="commands" data-md-level="4">
+        <label class="md-nav__title" for="nav-5-2-2-8">
+          <span class="md-nav__icon md-icon"></span>
+          commands
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.task/" class="md-nav__link">
+        task
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.cmd_utils/" class="md-nav__link">
+        cmd_utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.add/" class="md-nav__link">
+        add
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.create/" class="md-nav__link">
+        create
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.replicate/" class="md-nav__link">
+        replicate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.remove/" class="md-nav__link">
+        remove
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.assemble/" class="md-nav__link">
+        assemble
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.validate/" class="md-nav__link">
+        validate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.import_/" class="md-nav__link">
+        import_
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.init/" class="md-nav__link">
+        init
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.object_factory/" class="md-nav__link">
+        object_factory
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.err/" class="md-nav__link">
+        err
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.const/" class="md-nav__link">
+        const
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.validator_factory/" class="md-nav__link">
+        validator_factory
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2-3" type="checkbox" id="nav-5-2-3" >
+      
+      <label class="md-nav__link" for="nav-5-2-3">
+        utils
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="utils" data-md-level="3">
+        <label class="md-nav__title" for="nav-5-2-3">
+          <span class="md-nav__icon md-icon"></span>
+          utils
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.utils.log/" class="md-nav__link">
+        log
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.utils.load_distributed/" class="md-nav__link">
+        load_distributed
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.utils.trash/" class="md-nav__link">
+        trash
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.utils.fs/" class="md-nav__link">
+        fs
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-5-2-4" type="checkbox" id="nav-5-2-4" >
+      
+      <label class="md-nav__link" for="nav-5-2-4">
+        oscal
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="oscal" data-md-level="3">
+        <label class="md-nav__title" for="nav-5-2-4">
+          <span class="md-nav__icon md-icon"></span>
+          oscal
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.oscal.catalog/" class="md-nav__link">
+        catalog
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.oscal.poam/" class="md-nav__link">
+        poam
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.oscal.profile/" class="md-nav__link">
+        profile
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.oscal.target/" class="md-nav__link">
+        target
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.oscal.ssp/" class="md-nav__link">
+        ssp
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.oscal.component/" class="md-nav__link">
+        component
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.oscal.assessment_plan/" class="md-nav__link">
+        assessment_plan
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.cli/" class="md-nav__link">
+        cli
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview-usecases" class="md-nav__link">
+    Overview &amp; Usecases
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#opinionated-directory-structure" class="md-nav__link">
+    Opinionated directory structure
+  </a>
+  
+    <nav class="md-nav" aria-label="Opinionated directory structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#support-for-subdivided-document-structures" class="md-nav__link">
+    Support for subdivided document structures
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-init" class="md-nav__link">
+    trestle init
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-create" class="md-nav__link">
+    trestle create
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-import" class="md-nav__link">
+    trestle import
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-replicate" class="md-nav__link">
+    trestle replicate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-split" class="md-nav__link">
+    trestle split
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-merge" class="md-nav__link">
+    trestle merge
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-assemble" class="md-nav__link">
+    trestle assemble
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-add" class="md-nav__link">
+    trestle add
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-remove" class="md-nav__link">
+    trestle remove
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-validate" class="md-nav__link">
+    trestle validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-tasks" class="md-nav__link">
+    trestle tasks
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/IBM/compliance-trestle/edit/master/docs/cli.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="trestle-cli">Trestle CLI<a class="headerlink" href="#trestle-cli" title="Permanent link">¤</a></h1>
+<h2 id="overview-usecases">Overview &amp; Usecases<a class="headerlink" href="#overview-usecases" title="Permanent link">¤</a></h2>
+<p>The trestle CLI has two primary usecases by design:</p>
+<ul>
+<li>Tooling to generate and manipulate OSCAL files when used directly by and end user. The objective here is to reduce the complexity of creating and editing workflows. E.g. commands such as: <code>trestle import</code>, <code>trestle create</code>, <code>trestle add</code>, <code>trestle split</code>, <code>trestle merge</code>.</li>
+<li>The trestle CLI as an automation tool, which, by design is likely to occur as part of a CI-CD pipeline e.g. <code>trestle validate</code>, <code>trestle tasks</code>.</li>
+</ul>
+<p>To support each of these usecases trestle, inspired by programming languages such as <code>python</code> and <code>go</code> as well as projects such as <code>auditree</code> has created an opinionated directory structure to manage OSCAL documents.</p>
+<h2 id="opinionated-directory-structure">Opinionated directory structure<a class="headerlink" href="#opinionated-directory-structure" title="Permanent link">¤</a></h2>
+<p>Trestle relies on an opinionated directory structure, similar to <code>git</code> or <code>go</code>, to manage the workflow. Unlike git commands are not solely restricted to working within an initialized directory tree, however, it is most likely.</p>
+<p>The directory structure setup by trestle has three major elements</p>
+<ul>
+<li>A <code>.trestle</code> hidden folder.</li>
+<li>A <code>dist</code> folder.</li>
+<li>Folders for each of the OSCAL schemas.</li>
+</ul>
+<p>The outline of the schema is below:</p>
+<div class="highlight"><pre><span></span><code>.
+├── .trestle
+├── dist
+│   ├── catalogs
+│   ├── profiles
+│   ├── target-definitions
+│   ├── system-security-plans
+│   ├── assessment-plans
+│   ├── assessment-results
+│   └── plan-of-action-and-milestones
+├── catalogs
+├── profiles
+├── target-definitions
+├── component-definitions
+├── system-security-plans
+├── assessment-plans
+├── assessment-results
+└── plan-of-action-and-milestones
+</code></pre></div>
+<p><code>.trestle</code> directory is a special directory containing various trestle artefacts to help run various other commands. Examples include configuation files, caches and templates.</p>
+<p>The bulk of the folder structure is used to represent each of the <em>top level schemas</em> or <em>top level models</em> such as <code>catalogs</code> and <code>profiles</code>. For each of these directories the following root structure is maintained.</p>
+<div class="highlight"><pre><span></span><code>├── .trestle
+└── TOP_LEVEL_MODEL_PLURAL
+    └── NAME_OF_MODEL_INSTANCE
+        └── TOP_LEVEL_MODEL_NAME.{json,yaml,yml}
+</code></pre></div>
+<p>which appears, for a catalog a user decides is titled nist-800-53 as:</p>
+<div class="highlight"><pre><span></span><code>├── .trestle
+└── catalogs
+    └── nist-800-53
+        └── catalog.json
+</code></pre></div>
+<p><code>dist</code> directory will contain the assembled version of the models located on the source model directories (at the project root level) which are: <code>catalogs</code>, <code>profiles</code>, <code>target-definitions</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> and <code>plan-of-action-and-milestones</code>. The assumption is that each of the OSCAL files within this folder are ready to be read by external 3rd party tools.</p>
+<h3 id="support-for-subdivided-document-structures">Support for subdivided document structures<a class="headerlink" href="#support-for-subdivided-document-structures" title="Permanent link">¤</a></h3>
+<p>The files constructed by oscal can run into the tens of thousands of lines of yaml or formated json. At this size the
+files become completely unmanageable for users. To combat this trestle can <code>trestle split</code> file in the file system and merge those split files together.</p>
+<p>Directory structures such as the one below can represent oscal document structures. Users are strongly encourage to rely on split and merge to code these structures.</p>
+<div class="highlight"><pre><span></span><code>.
+├── .trestle
+├── dist 
+│   └── catalogs
+│       └── nist800-53.json 
+└── catalogs
+    └── nist800-53
+        ├── catalog.json
+        └── catalog
+            ├── metadata.json
+            ├── metadata
+            │   ├── revision-history
+            │   │   ├── 00000__revision-history.json
+            │   │   ├── 00001__revision-history.json
+            │   │   └── 00002__revision-history.json   
+            │   └── responsible-parties
+            │       ├── creator__responsible-party.json
+            │       └── contact__responsible-party.json       
+            └── groups
+                ├── 00000__group.json        
+                ├── 00000__group
+                │   └── controls
+                │       ├── 00000__control.json
+                │       └── 00001__control.json
+                ├── 00001__group.json 
+                └── 00001__group
+                    └── controls
+                        ├── 00000__control.json
+                        └── 00001__control.json
+...
+</code></pre></div>
+<h2 id="trestle-init"><code>trestle init</code><a class="headerlink" href="#trestle-init" title="Permanent link">¤</a></h2>
+<p>This command will create a trestle project in the current directory with necessary directory structure and trestle artefacts. For example, if we run <code>trestle init</code> in a directory, it will create a directory structure like below for different artefacts:</p>
+<div class="highlight"><pre><span></span><code>.
+├── .trestle
+├── dist
+│   ├── catalogs
+│   ├── profiles
+│   ├── target-definitions
+│   ├── system-security-plans
+│   ├── assessment-plans
+│   ├── assessment-results
+│   └── plan-of-action-and-milestones
+├── catalogs
+├── profiles
+├── target-definitions
+├── component-definitions
+├── system-security-plans
+├── assessment-plans
+├── assessment-results
+└── plan-of-action-and-milestones
+</code></pre></div>
+<p><code>.trestle</code> directory is a special directory containing various trestle artefacts to help run various other commands.</p>
+<p><code>dist</code> directory will contain the merged or assembled version of the models located on the source model directories (at the project root level) which are: <code>catalogs</code>, <code>profiles</code>, <code>target-definitions</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> and <code>plan-of-action-and-milestones</code>.</p>
+<p>Notice that trestle is a highly opinionated tool and, therefore, the names of the files and directories that are created by any of the <code>trestle</code> commands and subcommands MUST NOT be changed manually.</p>
+<h2 id="trestle-create"><code>trestle create</code><a class="headerlink" href="#trestle-create" title="Permanent link">¤</a></h2>
+<p>This command will create an initial directory structure for various OSCAL models including sample JSON files and subdirectories representing parts of the model. For example, <code>trestle create catalog -o nist800-53</code> will create a directory structure of a sample catalog like below.</p>
+<div class="highlight"><pre><span></span><code>.
+├── .trestle
+├── dist 
+│   └── catalogs
+│       └── nist800-53.json
+└── catalogs
+    └── nist800-53
+        ├── catalog.json
+        └── catalog        
+            └── groups
+                ├── 00000__group.json            
+                ├── 00000__group
+                │   └── controls
+                │       ├── 00000__control.json
+                │       └── 00001__control.json
+                ├── 00001__group
+                └── 00001__group
+                    └── controls
+                        ├── 00000__control.json
+                        ├── 00001__control.json
+                        └── 00002__control.json
+...
+</code></pre></div>
+<p>Notice that subdirectories under a trestle directory model such as <code>$TRESTLE_BASEDIR/catalogs/nist800-53/catalog</code> and <code>$TRESTLE_BASEDIR/catalogs/nist800-53/catalog/groups</code> represent a decomposition of the original file. The subdirectory <code>catalog</code> means that the original <code>catalog.json</code> was split and the split parts are inside the <code>catalog</code> directory (in this case <code>groups</code>).
+Every subdirectory in a trestle directory model should have a corresponding <code>.json</code> or <code>.yaml</code> file with the same name. Exceptions to that rule are named fields (dicts) such as <code>catalog.metadata.responsible-parties</code> and array fields such as <code>catalog.groups</code>. When those subcomponents are split/expanded each file or subdirectory under them represents an item of the collection. Because of that, if a corresponding <code>groups.json | groups.yaml</code> file were to exist, its contents would just be an empty representation of that collection and the user would need to be careful never to edit that file. Therefore, we decided not to create that corresponding file in those cases. Following the same logic, another exception is when all the fields from a <code>.json | .yaml</code> file are split, leaving the original file as an empty object. In that case, the file would be deleted as well.</p>
+<p>The following subcommands are currently supported:</p>
+<ul>
+<li><code>trestle create catalog</code>: creates a directory structure of a sample OSCAL catalog model under the <code>catalogs</code> folder. This folder can contain multiple catalogs.</li>
+<li><code>trestle create profile</code>: creates a directory structure of a sample OSCAL profile model under the <code>profiles</code> folder. This folder can contain multiple profiles.</li>
+<li><code>trestle create target-definition</code>: creates a directory structure of a sample target-definition model under the <code>target-definitions</code> folder. This folder can contain multiple target-definitions.</li>
+<li><code>trestle create component-definition</code>: creates a directory structure of a sample component-definition model under the <code>component-definitions</code> folder. This folder can contain multiple component-definitions.</li>
+<li><code>trestle create system-security-plan</code>: creates a directory structure of a sample system-security-plan model under the <code>system-security-plans</code> folder. This folder can contain multiple system-security-plans.</li>
+<li><code>trestle create assessment-plan</code>: creates a directory structure of a sample assessment-plan under the <code>assessment-plans</code> folder. This folder can contain multiple assessment-plans.</li>
+<li><code>trestle create assessment-result</code>: creates a directory structure of a sample assessment-result under the <code>assessment-results</code> folder. This folder can contain multiple assessment-results.</li>
+<li><code>trestle create plan-of-action-and-milestone</code>: creates a directory structure of a sample plan-of-action-and-milestone under the <code>plan-of-action-and-milestones</code> folder. This folder can contain multiple plan-of-action-and-milestones.</li>
+</ul>
+<p>The following options are supported:</p>
+<ul>
+<li><code>-o or --output</code>: specifies the name/alias of a model. It is used as the prefix for the output filename under the <code>dist</code> directory and for naming the source subdirectories under  <code>catalogs</code>, <code>profiles</code>, <code>target-definitions</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> or <code>plan-of-action-and-milestones</code>.</li>
+</ul>
+<p>The user can edit the parts of the generated OSCAL model by modifying the sample content in those directories.</p>
+<p>The initial level of decomposition of each type of model varies according to the model type.
+This default or reference decomposition behaviour can be changed by modifying the rules in a <code>.trestle/config file</code>. These rules can be written as a sequence of <code>trestle split</code> commands.</p>
+<h2 id="trestle-import"><code>trestle import</code><a class="headerlink" href="#trestle-import" title="Permanent link">¤</a></h2>
+<p>This command allows users to import existing OSCAL files so that they can be managed using trestle. For example <code>trestle import -f existing_catalog.json -o my_existing_catalog</code> will import <code>existing_catalog.json</code> into a new folder under <code>catalogs</code> as shown below:</p>
+<div class="highlight"><pre><span></span><code>.
+├── .trestle
+├── dist 
+│   └── catalogs
+│       ├── my_existing_catalog.json 
+│       └── nist800-53.json 
+└── catalogs
+    ├── my_existing_catalog
+    │   ├── catalog.json
+    │   └── catalog
+    │       └── groups
+    │           ├── 00000__group.json
+    │           └── 00000__group
+    │               └── controls
+    │                   ├── 00000__control.json
+    │                   └── 00001__control.json
+    └── nist800-53
+        ├── catalog.json
+        └── catalog        
+            └── groups
+                ├── 00000__group.json            
+                ├── 00000__group
+                │   └── controls
+                │       ├── 00000__control.json
+                │       └── 00001__control.json
+                ├── 00001__group.json
+                └── 00001__group
+                    └── controls
+                        ├── 00000__control.json
+                        ├── 00001__control.json
+...
+</code></pre></div>
+<p>The following options are supported:</p>
+<ul>
+<li><code>-f or --file</code>: specifies the path of an existing OSCAL file.</li>
+<li><code>-o or --output</code>: specifies the name/alias of a model. It is used as the prefix for the output filename under the <code>dist</code> directory and for naming the source subdirectories under  <code>catalogs</code>, <code>profiles</code>, <code>target-definitions</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> or <code>plan-of-action-and-milestones</code>.</li>
+</ul>
+<p>The import subcommand can determine the type of the model that is to be imported by the contents of the file.</p>
+<p>Note that the import command will decompose the file according to the default decomposing rules already mentioned in the <code>trestle create</code> section. Similarly to <code>trestle create</code>, the user can increase the level of decomposition by using <code>trestle split</code> command.</p>
+<h2 id="trestle-replicate"><code>trestle replicate</code><a class="headerlink" href="#trestle-replicate" title="Permanent link">¤</a></h2>
+<p>This command allows users to replicate a certain OSCAL model (file and directory structure). For example <code>trestle replicate catalog -i cat1 -o cat11</code> will replicate the Catalog cat1 into <code>cat11</code> directory. It can also regenerate all the UUIDs as required.</p>
+<h2 id="trestle-split"><code>trestle split</code><a class="headerlink" href="#trestle-split" title="Permanent link">¤</a></h2>
+<p>This command allows users to further decompose a trestle model into additional subcomponents.</p>
+<p>The following options are currently supported:</p>
+<ul>
+<li><code>-f or --file</code>: this option specifies the file path of the json/yaml file containing the elements that will be split.</li>
+<li><code>-e or --elements</code>: specifies the model subcomponent element(s) (JSON/YAML property path) that is/are going to be split. Multiple elements can be specified at once using a comma-separated value. If the element is of JSON/YAML type array list and you want trestle to create a separate subcomponent file per array item, the element needs to be suffixed with <code>.*</code>. If the suffix is not specified, split will place all array items in only one separate subcomponent file. If the element is a collection of JSON Schema additionalProperties and you want trestle to create a separate subcomponent file per additionalProperties item, the element also needs to be suffixed with <code>.*</code>. Similarly, not adding the suffix will place all additionalProperties items in only one separate subcomponent file.</li>
+</ul>
+<p>In the near future, <code>trestle split</code> should be smart enough to figure out which json/yaml files contain the elemenets you want to split. In that case, the <code>-f</code> option would be deprecated and only the <code>-e</code> option will be required. In order to determine which elements the user can split at the level the command is being executed, the following command can be used:
+<code>trestle split -l</code> which would be the same as <code>trestle split --list-available-elements</code></p>
+<h2 id="trestle-merge"><code>trestle merge</code><a class="headerlink" href="#trestle-merge" title="Permanent link">¤</a></h2>
+<p>The trestle merge command is the reversal of <code>trestle split</code>. This command allows users to reverse the decomposition of a trestle model by aggregating subcomponents scattered across multiple files or directories into the parent JSON/YAML file.
+To merge a model, you have to first change working directory to the root model component directory that you want to merge a sub-component model into.
+The following option is required:</p>
+<ul>
+<li><code>-e or --elements</code>: specifies the properties (JSON/YAML path) that will be merged, relative to the current working directory. This must contain at least 2 elements, where the last element is the model/sub-component to be merged into the second from last component.</li>
+</ul>
+<p>For example, in the command <code>trestle merge -e catalog.metadata</code>, executed in the same directory where <code>catalog.json</code> or splitted <code>catalog</code> directory exists, the property <code>metadata</code> from <code>metadata.json</code> or <code>metadata.yaml</code> would be moved/merged into <code>catalog.json</code>. If the <code>metadata</code> model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into <code>metadata</code>, before merging <code>metadata</code> subcomponent into <code>catalog.json</code>. To specify merging every sub-component split from a component, <code>.*</code> can be used. For example, <code>trestle merge -e catalog.*</code> command, issued from the directory where <code>catalog.json</code> or<code>catalog</code> directory exists, will merge every single sub-component of that catalog back into the <code>catalog.json</code>. </p>
+<h2 id="trestle-assemble"><code>trestle assemble</code><a class="headerlink" href="#trestle-assemble" title="Permanent link">¤</a></h2>
+<p>This command assembles all contents (files and directories) representing a specific model into a single OSCAL file located under <code>dist</code> folder. For example,</p>
+<blockquote>
+<p><code>$TRESTLE_BASEDIR$ trestle assemble catalog -i nist800-53</code></p>
+</blockquote>
+<p>will traverse the <code>catalogs/nist800-53</code> directory and its children and combine all data into a OSCAL file that will be written to <code>dist/catalogs/nist800-53.json</code>. Note that the parts of catalog <code>nist800-53</code> can be written in either YAML/JSON/XML (e.g. based on the file extension), however, the output will be generated as YAML/JSON/XML as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.</p>
+<h2 id="trestle-add"><code>trestle add</code><a class="headerlink" href="#trestle-add" title="Permanent link">¤</a></h2>
+<p>This command allows users to add an OSCAL model to a subcomponent in source directory structure of the model. For example,</p>
+<blockquote>
+<p><code>$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle add -f ./catalog.json -e catalog.metadata.roles</code></p>
+</blockquote>
+<p>will add the following property under the <code>metadata</code> property for a catalog that will be written to the appropriate file under <code>catalogs/nist800-53</code> directory:</p>
+<div class="highlight"><pre><span></span><code>&quot;roles&quot;: [
+  {
+    &quot;id&quot;: &quot;REPLACE_ME&quot;,
+    &quot;title&quot;: &quot;REPLACE_ME&quot;
+  }
+</code></pre></div>
+<p>Default values for mandatory datatypes will be like below. All UUID's will be populated by default whether or not they are mandatory.</p>
+<div class="highlight"><pre><span></span><code>- DateTime: &lt;Current date-time&gt;
+- Boolean: False
+- Integer: 0 
+- String: REPLACE_ME
+- Float/Double: 0.00
+- Id field: Auto generated UUID
+</code></pre></div>
+<h2 id="trestle-remove"><code>trestle remove</code><a class="headerlink" href="#trestle-remove" title="Permanent link">¤</a></h2>
+<p>The trestle remove command is the reversal of <code>trestle add</code>.</p>
+<h2 id="trestle-validate"><code>trestle validate</code><a class="headerlink" href="#trestle-validate" title="Permanent link">¤</a></h2>
+<p>Trestle validate is designed to perform a function to ensure integrity of a set of oscal files. This can be as simple as
+a schema validation within a single file or as complex as ensuring the integrity of a 'stack' of oscal files including potentially
+remote system state.</p>
+<p>Trestle validate the form `trestle validate -f FILE -i SPECIFIC_ITEM_OR_VALUE, --mode {duplicate or similar}</p>
+<p>and returns a non-zero return code on a validation failure. Mode is a list of validation modes that will be implemented as shown in the table below.</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>duplicates</td>
+<td>Identify if duplicate values exist for a given json key for example <code>trestle validate -f catalog.json -i uuid --mode duplicate</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="trestle-tasks"><code>trestle tasks</code><a class="headerlink" href="#trestle-tasks" title="Permanent link">¤</a></h2>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href=".." class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Overview
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../mkdocs_code_of_conduct/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Code of Conduct
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.93c04032.min.js"></script>
+      <script src="../assets/javascripts/bundle.83e5331e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: [],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.8c7e0a7e.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
