@@ -21,6 +21,7 @@ Allows for using uris to reference external directories and then expand.
 
 import getpass
 import logging
+import os
 import paramiko
 import pathlib
 import re
@@ -192,49 +193,65 @@ class SFTPFetcher(FetcherBase):
             return
 
         u = parse.urlparse(self._uri)
-        if self._inst_cache_path.exists() and self._refresh:
-            client = paramiko.SSHClient()
-            client.load_system_host_keys()
-            username = getpass.getuser() if not u.username else u.username
-            if u.password:
-                try:
-                    client.connect(
-                        u.hostname,
-                        username = username,
-                        password = u.password,
-                        port = 22 if not u.port else u.port,
-                    )
-                except Exception as e:
-                    logger.error(f'Error connecting SSH for {username}@{u.hostname}')
-                    logger.debug(e)
-                    raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
-            else:
-                try:
-                    client.connect(
-                        u.hostname,
-                        username = username,
-                        port = 22 if not u.port else u.port,
-                        allow_agent = True
-                    )
-                except Exception as e:
-                    logger.error(f'Error connecting SSH for {username}@{u.hostname}')
-                    logger.debug(e)
-                    raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
+        client = paramiko.SSHClient()
 
+        if 'SSH_KEY' in os.environ and self._refresh:
+            ssh_key_file = os.environ['SSH_KEY']
             try:
-                sftp_client = client.open_sftp()
+                client.load_host_keys(ssh_key_file)
             except Exception as e:
-                logger.error(f'Error opening sftp session for {username}@{u.hostname}')
-                logger.debug(e)
-                raise TrestleError(f'Cache update failure to open sftp for {username}@{u.hostname}')
-
-            localpath = self._inst_cache_path / pathlib.Path(u.path).name
-            try:
-                sftp_client.get(remotepath=u.path[1:], localpath=(localpath.__str__()))
-            except Exception as e:
-                logger.error(f'Error getting remote resource {self._uri} into cache {localpath}')
+                logger.error(f'Error loading host keys from {ssh_key_file}.')
                 logger.debug(e)
                 raise TrestleError(f'Cache update failure for {self._uri}')
+
+        elif self._inst_cache_path.exists() and self._refresh:
+            try:
+                client.load_system_host_keys()
+            except Exception as e:
+                logger.error(f'Error loading system host keys.')
+                logger.debug(e)
+                raise TrestleError(f'Cache update failure for {self._uri}')
+               
+        username = getpass.getuser() if not u.username else u.username
+        if u.password:
+            try:
+                client.connect(
+                    u.hostname,
+                    username = username,
+                    password = u.password,
+                    port = 22 if not u.port else u.port,
+                )
+            except Exception as e:
+                logger.error(f'Error connecting SSH for {username}@{u.hostname}')
+                logger.debug(e)
+                raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
+        else:
+            try:
+                client.connect(
+                    u.hostname,
+                    username = username,
+                    port = 22 if not u.port else u.port,
+                    allow_agent = True
+                )
+            except Exception as e:
+                logger.error(f'Error connecting SSH for {username}@{u.hostname}')
+                logger.debug(e)
+                raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
+
+        try:
+            sftp_client = client.open_sftp()
+        except Exception as e:
+            logger.error(f'Error opening sftp session for {username}@{u.hostname}')
+            logger.debug(e)
+            raise TrestleError(f'Cache update failure to open sftp for {username}@{u.hostname}')
+
+        localpath = self._inst_cache_path / pathlib.Path(u.path).name
+        try:
+            sftp_client.get(remotepath=u.path[1:], localpath=(localpath.__str__()))
+        except Exception as e:
+            logger.error(f'Error getting remote resource {self._uri} into cache {localpath}')
+            logger.debug(e)
+            raise TrestleError(f'Cache update failure for {self._uri}')
 
 
 class GithubFetcher(HTTPSFetcher):
