@@ -73,8 +73,14 @@ class MergeCmd(Command):
         """1. Load desination model into a stripped model"""
         # Load destination model
         destination_model_alias = element_path_list[-2]
+        # Destination model filetype
+        try:
+            file_type = fs.get_contextual_file_type(Path(os.getcwd()))
+        except Exception as e:
+            raise TrestleError(str(e))
+        file_ext = FileContentType.to_file_extension(file_type)
         # Destination model filename
-        destination_model_filename = Path(f'{utils.classname_to_alias(destination_model_alias, "json")}.json')
+        destination_model_filename = Path(f'{utils.classname_to_alias(destination_model_alias, "json")}{file_ext}')
         destination_model_type, _ = fs.get_stripped_contextual_model(destination_model_filename.absolute())
 
         destination_model_object = destination_model_type.oscal_read(destination_model_filename)
@@ -86,7 +92,7 @@ class MergeCmd(Command):
             plan = Plan()
             reset_destination_action = CreatePathAction(destination_model_filename.absolute(), clear_content=True)
             write_destination_action = WriteFileAction(
-                destination_model_filename, Element(merged_model_instance), content_type=FileContentType.JSON
+                destination_model_filename, Element(merged_model_instance), content_type=file_type
             )
             delete_target_action = RemovePathAction(Path(merged_model_alias).absolute())
             plan: Plan = Plan()
@@ -114,8 +120,8 @@ class MergeCmd(Command):
 
         # if target model is a file then handle file. If file doesn't exist, handle the directory,
         # but in this case it's a list or a dict collection type
-        if (Path(f'{target_model_path}.json')).exists():
-            target_model_filename = Path(f'{target_model_path}.json')
+        if (Path(f'{target_model_path}{file_ext}')).exists():
+            target_model_filename = Path(f'{target_model_path}{file_ext}')
             _, _, target_model_object = load_distributed.load_distributed(target_model_filename)
         else:
             target_model_filename = Path(target_model_path)
@@ -132,7 +138,7 @@ class MergeCmd(Command):
         """4. Create action  plan"""
         reset_destination_action = CreatePathAction(destination_model_filename.absolute(), clear_content=True)
         write_destination_action = WriteFileAction(
-            destination_model_filename, merged_destination_element, content_type=FileContentType.JSON
+            destination_model_filename, merged_destination_element, content_type=file_type
         )
         delete_target_action = RemovePathAction(target_model_filename)
 
