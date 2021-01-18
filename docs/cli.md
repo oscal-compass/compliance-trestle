@@ -2,18 +2,18 @@
 
 ## Overview & Usecases
 
-The trestle CLI has two primary usecases by design:
+The trestle CLI has two primary use cases by design:
 
-- Tooling to generate and manipulate OSCAL files when used directly by and end user. The objective here is to reduce the complexity of creating and editing workflows. E.g. commands such as: `trestle import`, `trestle create`, `trestle add`, `trestle split`, `trestle merge`.
-- The trestle CLI as an automation tool, which, by design is likely to occur as part of a CI-CD pipeline e.g. `trestle validate`, `trestle tasks`.
+- Serve as tooling to generate and manipulate OSCAL files directly by an end user. The objective is to reduce the complexity of creating and editing workflows. Example commands are: `trestle import`, `trestle create`, `trestle add`, `trestle split`, `trestle merge`.
+- Act as an automation tool that, by design, can be an integral part of a CI/CD pipeline e.g. `trestle validate`, `trestle tasks`.
 
-To support each of these usecases trestle, inspired by programming languages such as `python` and `go` as well as projects such as `auditree` has created an opinionated directory structure to manage OSCAL documents.
+To support each of these use cases trestle creates an opinionated directory structure to manage OSCAL documents.
 
 ## Opinionated directory structure
 
-Trestle relies on an opinionated directory structure, similar to `git` or `go`, to manage the workflow. Unlike git commands are not solely restricted to working within an initialized directory tree, however, it is most likely.
+Trestle relies on an opinionated directory structure, similar to `git`, `go`, or `auditree`, to manage the workflow. Unlike git commands, trestle commands are not restricted to working within an initialized directory tree - but that is the most likely use case.
 
-The directory structure setup by trestle has three major elements
+The directory structure setup by trestle has three major elements:
 
 - A `.trestle` hidden folder.
 - A `dist` folder.
@@ -42,9 +42,9 @@ The outline of the schema is below:
 └── plan-of-action-and-milestones
 ```
 
-`.trestle` directory is a special directory containing various trestle artefacts to help run various other commands. Examples include configuation files, caches and templates.
+`.trestle` directory is a special directory containing various trestle artefacts to help run various other commands. Examples include configuration files, caches and templates.
 
-The bulk of the folder structure is used to represent each of the *top level schemas* or *top level models* such as `catalogs` and `profiles`. For each of these directories the following root structure is maintained.
+The bulk of the folder structure is used to represent each of the *top level schemas* or *top level models* such as `catalogs` and `profiles`. For each of these directories the following root structure is maintained:
 
 ```
 
@@ -55,7 +55,7 @@ The bulk of the folder structure is used to represent each of the *top level sch
 
 ```
 
-which appears, for a catalog a user decides is titled nist-800-53 as:
+which appears, for a catalog a user decides is titled nist-800-53, as:
 
 ```
 ├── .trestle
@@ -65,14 +65,14 @@ which appears, for a catalog a user decides is titled nist-800-53 as:
 
 ```
 
-`dist` directory will contain the assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`, `target-definitions`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`. The assumption is that each of the OSCAL files within this folder are ready to be read by external 3rd party tools.
+`dist` directory will contain the assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`, `target-definitions`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`. The assumption is that each of the OSCAL files within this folder is ready to be read by external 3rd party tools.
 
 ### Support for subdivided document structures
 
-The files constructed by oscal can run into the tens of thousands of lines of yaml or formated json. At this size the
-files become completely unmanageable for users. To combat this trestle can `trestle split` file in the file system and merge those split files together.
+The files constructed by OSCAL can run into the tens of thousands of lines of yaml or formatted json. At this size the
+files become completely unmanageable for users. To combat this, trestle can `trestle split` a file into many smaller files and later merge those split files together.
 
-Directory structures such as the one below can represent oscal document structures. Users are strongly encourage to rely on split and merge to code these structures.
+Directory structures such as the one below can represent OSCAL document structures. Users are strongly encourage to rely on split and merge to code these structures.
 
 ```
 .
@@ -109,7 +109,7 @@ Directory structures such as the one below can represent oscal document structur
 
 ## `trestle init`
 
-This command will create a trestle project in the current directory with necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create a directory structure like below for different artefacts:
+This command will create a trestle project in the current directory with the necessary directory structure and trestle artefacts. For example, if we run `trestle init` in a directory, it will create the directory structure below for different artefacts:
 
 ```
 .
@@ -304,8 +304,8 @@ The trestle remove command is the reversal of `trestle add`.
 
 ## `trestle validate`
 
-Trestle validate is designed to perform a function to ensure integrity of a set of oscal files. This can be as simple as
-a schema validation within a single file or as complex as ensuring the integrity of a 'stack' of oscal files including potentially
+Trestle validate is designed to perform a function to ensure integrity of a set of OSCAL files. This can be as simple as
+a schema validation within a single file or as complex as ensuring the integrity of a 'stack' of OSCAL files including potentially
 remote system state.
 
 Trestle validate the form \`trestle validate -f FILE -i SPECIFIC\_ITEM\_OR\_VALUE, --mode {duplicate or similar}
