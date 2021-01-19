@@ -29,6 +29,7 @@ from trestle.utils import fs
 BASE_TMP_DIR = pathlib.Path('tests/__tmp_dir')
 YAML_TEST_DATA_PATH = pathlib.Path('tests/data/yaml/')
 JSON_TEST_DATA_PATH = pathlib.Path('tests/data/json/')
+ENV_TEST_DATA_PATH = pathlib.Path('tests/data/env/')
 
 TARGET_DEFS_DIR = 'target-definitions'
 CATALOGS_DIR = 'catalogs'
