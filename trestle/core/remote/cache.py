@@ -24,6 +24,7 @@ import json
 import logging
 import os
 import pathlib
+import re
 import shutil
 import sys
 from abc import ABC, abstractmethod
@@ -120,15 +121,25 @@ class LocalFetcher(FetcherBase):
         path = pathlib.Path(uri).absolute()
         self._abs_path = path
         localhost_cached_dir = self._trestle_cache_path / 'localhost'
-        localhost_cached_dir.mkdir(exist_ok=True)
-        self._inst_cache_path = localhost_cached_dir / path
+        localhost_cached_dir = localhost_cached_dir / '__abs__' / '__root__'
+        # Use the uri's path.parent to set a cache location
+        cache_location_string = path.parent.__str__()
+        # Remove the drive letter for Windows/DOS paths:
+        if re.match('[a-zA-Z]:', uri):
+            cache_location_string = re.sub('[a-zA-Z]:', '', path.parent.__str__())
+        # Locte first non-slash character as the root subdirectory to start with:
+        non_slash_start = re.search('[a-z-A-Z0-9]', cache_location_string).span()[0]
+        cache_location_string_relative = cache_location_string[non_slash_start:]
+        localhost_cached_dir = localhost_cached_dir / pathlib.Path(cache_location_string_relative)
+        localhost_cached_dir.mkdir(parents=True, exist_ok=True)
+        self._inst_cache_path = localhost_cached_dir
 
     def _update_cache(self) -> None:
         # Step one discover whether
         if self._cache_only:
             # Don't update if cache only.
             return
-        if not self.in_cache() or self._refresh:
+        if self._inst_cache_path.exists() and self._refresh:
             try:
                 shutil.copy(self._abs_path, self._inst_cache_path)
             except Exception as e:
@@ -365,7 +376,7 @@ class FetcherFactory(object):
     ) -> FetcherBase:
         """Return an instantiated fetcher object based on the uri."""
         # Basic correctness test
-        if len(uri) <= 9 or '/' not in uri:
+        if len(uri) <= 9 or ('/' not in uri and 'C:\\' not in uri):
             raise TrestleError(f'Unable to fetch uri as it appears to be invalid {uri}')
 
         if uri[0] == '/' or uri[0:3] == '../' or uri[0:2] == './' or 'file:///' == uri[0:8]:
@@ -382,5 +393,8 @@ class FetcherFactory(object):
                 return GithubFetcher(trestle_root, uri, settings, refresh, fail_hard, cache_only)
             else:
                 return HTTPSFetcher(trestle_root, uri, settings, refresh, fail_hard, cache_only)
+        elif 'C:\\' == uri[0:3]:
+            return LocalFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
+>>>>>>> c049fa5e3b41a74b333ac652232a3562fd68faa9
         else:
             raise TrestleError(f'Unable to fetch uri: {uri} as the uri did not match a suppported format.')

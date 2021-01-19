@@ -16,8 +16,11 @@
 """Testing for cache functionality."""
 
 import pathlib
+import random
+import string
 
-from trestle.core.remote import cache
+from trestle.core import generators
+# from trestle.core.remote import cache
 from trestle.core.settings import Settings
 
 
@@ -29,6 +32,18 @@ def test_fetcher_base():
 def test_github_fetcher():
     """Test the github fetcher."""
     pass
+
+
+def test_local_fetcher(tmp_trestle_dir):
+    """Test the local fetcher."""
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    catalog_file = pathlib.Path(tmp_trestle_dir / f'{rand_str}.json').__str__()
+    catalog_data = generators.generate_sample_model(Catalog)
+    catalog_data.oscal_write(pathlib.Path(catalog_file))
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)
+    fetcher._refresh = True
+    fetcher._update_cache()
+    assert fetcher._inst_cache_path.exists()
 
 
 def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
