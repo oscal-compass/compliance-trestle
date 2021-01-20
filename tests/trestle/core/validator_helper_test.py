@@ -37,8 +37,7 @@ def test_has_no_duplicate_values_generic() -> None:
     # test with valid pydantic target
     good_target_path = yaml_path / 'good_target.yaml'
     good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
-    loe = validator_helper.find_values_by_name(good_target, 'uuid')
-    assert len(loe) == 5
+    validator_helper.find_values_by_name(good_target, 'uuid')
     assert validator_helper.has_no_duplicate_values_by_name(good_target, 'uuid')
 
     # test with pydantic target containing duplicates
@@ -63,4 +62,4 @@ def test_has_no_duplicate_values_pydantic() -> None:
     # test presence of many duplicate properties
     good_target_path = yaml_path / 'good_target.yaml'
     good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
-    assert not validator_helper.has_no_duplicate_values_by_type(good_target, ostarget.Prop)
+    assert not validator_helper.has_no_duplicate_values_by_type(good_target, ostarget.Property)

@@ -1,17 +1,16 @@
 # Trestle CLI Specifications (v0.1.0)
 
-
 ## Table of Contents
 
-- [Purpose](<#purpose>)
-- [Users](<#users>)
-- [Scope](<#scope>)
-- [Trestle commands](<#trestle-commands>)
-  - [Draft commands](<#draft-commands>)
-- [Future work](<#future-work>)
-  - [Deploy commands](<#deploy-commands>)
-  - [Monitor commands](<#monitor-commands>)
-  - [Reporting commands](<#reporting-commands>)
+- [Purpose](#purpose)
+- [Users](#users)
+- [Scope](#scope)
+- [Trestle commands](#trestle-commands)
+  - [Draft commands](#draft-commands)
+- [Future work](#future-work)
+  - [Deploy commands](#deploy-commands)
+  - [Monitor commands](#monitor-commands)
+  - [Reporting commands](#reporting-commands)
 
 ## Purpose
 
@@ -110,10 +109,8 @@ This command will create an initial directory structure for various OSCAL models
 ...
 ```
 
-
 Notice that subdirectories under a trestle directory model such as `$TRESTLE_BASEDIR/catalogs/nist800-53/catalog` and `$TRESTLE_BASEDIR/catalogs/nist800-53/catalog/groups` represent a decomposition of the original file. The subdirectory `catalog` means that the original `catalog.json` was split and the split parts are inside the `catalog` directory (in this case `groups`).
 Every subdirectory in a trestle directory model should have a corresponding `.json` or `.yaml` file with the same name. Exceptions to that rule are named fields (dicts) such as `catalog.metadata.responsible-parties` and array fields such as `catalog.groups`. When those subcomponents are split/expanded each file or subdirectory under them represents an item of the collection. Because of that, if a corresponding `groups.json | groups.yaml` file were to exist, its contents would just be an empty representation of that collection and the user would need to be careful never to edit that file. Therefore, we decided not to create that corresponding file in those cases. Following the same logic, another exception is when all the fields from a `.json | .yaml` file are split, leaving the original file as an empty object. In that case, the file would be deleted as well.
-
 
 The following subcommands are currently supported:
 
@@ -255,7 +252,7 @@ This command allows users to import existing OSCAL files so that they can be man
                 │   └── controls
                 │       ├── 00000__control.json
                 │       └── 00001__control.json
-                ├── 00001__group
+                ├── 00001__group.json
                 └── 00001__group
                     └── controls
                         ├── 00000__control.json
@@ -318,7 +315,6 @@ To illustrate how this command could be used consider a catalog model named `nis
 
 **Step 1**: A user might want to decompose the `metadata` property from `catalog.json`. The command to achieve that would be:
 
-
 `$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle split -f catalog.json -e 'catalog.metadata'`.
 
 This would create a `metadata.json` file under `catalog` subdirectory and move the whole `metadata` property/section from `catalog.json` to `catalog/metadata.json` as below:
@@ -352,7 +348,6 @@ This would create a `metadata.json` file under `catalog` subdirectory and move t
 The future version of this command would be:
 
 > `$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle split -e 'catalog.metadata'`
-
 
 **Step 2**: Suppose now the user wants to further break down the `revision-history` property under the `metadata` subcomponent. The command to achieve that would be:
 
@@ -453,7 +448,7 @@ A more evident example of this type of property is in the `targets` property und
 
 **Step 4**: Suppose the user wants to split the `responsible-parties` property in order to be able to edit each arbitrary key/value object under it as a separate file. The command to achieve that would be:
 
- `$TRESTLE_BASEDIR/catalogs/nist800-53/catalog$ trestle split -f metadata.json -e metadata.responsible-parties.*`
+`$TRESTLE_BASEDIR/catalogs/nist800-53/catalog$ trestle split -f metadata.json -e metadata.responsible-parties.*`
 
 Notice the `.*` at the end referring to each key/value pair in the map).
 The command would result in creating a directory called `responsible-parties` under `metadata` and multiple JSON files under it, one for each named field using the key of the named field as the name of the JSON file. The result is shown below:
@@ -500,27 +495,12 @@ An example of a sequence of trestle split and merge commands and the correspondi
 #### `trestle merge`
 
 The trestle merge command is the reversal of `trestle split`. This command allows users to reverse the decomposition of a trestle model by aggregating subcomponents scattered across multiple files or directories into the parent JSON/YAML file.
+To merge a model, you have to first change working directory to the root model component directory that you want to merge a sub-component model into.
+The following option is required:
 
-The following options are currently supported:
+- `-e or --elements`: specifies the properties (JSON/YAML path) that will be merged, relative to the current working directory. This must contain at least 2 elements, where the last element is the model/sub-component to be merged into the second from last component.
 
-- `-f or --file`: this option specifies the file/directory paths of the files and/or directories containing the elements that will be merged.
-- `-d or --destination`: specifies the parent JSON/YAML file in which all the properties from the files/directories passed in via the `-f` option will be merge into.
-
-As an example, a command such as:
-
-> `$TRESTLE_BASEDIR/catalogs/nist800-53/catalog$ trestle merge -f uuid.json,metadata.json,groups.json,back-matter.json -d ../catalog.json`
-
-would merge the properties inside each of the files passed in via the `-f` option to the destination file specified with the `-d` option.
-
-In the near future, trestle merge should be smart enough to figure out which json files contain the elemenets that you want to be merged as well as the destination file that the elements should be placed into. In that case, both `-f` option and `-d` would be deprecated and the commands would look like:
-
-> `$TRESTLE_BASEDIR/catalogs/nist800-53/catalog$ trestle merge -e uuid,metadata,groups,back-matter`
-
-The only required option would be:
-
-- `-e or --elements`: specifies the properties (JSON/YAML path) that will be merged. In the command `trestle merge -e uuid,metadata,groups,back-matter`, the properties `uuid` from `uuid.json`, `metadata` from `metadata.json`, `groups` property from `groups.json` or `groups` directory, and `back-matter` property from `back-matter.json` would all be moved/merged into `../catalog.json`.
-  In order to determine which elements the user can merge at the level the command is being executed, the following command can be used:
-  `trestle merge -l` which would be the same as `trestle merge --list-available-elements`
+For example, in the command `trestle merge -e catalog.metadata`, executed in the same directory where `catalog.json` or splitted `catalog` directory exists, the property `metadata` from `metadata.json` or `metadata.yaml` would be moved/merged into `catalog.json`. If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into `metadata`, before merging `metadata` subcomponent into `catalog.json`. To specify merging every sub-component split from a component, `.*` can be used. For example, `trestle merge -e catalog.*` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`. 
 
 #### `trestle assemble`
 

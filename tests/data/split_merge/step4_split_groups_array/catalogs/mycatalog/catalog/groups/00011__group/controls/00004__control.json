@@ -1,0 +1,27 @@
+{
+    "control": {
+        "id": "pl-5",
+        "class": "SP800-53",
+        "title": "Privacy Impact Assessment",
+        "props": [
+            {
+                "name": "label",
+                "value": "PL-5"
+            },
+            {
+                "name": "sort-id",
+                "value": "pl-05"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ra-8",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

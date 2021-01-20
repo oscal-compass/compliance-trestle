@@ -1,0 +1,274 @@
+{
+    "control": {
+        "id": "sc-30",
+        "class": "SP800-53",
+        "title": "Concealment and Misdirection",
+        "params": [
+            {
+                "id": "sc-30_prm_1",
+                "label": "organization-defined systems"
+            },
+            {
+                "id": "sc-30_prm_2",
+                "label": "organization-defined time periods"
+            },
+            {
+                "id": "sc-30_prm_3",
+                "label": "organization-defined concealment and misdirection techniques"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-30"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-30"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-25",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-26",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-29",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-44",
+                "rel": "related"
+            },
+            {
+                "href": "#si-14",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-30_smt",
+                "name": "statement",
+                "prose": "Employ the following concealment and misdirection techniques for {{ sc-30_prm_1 }} at {{ sc-30_prm_2 }} to confuse and mislead adversaries: {{ sc-30_prm_3 }}."
+            },
+            {
+                "id": "sc-30_gdn",
+                "name": "guidance",
+                "prose": "Concealment and misdirection techniques can significantly reduce the targeting capabilities of adversaries (i.e., window of opportunity and available attack surface) to initiate and complete attacks. For example, virtualization techniques provide organizations with the ability to disguise systems, potentially reducing the likelihood of successful attacks without the cost of having multiple platforms. The increased use of concealment and misdirection techniques and methods\u2014including randomness, uncertainty, and virtualization\u2014may sufficiently confuse and mislead adversaries and subsequently increase the risk of discovery and/or exposing tradecraft. Concealment and misdirection techniques may provide additional time to perform core mission and business functions. The implementation of concealment and misdirection techniques may add to the complexity and management overhead required for the system."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-30.1",
+                "class": "SP800-53-enhancement",
+                "title": "Virtualization Techniques",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-30(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-30.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-29.1",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sc-30.2",
+                "class": "SP800-53-enhancement",
+                "title": "Randomness",
+                "params": [
+                    {
+                        "id": "sc-30.2_prm_1",
+                        "label": "organization-defined techniques"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-30(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-30.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-30",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-30.2_smt",
+                        "name": "statement",
+                        "prose": "Employ {{ sc-30.2_prm_1 }} to introduce randomness into organizational operations and assets."
+                    },
+                    {
+                        "id": "sc-30.2_gdn",
+                        "name": "guidance",
+                        "prose": "Randomness introduces increased levels of uncertainty for adversaries regarding the actions that organizations take to defend their systems against attacks. Such actions may impede the ability of adversaries to correctly target information resources of organizations that support critical missions or business functions. Uncertainty may also cause adversaries to hesitate before initiating or continuing attacks. Misdirection techniques that involve randomness include performing certain routine actions at different times of day, employing different information technologies, using different suppliers, and rotating roles and responsibilities of organizational personnel."
+                    }
+                ]
+            },
+            {
+                "id": "sc-30.3",
+                "class": "SP800-53-enhancement",
+                "title": "Change Processing and Storage Locations",
+                "params": [
+                    {
+                        "id": "sc-30.3_prm_1",
+                        "label": "organization-defined processing and/or storage"
+                    },
+                    {
+                        "id": "sc-30.3_prm_2",
+                        "select": {
+                            "choice": [
+                                " {{ sc-30.3_prm_3 }} ",
+                                "at random time intervals"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "sc-30.3_prm_3",
+                        "depends-on": "sc-30.3_prm_2",
+                        "label": "organization-defined time frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-30(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-30.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-30",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-30.3_smt",
+                        "name": "statement",
+                        "prose": "Change the location of {{ sc-30.3_prm_1 }} {{ sc-30.3_prm_2 }}]."
+                    },
+                    {
+                        "id": "sc-30.3_gdn",
+                        "name": "guidance",
+                        "prose": "Adversaries target critical mission and business functions and the systems that support those mission and business functions while also trying to minimize the exposure of their existence and tradecraft. The static, homogeneous, and deterministic nature of organizational systems targeted by adversaries make such systems more susceptible to attacks with less adversary cost and effort to be successful. Changing processing and storage locations (also referred to as moving target defense) addresses the advanced persistent threat using techniques such as virtualization, distributed processing, and replication. This enables organizations to relocate the system components (i.e., processing, storage) that support critical mission and business functions. Changing the locations of processing activities and/or storage sites introduces a degree of uncertainty into the targeting activities of adversaries. The targeting uncertainty increases the work factor of adversaries and makes compromises or breaches of the organizational systems more difficult and time-consuming. It also increases the chances that adversaries may inadvertently disclose certain aspects of their tradecraft while attempting to locate critical organizational resources."
+                    }
+                ]
+            },
+            {
+                "id": "sc-30.4",
+                "class": "SP800-53-enhancement",
+                "title": "Misleading Information",
+                "params": [
+                    {
+                        "id": "sc-30.4_prm_1",
+                        "label": "organization-defined system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-30(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-30.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-30",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-26",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-30.4_smt",
+                        "name": "statement",
+                        "prose": "Employ realistic, but misleading information in {{ sc-30.4_prm_1 }} about its security state or posture."
+                    },
+                    {
+                        "id": "sc-30.4_gdn",
+                        "name": "guidance",
+                        "prose": "Employing misleading information is intended to confuse potential adversaries regarding the nature and extent of controls deployed by organizations. Thus, adversaries may employ incorrect and ineffective attack techniques. One technique for misleading adversaries is for organizations to place misleading information regarding the specific controls deployed in external systems that are known to be targeted by adversaries. Another technique is the use of deception nets that mimic actual aspects of organizational systems but use, for example, out-of-date software configurations."
+                    }
+                ]
+            },
+            {
+                "id": "sc-30.5",
+                "class": "SP800-53-enhancement",
+                "title": "Concealment of System Components",
+                "params": [
+                    {
+                        "id": "sc-30.5_prm_1",
+                        "label": "organization-defined system components"
+                    },
+                    {
+                        "id": "sc-30.5_prm_2",
+                        "label": "organization-defined techniques"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-30(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-30.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-30",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-30.5_smt",
+                        "name": "statement",
+                        "prose": "Employ the following techniques to hide or conceal {{ sc-30.5_prm_1 }}: {{ sc-30.5_prm_2 }}."
+                    },
+                    {
+                        "id": "sc-30.5_gdn",
+                        "name": "guidance",
+                        "prose": "By hiding, disguising, or concealing critical system components, organizations may be able to decrease the probability that adversaries target and successfully compromise those assets. Potential means to hide, disguise, or conceal system components include the configuration of routers or the use of encryption or virtualization techniques."
+                    }
+                ]
+            }
+        ]
+    }
+}

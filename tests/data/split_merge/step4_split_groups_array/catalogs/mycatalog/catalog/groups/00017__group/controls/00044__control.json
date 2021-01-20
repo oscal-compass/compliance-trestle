@@ -1,0 +1,183 @@
+{
+    "control": {
+        "id": "sc-45",
+        "class": "SP800-53",
+        "title": "System Time Synchronization",
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-45"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-45"
+            }
+        ],
+        "links": [
+            {
+                "href": "#e4d37285-1e79-4029-8b6a-42df39cace30",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#au-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-45_smt",
+                "name": "statement",
+                "prose": "Synchronize system clocks within and between systems and system components."
+            },
+            {
+                "id": "sc-45_gdn",
+                "name": "guidance",
+                "prose": "Time synchronization of system clocks is essential for the correct execution of many system services, including identification and authentication processes that involve certificates and time-of-day restrictions as part of access control. Denial of service or failure to deny expired credentials may result without properly synchronized clocks within and between systems and system components. Time is commonly expressed in Coordinated Universal Time (UTC), a modern continuation of Greenwich Mean Time (GMT), or local time with an offset from UTC. The granularity of time measurements refers to the degree of synchronization between system clocks and reference clocks, such as clocks synchronizing within hundreds of milliseconds or tens of milliseconds. Organizations may define different time granularities for system components. Time service can be critical to other security capabilities\u2014such as access control and identification and authentication\u2014depending on the nature of the mechanisms used to support the capabilities."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-45.1",
+                "class": "SP800-53-enhancement",
+                "title": "Synchronization with Authoritative Time Source",
+                "params": [
+                    {
+                        "id": "sc-45.1_prm_1",
+                        "label": "organization-defined frequency"
+                    },
+                    {
+                        "id": "sc-45.1_prm_2",
+                        "label": "organization-defined authoritative time source"
+                    },
+                    {
+                        "id": "sc-45.1_prm_3",
+                        "label": "organization-defined time period"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-45(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-45.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-45",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-45.1_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "sc-45.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Compare the internal system clocks {{ sc-45.1_prm_1 }} with {{ sc-45.1_prm_2 }}; and"
+                            },
+                            {
+                                "id": "sc-45.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Synchronize the internal system clocks to the authoritative time source when the time difference is greater than {{ sc-45.1_prm_3 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sc-45.1_gdn",
+                        "name": "guidance",
+                        "prose": "Synchronization of internal system clocks with an authoritative source provides uniformity of time stamps for systems with multiple system clocks and systems connected over a network."
+                    }
+                ]
+            },
+            {
+                "id": "sc-45.2",
+                "class": "SP800-53-enhancement",
+                "title": "Secondary Authoritative Time Source",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-45(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-45.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-45",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#e4d37285-1e79-4029-8b6a-42df39cace30",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-45.2_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "sc-45.2_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Identify a secondary authoritative time source that is in a different geographic region than the primary authoritative time source; and"
+                            },
+                            {
+                                "id": "sc-45.2_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Synchronize the internal system clocks to the secondary authoritative time source if the primary authoritative time source is unavailable."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sc-45.2_gdn",
+                        "name": "guidance",
+                        "prose": "It may be necessary to employ geolocation information to determine that the secondary authoritative time source is in a different geographic region."
+                    }
+                ]
+            }
+        ]
+    }
+}

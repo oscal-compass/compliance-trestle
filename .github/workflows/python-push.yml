@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [3.7, 3.8]
+        python-version: [3.7, 3.8, 3.9]
 
     steps:
     - uses: actions/checkout@v2
@@ -79,3 +79,41 @@ jobs:
         GH_TOKEN: ${{ secrets.ADMIN_PAT }}
       run: |
         make release
+
+  deploy-docs:
+    runs-on: ubuntu-latest
+    needs: deploy
+    # Temporary hack: allow develop as well as master to deploy docs.
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+        fetch-depth: 0
+        token: ${{ secrets.ADMIN_PAT }} 
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      # This is deliberately not using a custom credential as it relies on native github actions token to have push rights.
+      with:
+        python-version: 3.7
+    - name: Install build tools
+      run: |
+        make develop
+    - name: Create release
+      shell: bash
+      run: |
+        mkdocs gh-deploy
+
+  merge-master-to-develop:
+    name: Merge master -> develop
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - uses: tukasz/direct-merge-action@master
+      with:
+        GITHUB_TOKEN: ${{ secrets.ADMIN_PAT }}
+        source-branch: master
+        target-branch: develop
+        commit-message: "chore: Merge back version tags and changelog into develop."
+

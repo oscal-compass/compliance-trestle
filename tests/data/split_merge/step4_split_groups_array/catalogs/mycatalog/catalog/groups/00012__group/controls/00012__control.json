@@ -1,0 +1,47 @@
+{
+    "control": {
+        "id": "pm-13",
+        "class": "SP800-53",
+        "title": "Security and Privacy Workforce",
+        "props": [
+            {
+                "name": "label",
+                "value": "PM-13"
+            },
+            {
+                "name": "sort-id",
+                "value": "pm-13"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#276bd50a-7e58-48e5-a405-8c8cb91d7a5f",
+                "rel": "reference"
+            },
+            {
+                "href": "#at-2",
+                "rel": "related"
+            },
+            {
+                "href": "#at-3",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pm-13_smt",
+                "name": "statement",
+                "prose": "Establish a security and privacy workforce development and improvement program."
+            },
+            {
+                "id": "pm-13_gdn",
+                "name": "guidance",
+                "prose": "Security and privacy workforce development and improvement programs include defining the knowledge, skills, and abilities needed to perform security and privacy duties and tasks; developing role-based training programs for individuals assigned security and privacy roles and responsibilities; and providing standards and guidelines for measuring and building individual qualifications for incumbents and applicants for security- and privacy-related positions. Such workforce development and improvement programs can also include security and privacy career paths to encourage security and privacy professionals to advance in the field and fill positions with greater responsibility. The programs encourage organizations to fill security- and privacy-related positions with qualified personnel. Security and privacy workforce development and improvement programs are complementary to organizational security awareness and training programs and focus on developing and institutionalizing the core security and privacy capabilities of personnel needed to protect organizational operations, assets, and individuals."
+            }
+        ]
+    }
+}

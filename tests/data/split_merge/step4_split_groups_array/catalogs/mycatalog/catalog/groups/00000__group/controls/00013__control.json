@@ -1,0 +1,99 @@
+{
+    "control": {
+        "id": "ac-14",
+        "class": "SP800-53",
+        "title": "Permitted Actions Without Identification or Authentication",
+        "params": [
+            {
+                "id": "ac-14_prm_1",
+                "label": "organization-defined user actions"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-14"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-14"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-2",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-14_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ac-14_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Identify {{ ac-14_prm_1 }} that can be performed on the system without identification or authentication consistent with organizational mission and business functions; and"
+                    },
+                    {
+                        "id": "ac-14_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Document and provide supporting rationale in the security plan for the system, user actions not requiring identification or authentication."
+                    }
+                ]
+            },
+            {
+                "id": "ac-14_gdn",
+                "name": "guidance",
+                "prose": "Specific user actions may be permitted without identification or authentication if organizations determine that identification and authentication are not required for the specified user actions. Organizations may allow a limited number of user actions without identification or authentication, including when individuals access public websites or other publicly accessible federal systems, when individuals use mobile phones to receive calls, or when facsimiles are received. Organizations identify actions that normally require identification or authentication but may, under certain circumstances, allow identification or authentication mechanisms to be bypassed. Such bypasses may occur, for example, via a software-readable physical switch that commands bypass of the logon functionality and is protected from accidental or unmonitored use. Permitting actions without identification or authentication does not apply to situations where identification and authentication have already occurred and are not repeated but rather to situations where identification and authentication have not yet occurred. Organizations may decide that there are no user actions that can be performed on organizational systems without identification and authentication, and therefore, the value for the assignment can be \"none.\" "
+            }
+        ],
+        "controls": [
+            {
+                "id": "ac-14.1",
+                "class": "SP800-53-enhancement",
+                "title": "Necessary Uses",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-14(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-14.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-14",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            }
+        ]
+    }
+}

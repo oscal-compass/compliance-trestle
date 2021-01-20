@@ -20,12 +20,16 @@ class TrestleError(RuntimeError):
     """
     General framework (non-application) related errors.
 
-    Args:
-        msg (str): The error message
+    Attributes:
+        msg (str): Human readable string describing the exception.
     """
 
     def __init__(self, msg: str):
-        """Intialization for TresleError."""
+        """Intialization for TresleError.
+
+        Args:
+            msg (str): The error message
+        """
         RuntimeError.__init__(self)
         self.msg = msg
 
@@ -38,12 +42,17 @@ class TrestleNotFoundError(TrestleError):
     """
     General framwork related not found error.
 
-    Args:
-        msg (str): The error message
+    Attributes:
+        msg (str): Human readable string describing the exception.
     """
 
     def __init__(self, msg: str):
-        """Intialization for TresleNotFoundError."""
+        """
+        Intialization for TresleNotFoundError.
+
+        Args:
+            msg: The error message
+        """
         super().__init__(msg)
 
 
@@ -51,10 +60,15 @@ class TrestleValidationError(TrestleError):
     """
     General framwork related validation error.
 
-    Args:
-        msg (str): The error message
+    Attributes:
+        msg (str): Human readable string describing the exception.
     """
 
     def __init__(self, msg: str):
-        """Intialization for TresleValidationError."""
+        """
+        Intialization for TresleValidationError.
+
+        Args:
+            msg (str): The error message
+        """
         super().__init__(msg)

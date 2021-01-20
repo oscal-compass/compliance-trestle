@@ -15,7 +15,7 @@
 
 import os
 import pathlib
-from typing import Dict, List
+from typing import Dict
 
 import pytest
 
@@ -23,21 +23,12 @@ from tests import test_utils
 
 from trestle.core.const import IDX_SEP
 from trestle.core.err import TrestleError
+from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog
 from trestle.utils import fs
 
 
-def test_ensure_directory(tmpdir):
-    """Test ensure_directory function."""
-    # Happy path
-    fs.ensure_directory(tmpdir)
-
-    # Unhappy path
-    with pytest.raises(AssertionError):
-        fs.ensure_directory(__file__)
-
-
-def test_should_ignore():
+def test_should_ignore() -> None:
     """Test should_ignore method."""
     assert fs.should_ignore('.test') is True
     assert fs.should_ignore('_test') is True
@@ -45,31 +36,29 @@ def test_should_ignore():
     assert fs.should_ignore('test') is False
 
 
-def test_is_valid_project_root(tmp_dir):
+def test_is_valid_project_root(tmp_path: pathlib.Path) -> None:
     """Test is_valid_project_root method."""
     assert fs.is_valid_project_root(None) is False
     assert fs.is_valid_project_root('') is False
-    assert fs.is_valid_project_root(tmp_dir) is False
+    assert fs.is_valid_project_root(tmp_path) is False
 
-    test_utils.ensure_trestle_config_dir(tmp_dir)
-    assert fs.is_valid_project_root(tmp_dir) is True
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    assert fs.is_valid_project_root(tmp_path) is True
 
 
-def test_has_parent_path(tmp_dir):
+def test_has_parent_path(tmp_path: pathlib.Path) -> None:
     """Test has_parent_path method."""
-    assert fs.has_parent_path(tmp_dir, pathlib.Path('')) is False
-    assert fs.has_parent_path(tmp_dir, None) is False
+    assert fs.has_parent_path(tmp_path, pathlib.Path('')) is False
+    assert fs.has_parent_path(tmp_path, None) is False
     assert fs.has_parent_path(pathlib.Path('tests'), test_utils.BASE_TMP_DIR) is False
     assert fs.has_parent_path(pathlib.Path('/invalid/path'), test_utils.BASE_TMP_DIR) is False
 
-    assert fs.has_parent_path(tmp_dir, test_utils.BASE_TMP_DIR) is True
 
-
-def test_get_trestle_project_root(tmp_dir, rand_str):
+def test_get_trestle_project_root(tmp_path: pathlib.Path, rand_str: str) -> None:
     """Test get_trestle_project_root  method."""
-    project_path: pathlib.Path = pathlib.Path.joinpath(tmp_dir, rand_str)
+    project_path: pathlib.Path = pathlib.Path.joinpath(tmp_path, rand_str)
     sub_path: pathlib.Path = project_path.joinpath('samples2')
-    fs.ensure_directory(sub_path)
+    sub_path.mkdir(exist_ok=True, parents=True)
     assert sub_path.exists() and sub_path.is_dir()
 
     # create a file
@@ -77,7 +66,7 @@ def test_get_trestle_project_root(tmp_dir, rand_str):
 
     # create a data-dir and a file
     sub_data_dir = pathlib.Path.joinpath(sub_path, 'data')
-    fs.ensure_directory(sub_data_dir)
+    sub_data_dir.mkdir(exist_ok=True, parents=True)
     sub_data_dir.joinpath('readme.md').touch()
 
     assert fs.get_trestle_project_root(sub_data_dir) is None
@@ -90,18 +79,18 @@ def test_get_trestle_project_root(tmp_dir, rand_str):
     assert fs.get_trestle_project_root(project_path.parent) is None
 
 
-def test_is_valid_project_model_path(tmp_dir):
+def test_is_valid_project_model_path(tmp_path: pathlib.Path) -> None:
     """Test is_valid_project_model method."""
     assert fs.is_valid_project_model_path(None) is False
     assert fs.is_valid_project_model_path('') is False
-    assert fs.is_valid_project_model_path(tmp_dir) is False
+    assert fs.is_valid_project_model_path(tmp_path) is False
 
-    test_utils.ensure_trestle_config_dir(tmp_dir)
-    assert fs.is_valid_project_model_path(tmp_dir) is False
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    assert fs.is_valid_project_model_path(tmp_path) is False
 
-    create_sample_catalog_project(tmp_dir)
+    create_sample_catalog_project(tmp_path)
 
-    catalog_dir = tmp_dir / 'catalogs'
+    catalog_dir = tmp_path / 'catalogs'
     assert fs.is_valid_project_model_path(catalog_dir) is False
 
     mycatalog_dir = catalog_dir / 'mycatalog'
@@ -111,18 +100,18 @@ def test_is_valid_project_model_path(tmp_dir):
     assert fs.is_valid_project_model_path(metadata_dir) is True
 
 
-def test_get_project_model_path(tmp_dir):
+def test_get_project_model_path(tmp_path: pathlib.Path) -> None:
     """Test get_project_model_path  method."""
     assert fs.get_project_model_path(None) is None
     assert fs.get_project_model_path('') is None
-    assert fs.get_project_model_path(tmp_dir) is None
+    assert fs.get_project_model_path(tmp_path) is None
 
-    test_utils.ensure_trestle_config_dir(tmp_dir)
-    assert fs.get_project_model_path(tmp_dir) is None
+    test_utils.ensure_trestle_config_dir(tmp_path)
+    assert fs.get_project_model_path(tmp_path) is None
 
-    create_sample_catalog_project(tmp_dir)
+    create_sample_catalog_project(tmp_path)
 
-    catalog_dir = tmp_dir / 'catalogs'
+    catalog_dir = tmp_path / 'catalogs'
     assert fs.get_project_model_path(catalog_dir) is None
 
     mycatalog_dir = catalog_dir / 'mycatalog'
@@ -132,11 +121,11 @@ def test_get_project_model_path(tmp_dir):
     assert fs.get_project_model_path(metadata_dir) == mycatalog_dir
 
 
-def test_has_trestle_project_in_path(tmp_dir, rand_str):
+def test_has_trestle_project_in_path(tmp_path: pathlib.Path, rand_str: str) -> None:
     """Test has_trestle_project_in_path method."""
-    project_path: pathlib.Path = pathlib.Path.joinpath(tmp_dir, rand_str)
+    project_path: pathlib.Path = pathlib.Path.joinpath(tmp_path, rand_str)
     sub_path: pathlib.Path = project_path.joinpath('samples2')
-    fs.ensure_directory(sub_path)
+    sub_path.mkdir(exist_ok=True, parents=True)
     assert sub_path.exists() and sub_path.is_dir()
 
     # create a file
@@ -144,7 +133,7 @@ def test_has_trestle_project_in_path(tmp_dir, rand_str):
 
     # create a data-dir and a file
     sub_data_dir = pathlib.Path.joinpath(sub_path, 'data')
-    fs.ensure_directory(sub_data_dir)
+    sub_data_dir.mkdir(exist_ok=True, parents=True)
 
     # create a file
     sub_data_dir.joinpath('readme.md').touch()
@@ -160,11 +149,11 @@ def test_has_trestle_project_in_path(tmp_dir, rand_str):
     assert fs.has_trestle_project_in_path(project_path.parent) is False
 
 
-def test_clean_project_sub_path(tmp_dir, rand_str):
+def test_clean_project_sub_path(tmp_path: pathlib.Path, rand_str: str) -> None:
     """Test clean_project_sub_path method."""
-    project_path: pathlib.Path = pathlib.Path.joinpath(tmp_dir, rand_str)
+    project_path: pathlib.Path = pathlib.Path.joinpath(tmp_path, rand_str)
     sub_path: pathlib.Path = project_path.joinpath('samples')
-    fs.ensure_directory(sub_path)
+    sub_path.mkdir(exist_ok=True, parents=True)
     assert sub_path.exists() and sub_path.is_dir()
 
     # create a file
@@ -173,13 +162,13 @@ def test_clean_project_sub_path(tmp_dir, rand_str):
     # create a data-dir and a file
     sub_data_dir = pathlib.Path.joinpath(sub_path, 'data')
     sub_data_dir_file = sub_data_dir.joinpath('readme.md')
-    fs.ensure_directory(sub_data_dir)
+    sub_data_dir.mkdir(exist_ok=True, parents=True)
 
     # create a file
     sub_data_dir_file.touch()
 
     try:
-        # not having .trestle directory at the project root or tmp_dir should fail
+        # not having .trestle directory at the project root or tmp_path should fail
         fs.clean_project_sub_path(sub_path)
     except TrestleError:
         pass
@@ -198,7 +187,7 @@ def test_clean_project_sub_path(tmp_dir, rand_str):
     assert not sub_path.exists()
 
 
-def test_load_file(tmp_dir):
+def test_load_file(tmp_path: pathlib.Path) -> None:
     """Test load file."""
     json_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'sample-target-definition.json')
     yaml_file_path = pathlib.Path.joinpath(test_utils.YAML_TEST_DATA_PATH, 'good_target.yaml')
@@ -207,30 +196,31 @@ def test_load_file(tmp_dir):
     assert fs.load_file(yaml_file_path) is not None
 
     try:
-        sample_file_path = tmp_dir.joinpath('sample.txt')
+        sample_file_path = tmp_path.joinpath('sample.txt')
         with open(sample_file_path, 'w'):
             fs.load_file(sample_file_path)
     except TrestleError:
         pass
 
 
-def test_get_contextual_model_type(tmp_dir):
+def test_get_contextual_model_type(tmp_path: pathlib.Path) -> None:
     """Test get model type and alias based on filesystem context."""
+    import trestle.core.utils as cutils
     with pytest.raises(TrestleError):
-        fs.get_contextual_model_type(tmp_dir / 'invalidpath')
+        fs.get_contextual_model_type(tmp_path / 'invalidpath')
 
     with pytest.raises(TrestleError):
-        fs.get_contextual_model_type(tmp_dir)
+        fs.get_contextual_model_type(tmp_path)
 
-    create_sample_catalog_project(tmp_dir)
+    create_sample_catalog_project(tmp_path)
 
-    catalogs_dir = tmp_dir / 'catalogs'
+    catalogs_dir = tmp_path / 'catalogs'
     mycatalog_dir = catalogs_dir / 'mycatalog'
     catalog_dir = mycatalog_dir / 'catalog'
     metadata_dir = catalog_dir / 'metadata'
     roles_dir = metadata_dir / 'roles'
     rps_dir = metadata_dir / 'responsible-parties'
-    props_dir = metadata_dir / 'properties'
+    props_dir = metadata_dir / 'props'
     groups_dir = mycatalog_dir / 'groups'
     group_dir = groups_dir / f'00000{IDX_SEP}group'
     controls_dir = group_dir / 'controls'
@@ -243,7 +233,11 @@ def test_get_contextual_model_type(tmp_dir):
     assert fs.get_contextual_model_type(catalog_dir / 'back-matter.json') == (catalog.BackMatter, 'catalog.back-matter')
     assert fs.get_contextual_model_type(catalog_dir / 'metadata.yaml') == (catalog.Metadata, 'catalog.metadata')
     assert fs.get_contextual_model_type(metadata_dir) == (catalog.Metadata, 'catalog.metadata')
-    assert fs.get_contextual_model_type(roles_dir) == (List[catalog.Role], 'catalog.metadata.roles')
+    # The line below is no longer possible to execute in many situations due to the constrained lists
+    # assert fs.get_contextual_model_type(roles_dir) == (List[catalog.Role], 'catalog.metadata.roles') # noqa: E800
+    (type_, element) = fs.get_contextual_model_type(roles_dir)
+    assert cutils.get_origin(type_) == list
+    assert element == 'catalog.metadata.roles'
     assert fs.get_contextual_model_type(roles_dir / '00000__role.json') == (catalog.Role, 'catalog.metadata.roles.role')
     assert fs.get_contextual_model_type(rps_dir) == (
         Dict[str, catalog.ResponsibleParty], 'catalog.metadata.responsible-parties'
@@ -251,19 +245,22 @@ def test_get_contextual_model_type(tmp_dir):
     assert fs.get_contextual_model_type(
         rps_dir / 'creator__responsible-party.json'
     ) == (catalog.ResponsibleParty, 'catalog.metadata.responsible-parties.responsible-party')
-    assert fs.get_contextual_model_type(props_dir) == (List[catalog.Prop], 'catalog.metadata.properties')
-    assert fs.get_contextual_model_type(props_dir / f'00000{IDX_SEP}prop.json'
-                                        ) == (catalog.Prop, 'catalog.metadata.properties.prop')
-    assert fs.get_contextual_model_type(groups_dir) == (List[catalog.Group], 'catalog.groups')
+    (type_, element) = fs.get_contextual_model_type(props_dir)
+    assert cutils.get_origin(type_) == list
+    assert cutils.get_inner_type(type_) == catalog.Property
+    assert element == 'catalog.metadata.props'
+    (expected_type, expected_json_path) = fs.get_contextual_model_type(props_dir / f'00000{IDX_SEP}property.json')
+    assert expected_type == catalog.Property
+    assert expected_json_path == 'catalog.metadata.props.property'
+    assert cutils.get_origin(type_) == list
     assert fs.get_contextual_model_type(groups_dir / f'00000{IDX_SEP}group.json'
                                         ) == (catalog.Group, 'catalog.groups.group')
     assert fs.get_contextual_model_type(group_dir) == (catalog.Group, 'catalog.groups.group')
-    assert fs.get_contextual_model_type(controls_dir) == (List[catalog.Control], 'catalog.groups.group.controls')
     assert fs.get_contextual_model_type(controls_dir / f'00000{IDX_SEP}control.json'
                                         ) == (catalog.Control, 'catalog.groups.group.controls.control')
 
 
-def create_sample_catalog_project(trestle_base_dir: pathlib.Path):
+def create_sample_catalog_project(trestle_base_dir: pathlib.Path) -> None:
     """Create directory structure for a sample catalog named mycatalog."""
     test_utils.ensure_trestle_config_dir(trestle_base_dir)
 
@@ -272,7 +269,7 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path):
     directories = [
         mycatalog_dir / 'catalog' / 'metadata' / 'roles',
         mycatalog_dir / 'catalog' / 'metadata' / 'responsible-parties',
-        mycatalog_dir / 'catalog' / 'metadata' / 'properties',
+        mycatalog_dir / 'catalog' / 'metadata' / 'props',
         mycatalog_dir / 'catalog' / 'groups' / f'00000{IDX_SEP}group' / 'controls'
     ]
 
@@ -285,7 +282,7 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path):
         mycatalog_dir / 'catalog' / 'metadata.json',
         mycatalog_dir / 'catalog' / 'metadata' / 'roles' / f'00000{IDX_SEP}role.json',
         mycatalog_dir / 'catalog' / 'metadata' / 'responsible-parties' / f'creator{IDX_SEP}responsible-party.json',
-        mycatalog_dir / 'catalog' / 'metadata' / 'properties' / f'00000{IDX_SEP}prop.json',
+        mycatalog_dir / 'catalog' / 'metadata' / 'props' / f'00000{IDX_SEP}property.json',
         mycatalog_dir / 'catalog' / 'groups' / f'00000{IDX_SEP}group.json',
         mycatalog_dir / 'catalog' / 'groups' / f'00000{IDX_SEP}group' / 'controls' / f'00000{IDX_SEP}control.json',
     ]
@@ -294,7 +291,7 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path):
         file.touch()
 
 
-def test_extract_alias():
+def test_extract_alias() -> None:
     """Test extraction of alias from filename or directory names."""
     assert fs.extract_alias(pathlib.Path('catalog')) == 'catalog'
     assert fs.extract_alias(pathlib.Path('/tmp/catalog')) == 'catalog'
@@ -310,21 +307,21 @@ def test_extract_alias():
     ) == 'responsible-party'
 
 
-def test_get_stripped_contextual_model(tmp_dir):
+def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
     """Test get stripped model type and alias based on filesystem context."""
     with pytest.raises(TrestleError):
-        fs.get_stripped_contextual_model(tmp_dir / 'invalidpath')
+        fs.get_stripped_contextual_model(tmp_path / 'invalidpath')
 
     with pytest.raises(TrestleError):
-        fs.get_stripped_contextual_model(tmp_dir)
+        fs.get_stripped_contextual_model(tmp_path)
 
-    create_sample_catalog_project(tmp_dir)
+    create_sample_catalog_project(tmp_path)
 
-    catalogs_dir = tmp_dir / 'catalogs'
+    catalogs_dir = tmp_path / 'catalogs'
     with pytest.raises(TrestleError):
         assert fs.get_stripped_contextual_model(catalogs_dir) is None
 
-    def check_stripped_catalog():
+    def check_stripped_catalog() -> None:
         assert 'uuid' in alias_to_field_map
         assert 'metadata' not in alias_to_field_map
         assert 'back-matter' not in alias_to_field_map
@@ -339,31 +336,31 @@ def test_get_stripped_contextual_model(tmp_dir):
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_catalog()
 
-    def check_stripped_metadata():
-        assert 'title' in alias_to_field_map
-        assert 'published' in alias_to_field_map
-        assert 'last-modified' in alias_to_field_map
-        assert 'version' in alias_to_field_map
-        assert 'oscal-version' in alias_to_field_map
-        assert 'revision-history' in alias_to_field_map
-        assert 'document-ids' in alias_to_field_map
-        assert 'links' in alias_to_field_map
-        assert 'locations' in alias_to_field_map
-        assert 'parties' in alias_to_field_map
-        assert 'remarks' in alias_to_field_map
+    def check_stripped_metadata(a2f_map) -> None:
+        assert 'title' in a2f_map
+        assert 'published' in a2f_map
+        assert 'last-modified' in a2f_map
+        assert 'version' in a2f_map
+        assert 'oscal-version' in a2f_map
+        assert 'revisions' in a2f_map
+        assert 'document-ids' in a2f_map
+        assert 'links' in a2f_map
+        assert 'locations' in a2f_map
+        assert 'parties' in a2f_map
+        assert 'remarks' in a2f_map
         assert 'roles' not in alias_to_field_map
-        assert 'responsible-properties' not in alias_to_field_map
-        assert 'properties' not in alias_to_field_map
+        assert 'responsible-properties' not in a2f_map
+        assert 'props' not in a2f_map
 
     catalog_dir = mycatalog_dir / 'catalog'
     metadata_dir = catalog_dir / 'metadata'
     stripped_catalog = fs.get_stripped_contextual_model(metadata_dir)
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
-    check_stripped_metadata()
+    check_stripped_metadata(alias_to_field_map)
 
     stripped_catalog = fs.get_stripped_contextual_model(catalog_dir / 'metadata.json')
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
-    check_stripped_metadata()
+    check_stripped_metadata(alias_to_field_map)
 
     groups_dir = catalog_dir / 'groups'
     stripped_catalog = fs.get_stripped_contextual_model(groups_dir)
@@ -371,12 +368,12 @@ def test_get_stripped_contextual_model(tmp_dir):
     assert stripped_catalog[0].__name__ == 'Groups'
     assert stripped_catalog[1] == 'catalog.groups'
 
-    def check_stripped_group():
+    def check_stripped_group() -> None:
         assert 'id' in alias_to_field_map
         assert 'class' in alias_to_field_map
         assert 'title' in alias_to_field_map
-        assert 'parameters' in alias_to_field_map
-        assert 'properties' in alias_to_field_map
+        assert 'params' in alias_to_field_map
+        assert 'props' in alias_to_field_map
         assert 'annotations' in alias_to_field_map
         assert 'links' in alias_to_field_map
         assert 'parts' in alias_to_field_map
@@ -392,7 +389,7 @@ def test_get_stripped_contextual_model(tmp_dir):
     check_stripped_group()
 
 
-def test_get_singular_alias():
+def test_get_singular_alias() -> None:
     """Test get_singular_alias function."""
     # Not of collection type
     with pytest.raises(TrestleError):
@@ -410,12 +407,11 @@ def test_get_singular_alias():
         fs.get_singular_alias(alias_path='')
 
     assert 'responsible-party' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties')
-    with pytest.raises(TrestleError):
-        fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*')
-    assert 'prop' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*.properties')
+    assert 'property' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*.props')
+    assert 'responsible-party' == fs.get_singular_alias(alias_path='catalog.metadata.responsible-parties.*')
 
     assert 'role' == fs.get_singular_alias(alias_path='catalog.metadata.roles')
-    assert 'prop' == fs.get_singular_alias(alias_path='catalog.metadata.properties')
+    assert 'property' == fs.get_singular_alias(alias_path='catalog.metadata.props')
 
     with pytest.raises(TrestleError):
         fs.get_singular_alias(alias_path='target-definition.targets.target-control-implementations')
@@ -431,11 +427,11 @@ def test_get_singular_alias():
     assert 'control' == fs.get_singular_alias(alias_path='catalog.groups.*.controls.*.controls')
 
 
-def test_contextual_get_singular_alias(tmp_dir):
+def test_contextual_get_singular_alias(tmp_path: pathlib.Path) -> None:
     """Test get_singular_alias in contextual mode."""
     # Contextual model tests
-    create_sample_catalog_project(tmp_dir)
-    catalogs_dir = tmp_dir.absolute() / 'catalogs'
+    create_sample_catalog_project(tmp_path)
+    catalogs_dir = tmp_path.absolute() / 'catalogs'
     mycatalog_dir = catalogs_dir / 'mycatalog'
     catalog_dir = mycatalog_dir / 'catalog'
     metadata_dir = catalog_dir / 'metadata'
@@ -457,9 +453,10 @@ def test_contextual_get_singular_alias(tmp_dir):
         fs.get_singular_alias('metadata.roles', contextual_mode=False)
     alias = fs.get_singular_alias('metadata.roles', contextual_mode=True)
     assert alias == 'role'
-    with pytest.raises(TrestleError):
-        fs.get_singular_alias(alias_path='metadata.responsible-parties.*', contextual_mode=True)
-    assert 'prop' == fs.get_singular_alias(alias_path='metadata.responsible-parties.*.properties', contextual_mode=True)
+    assert 'responsible-party' == fs.get_singular_alias(
+        alias_path='metadata.responsible-parties.*', contextual_mode=True
+    )
+    assert 'property' == fs.get_singular_alias(alias_path='metadata.responsible-parties.*.props', contextual_mode=True)
 
     os.chdir(groups_dir)
     assert 'control' == fs.get_singular_alias(alias_path='groups.*.controls.*.controls', contextual_mode=True)
@@ -468,3 +465,30 @@ def test_contextual_get_singular_alias(tmp_dir):
     assert 'control' == fs.get_singular_alias(alias_path='group.controls.*.controls', contextual_mode=True)
 
     os.chdir(cwd)
+
+
+def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
+    """Test fs.get_contextual_file_type()."""
+    (tmp_path / 'file.json').touch()
+    with pytest.raises(TrestleError):
+        fs.get_contextual_file_type(pathlib.Path(tmp_path / 'gu.json'))
+    (tmp_path / 'file.json').unlink()
+
+    (tmp_path / '.trestle').mkdir()
+    (tmp_path / 'catalogs').mkdir()
+    catalogs_dir = tmp_path / 'catalogs'
+    (catalogs_dir / 'mycatalog').mkdir()
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+
+    pathlib.Path(mycatalog_dir / 'file2.json').touch()
+    assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
+    (mycatalog_dir / 'file2.json').unlink()
+
+    pathlib.Path(mycatalog_dir / 'file3.yml').touch()
+    assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.YAML
+    (mycatalog_dir / 'file3.yml').unlink()
+
+    (mycatalog_dir / 'catalog').mkdir()
+    (mycatalog_dir / 'catalog/groups').mkdir()
+    (mycatalog_dir / 'catalog/groups/file4.yaml').touch()
+    assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.YAML

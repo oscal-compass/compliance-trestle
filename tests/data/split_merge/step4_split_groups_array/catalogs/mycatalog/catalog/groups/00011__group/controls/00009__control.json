@@ -1,0 +1,91 @@
+{
+    "control": {
+        "id": "pl-10",
+        "class": "SP800-53",
+        "title": "Baseline Selection",
+        "props": [
+            {
+                "name": "label",
+                "value": "PL-10"
+            },
+            {
+                "name": "sort-id",
+                "value": "pl-10"
+            }
+        ],
+        "links": [
+            {
+                "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
+                "rel": "reference"
+            },
+            {
+                "href": "#599fb53d-5041-444e-a7fe-640d6d30ad05",
+                "rel": "reference"
+            },
+            {
+                "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                "rel": "reference"
+            },
+            {
+                "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
+                "rel": "reference"
+            },
+            {
+                "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
+                "rel": "reference"
+            },
+            {
+                "href": "#46d9e201-840e-440e-987c-2c773333c752",
+                "rel": "reference"
+            },
+            {
+                "href": "#e72fde0b-6fc2-497e-a9db-d8fce5a11b8a",
+                "rel": "reference"
+            },
+            {
+                "href": "#9be5d661-421f-41ad-854e-86f98b811891",
+                "rel": "reference"
+            },
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#4e4fbc93-333d-45e6-a875-de36b878b6b9",
+                "rel": "reference"
+            },
+            {
+                "href": "#pl-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-11",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pl-10_smt",
+                "name": "statement",
+                "prose": "Select a control baseline for the system."
+            },
+            {
+                "id": "pl-10_gdn",
+                "name": "guidance",
+                "prose": "Control baselines are predefined sets of controls specifically assembled to address the protection needs of a group, organization, or community of interest. Controls are chosen for baselines to either satisfy mandates imposed by laws, executive orders, directives, regulations, policies, standards, and guidelines or address threats common to all users of the baseline under the assumptions specific to the baseline. Baselines represent a starting point for the protection of individuals\u2019 privacy, information, and information systems with subsequent tailoring actions to manage risk in accordance with mission, business, or other constraints (see [PL-11](#pl-11)). Federal control baselines are provided in [SP 800-53B](#46d9e201-840e-440e-987c-2c773333c752). The selection of a control baseline is determined by the needs of stakeholders. Stakeholder needs consider mission and business requirements as well as mandates imposed by applicable laws, executive orders, directives, policies, regulations, standards, and guidelines. For example, the control baselines in [SP 800-53B](#46d9e201-840e-440e-987c-2c773333c752) are based on the requirements from [FISMA](#0c67b2a9-bede-43d2-b86d-5f35b8be36e9) and [PRIVACT](#18e71fec-c6fd-475a-925a-5d8495cf8455). The requirements, along with the NIST standards and guidelines implementing the legislation, direct organizations to select one of the control baselines after the reviewing the information types and the information that is processed, stored, and transmitted on the system; analyzing the potential adverse impact of the loss or compromise of the information or system on the organization\u2019s operations and assets, individuals, other organizations, or the Nation; and considering the results from system and organizational risk assessments. [CNSSI 1253](#4e4fbc93-333d-45e6-a875-de36b878b6b9) provides guidance on control baselines for national security systems."
+            }
+        ]
+    }
+}

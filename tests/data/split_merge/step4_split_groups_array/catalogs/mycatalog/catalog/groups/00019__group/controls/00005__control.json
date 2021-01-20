@@ -1,0 +1,210 @@
+{
+    "control": {
+        "id": "sr-6",
+        "class": "SP800-53",
+        "title": "Supplier Assessments and Reviews",
+        "params": [
+            {
+                "id": "sr-6_prm_1",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SR-6"
+            },
+            {
+                "name": "sort-id",
+                "value": "sr-06"
+            }
+        ],
+        "links": [
+            {
+                "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
+                "rel": "reference"
+            },
+            {
+                "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
+                "rel": "reference"
+            },
+            {
+                "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
+                "rel": "reference"
+            },
+            {
+                "href": "#863caf2a-978a-4260-9e8d-4a8929bce40c",
+                "rel": "reference"
+            },
+            {
+                "href": "#15a95e24-65b6-4686-bc18-90855a10457d",
+                "rel": "reference"
+            },
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#eea3c092-42ed-4382-a6f4-1adadef01b9d",
+                "rel": "reference"
+            },
+            {
+                "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
+                "rel": "reference"
+            },
+            {
+                "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
+                "rel": "reference"
+            },
+            {
+                "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                "rel": "reference"
+            },
+            {
+                "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                "rel": "reference"
+            },
+            {
+                "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
+                "rel": "reference"
+            },
+            {
+                "href": "#38ff38f0-1366-4f50-a4c9-26a39aacee16",
+                "rel": "reference"
+            },
+            {
+                "href": "#sr-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-5",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sr-6_smt",
+                "name": "statement",
+                "prose": "Assess and review the supply chain-related risks associated with suppliers or contractors and the system, system component, or system service they provide {{ sr-6_prm_1 }}."
+            },
+            {
+                "id": "sr-6_gdn",
+                "name": "guidance",
+                "prose": "An assessment and review of supplier risk includes security and supply chain risk management processes, foreign ownership, control or influence (FOCI), and the ability of the supplier to effectively assess subordinate second-tier and third-tier suppliers and contractors. The reviews may be conducted by the organization or by an independent third party. The reviews consider documented processes, documented controls, all-source intelligence, and publicly available information related to the supplier or contractor. Organizations can use open-source information to monitor for indications of stolen information, poor development and quality control practices, information spillage, or counterfeits. In some cases, it may be appropriate or required to share assessment and review results with other organizations in accordance with any applicable rules, policies, or inter-organizational agreements or contracts."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sr-6.1",
+                "class": "SP800-53-enhancement",
+                "title": "Testing and Analysis",
+                "params": [
+                    {
+                        "id": "sr-6.1_prm_1",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                "organizational analysis",
+                                "independent third-party analysis",
+                                "organizational testing",
+                                "independent third-party testing"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "sr-6.1_prm_2",
+                        "label": "organization-defined supply chain elements, processes, and actors"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SR-6(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sr-06.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-6",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#863caf2a-978a-4260-9e8d-4a8929bce40c",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#15a95e24-65b6-4686-bc18-90855a10457d",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#eea3c092-42ed-4382-a6f4-1adadef01b9d",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#38ff38f0-1366-4f50-a4c9-26a39aacee16",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#ca-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sr-6.1_smt",
+                        "name": "statement",
+                        "prose": "Employ {{ sr-6.1_prm_1 }} of the following supply chain elements, processes, and actors associated with the system, system component, or system service: {{ sr-6.1_prm_2 }}."
+                    },
+                    {
+                        "id": "sr-6.1_gdn",
+                        "name": "guidance",
+                        "prose": "Relationships between entities and procedures within the supply chain, including development and delivery, are considered. Supply chain elements include organizations, entities, or tools that are used for the research and development, design, manufacturing, acquisition, delivery, integration, operations, maintenance, and disposal of systems, system components, or system services. Supply chain processes include supply chain risk management programs; SCRM strategies and implementation plans; personnel and physical security programs; hardware, software, and firmware development processes; configuration management tools, techniques, and measures to maintain provenance; shipping and handling procedures; and programs, processes, or procedures associated with the production and distribution of supply chain elements. Supply chain actors are individuals with specific roles and responsibilities in the supply chain. The evidence generated and collected during analyses and testing of supply chain elements, processes, and actors is documented and used to inform organizational risk management activities and decisions."
+                    }
+                ]
+            }
+        ]
+    }
+}

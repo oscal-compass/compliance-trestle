@@ -1,12 +1,12 @@
-# Compliance-trestle aka trestle
+# Compliance-trestle a.k.a. `trestle`
 
-[![OS Compatibility][platform-badge]](<#prerequisites>)
+[![OS Compatibility][platform-badge]](#prerequisites)
 [![Python Compatibility][python-badge]][python]
 [![pre-commit][pre-commit-badge]][pre-commit]
 [![code-coverage][coverage-badge]][coverage]
 [![pypi-downloads][pypi-downloads-badge]][pypi]
 
-Trestle is a tool that enables the creation and validation of documentation artifacts for compliance requirements. It leverages NIST's [OSCAL](<https://pages.nist.gov/OSCAL/documentation/>) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
+Trestle is a tool that enables the creation and validation of documentation artifacts for compliance requirements. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
 By design Trestle runs as a CICD pipeline running on top of compliance artifacts in `git` to provide transparency to the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the artifacts generated to tools that orchestrate the enforcement, measurement and reporting of compliance.
 
@@ -75,6 +75,8 @@ trestle -h
 `trestle` implicitly supports all OSCAL schemas for use within the object model. The development roadmap for `trestle` includes
 adding workflow around specific elements / objects that is opinionated.
 
+`trestle` supports OSCAL version `1.0.0rc1` only.
+
 In addition to the core OSCAL objects, trestle supports the definition of a `target`. The `target` (and its container
 `target-definition`) is a generalization of the `component` model that is designed specifically to support configuration.
 
@@ -84,22 +86,22 @@ level, e.g. `component` is an implementation and `target` is the definition of c
 
 ## Supported file formats for OSCAL objects.
 
-OSCAL supports `xml`, `json` and `yaml` with their [metaschema](<https://github.com/usnistgov/metaschema>) tooling. Trestle
+OSCAL supports `xml`, `json` and `yaml` with their [metaschema](https://github.com/usnistgov/metaschema) tooling. Trestle
 natively supports only `json` and `yaml` formats at this time.
 
-Future roadmap anticipates that support for xml (import)\[https://github.com/IBM/compliance-trestle/issues/177\] and (upstream references)\[https://github.com/IBM/compliance-trestle/issues/178\] will be enabled. However, it is expected
+Future roadmap anticipates that support for xml [import](https://github.com/IBM/compliance-trestle/issues/177) and [upstream references](https://github.com/IBM/compliance-trestle/issues/178) will be enabled. However, it is expected
 that full support will remain only for `json` and  `yaml`.
 
-Users needing to import XML OSCAL artifacts are recommended to look at NIST's XML to json conversion page (here)\[https://github.com/usnistgov/OSCAL/tree/master/json\#oscal-xml-to-json-converters\].
+Users needing to import XML OSCAL artifacts are recommended to look at NIST's XML to json conversion page [here](https://github.com/usnistgov/OSCAL/tree/master/json#oscal-xml-to-json-converters).
 
 ## Contributing to Trestle
 
-Our project welcomes external contributions. Please consult [CONTRIBUTING.md](<CONTRIBUTING.md>) to get started.
+Our project welcomes external contributions. Please consult [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
 
 ## License & Authors
 
-If you would like to see the detailed LICENSE click [here](<LICENSE>).
-Consult [MAINTAINERS](<MAINTAINERS.md>) for a list of authors.
+If you would like to see the detailed LICENSE click [here](LICENSE).
+Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](MAINTAINERS.md) for the core team.
 
 ```text
 # Copyright (c) 2020 IBM Corp. All rights reserved.

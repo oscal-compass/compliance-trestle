@@ -23,7 +23,7 @@ import pytest
 from trestle import cli
 
 
-def test_run():
+def test_run() -> None:
     """Test cli call."""
     testargs = ['trestle']
     with patch.object(sys, 'argv', testargs):

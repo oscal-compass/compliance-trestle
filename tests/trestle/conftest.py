@@ -28,7 +28,6 @@ from tests import test_utils
 from trestle.cli import Trestle
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.target import TargetDefinition
-from trestle.utils import fs
 
 TEST_CONFIG: dict = {}
 
@@ -41,45 +40,33 @@ def rand_str():
 
 
 @pytest.fixture(scope='function')
-def tmp_dir(rand_str) -> pathlib.Path:
-    """Return a path for a tmp directory."""
-    tmp_dir = pathlib.Path.joinpath(test_utils.BASE_TMP_DIR, rand_str)
-    assert tmp_dir.parent == test_utils.BASE_TMP_DIR
-    fs.ensure_directory(tmp_dir)
-    yield tmp_dir
-
-    # tear down
-    test_utils.clean_tmp_dir(tmp_dir)
-
-
-@pytest.fixture(scope='function')
-def tmp_file(tmp_dir):
+def tmp_file(tmp_path):
     """Return a path for a tmp yaml file."""
-    return pathlib.Path.joinpath(tmp_dir, f'{uuid4()}')
+    return pathlib.Path.joinpath(tmp_path, f'{uuid4()}')
 
 
 @pytest.fixture(scope='session')
-def tmp_fixed_file(tmp_dir):
+def tmp_fixed_file(tmp_path):
     """Return a path for a tmp yaml file."""
-    return pathlib.Path.joinpath(tmp_dir, 'fixed_file')
+    return pathlib.Path.joinpath(tmp_path, 'fixed_file')
 
 
 @pytest.fixture(scope='function')
-def tmp_yaml_file(tmp_dir):
+def tmp_yaml_file(tmp_path):
     """Return a path for a tmp yaml file."""
-    return pathlib.Path.joinpath(tmp_dir, f'{uuid4()}.yaml')
+    return pathlib.Path.joinpath(tmp_path, f'{uuid4()}.yaml')
 
 
 @pytest.fixture(scope='function')
-def tmp_json_file(tmp_dir):
+def tmp_json_file(tmp_path):
     """Return a path for a tmp yaml file."""
-    return pathlib.Path.joinpath(tmp_dir, f'{uuid4()}.json')
+    return pathlib.Path.joinpath(tmp_path, f'{uuid4()}.json')
 
 
 @pytest.fixture(scope='function')
-def tmp_xml_file(tmp_dir):
+def tmp_xml_file(tmp_path):
     """Return a path for a tmp yaml file."""
-    return pathlib.Path.joinpath(tmp_dir, f'{uuid4()}.xml')
+    return pathlib.Path.joinpath(tmp_path, f'{uuid4()}.xml')
 
 
 @pytest.fixture(scope='module')
@@ -105,7 +92,7 @@ def sample_target_def():
 @pytest.fixture(scope='function')
 def sample_catalog():
     """Return a valid catalog object."""
-    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'good_catalog.json')
+    file_path = pathlib.Path.joinpath(test_utils.JSON_NIST_DATA_PATH, test_utils.JSON_NIST_CATALOG_NAME)
     catalog_obj = Catalog.oscal_read(file_path)
     return catalog_obj
 
@@ -119,33 +106,40 @@ def sample_catalog_minimal():
 
 
 @pytest.fixture(scope='function')
-def tmp_trestle_dir(tmpdir: pathlib.Path) -> pathlib.Path:
-    """Create and return a new trestle project directory using std tmpdir fixture.
+def tmp_trestle_dir(tmp_path: pathlib.Path) -> pathlib.Path:
+    """Create and return a new trestle project directory using std tmp_path fixture.
 
     Note that this fixture relies on the 'trestle init' command and therefore may
     misbehave if there are errors in trestle init.
     """
     pytest_cwd = pathlib.Path.cwd()
-    os.chdir(tmpdir)
+    os.chdir(tmp_path)
     testargs = ['trestle', 'init']
     with patch.object(sys, 'argv', testargs):
         # FIXME: Correctly capture return codes
         Trestle().run()
-    yield tmpdir
+    yield tmp_path
 
     os.chdir(pytest_cwd)
 
 
 @pytest.fixture(scope='function')
-def tmp_empty_cwd(tmpdir: pathlib.Path) -> pathlib.Path:
+def tmp_empty_cwd(tmp_path: pathlib.Path) -> pathlib.Path:
     """Create a temporary directory and cd into that directory with fail out afterwards.
 
     The purpose of this is to provide a clean directory per unit test and ensure we get
     back to the base time.
     """
     pytest_cwd = pathlib.Path.cwd()
-    os.chdir(tmpdir)
+    os.chdir(tmp_path)
 
-    yield tmpdir
+    yield tmp_path
 
     os.chdir(pytest_cwd)
+
+
+@pytest.fixture(scope='function')
+def testdata_dir() -> pathlib.Path:
+    """Return absolute path to test data directory."""
+    test_data_source = pathlib.Path('tests/data')
+    return test_data_source.absolute()

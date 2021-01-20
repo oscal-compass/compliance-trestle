@@ -1,0 +1,236 @@
+{
+    "control": {
+        "id": "pt-5",
+        "class": "SP800-53",
+        "title": "Privacy Notice",
+        "params": [
+            {
+                "id": "pt-5_prm_1",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "pt-5_prm_2",
+                "label": "organization-defined information"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PT-5"
+            },
+            {
+                "name": "sort-id",
+                "value": "pt-05"
+            }
+        ],
+        "links": [
+            {
+                "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
+                "rel": "reference"
+            },
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#3671ff20-c17c-44d6-8a88-7de203fa74aa",
+                "rel": "reference"
+            },
+            {
+                "href": "#pm-20",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-22",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-18",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pt-5_smt",
+                "name": "statement",
+                "prose": "Provide notice to individuals about the processing of personally identifiable information that:",
+                "parts": [
+                    {
+                        "id": "pt-5_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Is available to individuals upon first interacting with an organization, and subsequently at {{ pt-5_prm_1 }};"
+                    },
+                    {
+                        "id": "pt-5_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Is clear and easy-to-understand, expressing information about personally identifiable information processing in plain language;"
+                    },
+                    {
+                        "id": "pt-5_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Identifies the authority that authorizes the processing of personally identifiable information;"
+                    },
+                    {
+                        "id": "pt-5_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Identifies the purposes for which personally identifiable information is to be processed; and"
+                    },
+                    {
+                        "id": "pt-5_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Includes {{ pt-5_prm_2 }}."
+                    }
+                ]
+            },
+            {
+                "id": "pt-5_gdn",
+                "name": "guidance",
+                "prose": "Privacy notices help inform individuals about how their personally identifiable information is being processed by the system or organization. Organizations use privacy notices to inform individuals about how, under what authority, and for what purpose their personally identifiable information is processed, as well as other information such as choices individuals might have with respect to that processing and other parties with whom information is shared. Laws, executive orders, directives, regulations, or policies may require that privacy notices include specific elements or be provided in specific formats. Federal agency personnel consult with the senior agency official for privacy and legal counsel regarding when and where to provide privacy notices, as well as elements to include in privacy notices and required formats. In circumstances where laws or government-wide policies do not require privacy notices, organizational policies and determinations may require privacy notices and may serve as a source of the elements to include in privacy notices.\n\nPrivacy risk assessments identify the privacy risks associated with the processing of personally identifiable information and may help organizations determine appropriate elements to include in a privacy notice to manage such risks. To help individuals understand how their information is being processed, organizations write materials in plain language and avoid technical jargon."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pt-5.1",
+                "class": "SP800-53-enhancement",
+                "title": "Just-in-time Notice",
+                "params": [
+                    {
+                        "id": "pt-5.1_prm_1",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PT-5(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pt-05.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pt-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pm-21",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pt-5.1_smt",
+                        "name": "statement",
+                        "prose": "Present notice of personally identifiable information processing to individuals at a time and location where the individual provides personally identifiable information or in conjunction with a data action, or {{ pt-5.1_prm_1 }}."
+                    },
+                    {
+                        "id": "pt-5.1_gdn",
+                        "name": "guidance",
+                        "prose": "Just-in-time notices inform individuals of how organizations process their personally identifiable information at a time when such notices may be most useful to the individuals. Individual assumptions about how personally identifiable information will be processed might not be accurate or reliable if time has passed since the organization last presented notice or the circumstances under which the individual was last provided notice have changed. A just-in-time notice can explain data actions that organizations have identified as potentially giving rise to greater privacy risk for individuals. Organizations can use a just-in-time notice to update or remind individuals about specific data actions as they occur or highlight specific changes that occurred since last presenting notice. A just-in-time notice can be used in conjunction with just-in-time consent to explain what will occur if consent is declined. Organizations use discretion to determine when to use a just-in-time notice and may use supporting information on user demographics, focus groups, or surveys to learn about users\u2019 privacy interests and concerns."
+                    }
+                ]
+            },
+            {
+                "id": "pt-5.2",
+                "class": "SP800-53-enhancement",
+                "title": "Privacy Act Statements",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PT-5(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pt-05.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pt-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#3671ff20-c17c-44d6-8a88-7de203fa74aa",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#pt-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pt-5.2_smt",
+                        "name": "statement",
+                        "prose": "Include Privacy Act statements on forms that collect information that will be maintained in a Privacy Act system of records, or provide Privacy Act statements on separate forms that can be retained by individuals."
+                    },
+                    {
+                        "id": "pt-5.2_gdn",
+                        "name": "guidance",
+                        "prose": "If a federal agency asks individuals to supply information that will become part of a system of records, the agency is required to provide a [PRIVACT](#18e71fec-c6fd-475a-925a-5d8495cf8455) statement on the form used to collect the information or on a separate form that can be retained by the individual. The agency provides a [PRIVACT](#18e71fec-c6fd-475a-925a-5d8495cf8455) statement in such circumstances regardless of whether the information will be collected on a paper or electronic form, on a website, on a mobile application, over the telephone, or through some other medium. This requirement ensures that the individual is provided with sufficient information about the request for information to make an informed decision on whether or not to respond.\n\n [PRIVACT](#18e71fec-c6fd-475a-925a-5d8495cf8455) statements provide formal notice to individuals of the authority that authorizes the solicitation of the information; whether providing the information is mandatory or voluntary; the principal purpose(s) for which the information is to be used; the published routine uses to which the information is subject; the effects on the individual, if any, of not providing all or any part of the information requested; and an appropriate citation and link to the relevant system of records notice. Federal agency personnel consult with the senior agency official for privacy and legal counsel regarding the notice provisions of the [PRIVACT](#18e71fec-c6fd-475a-925a-5d8495cf8455)."
+                    }
+                ]
+            }
+        ]
+    }
+}

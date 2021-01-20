@@ -1,0 +1,355 @@
+{
+    "control": {
+        "id": "sr-4",
+        "class": "SP800-53",
+        "title": "Provenance",
+        "params": [
+            {
+                "id": "sr-4_prm_1",
+                "label": "organization-defined systems, system components, and associated data"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SR-4"
+            },
+            {
+                "name": "sort-id",
+                "value": "sr-04"
+            }
+        ],
+        "links": [
+            {
+                "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
+                "rel": "reference"
+            },
+            {
+                "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
+                "rel": "reference"
+            },
+            {
+                "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
+                "rel": "reference"
+            },
+            {
+                "href": "#863caf2a-978a-4260-9e8d-4a8929bce40c",
+                "rel": "reference"
+            },
+            {
+                "href": "#15a95e24-65b6-4686-bc18-90855a10457d",
+                "rel": "reference"
+            },
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                "rel": "reference"
+            },
+            {
+                "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
+                "rel": "reference"
+            },
+            {
+                "href": "#a2590922-82f3-4277-83c0-ca5bee06dba4",
+                "rel": "reference"
+            },
+            {
+                "href": "#38ff38f0-1366-4f50-a4c9-26a39aacee16",
+                "rel": "reference"
+            },
+            {
+                "href": "#cm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sr-4_smt",
+                "name": "statement",
+                "prose": "Document, monitor, and maintain valid provenance of the following systems, system components, and associated data: {{ sr-4_prm_1 }}."
+            },
+            {
+                "id": "sr-4_gdn",
+                "name": "guidance",
+                "prose": "Every system and system component has a point of origin and may be changed throughout its existence. Provenance is the chronology of the origin, development, ownership, location, and changes to a system or system component and associated data. It may also include personnel and processes used to interact with or make modifications to the system, component, or associated data. Organizations consider developing procedures (see [SR-1](#sr-1)) for allocating responsibilities for the creation, maintenance, and monitoring of provenance for systems and system components; transferring provenance documentation and responsibility between organizations; and preventing and monitoring for unauthorized changes to the provenance records. Organizations have methods to document, monitor, and maintain valid provenance baselines for systems, system components, and related data. These actions help track, assess, and document any changes to the provenance, including changes in supply chain elements or configuration, and help ensure non-repudiation of provenance information and the provenance change records. Provenance considerations are addressed throughout the system development life cycle and incorporated into contracts and other arrangements, as appropriate."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sr-4.1",
+                "class": "SP800-53-enhancement",
+                "title": "Identity",
+                "params": [
+                    {
+                        "id": "sr-4.1_prm_1",
+                        "label": "organization-defined supply chain elements, processes, and personnel associated with organization-defined systems and critical system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SR-4(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sr-04.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ia-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-16",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sr-4.1_smt",
+                        "name": "statement",
+                        "prose": "Establish and maintain unique identification of the following supply chain elements, processes, and personnel associated with the identified system and critical system components: {{ sr-4.1_prm_1 }}."
+                    },
+                    {
+                        "id": "sr-4.1_gdn",
+                        "name": "guidance",
+                        "prose": "Knowing who and what is in the supply chains of organizations is critical to gaining visibility into supply chain activities. Visibility into supply chain activities is also important for monitoring and identifying high-risk events and activities. Without reasonable visibility into supply chains elements, processes, and personnel, it is very difficult for organizations to understand and manage risk and reduce their susceptibility to adverse events. Supply chain elements include organizations, entities, or tools used for the research and development, design, manufacturing, acquisition, delivery, integration, operations, maintenance, and disposal of systems and system components. Supply chain processes include development processes for hardware, software, and firmware; shipping and handling procedures; configuration management tools, techniques, and measures to maintain provenance; personnel and physical security programs; or other programs, processes, or procedures associated with the production and distribution of supply chain elements. Supply chain personnel are individuals with specific roles and responsibilities related to the secure the research and development, design, manufacturing, acquisition, delivery, integration, operations and maintenance, and disposal of a system or system component. Identification methods are sufficient to support an investigation in case of a supply chain change (e.g. if a supply company is purchased), compromise, or event."
+                    }
+                ]
+            },
+            {
+                "id": "sr-4.2",
+                "class": "SP800-53-enhancement",
+                "title": "Track and Trace",
+                "params": [
+                    {
+                        "id": "sr-4.2_prm_1",
+                        "label": "organization-defined systems and critical system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SR-4(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sr-04.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ia-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-16",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pl-2",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sr-4.2_smt",
+                        "name": "statement",
+                        "prose": "Establish and maintain unique identification of the following systems and critical system components for tracking through the supply chain: {{ sr-4.2_prm_1 }}."
+                    },
+                    {
+                        "id": "sr-4.2_gdn",
+                        "name": "guidance",
+                        "prose": "Tracking the unique identification of systems and system components during development and transport activities provides a foundational identity structure for the establishment and maintenance of provenance. For example, system components may be labeled using serial numbers or tagged using radio-frequency identification tags. Labels and tags can help provide better visibility into the provenance of a system or system component. A system or system component may have more than one unique identifier. Identification methods are sufficient to support a forensic investigation after a supply chain compromise or event."
+                    }
+                ]
+            },
+            {
+                "id": "sr-4.3",
+                "class": "SP800-53-enhancement",
+                "title": "Validate as Genuine and Not Altered",
+                "params": [
+                    {
+                        "id": "sr-4.3_prm_1",
+                        "label": "organization-defined controls"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SR-4(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sr-04.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#at-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sr-9",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sr-10",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sr-11",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sr-4.3_smt",
+                        "name": "statement",
+                        "prose": "Employ the following controls to validate that the system or system component received is genuine and has not been altered: {{ sr-4.3_prm_1 }}."
+                    },
+                    {
+                        "id": "sr-4.3_gdn",
+                        "name": "guidance",
+                        "prose": "For many systems and system components, especially hardware, there are technical means to determine if the items are genuine or have been altered, including optical and nanotechnology tagging, physically unclonable functions, side-channel analysis, cryptographic hash verifications or digital signatures, and visible anti-tamper labels or stickers. Controls can also include monitoring for out of specification performance, which can be an indicator of tampering or counterfeits. Organizations may leverage supplier and contractor processes for validating that a system or component is genuine and has not been altered and for replacing a suspect system or component. Some indications of tampering may be visible and addressable before accepting delivery, such as inconsistent packaging, broken seals, and incorrect labels. When a system or system component is suspected of being altered or counterfeit, the supplier, contractor, or original equipment manufacturer may be able to replace the item or provide a forensic capability to determine the origin of the counterfeit or altered item. Organizations can provide training to personnel on how to identify suspicious system or component deliveries."
+                    }
+                ]
+            },
+            {
+                "id": "sr-4.4",
+                "class": "SP800-53-enhancement",
+                "title": "Supply Chain Integrity \u2014 Pedigree",
+                "params": [
+                    {
+                        "id": "sr-4.4_prm_1",
+                        "label": "organization-defined controls"
+                    },
+                    {
+                        "id": "sr-4.4_prm_2",
+                        "label": "organization-defined analysis"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SR-4(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sr-04.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#863caf2a-978a-4260-9e8d-4a8929bce40c",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#15a95e24-65b6-4686-bc18-90855a10457d",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#a2590922-82f3-4277-83c0-ca5bee06dba4",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#38ff38f0-1366-4f50-a4c9-26a39aacee16",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#ra-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sr-4.4_smt",
+                        "name": "statement",
+                        "prose": "Employ {{ sr-4.4_prm_1 }} and conduct {{ sr-4.4_prm_2 }} to ensure the integrity of the system and system components by validating the internal composition and provenance of critical or mission-essential technologies, products, and services."
+                    },
+                    {
+                        "id": "sr-4.4_gdn",
+                        "name": "guidance",
+                        "prose": "Authoritative information regarding the internal composition of system components and the provenance of technology, products, and services provides a strong basis for trust. The validation of the internal composition and provenance of technologies, products, and services is referred to as the pedigree. For microelectronics, this includes material composition of components. For software this includes the composition of open-source and proprietary code, including the version of the component at a given point in time. Pedigrees increase the assurance that the claims suppliers assert about the internal composition and provenance of the products, services, and technologies they provide are valid. The validation of the internal composition and provenance can be achieved by various evidentiary artifacts or records that manufacturers and suppliers produce during the research and development, design, manufacturing, acquisition, delivery, integration, operations and maintenance, and disposal of technology, products, and services. Evidentiary artifacts include, but are not limited to, software identification (SWID) tags, software component inventory, the manufacturers\u2019 declarations of platform attributes (e.g., serial numbers, hardware component inventory), and measurements (e.g., firmware hashes) that are tightly bound to the hardware itself."
+                    }
+                ]
+            }
+        ]
+    }
+}

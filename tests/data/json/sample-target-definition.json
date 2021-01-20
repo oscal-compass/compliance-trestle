@@ -1,5 +1,6 @@
 {
   "target-definition": {
+    "uuid": "56676738-0f9a-4e38-9aac-c0fad00a5821",
     "metadata": {
       "title": "Demo target definition for NIST profiles",
       "last-modified": "2020-08-13T15:24:24.389+00:00",
@@ -9,22 +10,21 @@
         {
           "uuid": "ee47836c-877c-4007-bbf3-c9d9bd805000",
           "type": "organization",
-          "party-name": "International Business Machines"
+          "name": "International Business Machines"
         }
       ]
     },
     "targets": {
       "56666738-0f9a-4e38-9aac-c0fad00a5821": {
-        "name": "Red Hat OpenShift Kubernetes",
-        "target-type": "Software",
         "title": "Red Hat OpenShift Kubernetes",
         "description": "RedHat OpenShift Kubernetes",
+        "type": "Software",
         "target-control-implementations": [
           {
             "uuid": "daca7f77-a2eb-433c-aec2-999c185671dd",
             "source": "https://github.com/usnistgov/OSCAL/blob/v1.0.0-milestone3/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
             "description": "Compliance Operator SCAP guide for RedHat OpenShift Kubernetes Service for NIST 800-53. It includes optional configuration to use with an instance of auditree.",
-            "properties": [
+            "props": [
               {
                 "name": "implementation-type",
                 "value": "enforce"
@@ -47,12 +47,12 @@
                 "value": "TBD"
               },
               {
-                "ns": "TCE",
+                "ns": "https://sample.com/TCE",
                 "name": "configMap",
                 "value": "ssg-ocp4-ds-cis"
               },
               {
-                "ns": "TCE",
+                "ns": "https://sample.com/TCE",
                 "name": "xccdf_profile",
                 "value": "cis"
               }
@@ -70,7 +70,7 @@
                 "uuid": "09dc3f43-8f52-46a3-9445-f7f2906cb946",
                 "control-id": "SI-4",
                 "description": "SI-4",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_kubelet_enable_server_cert_rotation"
@@ -101,7 +101,7 @@
                 "uuid": "00f2f9fb-2256-4fed-9c0a-02f63fb332e6",
                 "control-id": "IA-5",
                 "description": "IA-5",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_api_server_basic_auth"
@@ -116,7 +116,7 @@
                 "uuid": "5fd97336-1dc3-4652-8a3e-6e5021f14546",
                 "control-id": "IA-5 (1)",
                 "description": "IA-5 (1)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_api_server_basic_auth"
@@ -131,7 +131,7 @@
                 "uuid": "4aaf266e-f3ad-4593-9aad-bb359f4b2e56",
                 "control-id": "IA-2 (1)",
                 "description": "IA-2 (1)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_api_server_kubelet_client_key"
@@ -154,7 +154,7 @@
                 "uuid": "3afcd3d5-9ae5-44f4-a8a7-709bfc53620a",
                 "control-id": "AU-3",
                 "description": "AU-3",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_api_server_request_timeout"
@@ -169,7 +169,7 @@
                 "uuid": "e55defa2-a63e-4da0-b1b9-f1e3ec7ba065",
                 "control-id": "AU-12",
                 "description": "AU-12",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_api_server_audit_log_path"
@@ -180,7 +180,7 @@
                 "uuid": "16124724-8c81-4696-a42a-0ccb9896fed5",
                 "control-id": "AU-4",
                 "description": "AU-4",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxbackup"
@@ -199,7 +199,7 @@
                 "uuid": "f7ad85ce-ccb5-4944-9b00-53bd0cfff34a",
                 "control-id": "SC-39",
                 "description": "SC-39",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_EventRateLimit"
@@ -210,7 +210,7 @@
                 "uuid": "ac3d1885-bb3c-4642-b8cc-619779f17766",
                 "control-id": "SI-16",
                 "description": "SI-16",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_EventRateLimit"
@@ -221,7 +221,7 @@
                 "uuid": "e5f8a604-31a3-419c-9d7b-222ce2dca080",
                 "control-id": "AC-3",
                 "description": "AC-3",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_file_permissions_worker_ca"
@@ -241,8 +241,7 @@
         ]
       },
       "89cfe7a7-ce6b-4699-aa7b-2f5739c72001": {
-        "name": "RedHat Enterprise Linux 7.8",
-        "target-type": "Software",
+        "type": "Software",
         "title": "RedHat Enterprise Linux 7.8",
         "description": "RedHat Enterprise Linux 7.8",
         "target-control-implementations": [
@@ -250,7 +249,7 @@
             "uuid": "daca7f77-a2eb-433c-aec2-999c185671dd",
             "source": "https://github.com/usnistgov/OSCAL/blob/v1.0.0-milestone3/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
             "description": "Compliance Operator SCAP guide for RedHat OpenShift Kubernetes Service for NIST 800-53. It includes optional configuration to use with an instance of auditree.",
-            "properties": [
+            "props": [
               {
                 "name": "implementation-type",
                 "value": "enforce"
@@ -273,12 +272,12 @@
                 "value": "TBD"
               },
               {
-                "ns": "TCE",
+                "ns": "https://sample.com/TCE",
                 "name": "configMap",
                 "value": "ssg-rhel7-ds-cis"
               },
               {
-                "ns": "TCE",
+                "ns": "https://sample.com/TCE",
                 "name": "xccdf_profile",
                 "value": "cis"
               }
@@ -296,7 +295,7 @@
                 "uuid": "0a0e76c0-944f-405a-bb65-7f8e37b18deb",
                 "control-id": "CM-6(a)",
                 "description": "CM-6(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_grub2_password"
@@ -1135,7 +1134,7 @@
                 "uuid": "b0392b57-bfe0-4e4d-b845-476e1f95022b",
                 "control-id": "AC-6(1)",
                 "description": "AC-6(1)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_file_owner_grub2_cfg"
@@ -1358,7 +1357,7 @@
                 "uuid": "51296dad-af1f-48aa-90e1-4c76a8347579",
                 "control-id": "CM-7(a)",
                 "description": "CM-7(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_icmp_echo_ignore_broadcasts"
@@ -1649,7 +1648,7 @@
                 "uuid": "dcea70e9-16bf-4748-9ed6-867fe272cc32",
                 "control-id": "CM-7(b)",
                 "description": "CM-7(b)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_icmp_echo_ignore_broadcasts"
@@ -1940,7 +1939,7 @@
                 "uuid": "1cd8012d-cb77-4e72-b530-0a4be189c44b",
                 "control-id": "SC-5",
                 "description": "SC-5",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_icmp_echo_ignore_broadcasts"
@@ -1963,7 +1962,7 @@
                 "uuid": "bf3f6051-cf7d-49db-a7c1-a1c271bbcd80",
                 "control-id": "SC-7(a)",
                 "description": "SC-7(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_rp_filter"
@@ -2014,7 +2013,7 @@
                 "uuid": "19e0ba00-651e-4530-b66d-605b1d307540",
                 "control-id": "SC-5(3)(a)",
                 "description": "SC-5(3)(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_log_martians"
@@ -2033,7 +2032,7 @@
                 "uuid": "bb39cf13-3e58-43b8-a40a-51ab4fb4c3f5",
                 "control-id": "SC-5CM-6(a)",
                 "description": "SC-5CM-6(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_accept_source_route"
@@ -2056,7 +2055,7 @@
                 "uuid": "2ad03e14-e525-4b5d-ad42-d94c60f64272",
                 "control-id": "SC-5(1)",
                 "description": "SC-5(1)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_tcp_syncookies"
@@ -2067,7 +2066,7 @@
                 "uuid": "eecb35c0-0a39-4d68-86e0-e4ec65c04cdd",
                 "control-id": "SC-5(2)",
                 "description": "SC-5(2)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_tcp_syncookies"
@@ -2098,7 +2097,7 @@
                 "uuid": "aaea84e1-6030-4226-a794-a41ea31d52a6",
                 "control-id": "AC-18(a)",
                 "description": "AC-18(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_wireless_disable_interfaces"
@@ -2109,7 +2108,7 @@
                 "uuid": "a2007b34-7e84-4aff-9b3e-ba1242db8d55",
                 "control-id": "AC-18(3)",
                 "description": "AC-18(3)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_wireless_disable_interfaces"
@@ -2120,7 +2119,7 @@
                 "uuid": "58825069-e6bc-41f8-b9d1-7d8b638c5178",
                 "control-id": "MP-7",
                 "description": "MP-7",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_wireless_disable_interfaces"
@@ -2171,7 +2170,7 @@
                 "uuid": "71454d26-4216-4479-aae1-31554d6e9760",
                 "control-id": "SI-11(a)",
                 "description": "SI-11(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sysctl_fs_suid_dumpable"
@@ -2182,7 +2181,7 @@
                 "uuid": "9349d34c-fc60-4dd8-ac88-e304d9eeb654",
                 "control-id": "SI-11(b)",
                 "description": "SI-11(b)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sysctl_fs_suid_dumpable"
@@ -2193,7 +2192,7 @@
                 "uuid": "c94a026f-c30c-432e-bf18-1a96acd49051",
                 "control-id": "SC-39",
                 "description": "SC-39",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_bios_enable_execution_restrictions"
@@ -2208,7 +2207,7 @@
                 "uuid": "bdcbda02-c79d-4d02-91da-0c50222dc9d3",
                 "control-id": "SC-30",
                 "description": "SC-30",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sysctl_kernel_randomize_va_space"
@@ -2219,7 +2218,7 @@
                 "uuid": "d6ebf3eb-4681-4247-addf-9300b0786182",
                 "control-id": "SC-30(2)",
                 "description": "SC-30(2)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sysctl_kernel_randomize_va_space"
@@ -2230,7 +2229,7 @@
                 "uuid": "a1426f15-eb40-48a0-a86d-5e354cf91675",
                 "control-id": "AC-6",
                 "description": "AC-6",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_mount_option_dev_shm_nosuid"
@@ -2281,7 +2280,7 @@
                 "uuid": "fb5eaa43-3bf0-42db-90e3-1b88d68dadf5",
                 "control-id": "CM-5(3)",
                 "description": "CM-5(3)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated"
@@ -2296,7 +2295,7 @@
                 "uuid": "dbb3ae98-105b-4b45-90f4-38485159e45f",
                 "control-id": "SI-7",
                 "description": "SI-7",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated"
@@ -2323,7 +2322,7 @@
                 "uuid": "3d5e7944-22d2-470a-a033-db1135a86db8",
                 "control-id": "SC-12",
                 "description": "SC-12",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated"
@@ -2338,7 +2337,7 @@
                 "uuid": "406662de-d2db-4810-be9e-4e30aa46d09c",
                 "control-id": "SC-12(3)",
                 "description": "SC-12(3)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated"
@@ -2357,7 +2356,7 @@
                 "uuid": "ba679f94-7d21-4ac2-a95f-a3c33c53a8a3",
                 "control-id": "SA-12",
                 "description": "SA-12",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated"
@@ -2368,7 +2367,7 @@
                 "uuid": "04648713-8857-4a68-821a-2fe2f9bb8e74",
                 "control-id": "SA-12(10)",
                 "description": "SA-12(10)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated"
@@ -2379,7 +2378,7 @@
                 "uuid": "9b93c675-0ac5-4b04-abd1-9055fe127b86",
                 "control-id": "CM-11(a)",
                 "description": "CM-11(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated"
@@ -2390,7 +2389,7 @@
                 "uuid": "a9bf9707-6e1d-4d4f-96d0-009a3d0d574f",
                 "control-id": "CM-11(b)",
                 "description": "CM-11(b)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated"
@@ -2401,7 +2400,7 @@
                 "uuid": "5f8a182d-3a83-4323-97cf-8cbfcdee3e9e",
                 "control-id": "SI-2(5)",
                 "description": "SI-2(5)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_security_patches_up_to_date"
@@ -2412,7 +2411,7 @@
                 "uuid": "c9de7135-e388-436c-8f13-7f9bbebadc75",
                 "control-id": "SI-2(c)",
                 "description": "SI-2(c)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_security_patches_up_to_date"
@@ -2423,7 +2422,7 @@
                 "uuid": "f8a6a941-ac57-453f-9823-ffafd4bb4025",
                 "control-id": "SI-7(1)",
                 "description": "SI-7(1)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_aide_periodic_cron_checking"
@@ -2442,7 +2441,7 @@
                 "uuid": "c95b13af-84f1-434c-9b56-39d53207589c",
                 "control-id": "CM-6(d)",
                 "description": "CM-6(d)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_rpm_verify_ownership"
@@ -2457,7 +2456,7 @@
                 "uuid": "b3aac6ba-c9b3-4f74-b4ab-b10c185f7151",
                 "control-id": "CM-6(c)",
                 "description": "CM-6(c)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_rpm_verify_ownership"
@@ -2472,7 +2471,7 @@
                 "uuid": "5b1b7aa6-ce23-4b5a-a340-f34eeefc0645",
                 "control-id": "SI-7(6)",
                 "description": "SI-7(6)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_rpm_verify_ownership"
@@ -2487,7 +2486,7 @@
                 "uuid": "cb2abda9-7f27-4bf3-8f6c-23f698d4cfc0",
                 "control-id": "AU-9(3)",
                 "description": "AU-9(3)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_rpm_verify_ownership"
@@ -2502,7 +2501,7 @@
                 "uuid": "5ca4ed7b-5437-49d9-8511-0d49cbc532c6",
                 "control-id": "SC-13",
                 "description": "SC-13",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_disable_prelink"
@@ -2521,7 +2520,7 @@
                 "uuid": "b7dd735b-e4c3-4e22-9c38-defa63cc3ea1",
                 "control-id": "AU-4",
                 "description": "AU-4",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_partition_for_var_log"
@@ -2536,7 +2535,7 @@
                 "uuid": "878730b6-f1d8-4040-9d7b-97a8039893ed",
                 "control-id": "AC-8(a)",
                 "description": "AC-8(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_dconf_gnome_banner_enabled"
@@ -2559,7 +2558,7 @@
                 "uuid": "c7b2f0eb-f126-41dc-991b-c7da7e40b805",
                 "control-id": "AC-8(b)",
                 "description": "AC-8(b)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_dconf_gnome_banner_enabled"
@@ -2570,7 +2569,7 @@
                 "uuid": "13dca933-35c8-4c25-94cd-d3bccf7ab828",
                 "control-id": "AC-8(c)",
                 "description": "AC-8(c)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_dconf_gnome_banner_enabled"
@@ -2593,7 +2592,7 @@
                 "uuid": "d9f3e9e8-d7cd-4343-855e-fefd5ba16a0f",
                 "control-id": "IA-5(f)",
                 "description": "IA-5(f)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_accounts_maximum_age_login_defs"
@@ -2616,7 +2615,7 @@
                 "uuid": "eb33f2cf-b4bc-496f-9143-6d56ae7c4a33",
                 "control-id": "IA-5(1)(d)",
                 "description": "IA-5(1)(d)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_accounts_maximum_age_login_defs"
@@ -2635,7 +2634,7 @@
                 "uuid": "4d07d02f-7f88-444f-8d09-e57c17d03421",
                 "control-id": "IA-2",
                 "description": "IA-2",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_no_direct_root_logins"
@@ -2658,7 +2657,7 @@
                 "uuid": "4b187cbf-69c5-4afc-8527-92b7496ab9e0",
                 "control-id": "AC-6(5)",
                 "description": "AC-6(5)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_accounts_no_uid_except_zero"
@@ -2669,7 +2668,7 @@
                 "uuid": "1667653c-846e-47fa-9d09-4b0b03637583",
                 "control-id": "IA-4(b)",
                 "description": "IA-4(b)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_accounts_no_uid_except_zero"
@@ -2680,7 +2679,7 @@
                 "uuid": "7a3088f9-8746-4b91-b058-2b3de0d64fb6",
                 "control-id": "IA-4(e)",
                 "description": "IA-4(e)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_account_disable_post_pw_expiration"
@@ -2691,7 +2690,7 @@
                 "uuid": "df333e31-c6ef-4ff1-ae37-eb780118987d",
                 "control-id": "AC-2(3)",
                 "description": "AC-2(3)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_account_disable_post_pw_expiration"
@@ -2702,7 +2701,7 @@
                 "uuid": "cf73bc00-7def-47fe-bc89-5c8d21712e11",
                 "control-id": "AC-7(a)",
                 "description": "AC-7(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_accounts_passwords_pam_faillock_deny"
@@ -2717,7 +2716,7 @@
                 "uuid": "63249353-a363-4df5-886b-8676067953b3",
                 "control-id": "IA-5(1)(e)",
                 "description": "IA-5(1)(e)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_accounts_password_pam_unix_remember"
@@ -2728,7 +2727,7 @@
                 "uuid": "86bc63b4-2a42-4a61-9256-043870ffbf75",
                 "control-id": "AC-7(b)",
                 "description": "AC-7(b)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_accounts_passwords_pam_faillock_unlock_time"
@@ -2739,7 +2738,7 @@
                 "uuid": "59bea5f1-3585-4dcf-80d0-d11636bff444",
                 "control-id": "IA-5(c)",
                 "description": "IA-5(c)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_accounts_password_pam_ocredit"
@@ -2770,7 +2769,7 @@
                 "uuid": "77987e1a-8cba-423f-a12a-810be72f8eb6",
                 "control-id": "IA-5(1)(a)",
                 "description": "IA-5(1)(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_accounts_password_pam_ocredit"
@@ -2797,7 +2796,7 @@
                 "uuid": "fc001009-c21a-46de-b0bf-c8c2ff43429d",
                 "control-id": "IA-5(4)",
                 "description": "IA-5(4)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_accounts_password_pam_ocredit"
@@ -2828,7 +2827,7 @@
                 "uuid": "8fda49f3-a93e-4a02-a50f-e65c442519ae",
                 "control-id": "IA-5(1)(c)",
                 "description": "IA-5(1)(c)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_set_password_hashing_algorithm_systemauth"
@@ -2863,7 +2862,7 @@
                 "uuid": "afc63ae7-624d-4462-b67c-a1e06bd2fec0",
                 "control-id": "AC-12",
                 "description": "AC-12",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_accounts_tmout"
@@ -2882,7 +2881,7 @@
                 "uuid": "7ac0840d-2274-407d-9773-5bb87d035aa5",
                 "control-id": "SC-10",
                 "description": "SC-10",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_accounts_tmout"
@@ -2901,7 +2900,7 @@
                 "uuid": "df00ae7b-8df6-460e-ab86-ce84a43cfdde",
                 "control-id": "AC-2(5)",
                 "description": "AC-2(5)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_accounts_tmout"
@@ -2920,7 +2919,7 @@
                 "uuid": "5b2b94fc-30ae-4e08-96c0-e3abde82546c",
                 "control-id": "AC-3",
                 "description": "AC-3",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_require_singleuser_auth"
@@ -2951,7 +2950,7 @@
                 "uuid": "5b04afd8-f5e3-476f-87ed-8d80349f9a97",
                 "control-id": "AC-17(1)",
                 "description": "AC-17(1)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_grub2_audit_argument"
@@ -2962,7 +2961,7 @@
                 "uuid": "60faa442-3787-4760-ad5b-c8cd82d596d5",
                 "control-id": "AU-14(1)",
                 "description": "AU-14(1)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_grub2_audit_argument"
@@ -2977,7 +2976,7 @@
                 "uuid": "834f9943-6284-4ca0-8b68-e80c56dfdc3d",
                 "control-id": "AU-10",
                 "description": "AU-10",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_grub2_audit_argument"
@@ -2992,7 +2991,7 @@
                 "uuid": "72678855-b709-41f8-9faa-d5e1d53f9474",
                 "control-id": "IR-5(1)",
                 "description": "IR-5(1)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_grub2_audit_argument"
@@ -3003,7 +3002,7 @@
                 "uuid": "145aa83c-4380-46c1-9dc9-f97bd84e294a",
                 "control-id": "AU-2(d)",
                 "description": "AU-2(d)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_open_by_handle_at"
@@ -3186,7 +3185,7 @@
                 "uuid": "50d3bf07-9c20-45e1-9a88-08742a6e3979",
                 "control-id": "AU-12(c)",
                 "description": "AU-12(c)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_open_by_handle_at"
@@ -3369,7 +3368,7 @@
                 "uuid": "5f4fcd7c-a3c5-4a9a-a9d5-f3f1c1f20304",
                 "control-id": "AC-6(9)",
                 "description": "AC-6(9)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_audit_rules_kernel_module_loading"
@@ -3452,7 +3451,7 @@
                 "uuid": "f27b30f4-4bec-4491-82f8-bc762ad2fe88",
                 "control-id": "AC-2(4)",
                 "description": "AC-2(4)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_gshadow"
@@ -3483,7 +3482,7 @@
                 "uuid": "2130f172-7609-4af9-8372-07d48fa4135f",
                 "control-id": "AC-2(7)(b)",
                 "description": "AC-2(7)(b)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_audit_rules_sysadmin_actions"
@@ -3494,7 +3493,7 @@
                 "uuid": "1fbbaee8-5fdb-4052-a88b-8e3432c6fa5f",
                 "control-id": "AU-5(b)",
                 "description": "AU-5(b)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_auditd_data_retention_admin_space_left_action"
@@ -3513,7 +3512,7 @@
                 "uuid": "62c9439e-e16b-47b5-a7d0-9c08d49d4a04",
                 "control-id": "AU-5(2)",
                 "description": "AU-5(2)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_auditd_data_retention_admin_space_left_action"
@@ -3536,7 +3535,7 @@
                 "uuid": "76198efa-5144-41e0-8d38-e2d8299fda4c",
                 "control-id": "AU-5(1)",
                 "description": "AU-5(1)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_auditd_data_retention_admin_space_left_action"
@@ -3555,7 +3554,7 @@
                 "uuid": "914709e7-4475-4005-8b0d-bf3e35309cbb",
                 "control-id": "AU-5(4)",
                 "description": "AU-5(4)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_auditd_data_retention_admin_space_left_action"
@@ -3574,7 +3573,7 @@
                 "uuid": "d01eb78f-bd8a-41eb-b295-62cf62d4d528",
                 "control-id": "IA-5(1)",
                 "description": "IA-5(1)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_auditd_data_retention_action_mail_acct"
@@ -3585,7 +3584,7 @@
                 "uuid": "aceabcfe-2d28-4ada-8ad2-5ac0a5635fbd",
                 "control-id": "AU-5(a)",
                 "description": "AU-5(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_auditd_data_retention_action_mail_acct"
@@ -3596,7 +3595,7 @@
                 "uuid": "a330026a-0636-45c5-a822-282a55977ada",
                 "control-id": "AU-11",
                 "description": "AU-11",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_auditd_data_retention_max_log_file"
@@ -3607,7 +3606,7 @@
                 "uuid": "03ac5f7a-17d6-4731-86b1-585a4b32b6ba",
                 "control-id": "AC-2(g)",
                 "description": "AC-2(g)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_service_auditd_enabled"
@@ -3618,7 +3617,7 @@
                 "uuid": "2b947743-3859-4d7c-b835-5e237d2feecf",
                 "control-id": "AU-3",
                 "description": "AU-3",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_service_auditd_enabled"
@@ -3629,7 +3628,7 @@
                 "uuid": "1b7ad4fe-25b9-4835-a88d-32dcbf97dbc5",
                 "control-id": "AC-3(3)(a)",
                 "description": "AC-3(3)(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_grub2_enable_selinux"
@@ -3652,7 +3651,7 @@
                 "uuid": "ad624f98-23be-49e6-824d-bb9bd1f5ac36",
                 "control-id": "AU-9",
                 "description": "AU-9",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_selinux_policytype"
@@ -3667,7 +3666,7 @@
                 "uuid": "ef1e0bd9-4950-491c-91cd-25d77b5bfd13",
                 "control-id": "SC-7(21)",
                 "description": "SC-7(21)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_selinux_policytype"
@@ -3682,7 +3681,7 @@
                 "uuid": "5c9c688c-67ba-4293-9aa2-6cc5ff672461",
                 "control-id": "AU-4(1)",
                 "description": "AU-4(1)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_service_rsyslog_enabled"
@@ -3697,7 +3696,7 @@
                 "uuid": "0429f58a-c998-4e08-b003-492605fc77ef",
                 "control-id": "AU-9(2)",
                 "description": "AU-9(2)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_rsyslog_remote_loghost"
@@ -3708,7 +3707,7 @@
                 "uuid": "a2df220f-cd2a-4897-92ec-badf27c8441c",
                 "control-id": "AU-6(3)",
                 "description": "AU-6(3)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_rsyslog_accept_remote_messages_udp"
@@ -3723,7 +3722,7 @@
                 "uuid": "361ae559-0590-47c7-92d4-ab75fa2a23f6",
                 "control-id": "AU-6(4)",
                 "description": "AU-6(4)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_rsyslog_accept_remote_messages_udp"
@@ -3738,7 +3737,7 @@
                 "uuid": "42364b25-bcfb-4789-9a0a-11ed78c6247e",
                 "control-id": "AC-17(a)",
                 "description": "AC-17(a)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_file_permissions_sshd_config"
@@ -3805,7 +3804,7 @@
                 "uuid": "8691af7d-01db-4686-ac4b-9f5e8c250cc3",
                 "control-id": "AC-17(2)",
                 "description": "AC-17(2)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sshd_use_approved_macs"
@@ -3820,7 +3819,7 @@
                 "uuid": "5dbc8e43-5372-4143-82d7-ceae39e8e7cb",
                 "control-id": "MA-4(6)",
                 "description": "MA-4(6)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sshd_use_approved_macs"
@@ -3835,7 +3834,7 @@
                 "uuid": "601e35ca-5380-4a23-ba04-d8f98f65b9a0",
                 "control-id": "SC-12(2)",
                 "description": "SC-12(2)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sshd_use_approved_macs"
@@ -3846,7 +3845,7 @@
                 "uuid": "0ca5b47e-383b-4c8e-8409-5e1ee94647a1",
                 "control-id": "AC-6(2)",
                 "description": "AC-6(2)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sshd_disable_root_login"
@@ -3857,7 +3856,7 @@
                 "uuid": "1616c508-926b-483d-a290-f8fb84bcd824",
                 "control-id": "IA-2(5)",
                 "description": "IA-2(5)",
-                "properties": [
+                "props": [
                   {
                     "name": "XCCDF_rule",
                     "value": "xccdf_org.ssgproject.content_rule_sshd_disable_root_login"

@@ -1,0 +1,638 @@
+{
+    "control": {
+        "id": "ac-16",
+        "class": "SP800-53",
+        "title": "Security and Privacy Attributes",
+        "params": [
+            {
+                "id": "ac-16_prm_1",
+                "label": "organization-defined types of security and privacy attributes"
+            },
+            {
+                "id": "ac-16_prm_2",
+                "label": "organization-defined security and privacy attribute values"
+            },
+            {
+                "id": "ac-16_prm_3",
+                "label": "organization-defined systems"
+            },
+            {
+                "id": "ac-16_prm_4",
+                "label": "organization-defined security and privacy attributes"
+            },
+            {
+                "id": "ac-16_prm_5",
+                "label": "organization-defined attribute values or ranges for established attributes"
+            },
+            {
+                "id": "ac-16_prm_6",
+                "label": "organization-defined security and privacy attributes"
+            },
+            {
+                "id": "ac-16_prm_7",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-16"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-16"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
+                "rel": "reference"
+            },
+            {
+                "href": "#2956e175-f674-43f4-b1b9-e074ad9fc39c",
+                "rel": "reference"
+            },
+            {
+                "href": "#388a3aa2-5d85-4bad-b8a3-77db80d63c4f",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-21",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-25",
+                "rel": "related"
+            },
+            {
+                "href": "#au-2",
+                "rel": "related"
+            },
+            {
+                "href": "#au-10",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-22",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-11",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-16",
+                "rel": "related"
+            },
+            {
+                "href": "#si-12",
+                "rel": "related"
+            },
+            {
+                "href": "#si-18",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-16_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ac-16_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Provide the means to associate {{ ac-16_prm_1 }} with {{ ac-16_prm_2 }} for information in storage, in process, and/or in transmission;"
+                    },
+                    {
+                        "id": "ac-16_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Ensure that the attribute associations are made and retained with the information;"
+                    },
+                    {
+                        "id": "ac-16_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Establish the following permitted security and privacy attributes from the attributes defined in [AC-16a](#ac-16_smt.a) for {{ ac-16_prm_3 }}: {{ ac-16_prm_4 }};"
+                    },
+                    {
+                        "id": "ac-16_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Determine the following permitted attribute values or ranges for each of the established attributes: {{ ac-16_prm_5 }};"
+                    },
+                    {
+                        "id": "ac-16_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Audit changes to attributes; and"
+                    },
+                    {
+                        "id": "ac-16_smt.f",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "f."
+                            }
+                        ],
+                        "prose": "Review {{ ac-16_prm_6 }} for applicability {{ ac-16_prm_7 }}."
+                    }
+                ]
+            },
+            {
+                "id": "ac-16_gdn",
+                "name": "guidance",
+                "prose": "Information is represented internally within systems using abstractions known as data structures. Internal data structures can represent different types of entities, both active and passive. Active entities, also known as subjects, are typically associated with individuals, devices, or processes acting on behalf of individuals. Passive entities, also known as objects, are typically associated with data structures, such as records, buffers, tables, files, inter-process pipes, and communications ports. Security attributes, a form of metadata, are abstractions that represent the basic properties or characteristics of active and passive entities with respect to safeguarding information. Privacy attributes, which may be used independently or in conjunction with security attributes, represent the basic properties or characteristics of active or passive entities with respect to the management of personally identifiable information. Attributes can be either explicitly or implicitly associated with the information contained in organizational systems or system components.\n\nAttributes may be associated with active entities (i.e., subjects) that have the potential to send or receive information, cause information to flow among objects, or change the system state. These attributes may also be associated with passive entities (i.e., objects) that contain or receive information. The association of attributes to subjects and objects by a system is referred to as binding and is inclusive of setting the attribute value and the attribute type. Attributes, when bound to data or information, permit the enforcement of security and privacy policies for access control and information flow control, including data retention limits, permitted uses of personally identifiable information, and identification of personal information within data objects. Such enforcement occurs through organizational processes or system functions or mechanisms. The binding techniques implemented by systems affect the strength of attribute binding to information. Binding strength and the assurance associated with binding techniques play important parts in the trust that organizations have in the information flow enforcement process. The binding techniques affect the number and degree of additional reviews required by organizations. The content or assigned values of attributes can directly affect the ability of individuals to access organizational information.\n\nOrganizations can define the types of attributes needed for systems to support missions or business functions. There are many values that can be assigned to a security attribute. By specifying the permitted attribute ranges and values, organizations ensure that attribute values are meaningful and relevant. Labeling refers to the association of attributes with the subjects and objects represented by the internal data structures within systems. This facilitates system-based enforcement of information security and privacy policies. Labels include classification of information in accordance with legal and compliance requirements (e.g., top secret, secret, confidential, controlled unclassified), information impact level; high value asset information, access authorizations, nationality; data life cycle protection (i.e., encryption and data expiration), personally identifiable information processing permissions, including individual consent to personally identifiable information processing, and contractor affiliation. A related term to labeling is marking. Marking refers to the association of attributes with objects in a human-readable form and displayed on system media. Marking enables manual, procedural, or process-based enforcement of information security and privacy policies. Security and privacy labels may have the same value as media markings (e.g., top secret, secret, confidential). See [MP-3](#mp-3) (Media Marking)."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ac-16.1",
+                "class": "SP800-53-enhancement",
+                "title": "Dynamic Attribute Association",
+                "params": [
+                    {
+                        "id": "ac-16.1_prm_1",
+                        "label": "organization-defined subjects and objects"
+                    },
+                    {
+                        "id": "ac-16.1_prm_2",
+                        "label": "organization-defined security and privacy policies"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-16(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-16.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-16",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-16.1_smt",
+                        "name": "statement",
+                        "prose": "Dynamically associate security and privacy attributes with {{ ac-16.1_prm_1 }} in accordance with the following security and privacy policies as information is created and combined: {{ ac-16.1_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-16.1_gdn",
+                        "name": "guidance",
+                        "prose": "Dynamic association of attributes is appropriate whenever the security or privacy characteristics of information change over time. Attributes may change due to information aggregation issues (i.e., characteristics of individual data elements are different from the combined elements), changes in individual access authorizations (i.e., privileges), changes in the security category of information, or changes in security or privacy policies. Attributes may also change situationally."
+                    }
+                ]
+            },
+            {
+                "id": "ac-16.2",
+                "class": "SP800-53-enhancement",
+                "title": "Attribute Value Changes by Authorized Individuals",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-16(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-16.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-16",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-16.2_smt",
+                        "name": "statement",
+                        "prose": "Provide authorized individuals (or processes acting on behalf of individuals) the capability to define or change the value of associated security and privacy attributes."
+                    },
+                    {
+                        "id": "ac-16.2_gdn",
+                        "name": "guidance",
+                        "prose": "The content or assigned values of attributes can directly affect the ability of individuals to access organizational information. Therefore, it is important for systems to be able to limit the ability to create or modify attributes to authorized individuals."
+                    }
+                ]
+            },
+            {
+                "id": "ac-16.3",
+                "class": "SP800-53-enhancement",
+                "title": "Maintenance of Attribute Associations by System",
+                "params": [
+                    {
+                        "id": "ac-16.3_prm_1",
+                        "label": "organization-defined security and privacy attributes"
+                    },
+                    {
+                        "id": "ac-16.3_prm_2",
+                        "label": "organization-defined subjects and objects"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-16(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-16.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-16",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-16.3_smt",
+                        "name": "statement",
+                        "prose": "Maintain the association and integrity of {{ ac-16.3_prm_1 }} to {{ ac-16.3_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-16.3_gdn",
+                        "name": "guidance",
+                        "prose": "Maintaining the association and integrity of security and privacy attributes to subjects and objects with sufficient assurance helps to ensure that the attribute associations can be used as the basis of automated policy actions. The integrity of specific items, such as security configuration files, may be maintained through the use of an integrity monitoring mechanism that detects anomalies and changes that deviate from \"known good\" baselines. Automated policy actions include retention date expirations, access control decisions, information flow control decisions, and information disclosure decisions."
+                    }
+                ]
+            },
+            {
+                "id": "ac-16.4",
+                "class": "SP800-53-enhancement",
+                "title": "Association of Attributes by Authorized Individuals",
+                "params": [
+                    {
+                        "id": "ac-16.4_prm_1",
+                        "label": "organization-defined security and privacy attributes"
+                    },
+                    {
+                        "id": "ac-16.4_prm_2",
+                        "label": "organization-defined subjects and objects"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-16(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-16.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-16",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-16.4_smt",
+                        "name": "statement",
+                        "prose": "Provide the capability to associate {{ ac-16.4_prm_1 }} with {{ ac-16.4_prm_2 }} by authorized individuals (or processes acting on behalf of individuals)."
+                    },
+                    {
+                        "id": "ac-16.4_gdn",
+                        "name": "guidance",
+                        "prose": "Systems, in general, provide the capability for privileged users to assign security and privacy attributes to system-defined subjects (e.g., users) and objects (e.g., directories, files, and ports). Some systems provide additional capability for general users to assign security and privacy attributes to additional objects (e.g., files, emails). The association of attributes by authorized individuals is described in the design documentation. The support provided by systems can include prompting users to select security and privacy attributes to be associated with information objects, employing automated mechanisms to categorize information with attributes based on defined policies, or ensuring that the combination of the security or privacy attributes selected is valid. Organizations consider the creation, deletion, or modification of attributes when defining auditable events."
+                    }
+                ]
+            },
+            {
+                "id": "ac-16.5",
+                "class": "SP800-53-enhancement",
+                "title": "Attribute Displays on Objects to Be Output",
+                "params": [
+                    {
+                        "id": "ac-16.5_prm_1",
+                        "label": "organization-defined special dissemination, handling, or distribution instructions"
+                    },
+                    {
+                        "id": "ac-16.5_prm_2",
+                        "label": "organization-defined human-readable, standard naming conventions"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-16(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-16.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-16",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-16.5_smt",
+                        "name": "statement",
+                        "prose": "Display security and privacy attributes in human-readable form on each object that the system transmits to output devices to identify {{ ac-16.5_prm_1 }} using {{ ac-16.5_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-16.5_gdn",
+                        "name": "guidance",
+                        "prose": "System outputs include printed pages, screens, or equivalent items. System output devices include printers, notebook computers, video displays, smart phones, and tablets. To mitigate the risk of unauthorized exposure of information (e.g., shoulder surfing), the outputs display full attribute values when unmasked by the subscriber."
+                    }
+                ]
+            },
+            {
+                "id": "ac-16.6",
+                "class": "SP800-53-enhancement",
+                "title": "Maintenance of Attribute Association",
+                "params": [
+                    {
+                        "id": "ac-16.6_prm_1",
+                        "label": "organization-defined security and privacy attributes"
+                    },
+                    {
+                        "id": "ac-16.6_prm_2",
+                        "label": "organization-defined subjects and objects"
+                    },
+                    {
+                        "id": "ac-16.6_prm_3",
+                        "label": "organization-defined security and privacy policies"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-16(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-16.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-16",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-16.6_smt",
+                        "name": "statement",
+                        "prose": "Require personnel to associate and maintain the association of {{ ac-16.6_prm_1 }} with {{ ac-16.6_prm_2 }} in accordance with {{ ac-16.6_prm_3 }}."
+                    },
+                    {
+                        "id": "ac-16.6_gdn",
+                        "name": "guidance",
+                        "prose": "Maintaining attribute association requires individual users (as opposed to the system) to maintain associations of defined security and privacy attributes with subjects and objects."
+                    }
+                ]
+            },
+            {
+                "id": "ac-16.7",
+                "class": "SP800-53-enhancement",
+                "title": "Consistent Attribute Interpretation",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-16(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-16.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-16",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-16.7_smt",
+                        "name": "statement",
+                        "prose": "Provide a consistent interpretation of security and privacy attributes transmitted between distributed system components."
+                    },
+                    {
+                        "id": "ac-16.7_gdn",
+                        "name": "guidance",
+                        "prose": "To enforce security and privacy policies across multiple system components in distributed systems, organizations provide a consistent interpretation of security and privacy attributes employed in access enforcement and flow enforcement decisions. Organizations can establish agreements and processes to help ensure that distributed system components implement attributes with consistent interpretations in automated access enforcement and flow enforcement actions."
+                    }
+                ]
+            },
+            {
+                "id": "ac-16.8",
+                "class": "SP800-53-enhancement",
+                "title": "Association Techniques and Technologies",
+                "params": [
+                    {
+                        "id": "ac-16.8_prm_1",
+                        "label": "organization-defined techniques and technologies"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-16(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-16.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-16",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-16.8_smt",
+                        "name": "statement",
+                        "prose": "Implement {{ ac-16.8_prm_1 }} in associating security and privacy attributes to information."
+                    },
+                    {
+                        "id": "ac-16.8_gdn",
+                        "name": "guidance",
+                        "prose": "\u00a0 The association of security and privacy attributes to information within systems is important for conducting automated access enforcement and flow enforcement actions. The association of such attributes to information (i.e., binding) can be accomplished with technologies and techniques that provide different levels of assurance. For example, systems can cryptographically bind attributes to information using digital signatures that support cryptographic keys protected by hardware devices (sometimes known as hardware roots of trust)."
+                    }
+                ]
+            },
+            {
+                "id": "ac-16.9",
+                "class": "SP800-53-enhancement",
+                "title": "Attribute Reassignment \u2014 Regrading Mechanisms",
+                "params": [
+                    {
+                        "id": "ac-16.9_prm_1",
+                        "label": "organization-defined techniques or procedures"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-16(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-16.09"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-16",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-16.9_smt",
+                        "name": "statement",
+                        "prose": "Change security and privacy attributes associated with information only via regrading mechanisms validated using {{ ac-16.9_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-16.9_gdn",
+                        "name": "guidance",
+                        "prose": "A regrading mechanism is a trusted process authorized to re-classify and re-label data in accordance with a defined policy exception. Validated regrading mechanisms are used by organizations to provide the requisite levels of assurance for attribute reassignment activities. The validation is facilitated by ensuring that regrading mechanisms are single purpose and of limited function. Since security and privacy attribute changes can directly affect policy enforcement actions, implementing trustworthy regrading mechanisms is necessary to help ensure that such mechanisms perform in a consistent and correct mode of operation."
+                    }
+                ]
+            },
+            {
+                "id": "ac-16.10",
+                "class": "SP800-53-enhancement",
+                "title": "Attribute Configuration by Authorized Individuals",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-16(10)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-16.10"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-16",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#2956e175-f674-43f4-b1b9-e074ad9fc39c",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#388a3aa2-5d85-4bad-b8a3-77db80d63c4f",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-16.10_smt",
+                        "name": "statement",
+                        "prose": "Provide authorized individuals the capability to define or change the type and value of security and privacy attributes available for association with subjects and objects."
+                    },
+                    {
+                        "id": "ac-16.10_gdn",
+                        "name": "guidance",
+                        "prose": "The content or assigned values of security and privacy attributes can directly affect the ability of individuals to access organizational information. Thus, it is important for systems to be able to limit the ability to create or modify the type and value of attributes available for association with subjects and objects to authorized individuals only."
+                    }
+                ]
+            }
+        ]
+    }
+}

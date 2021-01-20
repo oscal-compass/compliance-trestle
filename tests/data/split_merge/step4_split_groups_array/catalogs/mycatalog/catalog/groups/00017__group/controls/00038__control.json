@@ -1,0 +1,145 @@
+{
+    "control": {
+        "id": "sc-39",
+        "class": "SP800-53",
+        "title": "Process Isolation",
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-39"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-39"
+            }
+        ],
+        "links": [
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-25",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-16",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-39_smt",
+                "name": "statement",
+                "prose": "Maintain a separate execution domain for each executing system process."
+            },
+            {
+                "id": "sc-39_gdn",
+                "name": "guidance",
+                "prose": "Systems can maintain separate execution domains for each executing process by assigning each process a separate address space. Each system process has a distinct address space so that communication between processes is performed in a manner controlled through the security functions, and one process cannot modify the executing code of another process. Maintaining separate execution domains for executing processes can be achieved, for example, by implementing separate address spaces. Process isolation technologies, including sandboxing or virtualization, logically separate software and firmware from other software, firmware, and data. Process isolation helps limit the access of potentially untrusted software to other system resources. The capability to maintain separate execution domains is available in commercial operating systems that employ multi-state processor technologies."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-39.1",
+                "class": "SP800-53-enhancement",
+                "title": "Hardware Separation",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-39(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-39.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-39",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-39.1_smt",
+                        "name": "statement",
+                        "prose": "Implement hardware separation mechanisms to facilitate process isolation."
+                    },
+                    {
+                        "id": "sc-39.1_gdn",
+                        "name": "guidance",
+                        "prose": "Hardware-based separation of system processes is generally less susceptible to compromise than software-based separation, thus providing greater assurance that the separation will be enforced. Hardware separation mechanisms include hardware memory management."
+                    }
+                ]
+            },
+            {
+                "id": "sc-39.2",
+                "class": "SP800-53-enhancement",
+                "title": "Separate Execution Domain Per Thread",
+                "params": [
+                    {
+                        "id": "sc-39.2_prm_1",
+                        "label": "organization-defined multi-threaded processing"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-39(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-39.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-39",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-39.2_smt",
+                        "name": "statement",
+                        "prose": "Maintain a separate execution domain for each thread in {{ sc-39.2_prm_1 }}."
+                    },
+                    {
+                        "id": "sc-39.2_gdn",
+                        "name": "guidance",
+                        "prose": "None."
+                    }
+                ]
+            }
+        ]
+    }
+}

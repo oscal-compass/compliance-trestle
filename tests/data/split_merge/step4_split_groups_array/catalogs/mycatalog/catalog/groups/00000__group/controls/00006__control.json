@@ -1,0 +1,331 @@
+{
+    "control": {
+        "id": "ac-7",
+        "class": "SP800-53",
+        "title": "Unsuccessful Logon Attempts",
+        "params": [
+            {
+                "id": "ac-7_prm_1",
+                "label": "organization-defined number"
+            },
+            {
+                "id": "ac-7_prm_2",
+                "label": "organization-defined time period"
+            },
+            {
+                "id": "ac-7_prm_3",
+                "select": {
+                    "how-many": "one or more",
+                    "choice": [
+                        "lock the account or node for an {{ ac-7_prm_4 }} ",
+                        "lock the account or node until released by an administrator",
+                        "delay next logon prompt per {{ ac-7_prm_5 }} ",
+                        "notify system administrator",
+                        "take other {{ ac-7_prm_6 }} "
+                    ]
+                }
+            },
+            {
+                "id": "ac-7_prm_4",
+                "depends-on": "ac-7_prm_3",
+                "label": "organization-defined time period"
+            },
+            {
+                "id": "ac-7_prm_5",
+                "depends-on": "ac-7_prm_3",
+                "label": "organization-defined delay algorithm"
+            },
+            {
+                "id": "ac-7_prm_6",
+                "depends-on": "ac-7_prm_3",
+                "label": "organization-defined action"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-7"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-07"
+            }
+        ],
+        "links": [
+            {
+                "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
+                "rel": "reference"
+            },
+            {
+                "href": "#0f66be67-85e7-4ca6-bd19-39453e9f4394",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-9",
+                "rel": "related"
+            },
+            {
+                "href": "#au-2",
+                "rel": "related"
+            },
+            {
+                "href": "#au-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-5",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-7_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ac-7_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Enforce a limit of {{ ac-7_prm_1 }} consecutive invalid logon attempts by a user during a {{ ac-7_prm_2 }}; and"
+                    },
+                    {
+                        "id": "ac-7_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Automatically {{ ac-7_prm_3 }} when the maximum number of unsuccessful attempts is exceeded."
+                    }
+                ]
+            },
+            {
+                "id": "ac-7_gdn",
+                "name": "guidance",
+                "prose": "The need to limit unsuccessful logon attempts and take subsequent action when the maximum number of attempts is exceeded applies regardless of whether the logon occurs via a local or network connection. Due to the potential for denial of service, automatic lockouts initiated by systems are usually temporary and automatically release after a predetermined, organization-defined time period. If a delay algorithm is selected, organizations may employ different algorithms for different components of the system based on the capabilities of those components. Responses to unsuccessful logon attempts may be implemented at the operating system and the application levels. Organization-defined actions that may be taken when the number of allowed consecutive invalid logon attempts is exceeded include prompting the user to answer a secret question in addition to the username and password, invoking a lockdown mode with limited user capabilities (instead of full lockout), allowing users to only logon from specified Internet Protocol (IP) addresses, requiring a CAPTCHA to prevent automated attacks, or applying user profiles such as location, time of day, IP address, device, or Media Access Control (MAC) address. If automatic system lockout or execution of a delay algorithm is not implemented in support of the availability objective, organizations consider a combination of other actions to help prevent brute force attacks. In addition to the above, organizations can prompt users to respond to a secret question before the number of allowed unsuccessful logon attempts is exceeded. Automatically unlocking an account after a specified period of time is generally not permitted. However, exceptions may be required based on operational mission or need."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ac-7.1",
+                "class": "SP800-53-enhancement",
+                "title": "Automatic Account Lock",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-7(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-07.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-7",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ac-7.2",
+                "class": "SP800-53-enhancement",
+                "title": "Purge or Wipe Mobile Device",
+                "params": [
+                    {
+                        "id": "ac-7.2_prm_1",
+                        "label": "organization-defined mobile devices"
+                    },
+                    {
+                        "id": "ac-7.2_prm_2",
+                        "label": "organization-defined purging or wiping requirements and techniques"
+                    },
+                    {
+                        "id": "ac-7.2_prm_3",
+                        "label": "organization-defined number"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-7(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-07.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-19",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#mp-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#mp-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-7.2_smt",
+                        "name": "statement",
+                        "prose": "Purge or wipe information from {{ ac-7.2_prm_1 }} based on {{ ac-7.2_prm_2 }} after {{ ac-7.2_prm_3 }} consecutive, unsuccessful device logon attempts."
+                    },
+                    {
+                        "id": "ac-7.2_gdn",
+                        "name": "guidance",
+                        "prose": "A mobile device is a computing device that has a small form factor such that it can be carried by a single individual; is designed to operate without a physical connection; possesses local, non-removable or removable data storage; and includes a self-contained power source. Purging or wiping the device applies only to mobile devices for which the organization-defined number of unsuccessful logons occurs. The logon is to the mobile device, not to any one account on the device. Successful logons to accounts on mobile devices reset the unsuccessful logon count to zero. Purging or wiping may be unnecessary if the information on the device is protected with sufficiently strong encryption mechanisms."
+                    }
+                ]
+            },
+            {
+                "id": "ac-7.3",
+                "class": "SP800-53-enhancement",
+                "title": "Biometric Attempt Limiting",
+                "params": [
+                    {
+                        "id": "ac-7.3_prm_1",
+                        "label": "organization-defined number"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-7(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-07.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ia-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-7.3_smt",
+                        "name": "statement",
+                        "prose": "Limit the number of unsuccessful biometric logon attempts to {{ ac-7.3_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-7.3_gdn",
+                        "name": "guidance",
+                        "prose": "\u00a0\u00a0Biometrics are probabilistic in nature. The ability to successfully authenticate can be impacted by many factors, including matching performance and presentation attack detection mechanisms. Organizations select the appropriate number of attempts for users based on organizationally-defined factors."
+                    }
+                ]
+            },
+            {
+                "id": "ac-7.4",
+                "class": "SP800-53-enhancement",
+                "title": "Use of Alternate Authentication Factor",
+                "params": [
+                    {
+                        "id": "ac-7.4_prm_1",
+                        "label": "organization-defined authentication factors"
+                    },
+                    {
+                        "id": "ac-7.4_prm_2",
+                        "label": "organization-defined number"
+                    },
+                    {
+                        "id": "ac-7.4_prm_3",
+                        "label": "organization-defined time period"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-7(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-07.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#0f66be67-85e7-4ca6-bd19-39453e9f4394",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#ia-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-7.4_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ac-7.4_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Allow the use of {{ ac-7.4_prm_1 }} that are different from the primary authentication factors after the number of organization-defined consecutive invalid logon attempts have been exceeded; and"
+                            },
+                            {
+                                "id": "ac-7.4_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Enforce a limit of {{ ac-7.4_prm_2 }} consecutive invalid logon attempts through use of the alternative factors by a user during a {{ ac-7.4_prm_3 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ac-7.4_gdn",
+                        "name": "guidance",
+                        "prose": "The use of alternate authentication factors supports the objective of availability and allows a user who has inadvertently been locked out to use additional authentication factors to bypass the lockout."
+                    }
+                ]
+            }
+        ]
+    }
+}

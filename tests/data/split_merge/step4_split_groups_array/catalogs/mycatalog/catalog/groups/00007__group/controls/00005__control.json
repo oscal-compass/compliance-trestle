@@ -1,0 +1,241 @@
+{
+    "control": {
+        "id": "ir-6",
+        "class": "SP800-53",
+        "title": "Incident Reporting",
+        "params": [
+            {
+                "id": "ir-6_prm_1",
+                "label": "organization-defined time period"
+            },
+            {
+                "id": "ir-6_prm_2",
+                "label": "organization-defined authorities"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "IR-6"
+            },
+            {
+                "name": "sort-id",
+                "value": "ir-06"
+            }
+        ],
+        "links": [
+            {
+                "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
+                "rel": "reference"
+            },
+            {
+                "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
+                "rel": "reference"
+            },
+            {
+                "href": "#40b78258-c892-480e-9af8-77ac36648301",
+                "rel": "reference"
+            },
+            {
+                "href": "#49b8aa2d-a88c-4bff-9f20-876ccb8f7dcb",
+                "rel": "reference"
+            },
+            {
+                "href": "#cm-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-9",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ir-6_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ir-6_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Require personnel to report suspected incidents to the organizational incident response capability within {{ ir-6_prm_1 }}; and"
+                    },
+                    {
+                        "id": "ir-6_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Report incident information to {{ ir-6_prm_2 }}."
+                    }
+                ]
+            },
+            {
+                "id": "ir-6_gdn",
+                "name": "guidance",
+                "prose": "The types of incidents reported, the content and timeliness of the reports, and the designated reporting authorities reflect applicable laws, executive orders, directives, regulations, policies, standards, and guidelines. Incident information can inform risk assessments, control effectiveness assessments, security requirements for acquisitions, and selection criteria for technology products."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ir-6.1",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Reporting",
+                "params": [
+                    {
+                        "id": "ir-6.1_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IR-6(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ir-06.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ir-6",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ir-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ir-6.1_smt",
+                        "name": "statement",
+                        "prose": "Report incidents using {{ ir-6.1_prm_1 }}."
+                    },
+                    {
+                        "id": "ir-6.1_gdn",
+                        "name": "guidance",
+                        "prose": "The recipients of incident reports are specified in [IR-6b](#ir-6_smt.b). Automated reporting mechanisms include email, posting on websites (with automatic updates), and automated incident response tools and programs."
+                    }
+                ]
+            },
+            {
+                "id": "ir-6.2",
+                "class": "SP800-53-enhancement",
+                "title": "Vulnerabilities Related to Incidents",
+                "params": [
+                    {
+                        "id": "ir-6.2_prm_1",
+                        "label": "organization-defined personnel or roles"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IR-6(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ir-06.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ir-6",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ir-6.2_smt",
+                        "name": "statement",
+                        "prose": "Report system vulnerabilities associated with reported incidents to {{ ir-6.2_prm_1 }}."
+                    },
+                    {
+                        "id": "ir-6.2_gdn",
+                        "name": "guidance",
+                        "prose": "Reported incidents that uncover system vulnerabilities are analyzed by organizational personnel including system owners, mission and business owners, senior agency information security officers, senior agency officials for privacy, authorizing officials, and the risk executive (function). The analysis can serve to prioritize and initiate mitigation actions to address the discovered system vulnerability."
+                    }
+                ]
+            },
+            {
+                "id": "ir-6.3",
+                "class": "SP800-53-enhancement",
+                "title": "Supply Chain Coordination",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IR-6(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ir-06.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ir-6",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#40b78258-c892-480e-9af8-77ac36648301",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#49b8aa2d-a88c-4bff-9f20-876ccb8f7dcb",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#sr-8",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ir-6.3_smt",
+                        "name": "statement",
+                        "prose": "Provide incident information to the provider of the product or service and other organizations involved in the supply chain or supply chain governance for systems or system components related to the incident."
+                    },
+                    {
+                        "id": "ir-6.3_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations involved in supply chain activities include product developers, system integrators, manufacturers, packagers, assemblers, distributors, vendors, and resellers. Entities that provide supply chain governance include the Federal Acquisition Security Council (FASC). Supply chain incidents include compromises or breaches that involve information technology products, system components, development processes or personnel, distribution processes, or warehousing facilities. Organizations determine the appropriate information to share and consider the value gained from informing external organizations about supply chain incidents, including the ability to improve processes or to identify the root cause of an incident."
+                    }
+                ]
+            }
+        ]
+    }
+}

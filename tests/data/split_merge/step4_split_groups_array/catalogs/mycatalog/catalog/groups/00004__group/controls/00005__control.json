@@ -1,0 +1,404 @@
+{
+    "control": {
+        "id": "cm-6",
+        "class": "SP800-53",
+        "title": "Configuration Settings",
+        "params": [
+            {
+                "id": "cm-6_prm_1",
+                "label": "organization-defined common secure configurations"
+            },
+            {
+                "id": "cm-6_prm_2",
+                "label": "organization-defined system components"
+            },
+            {
+                "id": "cm-6_prm_3",
+                "label": "organization-defined operational requirements"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CM-6"
+            },
+            {
+                "name": "sort-id",
+                "value": "cm-06"
+            }
+        ],
+        "links": [
+            {
+                "href": "#4895b4cd-34c5-4667-bf8a-27d443c12047",
+                "rel": "reference"
+            },
+            {
+                "href": "#8016d2ed-d30f-4416-9c45-0f42c7aa3232",
+                "rel": "reference"
+            },
+            {
+                "href": "#20db4e66-e257-450c-b2e4-2bb9a62a2c88",
+                "rel": "reference"
+            },
+            {
+                "href": "#98498928-3ca3-44b3-8b1e-f48685373087",
+                "rel": "reference"
+            },
+            {
+                "href": "#d744d9a3-73eb-4085-b9ff-79e82e9e2d6e",
+                "rel": "reference"
+            },
+            {
+                "href": "#aa66e14f-e7cb-4a37-99d2-07578dfd4608",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-19",
+                "rel": "related"
+            },
+            {
+                "href": "#au-2",
+                "rel": "related"
+            },
+            {
+                "href": "#au-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-3",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-5",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-7",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-11",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-7",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-10",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-5",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-9",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-18",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-28",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-43",
+                "rel": "related"
+            },
+            {
+                "href": "#si-2",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            },
+            {
+                "href": "#si-6",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cm-6_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "cm-6_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Establish and document configuration settings for components employed within the system that reflect the most restrictive mode consistent with operational requirements using {{ cm-6_prm_1 }};"
+                    },
+                    {
+                        "id": "cm-6_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Implement the configuration settings;"
+                    },
+                    {
+                        "id": "cm-6_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Identify, document, and approve any deviations from established configuration settings for {{ cm-6_prm_2 }} based on {{ cm-6_prm_3 }}; and"
+                    },
+                    {
+                        "id": "cm-6_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Monitor and control changes to the configuration settings in accordance with organizational policies and procedures."
+                    }
+                ]
+            },
+            {
+                "id": "cm-6_gdn",
+                "name": "guidance",
+                "prose": "Configuration settings are the parameters that can be changed in the hardware, software, or firmware components of the system that affect the security and privacy posture or functionality of the system. Information technology products for which configuration settings can be defined include mainframe computers, servers, workstations, operating systems, mobile devices, input/output devices, protocols, and applications. Parameters that impact the security posture of systems include registry settings; account, file, or directory permission settings; and settings for functions, protocols, ports, services, and remote connections. Privacy parameters are parameters impacting the privacy posture of systems, including the parameters required to satisfy other privacy controls. Privacy parameters include settings for access controls, data processing preferences, and processing and retention permissions. Organizations establish organization-wide configuration settings and subsequently derive specific configuration settings for systems. The established settings become part of the configuration baseline for the system.\n\nCommon secure configurations (also known as security configuration checklists, lockdown and hardening guides, and security reference guides) provide recognized, standardized, and established benchmarks that stipulate secure configuration settings for information technology products and platforms as well as instructions for configuring those products or platforms to meet operational requirements. Common secure configurations can be developed by a variety of organizations, including information technology product developers, manufacturers, vendors, federal agencies, consortia, academia, industry, and other organizations in the public and private sectors.\n\nImplementation of a common secure configuration may be mandated at the organization level, mission and business process level, system level, or at a higher level, including by a regulatory agency. Common secure configurations include the United States Government Configuration Baseline [USGCB](#98498928-3ca3-44b3-8b1e-f48685373087) and security technical implementation guides (STIGs), which affect the implementation of [CM-6](#cm-6) and other controls such as [AC-19](#ac-19) and [CM-7](#cm-7). The Security Content Automation Protocol (SCAP) and the defined standards within the protocol provide an effective method to uniquely identify, track, and control configuration settings."
+            }
+        ],
+        "controls": [
+            {
+                "id": "cm-6.1",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Management, Application, and Verification",
+                "params": [
+                    {
+                        "id": "cm-6.1_prm_1",
+                        "label": "organization-defined system components"
+                    },
+                    {
+                        "id": "cm-6.1_prm_2",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-6(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-06.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-6",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ca-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-6.1_smt",
+                        "name": "statement",
+                        "prose": "Manage, apply, and verify configuration settings for {{ cm-6.1_prm_1 }} using {{ cm-6.1_prm_2 }}."
+                    },
+                    {
+                        "id": "cm-6.1_gdn",
+                        "name": "guidance",
+                        "prose": "Automated tools (e.g., hardening tools, baseline configuration tools) can improve the accuracy, consistency, and availability of configuration settings information. Automation can also provide data aggregation and data correlation capabilities, alerting mechanisms, and dashboards to support risk-based decision-making within the organization."
+                    }
+                ]
+            },
+            {
+                "id": "cm-6.2",
+                "class": "SP800-53-enhancement",
+                "title": "Respond to Unauthorized Changes",
+                "params": [
+                    {
+                        "id": "cm-6.2_prm_1",
+                        "label": "organization-defined configuration settings"
+                    },
+                    {
+                        "id": "cm-6.2_prm_2",
+                        "label": "organization-defined actions"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-6(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-06.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-6",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ir-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ir-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-6.2_smt",
+                        "name": "statement",
+                        "prose": "Take the following actions in response to unauthorized changes to {{ cm-6.2_prm_1 }}: {{ cm-6.2_prm_2 }}."
+                    },
+                    {
+                        "id": "cm-6.2_gdn",
+                        "name": "guidance",
+                        "prose": "Responses to unauthorized changes to configuration settings include alerting designated organizational personnel, restoring established configuration settings, or\u2014in extreme cases\u2014halting affected system processing."
+                    }
+                ]
+            },
+            {
+                "id": "cm-6.3",
+                "class": "SP800-53-enhancement",
+                "title": "Unauthorized Change Detection",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-6(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-06.03"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "cm-6.4",
+                "class": "SP800-53-enhancement",
+                "title": "Conformance Demonstration",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-6(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-06.04"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-4",
+                        "rel": "incorporated-into"
+                    },
+                    {
+                        "href": "#4895b4cd-34c5-4667-bf8a-27d443c12047",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#8016d2ed-d30f-4416-9c45-0f42c7aa3232",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#20db4e66-e257-450c-b2e4-2bb9a62a2c88",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#98498928-3ca3-44b3-8b1e-f48685373087",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#d744d9a3-73eb-4085-b9ff-79e82e9e2d6e",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#aa66e14f-e7cb-4a37-99d2-07578dfd4608",
+                        "rel": "reference"
+                    }
+                ]
+            }
+        ]
+    }
+}

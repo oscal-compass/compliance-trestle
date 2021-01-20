@@ -1,0 +1,204 @@
+{
+    "control": {
+        "id": "ma-6",
+        "class": "SP800-53",
+        "title": "Timely Maintenance",
+        "params": [
+            {
+                "id": "ma-6_prm_1",
+                "label": "organization-defined system components"
+            },
+            {
+                "id": "ma-6_prm_2",
+                "label": "organization-defined time period"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "MA-6"
+            },
+            {
+                "name": "sort-id",
+                "value": "ma-06"
+            }
+        ],
+        "links": [
+            {
+                "href": "#cm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-15",
+                "rel": "related"
+            },
+            {
+                "href": "#si-13",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-4",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ma-6_smt",
+                "name": "statement",
+                "prose": "Obtain maintenance support and/or spare parts for {{ ma-6_prm_1 }} within {{ ma-6_prm_2 }} of failure."
+            },
+            {
+                "id": "ma-6_gdn",
+                "name": "guidance",
+                "prose": "Organizations specify the system components that result in increased risk to organizational operations and assets, individuals, other organizations, or the Nation when the functionality provided by those components is not operational. Organizational actions to obtain maintenance support include having appropriate contracts in place."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ma-6.1",
+                "class": "SP800-53-enhancement",
+                "title": "Preventive Maintenance",
+                "params": [
+                    {
+                        "id": "ma-6.1_prm_1",
+                        "label": "organization-defined system components"
+                    },
+                    {
+                        "id": "ma-6.1_prm_2",
+                        "label": "organization-defined time intervals"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-6(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-06.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-6",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-6.1_smt",
+                        "name": "statement",
+                        "prose": "Perform preventive maintenance on {{ ma-6.1_prm_1 }} at {{ ma-6.1_prm_2 }}."
+                    },
+                    {
+                        "id": "ma-6.1_gdn",
+                        "name": "guidance",
+                        "prose": "Preventive maintenance includes proactive care and the servicing of system components to maintain organizational equipment and facilities in satisfactory operating condition. Such maintenance provides for the systematic inspection, tests, measurements, adjustments, parts replacement, detection, and correction of incipient failures either before they occur or before they develop into major defects. The primary goal of preventive maintenance is to avoid or mitigate the consequences of equipment failures. Preventive maintenance is designed to preserve and restore equipment reliability by replacing worn components before they fail. Methods of determining what preventive (or other) failure management policies to apply include original equipment manufacturer recommendations; statistical failure records; expert opinion; maintenance that has already been conducted on similar equipment; requirements of codes, laws, or regulations within a jurisdiction; or measured values and performance indications."
+                    }
+                ]
+            },
+            {
+                "id": "ma-6.2",
+                "class": "SP800-53-enhancement",
+                "title": "Predictive Maintenance",
+                "params": [
+                    {
+                        "id": "ma-6.2_prm_1",
+                        "label": "organization-defined system components"
+                    },
+                    {
+                        "id": "ma-6.2_prm_2",
+                        "label": "organization-defined time intervals"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-6(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-06.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-6",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-6.2_smt",
+                        "name": "statement",
+                        "prose": "Perform predictive maintenance on {{ ma-6.2_prm_1 }} at {{ ma-6.2_prm_2 }}."
+                    },
+                    {
+                        "id": "ma-6.2_gdn",
+                        "name": "guidance",
+                        "prose": "Predictive maintenance evaluates the condition of equipment by performing periodic or continuous (online) equipment condition monitoring. The goal of predictive maintenance is to perform maintenance at a scheduled time when the maintenance activity is most cost-effective and before the equipment loses performance within a threshold. The predictive component of predictive maintenance stems from the objective of predicting the future trend of the equipment's condition. The predictive maintenance approach employs principles of statistical process control to determine at what point in the future maintenance activities will be appropriate. Most predictive maintenance inspections are performed while equipment is in service, thus minimizing disruption of normal system operations. Predictive maintenance can result in substantial cost savings and higher system reliability."
+                    }
+                ]
+            },
+            {
+                "id": "ma-6.3",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Support for Predictive Maintenance",
+                "params": [
+                    {
+                        "id": "ma-6.3_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-6(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-06.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-6",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-6.3_smt",
+                        "name": "statement",
+                        "prose": "Transfer predictive maintenance data to a maintenance management system using {{ ma-6.3_prm_1 }}."
+                    },
+                    {
+                        "id": "ma-6.3_gdn",
+                        "name": "guidance",
+                        "prose": "A computerized maintenance management system maintains a database of information about the maintenance operations of organizations and automates the processing of equipment condition data to trigger maintenance planning, execution, and reporting."
+                    }
+                ]
+            }
+        ]
+    }
+}

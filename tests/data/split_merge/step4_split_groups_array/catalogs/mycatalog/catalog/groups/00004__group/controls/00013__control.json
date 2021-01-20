@@ -1,0 +1,57 @@
+{
+    "control": {
+        "id": "cm-14",
+        "class": "SP800-53",
+        "title": "Signed Components",
+        "params": [
+            {
+                "id": "cm-14_prm_1",
+                "label": "organization-defined software and firmware components"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CM-14"
+            },
+            {
+                "name": "sort-id",
+                "value": "cm-14"
+            }
+        ],
+        "links": [
+            {
+                "href": "#98d415ca-7281-4064-9931-0c366637e324",
+                "rel": "reference"
+            },
+            {
+                "href": "#cm-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-13",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cm-14_smt",
+                "name": "statement",
+                "prose": "Prevent the installation of {{ cm-14_prm_1 }} without verification that the component has been digitally signed using a certificate that is recognized and approved by the organization."
+            },
+            {
+                "id": "cm-14_gdn",
+                "name": "guidance",
+                "prose": "Software and firmware components prevented from installation unless signed with recognized and approved certificates include software and firmware version updates, patches, service packs, device drivers, and basic input/output system updates. Organizations can identify applicable software and firmware components by type, by specific items, or a combination of both. Digital signatures and organizational verification of such signatures is a method of code authentication."
+            }
+        ]
+    }
+}
