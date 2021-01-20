@@ -212,7 +212,7 @@ class OscoToOscal(TaskBase):
         logger.error(f'config missing')
         return TaskOutcome('failure')
     
-    def _read_content(self, ifile: pathlib.Path):
+    def _read_content(self, ifile: pathlib.Path) -> osco.t_osco:
         """Read the contents of a yaml file."""
         content = yaml.load(ifile.open('r+'), Loader=yaml.Loader)
         logger.debug('========== <content> ==========')
