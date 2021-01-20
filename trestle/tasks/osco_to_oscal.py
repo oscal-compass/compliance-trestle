@@ -85,8 +85,7 @@ class OscoToOscal(TaskBase):
         logger.info('        cluster-type: <cluster-type>')
         logger.info('        cluster-region: <cluster-region>')
         logger.info('')
-        logger.info('Augmentation occurs when the name specified in the metadata entry of the osco .yaml file matches an entry <name> specified in the input-metadata .yaml file, if any.')
-        logger.info('All entries in the input-metadata .yaml are optional. For example, locker and its value can be omitted.')
+        logger.info('Augmentation occurs when the name specified in the metadata entry of the osco .yaml file matches an entry <name> specified in the input-metadata .yaml file, if any. All entries in the input-metadata .yaml are optional. For example, locker and its value can be omitted. Likewise, any or all of cluster-name, -type, and -region may be omitted if not applicable.')
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
