@@ -34,7 +34,6 @@ from urllib.parse import urlparse
 import requests
 from furl import furl
 from requests.auth import HTTPBasicAuth
-
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
@@ -172,28 +171,32 @@ class HTTPSFetcher(FetcherBase):
         password = self._furl.password
         if username is not None:
             if not username.startswith("{{") or not username.endswith("}}"):
-                raise TrestleError(f"Username must refer to an environment"
-                                f"variable using moustache {username}")
+                logger.error(f'Malformed URI, username must refer to an environment variable using moustache {self._uri}')
+                raise TrestleError(f'Cache request for invalid input URI: username must refer to an environment variable using moustache {self._uri}')
             username = username[2:-2]
             if username not in os.environ:
-                raise TrestleError(f"Username must refer to an environment"
-                                f"variable using moustache {username}")
+                logger.error(f'Malformed URI, username not found in the environment {self._uri}')
+                raise TrestleError(f'Cache request for invalid input URI: username not found in the environment {self._uri}')
             self._username = os.environ[username]
         if password is not None:
             if not password.startswith("{{") or not password.endswith("}}"):
-                raise TrestleError(f"Password must refer to an environment"
-                                f"variable using moustache {password}")
+                logger.error(f'Malformed URI, password must refer to an environment variable using moustache {self._uri}')
+                raise TrestleError(f'Cache request for invalid input URI: password must refer to an environment variable using moustache {self._uri}')
             password = password[2:-2]
             if password not in os.environ:
-                raise TrestleError(f"Password must refer to an environment"
-                                f"variable using moustache {password}")
+                logger.error(f'Malformed URI, password not found in the environment {self._uri}')
+                raise TrestleError(f'Cache request for invalid input URI: password not found in the environment {self._uri}')
             self._password = os.environ[password]
+        if self._username and not self._password:
+            logger.error(f'Malformed URI, username found but password missing in URL {self._uri}')
+            raise TrestleError(f'Cache request for invalid input URI: username found but password missing {self._uri}')
+        if self._password and not self._username:
+            logger.error(f'Malformed URI, password found but username missing in URL {self._uri}')
+            raise TrestleError(f'Cache request for invalid input URI: password found but username missing {self._uri}')
         if self._username is not None or self._password is not None:
-            if self._username is None or self._password is None:
-                raise TrestleError(f"Basic authentication requires both a"
-                                   f"username and a password be specified")
             if self._furl.scheme != "https":
-                raise TrestleError(f"Basic authentication requires https")
+                logger.error(f'Malformed URI, basic authentication requires https {self._uri}')
+                raise TrestleError(f'Cache request for invalid input URI: basic authentication requires https {self._uri}')
         self._furl.username = None
         self._furl.password = None
 
@@ -249,12 +252,10 @@ class SFTPFetcher(FetcherBase):
         pass
 
 
-# For github enterprise the URL is https://github.mycompany.com/api/graphql
 # For passing variables:
 # Do https://gist.github.com/gbaman/b3137e18c739e0cf98539bf4ec4366ad#gistcomment-2747872
 # or https://gist.github.com/gbaman/b3137e18c739e0cf98539bf4ec4366ad#gistcomment-2752081
 # or https://gist.github.com/gbaman/b3137e18c739e0cf98539bf4ec4366ad#gistcomment-2865053
-URL = "https://api.github.com/graphql"
 
 class GithubFetcher(HTTPSFetcher):
     """Github fetcher which supports both github and GHE URLs."""
@@ -395,6 +396,5 @@ class FetcherFactory(object):
                 return HTTPSFetcher(trestle_root, uri, settings, refresh, fail_hard, cache_only)
         elif 'C:\\' == uri[0:3]:
             return LocalFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
->>>>>>> c049fa5e3b41a74b333ac652232a3562fd68faa9
         else:
             raise TrestleError(f'Unable to fetch uri: {uri} as the uri did not match a suppported format.')

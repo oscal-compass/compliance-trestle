@@ -22,6 +22,7 @@ import string
 from trestle.core import generators
 from trestle.core.remote import cache
 from trestle.core.settings import Settings
+from trestle.oscal.catalog import Catalog
 
 
 def test_fetcher_base():
