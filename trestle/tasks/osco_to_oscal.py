@@ -24,6 +24,7 @@ from typing import Any, Dict, Optional
 
 import yaml
 
+import trestle.core.const as const
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.utils import osco
@@ -223,7 +224,8 @@ class OscoToOscal(TaskBase):
         """Write the contents of a json file."""
         if simulate:
             return
-        observations.oscal_write(ofile)
+        write_file = pathlib.Path(ofile).open('w', encoding=const.FILE_ENCODING)
+        write_file.write(observations.json(exclude_none=True, by_alias=True, indent=2))
     
     def _get_metadata(self, mfile: pathlib.Path, default_metadata: osco.t_metadata) -> osco.t_metadata:
         """Get metadata, if it exists."""
