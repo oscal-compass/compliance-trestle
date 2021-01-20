@@ -45,7 +45,7 @@ class OscoToOscal(TaskBase):
         """
         Initialize trestle task osco-to-oscal.
 
-        Attributes:
+        Args:
             config_object: Config section associated with the task.
         """
         super().__init__(config_object)
@@ -120,12 +120,11 @@ class OscoToOscal(TaskBase):
                 if ifile.name == imeta:
                     continue
                 # ignore non-yaml files
-                if ifile.suffix != '.yml':
-                    if ifile.suffix != '.yaml':
-                        logger.debug(f'[simluate] skipping {ifile.name}')
-                        continue
+                if ifile.suffix not in ['.yml', '.yaml']:
+                    logger.debug(f'[simluate] skipping {ifile.name}')
+                    continue
                 # calculate the output file, including path
-                ofile = self._calculate_ofile(ifile.name, opth)
+                ofile = opth / pathlib.Path(ifile.stem+'.json')
                 # only allow writing output file if either:
                 # a) it does not already exist, or
                 # b) output-overwrite flag is True
@@ -183,12 +182,11 @@ class OscoToOscal(TaskBase):
                 if ifile.name == imeta:
                     continue
                 # ignore non-yaml files
-                if ifile.suffix != '.yml':
-                    if ifile.suffix != '.yaml':
-                        logger.debug(f'skipping {ifile.name}')
-                        continue
+                if ifile.suffix not in ['.yml', '.yaml']:
+                    logger.debug(f'skipping {ifile.name}')
+                    continue
                 # calculate the output file, including path
-                ofile = self._calculate_ofile(ifile.name, opth)
+                ofile = opth / pathlib.Path(ifile.stem+'.json')
                 # only allow writing output file if either:
                 # a) it does not already exist, or
                 # b) output-overwrite flag is True
@@ -216,9 +214,7 @@ class OscoToOscal(TaskBase):
     
     def _read_content(self, ifile: pathlib.Path):
         """Read the contents of a yaml file."""
-        with open(ifile, 'r+') as fp:
-            data = fp.read()
-            content = yaml.full_load(data)
+        content = yaml.load(ifile.open('r+'), Loader=yaml.Loader)
         logger.debug('========== <content> ==========')
         logger.debug(content)
         logger.debug('========== </content> ==========')
@@ -230,21 +226,11 @@ class OscoToOscal(TaskBase):
             return
         observations.oscal_write(ofile)
     
-    def _calculate_ofile(self, ifn: str, opth: pathlib.Path) -> pathlib.Path:
-        """Synthesize output file path+name."""
-        ofn = ifn
-        ofn = ofn.rsplit('.yaml')[0]
-        ofn = ofn.rsplit('.yml')[0]
-        ofn += '-oscal.json'
-        ofile = opth / ofn
-        return ofile
-    
     def _get_metadata(self, mfile: pathlib.Path, default_metadata: osco.t_metadata) -> osco.t_metadata:
         """Get metadata, if it exists."""
         metadata = default_metadata
         try:
-            with open(mfile, "r") as fp:
-                metadata = yaml.full_load(fp)
+            metadata = yaml.load(mfile.open('r+'),  Loader=yaml.Loader)
         except:
             logger.debug(traceback.format_exc())
         return metadata
