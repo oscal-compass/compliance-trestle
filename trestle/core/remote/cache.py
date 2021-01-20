@@ -22,13 +22,15 @@ Allows for using uris to reference external directories and then expand.
 import getpass
 import logging
 import os
-import paramiko
 import pathlib
 import re
 import shutil
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Type
 from urllib import parse
+
+import paramiko
+
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
@@ -178,13 +180,14 @@ class SFTPFetcher(FetcherBase):
 
         localhost_cached_dir = self._trestle_cache_path / u.hostname
         # Skip any number of back- or forward slashes preceding the url path (u.path)
-        localhost_cached_dir = localhost_cached_dir / pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0]:]).parent
+        path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0]:]).parent
+        localhost_cached_dir = localhost_cached_dir / path_parent
         try:
             localhost_cached_dir.mkdir(parents=True, exist_ok=True)
         except Exception as e:
-                logger.error(f'Error creating cache directory {localhost_cached_dir} for {self._uri}')
-                logger.debug(e)
-                raise TrestleError(f'Cache update failure for {self._uri}')
+            logger.error(f'Error creating cache directory {localhost_cached_dir} for {self._uri}')
+            logger.debug(e)
+            raise TrestleError(f'Cache update failure for {self._uri}')
         self._inst_cache_path = localhost_cached_dir
 
     def _update_cache(self) -> None:
@@ -208,18 +211,18 @@ class SFTPFetcher(FetcherBase):
             try:
                 client.load_system_host_keys()
             except Exception as e:
-                logger.error(f'Error loading system host keys.')
+                logger.error('Error loading system host keys.')
                 logger.debug(e)
                 raise TrestleError(f'Cache update failure for {self._uri}')
-               
+
         username = getpass.getuser() if not u.username else u.username
         if u.password:
             try:
                 client.connect(
                     u.hostname,
-                    username = username,
-                    password = u.password,
-                    port = 22 if not u.port else u.port,
+                    username=username,
+                    password=u.password,
+                    port=22 if not u.port else u.port,
                 )
             except Exception as e:
                 logger.error(f'Error connecting SSH for {username}@{u.hostname}')
@@ -227,12 +230,7 @@ class SFTPFetcher(FetcherBase):
                 raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
         else:
             try:
-                client.connect(
-                    u.hostname,
-                    username = username,
-                    port = 22 if not u.port else u.port,
-                    allow_agent = True
-                )
+                client.connect(u.hostname, username=username, port=22 if not u.port else u.port, allow_agent=True)
             except Exception as e:
                 logger.error(f'Error connecting SSH for {username}@{u.hostname}')
                 logger.debug(e)

@@ -17,15 +17,14 @@
 
 import os
 import pathlib
-import pytest
 import random
 import string
-from urllib import parse
 from unittest import mock
 from unittest.mock import patch
 
+import pytest
+
 import trestle.core.err as err
-from trestle.core import const
 from trestle.core import generators
 from trestle.core.err import TrestleError
 from trestle.core.remote import cache
@@ -85,7 +84,7 @@ def test_sftp_fetcher_cache_only(tmp_trestle_dir):
     try:
         fetcher._update_cache()
     except Exception:
-        assert False
+        AssertionError()
     else:
         assert True
 
@@ -102,7 +101,7 @@ def test_sftp_fetcher_load_system_keys_fails(tmp_trestle_dir):
             fetcher._update_cache()
 
 
-@mock.patch.dict(os.environ, {"SSH_KEY": "/tmp/no_ssh_key_here"})
+@mock.patch.dict(os.environ, {'SSH_KEY': '/tmp/no_ssh_key_here'})
 def test_sftp_fetcher_load_keys_fails(tmp_trestle_dir):
     """Test the sftp fetcher, SSHClient load host keys specified in env var should fail."""
     uri = 'sftp://username:password@some.host/path/to/file.json'
@@ -165,19 +164,17 @@ def test_sftp_fetcher_get_fails(tmp_trestle_dir):
 
 def test_fetcher_bad_uri(tmp_trestle_dir):
     """Test fetcher factory with bad URI."""
-    for uri in [
-            '',
-            'https://',
-            'https:///blah.com',
-            'sftp://',
-            '..',
-            'sftp://blah.com',
-            'sftp:///path/to/file.json',
-            'sftp://user:pass@hostname.com\\path\\to\\file.json',
-            'sftp://:pass@hostname.com/path/to/file.json'
-    ]:
+    for uri in ['',
+                'https://',
+                'https:///blah.com',
+                'sftp://',
+                '..',
+                'sftp://blah.com',
+                'sftp:///path/to/file.json',
+                'sftp://user:pass@hostname.com\\path\\to\\file.json',
+                'sftp://:pass@hostname.com/path/to/file.json']:
         with pytest.raises(TrestleError):
-            fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+            cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
 
 
 def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
