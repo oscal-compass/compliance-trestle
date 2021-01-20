@@ -13,7 +13,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Pydantic base model and utility functions."""
+"""
+Pydantic base model for use within trestle project and associated configuration.
+
+The heart of the current OSCAL model within trestle is based on pydantic
+(https://pydantic-docs.helpmanual.io/) which itself is a veneer on-top of python
+data classes.
+
+Functionality here defines a base-model which all trestle oscal data models inherit
+from. This allows additional functionality to be easily inserted.
+
+I can write a comment in here and you can even edit on the same line.
+"""
 
 import datetime
 import logging
@@ -35,12 +46,22 @@ logger = logging.getLogger(__name__)
 
 
 def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
-    """Return a nicely formatted string for time as OSCAL likes it."""
+    """Return a nicely formatted string for in a format compatible with OSCAL specifications.
+
+    Args:
+        input_dt: Input datetime to convert to a string.
+
+    Returns:
+        String in isoformat to the millisecond enforcing that timezone offset is provided.
+
+    Raises:
+        TrestleError: Error is raised if datetime object does not contain sufficient timezone information.
+    """
     # fail if the input datetime is not aware - ie it has no associated timezone
     if input_dt.tzinfo is None:
-        raise Exception('Missing timezone in datetime')
+        raise err.TrestleError('Missing timezone in datetime')
     if input_dt.tzinfo.utcoffset(input_dt) is None:
-        raise Exception('Missing utcoffset in datetime')
+        raise err.TrestleError('Missing utcoffset in datetime')
 
     # use this leave in original timezone rather than utc
     # return input_dt.astimezone().isoformat(timespec='milliseconds')  noqa: E800
@@ -50,10 +71,16 @@ def robust_datetime_serialization(input_dt: datetime.datetime) -> str:
 
 
 class OscalBaseModel(BaseModel):
-    """Base model which overrides defaults for all OSCAL classes."""
+    """
+    Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.
+
+    This BaseModel provides two types of functionality:
+    1. Overrides default configuation of the pydantic library with behaviours required for trestle
+    2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.
+    """
 
     class Config:
-        """Configuration for Oscal Models."""
+        """Overriding configuration class for pydantic base model, for use with OSCAL data classes."""
 
         json_encoders = {datetime.datetime: lambda x: robust_datetime_serialization(x)}
         # this is not safe and caused class: nan in yaml output
@@ -67,16 +94,32 @@ class OscalBaseModel(BaseModel):
         validate_assignment = True
 
     @classmethod
-    def create_stripped_model_type(cls,
-                                   stripped_fields: List[str] = None,
-                                   stripped_fields_aliases: List[str] = None) -> Type['OscalBaseModel']:
-        """Use introspection to create a model that removes the fields.
+    def create_stripped_model_type(
+        cls,
+        stripped_fields: Optional[List[str]] = None,
+        stripped_fields_aliases: Optional[List[str]] = None
+    ) -> Type['OscalBaseModel']:
+        """Create a pydantic model, which is derived from the current model, but missing certain fields.
 
-        Either 'stripped_fields' or 'stripped_fields_aliases' need to be passed, not both.
-        Returns a model class definition that can be used to instanciate a model.
+        OSCAL mandates a 'strict' schema (e.g. unless otherwise stated no additional fields), and certain fields
+        are mandatory. Given this the corresponding dataclasses are also strict. Workflows with trestle require missing
+        mandatory fields. This allows creation of derivative models missing certain fields.
+
+        Args:
+            stripped_fields: The fields to be removed from the current data class.
+            stripped_fields_aliases: The fields to be removed from the current data class provided by alias.
+
+        Returns:
+            Pydantic data class thta can be used to instanciate a model.
+
+        Raises:
+            TrestleError: If user provided both stripped_fields and stripped_field_aliases or neither.
+            TrestleError: If incorrect aliases or field names are provided.
         """
         if stripped_fields is not None and stripped_fields_aliases is not None:
             raise err.TrestleError('Either "stripped_fields" or "stripped_fields_aliases" need to be passed, not both.')
+        elif stripped_fields is None and stripped_fields_aliases is None:
+            raise err.TrestleError('Exactly one of "stripped_fields" or "stripped_fields_aliases" must be provided')
 
         # create alias to field_name mapping
         excluded_fields = []
@@ -114,6 +157,7 @@ class OscalBaseModel(BaseModel):
 
     def get_field_value(self, field_name_or_alias: str) -> Any:
         """Get attribute value by field alias or field name."""
+        # FIXME: This is not called and should be removed. There is no point and it esacpes typing.
         if hasattr(self, field_name_or_alias):
             return getattr(self, field_name_or_alias, None)
 
@@ -138,7 +182,16 @@ class OscalBaseModel(BaseModel):
     ) -> 'OscalBaseModel':
         """Return a new model instance with the specified fields being stripped.
 
-        Either 'stripped_fields' or 'stripped_fields_aliases' need to be passed, not both.
+        Args:
+            stripped_fields: The fields to be removed from the current data class.
+            stripped_fields_aliases: The fields to be removed from the current data class provided by alias.
+
+        Returns:
+            The current datamodel with the fields provided removed in a derivate (run time created) data model.
+
+        Raises:
+            err.TrestleError: If user provided both stripped_fields and stripped_field_aliases or neither.
+            err.TrestleError: If incorrect aliases or field names are provided.
         """
         # stripped class type
         stripped_class: Type[OscalBaseModel] = self.create_stripped_model_type(
@@ -157,13 +210,19 @@ class OscalBaseModel(BaseModel):
 
         return stripped_instance
 
-    def oscal_write(self, path: pathlib.Path, minimize_json: bool = False) -> None:
+    def oscal_write(self, path: pathlib.Path) -> None:
         """
-        Write oscal objects.
+        Write out a pydantic data model in an oscal friendly way.
 
         OSCAL schema mandates that top level elements are wrapped in a singular
         json/yaml field. This function handles both json and yaml output as well
-        as
+        as formatting of the json.
+
+        Args:
+            path: The output file location for the oscal object.
+
+        Raises:
+            err.TrestleError: If a unknown file extension is provided.
         """
         class_name = self.__class__.__name__
         # It would be nice to pass through the description but I can't seem to and
@@ -183,8 +242,6 @@ class OscalBaseModel(BaseModel):
             yaml.dump(yaml.safe_load(wrapped_model.json(exclude_none=True, by_alias=True)), write_file)
         elif content_type == FileContentType.JSON:
             write_file.write(wrapped_model.json(exclude_none=True, by_alias=True, indent=2))
-        else:
-            raise err.TrestleError('Unknown file type')
 
     @classmethod
     def oscal_read(cls, path: pathlib.Path) -> 'OscalBaseModel':
@@ -192,6 +249,11 @@ class OscalBaseModel(BaseModel):
         Read OSCAL objects.
 
         Handles the fact OSCAL wrap's top level elements and also deals with both yaml and json.
+
+        Args:
+            path: The path of the oscal object to read.
+        Returns:
+            The oscal object read into trestle oscal models.
         """
         # Create the wrapper model.
         alias = classname_to_alias(cls.__name__, 'json')
@@ -206,17 +268,23 @@ class OscalBaseModel(BaseModel):
                 json_loads=cls.__config__.json_loads,
             )
             return cls.parse_obj(obj[alias])
-        else:
-            raise err.TrestleError('Unknown file type')
 
     def copy_to(self, new_oscal_type: Type['OscalBaseModel']) -> 'OscalBaseModel':
         """
-        Copy operation that explicilty does type conversion.
+        Opportunistic copy operation between similar types of data classes.
 
-        Input parameter is a class of type OscalBaseModel NOT a a class instance.
+        Due to the way in which oscal is constructed we get a set of similar / the same definition across various
+        oscal models. Due to the lack of guarantees that they are the same we cannot easily 'collapse' the mode.
+
+        Args:
+            new_oscal_type: The desired type of oscal model
+
+        Returns:
+            Opportunistic copy of the data into the new model type.
+
         """
         logger.debug('Copy to started')
-
+        # FIXME: This needs to be tested. Unsure of behavior.
         if self.__class__.__name__ == new_oscal_type.__name__:
             logger.debug('Dict based copy too ')
             return new_oscal_type.parse_obj(self.dict(exclude_none=True, by_alias=True))
@@ -246,6 +314,9 @@ class OscalBaseModel(BaseModel):
         3) if the from and 'to' objects are root schema elements the copy operation
         will copy the root element to the value.
 
+        Args:
+            existing_oscal_object: The oscal object where fields are copied from.
+
         """
         recast_object = existing_oscal_object.copy_to(self.__class__)
         # This is a sanity check
@@ -255,7 +326,11 @@ class OscalBaseModel(BaseModel):
 
     @classmethod
     def alias_to_field_map(cls) -> Dict[str, ModelField]:
-        """Create a map from field alias to field."""
+        """Create a map from field alias to field.
+
+        Returns:
+            A dict which has key's of aliases and Fields as values.
+        """
         alias_to_field: Dict[str, ModelField] = {}
         for field in cls.__fields__.values():
             alias_to_field[field.alias] = field

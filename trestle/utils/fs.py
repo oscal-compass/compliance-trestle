@@ -252,9 +252,6 @@ def load_file(file_name: pathlib.Path) -> Dict[str, Any]:
             return yaml.load(f, yaml.FullLoader)
         elif content_type == FileContentType.JSON:
             return json.load(f)
-        else:
-            logger.debug(f'Invalid file extension "{file_name.suffix}" in load')
-            raise TrestleError(f'Invalid file extension "{file_name.suffix}"')
 
 
 def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
@@ -319,3 +316,19 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
     )
 
     return singular_alias
+
+
+def get_contextual_file_type(path: pathlib.Path) -> FileContentType:
+    """Return the file content type for files in the given directory, if it's a trestle project."""
+    if not is_valid_project_model_path(path):
+        raise err.TrestleError('Trestle project not found.')
+
+    for file_or_directory in path.iterdir():
+        if file_or_directory.is_file():
+            return FileContentType.to_content_type(file_or_directory.suffix)
+
+    for file_or_directory in path.iterdir():
+        if file_or_directory.is_dir():
+            return get_contextual_file_type(file_or_directory)
+
+    raise err.TrestleError('No files found in the project.')
