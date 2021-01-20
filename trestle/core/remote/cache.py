@@ -20,6 +20,7 @@ Allows for using uris to reference external directories and then expand.
 """
 
 import errno
+import getpass
 import json
 import logging
 import os
@@ -29,8 +30,9 @@ import shutil
 import sys
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Type
-from urllib.parse import urlparse
+from urllib import parse
 
+import paramiko
 import requests
 from furl import furl
 from requests.auth import HTTPBasicAuth
@@ -71,19 +73,26 @@ class FetcherBase(ABC):
     # Eventually we will move the _update_cache impl in LocalFetcher
     # to FetcherBase and it will call this abstract method _sync_cache
     # which will then be implemented in each subclass...
-    # @abstractmethod
-    # def _sync_cache(self) -> None:
-    #     """Fetch a object from a remote source.
-
-    #     This contains the underlying logic to update the cache.
-    #     """
-
     @abstractmethod
-    def _update_cache(self) -> None:
+    def _sync_cache(self) -> None:
         """Fetch a object from a remote source.
 
         This contains the underlying logic to update the cache.
         """
+        pass
+
+    def _update_cache(self) -> None:
+        # First discover whether...
+        if self._cache_only:
+            # Don't update if cache only...
+            return
+        if not self.in_cache() or self._refresh:
+            try:
+                self._sync_cache()
+            except Exception as e:
+                logger.error(f'Unable to update cache for {self._uri}')
+                logger.debug(e)
+                raise TrestleError(f'Cache update failure for {self._uri}') from e
 
     def get_raw(self) -> Dict[str, Any]:
         """Get the raw dictionary representing the underlying object."""
@@ -133,18 +142,8 @@ class LocalFetcher(FetcherBase):
         localhost_cached_dir.mkdir(parents=True, exist_ok=True)
         self._inst_cache_path = localhost_cached_dir
 
-    def _update_cache(self) -> None:
-        # Step one discover whether
-        if self._cache_only:
-            # Don't update if cache only.
-            return
-        if self._inst_cache_path.exists() and self._refresh:
-            try:
-                shutil.copy(self._abs_path, self._inst_cache_path)
-            except Exception as e:
-                logger.error(f'Unable to update cache for {self._uri}')
-                logger.debug(e)
-                raise TrestleError(f'Cache update failure for {self._uri}')
+    def _sync_cache(self) -> None:
+        shutil.copy(self._abs_path, self._inst_cache_path)
 
 
 class HTTPSFetcher(FetcherBase):
@@ -218,19 +217,6 @@ class HTTPSFetcher(FetcherBase):
         #     raise TrestleError(f"Query failed to run by returning code of "
         #                        f"{request.status_code}. {self._query}")
 
-    def _update_cache(self) -> None:
-        # First discover whether...
-        if self._cache_only:
-            # Don't update if cache only...
-            return
-        if not self.in_cache() or self._refresh:
-            try:
-                self._sync_cache()
-            except Exception as e:
-                logger.error(f'Unable to update cache for {self._uri}')
-                logger.debug(e)
-                raise TrestleError(f'Cache update failure for {self._uri}') from e
-
 class SFTPFetcher(FetcherBase):
     """Fetcher for https content."""
 
@@ -247,9 +233,86 @@ class SFTPFetcher(FetcherBase):
     ) -> None:
         """Initialize STFP fetcher."""
         super().__init__(trestle_root, uri, settings, refresh, fail_hard, cache_only)
+        # Is this a valid uri, however? Username and password are optional, of course.
+        u = parse.urlparse(self._uri)
+        if not u.hostname:
+            logger.error(f'Malformed URI, cannot parse hostname in URL {self._uri}')
+            raise TrestleError(f'Cache request for invalid input URI: missing hostname {self._uri}')
+        if not u.path:
+            logger.error(f'Malformed URI, cannot parse path in URL {self._uri}')
+            raise TrestleError(f'Cache request for invalid input URI: missing file path {self._uri}')
+        if u.password and not u.username:
+            logger.error(f'Malformed URI, password found but username missing in URL {self._uri}')
+            raise TrestleError(f'Cache request for invalid input URI: password found but username missing {self._uri}')
 
-    def _update_cache(self) -> None:
-        pass
+        localhost_cached_dir = self._trestle_cache_path / u.hostname
+        # Skip any number of back- or forward slashes preceding the url path (u.path)
+        path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0]:]).parent
+        localhost_cached_dir = localhost_cached_dir / path_parent
+        try:
+            localhost_cached_dir.mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+            logger.error(f'Error creating cache directory {localhost_cached_dir} for {self._uri}')
+            logger.debug(e)
+            raise TrestleError(f'Cache update failure for {self._uri}')
+        self._inst_cache_path = localhost_cached_dir
+
+    def _sync_cache(self) -> None:
+        u = parse.urlparse(self._uri)
+        client = paramiko.SSHClient()
+
+        if 'SSH_KEY' in os.environ and self._refresh:
+            ssh_key_file = os.environ['SSH_KEY']
+            try:
+                client.load_host_keys(ssh_key_file)
+            except Exception as e:
+                logger.error(f'Error loading host keys from {ssh_key_file}.')
+                logger.debug(e)
+                raise TrestleError(f'Cache update failure for {self._uri}')
+
+        elif self._inst_cache_path.exists() and self._refresh:
+            try:
+                client.load_system_host_keys()
+            except Exception as e:
+                logger.error('Error loading system host keys.')
+                logger.debug(e)
+                raise TrestleError(f'Cache update failure for {self._uri}')
+
+        username = getpass.getuser() if not u.username else u.username
+        if u.password:
+            try:
+                client.connect(
+                    u.hostname,
+                    username=username,
+                    password=u.password,
+                    port=22 if not u.port else u.port,
+                )
+            except Exception as e:
+                logger.error(f'Error connecting SSH for {username}@{u.hostname}')
+                logger.debug(e)
+                raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
+        else:
+            try:
+                client.connect(u.hostname, username=username, port=22 if not u.port else u.port, allow_agent=True)
+            except Exception as e:
+                logger.error(f'Error connecting SSH for {username}@{u.hostname}')
+                logger.debug(e)
+                raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
+
+        try:
+            sftp_client = client.open_sftp()
+        except Exception as e:
+            logger.error(f'Error opening sftp session for {username}@{u.hostname}')
+            logger.debug(e)
+            raise TrestleError(f'Cache update failure to open sftp for {username}@{u.hostname}')
+
+        localpath = self._inst_cache_path / pathlib.Path(u.path).name
+        try:
+            sftp_client.get(remotepath=u.path[1:], localpath=(localpath.__str__()))
+        except Exception as e:
+            logger.error(f'Error getting remote resource {self._uri} into cache {localpath}')
+            logger.debug(e)
+            raise TrestleError(f'Cache update failure for {self._uri}')
 
 
 # For passing variables:
@@ -342,19 +405,6 @@ class GithubFetcher(HTTPSFetcher):
         else:
             raise TrestleError(f"Query failed to run by returning code of "
                                f"{request.status_code}. {self._query}")
-
-    def _update_cache(self) -> None:
-        # First discover whether...
-        if self._cache_only:
-            # Don't update if cache only...
-            return
-        if not self.in_cache() or self._refresh:
-            try:
-                self._sync_cache()
-            except Exception as e:
-                logger.error(f'Unable to update cache for {self._uri}')
-                logger.debug(e)
-                raise TrestleError(f'Cache update failure for {self._uri}') from e
 
 
 class FetcherFactory(object):
