@@ -15,11 +15,18 @@
 # limitations under the License.
 """Testing for cache functionality."""
 
+import os
 import pathlib
 import random
 import string
+from unittest import mock
+from unittest.mock import patch
 
+import pytest
+
+import trestle.core.err as err
 from trestle.core import generators
+from trestle.core.err import TrestleError
 from trestle.core.remote import cache
 from trestle.oscal.catalog import Catalog
 
@@ -44,6 +51,130 @@ def test_local_fetcher(tmp_trestle_dir):
     fetcher._refresh = True
     fetcher._update_cache()
     assert fetcher._inst_cache_path.exists()
+
+
+def test_sftp_fetcher(tmp_trestle_dir):
+    """Test the sftp fetcher."""
+    uri = 'sftp://some.host//path/to/test.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with patch('paramiko.SSHClient.load_system_host_keys') as ssh_load_keys_mock:
+        ssh_load_keys_mock.return_value = None
+        with patch('paramiko.SSHClient.connect') as ssh_connect_mock:
+            ssh_connect_mock.return_value = None
+            with patch('paramiko.SSHClient.open_sftp') as sftp_open_mock:
+                sftp_open_mock.return_value = None
+                with patch('paramiko.sftp_client.SFTPClient.get') as sftp_get_mock:
+                    sftp_get_mock.return_value = None
+                    try:
+                        fetcher._update_cache()
+                    except Exception:
+                        AssertionError()
+                    else:
+                        assert True
+
+
+def test_sftp_fetcher_cache_only(tmp_trestle_dir):
+    """Test sftp fetcher should not update, cache only."""
+    uri = 'sftp://some.host//path/to/test.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = True
+    try:
+        fetcher._update_cache()
+    except Exception:
+        AssertionError()
+    else:
+        assert True
+
+
+def test_sftp_fetcher_load_system_keys_fails(tmp_trestle_dir):
+    """Test the sftp fetcher, SSHClient load system host keys should fail."""
+    uri = 'sftp://username:password@some.host/path/to/file.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with patch('paramiko.SSHClient.load_system_host_keys') as ssh_load_system_host_keys_mock:
+        ssh_load_system_host_keys_mock.side_effect = OSError('stuff')
+        with pytest.raises(err.TrestleError):
+            fetcher._update_cache()
+
+
+@mock.patch.dict(os.environ, {'SSH_KEY': '/tmp/no_ssh_key_here'})
+def test_sftp_fetcher_load_keys_fails(tmp_trestle_dir):
+    """Test the sftp fetcher, SSHClient load host keys specified in env var should fail."""
+    uri = 'sftp://username:password@some.host/path/to/file.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with patch('paramiko.SSHClient.load_host_keys') as ssh_load_host_keys_mock:
+        ssh_load_host_keys_mock.side_effect = OSError('stuff')
+        with pytest.raises(err.TrestleError):
+            fetcher._update_cache()
+
+
+def test_sftp_fetcher_connect_fails(tmp_trestle_dir):
+    """Test the sftp fetcher, SSHClient connect should fail."""
+    uri = 'sftp://username:password@some.host/path/to/file.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with patch('paramiko.SSHClient.connect') as ssh_connect_mock:
+        ssh_connect_mock.side_effect = err.TrestleError('stuff')
+        try:
+            fetcher._update_cache()
+        except Exception:
+            assert True
+        else:
+            AssertionError
+
+
+def test_sftp_fetcher_open_sftp_fails(tmp_trestle_dir):
+    """Test the local fetcher."""
+    uri = 'sftp://username:password@some.host/path/to/file.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with patch('paramiko.SSHClient.open_sftp') as sftp_open_mock:
+        sftp_open_mock.side_effect = err.TrestleError('stuff')
+        try:
+            fetcher._update_cache()
+        except Exception:
+            assert True
+        else:
+            AssertionError
+
+
+def test_sftp_fetcher_get_fails(tmp_trestle_dir):
+    """Test the local fetcher."""
+    uri = 'sftp://username:password@some.host/path/to/file.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with patch('paramiko.sftp_client.SFTPClient.get') as sftp_get_mock:
+        sftp_get_mock.side_effect = err.TrestleError('stuff')
+        try:
+            fetcher._update_cache()
+        except Exception:
+            assert True
+        else:
+            AssertionError
+
+
+def test_fetcher_bad_uri(tmp_trestle_dir):
+    """Test fetcher factory with bad URI."""
+    for uri in ['',
+                'https://',
+                'https:///blah.com',
+                'sftp://',
+                '..',
+                'sftp://blah.com',
+                'sftp:///path/to/file.json',
+                'sftp://user:pass@hostname.com\\path\\to\\file.json',
+                'sftp://:pass@hostname.com/path/to/file.json']:
+        with pytest.raises(TrestleError):
+            cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
 
 
 def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
