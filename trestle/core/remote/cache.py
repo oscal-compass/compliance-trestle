@@ -249,12 +249,7 @@ class SFTPFetcher(FetcherBase):
         # Skip any number of back- or forward slashes preceding the url path (u.path)
         path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0]:]).parent
         localhost_cached_dir = localhost_cached_dir / path_parent
-        try:
-            localhost_cached_dir.mkdir(parents=True, exist_ok=True)
-        except Exception as e:
-            logger.error(f'Error creating cache directory {localhost_cached_dir} for {self._uri}')
-            logger.debug(e)
-            raise TrestleError(f'Cache update failure for {self._uri}')
+        localhost_cached_dir.mkdir(parents=True, exist_ok=True)
         self._inst_cache_path = localhost_cached_dir
 
     def _sync_cache(self) -> None:
@@ -270,7 +265,7 @@ class SFTPFetcher(FetcherBase):
                 logger.debug(e)
                 raise TrestleError(f'Cache update failure for {self._uri}')
 
-        elif self._inst_cache_path.exists() and self._refresh:
+        elif 'SSH_KEY' not in os.environ and self._inst_cache_path.exists() and self._refresh:
             try:
                 client.load_system_host_keys()
             except Exception as e:
