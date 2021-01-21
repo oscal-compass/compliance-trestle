@@ -1,0 +1,689 @@
+apiVersion: v1
+data:
+  exit-code: "2"
+  results: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <TestResult xmlns="http://checklists.nist.gov/xccdf/1.2" id="xccdf_org.open-scap_testresult_xccdf_org.ssgproject.content_profile_cis" start-time="2020-08-03T02:26:26+00:00" end-time="2020-08-03T02:26:26+00:00" version="0.1.52" test-system="cpe:/a:redhat:openscap:1.3.3">
+              <benchmark href="/content/ssg-ocp4-ds.xml" id="xccdf_org.ssgproject.content_benchmark_OCP-4"/>
+              <title>OSCAP Scan Result</title>
+              <profile idref="xccdf_org.ssgproject.content_profile_cis"/>
+              <target>kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp</target>
+              <target-facts>
+                <fact name="urn:xccdf:fact:identifier" type="string">chroot:///host</fact>
+                <fact name="urn:xccdf:fact:scanner:name" type="string">OpenSCAP</fact>
+                <fact name="urn:xccdf:fact:scanner:version" type="string">1.3.3</fact>
+              </target-facts>
+              <target-id-ref system="http://scap.nist.gov/schema/asset-identification/1.1" name="asset0" href=""/>
+              <platform idref="cpe:/a:redhat:openshift_container_platform:4.1"/>
+              <platform idref="cpe:/a:machine"/>
+              <set-value idref="xccdf_org.ssgproject.content_value_ocp_data_root">/kubernetes-api-resources</set-value>
+              <set-value idref="xccdf_org.ssgproject.content_value_var_kube_authorization_mode">Webhook</set-value>
+              <set-value idref="xccdf_org.ssgproject.content_value_var_streaming_connection_timeouts">5m</set-value>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notselected</result>
+                <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84209-6</ident>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_accounts_unique_service_account" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_configure_network_policies" time="2020-08-03T02:26:26+00:00" severity="high" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_configure_network_policies_namespaces" time="2020-08-03T02:26:26+00:00" severity="high" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_scheduler_profiling_argument" time="2020-08-03T02:26:26+00:00" severity="low" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-scheduler_profiling_argument:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_secrets_no_environment_variables" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_worker_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_worker_service" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_groupowner_worker_service:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_proxy_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_worker_ca" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_permissions_worker_ca:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_worker_service" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_owner_worker_service:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_worker_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_kubelet_conf" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_groupowner_kubelet_conf:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_worker_service" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_permissions_worker_service:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_proxy_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_worker_ca" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_owner_worker_ca:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_proxy_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_worker_ca" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_groupowner_worker_ca:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_worker_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_kubelet_conf" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_permissions_kubelet_conf:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_kubelet_conf" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_owner_kubelet_conf:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_controller_use_service_account" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>pass</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-controller_use_service_account:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_controller_bind_address" time="2020-08-03T02:26:26+00:00" severity="low" weight="1.000000">
+                <result>pass</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-controller_bind_address:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_controller_service_account_private_key" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_controller_service_account_ca" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_controller_rotate_kubelet_server_certs" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-controller_rotate_kubelet_server_certs:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_process_id_namespace" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_root_containers" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_privilege_escalation" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_ipc_namespace" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_container_allowed_capabilities" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_net_raw_capability" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_network_namespace" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_scc_drop_container_capabilities" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_privileged_containers" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_general_configure_imagepolicywebhook" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-general_configure_imagepolicywebhook:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_rbac_limit_secrets_access" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_rbac_wildcard_use" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_rbac_pod_creation_access" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_rbac_limit_cluster_admin" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_configure_client_ca" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-kubelet_configure_client_ca:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_disable_readonly_port" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>pass</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-kubelet_disable_readonly_port:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_anonymous_auth" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_enable_server_cert_rotation" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-kubelet_enable_server_cert_rotation:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_configure_tls_key" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-kubelet_configure_tls_key:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_enable_streaming_connections" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_authorization_mode" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_configure_event_creation" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-kubelet_configure_event_creation:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_enable_client_cert_rotation" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-kubelet_enable_client_cert_rotation:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cert" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-kubelet_configure_tls_cert:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_ocp_allowed_registries_for_import" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notselected</result>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_client_cert_auth" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-etcd_client_cert_auth:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_peer_key_file" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-etcd_peer_key_file:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_peer_cert_file" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-etcd_peer_cert_file:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_unique_ca" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-etcd_unique_ca:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_peer_auto_tls" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-etcd_peer_auto_tls:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_peer_client_cert_auth" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-etcd_peer_client_cert_auth:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_cert_file" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-etcd_cert_file:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_auto_tls" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-etcd_auto_tls:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_key_file" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-etcd_key_file:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_cni_conf" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>pass</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_owner_cni_conf:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_etcd_member" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_etcd_member" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_kube_scheduler" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_openvswitch" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_owner_openvswitch:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_controller_manager_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_groupowner_controller_manager_kubeconfig:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_scheduler_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_openvswitch" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_permissions_openvswitch:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_var_lib_etcd" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_owner_var_lib_etcd:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_var_lib_etcd" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_permissions_var_lib_etcd:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_controller_manager_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_owner_controller_manager_kubeconfig:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_scheduler_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_kube_controller_manager" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_kube_scheduler" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_kube_controller_manager" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_cni_conf" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>pass</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_permissions_cni_conf:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_kube_scheduler" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_controller_manager_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_permissions_controller_manager_kubeconfig:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_cni_conf" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>pass</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_groupowner_cni_conf:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_openvswitch" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-file_groupowner_openvswitch:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_etcd_member" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_scheduler_kubeconfig" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_insecure_port" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>pass</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_insecure_port:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_tls_private_key" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_tls_private_key:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_tls_cert" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_tls_cert:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_client_ca" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_client_ca:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_audit_log_path" time="2020-08-03T02:26:26+00:00" severity="high" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_audit_log_path:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_tls_cipher_suites" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_tls_cipher_suites:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_EventRateLimit" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_admission_control_plugin_EventRateLimit:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_authorization_mode" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>pass</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_authorization_mode:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_audit_log_maxage" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_audit_log_maxage:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_profiling" time="2020-08-03T02:26:26+00:00" severity="low" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_profiling:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_ServiceAccount" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_admission_control_plugin_ServiceAccount:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysAdmit" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>pass</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_admission_control_plugin_AlwaysAdmit:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_encryption_provider_cipher" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_encryption_provider_cipher:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_token_auth" time="2020-08-03T02:26:26+00:00" severity="high" weight="1.000000">
+                <result>pass</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_token_auth:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_anonymous_auth" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_anonymous_auth:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_etcd_ca" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_etcd_ca:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_encryption_provider_config" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_encryption_provider_config:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_request_timeout" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_request_timeout:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_audit_log_maxsize" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_audit_log_maxsize:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NodeRestriction" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_admission_control_plugin_NodeRestriction:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_SecurityContextDeny" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_admission_control_plugin_SecurityContextDeny:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_PodSecurityPolicy" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_admission_control_plugin_PodSecurityPolicy:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_basic_auth" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>pass</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_basic_auth:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_kubelet_client_key" time="2020-08-03T02:26:26+00:00" severity="high" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_kubelet_client_key:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_service_account_public_key" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_service_account_public_key:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_etcd_key" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_etcd_key:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysPullImages" time="2020-08-03T02:26:26+00:00" severity="high" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_admission_control_plugin_AlwaysPullImages:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_kubelet_client_cert" time="2020-08-03T02:26:26+00:00" severity="high" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_kubelet_client_cert:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_audit_log_maxbackup" time="2020-08-03T02:26:26+00:00" severity="low" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_audit_log_maxbackup:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_kubelet_https" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_kubelet_https:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_etcd_cert" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_etcd_cert:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_insecure_bind_address" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>pass</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_insecure_bind_address:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_kubelet_certificate_authority" time="2020-08-03T02:26:26+00:00" severity="high" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_kubelet_certificate_authority:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NamespaceLifecycle" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_admission_control_plugin_NamespaceLifecycle:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_secure_port" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>fail</result>
+                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+                  <check-content-ref name="oval:ssg-api_server_secure_port:def:1" href="#oval0"/>
+                </check>
+              </rule-result>
+              <score system="urn:xccdf:scoring:default" maximum="100.000000">15.670996</score>
+            </TestResult>
+kind: ConfigMap
+metadata:
+  annotations:
+    compliance-remediations/processed: ""
+    compliance.openshift.io/scan-error-msg: ""
+    compliance.openshift.io/scan-result: NON-COMPLIANT
+    openscap-scan-result/node: 111.222.333.444
+  creationTimestamp: "2020-08-03T02:26:34Z"
+  labels:
+    compliance-scan: ssg-ocp4-ds-cis
+  name: ssg-ocp4-ds-cis-111.222.333.444-pod
+  namespace: openshift-compliance
+  resourceVersion: "22693328"
+  selfLink: /api/v1/namespaces/openshift-compliance/configmaps/ssg-ocp4-ds-cis-111.222.333.444-pod
+  uid: 1da3ea81-0a25-4512-ad86-7ac360246b5d
