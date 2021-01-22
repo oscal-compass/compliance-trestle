@@ -53,16 +53,16 @@ def test_replicate_cmd(testdata_dir, tmp_trestle_dir) -> None:
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
 
     catalogs_dir = Path('catalogs/')
-    mycatalog_dir = catalogs_dir / 'mycatalog'
-    catalog_file = mycatalog_dir / 'catalog.json'
-    rep_file = catalogs_dir / 'replicated'
+    catalog_name = 'mycatalog'
+    rep_name = 'repcatalog'
+    rep_file = catalogs_dir / rep_name / 'catalog.json'
 
     # Copy files from test/data/split_merge/step4
     shutil.rmtree(catalogs_dir)
     shutil.copytree(test_data_source, catalogs_dir)
 
     # execute the command to replicate the model into replicated
-    test_args = f'trestle replicate -f {catalog_file} -o {rep_file}'.split()
+    test_args = f'trestle replicate catalog -f {catalog_name} -o {rep_name}'.split()
     with patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
@@ -71,7 +71,7 @@ def test_replicate_cmd(testdata_dir, tmp_trestle_dir) -> None:
 
     rep_model_type, rep_model_alias, rep_model_instance = load_distributed(rep_file)
 
-    expected_model_type, _ = fs.get_contextual_model_type(catalog_file.absolute())
+    expected_model_type, _ = fs.get_contextual_model_type(rep_file.absolute())
 
     expected_model_instance = Catalog.oscal_read(testdata_dir / 'split_merge/load_distributed/catalog.json')
 

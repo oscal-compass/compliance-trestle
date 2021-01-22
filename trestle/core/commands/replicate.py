@@ -18,50 +18,149 @@ import argparse
 import logging
 import pathlib
 from json.decoder import JSONDecodeError
+from typing import Type, TypeVar
 
 from ilcli import Command  # type: ignore
 
-# from trestle.core import parser
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
+from trestle.oscal import assessment_plan
+from trestle.oscal import assessment_results
+from trestle.oscal import catalog
+from trestle.oscal import component
+from trestle.oscal import poam
+from trestle.oscal import profile
+from trestle.oscal import ssp
+from trestle.oscal import target
 from trestle.utils import fs
 from trestle.utils import log
 from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
 
+TLO = TypeVar(
+    'TLO',
+    assessment_plan.AssessmentPlan,
+    assessment_results.AssessmentResults,
+    catalog.Catalog,
+    component.ComponentDefinition,
+    poam.PlanOfActionAndMilestones,
+    profile.Profile,
+    ssp.SystemSecurityPlan,
+    target.TargetDefinition
+)
+
+
+class CatalogCmd(Command):
+    """Replicate a catalog within the trestle directory structure."""
+
+    name = 'catalog'
+
+    def _run(self, args: argparse.Namespace) -> int:
+        """Replicate a sample catalog in the trestle directory structure, given an OSCAL schema."""
+        logger.info(f'Replicating catalog {args.file} to: {args.output}')
+        return ReplicateCmd.replicate_object(self.name, catalog.Catalog, args)
+
+
+class ProfileCmd(Command):
+    """Replicate a profile within the trestle directory structure."""
+
+    name = 'profile'
+
+    def _run(self, args: argparse.Namespace) -> int:
+        logger.info(f'Replicating profile {args.file} to: {args.name}')
+        return ReplicateCmd.replicate_object(self.name, profile.Profile, args)
+
+
+class TargetDefinitionCmd(Command):
+    """Replicate a target within the trestle directory structure."""
+
+    name = 'target-definition'
+
+    def _run(self, args: argparse.Namespace) -> int:
+        return ReplicateCmd.replicate_object(self.name, target.TargetDefinition, args)
+
+
+class ComponentDefinitionCmd(Command):
+    """Replicate a component definition within the trestle directory structure."""
+
+    name = 'component-definition'
+
+    def _run(self, args: argparse.Namespace) -> int:
+        return ReplicateCmd.replicate_object(self.name, component.ComponentDefinition, args)
+
+
+class SystemSecurityPlanCmd(Command):
+    """Replicate a system security plan within the trestle directory structure."""
+
+    name = 'system-security-plan'
+
+    def _run(self, args: argparse.Namespace) -> int:
+        return ReplicateCmd.replicate_object(self.name, ssp.SystemSecurityPlan, args)
+
+
+class AssessmentPlanCmd(Command):
+    """Replicate an assessment plan within the trestle directory structure."""
+
+    name = 'assessment-plan'
+
+    def _run(self, args: argparse.Namespace) -> int:
+        return ReplicateCmd.replicate_object(self.name, assessment_plan.AssessmentPlan, args)
+
+
+class AssessmentResultCmd(Command):
+    """Replicate an assessment result within the trestle directory structure."""
+
+    name = 'assessment-results'
+
+    def _run(self, args: argparse.Namespace) -> int:
+        return ReplicateCmd.replicate_object(self.name, assessment_results.AssessmentResults, args)
+
+
+class PlanOfActionAndMilestonesCmd(Command):
+    """Replicate a plan of action and milestones within the trestle directory structure."""
+
+    name = 'plan-of-action-and-milestones'
+
+    def _run(self, args: argparse.Namespace) -> int:
+        return ReplicateCmd.replicate_object(self.name, poam.PlanOfActionAndMilestones, args)
+
 
 class ReplicateCmd(Command):
-    """Replicate an existing full OSCAL model into the trestle project."""
+    """Replicate an existing top level OSCAL model within the trestle project."""
 
     name = 'replicate'
 
+    subcommands = [
+        CatalogCmd,
+        ProfileCmd,
+        TargetDefinitionCmd,
+        ComponentDefinitionCmd,
+        SystemSecurityPlanCmd,
+        AssessmentPlanCmd,
+        AssessmentResultCmd,
+        PlanOfActionAndMilestonesCmd
+    ]
+
     def _init_arguments(self) -> None:
         logger.debug('Init arguments')
-        self.add_argument('-f', '--file', help='OSCAL file to replicate.', type=str, required=True)
+        self.add_argument('-f', '--file', help='OSCAL model to replicate.', type=str, required=True)
 
-        self.add_argument('-o', '--output', help='Name of output model.', type=str, required=True)
+        self.add_argument('-o', '--output', help='Name of replicated model.', type=str, required=True)
 
         self.add_argument(
             '-r', '--regenerate', type=bool, default=False, help='Enable to regenerate uuids within the document'
         )
 
-    def _run(self, args: argparse.Namespace) -> int:
-        """Top level replicate run command."""
+    @classmethod
+    def replicate_object(cls, model_alias: str, object_type: Type[TLO], args: argparse.Namespace) -> int:
+        """Core replicate routine invoked by subcommands."""
         log.set_log_level_from_args(args)
 
-        logger.debug('Entering replicate run.')
-
-        # 1. Validate input arguments are as expected.
-
-        # 1.1 Check that input file given exists.
-        input_file = pathlib.Path(args.file)
-        if not input_file.exists():
-            logger.error(f'Input file {args.file} does not exist.')
-            return 1
+        logger.debug('Entering replicate_object.')
 
         # 1.2 Bad working directory if not running from current working directory
         cwd = pathlib.Path.cwd().resolve()
@@ -70,29 +169,38 @@ class ReplicateCmd(Command):
             logger.error(f'Current working directory: {cwd} is not within a trestle project.')
             return 1
 
-        # 2. Importing a file that is already inside a trestle-initialized dir is bad
-        # trestle_root = trestle_root.resolve()
-        # try:
-        #     input_file.absolute().relative_to(trestle_root)
-        # except ValueError:
-        #     # An exception here is good: it means that the input file is not inside a trestle dir.
-        #     pass
-        # else:
-        #     logger.error('Input file cannot be from current trestle project. Use duplicate instead.')
-        #     return 1
+        trestle_root = trestle_root.resolve()
+
+        plural_path: str
+        plural_path = model_alias
+        # Cater to POAM
+        if model_alias[-1] != 's':
+            plural_path = model_alias + 's'
+
+        # 1.1 Check that input file given exists.
+        input_file = trestle_root / plural_path / args.file / (model_alias + '.json')
+        if not input_file.exists():
+            logger.error(f'Input file {args.file} does not exist at expected location {input_file}.')
+            return 1
+
+        # 2. File to be replicated must be in current trestle directory.
+        try:
+            input_file.absolute().relative_to(trestle_root)
+        except ValueError:
+            logger.error('Input file must be in current trestle project. Use import instead.')
+            return 1
 
         # 3. Work out typing information from input suffix.
-        try:
-            content_type = FileContentType.to_content_type(input_file.suffix)
-        except TrestleError as err:
-            logger.debug(f'FileContentType.to_content_type() failed: {err}')
-            logger.error(f'Import failed, could not work out content type from file suffix: {err}')
-            return 1
+        # try:
+        #     content_type = FileContentType.to_content_type(input_file.suffix)
+        # except TrestleError as err:
+        #     logger.debug(f'FileContentType.to_content_type() failed: {err}')
+        #     logger.error(f'Import failed, could not work out content type from file suffix: {err}')
+        #     return 1
 
         # 4. Load input and parse for model
 
         # 4.1 Distributed load from file
-        model_instance: OscalBaseModel
 
         try:
             model_type, model_alias, model_instance = load_distributed(input_file.absolute())
@@ -109,45 +217,24 @@ class ReplicateCmd(Command):
             logger.error(f'Replicate failed, access permission error loading file: {err}')
             return 1
 
-        # 4.2 root key check
-        # try:
-        #     parent_alias = parser.root_key(model)
-        # except TrestleError as err:
-        #     logger.debug(f'parser.root_key() failed: {err}')
-        #     logger.error(f'Import failed, failed to parse input file for root key: {err}')
-        #     return 1
+        rep_model_path = trestle_root / plural_path / args.output / (model_alias + '.json')
 
-        # 4.3 parse the model
-        # parent_model_name = parser.to_full_model_name(parent_alias)
-        # try:
-        #     parent_model = parser.parse_file(input_file.absolute(), parent_model_name)
-        # except TrestleError as err:
-        #     logger.debug(f'parser.parse_file() failed: {err}')
-        #     logger.error(f'Import failed, failed to parse valid contents of input file: {err}')
-        #     return 1
-
-        # 5. Work out output directory and file
-        plural_path: str
-        plural_path = model_alias
-        # Cater to POAM
-        if model_alias[-1] != 's':
-            plural_path = model_alias + 's'
-
-        desired_model_dir = trestle_root / plural_path
-        # args.output is presumed to be assured as it is declared to be required
-        if args.output:
-            desired_model_path = desired_model_dir / args.output / (model_alias + input_file.suffix)
-
-        if desired_model_path.exists():
-            logger.error(f'OSCAL file to be created here: {desired_model_path} exists.')
+        if rep_model_path.exists():
+            logger.error(f'OSCAL file to be replicated here: {rep_model_path} exists.')
             logger.error('Aborting trestle replicate.')
             return 1
 
+        try:
+            content_type = FileContentType.to_content_type('.json')
+        except TrestleError as err:
+            logger.debug(f'FileContentType.to_content_type() failed: {err}')
+            logger.error(f'Import failed, could not work out content type from file suffix: {err}')
+            return 1
+
         # 6. Prepare actions and plan
-        # top_element = Element(model_instance.oscal_read(input_file))
         top_element = Element(model_instance)
-        create_action = CreatePathAction(desired_model_path.absolute(), True)
-        write_action = WriteFileAction(desired_model_path.absolute(), top_element, content_type)
+        create_action = CreatePathAction(rep_model_path.absolute(), True)
+        write_action = WriteFileAction(rep_model_path.absolute(), top_element, content_type)
 
         # create a plan to create the directory and imported file.
         import_plan = Plan()
@@ -168,5 +255,4 @@ class ReplicateCmd(Command):
             logger.error(f'Import failed, error in actual import operation: {err}')
             return 1
 
-        # 7. Leave the rest to trestle split
         return 0
