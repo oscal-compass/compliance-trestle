@@ -55,17 +55,18 @@ class OscoToOscal(TaskBase):
         """Print the help string."""
         logger.info(f'Help information for {self.name} task.')
         logger.info('')
-        logger.info('Purpose: Transform OpenShift Compliance Operator (OSCO) produced .yaml files into Open Security Controls Assessment Language (OSCAL) .json partial results files.')
+        logger.info('Purpose: Transform OpenShift Compliance Operator (OSCO) files into Open Security Controls Assessment Language (OSCAL) partial results files.')
         logger.info('')
         logger.info('Configuration flags sit under [task.osco-to-oscal]:')
-        logger.info('  input-dir = (required) the path of the input directory comprising osco .yaml files.')
+        logger.info('  input-dir = (required) the path of the input directory comprising OSCO .yaml and/or .json files.')
         logger.info('  input-metadata = (optional) the name of the input directory metadata .yaml file, default = oscal-metadata.yaml.')
         logger.info('  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.')
         logger.info('  output-overwrite = (optional) true [default] or false; replace existing output when true.')
         logger.info('  quiet = (optional) true or false [default]; display file creations and rules analysis when false.')
         logger.info('')
-        logger.info('Operation: All the .yaml files in the input-dir are processed, each producing a corresponding .json output-dir file.')
-        logger.info('The exception is the input-metadata .yaml file which, if present, is used to augment all produced .json output directory files.')
+        logger.info('Operation: A transformation is performed on one or more OSCO input files to produce corresponding output files in OSCAL partial results format. Input files are typically OSCO .yaml files or Arboretum .json files, the latter constructed by a fetcher/check (see https://github.com/ComplianceAsCode/auditree-arboretum).')
+        logger.info('')
+        logger.info('All the .yaml files in the input-dir are processed, each producing a corresponding .json output-dir file. The exception is the input-metadata .yaml file which, if present, is used to augment all produced .json output directory files. Similarly, all the .json files in the input-dir are processed, each producing one or more corresponding .json output-dir files.')
         logger.info('')
         logger.info('The format of the input-metadata .yaml file comprises one or more entries as follows:')
         logger.info('<name>:')
@@ -119,33 +120,30 @@ class OscoToOscal(TaskBase):
                 # skip enhancing oscal metadata
                 if ifile.name == imeta:
                     continue
-                # ignore non-yaml files
-                if ifile.suffix not in ['.yml', '.yaml']:
-                    logger.debug(f'[simluate] skipping {ifile.name}')
-                    continue
-                # calculate the output file, including path
-                ofile = opth / pathlib.Path(ifile.stem+'.json')
-                # only allow writing output file if either:
-                # a) it does not already exist, or
-                # b) output-overwrite flag is True
-                if not overwrite:
-                    if ofile.exists():
-                        logger.error(f'simluate: file exists: {ofile}')
-                        return TaskOutcome('simulated-failure')
-                if not quiet:
-                    logger.debug(f'[simluate]  create {ofile}')
-                # fetch the contents of the subject OSCO .yaml/.yml file
-                idata = self._read_content(ifile)
-                # create the OSCAL .json file from the OSCO and the optional osco-metadata files
-                observations, analysis = osco.get_observations(idata, metadata)
-                # write the OSCAL to the output file
-                self._write_content(ofile, observations, True)
-                # display analysis
-                if not quiet:
-                    logger.debug(f'[simluate] Rules Analysis:')
-                    logger.debug(f'[simluate] config_maps: {analysis["config_maps"]}')
-                    logger.debug(f'[simluate] dispatched rules: {analysis["dispatched_rules"]}')
-                    logger.debug(f'[simluate] result types: {analysis["result_types"]}')
+                # assemble collection comprising output file name to unprocessed content
+                collection = self._assemble(ifile)
+                # formulate each output OSCAL partial results file
+                for oname in collection.keys():
+                    ofile = opth / pathlib.Path(oname)
+                    # only allow writing output file if either:
+                    # a) it does not already exist, or
+                    # b) output-overwrite flag is True
+                    if not overwrite:
+                        if ofile.exists():
+                            logger.error(f'file exists: {ofile}')
+                            return TaskOutcome('simulated-failure')
+                    if not quiet:
+                        logger.debug(f'create: {ofile}')
+                    # create the OSCAL .json file from the OSCO and the optional osco-metadata files
+                    observations, analysis = osco.get_observations(collection[oname], metadata)
+                    # write the OSCAL to the output file
+                    self._write_content(ofile, observations, True)
+                    # display analysis
+                    if not quiet:
+                        logger.debug(f'[simluate] Rules Analysis:')
+                        logger.debug(f'[simluate] config_maps: {analysis["config_maps"]}')
+                        logger.debug(f'[simluate] dispatched rules: {analysis["dispatched_rules"]}')
+                        logger.debug(f'[simluate] result types: {analysis["result_types"]}')
             return TaskOutcome('simulated-success')
         logger.error(f'config missing')
         return TaskOutcome('simulated-failure')
@@ -181,44 +179,84 @@ class OscoToOscal(TaskBase):
                 # skip enhancing oscal metadata
                 if ifile.name == imeta:
                     continue
-                # ignore non-yaml files
-                if ifile.suffix not in ['.yml', '.yaml']:
-                    logger.debug(f'skipping {ifile.name}')
-                    continue
-                # calculate the output file, including path
-                ofile = opth / pathlib.Path(ifile.stem+'.json')
-                # only allow writing output file if either:
-                # a) it does not already exist, or
-                # b) output-overwrite flag is True
-                if not overwrite:
-                    if ofile.exists():
-                        logger.error(f'file exists: {ofile}')
-                        return TaskOutcome('failure')
-                if not quiet:
-                    logger.info(f'create: {ofile}')
-                # fetch the contents of the subject OSCO .yaml/.yml file
-                idata = self._read_content(ifile)
-                # create the OSCAL .json file from the OSCO and the optional osco-metadata files
-                observations, analysis = osco.get_observations(idata, metadata)
-                # write the OSCAL to the output file
-                self._write_content(ofile, observations)
-                # display analysis
-                if not quiet:
-                    logger.info(f'Rules Analysis:')
-                    logger.info(f'config_maps: {analysis["config_maps"]}')
-                    logger.info(f'dispatched rules: {analysis["dispatched_rules"]}')
-                    logger.info(f'result types: {analysis["result_types"]}')
+                # assemble collection comprising output file name to unprocessed content
+                collection = self._assemble(ifile)
+                # formulate each output OSCAL partial results file
+                for oname in collection.keys():
+                    ofile = opth / pathlib.Path(oname)
+                    # only allow writing output file if either:
+                    # a) it does not already exist, or
+                    # b) output-overwrite flag is True
+                    if not overwrite:
+                        if ofile.exists():
+                            logger.error(f'file exists: {ofile}')
+                            return TaskOutcome('failure')
+                    if not quiet:
+                        logger.info(f'create: {ofile}')
+                    # create the OSCAL .json file from the OSCO and the optional osco-metadata files
+                    observations, analysis = osco.get_observations(collection[oname], metadata)
+                    # write the OSCAL to the output file
+                    self._write_content(ofile, observations)
+                    # display analysis
+                    if not quiet:
+                        logger.info(f'Rules Analysis:')
+                        logger.info(f'config_maps: {analysis["config_maps"]}')
+                        logger.info(f'dispatched rules: {analysis["dispatched_rules"]}')
+                        logger.info(f'result types: {analysis["result_types"]}')
             return TaskOutcome('success')
         logger.error(f'config missing')
         return TaskOutcome('failure')
     
-    def _read_content(self, ifile: pathlib.Path) -> osco.t_osco:
-        """Read the contents of a yaml file."""
-        content = yaml.load(ifile.open('r+'), Loader=yaml.Loader)
-        logger.debug('========== <content> ==========')
-        logger.debug(content)
-        logger.debug('========== </content> ==========')
-        return content
+    def _assemble(self, ifile: pathlib.Path) -> Dict[str, osco.t_osco]:
+        """Formulate collection comprising output file name to unprocessed content."""
+        collection = {}
+        #  handle OSCO individual yaml files (just one pairing)
+        if ifile.suffix in ['.yml', '.yaml']:
+            ydict = yaml.load(ifile.open('r+'), Loader=yaml.Loader)
+            oname = ifile.stem+'.json'
+            logger.debug(f'========== <{oname}> ==========')
+            logger.debug(ydict)
+            logger.debug(f'========== </{oname}> ==========')
+            collection[oname] = ydict
+        #  handle arboretum  OSCO fetcher/check composite json files (one or more pairings)
+        elif ifile.suffix in ['.jsn', '.json']:
+            idata = json.load(ifile.open('r+'))
+            if idata is not None:
+                for key in idata.keys():
+                    for group in idata[key]:
+                        # for each cluster create an individual yaml-like unprocessed data set
+                        for cluster in idata[key][group]:
+                            if 'resources' not in cluster.keys():
+                                continue
+                            for resource in cluster['resources']:
+                                if 'kind' not in resource.keys():
+                                    continue
+                                if resource['kind'] != 'ConfigMap':
+                                    continue
+                                if 'data' not in resource.keys():
+                                    continue
+                                if 'results' not in resource['data'].keys():
+                                    continue
+                                if 'metadata' not in resource.keys():
+                                    continue
+                                if 'name' not in resource['metadata'].keys():
+                                    continue
+                                # add yaml-like data set to collection indexed by ConfigMap identity
+                                ydict = {}
+                                ydict['kind'] = resource['kind']                       
+                                data = {}
+                                data['results'] = resource['data']['results']                        
+                                ydict['data'] = data
+                                ydict['metadata'] = resource['metadata']
+                                oname = resource['metadata']['name']+'.json'
+                                collection[oname] = ydict
+                                logger.debug(f'========== <{oname}> ==========')
+                                logger.debug(ydict)
+                                logger.debug(f'========== </{oname}> ==========')
+        else:                                               
+            logger.debug(f'skipping {ifile.name}')
+        logger.debug(f'collection: {len(collection)}')
+        return collection
 
     def _write_content(self, ofile: pathlib.Path, observations: osco.AssessmentResultsPartial, simulate:bool=False) -> None:
         """Write the contents of a json file."""
