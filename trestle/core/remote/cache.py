@@ -39,6 +39,7 @@ from requests.auth import HTTPBasicAuth
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
+from trestle.core.remote import cache
 from trestle.core.settings import Settings
 
 logger = logging.getLogger(__name__)
@@ -218,7 +219,7 @@ class HTTPSFetcher(FetcherBase):
         #                        f"{request.status_code}. {self._query}")
 
 class SFTPFetcher(FetcherBase):
-    """Fetcher for https content."""
+    """Fetcher for SFTP content."""
 
     # STFP method: https://stackoverflow.com/questions/7563496/open-a-remote-file-using-paramiko-in-python-slow#7563551
     # For SFTP fetch into memory.
