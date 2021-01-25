@@ -15,13 +15,10 @@
 # limitations under the License.
 """Testing for cache functionality."""
 
-import os
 import pathlib
 import random
 import string
-from unittest import mock
 from unittest.mock import patch
-from urllib import parse
 
 import pytest
 
@@ -72,25 +69,21 @@ def test_sftp_fetcher(tmp_trestle_dir):
                     ssh_load_keys_mock.assert_called_once()
                     ssh_connect_mock.assert_called_once()
                     sftp_open_mock.assert_called_once()
-                    # sftp_get_mock.assert_called_once()
 
 
 def test_sftp_fetcher_cache_only(tmp_trestle_dir):
-    """Test sftp fetcher should not update, cache only."""
+    """Test that sftp fetcher does not call update (_sync_cache) when _cache_only is true."""
     uri = 'sftp://some.host//path/to/test.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
     fetcher._refresh = True
     fetcher._cache_only = True
-    try:
+    with patch('trestle.core.remote.cache.SFTPFetcher._sync_cache') as sync_cache_mock:
         fetcher._update_cache()
-    except Exception:
-        AssertionError()
-    else:
-        assert True
+        sync_cache_mock.assert_not_called()
 
 
 def test_sftp_fetcher_load_system_keys_fails(tmp_trestle_dir):
-    """Test the sftp fetcher, SSHClient load system host keys should fail."""
+    """Test the sftp fetcher when SSHClient loading of system host keys fails."""
     uri = 'sftp://username:password@some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
     fetcher._refresh = True
@@ -102,7 +95,7 @@ def test_sftp_fetcher_load_system_keys_fails(tmp_trestle_dir):
 
 
 def test_sftp_fetcher_load_keys_fails(tmp_trestle_dir, monkeypatch):
-    """Test the sftp fetcher, SSHClient load host keys specified in env var should fail."""
+    """Test the sftp fetcher when SSHClient load host keys specified in env var fails."""
     monkeypatch.setenv('SSH_KEY', 'some_key_file')
     uri = 'sftp://username:password@some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
@@ -116,7 +109,7 @@ def test_sftp_fetcher_load_keys_fails(tmp_trestle_dir, monkeypatch):
 
 
 def test_sftp_fetcher_connect_fails(tmp_trestle_dir):
-    """Test the sftp fetcher, SSHClient connect should fail."""
+    """Test sftp during SSHClient connect failure."""
     # Password given:
     uri = 'sftp://username:password@some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
@@ -138,7 +131,7 @@ def test_sftp_fetcher_connect_fails(tmp_trestle_dir):
 
 
 def test_sftp_fetcher_open_sftp_fails(tmp_trestle_dir, monkeypatch):
-    """Test the local fetcher."""
+    """Test the exception response during open_sftp failure."""
     uri = 'sftp://username:password@some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
     fetcher._refresh = True
@@ -150,13 +143,13 @@ def test_sftp_fetcher_open_sftp_fails(tmp_trestle_dir, monkeypatch):
                 open_sftp_mock.side_effect = err.TrestleError('stuff')
                 with pytest.raises(err.TrestleError):
                     fetcher._update_cache()
-                    ssh_load_host_keys_mock.assert_called_once()
+                    load_host_keys_mock.assert_called_once()
                     connect_mock.assert_called_once()
                     open_sftp_mock.assert_called_once()
 
 
 def test_sftp_fetcher_getuser_fails(tmp_trestle_dir, monkeypatch):
-    """Test the local fetcher."""
+    """Test the sftp call to getpass.getuser."""
     uri = 'sftp://some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
     fetcher._refresh = True
@@ -166,10 +159,11 @@ def test_sftp_fetcher_getuser_fails(tmp_trestle_dir, monkeypatch):
     with patch('getpass.getuser') as getuser_mock:
         with pytest.raises(err.TrestleError):
             fetcher._update_cache()
+            getuser_mock.assert_called_once()
 
 
 def test_sftp_fetcher_get_fails(tmp_trestle_dir, monkeypatch):
-    """Test the local fetcher."""
+    """Test the sftp fetcher SFTPClient.get() failing."""
     uri = 'sftp://username:password@some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
     fetcher._refresh = True
@@ -184,38 +178,30 @@ def test_sftp_fetcher_get_fails(tmp_trestle_dir, monkeypatch):
                     fetcher._update_cache()
                     load_host_keys_mock.assert_called_once()
                     connect_mock.assert_called_once()
-                    open_sftp_mock.assert_called_once()
                     get_mock.assert_called_once()
 
 
 def test_sftp_fetcher_bad_uri(tmp_trestle_dir):
-    """Test fetcher factory with bad URI."""
-    for uri in [
-                'sftp://blah.com',
+    """Test get_fetcher handling of bad SFTP URI."""
+    for uri in ['sftp://blah.com',
                 'sftp:///path/to/file.json',
                 'sftp://user:pass@hostname.com\\path\\to\\file.json',
-                'sftp://:pass@hostname.com/path/to/file.json'
-    ]:
+                'sftp://:pass@hostname.com/path/to/file.json']:
         with pytest.raises(TrestleError):
             cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
 
 
 def test_fetcher_bad_uri(tmp_trestle_dir):
     """Test fetcher factory with bad URI."""
-    for uri in ['',
-                'https://',
-                'https:///blah.com',
-                'sftp://',
-                '..'
-    ]:
+    for uri in ['', 'https://', 'https:///blah.com', 'sftp://', '..']:
         with pytest.raises(TrestleError):
             cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
 
 
 def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test that the fetcher factory correctly resolves functionality."""
     settings = Settings()
 
-    """Test that the fetcher factory correctly resolves functionality."""
     local_uri_1 = 'file:///home/user/oscal_file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_1, settings, False, False)
     assert type(fetcher) == cache.LocalFetcher
