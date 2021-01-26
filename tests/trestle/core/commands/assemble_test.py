@@ -14,17 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle assemble command."""
-import argparse
 import pathlib
-import sys
 import shutil
+import sys
 from unittest import mock
 
-import pytest
-
-import trestle.core.err as err
 from trestle.cli import Trestle
-from trestle.core.commands import assemble
 from trestle.oscal.catalog import Catalog
 from trestle.utils.load_distributed import load_distributed
 
@@ -41,7 +36,7 @@ subcommand_list = [
 
 
 def test_run_and_missing_model(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test _run and test it fails without top level model file"""
+    """Test _run and test it fails without top level model file."""
     testargs_root = ['trestle', 'assemble']
     for subcommand in subcommand_list:
         test_args = testargs_root + [subcommand] + ['-n', f'my_{subcommand}'] + ['-x', 'json']
@@ -51,7 +46,7 @@ def test_run_and_missing_model(tmp_trestle_dir: pathlib.Path) -> None:
 
 
 def test_assemble_catalog(testdata_dir, tmp_trestle_dir: pathlib.Path) -> None:
-    """Test assembling a catalog"""
+    """Test assembling a catalog."""
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
     catalogs_dir = pathlib.Path('catalogs/')
     mycatalog_dir = catalogs_dir / 'mycatalog'
