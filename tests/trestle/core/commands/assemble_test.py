@@ -28,7 +28,6 @@ from trestle.core.commands import assemble
 from trestle.oscal.catalog import Catalog
 from trestle.utils.load_distributed import load_distributed
 
-
 subcommand_list = [
     'catalog',
     'profile',
@@ -50,6 +49,7 @@ def test_run_and_missing_model(tmp_trestle_dir: pathlib.Path) -> None:
             rc = Trestle().run()
             assert rc != 0
 
+
 def test_assemble_catalog(testdata_dir, tmp_trestle_dir: pathlib.Path) -> None:
     """Test assembling a catalog"""
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
@@ -69,5 +69,4 @@ def test_assemble_catalog(testdata_dir, tmp_trestle_dir: pathlib.Path) -> None:
     actual_model = Catalog.oscal_read(pathlib.Path('dist/catalog.json'))
     _, _, expected_model = load_distributed(mycatalog_dir / 'catalog.json')
 
-    assert actual_model==expected_model
-
+    assert actual_model == expected_model
