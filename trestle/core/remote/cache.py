@@ -39,7 +39,6 @@ from requests.auth import HTTPBasicAuth
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.core.models.file_content_type import FileContentType
 from trestle.core.settings import Settings
 from trestle.utils import fs
 
