@@ -1,0 +1,55 @@
+ 
+ssg-ocp4-ds-cis-111.222.333.444-pod:
+   locker: https://github.mycorp.com/degenaro/evidence-locker
+   namespace: xccdf
+   subject-references:
+      component:
+         uuid-ref: 56666738-0f9a-4e38-9aac-c0fad00a5821
+         type: component
+         title: Red Hat OpenShift Kubernetes
+      inventory-item:
+         uuid-ref: 46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e
+         type: inventory-item
+         title: Pod
+         properties:
+            target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+            cluster-name: ROKS-OpenSCAP-1
+            cluster-type: openshift
+            cluster-region: us-south
+
+ssg-ocp4-ds-cis-111.222.333.555-pod:
+   locker: https://github.mycorp.com/degenaro/evidence-locker
+   namespace: xccdf
+   subject-references:
+      component:
+         uuid-ref: 3e42fa6b-a819-4f58-b073-a04a0b3c828d
+         type: component
+         title: Red Hat OpenShift Kubernetes
+      inventory-item:
+         uuid-ref: 285d87c2-aab0-4935-b28b-c4dab131cf88
+         type: inventory-item
+         title: Pod
+         properties:
+            target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp
+            cluster-name: ROKS-OpenSCAP-1
+            cluster-type: openshift
+            cluster-region: us-south
+            
+ssg-rhel7-ds-cis-111.222.333.444-pod:
+   locker: https://github.mycorp.com/degenaro/evidence-locker
+   namespace: xccdf
+   subject-references:
+      component:
+         uuid-ref: 89cfe7a7-ce6b-4699-aa7b-2f5739c72001
+         type: component
+         title: RedHat Enterprise Linux 7.8
+      inventory-item:
+         uuid-ref: 46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e
+         type: inventory-item
+         title: VM
+         properties:
+            target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+            cluster-name: ROKS-OpenSCAP-1
+            cluster-type: openshift
+            cluster-region: us-south
+            
