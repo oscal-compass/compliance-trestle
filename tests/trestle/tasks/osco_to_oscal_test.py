@@ -123,7 +123,19 @@ def test_simulate_no_ouput_dir(tmpdir):
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_FAILURE
     assert len(os.listdir(str(tmpdir))) == 0
-
+    
+def test_simulate_input_fetcher(tmpdir):
+    """Test simulate call OSCO fetcher json data."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal-fetcher.config')
+    config.read(config_path)
+    section = config['task.osco-to-oscal']
+    section['output-dir'] = str(tmpdir)
+    tgt = osco_to_oscal.OscoToOscal(section)
+    retval = tgt.simulate()
+    assert retval == TaskOutcome.SIM_SUCCESS
+    assert len(os.listdir(str(tmpdir))) == 0
+    
 @patch(target='uuid.uuid4', new=uuid_mock1)
 def test_execute(tmpdir):
     """Test execute call."""
@@ -238,3 +250,22 @@ def test_execute_no_ouput_dir(tmpdir):
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
     assert len(os.listdir(str(tmpdir))) == 0
+
+@patch(target='uuid.uuid4', new=uuid_mock1)
+def test_execute_input_fetcher(tmpdir):
+    """Test execute call OSCO fetcher json data."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal-fetcher.config')
+    config.read(config_path)
+    section = config['task.osco-to-oscal']
+    section['output-dir'] = str(tmpdir)
+    tgt = osco_to_oscal.OscoToOscal(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    assert len(os.listdir(str(tmpdir))) == 2
+    f_expected = pathlib.Path('tests/data/tasks/osco/output-fetcher/') / 'ssg-ocp4-ds-cis-111.222.333.444-pod.json'
+    f_produced = tmpdir  / 'ssg-ocp4-ds-cis-111.222.333.444-pod.json'
+    assert [row for row in open(f_produced)] == [row for row in open(f_expected)]
+    f_expected = pathlib.Path('tests/data/tasks/osco/output-fetcher/') / 'ssg-ocp4-ds-cis-111.222.333.555-pod.json'
+    f_produced = tmpdir  / 'ssg-ocp4-ds-cis-111.222.333.555-pod.json'
+    assert [row for row in open(f_produced)] == [row for row in open(f_expected)]

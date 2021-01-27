@@ -1,0 +1,39 @@
+{
+  "iks": {
+    "demo2020": [
+      {
+        "account": "demo2020",
+        "name": "compliance-dev-dal10",
+        "region": "us-south",
+        "resources": [
+          {
+            "apiVersion": "v1",
+            "data": {
+              "exit-code": "2",
+              "results": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><TestResult></TestResult>"
+            },
+            "bogus": "ConfigMap",
+            "metadata": {
+              "annotations": {
+                "compliance-remediations/processed": "",
+                "compliance.openshift.io/scan-error-msg": "",
+                "compliance.openshift.io/scan-result": "NON-COMPLIANT",
+                "openscap-scan-result/node": "111.222.333.444"
+              },
+              "creationTimestamp": "2020-08-03T02:26:34Z",
+              "labels": {
+                "compliance-scan": "ssg-ocp4-ds-cis"
+              },
+              "name": "ssg-ocp4-ds-cis-111.222.333.444-pod",
+              "namespace": "openshift-compliance",
+              "resourceVersion": "22693328",
+              "selfLink": "/api/v1/namespaces/openshift-compliance/configmaps/ssg-ocp4-ds-cis-111.222.333.444-pod",
+              "uid": "1da3ea81-0a25-4512-ad86-7ac360246b5d"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+    
