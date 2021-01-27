@@ -39,7 +39,9 @@ from requests.auth import HTTPBasicAuth
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
+from trestle.core.models.file_content_type import FileContentType
 from trestle.core.settings import Settings
+from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
 
@@ -96,9 +98,14 @@ class FetcherBase(ABC):
 
     def get_raw(self) -> Dict[str, Any]:
         """Get the raw dictionary representing the underlying object."""
-        self._update_cache()
-        # Results are now in the cache.
-        pass
+        try:
+            self._update_cache()
+        except TrestleError as e:
+            logger.error(f'Cannot get_raw due to failed _update_cache for {self._uri}')
+            logger.debug(e)
+            raise TrestleError(f'Cache get failure for {self._uri}') from e
+        # Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().
+        return fs.load_file(self._inst_cache_path / pathlib.Path(pathlib.Path(self._uri).name))
 
     def get_oscal(self, model_type: Type[OscalBaseModel]) -> OscalBaseModel:
         """Retrieve the cached file as a particular OSCAL model."""
@@ -144,6 +151,8 @@ class LocalFetcher(FetcherBase):
 
     def _sync_cache(self) -> None:
         shutil.copy(self._abs_path, self._inst_cache_path)
+        # Update path attribute:
+        # self._inst_cache_path = self._inst_cache_path / pathlib.Path(self._uri).name
 
 
 class HTTPSFetcher(FetcherBase):

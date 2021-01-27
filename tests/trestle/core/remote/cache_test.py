@@ -30,11 +30,23 @@ from trestle.core.err import TrestleError
 from trestle.core.remote import cache
 from trestle.core.settings import Settings
 from trestle.oscal.catalog import Catalog
+from trestle.utils import fs
 
 
-def test_fetcher_base():
+def test_fetcher_base(tmp_trestle_dir):
     """Test whether fetcher can get an object from the cache."""
-    pass
+    # Fetch from local content, expecting it to be cached and then fetched.
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    catalog_file = pathlib.Path(tmp_trestle_dir / f'{rand_str}.json').__str__()
+    catalog_data = generators.generate_sample_model(Catalog)
+    catalog_data.oscal_write(pathlib.Path(catalog_file))
+    saved_data = fs.load_file(pathlib.Path(catalog_file))
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)
+    # Create/update the cache copy
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    fetched_data = fetcher.get_raw()
+    assert fetched_data == saved_data
 
 
 def test_github_fetcher():
