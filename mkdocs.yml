@@ -93,7 +93,7 @@ repo_name: IBM/compliance-trestle
 repo_url: https://github.com/IBM/compliance-trestle
 site_description: Documentation for compliance-trestle package.
 site_name: Compliance Trestle
-site_url: https://compliance-trestle.github.io
+site_url: https://ibm.github.io/compliance-trestle
 theme:
   name: material
   palette:
