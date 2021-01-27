@@ -506,9 +506,9 @@ For example, in the command `trestle merge -e catalog.metadata`, executed in the
 
 This command assembles all contents (files and directories) representing a specific model into a single OSCAL file located under `dist` folder. For example,
 
-> `$TRESTLE_BASEDIR$ trestle assemble catalog -i nist800-53`
+> `$TRESTLE_BASEDIR$ trestle assemble catalog -n nist800-53 -x json`
 
-will traverse the `catalogs/nist800-53` directory and its children and combine all data into a OSCAL file that will be written to `dist/catalogs/nist800-53.json`. Note that the parts of catalog `nist800-53` can be written in either YAML/JSON/XML (e.g. based on the file extension), however, the output will be generated as YAML/JSON/XML as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.
+will traverse the `catalogs/nist800-53` directory and its children and combine all data into a OSCAL file that will be written to `dist/catalogs/nist800-53.json`. Note that the parts of catalog `nist800-53` can be written in either YAML/JSON/XML (e.g. based on the file extension), however, the output will be generated as YAML/JSON/XML as desired, based on the file extension argument provided 'json', 'yml' or 'yaml'. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.
 
 #### `trestle add`
 
