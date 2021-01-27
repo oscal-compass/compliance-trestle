@@ -102,3 +102,20 @@ def test_assemble_execution_failure(testdata_dir: pathlib.Path, tmp_trestle_dir:
             'catalog', Catalog, argparse.Namespace(name='mycatalog', extension='json', verbose=1)
         )
         assert rc == 1
+
+
+def test_assemble_missing_top_model(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test assembling a catalog."""
+    test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
+    catalogs_dir = pathlib.Path('catalogs/')
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+    # Copy files from test/data/split_merge/step4
+    shutil.rmtree(catalogs_dir)
+    shutil.rmtree(pathlib.Path('dist'))
+    shutil.copytree(test_data_source, catalogs_dir)
+    (mycatalog_dir / 'catalog.json').unlink()
+
+    testargs = ['trestle', 'assemble', 'catalog', '-n', 'mycatalog', '-x', 'json']
+    with mock.patch.object(sys, 'argv', testargs):
+        rc = Trestle().run()
+        assert rc == 1
