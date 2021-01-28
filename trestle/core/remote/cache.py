@@ -29,7 +29,6 @@ import re
 import shutil
 import sys
 from abc import ABC, abstractmethod
-from json.decoder import JSONDecodeError
 from typing import Any, Dict, Type
 from urllib import parse
 
