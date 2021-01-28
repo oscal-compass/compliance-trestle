@@ -80,39 +80,39 @@ def test_replicate_cmd(testdata_dir, tmp_trestle_dir) -> None:
     assert len(list(dictdiffer.diff(expected_model_instance, rep_model_instance))) == 0
 
 
-def test_replicate_cmd2(tmp_trestle_dir: pathlib.Path) -> None:
-    """Happy path test at the cli level."""
-    # 1. Input file, profile:
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    profile_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
-    profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
-    profile_data.oscal_write(pathlib.Path(profile_file))
-    # 2. Input file, target:
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    target_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
-    target_data = generators.generate_sample_model(trestle.oscal.target.TargetDefinition)
-    target_data.oscal_write(pathlib.Path(target_file))
-    # Test 1
-    test_args = f'trestle replicate -f {profile_file} -o replicated'.split()
-    with patch.object(sys, 'argv', test_args):
-        rc = Trestle().run()
-        assert rc == 0
-    # Test 2
-    test_args = f'trestle replicate -f {target_file} -o replicated'.split()
-    with patch.object(sys, 'argv', test_args):
-        rc = Trestle().run()
-        assert rc == 0
+# def test_replicate_cmd2(tmp_trestle_dir: pathlib.Path) -> None:
+#     """Happy path test at the cli level."""
+#     # 1. Input file, profile:
+#     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+#     profile_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
+#     profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
+#     profile_data.oscal_write(pathlib.Path(profile_file))
+#     # 2. Input file, target:
+#     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+#     target_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
+#     target_data = generators.generate_sample_model(trestle.oscal.target.TargetDefinition)
+#     target_data.oscal_write(pathlib.Path(target_file))
+#     # Test 1
+#     test_args = f'trestle replicate -f {profile_file} -o replicated'.split()
+#     with patch.object(sys, 'argv', test_args):
+#         rc = Trestle().run()
+#         assert rc == 0
+#     # Test 2
+#     test_args = f'trestle replicate -f {target_file} -o replicated'.split()
+#     with patch.object(sys, 'argv', test_args):
+#         rc = Trestle().run()
+#         assert rc == 0
 
 
-def test_replicate_run(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test successful _run() on valid and invalid."""
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
-    catalog_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)
-    catalog_data.oscal_write(pathlib.Path(catalog_file))
-    i = repcmd.ReplicateCmd()
-    args = argparse.Namespace(file=catalog_file, output='replicated', verbose=True)
-    rc = i._run(args)
-    assert rc == 0
+# def test_replicate_run(tmp_trestle_dir: pathlib.Path) -> None:
+#     """Test successful _run() on valid and invalid."""
+#     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+#     catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
+#     catalog_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)
+#     catalog_data.oscal_write(pathlib.Path(catalog_file))
+#     i = repcmd.ReplicateCmd()
+#     args = argparse.Namespace(file=catalog_file, output='replicated', verbose=True)
+#     rc = i._run(args)
+#     assert rc == 0
 
 
