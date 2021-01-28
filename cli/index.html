@@ -11,10 +11,10 @@
       
       
       
-        <link rel="canonical" href="https://compliance-trestle.github.io/cli/">
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/cli/">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.5">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.6">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.15aa0b43.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.cb6bc1d0.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.75751829.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.39b8e14a.min.css">
         
           
           
@@ -81,7 +81,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href="https://compliance-trestle.github.io" title="Compliance Trestle" class="md-header-nav__button md-logo" aria-label="Compliance Trestle">
+    <a href="https://ibm.github.io/compliance-trestle" title="Compliance Trestle" class="md-header-nav__button md-logo" aria-label="Compliance Trestle">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -174,7 +174,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="https://compliance-trestle.github.io" title="Compliance Trestle" class="md-nav__button md-logo" aria-label="Compliance Trestle">
+    <a href="https://ibm.github.io/compliance-trestle" title="Compliance Trestle" class="md-nav__button md-logo" aria-label="Compliance Trestle">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -202,7 +202,6 @@
       
       
 
-
   
   
   
@@ -217,7 +216,6 @@
       
       
       
-
 
   
   
@@ -369,7 +367,6 @@
       
       
 
-
   
   
   
@@ -384,7 +381,6 @@
       
       
       
-
 
   
   
@@ -476,7 +472,6 @@
       
       
       
-
 
   
   
@@ -1364,15 +1359,15 @@
                 
                 <h1 id="trestle-cli">Trestle CLI<a class="headerlink" href="#trestle-cli" title="Permanent link">¤</a></h1>
 <h2 id="overview-usecases">Overview &amp; Usecases<a class="headerlink" href="#overview-usecases" title="Permanent link">¤</a></h2>
-<p>The trestle CLI has two primary usecases by design:</p>
+<p>The trestle CLI has two primary use cases by design:</p>
 <ul>
-<li>Tooling to generate and manipulate OSCAL files when used directly by and end user. The objective here is to reduce the complexity of creating and editing workflows. E.g. commands such as: <code>trestle import</code>, <code>trestle create</code>, <code>trestle add</code>, <code>trestle split</code>, <code>trestle merge</code>.</li>
-<li>The trestle CLI as an automation tool, which, by design is likely to occur as part of a CI-CD pipeline e.g. <code>trestle validate</code>, <code>trestle tasks</code>.</li>
+<li>Serve as tooling to generate and manipulate OSCAL files directly by an end user. The objective is to reduce the complexity of creating and editing workflows. Example commands are: <code>trestle import</code>, <code>trestle create</code>, <code>trestle add</code>, <code>trestle split</code>, <code>trestle merge</code>.</li>
+<li>Act as an automation tool that, by design, can be an integral part of a CI/CD pipeline e.g. <code>trestle validate</code>, <code>trestle tasks</code>.</li>
 </ul>
-<p>To support each of these usecases trestle, inspired by programming languages such as <code>python</code> and <code>go</code> as well as projects such as <code>auditree</code> has created an opinionated directory structure to manage OSCAL documents.</p>
+<p>To support each of these use cases trestle creates an opinionated directory structure to manage OSCAL documents.</p>
 <h2 id="opinionated-directory-structure">Opinionated directory structure<a class="headerlink" href="#opinionated-directory-structure" title="Permanent link">¤</a></h2>
-<p>Trestle relies on an opinionated directory structure, similar to <code>git</code> or <code>go</code>, to manage the workflow. Unlike git commands are not solely restricted to working within an initialized directory tree, however, it is most likely.</p>
-<p>The directory structure setup by trestle has three major elements</p>
+<p>Trestle relies on an opinionated directory structure, similar to <code>git</code>, <code>go</code>, or <code>auditree</code>, to manage the workflow. Unlike git commands, trestle commands are not restricted to working within an initialized directory tree - but that is the most likely use case.</p>
+<p>The directory structure setup by trestle has three major elements:</p>
 <ul>
 <li>A <code>.trestle</code> hidden folder.</li>
 <li>A <code>dist</code> folder.</li>
@@ -1398,24 +1393,24 @@
 ├── assessment-results
 └── plan-of-action-and-milestones
 </code></pre></div>
-<p><code>.trestle</code> directory is a special directory containing various trestle artefacts to help run various other commands. Examples include configuation files, caches and templates.</p>
-<p>The bulk of the folder structure is used to represent each of the <em>top level schemas</em> or <em>top level models</em> such as <code>catalogs</code> and <code>profiles</code>. For each of these directories the following root structure is maintained.</p>
+<p><code>.trestle</code> directory is a special directory containing various trestle artefacts to help run various other commands. Examples include configuration files, caches and templates.</p>
+<p>The bulk of the folder structure is used to represent each of the <em>top level schemas</em> or <em>top level models</em> such as <code>catalogs</code> and <code>profiles</code>. For each of these directories the following root structure is maintained:</p>
 <div class="highlight"><pre><span></span><code>├── .trestle
 └── TOP_LEVEL_MODEL_PLURAL
     └── NAME_OF_MODEL_INSTANCE
         └── TOP_LEVEL_MODEL_NAME.{json,yaml,yml}
 </code></pre></div>
-<p>which appears, for a catalog a user decides is titled nist-800-53 as:</p>
+<p>which appears, for a catalog a user decides is titled nist-800-53, as:</p>
 <div class="highlight"><pre><span></span><code>├── .trestle
 └── catalogs
     └── nist-800-53
         └── catalog.json
 </code></pre></div>
-<p><code>dist</code> directory will contain the assembled version of the models located on the source model directories (at the project root level) which are: <code>catalogs</code>, <code>profiles</code>, <code>target-definitions</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> and <code>plan-of-action-and-milestones</code>. The assumption is that each of the OSCAL files within this folder are ready to be read by external 3rd party tools.</p>
+<p><code>dist</code> directory will contain the assembled version of the models located on the source model directories (at the project root level) which are: <code>catalogs</code>, <code>profiles</code>, <code>target-definitions</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> and <code>plan-of-action-and-milestones</code>. The assumption is that each of the OSCAL files within this folder is ready to be read by external 3rd party tools.</p>
 <h3 id="support-for-subdivided-document-structures">Support for subdivided document structures<a class="headerlink" href="#support-for-subdivided-document-structures" title="Permanent link">¤</a></h3>
-<p>The files constructed by oscal can run into the tens of thousands of lines of yaml or formated json. At this size the
-files become completely unmanageable for users. To combat this trestle can <code>trestle split</code> file in the file system and merge those split files together.</p>
-<p>Directory structures such as the one below can represent oscal document structures. Users are strongly encourage to rely on split and merge to code these structures.</p>
+<p>The files constructed by OSCAL can run into the tens of thousands of lines of yaml or formatted json. At this size the
+files become completely unmanageable for users. To combat this, trestle can <code>trestle split</code> a file into many smaller files and later merge those split files together.</p>
+<p>Directory structures such as the one below can represent OSCAL document structures. Users are strongly encourage to rely on split and merge to code these structures.</p>
 <div class="highlight"><pre><span></span><code>.
 ├── .trestle
 ├── dist 
@@ -1448,7 +1443,7 @@ files become completely unmanageable for users. To combat this trestle can <code
 ...
 </code></pre></div>
 <h2 id="trestle-init"><code>trestle init</code><a class="headerlink" href="#trestle-init" title="Permanent link">¤</a></h2>
-<p>This command will create a trestle project in the current directory with necessary directory structure and trestle artefacts. For example, if we run <code>trestle init</code> in a directory, it will create a directory structure like below for different artefacts:</p>
+<p>This command will create a trestle project in the current directory with the necessary directory structure and trestle artefacts. For example, if we run <code>trestle init</code> in a directory, it will create the directory structure below for different artefacts:</p>
 <div class="highlight"><pre><span></span><code>.
 ├── .trestle
 ├── dist
@@ -1605,8 +1600,8 @@ The following option is required:</p>
 <h2 id="trestle-remove"><code>trestle remove</code><a class="headerlink" href="#trestle-remove" title="Permanent link">¤</a></h2>
 <p>The trestle remove command is the reversal of <code>trestle add</code>.</p>
 <h2 id="trestle-validate"><code>trestle validate</code><a class="headerlink" href="#trestle-validate" title="Permanent link">¤</a></h2>
-<p>Trestle validate is designed to perform a function to ensure integrity of a set of oscal files. This can be as simple as
-a schema validation within a single file or as complex as ensuring the integrity of a 'stack' of oscal files including potentially
+<p>Trestle validate is designed to perform a function to ensure integrity of a set of OSCAL files. This can be as simple as
+a schema validation within a single file or as complex as ensuring the integrity of a 'stack' of OSCAL files including potentially
 remote system state.</p>
 <p>Trestle validate the form `trestle validate -f FILE -i SPECIFIC_ITEM_OR_VALUE, --mode {duplicate or similar}</p>
 <p>and returns a non-zero return code on a validation failure. Mode is a list of validation modes that will be implemented as shown in the table below.</p>
@@ -1691,15 +1686,15 @@ remote system state.</p>
       
     </div>
     
-      <script src="../assets/javascripts/vendor.93c04032.min.js"></script>
-      <script src="../assets/javascripts/bundle.83e5331e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../assets/javascripts/vendor.53cc9318.min.js"></script>
+      <script src="../assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "..",
           features: [],
           search: Object.assign({
-            worker: "../assets/javascripts/worker/search.8c7e0a7e.min.js"
+            worker: "../assets/javascripts/worker/search.9c0e82ba.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>

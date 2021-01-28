@@ -11,10 +11,10 @@
       
       
       
-        <link rel="canonical" href="https://compliance-trestle.github.io/specifications/trestle-spec/">
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/specifications/trestle-spec/">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.5">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.6">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.15aa0b43.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.cb6bc1d0.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.75751829.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.39b8e14a.min.css">
         
           
           
@@ -81,7 +81,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href="https://compliance-trestle.github.io" title="Compliance Trestle" class="md-header-nav__button md-logo" aria-label="Compliance Trestle">
+    <a href="https://ibm.github.io/compliance-trestle" title="Compliance Trestle" class="md-header-nav__button md-logo" aria-label="Compliance Trestle">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -174,7 +174,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="https://compliance-trestle.github.io" title="Compliance Trestle" class="md-nav__button md-logo" aria-label="Compliance Trestle">
+    <a href="https://ibm.github.io/compliance-trestle" title="Compliance Trestle" class="md-nav__button md-logo" aria-label="Compliance Trestle">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -202,7 +202,6 @@
       
       
 
-
   
   
   
@@ -217,7 +216,6 @@
       
       
       
-
 
   
   
@@ -234,7 +232,6 @@
       
       
 
-
   
   
   
@@ -249,7 +246,6 @@
       
       
       
-
 
   
   
@@ -341,7 +337,6 @@
       
       
       
-
 
   
   
@@ -1754,9 +1749,9 @@ The following option is required:</p>
 <h4 id="trestle-assemble"><code>trestle assemble</code><a class="headerlink" href="#trestle-assemble" title="Permanent link">¤</a></h4>
 <p>This command assembles all contents (files and directories) representing a specific model into a single OSCAL file located under <code>dist</code> folder. For example,</p>
 <blockquote>
-<p><code>$TRESTLE_BASEDIR$ trestle assemble catalog -i nist800-53</code></p>
+<p><code>$TRESTLE_BASEDIR$ trestle assemble catalog -n nist800-53 -x json</code></p>
 </blockquote>
-<p>will traverse the <code>catalogs/nist800-53</code> directory and its children and combine all data into a OSCAL file that will be written to <code>dist/catalogs/nist800-53.json</code>. Note that the parts of catalog <code>nist800-53</code> can be written in either YAML/JSON/XML (e.g. based on the file extension), however, the output will be generated as YAML/JSON/XML as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.</p>
+<p>will traverse the <code>catalogs/nist800-53</code> directory and its children and combine all data into a OSCAL file that will be written to <code>dist/catalogs/nist800-53.json</code>. Note that the parts of catalog <code>nist800-53</code> can be written in either YAML/JSON/XML (e.g. based on the file extension), however, the output will be generated as YAML/JSON/XML as desired, based on the file extension argument provided 'json', 'yml' or 'yaml'. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.</p>
 <h4 id="trestle-add"><code>trestle add</code><a class="headerlink" href="#trestle-add" title="Permanent link">¤</a></h4>
 <p>This command allows users to add an OSCAL model to a subcomponent in source directory structure of the model. For example,</p>
 <blockquote>
@@ -1842,15 +1837,15 @@ The following option is required:</p>
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.93c04032.min.js"></script>
-      <script src="../../assets/javascripts/bundle.83e5331e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../../assets/javascripts/vendor.53cc9318.min.js"></script>
+      <script src="../../assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: "../..",
           features: [],
           search: Object.assign({
-            worker: "../../assets/javascripts/worker/search.8c7e0a7e.min.js"
+            worker: "../../assets/javascripts/worker/search.9c0e82ba.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>
