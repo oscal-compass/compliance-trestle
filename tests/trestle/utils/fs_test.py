@@ -23,6 +23,7 @@ from tests import test_utils
 
 from trestle.core.const import IDX_SEP
 from trestle.core.err import TrestleError
+from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog
 from trestle.utils import fs
 
@@ -464,3 +465,30 @@ def test_contextual_get_singular_alias(tmp_path: pathlib.Path) -> None:
     assert 'control' == fs.get_singular_alias(alias_path='group.controls.*.controls', contextual_mode=True)
 
     os.chdir(cwd)
+
+
+def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
+    """Test fs.get_contextual_file_type()."""
+    (tmp_path / 'file.json').touch()
+    with pytest.raises(TrestleError):
+        fs.get_contextual_file_type(pathlib.Path(tmp_path / 'gu.json'))
+    (tmp_path / 'file.json').unlink()
+
+    (tmp_path / '.trestle').mkdir()
+    (tmp_path / 'catalogs').mkdir()
+    catalogs_dir = tmp_path / 'catalogs'
+    (catalogs_dir / 'mycatalog').mkdir()
+    mycatalog_dir = catalogs_dir / 'mycatalog'
+
+    pathlib.Path(mycatalog_dir / 'file2.json').touch()
+    assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.JSON
+    (mycatalog_dir / 'file2.json').unlink()
+
+    pathlib.Path(mycatalog_dir / 'file3.yml').touch()
+    assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.YAML
+    (mycatalog_dir / 'file3.yml').unlink()
+
+    (mycatalog_dir / 'catalog').mkdir()
+    (mycatalog_dir / 'catalog/groups').mkdir()
+    (mycatalog_dir / 'catalog/groups/file4.yaml').touch()
+    assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.YAML
