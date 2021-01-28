@@ -53,7 +53,8 @@ def test_settings_env_file():
     assert (env_file_path.is_file())
 
     settings = Settings(_env_file=env_file_path)
-    assert(len(settings.GITHUB_TOKENS) == 1)
+    assert (len(settings.GITHUB_TOKENS) == 1)
+
 
 def test_settings_env_variable():
     """Test ability to override .env file settings with environment variable."""
@@ -63,4 +64,4 @@ def test_settings_env_variable():
     token = str(uuid4())
     os.environ["TRESTLE_GITHUB_TOKENS"] = f'{{ "github.com": "{token}" }}'
     settings = Settings(_env_file=env_file_path)
-    assert(settings.GITHUB_TOKENS["github.com"] == token)
+    assert (settings.GITHUB_TOKENS["github.com"] == token)

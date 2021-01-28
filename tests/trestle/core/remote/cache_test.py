@@ -32,6 +32,50 @@ from trestle.core.settings import Settings
 from trestle.oscal.catalog import Catalog
 
 
+def test_fetcher_oscal(tmp_trestle_dir):
+    """Test whether fetcher can get an object from the cache as an oscal model."""
+    # Fetch from local content, expecting it to be cached and then fetched as an oscal model.
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    catalog_file = pathlib.Path(tmp_trestle_dir / f'{rand_str}.json').__str__()
+    catalog_data = generators.generate_sample_model(Catalog)
+    catalog_data.oscal_write(pathlib.Path(catalog_file))
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)
+    # Create/update the cache copy
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    fetcher._update_cache()
+    fetched_data = fetcher.get_oscal(Catalog)
+    # Make last_modified identical then compare as this alone is expected to differ:
+    fetched_data.metadata.last_modified = catalog_data.metadata.last_modified
+    assert fetched_data == catalog_data
+
+
+def test_fetcher_oscal_fails(tmp_trestle_dir):
+    """Test whether fetcher can get an object from the cache as an oscal model."""
+    # Fetch from local content, expecting it to be cached and then fetched as an oscal model.
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    catalog_file = pathlib.Path(tmp_trestle_dir / f'{rand_str}.json').__str__()
+    catalog_data = generators.generate_sample_model(Catalog)
+    catalog_data.oscal_write(pathlib.Path(catalog_file))
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)
+    # Create/update the cache copy
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    fetcher._update_cache()
+    # 1. What if cache file does not exist?
+    with patch('pathlib.Path.exists') as path_exists_mock:
+        path_exists_mock.return_value = False
+        with pytest.raises(err.TrestleError):
+            fetched_data = fetcher.get_oscal(Catalog)
+        path_exists_mock.assert_called_once()
+    # 2. What if oscal_read of cache file throws TrestleError?
+    with patch('trestle.oscal.catalog.Catalog.oscal_read') as oscal_read_mock:
+        oscal_read_mock.side_effect = err.TrestleError
+        with pytest.raises(err.TrestleError):
+            fetched_data = fetcher.get_oscal(Catalog)
+        oscal_read_mock.assert_called_once()
+
+
 def test_fetcher_base():
     """Test whether fetcher can get an object from the cache."""
     pass
@@ -180,7 +224,6 @@ def test_fetcher_bad_uri(tmp_trestle_dir):
 
 def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
     settings = Settings()
-
     """Test that the fetcher factory correctly resolves functionality."""
     local_uri_1 = 'file:///home/user/oscal_file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_1, settings, False, False)
