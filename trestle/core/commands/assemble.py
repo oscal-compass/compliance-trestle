@@ -181,7 +181,8 @@ class AssembleCmd(Command):
 
         # distributed load
         _, _, assembled_model = load_distributed(root_model_filepath)
-        assembled_model_filepath = trestle_root / const.TRESTLE_DIST_DIR / f'{model_alias}.{args.extension}'
+        assembled_model_dir = trestle_root / const.TRESTLE_DIST_DIR / f'{model_alias}s'
+        assembled_model_filepath = assembled_model_dir / f'{args.name}.{args.extension}'
 
         plan = Plan()
         plan.add_action(CreatePathAction(assembled_model_filepath, True))
