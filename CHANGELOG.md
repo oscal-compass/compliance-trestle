@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.7.1 (2021-02-02)
+### Fix
+* Assembly behaviour correction and devops fixes. ([`ac3828d`](https://github.com/IBM/compliance-trestle/commit/ac3828de66874807b70ee372be51976a724322d1))
+
 ## v0.7.0 (2021-01-28)
 ### Feature
 * Trestle assemble implemented and documented. ([`e752bc2`](https://github.com/IBM/compliance-trestle/commit/e752bc2a6923c05c6251622499137d0c40633467))
