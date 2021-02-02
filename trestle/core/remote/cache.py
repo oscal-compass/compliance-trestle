@@ -26,7 +26,6 @@ import os
 import pathlib
 import re
 import shutil
-import sys
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Type
 from urllib import parse
@@ -41,7 +40,6 @@ from requests.auth import HTTPBasicAuth
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.core.remote import cache
 from trestle.core.settings import Settings
 from trestle.utils import fs
 
@@ -108,11 +106,11 @@ class FetcherBase(ABC):
             logger.debug(e)
             raise TrestleError(f'Cache get failure for {self._uri}') from e
         # Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().
-        return fs.load_file(self._inst_cache_path / pathlib.Path(pathlib.Path(self._uri).name))
+        return fs.load_file(self._inst_cache_path)
 
     def get_oscal(self, model_type: Type[OscalBaseModel]) -> OscalBaseModel:
         """Retrieve the cached file as a particular OSCAL model."""
-        cache_file = self._inst_cache_path / pathlib.Path(pathlib.Path(self._uri).name)
+        cache_file = self._inst_cache_path
         if cache_file.exists():
             try:
                 return model_type.oscal_read(cache_file)
