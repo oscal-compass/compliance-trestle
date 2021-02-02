@@ -160,7 +160,7 @@ class LocalFetcher(FetcherBase):
         cache_location_string_relative = cache_location_string[non_slash_start:]
         localhost_cached_dir = localhost_cached_dir / pathlib.Path(cache_location_string_relative)
         localhost_cached_dir.mkdir(parents=True, exist_ok=True)
-        self._inst_cache_path = localhost_cached_dir
+        self._inst_cache_path = localhost_cached_dir / pathlib.Path(pathlib.Path(self._uri).name)
 
     def _sync_cache(self) -> None:
         shutil.copy(self._abs_path, self._inst_cache_path)
@@ -285,7 +285,7 @@ class SFTPFetcher(FetcherBase):
         path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0]:]).parent
         localhost_cached_dir = localhost_cached_dir / path_parent
         localhost_cached_dir.mkdir(parents=True, exist_ok=True)
-        self._inst_cache_path = localhost_cached_dir
+        self._inst_cache_path = localhost_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
 
     def _sync_cache(self) -> None:
         u = parse.urlparse(self._uri)
@@ -300,7 +300,7 @@ class SFTPFetcher(FetcherBase):
                 logger.debug(e)
                 raise TrestleError(f'Cache update failure for {self._uri}')
 
-        elif 'SSH_KEY' not in os.environ and self._inst_cache_path.exists() and self._refresh:
+        elif 'SSH_KEY' not in os.environ and self._inst_cache_path.parent.exists() and self._refresh:
             try:
                 client.load_system_host_keys()
             except Exception as e:
@@ -336,7 +336,7 @@ class SFTPFetcher(FetcherBase):
             logger.debug(e)
             raise TrestleError(f'Cache update failure to open sftp for {username}@{u.hostname}')
 
-        localpath = self._inst_cache_path / pathlib.Path(u.path).name
+        localpath = self._inst_cache_path
         try:
             sftp_client.get(remotepath=u.path[1:], localpath=(localpath.__str__()))
         except Exception as e:

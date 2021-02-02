@@ -15,10 +15,12 @@
 # limitations under the License.
 """Testing for cache functionality."""
 
+import os
 import pathlib
 import random
 import string
 from unittest.mock import patch
+from urllib import parse
 
 import pytest
 
