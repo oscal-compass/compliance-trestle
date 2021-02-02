@@ -7,6 +7,7 @@ from pydantic import BaseModel, BaseSettings, Field
 class Settings(BaseSettings):
     tmp_dir: str = './tmp'
     GITHUB_TOKENS: Optional[Dict[str, str]] = {}
+
     # [catalog]
     # decomposition_rules: List[str] = ['catalog.groups.*.controls.*']
     # create_number_of_groups: int = 2
