@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.assemble/">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.6">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.7">
     
     
       
@@ -1760,7 +1760,10 @@
 
     <span class="c1"># distributed load</span>
     <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">assembled_model</span> <span class="o">=</span> <span class="n">load_distributed</span><span class="p">(</span><span class="n">root_model_filepath</span><span class="p">)</span>
-    <span class="n">assembled_model_filepath</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_DIST_DIR</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">model_alias</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">extension</span><span class="si">}</span><span class="s1">'</span>
+    <span class="n">plural_alias</span> <span class="o">=</span> <span class="n">model_alias</span> <span class="k">if</span> <span class="n">model_alias</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'s'</span> <span class="k">else</span> <span class="n">model_alias</span> <span class="o">+</span> <span class="s1">'s'</span>
+    <span class="n">assembled_model_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_DIST_DIR</span> <span class="o">/</span> <span class="n">plural_alias</span>
+
+    <span class="n">assembled_model_filepath</span> <span class="o">=</span> <span class="n">assembled_model_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">extension</span><span class="si">}</span><span class="s1">'</span>
 
     <span class="n">plan</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">()</span>
     <span class="n">plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">CreatePathAction</span><span class="p">(</span><span class="n">assembled_model_filepath</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
