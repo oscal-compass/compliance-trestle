@@ -106,7 +106,12 @@ class FetcherBase(ABC):
             logger.debug(e)
             raise TrestleError(f'Cache get failure for {self._uri}') from e
         # Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().
-        return fs.load_file(self._inst_cache_path)
+        try:
+            return fs.load_file(self._inst_cache_path)
+        except Exception as e:
+            logger.error(f'Cannot fs.load_file {self._inst_cache_path}')
+            logger.debug(e)
+            raise TrestleError(f'Cache get failure for {self._uri}') from e
 
     def get_oscal(self, model_type: Type[OscalBaseModel]) -> OscalBaseModel:
         """Retrieve the cached file as a particular OSCAL model."""

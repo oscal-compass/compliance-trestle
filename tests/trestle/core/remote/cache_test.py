@@ -96,6 +96,20 @@ def test_github_fetcher():
     pass
 
 
+def test_local_fetcher_get_fails(tmp_trestle_dir):
+    """Test the local fetcher."""
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    catalog_file = pathlib.Path(tmp_trestle_dir / f'{rand_str}.json').__str__()
+    catalog_data = generators.generate_sample_model(Catalog)
+    catalog_data.oscal_write(pathlib.Path(catalog_file))
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)
+    fetcher._cache_only = True
+    with pytest.raises(err.TrestleError):
+        fetcher.get_raw()
+    with pytest.raises(err.TrestleError):
+        fetcher.get_oscal(Catalog)
+
+
 def test_local_fetcher(tmp_trestle_dir):
     """Test the local fetcher."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
@@ -104,6 +118,7 @@ def test_local_fetcher(tmp_trestle_dir):
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)
     fetcher._refresh = True
+    fetcher._cache_only = False
     fetcher._update_cache()
     assert fetcher._inst_cache_path.exists()
 
@@ -117,7 +132,7 @@ def test_sftp_fetcher(tmp_trestle_dir):
     with patch('paramiko.SSHClient.load_system_host_keys') as ssh_load_keys_mock:
         with patch('paramiko.SSHClient.connect') as ssh_connect_mock:
             with patch('paramiko.SSHClient.open_sftp') as sftp_open_mock:
-                with patch('paramiko.SFTPClient.get') as sftp_get_mock:
+                with patch('paramiko.SFTPClient.get'):
                     try:
                         fetcher._update_cache()
                     except Exception:
