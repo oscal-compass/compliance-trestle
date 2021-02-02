@@ -71,7 +71,7 @@ class ProfileCmd(Command):
     name = 'profile'
 
     def _run(self, args: argparse.Namespace) -> int:
-        logger.info(f'Replicating profile {args.file} to: {args.name}')
+        logger.info(f'Replicating profile {args.file} to: {args.output}')
         return ReplicateCmd.replicate_object(self.name, profile.Profile, args)
 
 
@@ -178,10 +178,14 @@ class ReplicateCmd(Command):
             plural_path = model_alias + 's'
 
         # 1.1 Check that input file given exists.
-        input_file = trestle_root / plural_path / args.file / (model_alias + '.json')
-        if not input_file.exists():
-            logger.error(f'Input file {args.file} does not exist at expected location {input_file}.')
+
+        input_file_stem = trestle_root / plural_path / args.file / model_alias
+        content_type = FileContentType.path_to_content_type(input_file_stem)
+        if content_type == FileContentType.UNKNOWN:
+            logger.error(f'Input file {args.file} has no json or yaml file at expected location {input_file_stem}.')
             return 1
+
+        input_file = input_file_stem.with_suffix(FileContentType.to_file_extension(content_type))
 
         # 2. File to be replicated must be in current trestle directory.
         try:
@@ -190,17 +194,7 @@ class ReplicateCmd(Command):
             logger.error('Input file must be in current trestle project. Use import instead.')
             return 1
 
-        # 3. Work out typing information from input suffix.
-        # try:
-        #     content_type = FileContentType.to_content_type(input_file.suffix)
-        # except TrestleError as err:
-        #     logger.debug(f'FileContentType.to_content_type() failed: {err}')
-        #     logger.error(f'Import failed, could not work out content type from file suffix: {err}')
-        #     return 1
-
-        # 4. Load input and parse for model
-
-        # 4.1 Distributed load from file
+        # 4. Distributed load from file
 
         try:
             model_type, model_alias, model_instance = load_distributed(input_file.absolute())
@@ -217,18 +211,13 @@ class ReplicateCmd(Command):
             logger.error(f'Replicate failed, access permission error loading file: {err}')
             return 1
 
-        rep_model_path = trestle_root / plural_path / args.output / (model_alias + '.json')
+        rep_model_path = trestle_root / plural_path / args.output / (
+            model_alias + FileContentType.to_file_extension(content_type)
+        )
 
         if rep_model_path.exists():
             logger.error(f'OSCAL file to be replicated here: {rep_model_path} exists.')
             logger.error('Aborting trestle replicate.')
-            return 1
-
-        try:
-            content_type = FileContentType.to_content_type('.json')
-        except TrestleError as err:
-            logger.debug(f'FileContentType.to_content_type() failed: {err}')
-            logger.error(f'Import failed, could not work out content type from file suffix: {err}')
             return 1
 
         # 6. Prepare actions and plan
