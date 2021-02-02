@@ -15,45 +15,10 @@
 # limitations under the License.
 
 
-develop:
-	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager
-
-pre-commit: 
-	pre-commit install
-	pre-commit autoupdate
-
 install:
 	python -m pip install  --upgrade pip setuptools
-	python -m pip install . --upgrade --upgrade-strategy eager
-
-code-format:
-	pre-commit run yapf --all-files
-
-code-lint:
-	pre-commit run flake8 --all-files
-
-code-typing:
-	mypy --pretty trestle
+	python -m pip install compliance-trestle --upgrade --upgrade-strategy eager
 
 test::
-	python -m pytest --cov trestle tests --cov-report=xml --exitfirst --random-order
-test-verbose:
-	python -m pytest --cov trestle tests -v --cov-report=term-missing --cov-report=html:cov_html --exitfirst
+	python scripts/trestle_assemble_all.py
 
-release::
-	git config --global user.name "semantic-release (via Github actions)"
-	git config --global user.email "semantic-release@github-actions"
-	semantic-release publish
-
-gen-oscal::
-	python ./scripts/gen_oscal.py
-
-docs-automation::
-	python ./scripts/website_automation.py
-
-docs-validate::
-	mkdocs build -c -s
-	rm -rf site
-
-docs-serve: docs-automation
-	mkdocs serve	
