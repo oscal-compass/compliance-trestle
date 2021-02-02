@@ -67,13 +67,13 @@ def test_fetcher_oscal_fails(tmp_trestle_dir):
     with patch('pathlib.Path.exists') as path_exists_mock:
         path_exists_mock.return_value = False
         with pytest.raises(err.TrestleError):
-            fetched_data = fetcher.get_oscal(Catalog)
+            fetcher.get_oscal(Catalog)
         path_exists_mock.assert_called_once()
     # 2. What if oscal_read of cache file throws TrestleError?
     with patch('trestle.oscal.catalog.Catalog.oscal_read') as oscal_read_mock:
         oscal_read_mock.side_effect = err.TrestleError
         with pytest.raises(err.TrestleError):
-            fetched_data = fetcher.get_oscal(Catalog)
+            fetcher.get_oscal(Catalog)
         oscal_read_mock.assert_called_once()
 
 
@@ -179,12 +179,8 @@ def test_sftp_fetcher_connect_fails(tmp_trestle_dir):
     fetcher._cache_only = False
     with patch('paramiko.SSHClient.connect') as ssh_connect_mock:
         ssh_connect_mock.side_effect = err.TrestleError('stuff')
-        try:
+        with pytest.raises(err.TrestleError):
             fetcher._update_cache()
-        except Exception:
-            assert True
-        else:
-            AssertionError
 
 
 def test_sftp_fetcher_open_sftp_fails(tmp_trestle_dir):
@@ -195,12 +191,8 @@ def test_sftp_fetcher_open_sftp_fails(tmp_trestle_dir):
     fetcher._cache_only = False
     with patch('paramiko.SSHClient.open_sftp') as sftp_open_mock:
         sftp_open_mock.side_effect = err.TrestleError('stuff')
-        try:
+        with pytest.raises(err.TrestleError):
             fetcher._update_cache()
-        except Exception:
-            assert True
-        else:
-            AssertionError
 
 
 def test_sftp_fetcher_get_fails(tmp_trestle_dir):
@@ -211,12 +203,8 @@ def test_sftp_fetcher_get_fails(tmp_trestle_dir):
     fetcher._cache_only = False
     with patch('paramiko.sftp_client.SFTPClient.get') as sftp_get_mock:
         sftp_get_mock.side_effect = err.TrestleError('stuff')
-        try:
+        with pytest.raises(err.TrestleError):
             fetcher._update_cache()
-        except Exception:
-            assert True
-        else:
-            AssertionError
 
 
 def test_fetcher_bad_uri(tmp_trestle_dir):
@@ -235,8 +223,9 @@ def test_fetcher_bad_uri(tmp_trestle_dir):
 
 
 def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
-    settings = Settings()
     """Test that the fetcher factory correctly resolves functionality."""
+    settings = Settings()
+
     local_uri_1 = 'file:///home/user/oscal_file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_1, settings, False, False)
     assert type(fetcher) == cache.LocalFetcher

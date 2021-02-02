@@ -21,7 +21,6 @@ Allows for using uris to reference external directories and then expand.
 
 import errno
 import getpass
-import json
 import logging
 import os
 import pathlib
@@ -32,12 +31,14 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, Type
 from urllib import parse
 
-import paramiko
-import requests
 from furl import furl
+
+import paramiko
+
+import requests
 from requests.auth import HTTPBasicAuth
+
 from trestle.core import const
-from trestle.core import parser
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.settings import Settings
