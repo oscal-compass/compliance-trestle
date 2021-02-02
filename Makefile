@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 develop:
 	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager
 
@@ -37,6 +36,7 @@ code-typing:
 
 test::
 	python -m pytest --cov trestle tests --cov-report=xml --exitfirst --random-order
+
 test-verbose:
 	python -m pytest --cov trestle tests -v --cov-report=term-missing --cov-report=html:cov_html --exitfirst
 
@@ -54,6 +54,7 @@ docs-automation::
 docs-validate::
 	mkdocs build -c -s
 	rm -rf site
+
 
 docs-serve: docs-automation
 	mkdocs serve	
