@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.7.2 (2021-02-02)
+### Fix
+* DevOps fixes onto main ([#334](https://github.com/IBM/compliance-trestle/issues/334)) ([`74df375`](https://github.com/IBM/compliance-trestle/commit/74df375c15ad0bc2f0fb8c54e1ed83faf11d66e4))
+
 ## v0.7.1 (2021-02-02)
 ### Fix
 * Assembly behaviour correction and devops fixes. ([`ac3828d`](https://github.com/IBM/compliance-trestle/commit/ac3828de66874807b70ee372be51976a724322d1))
