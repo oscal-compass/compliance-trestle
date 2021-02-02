@@ -150,8 +150,6 @@ class LocalFetcher(FetcherBase):
 
     def _sync_cache(self) -> None:
         shutil.copy(self._abs_path, self._inst_cache_path)
-        # Update path attribute:
-        # self._inst_cache_path = self._inst_cache_path / pathlib.Path(self._uri).name
 
 
 class HTTPSFetcher(FetcherBase):
