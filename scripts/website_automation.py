@@ -84,5 +84,5 @@ if __name__ == '__main__':
     structer = create_module_markdowns(pathlib.Path('trestle'), 'trestle', pathlib.Path('docs/api_reference'))
     update_mkdocs_meta(pathlib.Path('mkdocs.yml'), structer)
     # Ensure single source of truth for license file
-    md_txt(pathlib.Path('license'), pathlib.Path('docs/license.md'))
+    md_txt(pathlib.Path('LICENSE'), pathlib.Path('docs/license.md'))
     md_txt(pathlib.Path('DCO1.1.txt'), pathlib.Path('docs/contributing/DCO.md'))

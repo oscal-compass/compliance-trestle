@@ -65,7 +65,7 @@ def test_assemble_catalog(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.P
         assert rc == 0
 
     # Read assembled model
-    actual_model = Catalog.oscal_read(pathlib.Path('dist/catalog.json'))
+    actual_model = Catalog.oscal_read(pathlib.Path('dist/catalogs/mycatalog.json'))
     _, _, expected_model = load_distributed(mycatalog_dir / 'catalog.json')
 
     assert actual_model == expected_model
