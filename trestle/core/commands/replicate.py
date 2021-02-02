@@ -130,7 +130,7 @@ class PlanOfActionAndMilestonesCmd(Command):
 
 
 class ReplicateCmd(Command):
-    """Replicate an existing top level OSCAL model within the trestle project."""
+    """Replicate a top level model within the trestle directory structure."""
 
     name = 'replicate'
 
@@ -157,7 +157,17 @@ class ReplicateCmd(Command):
 
     @classmethod
     def replicate_object(cls, model_alias: str, object_type: Type[TLO], args: argparse.Namespace) -> int:
-        """Core replicate routine invoked by subcommands."""
+        """
+        Core replicate routine invoked by subcommands.
+
+        Args:
+            model_alias: Name of the top level model in the trestle directory.
+            object_type: Type of object as trestle model
+
+        Returns:
+            A return code that can be used as standard posix codes. 0 is success.
+
+        """
         log.set_log_level_from_args(args)
 
         logger.debug('Entering replicate_object.')
@@ -171,11 +181,7 @@ class ReplicateCmd(Command):
 
         trestle_root = trestle_root.resolve()
 
-        plural_path: str
-        plural_path = model_alias
-        # Cater to POAM
-        if model_alias[-1] != 's':
-            plural_path = model_alias + 's'
+        plural_path = model_alias if model_alias[-1] == 's' else model_alias + 's'
 
         # 1.1 Check that input file given exists.
 
