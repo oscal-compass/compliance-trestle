@@ -62,7 +62,7 @@ class InitCmd(Command):
             directory_list.append(pathlib.Path(model_dir))
             directory_list.append(pathlib.Path(const.TRESTLE_DIST_DIR) / model_dir)
 
-        # Create directories
+        # Create directories and .keep files
         for directory in directory_list:
             directory.mkdir(parents=True, exist_ok=True)
             filename = str(directory) + '/.keep'
