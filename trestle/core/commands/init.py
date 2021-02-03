@@ -65,6 +65,9 @@ class InitCmd(Command):
         # Create directories
         for directory in directory_list:
             directory.mkdir(parents=True, exist_ok=True)
+            filename = str(directory) + '/.keep'
+            f = open(filename, 'w+')
+            f.close()
 
     def _copy_config_file(self) -> None:
         """Copy the initial config.ini file to .trestle directory."""
