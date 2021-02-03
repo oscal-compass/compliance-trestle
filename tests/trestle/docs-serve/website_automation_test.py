@@ -22,10 +22,13 @@ from click.testing import CliRunner
 
 from mkdocs import __main__ as cli
 
+
 def _webserver():
-    CliRunner().invoke(cli.cli, ["serve"], catch_exceptions=False)
-    
+    CliRunner().invoke(cli.cli, ['serve'], catch_exceptions=False)
+
+
 def test_website_automation(tmpdir):
+    """Test website boot and usability."""
     p = multiprocessing.Process(target=_webserver)
     p.start()
     try:
@@ -35,7 +38,7 @@ def test_website_automation(tmpdir):
             retrys += 1
             try:
                 connection = http.client.HTTPConnection('localhost', 8000, timeout=60)
-                connection.request("GET", "/")
+                connection.request('GET', '/')
                 response = connection.getresponse()
                 break
             except Exception as e:
@@ -46,9 +49,8 @@ def test_website_automation(tmpdir):
             raise Exception(f'status: {response.status}')
         if response.reason != 'OK':
             raise Exception(f'reason: {response.reason}')
-        body = response.read().decode("utf-8") 
+        body = response.read().decode('utf-8')
         if '<meta name="description" content="Documentation for compliance-trestle package.">' not in body:
             raise Exception(f'body: {body}')
     finally:
         p.terminate()
-    
