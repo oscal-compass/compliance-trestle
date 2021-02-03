@@ -232,22 +232,22 @@ class ReplicateCmd(Command):
         write_action = WriteFileAction(rep_model_path.absolute(), top_element, content_type)
 
         # create a plan to create the directory and imported file.
-        import_plan = Plan()
-        import_plan.add_action(create_action)
-        import_plan.add_action(write_action)
+        replicate_plan = Plan()
+        replicate_plan.add_action(create_action)
+        replicate_plan.add_action(write_action)
 
         try:
-            import_plan.simulate()
+            replicate_plan.simulate()
         except TrestleError as err:
-            logger.debug(f'import_plan.simulate() failed: {err}')
-            logger.error(f'Import failed, error in testing import operation: {err}')
+            logger.debug(f'replicate_plan.simulate() failed: {err}')
+            logger.error(f'Replicate failed, error in simulating replicate operation: {err}')
             return 1
 
         try:
-            import_plan.execute()
+            replicate_plan.execute()
         except TrestleError as err:
-            logger.debug(f'import_plan.execute() failed: {err}')
-            logger.error(f'Import failed, error in actual import operation: {err}')
+            logger.debug(f'replicate_plan.execute() failed: {err}')
+            logger.error(f'Replicate failed, error in executing replication operation: {err}')
             return 1
 
         return 0
