@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle file content type module."""
+from pathlib import Path
+
 import pytest
 
 from trestle.core.err import TrestleError
@@ -36,3 +38,25 @@ def test_to_file_extension():
 
     with pytest.raises(TrestleError):
         FileContentType.to_file_extension(-1)
+
+
+def test_path_to_file_content_type(tmp_trestle_dir: Path):
+    """Test path_to_file_content_type method."""
+    tmp_stem = tmp_trestle_dir / 'content_type_test'
+
+    tmp_file = tmp_stem.with_suffix('.json')
+    tmp_file.touch()
+    assert FileContentType.JSON == FileContentType.path_to_content_type(tmp_stem)
+    tmp_file.unlink()
+
+    tmp_file = tmp_stem.with_suffix('.yaml')
+    tmp_file.touch()
+    assert FileContentType.YAML == FileContentType.path_to_content_type(tmp_stem)
+    tmp_file.unlink()
+
+    tmp_file = tmp_stem.with_suffix('.yml')
+    tmp_file.touch()
+    assert FileContentType.YAML == FileContentType.path_to_content_type(tmp_stem)
+    tmp_file.unlink()
+
+    assert FileContentType.UNKNOWN == FileContentType.path_to_content_type(tmp_stem)
