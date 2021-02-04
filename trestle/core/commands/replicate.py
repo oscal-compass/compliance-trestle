@@ -193,13 +193,6 @@ class ReplicateCmd(Command):
 
         input_file = input_file_stem.with_suffix(FileContentType.to_file_extension(content_type))
 
-        # 2. File to be replicated must be in current trestle directory.
-        try:
-            input_file.absolute().relative_to(trestle_root)
-        except ValueError:
-            logger.error('Input file must be in current trestle project. Use import instead.')
-            return 1
-
         # 4. Distributed load from file
 
         try:
