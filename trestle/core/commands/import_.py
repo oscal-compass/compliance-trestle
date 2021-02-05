@@ -21,9 +21,8 @@ from json.decoder import JSONDecodeError
 
 from ilcli import Command  # type: ignore
 
-import trestle.core.validator_factory as vfact
-from trestle.core import parser
 import trestle.core.commands.validate as validatecmd
+from trestle.core import parser
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
@@ -175,7 +174,7 @@ class ImportCmd(Command):
             rc = validatecmd.ValidateCmd()._run(args)
         except TrestleError as err:
             logger.debug(f'validator.validate() raised exception: {err}')
-            logger.error(f'Import of input file {str(input_file.absolute())} failed, validation failed with error: {err}')
+            logger.error(f'Import of {str(input_file.absolute())} failed, validation failed with error: {err}')
             rollback = True
         else:
             if rc > 0:
@@ -183,13 +182,13 @@ class ImportCmd(Command):
                 logger.error(f'Validation of imported file {desired_model_path.absolute()} failed')
                 rollback = True
 
-        if rollback == True:
+        if rollback:
             logger.debug(f'Rolling back import of {str(input_file.absolute())} to {desired_model_path.absolute()}')
             try:
                 import_plan.rollback()
             except TrestleError as err:
                 logger.debug(f'Failed rollback attempt with error: {err}')
-                logger.error(f'Failed to rollback: {err}. Remove {desired_model_path.absolute()} to resolve inconsistent state.')
+                logger.error(f'Failed to rollback: {err}. Remove {desired_model_path.absolute()} to resolve state.')
             return 1
         else:
             logger.debug(f'Successful rollback of import to {desired_model_path.absolute()}')
