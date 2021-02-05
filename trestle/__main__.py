@@ -16,5 +16,11 @@
 
 import trestle.cli
 
-if __name__ == '__main__':
-    trestle.cli.run()
+
+def init():
+    """Initialize trestle CLI."""
+    if __name__ == '__main__':
+        trestle.cli.run()
+
+
+init()

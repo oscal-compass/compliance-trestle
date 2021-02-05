@@ -1,0 +1,77 @@
+{
+    "control": {
+        "id": "sc-44",
+        "class": "SP800-53",
+        "title": "Detonation Chambers",
+        "params": [
+            {
+                "id": "sc-44_prm_1",
+                "label": "organization-defined system, system component, or location"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-44"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-44"
+            }
+        ],
+        "links": [
+            {
+                "href": "#1c71b420-2bd9-4e52-9fc8-390f58b85b59",
+                "rel": "reference"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-18",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-25",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-26",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-30",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-35",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-39",
+                "rel": "related"
+            },
+            {
+                "href": "#si-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-44_smt",
+                "name": "statement",
+                "prose": "Employ a detonation chamber capability within {{ sc-44_prm_1 }}."
+            },
+            {
+                "id": "sc-44_gdn",
+                "name": "guidance",
+                "prose": "Detonation chambers, also known as dynamic execution environments, allow organizations to open email attachments, execute untrusted or suspicious applications, and execute Universal Resource Locator requests in the safety of an isolated environment or a virtualized sandbox. Protected and isolated execution environments provide a means of determining whether the associated attachments or applications contain malicious code. While related to the concept of deception nets, the employment of detonation chambers is not intended to maintain a long-term environment in which adversaries can operate and their actions can be observed. Rather, detonation chambers are intended to quickly identify malicious code and either reduce the likelihood that the code is propagated to user environments of operation or prevent such propagation completely."
+            }
+        ]
+    }
+}

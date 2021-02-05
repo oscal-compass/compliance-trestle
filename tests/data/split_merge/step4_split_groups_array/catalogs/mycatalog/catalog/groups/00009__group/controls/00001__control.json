@@ -1,0 +1,173 @@
+{
+    "control": {
+        "id": "mp-2",
+        "class": "SP800-53",
+        "title": "Media Access",
+        "params": [
+            {
+                "id": "mp-2_prm_1",
+                "label": "organization-defined types of digital and/or non-digital media"
+            },
+            {
+                "id": "mp-2_prm_2",
+                "label": "organization-defined personnel or roles"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "MP-2"
+            },
+            {
+                "name": "sort-id",
+                "value": "mp-02"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
+                "rel": "reference"
+            },
+            {
+                "href": "#22f2d4f0-4365-4e88-a30d-275c1f5473ea",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-19",
+                "rel": "related"
+            },
+            {
+                "href": "#au-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-10",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-5",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-6",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-13",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-34",
+                "rel": "related"
+            },
+            {
+                "href": "#si-12",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "mp-2_smt",
+                "name": "statement",
+                "prose": "Restrict access to {{ mp-2_prm_1 }} to {{ mp-2_prm_2 }}."
+            },
+            {
+                "id": "mp-2_gdn",
+                "name": "guidance",
+                "prose": "System media includes digital and non-digital media. Digital media includes flash drives, diskettes, magnetic tapes, external or removable hard disk drives (e.g., solid state, magnetic), compact discs, and digital versatile discs. Non-digital media includes paper and microfilm. Denying access to patient medical records in a community hospital unless the individuals seeking access to such records are authorized healthcare providers is an example of restricting access to non-digital media. Limiting access to the design specifications stored on compact discs in the media library to individuals on the system development team is an example of restricting access to digital media."
+            }
+        ],
+        "controls": [
+            {
+                "id": "mp-2.1",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Restricted Access",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MP-2(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "mp-02.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#mp-4.2",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "mp-2.2",
+                "class": "SP800-53-enhancement",
+                "title": "Cryptographic Protection",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MP-2(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "mp-02.02"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-28.1",
+                        "rel": "incorporated-into"
+                    },
+                    {
+                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#22f2d4f0-4365-4e88-a30d-275c1f5473ea",
+                        "rel": "reference"
+                    }
+                ]
+            }
+        ]
+    }
+}

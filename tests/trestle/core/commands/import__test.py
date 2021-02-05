@@ -38,12 +38,12 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
     """Happy path test at the cli level."""
     # 1. Input file, profile:
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    profile_file = f'{tmp_trestle_dir.dirname}/{rand_str}.json'
+    profile_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
     profile_data.oscal_write(pathlib.Path(profile_file))
     # 2. Input file, target:
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    target_file = f'{tmp_trestle_dir.dirname}/{rand_str}.json'
+    target_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     target_data = generators.generate_sample_model(trestle.oscal.target.TargetDefinition)
     target_data.oscal_write(pathlib.Path(target_file))
     # Test 1
@@ -61,7 +61,7 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_run(tmp_trestle_dir: pathlib.Path) -> None:
     """Test successful _run() on valid and invalid."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = f'{tmp_trestle_dir.dirname}/{rand_str}.json'
+    catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     catalog_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     i = importcmd.ImportCmd()
@@ -73,15 +73,15 @@ def test_import_run(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_clash_on_output(tmp_trestle_dir: pathlib.Path) -> None:
     """Test an attempt to import into an existing trestle file."""
     # 1. Create a sample catalog,
-    args = argparse.Namespace(name='my-catalog', extension='json', verbose=True)
+    args = argparse.Namespace(output='my-catalog', extension='json', verbose=True)
     create.CreateCmd.create_object('catalog', Catalog, args)
-    # 2. Create a valid oscal object in tmp_trestle_dir.dirname,
+    # 2. Create a valid oscal object in tmp_trestle_dir.parent,
     sample_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    sample_data.oscal_write(pathlib.Path(f'{tmp_trestle_dir.dirname}/{rand_str}.json'))
+    sample_data.oscal_write(pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json'))
     # 3. then attempt to import that out to the previously created catalog, forcing the clash:
     i = importcmd.ImportCmd()
-    args = argparse.Namespace(file=f'{tmp_trestle_dir.dirname}/{rand_str}.json', output='my-catalog', verbose=True)
+    args = argparse.Namespace(file=f'{tmp_trestle_dir.parent}/{rand_str}.json', output='my-catalog', verbose=True)
     rc = i._run(args)
     assert rc == 1
 
@@ -90,7 +90,7 @@ def test_import_non_top_level_element(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for expected fail to import non-top level element, e.g., groups."""
     # Input file, catalog:
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    groups_file = f'{tmp_trestle_dir.dirname}/{rand_str}.json'
+    groups_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     groups_data = generators.generate_sample_model(trestle.oscal.catalog.Group)
     groups_data.oscal_write(pathlib.Path(groups_file))
     args = argparse.Namespace(file=groups_file, output='imported', verbose=True)
@@ -108,7 +108,7 @@ def test_import_missing_input_file(tmp_trestle_dir: pathlib.Path) -> None:
     assert rc == 1
 
 
-def test_import_bad_working_directory(tmp_dir: pathlib.Path) -> None:
+def test_import_bad_working_directory(tmp_path: pathlib.Path) -> None:
     """Test for working directory that is not a trestle initialized directory."""
     # Input file, catalog:
     catalog_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'minimal_catalog.json')
@@ -146,7 +146,7 @@ def test_import_load_file_failure(tmp_trestle_dir: pathlib.Path) -> None:
     # Create a file with bad json
     sample_data = '"star": {'
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    bad_file = pathlib.Path(f'{tmp_trestle_dir.dirname}/{rand_str}.json').open('w+', encoding='utf8')
+    bad_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding='utf8')
     bad_file.write(sample_data)
     bad_file.close()
     with patch('trestle.utils.fs.load_file') as load_file_mock:
@@ -169,7 +169,7 @@ def test_import_load_file_failure(tmp_trestle_dir: pathlib.Path) -> None:
         i = importcmd.ImportCmd()
         rc = i._run(args)
         assert rc == 1
-    # This is in case the same tmp_trestle_dir.dirname is used, as across succeeding scopes of one pytest
+    # This is in case the same tmp_trestle_dir.parent is used, as across succeeding scopes of one pytest
     os.chmod(bad_file.name, 0o600)
     os.remove(bad_file.name)
 
@@ -178,7 +178,7 @@ def test_import_root_key_failure(tmp_trestle_dir: pathlib.Path) -> None:
     """Test root key is not found."""
     sample_data = {'id': '0000', 'title': 'nothing'}
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    sample_file = pathlib.Path(f'{tmp_trestle_dir.dirname}/{rand_str}.json').open('w+', encoding='utf8')
+    sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding='utf8')
     sample_file.write(json.dumps(sample_data))
     sample_file.close()
     args = argparse.Namespace(file=sample_file.name, output='catalog', verbose=True)
@@ -191,12 +191,12 @@ def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model failures throw errors and exit badly."""
     sample_data = {'id': '0000'}
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    sample_file = pathlib.Path(f'{tmp_trestle_dir.dirname}/{rand_str}.json').open('w+', encoding='utf8')
+    sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding='utf8')
     sample_file.write(json.dumps(sample_data))
     sample_file.close()
     with patch('trestle.core.parser.parse_file') as parse_file_mock:
         parse_file_mock.side_effect = err.TrestleError('stuff')
-        args = argparse.Namespace(file=f'{tmp_trestle_dir.dirname}/{rand_str}.json', output='catalog', verbose=True)
+        args = argparse.Namespace(file=f'{tmp_trestle_dir.parent}/{rand_str}.json', output='catalog', verbose=True)
         i = importcmd.ImportCmd()
         rc = i._run(args)
         assert rc == 1
@@ -205,7 +205,7 @@ def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_root_key_found(tmp_trestle_dir: pathlib.Path) -> None:
     """Test root key is found."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = f'{tmp_trestle_dir.dirname}/{rand_str}.json'
+    catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     catalog_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     args = argparse.Namespace(file=catalog_file, output='catalog', verbose=True)
@@ -217,7 +217,7 @@ def test_import_root_key_found(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_failure_simulate_plan(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model failures throw errors and exit badly."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = f'{tmp_trestle_dir.dirname}/{rand_str}.json'
+    catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     catalog_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     with patch('trestle.core.models.plans.Plan.simulate') as simulate_plan_mock:
@@ -231,7 +231,7 @@ def test_import_failure_simulate_plan(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_failure_execute_plan(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model failures throw errors and exit badly."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = f'{tmp_trestle_dir.dirname}/{rand_str}.json'
+    catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     catalog_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     with patch('trestle.core.models.plans.Plan.simulate'):

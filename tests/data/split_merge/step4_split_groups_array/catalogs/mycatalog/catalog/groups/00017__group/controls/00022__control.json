@@ -1,0 +1,262 @@
+{
+    "control": {
+        "id": "sc-23",
+        "class": "SP800-53",
+        "title": "Session Authenticity",
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-23"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-23"
+            }
+        ],
+        "links": [
+            {
+                "href": "#7537638e-2837-407d-844b-40fb3fafdd99",
+                "rel": "reference"
+            },
+            {
+                "href": "#d4d7c760-2907-403b-8b2a-767ca5370ecd",
+                "rel": "reference"
+            },
+            {
+                "href": "#a6b9907a-2a14-4bb4-a142-d4c73026a8b4",
+                "rel": "reference"
+            },
+            {
+                "href": "#6bc4d137-aece-42a8-8081-9ecb1ebe9fb4",
+                "rel": "reference"
+            },
+            {
+                "href": "#au-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-11",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-23_smt",
+                "name": "statement",
+                "prose": "Protect the authenticity of communications sessions."
+            },
+            {
+                "id": "sc-23_gdn",
+                "name": "guidance",
+                "prose": "Protecting session authenticity addresses communications protection at the session level, not at the packet level. Such protection establishes grounds for confidence at both ends of communications sessions in the ongoing identities of other parties and the validity of transmitted information. Authenticity protection includes protecting against \"man-in-the-middle\" attacks, session hijacking, and the insertion of false information into sessions."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-23.1",
+                "class": "SP800-53-enhancement",
+                "title": "Invalidate Session Identifiers at Logout",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-23(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-23.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-23",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-23.1_smt",
+                        "name": "statement",
+                        "prose": "Invalidate session identifiers upon user logout or other session termination."
+                    },
+                    {
+                        "id": "sc-23.1_gdn",
+                        "name": "guidance",
+                        "prose": "Invalidating session identifiers at logout curtails the ability of adversaries to capture and continue to employ previously valid session IDs."
+                    }
+                ]
+            },
+            {
+                "id": "sc-23.2",
+                "class": "SP800-53-enhancement",
+                "title": "User-initiated Logouts and Message Displays",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-23(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-23.02"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-12.1",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sc-23.3",
+                "class": "SP800-53-enhancement",
+                "title": "Unique System-generated Session Identifiers",
+                "params": [
+                    {
+                        "id": "sc-23.3_prm_1",
+                        "label": "organization-defined randomness requirements"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-23(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-23.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-23",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-10",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-23.3_smt",
+                        "name": "statement",
+                        "prose": "Generate a unique session identifier for each session with {{ sc-23.3_prm_1 }} and recognize only session identifiers that are system-generated."
+                    },
+                    {
+                        "id": "sc-23.3_gdn",
+                        "name": "guidance",
+                        "prose": "Generating unique session identifiers curtails the ability of adversaries to reuse previously valid session IDs. Employing the concept of randomness in the generation of unique session identifiers protects against brute-force attacks to determine future session identifiers."
+                    }
+                ]
+            },
+            {
+                "id": "sc-23.4",
+                "class": "SP800-53-enhancement",
+                "title": "Unique Session Identifiers with Randomization",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-23(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-23.04"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-23.3",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sc-23.5",
+                "class": "SP800-53-enhancement",
+                "title": "Allowed Certificate Authorities",
+                "params": [
+                    {
+                        "id": "sc-23.5_prm_1",
+                        "label": "organization-defined certificate authorities"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-23(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-23.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-23",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#7537638e-2837-407d-844b-40fb3fafdd99",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#d4d7c760-2907-403b-8b2a-767ca5370ecd",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#a6b9907a-2a14-4bb4-a142-d4c73026a8b4",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#6bc4d137-aece-42a8-8081-9ecb1ebe9fb4",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-23.5_smt",
+                        "name": "statement",
+                        "prose": "Only allow the use of {{ sc-23.5_prm_1 }} for verification of the establishment of protected sessions."
+                    },
+                    {
+                        "id": "sc-23.5_gdn",
+                        "name": "guidance",
+                        "prose": "Reliance on certificate authorities for the establishment of secure sessions includes the use of Transport Layer Security (TLS) certificates. These certificates, after verification by their respective certificate authorities, facilitate the establishment of protected sessions between web clients and web servers."
+                    }
+                ]
+            }
+        ]
+    }
+}

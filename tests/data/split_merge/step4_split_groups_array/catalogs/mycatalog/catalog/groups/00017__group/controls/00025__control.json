@@ -1,0 +1,86 @@
+{
+    "control": {
+        "id": "sc-26",
+        "class": "SP800-53",
+        "title": "Decoys",
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-26"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-26"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ra-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-30",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-35",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-44",
+                "rel": "related"
+            },
+            {
+                "href": "#si-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-26_smt",
+                "name": "statement",
+                "prose": "Include components within organizational systems specifically designed to be the target of malicious attacks for detecting, deflecting, and analyzing such attacks."
+            },
+            {
+                "id": "sc-26_gdn",
+                "name": "guidance",
+                "prose": "Decoys (i.e., honeypots, honeynets, or deception nets) are established to attract adversaries and deflect attacks away from the operational systems that support organizational mission and business functions. Use of decoys requires some supporting isolation measures to ensure that any deflected malicious code does not infect organizational systems. Depending on the specific usage of the decoy, consultation with the Office of the General Counsel before deployment may be needed."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-26.1",
+                "class": "SP800-53-enhancement",
+                "title": "Detection of Malicious Code",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-26(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-26.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-35",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,49 @@
+{
+    "control": {
+        "id": "pe-21",
+        "class": "SP800-53",
+        "title": "Electromagnetic Pulse Protection",
+        "params": [
+            {
+                "id": "pe-21_prm_1",
+                "label": "organization-defined protective measures"
+            },
+            {
+                "id": "pe-21_prm_2",
+                "label": "organization-defined systems and system components"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PE-21"
+            },
+            {
+                "name": "sort-id",
+                "value": "pe-21"
+            }
+        ],
+        "links": [
+            {
+                "href": "#pe-18",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-19",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pe-21_smt",
+                "name": "statement",
+                "prose": "Employ {{ pe-21_prm_1 }} against electromagnetic pulse damage for {{ pe-21_prm_2 }}."
+            },
+            {
+                "id": "pe-21_gdn",
+                "name": "guidance",
+                "prose": "An electromagnetic pulse (EMP) is a short burst of electromagnetic energy that is spread over a range of frequencies. Such energy bursts may be natural or man-made. EMP interference may be disruptive or damaging to electronic equipment. Protective measures used to mitigate EMP risk include shielding, surge suppressors, ferro-resonant transformers, and earth grounding. EMP protection may be especially significant for systems and applications that are part of the U.S. critical infrastructure."
+            }
+        ]
+    }
+}

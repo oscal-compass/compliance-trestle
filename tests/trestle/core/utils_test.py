@@ -30,7 +30,7 @@ import trestle.oscal.ssp as ssp
 import trestle.oscal.target as target
 
 
-def load_good_catalog():
+def load_good_catalog() -> catalog.Catalog:
     """Load nist 800-53 as a catalog example."""
     good_sample_path = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
 
@@ -38,7 +38,7 @@ def load_good_catalog():
     return catalog.Catalog.oscal_read(good_sample_path)
 
 
-def test_get_elements():
+def test_get_elements() -> None:
     """Test getting flat list of elements."""
     good_sample = load_good_catalog()
 
@@ -54,7 +54,7 @@ def test_get_elements():
     assert (len(group_list) >= 2)
 
 
-def test_is_collection_field_type():
+def test_is_collection_field_type() -> None:
     """Test for checking whether the type of a field in an OscalBaseModel object is a collection field."""
     good_catalog = load_good_catalog()
 
@@ -79,14 +79,14 @@ def test_is_collection_field_type():
     assert mutils.is_collection_field_type(responsible_parties_field.type_) is False  # ResponsibleParty
 
     assert mutils.is_collection_field_type(
-        type(good_catalog.metadata.parties[0].addresses[0].postal_address)
+        type(good_catalog.metadata.parties[0].addresses[0].addr_lines)
     ) is False  # list
-    postal_address_field = catalog.Address.alias_to_field_map()['postal-address']
+    postal_address_field = catalog.Address.alias_to_field_map()['addr-lines']
     assert mutils.is_collection_field_type(postal_address_field.outer_type_) is True  # List[AddrLine]
     assert mutils.is_collection_field_type(postal_address_field.type_) is False  # AddrLine
 
 
-def test_get_inner_type():
+def test_get_inner_type() -> None:
     """Test retrievel of inner type of a model field representing a collection."""
     good_catalog = load_good_catalog()
 
@@ -118,7 +118,7 @@ def test_get_inner_type():
     assert responsible_party_type == catalog.ResponsibleParty
 
 
-def test_get_root_model():
+def test_get_root_model() -> None:
     """Test looking for the root model of a trestle oscal module."""
     with pytest.raises(err.TrestleError):
         mutils.get_root_model('invalid')
@@ -143,7 +143,7 @@ def test_get_root_model():
         assert model_alias == key
 
 
-def test_classname_to_alias():
+def test_classname_to_alias() -> None:
     """Test conversion of class name to alias."""
     module_name = catalog.Catalog.__module__
 
@@ -164,12 +164,12 @@ def test_classname_to_alias():
     json_alias = mutils.classname_to_alias(full_classname, 'field')
     assert json_alias == 'responsible_party'
 
-    short_classname = catalog.Prop.__name__
+    short_classname = catalog.Property.__name__
     full_classname = f'{module_name}.{short_classname}'
     json_alias = mutils.classname_to_alias(short_classname, 'json')
-    assert json_alias == 'prop'
+    assert json_alias == 'property'
     json_alias = mutils.classname_to_alias(full_classname, 'field')
-    assert json_alias == 'prop'
+    assert json_alias == 'property'
 
     short_classname = catalog.MemberOfOrganization.__name__
     full_classname = f'{module_name}.{short_classname}'
@@ -177,6 +177,26 @@ def test_classname_to_alias():
     assert json_alias == 'member-of-organization'
     json_alias = mutils.classname_to_alias(full_classname, 'field')
     assert json_alias == 'member_of_organization'
+
+
+def test_snake_to_upper_camel() -> None:
+    """Ensure Snake to upper camel behaves correctly."""
+    cammeled = mutils.snake_to_upper_camel('target_definition')
+    assert cammeled == 'TargetDefinition'
+    cammeled = mutils.snake_to_upper_camel('control')
+    assert cammeled == 'Control'
+    cammeled = mutils.snake_to_upper_camel('')
+    assert cammeled == ''
+
+
+def test_camel_to_snake() -> None:
+    """Ensure camel to snake behaves correctly."""
+    snaked = mutils.camel_to_snake('TargetDefinition')
+    assert snaked == 'target_definition'
+    snaked = mutils.camel_to_snake('Control')
+    assert snaked == 'control'
+    snaked = mutils.camel_to_snake('')
+    assert snaked == ''
 
 
 def test_alias_to_classname() -> None:
@@ -188,7 +208,7 @@ def test_alias_to_classname() -> None:
         assert mutils.alias_to_classname('target-definition', 'invalid') == 'TargetDefinition'
 
 
-def test_get_target_model():
+def test_get_target_model() -> None:
     """Test utils method get_target_model."""
     assert mutils.is_collection_field_type(
         mutils.get_target_model(['catalog', 'metadata', 'roles'], catalog.Catalog)
@@ -213,7 +233,7 @@ def test_get_target_model():
         ['catalog', 'metadata', 'responsible-parties', 'creator'], catalog.Catalog
     ) is catalog.ResponsibleParty
 
-    assert mutils.get_target_model(['catalog', 'metadata', 'title'], catalog.Catalog) is catalog.Title
+    assert mutils.get_target_model(['catalog', 'metadata'], catalog.Catalog) is catalog.Metadata
 
     with pytest.raises(err.TrestleError):
         mutils.get_target_model(['catalog', 'metadata', 'bad_element'], catalog.Catalog)

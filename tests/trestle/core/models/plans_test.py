@@ -26,11 +26,11 @@ from trestle.core.models.plans import Plan
 from trestle.oscal import target
 
 
-def test_plan_execution(tmp_dir, sample_target_def: target.TargetDefinition):
+def test_plan_execution(tmp_path, sample_target_def: target.TargetDefinition):
     """Test successful execution of a valid plan."""
     content_type = FileContentType.YAML
 
-    base_dir: pathlib.Path = pathlib.Path.joinpath(tmp_dir, 'mytarget')
+    base_dir: pathlib.Path = pathlib.Path.joinpath(tmp_path, 'mytarget')
     targets_dir: pathlib.Path = pathlib.Path.joinpath(base_dir, 'targets')
     metadata_yaml: pathlib.Path = pathlib.Path.joinpath(base_dir, 'metadata.yaml')
 
@@ -42,6 +42,9 @@ def test_plan_execution(tmp_dir, sample_target_def: target.TargetDefinition):
     split_plan.add_action(
         WriteFileAction(metadata_yaml, Element(sample_target_def.metadata, 'target-definition'), content_type)
     )
+    # Test stringing a plan
+    stringed = str(split_plan)
+    assert len(stringed) > 0
 
     target_files: List[pathlib.Path] = []
     for tid, t in sample_target_def.targets.items():

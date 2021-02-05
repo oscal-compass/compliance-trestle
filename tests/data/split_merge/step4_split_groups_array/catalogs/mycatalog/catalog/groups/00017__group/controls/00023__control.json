@@ -1,0 +1,77 @@
+{
+    "control": {
+        "id": "sc-24",
+        "class": "SP800-53",
+        "title": "Fail in Known State",
+        "params": [
+            {
+                "id": "sc-24_prm_1",
+                "label": "organization-defined known system state"
+            },
+            {
+                "id": "sc-24_prm_2",
+                "label": "organization-defined system state information"
+            },
+            {
+                "id": "sc-24_prm_3",
+                "label": "list of organization-defined types of system failures on organization-defined system components"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-24"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-24"
+            }
+        ],
+        "links": [
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-10",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-22",
+                "rel": "related"
+            },
+            {
+                "href": "#si-13",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-24_smt",
+                "name": "statement",
+                "prose": "Fail to a {{ sc-24_prm_1 }} for the following failures on the indicated components while preserving {{ sc-24_prm_2 }} in failure: {{ sc-24_prm_3 }}."
+            },
+            {
+                "id": "sc-24_gdn",
+                "name": "guidance",
+                "prose": "Failure in a known state addresses security concerns in accordance with the mission and business needs of organizations. Failure in a known state prevents the loss of confidentiality, integrity, or availability of information in the event of failures of organizational systems or system components. Failure in a known safe state helps to prevent systems from failing to a state that may cause injury to individuals or destruction to property. Preserving system state information facilitates system restart and return to the operational mode with less disruption of mission and business processes."
+            }
+        ]
+    }
+}

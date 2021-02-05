@@ -1,0 +1,53 @@
+{
+    "control": {
+        "id": "ia-10",
+        "class": "SP800-53",
+        "title": "Adaptive Authentication",
+        "params": [
+            {
+                "id": "ia-10_prm_1",
+                "label": "organization-defined supplemental authentication techniques or mechanisms"
+            },
+            {
+                "id": "ia-10_prm_2",
+                "label": "organization-defined circumstances or situations"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "IA-10"
+            },
+            {
+                "name": "sort-id",
+                "value": "ia-10"
+            }
+        ],
+        "links": [
+            {
+                "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
+                "rel": "reference"
+            },
+            {
+                "href": "#ia-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ia-10_smt",
+                "name": "statement",
+                "prose": "Require individuals accessing the system to employ {{ ia-10_prm_1 }} under specific {{ ia-10_prm_2 }}."
+            },
+            {
+                "id": "ia-10_gdn",
+                "name": "guidance",
+                "prose": "Adversaries may compromise individual authentication mechanisms employed by organizations and subsequently attempt to impersonate legitimate users. To address this threat, organizations may employ specific techniques or mechanisms and establish protocols to assess suspicious behavior. Suspicious behavior may include accessing information that individuals do not typically access as part of their duties, roles, or responsibilities; accessing greater quantities of information than individuals would routinely access; or attempting to access information from suspicious network addresses. When pre-established conditions or triggers occur, organizations can require individuals to provide additional authentication information. Another potential use for adaptive authentication is to increase the strength of mechanism based on the number or types of records being accessed. Adaptive authentication does not replace and is not used to avoid the use of multi-factor authentication mechanisms but can augment implementations of multi-factor authentication."
+            }
+        ]
+    }
+}

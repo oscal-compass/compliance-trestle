@@ -1,0 +1,102 @@
+extra_css:
+- css/extra.css
+markdown_extensions:
+- admonition
+- markdown_include.include
+- pymdownx.emoji
+- pymdownx.magiclink
+- pymdownx.superfences
+- pymdownx.tabbed
+- pymdownx.tasklist
+- toc:
+    permalink: "\xA4"
+nav:
+- Overview: index.md
+- Trestle cli: cli.md
+- Code of Conduct: mkdocs_code_of_conduct.md
+- Contributing:
+  - Overview: contributing/mkdocs_contributing.md
+  - Contributors: https://github.com/IBM/compliance-trestle/graphs/contributors
+  - Maintainers: maintainers.md
+  - Documentation website: contributing/website.md
+  - Developer Certificate of Originality: contributing/DCO.md
+- Reference:
+  - Overview: api_overview.md
+  - trestle:
+    - tasks:
+      - base_task: api_reference/trestle.tasks.base_task.md
+      - transform: api_reference/trestle.tasks.transform.md
+    - core:
+      - validator_helper: api_reference/trestle.core.validator_helper.md
+      - models:
+        - interfaces: api_reference/trestle.core.models.interfaces.md
+        - elements: api_reference/trestle.core.models.elements.md
+        - actions: api_reference/trestle.core.models.actions.md
+        - plans: api_reference/trestle.core.models.plans.md
+        - file_content_type: api_reference/trestle.core.models.file_content_type.md
+      - base_model: api_reference/trestle.core.base_model.md
+      - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
+      - generators: api_reference/trestle.core.generators.md
+      - parser: api_reference/trestle.core.parser.md
+      - utils: api_reference/trestle.core.utils.md
+      - commands:
+        - task: api_reference/trestle.core.commands.task.md
+        - merge: api_reference/trestle.core.commands.merge.md
+        - cmd_utils: api_reference/trestle.core.commands.cmd_utils.md
+        - add: api_reference/trestle.core.commands.add.md
+        - create: api_reference/trestle.core.commands.create.md
+        - replicate: api_reference/trestle.core.commands.replicate.md
+        - remove: api_reference/trestle.core.commands.remove.md
+        - assemble: api_reference/trestle.core.commands.assemble.md
+        - validate: api_reference/trestle.core.commands.validate.md
+        - split: api_reference/trestle.core.commands.split.md
+        - import_: api_reference/trestle.core.commands.import_.md
+        - init: api_reference/trestle.core.commands.init.md
+      - object_factory: api_reference/trestle.core.object_factory.md
+      - err: api_reference/trestle.core.err.md
+      - const: api_reference/trestle.core.const.md
+      - validator_factory: api_reference/trestle.core.validator_factory.md
+    - utils:
+      - log: api_reference/trestle.utils.log.md
+      - load_distributed: api_reference/trestle.utils.load_distributed.md
+      - trash: api_reference/trestle.utils.trash.md
+      - fs: api_reference/trestle.utils.fs.md
+    - oscal:
+      - catalog: api_reference/trestle.oscal.catalog.md
+      - poam: api_reference/trestle.oscal.poam.md
+      - profile: api_reference/trestle.oscal.profile.md
+      - assessment_results: api_reference/trestle.oscal.assessment_results.md
+      - target: api_reference/trestle.oscal.target.md
+      - ssp: api_reference/trestle.oscal.ssp.md
+      - component: api_reference/trestle.oscal.component.md
+      - assessment_plan: api_reference/trestle.oscal.assessment_plan.md
+    - cli: api_reference/trestle.cli.md
+plugins:
+- search
+- mkdocstrings:
+    handlers:
+      python:
+        rendering:
+          group_by_category: true
+          show_category_heading: true
+          show_if_no_docstring: true
+          show_root_heading: true
+        selection:
+          filters:
+          - '!^_[^_]'
+          - '!^__json'
+          - '!^__config__'
+          new_path_syntax: true
+    watch:
+    - trestle
+repo_name: IBM/compliance-trestle
+repo_url: https://github.com/IBM/compliance-trestle
+site_description: Documentation for compliance-trestle package.
+site_name: Compliance Trestle
+site_url: https://ibm.github.io/compliance-trestle
+theme:
+  name: material
+  palette:
+    accent: purple
+    primary: teal
+    scheme: slate

@@ -17,9 +17,8 @@
 
 import json
 import logging
-import os
 import pathlib
-from typing import Any, Dict, Optional, Tuple, Type, cast
+from typing import Any, Dict, List, Optional, Tuple, Type, cast
 
 from pydantic import create_model
 
@@ -38,27 +37,6 @@ logger = logging.getLogger(__name__)
 def should_ignore(name: str) -> bool:
     """Check if the file or directory should be ignored or not."""
     return name[0] == '.' or name[0] == '_'
-
-
-def ensure_directory(path: str) -> None:
-    """
-    Ensure the directory ```path``` exists.
-
-    It creates the directories along the path if they do not exist.
-    Arguments:
-        path(str): The path to the directory
-
-    Raises:
-        AssertionError: If the directory path exists but is not a directory
-
-    Returns: None
-    """
-    path = os.path.abspath(path)
-
-    if not os.path.exists(path):
-        os.makedirs(path)
-    elif not os.path.isdir(path):
-        raise AssertionError(f'Path `{path}` exists but is not a directory')
 
 
 def is_valid_project_root(project_root: pathlib.Path) -> bool:
@@ -183,7 +161,8 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBase
     return model_type, full_alias
 
 
-def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[Type[OscalBaseModel], str]:
+def get_stripped_contextual_model(path: pathlib.Path = None,
+                                  aliases_not_to_be_stripped: List[str] = None) -> Tuple[Type[OscalBaseModel], str]:
     """
     Get the stripped contextual model class and alias based on the contextual path.
 
@@ -193,6 +172,8 @@ def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[Type[Oscal
     """
     if path is None:
         path = pathlib.Path.cwd()
+    if aliases_not_to_be_stripped is None:
+        aliases_not_to_be_stripped = []
 
     singular_model_type, model_alias = get_contextual_model_type(path)
 
@@ -216,7 +197,8 @@ def get_stripped_contextual_model(path: pathlib.Path = None) -> Tuple[Type[Oscal
     if split_subdir.exists():
         for f in split_subdir.iterdir():
             alias = extract_alias(f)
-            aliases_to_be_stripped.add(alias)
+            if alias not in aliases_not_to_be_stripped:
+                aliases_to_be_stripped.add(alias)
 
     if len(aliases_to_be_stripped) > 0:
         model_type = singular_model_type.create_stripped_model_type(
@@ -270,29 +252,6 @@ def load_file(file_name: pathlib.Path) -> Dict[str, Any]:
             return yaml.load(f, yaml.FullLoader)
         elif content_type == FileContentType.JSON:
             return json.load(f)
-        else:
-            logger.debug(f'Invalid file extension "{file_name.suffix}" in load')
-            raise TrestleError(f'Invalid file extension "{file_name.suffix}"')
-
-
-def find_node(data: Dict[Any, Any], key: str, depth: int = 0, max_depth: int = 1, instance_type: type = list):
-    """Find a node of an instance_type in the data recursively."""
-    # TODO: Properly annotate with yield output typing as shown here:
-    # https://stackoverflow.com/questions/38419654/proper-type-annotation-of-python-functions-with-yield
-    if depth > max_depth:
-        return
-
-    if key in data and isinstance(data[key], instance_type):
-        yield data[key]
-
-    for _, v in data.items():
-        if isinstance(v, dict):
-            for i in find_node(v, key, depth + 1, max_depth, instance_type):
-                yield i
-        elif isinstance(v, list):
-            for item in v:
-                for i in find_node(item, key, depth + 1, max_depth, instance_type):
-                    yield i
 
 
 def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
@@ -337,19 +296,39 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
     model_type = model_types[0]
     for i in range(1, len(path_parts)):
         if utils.is_collection_field_type(model_type):
+            if i == len(path_parts) - 1 and path_parts[i] == '*':
+                break
             model_type = utils.get_inner_type(model_type)
             i = i + 1
         else:
             model_type = model_type.alias_to_field_map()[path_parts[i]].outer_type_
         model_types.append(model_type)
 
+    last_alias = path_parts[-1]
+    if last_alias == '*':
+        last_alias = path_parts[-2]
     if not utils.is_collection_field_type(model_type):
         raise err.TrestleError('Not a valid generic collection model.')
 
-    last_alias = path_parts[-1]
     parent_model_type = model_types[-2]
     singular_alias = utils.classname_to_alias(
         utils.get_inner_type(parent_model_type.alias_to_field_map()[last_alias].outer_type_).__name__, 'json'
     )
 
     return singular_alias
+
+
+def get_contextual_file_type(path: pathlib.Path) -> FileContentType:
+    """Return the file content type for files in the given directory, if it's a trestle project."""
+    if not is_valid_project_model_path(path):
+        raise err.TrestleError('Trestle project not found.')
+
+    for file_or_directory in path.iterdir():
+        if file_or_directory.is_file():
+            return FileContentType.to_content_type(file_or_directory.suffix)
+
+    for file_or_directory in path.iterdir():
+        if file_or_directory.is_dir():
+            return get_contextual_file_type(file_or_directory)
+
+    raise err.TrestleError('No files found in the project.')

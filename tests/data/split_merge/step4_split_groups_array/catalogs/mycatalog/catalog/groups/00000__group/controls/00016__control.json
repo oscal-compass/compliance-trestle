@@ -1,0 +1,599 @@
+{
+    "control": {
+        "id": "ac-17",
+        "class": "SP800-53",
+        "title": "Remote Access",
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-17"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-17"
+            }
+        ],
+        "links": [
+            {
+                "href": "#83b9d63b-66b1-467c-9f3b-3a0b108771e9",
+                "rel": "reference"
+            },
+            {
+                "href": "#d4d7c760-2907-403b-8b2a-767ca5370ecd",
+                "rel": "reference"
+            },
+            {
+                "href": "#6bc4d137-aece-42a8-8081-9ecb1ebe9fb4",
+                "rel": "reference"
+            },
+            {
+                "href": "#42e37e51-7cc0-4ffa-81c9-0ac942da7e99",
+                "rel": "reference"
+            },
+            {
+                "href": "#d17ebd7a-ffab-499d-bfff-e705bbb01fa6",
+                "rel": "reference"
+            },
+            {
+                "href": "#3915a084-b87b-4f02-83d4-c369e746292f",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-18",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-19",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-20",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-3",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-10",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-17",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-13",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-17_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ac-17_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Establish and document usage restrictions, configuration/connection requirements, and implementation guidance for each type of remote access allowed; and"
+                    },
+                    {
+                        "id": "ac-17_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Authorize each type of remote access to the system prior to allowing such connections."
+                    }
+                ]
+            },
+            {
+                "id": "ac-17_gdn",
+                "name": "guidance",
+                "prose": "Remote access is access to organizational systems (or processes acting on behalf of users) that communicate through external networks such as the Internet. Types of remote access include dial-up, broadband, and wireless. Organizations use encrypted virtual private networks (VPNs) to enhance confidentiality and integrity for remote connections. The use of encrypted VPNs provides sufficient assurance to the organization that it can effectively treat such connections as internal networks if the cryptographic mechanisms used are implemented in accordance with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines. Still, VPN connections traverse external networks, and the encrypted VPN does not enhance the availability of remote connections. VPNs with encrypted tunnels can also affect the ability to adequately monitor network communications traffic for malicious code. Remote access controls apply to systems other than public web servers or systems designed for public access. Authorization of each remote access type addresses authorization prior to allowing remote access without specifying the specific formats for such authorization. While organizations may use information exchange and system connection security agreements to manage remote access connections to other systems, such agreements are addressed as part of [CA-3](#ca-3). Enforcing access restrictions for remote access is addressed via [AC-3](#ac-3)."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ac-17.1",
+                "class": "SP800-53-enhancement",
+                "title": "Monitoring and Control",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-17(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-17.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-14",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-17.1_smt",
+                        "name": "statement",
+                        "prose": "Employ automated mechanisms to monitor and control remote access methods."
+                    },
+                    {
+                        "id": "ac-17.1_gdn",
+                        "name": "guidance",
+                        "prose": "Monitoring and control of remote access methods allows organizations to detect attacks and help ensure compliance with remote access policies by auditing the connection activities of remote users on a variety of system components, including servers, notebook computers, workstations, smart phones, and tablets. Audit logging for remote access is enforced by [AU-2](#au-2). Audit events are defined in [AU-2a](#au-2_smt.a)."
+                    }
+                ]
+            },
+            {
+                "id": "ac-17.2",
+                "class": "SP800-53-enhancement",
+                "title": "Protection of Confidentiality and Integrity Using Encryption",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-17(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-17.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-17.2_smt",
+                        "name": "statement",
+                        "prose": "Implement cryptographic mechanisms to protect the confidentiality and integrity of remote access sessions."
+                    },
+                    {
+                        "id": "ac-17.2_gdn",
+                        "name": "guidance",
+                        "prose": "Virtual private networks can be used to protect the confidentiality and integrity of remote access sessions. Transport Layer Security (TLS) is an example of a cryptographic protocol that provides end-to-end communications security over networks and is used for Internet communications and online transactions."
+                    }
+                ]
+            },
+            {
+                "id": "ac-17.3",
+                "class": "SP800-53-enhancement",
+                "title": "Managed Access Control Points",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-17(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-17.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-17.3_smt",
+                        "name": "statement",
+                        "prose": "Route remote accesses through authorized and managed network access control points."
+                    },
+                    {
+                        "id": "ac-17.3_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations consider the Trusted Internet Connections (TIC) initiative [DHS TIC](#4f42ee6e-86cc-403b-a51f-76c2b4f81b54) requirements for external network connections since limiting the number of access control points for remote access reduces attack surfaces."
+                    }
+                ]
+            },
+            {
+                "id": "ac-17.4",
+                "class": "SP800-53-enhancement",
+                "title": "Privileged Commands and Access",
+                "params": [
+                    {
+                        "id": "ac-17.4_prm_1",
+                        "label": "organization-defined needs"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-17(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-17.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-17.4_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ac-17.4_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Authorize the execution of privileged commands and access to security-relevant information via remote access only in a format that provides assessable evidence and for the following needs: {{ ac-17.4_prm_1 }}; and"
+                            },
+                            {
+                                "id": "ac-17.4_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Document the rationale for remote access in the security plan for the system."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ac-17.4_gdn",
+                        "name": "guidance",
+                        "prose": "Remote access to systems represents a significant potential vulnerability that can be exploited by adversaries. As such, restricting the execution of privileged commands and access to security-relevant information via remote access reduces the exposure of the organization and the susceptibility to threats by adversaries to the remote access capability."
+                    }
+                ]
+            },
+            {
+                "id": "ac-17.5",
+                "class": "SP800-53-enhancement",
+                "title": "Monitoring for Unauthorized Connections",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-17(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-17.05"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ac-17.6",
+                "class": "SP800-53-enhancement",
+                "title": "Protection of Mechanism Information",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-17(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-17.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#at-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#at-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ps-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-17.6_smt",
+                        "name": "statement",
+                        "prose": "Protect information about remote access mechanisms from unauthorized use and disclosure."
+                    },
+                    {
+                        "id": "ac-17.6_gdn",
+                        "name": "guidance",
+                        "prose": "Remote access to organizational information by non-organizational entities can increase the risk of unauthorized use and disclosure about remote access mechanisms. The organization considers including remote access requirements in the information exchange agreements with other organizations, as applicable. Remote access requirements can also be included in rules of behavior (see [PL-4](#pl-4)) and access agreements (see [PS-6](#ps-6))."
+                    }
+                ]
+            },
+            {
+                "id": "ac-17.7",
+                "class": "SP800-53-enhancement",
+                "title": "Additional Protection for Security Function Access",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-17(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-17.07"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-3.10",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ac-17.8",
+                "class": "SP800-53-enhancement",
+                "title": "Disable Nonsecure Network Protocols",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-17(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-17.08"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-7",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ac-17.9",
+                "class": "SP800-53-enhancement",
+                "title": "Disconnect or Disable Access",
+                "params": [
+                    {
+                        "id": "ac-17.9_prm_1",
+                        "label": "organization-defined time period"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-17(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-17.09"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-17",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-17.9_smt",
+                        "name": "statement",
+                        "prose": "Provide the capability to disconnect or disable remote access to the system within {{ ac-17.9_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-17.9_gdn",
+                        "name": "guidance",
+                        "prose": "The speed of system disconnect or disablement varies based on the criticality of missions or business functions and the need to eliminate immediate or future remote access to systems."
+                    }
+                ]
+            },
+            {
+                "id": "ac-17.10",
+                "class": "SP800-53-enhancement",
+                "title": "Authenticate Remote Commands",
+                "params": [
+                    {
+                        "id": "ac-17.10_prm_1",
+                        "label": "organization-defined mechanisms"
+                    },
+                    {
+                        "id": "ac-17.10_prm_2",
+                        "label": "organization-defined remote commands"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-17(10)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-17.10"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-17",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#83b9d63b-66b1-467c-9f3b-3a0b108771e9",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#d4d7c760-2907-403b-8b2a-767ca5370ecd",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#6bc4d137-aece-42a8-8081-9ecb1ebe9fb4",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#42e37e51-7cc0-4ffa-81c9-0ac942da7e99",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#d17ebd7a-ffab-499d-bfff-e705bbb01fa6",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#3915a084-b87b-4f02-83d4-c369e746292f",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-23",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-17.10_smt",
+                        "name": "statement",
+                        "prose": "Implement {{ ac-17.10_prm_1 }} to authenticate {{ ac-17.10_prm_2 }}."
+                    },
+                    {
+                        "id": "ac-17.10_gdn",
+                        "name": "guidance",
+                        "prose": "Authenticating remote commands protects against unauthorized commands and the replay of authorized commands. The ability to authenticate remote commands is important for remote systems for which loss, malfunction, misdirection, or exploitation would have immediate or serious consequences, such as injury, death, property damage, loss of high value assets, failure of mission or business functions, or compromise of classified or controlled unclassified information. Authentication mechanisms for remote commands ensure that systems accept and execute commands in the order intended, execute only authorized commands, and reject unauthorized commands. Cryptographic mechanisms can be used, for example, to authenticate remote commands."
+                    }
+                ]
+            }
+        ]
+    }
+}

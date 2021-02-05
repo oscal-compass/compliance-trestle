@@ -1,0 +1,79 @@
+{
+    "control": {
+        "id": "sa-18",
+        "class": "SP800-53",
+        "title": "Tamper Resistance and Detection",
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-18"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-18"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#sr-9",
+                "rel": "incorporated-into"
+            }
+        ],
+        "controls": [
+            {
+                "id": "sa-18.1",
+                "class": "SP800-53-enhancement",
+                "title": "Multiple Phases of System Development Life Cycle",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-18(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-18.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-9.1",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-18.2",
+                "class": "SP800-53-enhancement",
+                "title": "Inspection of Systems or Components",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-18(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-18.02"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-10",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            }
+        ]
+    }
+}

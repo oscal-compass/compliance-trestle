@@ -1,0 +1,55 @@
+{
+    "control": {
+        "id": "ra-6",
+        "class": "SP800-53",
+        "title": "Technical Surveillance Countermeasures Survey",
+        "params": [
+            {
+                "id": "ra-6_prm_1",
+                "label": "organization-defined locations"
+            },
+            {
+                "id": "ra-6_prm_2",
+                "select": {
+                    "how-many": "one or more",
+                    "choice": [
+                        " {{ ra-6_prm_3 }} ",
+                        "when the following events or indicators occur: {{ ra-6_prm_4 }} "
+                    ]
+                }
+            },
+            {
+                "id": "ra-6_prm_3",
+                "depends-on": "ra-6_prm_2",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "ra-6_prm_4",
+                "depends-on": "ra-6_prm_2",
+                "label": "organization-defined events or indicators"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "RA-6"
+            },
+            {
+                "name": "sort-id",
+                "value": "ra-06"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ra-6_smt",
+                "name": "statement",
+                "prose": "Employ a technical surveillance countermeasures survey at {{ ra-6_prm_1 }} {{ ra-6_prm_2 }}."
+            },
+            {
+                "id": "ra-6_gdn",
+                "name": "guidance",
+                "prose": "A technical surveillance countermeasures survey is a service provided by qualified personnel to detect the presence of technical surveillance devices and hazards and to identify technical security weaknesses that could be used in the conduct of a technical penetration of the surveyed facility. Technical surveillance countermeasures surveys also provide evaluations of the technical security posture of organizations and facilities and include visual, electronic, and physical examinations of surveyed facilities, internally and externally. The surveys also provide useful input for risk assessments and information regarding organizational exposure to potential adversaries."
+            }
+        ]
+    }
+}

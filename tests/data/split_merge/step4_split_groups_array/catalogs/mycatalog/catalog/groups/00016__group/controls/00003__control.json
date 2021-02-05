@@ -1,0 +1,1001 @@
+{
+    "control": {
+        "id": "sa-4",
+        "class": "SP800-53",
+        "title": "Acquisition Process",
+        "params": [
+            {
+                "id": "sa-4_prm_1",
+                "select": {
+                    "how-many": "one or more",
+                    "choice": [
+                        "standardized contract language",
+                        " {{ sa-4_prm_2 }} "
+                    ]
+                }
+            },
+            {
+                "id": "sa-4_prm_2",
+                "depends-on": "sa-4_prm_1",
+                "label": "organization-defined contract language"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-4"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-04"
+            }
+        ],
+        "links": [
+            {
+                "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
+                "rel": "reference"
+            },
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#6afc1b04-c9d6-4023-adbc-f8fbe33a3c73",
+                "rel": "reference"
+            },
+            {
+                "href": "#87087451-2af5-43d4-88c1-d66ad850f614",
+                "rel": "reference"
+            },
+            {
+                "href": "#4452efc0-e79e-47b8-aa30-b54f3ef61c2f",
+                "rel": "reference"
+            },
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
+                "rel": "reference"
+            },
+            {
+                "href": "#77faf0bc-c394-44ad-9154-bbac3b79c8ad",
+                "rel": "reference"
+            },
+            {
+                "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
+                "rel": "reference"
+            },
+            {
+                "href": "#4895b4cd-34c5-4667-bf8a-27d443c12047",
+                "rel": "reference"
+            },
+            {
+                "href": "#858705be-3c1f-48aa-a328-0ce398d95ef0",
+                "rel": "reference"
+            },
+            {
+                "href": "#067223d8-1ec7-45c5-b21b-c848da6de8fb",
+                "rel": "reference"
+            },
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                "rel": "reference"
+            },
+            {
+                "href": "#15dc76ff-b17a-4eeb-8948-8ea8de3ccc2c",
+                "rel": "reference"
+            },
+            {
+                "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
+                "rel": "reference"
+            },
+            {
+                "href": "#4b38e961-1125-4a5b-aa35-1d6c02846dad",
+                "rel": "reference"
+            },
+            {
+                "href": "#604774da-9e1d-48eb-9c62-4e959dc80737",
+                "rel": "reference"
+            },
+            {
+                "href": "#98d415ca-7281-4064-9931-0c366637e324",
+                "rel": "reference"
+            },
+            {
+                "href": "#795aff72-3e6c-4b6b-a80a-b14d84b7f544",
+                "rel": "reference"
+            },
+            {
+                "href": "#3d575737-98cb-459d-b41c-d7e82b73ad78",
+                "rel": "reference"
+            },
+            {
+                "href": "#cm-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-11",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-15",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-16",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-17",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-21",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-5",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sa-4_smt",
+                "name": "statement",
+                "prose": "Include the following requirements, descriptions, and criteria, explicitly or by reference, using {{ sa-4_prm_1 }} in the acquisition contract for the system, system component, or system service:",
+                "parts": [
+                    {
+                        "id": "sa-4_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Security and privacy functional requirements;"
+                    },
+                    {
+                        "id": "sa-4_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Strength of mechanism requirements;"
+                    },
+                    {
+                        "id": "sa-4_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Security and privacy assurance requirements;"
+                    },
+                    {
+                        "id": "sa-4_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Controls needed to satisfy the security and privacy requirements."
+                    },
+                    {
+                        "id": "sa-4_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Security and privacy documentation requirements;"
+                    },
+                    {
+                        "id": "sa-4_smt.f",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "f."
+                            }
+                        ],
+                        "prose": "Requirements for protecting security and privacy documentation;"
+                    },
+                    {
+                        "id": "sa-4_smt.g",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "g."
+                            }
+                        ],
+                        "prose": "Description of the system development environment and environment in which the system is intended to operate;"
+                    },
+                    {
+                        "id": "sa-4_smt.h",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "h."
+                            }
+                        ],
+                        "prose": "Allocation of responsibility or identification of parties responsible for information security, privacy, and supply chain risk management; and"
+                    },
+                    {
+                        "id": "sa-4_smt.i",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "i."
+                            }
+                        ],
+                        "prose": "Acceptance criteria."
+                    }
+                ]
+            },
+            {
+                "id": "sa-4_gdn",
+                "name": "guidance",
+                "prose": "Security and privacy functional requirements are typically derived from the high-level security and privacy requirements described in [SA-2](#sa-2). The derived requirements include security and privacy capabilities, functions, and mechanisms. Strength requirements associated with such capabilities, functions, and mechanisms include degree of correctness, completeness, resistance to tampering or bypass, and resistance to direct attack. Assurance requirements include development processes, procedures, and methodologies as well as the evidence from development and assessment activities that provide grounds for confidence that the required functionality is implemented and possesses the required strength of mechanism. [SP 800-160-1](#e3cc0520-a366-4fc9-abc2-5272db7e3564) describes the process of requirements engineering as part of the system development life cycle.\n\nControls can be viewed as descriptions of the safeguards and protection capabilities appropriate for achieving the particular security and privacy objectives of the organization and for reflecting the security and privacy requirements of stakeholders. Controls are selected and implemented in order to satisfy system requirements and include developer and organizational responsibilities. Controls can include technical, administrative, and physical aspects. In some cases, the selection and implementation of a control may necessitate additional specification by the organization in the form of derived requirements or instantiated control parameter values. The derived requirements and control parameter values may be necessary to provide the appropriate level of implementation detail for controls within the system development life cycle.\n\nSecurity and privacy documentation requirements address all stages of the system development life cycle. Documentation provides user and administrator guidance for the implementation and operation of controls. The level of detail required in such documentation is based on the security categorization or classification level of the system and the degree to which organizations depend on the capabilities, functions, or mechanisms to meet risk response expectations. Requirements can include mandated configuration settings that specify allowed functions, ports, protocols, and services. Acceptance criteria for systems, system components, and system services are defined in the same manner as the criteria for any organizational acquisition or procurement."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sa-4.1",
+                "class": "SP800-53-enhancement",
+                "title": "Functional Properties of Controls",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-4(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-04.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-4.1_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to provide a description of the functional properties of the controls to be implemented."
+                    },
+                    {
+                        "id": "sa-4.1_gdn",
+                        "name": "guidance",
+                        "prose": "Functional properties of security and privacy controls describe the functionality (i.e., security or privacy capability, functions, or mechanisms) visible at the interfaces of the controls and specifically exclude functionality and data structures internal to the operation of the controls."
+                    }
+                ]
+            },
+            {
+                "id": "sa-4.2",
+                "class": "SP800-53-enhancement",
+                "title": "Design and Implementation Information for Controls",
+                "params": [
+                    {
+                        "id": "sa-4.2_prm_1",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                "security-relevant external system interfaces",
+                                "high-level design",
+                                "low-level design",
+                                "source code or hardware schematics",
+                                " {{ sa-4.2_prm_2 }} "
+                            ]
+                        }
+                    },
+                    {
+                        "id": "sa-4.2_prm_2",
+                        "depends-on": "sa-4.2_prm_1",
+                        "label": "organization-defined design and implementation information"
+                    },
+                    {
+                        "id": "sa-4.2_prm_3",
+                        "label": "organization-defined level of detail"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-4(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-04.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-4.2_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to provide design and implementation information for the controls that includes: {{ sa-4.2_prm_1 }} at {{ sa-4.2_prm_3 }}."
+                    },
+                    {
+                        "id": "sa-4.2_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations may require different levels of detail in the documentation for the design and implementation of controls in organizational systems, system components, or system services based on mission and business requirements, requirements for resiliency and trustworthiness, and requirements for analysis and testing. Systems can be partitioned into multiple subsystems. Each subsystem within the system can contain one or more modules. The high-level design for the system is expressed in terms of subsystems and the interfaces between subsystems providing security-relevant functionality. The low-level design for the system is expressed in terms of modules and the interfaces between modules providing security-relevant functionality. Design and implementation documentation can include manufacturer, version, serial number, verification hash signature, software libraries used, date of purchase or download, and the vendor or download source. Source code and hardware schematics are referred to as the implementation representation of the system."
+                    }
+                ]
+            },
+            {
+                "id": "sa-4.3",
+                "class": "SP800-53-enhancement",
+                "title": "Development Methods, Techniques, and Practices",
+                "params": [
+                    {
+                        "id": "sa-4.3_prm_1",
+                        "label": "organization-defined systems engineering methods"
+                    },
+                    {
+                        "id": "sa-4.3_prm_2",
+                        "select": {
+                            "how-many": "one or more",
+                            "choice": [
+                                "systems security",
+                                "privacy<#:assign> engineering methods"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "sa-4.3_prm_3",
+                        "label": "organization-defined software development methods; testing, evaluation, assessment, verification, and validation methods; and quality control processes"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-4(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-04.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-4.3_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to demonstrate the use of a system development life cycle process that includes:",
+                        "parts": [
+                            {
+                                "id": "sa-4.3_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": " {{ sa-4.3_prm_1 }};"
+                            },
+                            {
+                                "id": "sa-4.3_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "<assign:#>organization-defined {{ sa-4.3_prm_2 }}; and"
+                            },
+                            {
+                                "id": "sa-4.3_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": " {{ sa-4.3_prm_3 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sa-4.3_gdn",
+                        "name": "guidance",
+                        "prose": "Following a system development life cycle that includes state-of-the-practice software development methods, systems engineering methods, systems security and privacy engineering methods, and quality control processes helps to reduce the number and severity of latent errors within systems, system components, and system services. Reducing the number and severity of such errors reduces the number of vulnerabilities in those systems, components, and services. Transparency in the methods and techniques that developers select and implement for systems engineering, systems security and privacy engineering, software development, component and system assessments, and quality control processes provides an increased level of assurance in the trustworthiness of the system, system component, or system service being acquired."
+                    }
+                ]
+            },
+            {
+                "id": "sa-4.4",
+                "class": "SP800-53-enhancement",
+                "title": "Assignment of Components to Systems",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-4(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-04.04"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-8.9",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sa-4.5",
+                "class": "SP800-53-enhancement",
+                "title": "System, Component, and Service Configurations",
+                "params": [
+                    {
+                        "id": "sa-4.5_prm_1",
+                        "label": "organization-defined security configurations"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-4(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-04.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-4.5_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to:",
+                        "parts": [
+                            {
+                                "id": "sa-4.5_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Deliver the system, component, or service with {{ sa-4.5_prm_1 }} implemented; and"
+                            },
+                            {
+                                "id": "sa-4.5_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Use the configurations as the default for any subsequent system, component, or service reinstallation or upgrade."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sa-4.5_gdn",
+                        "name": "guidance",
+                        "prose": "Examples of security configurations include the U.S. Government Configuration Baseline (USGCB), Security Technical Implementation Guides (STIGs), and any limitations on functions, ports, protocols, and services. Security characteristics can include requiring that default passwords have been changed."
+                    }
+                ]
+            },
+            {
+                "id": "sa-4.6",
+                "class": "SP800-53-enhancement",
+                "title": "Use of Information Assurance Products",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-4(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-04.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-4.6_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "sa-4.6_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Employ only government off-the-shelf or commercial off-the-shelf information assurance and information assurance-enabled information technology products that compose an NSA-approved solution to protect classified information when the networks used to transmit the information are at a lower classification level than the information being transmitted; and"
+                            },
+                            {
+                                "id": "sa-4.6_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Ensure that these products have been evaluated and/or validated by NSA or in accordance with NSA-approved procedures."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sa-4.6_gdn",
+                        "name": "guidance",
+                        "prose": "Commercial off-the-shelf IA or IA-enabled information technology products used to protect classified information by cryptographic means may be required to use NSA-approved key management. See [NSA CSFC](#3d575737-98cb-459d-b41c-d7e82b73ad78)."
+                    }
+                ]
+            },
+            {
+                "id": "sa-4.7",
+                "class": "SP800-53-enhancement",
+                "title": "Niap-approved Protection Profiles",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-4(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-04.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ia-7",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-4.7_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "sa-4.7_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Limit the use of commercially provided information assurance and information assurance-enabled information technology products to those products that have been successfully evaluated against a National Information Assurance partnership (NIAP)-approved Protection Profile for a specific technology type, if such a profile exists; and"
+                            },
+                            {
+                                "id": "sa-4.7_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Require, if no NIAP-approved Protection Profile exists for a specific technology type but a commercially provided information technology product relies on cryptographic functionality to enforce its security policy, that the cryptographic module is FIPS-validated or NSA-approved."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sa-4.7_gdn",
+                        "name": "guidance",
+                        "prose": "See [NIAP CCEVS](#795aff72-3e6c-4b6b-a80a-b14d84b7f544) for additional information on NIAP. See [NIST CMVP](#1acdc775-aafb-4d11-9341-dc6a822e9d38) for additional information on FIPS-validated cryptographic modules."
+                    }
+                ]
+            },
+            {
+                "id": "sa-4.8",
+                "class": "SP800-53-enhancement",
+                "title": "Continuous Monitoring Plan for Controls",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-4(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-04.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ca-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-4.8_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to produce a plan for continuous monitoring of control effectiveness that is consistent with the continuous monitoring program of the organization."
+                    },
+                    {
+                        "id": "sa-4.8_gdn",
+                        "name": "guidance",
+                        "prose": "The objective of continuous monitoring plans is to determine if the planned, required, and deployed controls within the system, system component, or system service continue to be effective over time based on the inevitable changes that occur. Developer continuous monitoring plans include a sufficient level of detail such that the information can be incorporated into continuous monitoring programs implemented by organizations. Continuous monitoring plans can include the types of control assessment and monitoring activities planned, frequency of control monitoring, and actions to be taken when controls fail or become ineffective."
+                    }
+                ]
+            },
+            {
+                "id": "sa-4.9",
+                "class": "SP800-53-enhancement",
+                "title": "Functions, Ports, Protocols, and Services in Use",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-4(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-04.09"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-7",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-9",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-4.9_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to identify the functions, ports, protocols, and services intended for organizational use."
+                    },
+                    {
+                        "id": "sa-4.9_gdn",
+                        "name": "guidance",
+                        "prose": "The identification of functions, ports, protocols, and services early in the system development life cycle (e.g., during the initial requirements definition and design stages) allows organizations to influence the design of the system, system component, or system service. This early involvement in the system development life cycle helps organizations avoid or minimize the use of functions, ports, protocols, or services that pose unnecessarily high risks and understand the trade-offs involved in blocking specific ports, protocols, or services or requiring system service providers to do so. Early identification of functions, ports, protocols, and services avoids costly retrofitting of controls after the system, component, or system service has been implemented. [SA-9](#sa-9) describes the requirements for external system services. Organizations identify which functions, ports, protocols, and services are provided from external sources."
+                    }
+                ]
+            },
+            {
+                "id": "sa-4.10",
+                "class": "SP800-53-enhancement",
+                "title": "Use of Approved Piv Products",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-4(10)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-04.10"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ia-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pm-9",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-4.10_smt",
+                        "name": "statement",
+                        "prose": "Employ only information technology products on the FIPS 201-approved products list for Personal Identity Verification (PIV) capability implemented within organizational systems."
+                    },
+                    {
+                        "id": "sa-4.10_gdn",
+                        "name": "guidance",
+                        "prose": "Products on the FIPS 201-approved products list meet NIST requirements for Personal Identity Verification (PIV) of Federal Employees and Contractors. PIV cards are used for multi-factor authentication in systems and organizations."
+                    }
+                ]
+            },
+            {
+                "id": "sa-4.11",
+                "class": "SP800-53-enhancement",
+                "title": "System of Records",
+                "params": [
+                    {
+                        "id": "sa-4.11_prm_1",
+                        "label": "organization-defined Privacy Act requirements"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-4(11)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-04.11"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pt-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-4.11_smt",
+                        "name": "statement",
+                        "prose": "Include {{ sa-4.11_prm_1 }} in the acquisition contract for the operation of a system of records on behalf of an organization to accomplish an organizational mission or function."
+                    },
+                    {
+                        "id": "sa-4.11_gdn",
+                        "name": "guidance",
+                        "prose": "When, by contract, an organization provides for the operation of a system of records to accomplish an organizational mission or function, the organization, consistent with its authority, causes the requirements of the [PRIVACT](#18e71fec-c6fd-475a-925a-5d8495cf8455) to be applied to the system of records."
+                    }
+                ]
+            },
+            {
+                "id": "sa-4.12",
+                "class": "SP800-53-enhancement",
+                "title": "Data Ownership",
+                "params": [
+                    {
+                        "id": "sa-4.12_prm_1",
+                        "label": "organization-defined time frame"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-4(12)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-04.12"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#6afc1b04-c9d6-4023-adbc-f8fbe33a3c73",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#87087451-2af5-43d4-88c1-d66ad850f614",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#4452efc0-e79e-47b8-aa30-b54f3ef61c2f",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#77faf0bc-c394-44ad-9154-bbac3b79c8ad",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#4895b4cd-34c5-4667-bf8a-27d443c12047",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#858705be-3c1f-48aa-a328-0ce398d95ef0",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#067223d8-1ec7-45c5-b21b-c848da6de8fb",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#15dc76ff-b17a-4eeb-8948-8ea8de3ccc2c",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#4b38e961-1125-4a5b-aa35-1d6c02846dad",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#604774da-9e1d-48eb-9c62-4e959dc80737",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#98d415ca-7281-4064-9931-0c366637e324",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#795aff72-3e6c-4b6b-a80a-b14d84b7f544",
+                        "rel": "reference"
+                    },
+                    {
+                        "href": "#3d575737-98cb-459d-b41c-d7e82b73ad78",
+                        "rel": "reference"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-4.12_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "sa-4.12_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Include organizational data ownership requirements in the acquisition contract; and"
+                            },
+                            {
+                                "id": "sa-4.12_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Require all data to be removed from the contractor\u2019s system and returned to the organization within {{ sa-4.12_prm_1 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sa-4.12_gdn",
+                        "name": "guidance",
+                        "prose": "Contractors who operate a system that contains data owned by an organization initiating the contract have policies and procedures in place to remove the data from their systems and/or return the data in a time frame defined by the contract."
+                    }
+                ]
+            }
+        ]
+    }
+}

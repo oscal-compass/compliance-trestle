@@ -1,0 +1,114 @@
+{
+    "control": {
+        "id": "au-4",
+        "class": "SP800-53",
+        "title": "Audit Log Storage Capacity",
+        "params": [
+            {
+                "id": "au-4_prm_1",
+                "label": "organization-defined audit log retention requirements"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AU-4"
+            },
+            {
+                "name": "sort-id",
+                "value": "au-04"
+            }
+        ],
+        "links": [
+            {
+                "href": "#au-2",
+                "rel": "related"
+            },
+            {
+                "href": "#au-5",
+                "rel": "related"
+            },
+            {
+                "href": "#au-6",
+                "rel": "related"
+            },
+            {
+                "href": "#au-7",
+                "rel": "related"
+            },
+            {
+                "href": "#au-9",
+                "rel": "related"
+            },
+            {
+                "href": "#au-11",
+                "rel": "related"
+            },
+            {
+                "href": "#au-12",
+                "rel": "related"
+            },
+            {
+                "href": "#au-14",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "au-4_smt",
+                "name": "statement",
+                "prose": "Allocate audit log storage capacity to accommodate {{ au-4_prm_1 }}."
+            },
+            {
+                "id": "au-4_gdn",
+                "name": "guidance",
+                "prose": "Organizations consider the types of audit logging to be performed and the audit log processing requirements when allocating audit log storage capacity. Allocating sufficient audit log storage capacity reduces the likelihood of such capacity being exceeded and resulting in the potential loss or reduction of audit logging capability."
+            }
+        ],
+        "controls": [
+            {
+                "id": "au-4.1",
+                "class": "SP800-53-enhancement",
+                "title": "Transfer to Alternate Storage",
+                "params": [
+                    {
+                        "id": "au-4.1_prm_1",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AU-4(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "au-04.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#au-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "au-4.1_smt",
+                        "name": "statement",
+                        "prose": "Transfer audit logs {{ au-4.1_prm_1 }} to a different system, system component, or media other than the system or system component conducting the logging."
+                    },
+                    {
+                        "id": "au-4.1_gdn",
+                        "name": "guidance",
+                        "prose": "Audit log transfer, also known as off-loading, is a common process in systems with limited audit log storage capacity and thus supports availability of the audit logs. The initial audit log storage is only used in a transitory fashion until the system can communicate with the secondary or alternate system allocated to audit log storage, at which point the audit logs are transferred. Transferring audit logs to alternate storage is similar to [AU-9(2)](#au-9.2) in that audit logs are transferred to a different entity. However, the purpose of selecting [AU-9(2)](#au-9.2) is to protect the confidentiality and integrity of audit records. Organizations can select either control enhancement to obtain the benefit of increased audit log storage capacity and preserving the confidentiality, integrity, and availability of audit records and logs."
+                    }
+                ]
+            }
+        ]
+    }
+}

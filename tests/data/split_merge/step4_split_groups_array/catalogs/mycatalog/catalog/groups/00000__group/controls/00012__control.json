@@ -1,0 +1,31 @@
+{
+    "control": {
+        "id": "ac-13",
+        "class": "SP800-53",
+        "title": "Supervision and Review \u2014 Access Control",
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-13"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-13"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-2",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#au-6",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

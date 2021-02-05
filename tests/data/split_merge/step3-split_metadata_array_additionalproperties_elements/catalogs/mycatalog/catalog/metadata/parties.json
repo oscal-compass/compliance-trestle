@@ -1,12 +1,15 @@
 {
     "parties": [
         {
-            "uuid": "d2cd65bd-2123-4dd9-afb2-c7564f3251c2",
+            "uuid": "41a93829-b76b-43ec-b9e7-250553511549",
             "type": "organization",
-            "party-name": "Joint Task Force, Interagency Working Group",
+            "name": "Joint Task Force, Interagency Working Group",
+            "email-addresses": [
+                "sec-cert@nist.gov"
+            ],
             "addresses": [
                 {
-                    "postal-address": [
+                    "addr-lines": [
                         "National Institute of Standards and Technology",
                         "Attn: Computer Security Division",
                         "Information Technology Laboratory",
@@ -16,9 +19,6 @@
                     "state": "MD",
                     "postal-code": "20899-8930"
                 }
-            ],
-            "email-addresses": [
-                "sec-cert@nist.gov"
             ]
         }
     ]

@@ -22,16 +22,17 @@ import pytest
 
 import trestle.core.base_model as ospydantic
 import trestle.core.err as err
-import trestle.core.parser as p
 import trestle.oscal.catalog as oscatalog
+import trestle.oscal.component as component
+import trestle.oscal.poam as poam
 import trestle.oscal.target as ostarget
 from trestle.core.base_model import OscalBaseModel
 from trestle.oscal.target import TargetDefinition
 
 
-def test_echo_tmpdir(tmpdir):
+def test_echo_tmp_path(tmp_path) -> None:
     """Testing pytest."""
-    print(tmpdir)  # noqa T001
+    print(tmp_path)  # noqa T001
     assert 1
 
 
@@ -63,21 +64,14 @@ def simple_catalog_with_tz() -> oscatalog.Catalog:
     return catalog
 
 
-def test_is_oscal_base():
+def test_is_oscal_base() -> None:
     """Test that the typing information is as expected."""
     catalog = simple_catalog()
 
     assert (isinstance(catalog, ospydantic.OscalBaseModel))
 
 
-def test_wrapper_is_oscal_base():
-    """Test a wrapped class is still a instance of OscalBaseModel."""
-    catalog = simple_catalog()
-    wrapped_catalog = p.wrap_for_output(catalog)
-    assert (isinstance(wrapped_catalog, ospydantic.OscalBaseModel))
-
-
-def test_no_timezone_exception():
+def test_no_timezone_exception() -> None:
     """Test that an exception occurs when no timezone is passed in datetime."""
     no_tz_catalog = simple_catalog()
     with pytest.raises(Exception):
@@ -85,7 +79,7 @@ def test_no_timezone_exception():
         type(jsoned_catalog)
 
 
-def test_with_timezone():
+def test_with_timezone() -> None:
     """Test where serialzation should work."""
     tz_catalog = simple_catalog_with_tz()
     jsoned_catalog = tz_catalog.json(exclude_none=True, by_alias=True, indent=2)
@@ -96,10 +90,11 @@ def test_with_timezone():
     assert ('Z' in time or '+' in time or '-' in time)
 
 
-def test_broken_tz():
+def test_broken_tz() -> None:
     """Deliberately break tz to trigger exception."""
 
     class BrokenTimezone(tzinfo):
+        # TODO: Type annotations here.
         """Broken TZ class which returns null offset."""
 
         def fromutc(self, dt):
@@ -133,11 +128,11 @@ def test_broken_tz():
         type(jsoned_catalog)
 
 
-def test_stripped_model():
+def test_stripped_model() -> None:
     """Test whether model is can be stripped when acting as an intstance function."""
     catalog = simple_catalog()
 
-    stripped_catalog_object = catalog.create_stripped_model_type(['metadata'])
+    stripped_catalog_object = catalog.create_stripped_model_type(stripped_fields=['metadata'])
 
     # TODO: Need to check best practice here
     if 'metadata' in stripped_catalog_object.__fields__.keys():
@@ -152,9 +147,9 @@ def test_stripped_model():
         raise Exception('Test failure')
 
 
-def test_stripping_model_class():
+def test_stripping_model_class() -> None:
     """Test as a class variable."""
-    stripped_catalog_object = oscatalog.Catalog.create_stripped_model_type(['metadata'])
+    stripped_catalog_object = oscatalog.Catalog.create_stripped_model_type(stripped_fields=['metadata'])
     if 'metadata' in stripped_catalog_object.__fields__.keys():
         raise Exception('Test failure')
 
@@ -167,7 +162,19 @@ def test_stripping_model_class():
         raise Exception('Test failure')
 
 
-def test_stripped_instance(sample_target_def: OscalBaseModel):
+def test_stripped_model_type_failure() -> None:
+    """Test for user failure conditions."""
+    with pytest.raises(err.TrestleError):
+        a = oscatalog.Catalog.create_stripped_model_type(
+            stripped_fields=['metadata'], stripped_fields_aliases=['groups']
+        )
+        assert a is not None
+    with pytest.raises(err.TrestleError):
+        a = oscatalog.Catalog.create_stripped_model_type(stripped_fields=None)
+        assert a is not None
+
+
+def test_stripped_instance(sample_target_def: OscalBaseModel) -> None:
     """Test stripped_instance method."""
     assert hasattr(sample_target_def, 'metadata')
 
@@ -193,7 +200,7 @@ def test_stripped_instance(sample_target_def: OscalBaseModel):
         raise Exception('Test failure')
 
 
-def test_multiple_variable_strip():
+def test_multiple_variable_strip() -> None:
     """Test mutliple fields can be stripped and checking strict schema enforcement."""
     stripped_catalog_object = oscatalog.Catalog.create_stripped_model_type(['metadata', 'uuid'])
     if 'metadata' in stripped_catalog_object.__fields__.keys():
@@ -208,18 +215,8 @@ def test_multiple_variable_strip():
         stripped_catalog_object(uuid=str(uuid4()))
 
 
-def test_copy_to():
+def test_copy_to() -> None:
     """Test the copy to functionality."""
-    # Root variable copy too
-    catalog_title = oscatalog.Title.parse_obj('my_fun_title')
-
-    target_description = catalog_title.copy_to(ostarget.Description)
-
-    assert (target_description == catalog_title)
-
-    target_title = catalog_title.copy_to(ostarget.Title)
-    assert (target_title == catalog_title)
-
     # Complex variable
     c_m = oscatalog.Metadata(
         **{
@@ -233,11 +230,18 @@ def test_copy_to():
     target_metadata = c_m.copy_to(ostarget.Metadata)
     assert (target_metadata.title == c_m.title)
     # Non matching object
-    with pytest.raises(Exception):
-        c_m.copy_to(ostarget.Target)
+    with pytest.raises(err.TrestleError):
+        c_m.copy_to(ostarget.DefinedTarget)
+
+    # Testing of root fields. This is is subject to change.
+    # component.Remarks (type str)
+    # poam.ParameterValue (type str)
+    # note the testing conducntio
+    remark = component.Remarks(__root__='hello')
+    _ = remark.copy_to(poam.ParameterValue)
 
 
-def test_copy_from():
+def test_copy_from() -> None:
     """Test copy from function."""
     m = oscatalog.Metadata(
         **{
@@ -262,7 +266,7 @@ def test_copy_from():
     assert catalog.metadata.title == target_md.title
 
 
-def test_oscal_read():
+def test_oscal_read() -> None:
     """Test ability to read and uwrap oscal object."""
     path_target_definition = pathlib.Path('tests/data/json/sample-target-definition.json')
     assert (path_target_definition.exists())
@@ -271,31 +275,34 @@ def test_oscal_read():
     assert (len(str(target.metadata.title)) > 1)
 
 
-def test_oscal_write(tmpdir):
+def test_oscal_write(tmp_path: pathlib.Path) -> None:
     """Test Oscal write by repetitive operations."""
     path_target_definition = pathlib.Path('tests/data/json/sample-target-definition.json')
     assert (path_target_definition.exists())
 
     target = ostarget.TargetDefinition.oscal_read(path_target_definition)
 
-    temp_td_json = pathlib.Path(tmpdir) / 'target_test.json'
+    temp_td_json = pathlib.Path(tmp_path) / 'target_test.json'
     target.oscal_write(temp_td_json)
 
     target2 = ostarget.TargetDefinition.oscal_read(temp_td_json)
 
-    temp_td_yaml = pathlib.Path(tmpdir) / 'target_test.yaml'
+    temp_td_yaml = pathlib.Path(tmp_path) / 'target_test.yaml'
     target2.oscal_write(temp_td_yaml)
 
     ostarget.TargetDefinition.oscal_read(temp_td_yaml)
+    # test failure
+    with pytest.raises(err.TrestleError):
+        target2.oscal_write(tmp_path / 'target.borked')
 
 
-def test_get_field_value(sample_target_def: TargetDefinition):
+def test_get_field_value(sample_target_def: TargetDefinition) -> None:
     """Test get field value method."""
     assert sample_target_def.metadata.get_field_value('last-modified') == sample_target_def.metadata.last_modified
     assert sample_target_def.metadata.get_field_value('last_modified') == sample_target_def.metadata.last_modified
 
 
-def test_get_field_value_by_alias(sample_target_def: TargetDefinition):
+def test_get_field_value_by_alias(sample_target_def: TargetDefinition) -> None:
     """Test get attribute by alias method."""
     assert sample_target_def.metadata.get_field_value_by_alias(
         'last-modified'
@@ -303,7 +310,7 @@ def test_get_field_value_by_alias(sample_target_def: TargetDefinition):
     assert sample_target_def.metadata.get_field_value_by_alias('last_modified') is None
 
 
-def test_get_field_by_alias(sample_target_def: TargetDefinition):
+def test_get_field_by_alias(sample_target_def: TargetDefinition) -> None:
     """Test get field for field alias."""
     assert sample_target_def.metadata.get_field_by_alias('last-modified').name == 'last_modified'
     assert sample_target_def.metadata.get_field_by_alias('last_modified') is None

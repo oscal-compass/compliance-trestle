@@ -20,8 +20,7 @@ PACKAGE_OSCAL = 'trestle.oscal'
 TRESTLE_CONFIG_DIR = '.trestle'
 TRESTLE_DIST_DIR = 'dist'
 TRESTLE_CONFIG_FILE = 'config.ini'
-
-# Map of plural form of a model type to the oscal module that contains the classes related to it
+"""Map of plural form of a model type to the oscal module that contains the classes related to it."""
 MODELTYPE_TO_MODELMODULE = {
     'catalogs': f'{PACKAGE_OSCAL}.catalog',
     'profiles': f'{PACKAGE_OSCAL}.profile',
@@ -32,8 +31,7 @@ MODELTYPE_TO_MODELMODULE = {
     'assessment-results': f'{PACKAGE_OSCAL}.assessment_results',
     'plan-of-action-and-milestones': f'{PACKAGE_OSCAL}.poam'
 }
-
-# path separator
+"""Element path separator"""
 ALIAS_PATH_SEPARATOR: str = '.'
 
 # argument names
@@ -46,8 +44,6 @@ ARG_ELEMENT_SHORT = 'e'
 # argument descriptions
 ARG_DESC_FILE = 'Path of the file'
 ARG_DESC_ELEMENT = 'Path of the element in the OSCAL model'
-
-TMP_DIR_NAME = '__tmp_dir'
 
 # Index separater for naming directories representing collection properties
 IDX_SEP = '__'

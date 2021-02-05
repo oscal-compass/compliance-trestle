@@ -3,6 +3,53 @@
 
 <!--next-version-placeholder-->
 
+## v0.7.2 (2021-02-02)
+### Fix
+* DevOps fixes onto main ([#334](https://github.com/IBM/compliance-trestle/issues/334)) ([`74df375`](https://github.com/IBM/compliance-trestle/commit/74df375c15ad0bc2f0fb8c54e1ed83faf11d66e4))
+
+## v0.7.1 (2021-02-02)
+### Fix
+* Assembly behaviour correction and devops fixes. ([`ac3828d`](https://github.com/IBM/compliance-trestle/commit/ac3828de66874807b70ee372be51976a724322d1))
+
+## v0.7.0 (2021-01-28)
+### Feature
+* Trestle assemble implemented and documented. ([`e752bc2`](https://github.com/IBM/compliance-trestle/commit/e752bc2a6923c05c6251622499137d0c40633467))
+* Enhancement to handle arboretum fetcher-built OSCO evidence as input ([#311](https://github.com/IBM/compliance-trestle/issues/311)) ([`e9c4196`](https://github.com/IBM/compliance-trestle/commit/e9c41969597c6bf587b5732e0851da3e7b24429e))
+* Task osco-to-oscal to allow transformation from OpenSHift Compliance Operator to OSCAL ([#296](https://github.com/IBM/compliance-trestle/issues/296)) ([`ad995a2`](https://github.com/IBM/compliance-trestle/commit/ad995a22029aa67972bc9e6fdd3ebd0e987f50ba))
+* Merge allows use of both yaml and json files. ([`4d87e6a`](https://github.com/IBM/compliance-trestle/commit/4d87e6aac5a49d1624da06d4f7bab4accb13b033))
+
+### Fix
+* Corrected bad link to website homepage. ([#314](https://github.com/IBM/compliance-trestle/issues/314)) ([`81124fb`](https://github.com/IBM/compliance-trestle/commit/81124fba5f25772cbcabf3fd0923ac6284794ff1))
+* Corrected branch for mkdocs deploy. ([#304](https://github.com/IBM/compliance-trestle/issues/304)) ([`2dd5d93`](https://github.com/IBM/compliance-trestle/commit/2dd5d93df759f9bde345ca1f8d59014d8eb15787))
+
+### Documentation
+* Fix typos and grammar in cli and misspelling in split_merge docs ([#306](https://github.com/IBM/compliance-trestle/issues/306)) ([`272c2cc`](https://github.com/IBM/compliance-trestle/commit/272c2ccf6fbfca5fe6cdac7f0623b85fa8d5ddd7))
+
+## v0.6.2 (2021-01-17)
+### Fix
+* Corrected branch for mkdocs deploy. (#304) ([#305](https://github.com/IBM/compliance-trestle/issues/305)) ([`be3f13a`](https://github.com/IBM/compliance-trestle/commit/be3f13a89d44c3f773ad7e372e4116eb609c8f5d))
+
+## v0.6.1 (2021-01-15)
+### Fix
+* Extra unit tests and cleanup to close more significant gaps ([#298](https://github.com/IBM/compliance-trestle/issues/298)) ([`2abcaad`](https://github.com/IBM/compliance-trestle/commit/2abcaadc1bc14419111e1778bbb1fab61d633d5e))
+* Changed split to not write empty files after split. Implemented circular split-merge test ([#295](https://github.com/IBM/compliance-trestle/issues/295)) ([`1ebbeb2`](https://github.com/IBM/compliance-trestle/commit/1ebbeb20db1e25852dd58f7fa7a4ed909e995ef0))
+
+### Documentation
+* Initial setup of documentation website. ([#234](https://github.com/IBM/compliance-trestle/issues/234)) ([`a51081b`](https://github.com/IBM/compliance-trestle/commit/a51081bd93cb43b02135b72f00e16cf805eacba9))
+
+## v0.6.0 (2021-01-07)
+### Feature
+* Force update of version ([`fc0357b`](https://github.com/IBM/compliance-trestle/commit/fc0357b297bb59d64ad28af23fe2404c31364010))
+* Update to OSCAL 1.0.0rc1 and simplified models. ([#286](https://github.com/IBM/compliance-trestle/issues/286)) ([`992b317`](https://github.com/IBM/compliance-trestle/commit/992b31743f4d1c4ce11d5b8c1ee69995856d0056))
+* Distributed load and trestle merge.(#272) ([`dceae85`](https://github.com/IBM/compliance-trestle/commit/dceae854c9e96ef2e66931efa9a0263b0470003e))
+* Misc cleanups of code for typing, unsafe functions, and other issues. ([#274](https://github.com/IBM/compliance-trestle/issues/274)) ([`0652392`](https://github.com/IBM/compliance-trestle/commit/06523929944351ce90ba83a85d57f0b04b323660))
+
+### Fix
+* Correct semantic release behaviour ([`c25d5be`](https://github.com/IBM/compliance-trestle/commit/c25d5be7448ee956cd848a1476b5c9c70d72ab33))
+* Correct semantic release behaviour. ([`caba993`](https://github.com/IBM/compliance-trestle/commit/caba993013fed5b70ced84fc58d34345e042cb6c))
+* Refactor to use python and pytest internals for temporary paths and creating directories. ([`1d99ca2`](https://github.com/IBM/compliance-trestle/commit/1d99ca2ac96d76dfa777a0c514be582b382504de))
+* Small typo fix. ([`2168bb2`](https://github.com/IBM/compliance-trestle/commit/2168bb2b4d8fa79fbf93687a41265379cba608b8))
+
 ## v0.4.0 (2020-11-24)
 ### Feature
 * Validation of duplicates now uses object factory (#216) ([`cf00f8b`](https://github.com/IBM/compliance-trestle/commit/cf00f8bb0ea4f0a7c039e1399525ede8d8d0ace8))

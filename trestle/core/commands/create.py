@@ -19,13 +19,12 @@ import argparse
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Type
+from typing import Type, TypeVar
 
 from ilcli import Command  # type: ignore
 
 import trestle.oscal
 from trestle.core import generators
-from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
@@ -43,6 +42,18 @@ from trestle.utils import log
 
 logger = logging.getLogger(__name__)
 
+TLO = TypeVar(
+    'TLO',
+    assessment_plan.AssessmentPlan,
+    assessment_results.AssessmentResults,
+    catalog.Catalog,
+    component.ComponentDefinition,
+    poam.PlanOfActionAndMilestones,
+    profile.Profile,
+    ssp.SystemSecurityPlan,
+    target.TargetDefinition
+)
+
 
 class CatalogCmd(Command):
     """Create a sample catalog in the trestle directory structure, given an OSCAL schema."""
@@ -51,7 +62,7 @@ class CatalogCmd(Command):
 
     def _run(self, args: argparse.Namespace) -> int:
         """Create a sample catalog in the trestle directory structure, given an OSCAL schema."""
-        logger.info(f'Creating catalog titled: {args.name}')
+        logger.info(f'Creating catalog titled: {args.output}')
         return CreateCmd.create_object(self.name, catalog.Catalog, args)
 
 
@@ -61,7 +72,7 @@ class ProfileCmd(Command):
     name = 'profile'
 
     def _run(self, args: argparse.Namespace) -> int:
-        logger.info(f'Creating profile titled: {args.name}')
+        logger.info(f'Creating profile titled: {args.output}')
         return CreateCmd.create_object(self.name, profile.Profile, args)
 
 
@@ -136,13 +147,13 @@ class CreateCmd(Command):
     ]
 
     def _init_arguments(self) -> None:
-        self.add_argument('-n', '--name', help='Name of the model.', required=True)
+        self.add_argument('-o', '--output', help='Name of the output created model.', required=True)
         self.add_argument(
             '-x', '--extension', help='Type of file output.', choices=['json', 'yaml', 'yml'], default='json'
         )
 
     @classmethod
-    def create_object(cls, model_alias: str, object_type: Type[OscalBaseModel], args: argparse.Namespace) -> int:
+    def create_object(cls, model_alias: str, object_type: Type[TLO], args: argparse.Namespace) -> int:
         """Create a top level OSCAL object within the trestle directory, leveraging functionality in add."""
         log.set_log_level_from_args(args)
         trestle_root = fs.get_trestle_project_root(Path.cwd())
@@ -156,7 +167,7 @@ class CreateCmd(Command):
         else:
             plural_path = model_alias + 's'
 
-        desired_model_dir = trestle_root / plural_path / args.name
+        desired_model_dir = trestle_root / plural_path / args.output
 
         desired_model_path = desired_model_dir / (model_alias + '.' + args.extension)
 

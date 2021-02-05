@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 develop:
 	python -m pip install -e .[dev] --upgrade --upgrade-strategy eager
 
@@ -36,7 +35,7 @@ code-typing:
 	mypy --pretty trestle
 
 test::
-	python -m pytest --cov trestle tests --cov-report=xml --exitfirst
+	python -m pytest --cov trestle tests --cov-report=xml --exitfirst --random-order
 
 test-verbose:
 	python -m pytest --cov trestle tests -v --cov-report=term-missing --cov-report=html:cov_html --exitfirst
@@ -48,3 +47,14 @@ release::
 
 gen-oscal::
 	python ./scripts/gen_oscal.py
+
+docs-automation::
+	python ./scripts/website_automation.py
+
+docs-validate::
+	mkdocs build -c -s
+	rm -rf site
+
+
+docs-serve: docs-automation
+	mkdocs serve	
