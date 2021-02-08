@@ -16,6 +16,7 @@
 
 import base64
 import bz2
+import json
 import logging
 import uuid
 from typing import Any, Dict, List, Optional
@@ -33,6 +34,7 @@ logger = logging.getLogger(__name__)
 
 t_analysis = Dict[str, Any]
 t_benchmark = Dict[str, str]
+t_json = Dict[str, List[Any]]
 t_metadata_entry = Dict[Any, Any]
 t_metadata = Dict[Any, t_metadata_entry]
 t_osco = Dict[str, Any]
@@ -71,6 +73,29 @@ def get_observations(osco: t_osco,
     assessment_results_partial = AssessmentResultsPartial(observations=observation_list)
     logger.debug(f'get_observations: {assessment_results_partial}')
     return assessment_results_partial, rules.analysis
+
+
+def get_observations_json(osco: t_osco, oscal_metadata: Optional[t_metadata] = None) -> (t_json, t_analysis):
+    """Transform OSCO data to NIST OSCAL json with statistics.
+
+    Transforms the given OpenShift Compliance Operator data into OSCAL-like
+    Assessment Results observations json. Optional metadata is employed to produce
+    enhanced Observations json.
+
+    Args:
+        osco: OSCO data to be transformed into observations.
+        oscal_metadata: helps more completely formulate each observation, if present.
+
+    Returns:
+        assessment_results_partial: comprises OSCAL-like Assessment Results observations json.
+        analysis: comprises statistics about the transformation.
+    """
+    observation_list = []
+    arp, analysis = get_observations(osco, oscal_metadata)
+    for observation_model in arp.observations:
+        observation_json = json.loads(observation_model.json(exclude_none=True, by_alias=True, indent=2))
+        observation_list.append(observation_json)
+    return {'observations': observation_list}, analysis
 
 
 def _get_observation(rule: t_rule, oscal_metadata: Optional[t_metadata] = None) -> Observation:
