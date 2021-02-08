@@ -317,3 +317,305 @@ and returns a non-zero return code on a validation failure. Mode is a list of va
 | duplicates | Identify if duplicate values exist for a given json key for example `trestle validate -f catalog.json -i uuid --mode duplicate` |
 
 ## `trestle tasks`
+
+TBD.
+
+
+## `trestle task osco-to-oscal`
+
+The *trestle task osco-to-oscal* command facilitates transformation of OpenShift Compliance Operator (OSCO) scan results *.yaml* files into OSCAL partial results *.json* files. Specify required config parameters to indicate the location of the input and the output. Specify optional config parameters to indicate the name of the oscal-metadata.yaml file, if any, and whether overwriting of existing output is permitted.
+
+<span style="color:green">
+Example command invocation:
+</span>
+
+> `$TRESTLE_BASEDIR$ trestle task osco-to-oscal -c /home/user/task.config`
+
+
+<span style="color:green">
+Example config:
+</span>
+
+*/home/user/task.config*
+
+```
+[task.osco-to-oscal]
+
+input-dir =  /home/user/git/evidence/osco/input
+output-dir = /home/user/git/evidence/oscal/output
+oscal-metadata = oscal-metadata.yaml
+output-overwrite = true
+```
+**input**
+
+<span style="color:green">
+Example input directory contents listing:
+</span>
+
+
+*/home/user/git/evidence/osco/input*
+
+```
+-rw-rw-r--. 1 user user  3832 Feb  2 09:36 oscal-metadata.yaml
+-rw-rw-r--. 1 user user 49132 Feb  2 06:12 ssg-ocp4-ds-cis-111.222.333.444-pod.yaml
+-rw-rw-r--. 1 user user 52747 Feb  2 06:41 ssg-ocp4-ds-cis-111.222.333.555-pod.yaml
+
+```
+
+<span style="color:green">
+Example input OSCO scan result file contents (snippet):
+</span>
+
+*ssg-ocp4-ds-cis-111.222.333.444-pod.yaml*
+
+```
+apiVersion: v1
+data:
+  exit-code: "2"
+  results: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <TestResult xmlns="http://checklists.nist.gov/xccdf/1.2" 
+                id="xccdf_org.open-scap_testresult_xccdf_org.ssgproject.content_profile_cis"
+                start-time="2020-08-03T02:26:26+00:00" end-time="2020-08-03T02:26:26+00:00"
+                version="0.1.52"
+                test-system="cpe:/a:redhat:openscap:1.3.3">
+              <benchmark href="/content/ssg-ocp4-ds.xml" id="xccdf_org.ssgproject.content_benchmark_OCP-4"/>
+              <title>OSCAP Scan Result</title>
+              <profile idref="xccdf_org.ssgproject.content_profile_cis"/>
+              <target>kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp</target>
+              <target-facts>
+                <fact name="urn:xccdf:fact:identifier" type="string">chroot:///host</fact>
+                <fact name="urn:xccdf:fact:scanner:name" type="string">OpenSCAP</fact>
+                <fact name="urn:xccdf:fact:scanner:version" type="string">1.3.3</fact>
+              </target-facts>
+              <target-id-ref system="http://scap.nist.gov/schema/asset-identification/1.1" name="asset0" href=""/>
+              <platform idref="cpe:/a:redhat:openshift_container_platform:4.1"/>
+              <platform idref="cpe:/a:machine"/>
+              <set-value idref="xccdf_org.ssgproject.content_value_ocp_data_root">/kubernetes-api-resources</set-value>
+              <set-value idref="xccdf_org.ssgproject.content_value_var_kube_authorization_mode">Webhook</set-value>
+              <set-value idref="xccdf_org.ssgproject.content_value_var_streaming_connection_timeouts">5m</set-value>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notselected</result>
+                <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84209-6</ident>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              <rule-result idref="xccdf_org.ssgproject.content_rule_accounts_unique_service_account" time="2020-08-03T02:26:26+00:00" severity="medium" weight="1.000000">
+                <result>notchecked</result>
+                <message severity="info">No candidate or applicable check found.</message>
+              </rule-result>
+              
+              ...
+              
+           </TestResult>
+kind: ConfigMap
+metadata:
+  annotations:
+    compliance-remediations/processed: ""
+    compliance.openshift.io/scan-error-msg: ""
+    compliance.openshift.io/scan-result: NON-COMPLIANT
+    openscap-scan-result/node: 111.222.333.444
+  creationTimestamp: "2020-08-03T02:26:34Z"
+  labels:
+    compliance-scan: ssg-ocp4-ds-cis
+  name: ssg-ocp4-ds-cis-111.222.333.444-pod
+  namespace: openshift-compliance
+  resourceVersion: "22693328"
+  selfLink: /api/v1/namespaces/openshift-compliance/configmaps/ssg-ocp4-ds-cis-111.222.333.444-pod
+  uid: 1da3ea81-0a25-4512-ad86-7ac360246b5d
+```
+
+<span style="color:green">
+Example input OSCAL metadata file contents:
+</span>
+
+*oscal-metadata.yaml*
+
+```
+
+ssg-ocp4-ds-cis-111.222.333.444-pod:
+   locker: https://github.mycorp.com/degenaro/evidence-locker
+   namespace: xccdf
+   subject-references:
+      component:
+         uuid-ref: 56666738-0f9a-4e38-9aac-c0fad00a5821
+         type: component
+         title: Red Hat OpenShift Kubernetes
+      inventory-item:
+         uuid-ref: 46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e
+         type: inventory-item
+         title: Pod
+         properties:
+            target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+            cluster-name: ROKS-OpenSCAP-1
+            cluster-type: openshift
+            cluster-region: us-south
+                    
+ssg-rhel7-ds-cis-111.222.333.444-pod:
+   locker: https://github.mycorp.com/degenaro/evidence-locker
+   namespace: xccdf
+   subject-references:
+      component:
+         uuid-ref: 89cfe7a7-ce6b-4699-aa7b-2f5739c72001
+         type: component
+         title: RedHat Enterprise Linux 7.8
+      inventory-item:
+         uuid-ref: 46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e
+         type: inventory-item
+         title: VM
+         properties:
+            target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+            cluster-name: ROKS-OpenSCAP-1
+            cluster-type: openshift
+            cluster-region: us-south
+```
+
+**metadata format**
+
+The *oscal_metadata.yaml* file comprises one or more mappings. Below is shown the
+format of a single mapping. The items in angle brackets are to be replaced with
+desired values for augmenting the produced OSCAL.
+
+The mapping whose *<name>* matches the *[metadata][name]* in the evidence for the
+corresponding embedded XML, if any, will be used for augmenting the produced
+OSCAL.
+
+```
+<name>:
+   namespace: <namespace>
+   subject-references:
+      component:
+         uuid-ref: <uuid-ref-component>
+         type: <component-type>
+         title: <component-title>
+      inventory-item:
+         uuid-ref: <uuid-ref-inventory-item>
+         type: <inventory-item-type>
+         title: <inventory-item-title>
+         properties:
+            target: <target>
+            cluster-name: <cluster-name>
+            cluster-type: <cluster-type>
+            cluster-region: <cluster-region>
+```
+**output**
+
+<span style="color:green">
+Example output directory contents listing:
+</span>
+
+
+*/home/user/git/evidence/oscal/output*
+
+```
+-rw-rw-r--. 1 user user 49132 Feb  3 10:59 ssg-ocp4-ds-cis-111.222.333.444-pod.json
+-rw-rw-r--. 1 user user 52747 Feb  3 10:59 ssg-ocp4-ds-cis-111.222.333.555-pod.json
+
+```
+
+
+<span style="color:green">
+Example output OSCAL Observations file contents (snippet):
+</span>
+
+*ssg-ocp4-ds-cis-111.222.333.444-pod.json*
+
+
+```
+{
+  "observations": [
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd",
+      "description": "xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "subjects": [
+        {
+          "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+          "type": "component",
+          "title": "Red Hat OpenShift Kubernetes"
+        },
+        {
+          "uuid-ref": "46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e",
+          "type": "inventory-item",
+          "title": "Pod",
+          "props": [
+            {
+              "name": "target",
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
+            },
+            {
+              "name": "cluster-name",
+              "value": "ROKS-OpenSCAP-1"
+            },
+            {
+              "name": "cluster-type",
+              "value": "openshift"
+            },
+            {
+              "name": "cluster-region",
+              "value": "us-south"
+            }
+          ]
+        }
+      ],
+      "relevant-evidence": [
+        {
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
+          "description": "Evidence location.",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-08-03T02:26:26+00:00"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "notselected"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "target",
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens",
+      "description": "xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "subjects": [
+        {
+          "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+          "type": "component",
+          "title": "Red Hat OpenShift Kubernetes"
+        },
+        ...
+      ]
+    },
+    ...
+    {
+      ...
+    }
+  ]
+}
+```
