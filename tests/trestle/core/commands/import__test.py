@@ -115,8 +115,7 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path) -> None:
     j = importcmd.ImportCmd()
     args = argparse.Namespace(file=dup_file_name, output=f'dup-{rand_str}', verbose=True)
     with patch('trestle.core.models.plans.Plan.rollback') as rollback_mock:
-        # For some reason, simulate() call incorrectly takes this mock side_effect.
-        rollback_mock.side_effect = err.TrestleError('rollback error')
+        rollback_mock.side_effect = [None, err.TrestleError('rollback error')]
         rc = j._run(args)
         assert rc > 0
 
