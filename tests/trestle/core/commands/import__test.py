@@ -124,7 +124,7 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_clash_on_output(tmp_trestle_dir: pathlib.Path) -> None:
     """Test an attempt to import into an existing trestle file."""
     # 1. Create a sample catalog,
-    args = argparse.Namespace(name='my-catalog', extension='json', verbose=True)
+    args = argparse.Namespace(output='my-catalog', extension='json', verbose=True)
     create.CreateCmd.create_object('catalog', Catalog, args)
     # 2. Create a valid oscal object in tmp_trestle_dir.parent,
     sample_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)

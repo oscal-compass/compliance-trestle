@@ -19,9 +19,9 @@ import argparse
 import pathlib
 from abc import ABC, abstractmethod
 
-from trestle.core.base_model import OscalBaseModel
 from trestle.core.validator_helper import find_values_by_name
 from trestle.utils import fs
+from trestle.utils.load_distributed import load_distributed
 
 
 class Validator(ABC):
@@ -39,7 +39,7 @@ class DuplicatesValidator(Validator):
         """Perform the validation."""
         file_path = pathlib.Path(args.file).absolute()
         model_type, _ = fs.get_contextual_model_type(file_path)
-        model: OscalBaseModel = model_type.oscal_read(file_path)
+        _, _, model = load_distributed(file_path, model_type)
 
         loe = find_values_by_name(model, args.item)
         if loe:
