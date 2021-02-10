@@ -14,15 +14,12 @@
 # limitations under the License.
 """Testing of core settings module."""
 
-import json
 import os
 import pathlib
 from uuid import uuid4
 
-import pytest
 from tests import test_utils
 
-# import trestle.core.err as err
 from trestle.core.settings import Settings
 
 
@@ -30,20 +27,6 @@ def test_settings_class():
     """Test as a class variable."""
     env_file_path = pathlib.Path(test_utils.ENV_TEST_DATA_PATH / 'good_env_bad_token').absolute()
     assert (env_file_path.is_file())
-
-    settings = Settings(_env_file=env_file_path)
-    # file_path = pathlib.Path.joinpath(test_utils.ENV_TEST_DATA_PATH, 'minimal_catalog_roles.json')
-    # stripped_catalog_object = oscatalog.Catalog.create_stripped_model_type(['metadata'])
-    # if 'metadata' in stripped_catalog_object.__fields__.keys():
-    #     raise Exception('Test failure')
-
-    # if 'controls' not in stripped_catalog_object.__fields__.keys():
-    #     raise Exception('Test failure')
-
-    # # Create instance.
-    # sc_instance = stripped_catalog_object(uuid=str(uuid4()))
-    # if 'metadata' in sc_instance.__fields__.keys():
-    #     raise Exception('Test failure')
     pass
 
 
@@ -62,6 +45,6 @@ def test_settings_env_variable():
     assert (env_file_path.is_file())
 
     token = str(uuid4())
-    os.environ["TRESTLE_GITHUB_TOKENS"] = f'{{ "github.com": "{token}" }}'
+    os.environ['TRESTLE_GITHUB_TOKENS'] = f'{{ "github.com": "{token}" }}'
     settings = Settings(_env_file=env_file_path)
-    assert (settings.GITHUB_TOKENS["github.com"] == token)
+    assert (settings.GITHUB_TOKENS['github.com'] == token)
