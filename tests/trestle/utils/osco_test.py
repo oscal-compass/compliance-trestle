@@ -39,9 +39,22 @@ def test_function_osco_get_observations(tmp_path):
     with patch('uuid.uuid4') as mock_uuid4:
         mock_uuid4.return_value = mock_uuid4_value
         observations, analysis = osco.get_observations(idata, metadata)
-    expected = _load_json(stem_out, 'osco-pod-oscal.json')
-    tfile = tmp_path / 'osco-pod-oscal.json'
+    expected = _load_json(stem_out, 'osco-pod-oscal-arp.json')
+    tfile = tmp_path / 'osco-pod-oscal-arp.json'
     observations.oscal_write(tfile)
+    actual = _load_json(tmp_path, 'osco-pod-oscal-arp.json')
+    assert actual == expected
+
+
+def test_function_osco_get_observations_json(tmp_path):
+    """Test OSCO to OSCAL transformation."""
+    idata = _load_yaml(stem_in, 'ssg-ocp4-ds-cis-111.222.333.444-pod.yaml')
+    metadata = _load_yaml(stem_in, 'oscal-metadata.yaml')
+    with patch('uuid.uuid4') as mock_uuid4:
+        mock_uuid4.return_value = mock_uuid4_value
+        observations, analysis = osco.get_observations_json(idata, metadata)
+    expected = _load_json(stem_out, 'osco-pod-oscal.json')
+    _dump_json(tmp_path, 'osco-pod-oscal.json', observations)
     actual = _load_json(tmp_path, 'osco-pod-oscal.json')
     assert actual == expected
 
@@ -137,3 +150,10 @@ def _load_json(stem, filename):
     with open(ifile, 'r', encoding='utf-8') as fp:
         content = json.load(fp)
     return content
+
+
+def _dump_json(stem, filename, content):
+    """Provide utility to dump json."""
+    ifile = pathlib.Path('') / stem / filename
+    with open(ifile, 'w', encoding='utf-8') as fp:
+        content = json.dump(content, fp, indent=2)
