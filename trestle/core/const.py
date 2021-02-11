@@ -20,6 +20,7 @@ PACKAGE_OSCAL = 'trestle.oscal'
 TRESTLE_CONFIG_DIR = '.trestle'
 TRESTLE_DIST_DIR = 'dist'
 TRESTLE_CONFIG_FILE = 'config.ini'
+TRESTLE_KEEP_FILE = '.keep'
 """Map of plural form of a model type to the oscal module that contains the classes related to it."""
 MODELTYPE_TO_MODELMODULE = {
     'catalogs': f'{PACKAGE_OSCAL}.catalog',

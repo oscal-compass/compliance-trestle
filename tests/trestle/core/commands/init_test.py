@@ -40,6 +40,7 @@ def test_init(tmp_path):
         for directory in const.MODELTYPE_TO_MODELMODULE.keys():
             assert os.path.isdir(directory)
             assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
+            assert os.path.isfile(os.path.join(directory, const.TRESTLE_KEEP_FILE))
         assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
         assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
     os.chdir(owd)
