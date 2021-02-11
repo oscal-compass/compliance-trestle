@@ -264,7 +264,7 @@ def test_sftp_fetcher_bad_uri(tmp_trestle_dir):
 
 def test_fetcher_bad_uri(tmp_trestle_dir):
     """Test fetcher factory with bad URI."""
-    for uri in ['', 'sftp://', '..']:
+    for uri in ['', 'sftp://', '..', 'ftp://some.host/this.file']:
         with pytest.raises(TrestleError):
             cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
 
@@ -283,6 +283,10 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
 
     local_uri_3 = '../../file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_3, settings, False, False)
+    assert type(fetcher) == cache.LocalFetcher
+
+    local_uri_4 = 'C:\\Users\\user\\this.file'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_4, settings, False, False)
     assert type(fetcher) == cache.LocalFetcher
 
     sftp_uri = 'sftp://user@hostname:/path/to/file.json'
