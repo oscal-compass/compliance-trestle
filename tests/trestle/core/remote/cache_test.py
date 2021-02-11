@@ -22,6 +22,9 @@ from unittest.mock import patch
 
 import pytest
 
+import requests
+from requests.auth import HTTPBasicAuth
+
 import trestle.core.err as err
 from trestle.core import generators
 from trestle.core.err import TrestleError
@@ -121,6 +124,20 @@ def test_local_fetcher(tmp_trestle_dir):
     fetcher._cache_only = False
     fetcher._update_cache()
     assert fetcher._inst_cache_path.exists()
+
+
+def test_https_fetcher(tmp_trestle_dir):
+    """Test the https fetcher."""
+    uri = 'https://{{USER}}:{{USER}}@placekitten.com/200/300'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with patch('requests.get') as get_mock:
+        try:
+            fetcher._update_cache()
+        except Exception:
+            AssertionError()
+            get_mock.assert_called_once()
 
 
 def test_sftp_fetcher(tmp_trestle_dir):
@@ -298,10 +315,7 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
     assert type(fetcher) == cache.SFTPFetcher
 
     https_uri = 'https://placekitten.com/200/300'
-    try:
-        fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), https_uri, settings, False, False)
-    except Exception:
-        pass
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), https_uri, settings, False, False)
     assert type(fetcher) == cache.HTTPSFetcher or True
 
     https_basic_auth = 'https://{{USERNAME}}:{{PASSWORD}}@placekitten.com/200/300'

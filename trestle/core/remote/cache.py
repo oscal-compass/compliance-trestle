@@ -237,6 +237,13 @@ class HTTPSFetcher(FetcherBase):
                 )
         self._furl.username = None
         self._furl.password = None
+        localhost_cached_dir = self._trestle_cache_path / self._furl.host
+        # Skip any number of back- or forward slashes preceding the url path
+        fpath = str(self._furl.path)
+        path_parent = pathlib.Path(fpath[re.search('[^/\\\\]', fpath).span()[0]:]).parent
+        localhost_cached_dir = localhost_cached_dir / path_parent
+        localhost_cached_dir.mkdir(parents=True, exist_ok=True)
+        self._inst_cache_path = localhost_cached_dir / pathlib.Path(pathlib.Path(fpath).name)
 
     def _sync_cache(self) -> None:
         auth = None
@@ -443,7 +450,6 @@ class FetcherFactory(object):
 
     def __init__(self) -> None:
         """Initialize fetcher factory."""
-        logger.debug('Initializing GithubFetcher')
         pass
 
     @classmethod
