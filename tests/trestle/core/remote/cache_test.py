@@ -19,6 +19,7 @@ import pathlib
 import random
 import string
 from unittest.mock import patch
+from unittest.mock import PropertyMock
 
 import pytest
 
@@ -137,7 +138,25 @@ def test_https_fetcher(tmp_trestle_dir):
             fetcher._update_cache()
         except Exception:
             AssertionError()
-            get_mock.assert_called_once()
+        get_mock.assert_called_once()
+
+
+def test_https_fetcher_get_fails(tmp_trestle_dir):
+    """Test the https fetcher."""
+    uri = 'https://{{USER}}:{{USER}}@placekitten.com/200/300'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with patch('requests.auth.HTTPBasicAuth') as auth_mock:
+        auth_mock.return_value = None
+        with patch('requests.models.Response.json') as json_mock:
+            json_mock.return_value = None
+            with pytest.raises(err.TrestleError):
+                fetcher._update_cache()
+        with patch('requests.models.Response.json') as json_mock:
+            json_mock.return_value = { 'isBinary': True }
+            with pytest.raises(err.TrestleError):
+                fetcher._update_cache()
 
 
 def test_sftp_fetcher(tmp_trestle_dir):
