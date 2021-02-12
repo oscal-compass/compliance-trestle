@@ -126,8 +126,10 @@ def test_local_fetcher(tmp_trestle_dir):
 
 def test_https_fetcher(tmp_trestle_dir):
     """Test the https fetcher."""
+    os.environ['fetcher_user'] = 'fetcher'
+    os.environ['fetcher_pass'] = 'secret'
     # This is a real, live URL:
-    uri = 'https://{{USER}}:{{USER}}@placekitten.com/200/300'
+    uri = 'https://{{fetcher_user}}:{{fetcher_pass}}@placekitten.com/200/300'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
     fetcher._refresh = True
     fetcher._cache_only = False
