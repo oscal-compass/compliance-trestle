@@ -19,12 +19,8 @@ import pathlib
 import random
 import string
 from unittest.mock import patch
-from unittest.mock import PropertyMock
 
 import pytest
-
-import requests
-from requests.auth import HTTPBasicAuth
 
 import trestle.core.err as err
 from trestle.core import generators
@@ -129,20 +125,21 @@ def test_local_fetcher(tmp_trestle_dir):
 
 def test_https_fetcher(tmp_trestle_dir):
     """Test the https fetcher."""
+    # This is a real, live URL:
     uri = 'https://{{USER}}:{{USER}}@placekitten.com/200/300'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
     fetcher._refresh = True
     fetcher._cache_only = False
     with patch('requests.models.Response.json') as json_mock:
-        json_mock.return_value = { 'isBinary': False, 'text': '{ "key": "val"}' }
+        json_mock.return_value = {'isBinary': False, 'text': str({'key': 'val'})}
         try:
             fetcher._update_cache()
         except Exception:
             AssertionError()
-   
 
-def test_https_fetcher_get_fails(tmp_trestle_dir):
-    """Test the https fetcher."""
+
+def test_https_fetcher_fails(tmp_trestle_dir):
+    """Test the https fetcher failures."""
     uri = 'https://{{USER}}:{{USER}}@placekitten.com/200/300'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
     fetcher._refresh = True
@@ -154,7 +151,7 @@ def test_https_fetcher_get_fails(tmp_trestle_dir):
             with pytest.raises(err.TrestleError):
                 fetcher._update_cache()
         with patch('requests.models.Response.json') as json_mock:
-            json_mock.return_value = { 'isBinary': True }
+            json_mock.return_value = {'isBinary': True}
             with pytest.raises(err.TrestleError):
                 fetcher._update_cache()
 
