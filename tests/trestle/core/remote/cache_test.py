@@ -133,13 +133,13 @@ def test_https_fetcher(tmp_trestle_dir):
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
     fetcher._refresh = True
     fetcher._cache_only = False
-    with patch('requests.get') as get_mock:
+    with patch('requests.models.Response.json') as json_mock:
+        json_mock.return_value = { 'isBinary': False, 'text': '{ "key": "val"}' }
         try:
             fetcher._update_cache()
         except Exception:
             AssertionError()
-        get_mock.assert_called_once()
-
+   
 
 def test_https_fetcher_get_fails(tmp_trestle_dir):
     """Test the https fetcher."""
