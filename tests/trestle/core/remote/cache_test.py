@@ -15,6 +15,7 @@
 # limitations under the License.
 """Testing for cache functionality."""
 
+import os
 import pathlib
 import random
 import string
@@ -140,7 +141,9 @@ def test_https_fetcher(tmp_trestle_dir):
 
 def test_https_fetcher_fails(tmp_trestle_dir):
     """Test the https fetcher failures."""
-    uri = 'https://{{USER}}:{{USER}}@placekitten.com/200/300'
+    os.environ['fetcher_user'] = 'fetcher'
+    os.environ['fetcher_pass'] = 'secret'
+    uri = 'https://{{fetcher_user}}:{{fetcher_pass}}@placekitten.com/200/300'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
     fetcher._refresh = True
     fetcher._cache_only = False
