@@ -21,7 +21,7 @@ TRESTLE_CONFIG_DIR = '.trestle'
 TRESTLE_DIST_DIR = 'dist'
 TRESTLE_CONFIG_FILE = 'config.ini'
 """Map of plural form of a model type to the oscal module that contains the classes related to it."""
-MODELTYPE_TO_MODELMODULE = {
+MODEL_TYPE_TO_MODEL_MODULE = {
     'catalogs': f'{PACKAGE_OSCAL}.catalog',
     'profiles': f'{PACKAGE_OSCAL}.profile',
     'target-definitions': f'{PACKAGE_OSCAL}.target',
@@ -31,8 +31,29 @@ MODELTYPE_TO_MODELMODULE = {
     'assessment-results': f'{PACKAGE_OSCAL}.assessment_results',
     'plan-of-action-and-milestones': f'{PACKAGE_OSCAL}.poam'
 }
+MODEL_TYPE_TO_MODEL_DIR = {
+    'catalog': 'catalogs',
+    'profile': 'profiles',
+    'target-definition': 'target-definitions',
+    'component-definition': 'component-definitions',
+    'system-security-plan': 'system-security-plans',
+    'assessment-plan': 'assessment_plans',
+    'assessment-results': 'assessment_results',
+    'plan-of-action-and-milestones': 'plan-of-action-and-milestones'
+}
 """Element path separator"""
 ALIAS_PATH_SEPARATOR: str = '.'
+
+MODEL_TYPE_LIST = [
+    'catalog',
+    'profile',
+    'target-definition',
+    'component-definition',
+    'system-security-plan',
+    'assessment-plan',
+    'assessment-results',
+    'plan-of-action-and-milestones'
+]
 
 # argument names
 ARG_FILE = 'file'

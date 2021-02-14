@@ -41,11 +41,27 @@ def test_target_dups(tmp_path: pathlib.Path) -> None:
     models_full_path = tmp_path / models_dir_name / 'my_test_model'
     model_alias = utils.classname_to_alias(model_ref.__name__, 'json')
     model_def_file = models_full_path / f'{model_alias}{file_ext}'
+    model_def_file2 = tmp_path / models_dir_name / 'my_test_model2'
     models_full_path.mkdir(exist_ok=True, parents=True)
 
     shutil.copyfile('tests/data/yaml/good_target.yaml', model_def_file)
+    shutil.copyfile('tests/data/yaml/good_target.yaml', model_def_file2)
 
     testcmd = f'trestle validate -f {model_def_file} -m duplicates -i uuid'
+    with patch.object(sys, 'argv', testcmd.split()):
+        with pytest.raises(SystemExit) as pytest_wrapped_e:
+            cli.run()
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code == 0
+
+    testcmd = f'trestle validate -f {model_def_file.parent} -m duplicates -i uuid'
+    with patch.object(sys, 'argv', testcmd.split()):
+        with pytest.raises(SystemExit) as pytest_wrapped_e:
+            cli.run()
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code == 0
+
+    testcmd = 'trestle validate -t target-definition -m duplicates -i uuid'
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()
@@ -61,11 +77,4 @@ def test_target_dups(tmp_path: pathlib.Path) -> None:
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 1
 
-    shutil.copyfile('tests/data/yaml/good_target.yaml', model_def_file)
-
-    testcmd = f'trestle validate -f {model_def_file} -m duplicates -i foobar'
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 0
+    

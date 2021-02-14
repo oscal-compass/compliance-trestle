@@ -22,25 +22,17 @@ from tests import test_utils
 
 import trestle.core.err as err
 from trestle.cli import Trestle
+from trestle.core import const
 from trestle.core.commands.replicate import ReplicateCmd
 from trestle.oscal.catalog import Catalog
 from trestle.utils import fs
 from trestle.utils.load_distributed import load_distributed
 
-subcommand_list = [
-    'catalog',
-    'profile',
-    'target-definition',
-    'component-definition',
-    'system-security-plan',
-    'assessment-plan',
-    'assessment-results',
-    'plan-of-action-and-milestones'
-]
+subcommand_list = const.MODEL_TYPE_LIST
 
 
 def _copy_local(source_model_path, source_model_name, model_alias):
-    plural_alias = model_alias if model_alias[-1] == 's' else model_alias + 's'
+    plural_alias = fs.model_type_to_model_dir(model_alias)
     full_model_path = source_model_path / plural_alias / source_model_name
     local_model_path = Path(plural_alias) / source_model_name
     shutil.rmtree(local_model_path, ignore_errors=True)

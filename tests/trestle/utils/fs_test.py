@@ -492,3 +492,13 @@ def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
     (mycatalog_dir / 'catalog/groups').mkdir()
     (mycatalog_dir / 'catalog/groups/file4.yaml').touch()
     assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.YAML
+
+def test_get_models_of_type(tmp_trestle_dir) -> None:
+    """Test fs.get_models_of_type()."""
+    create_sample_catalog_project(tmp_trestle_dir)
+    catalogs_dir = tmp_trestle_dir.absolute() / 'catalogs'
+    # mycatalog is already there
+    (catalogs_dir / 'mycatalog2').mkdir()
+    (catalogs_dir / '.myfile').touch()
+    models = fs.get_models_of_type('catalog')
+    assert len(models) == 2

@@ -37,7 +37,7 @@ def test_init(tmp_path):
             cli.run()
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 0
-        for directory in const.MODELTYPE_TO_MODELMODULE.keys():
+        for directory in const.MODEL_TYPE_TO_MODEL_MODULE.keys():
             assert os.path.isdir(directory)
             assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
         assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
@@ -60,7 +60,7 @@ def test_directory_creation_error(tmp_path):
             cli.run()
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 1
-        for directory in const.MODELTYPE_TO_MODELMODULE.keys():
+        for directory in const.MODEL_TYPE_TO_MODEL_MODULE.keys():
             assert os.path.isdir(directory)
             assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
         assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
@@ -81,7 +81,7 @@ def test_config_copy_error(tmp_path):
             cli.run()
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 1
-        for directory in const.MODELTYPE_TO_MODELMODULE.keys():
+        for directory in const.MODEL_TYPE_TO_MODEL_MODULE.keys():
             assert os.path.isdir(directory)
             assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
         assert os.path.isdir(const.TRESTLE_CONFIG_DIR)

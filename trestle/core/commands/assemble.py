@@ -181,7 +181,8 @@ class AssembleCmd(Command):
 
         # distributed load
         _, _, assembled_model = load_distributed(root_model_filepath)
-        plural_alias = model_alias if model_alias[-1] == 's' else model_alias + 's'
+        plural_alias = fs.model_type_to_model_dir(model_alias)
+
         assembled_model_dir = trestle_root / const.TRESTLE_DIST_DIR / plural_alias
 
         assembled_model_filepath = assembled_model_dir / f'{args.name}.{args.extension}'

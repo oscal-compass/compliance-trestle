@@ -181,7 +181,7 @@ class ReplicateCmd(Command):
 
         trestle_root = trestle_root.resolve()
 
-        plural_path = model_alias if model_alias[-1] == 's' else model_alias + 's'
+        plural_path = fs.model_type_to_model_dir(model_alias)
 
         # 1.1 Check that input file given exists.
 

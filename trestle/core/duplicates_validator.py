@@ -37,6 +37,18 @@ class DuplicatesValidator(Validator):
 
     def validate(self, args: argparse.Namespace) -> int:
         """Perform the validation."""
+        if args.type is not None:
+            file_path = pathlib.Path(fs.model_type_to_model_dir(args.type)).absolute()
+            models = fs.get_models_of_type(args.type)
+            for m in models:
+                model_path = file_path / m
+                _, _, model = load_distributed(model_path, args.type)
+                loe = find_values_by_name(model, args.item)
+                nitems = len(loe)
+                if nitems != len(set(loe)):
+                    return 1
+            return 0
+
         file_path = pathlib.Path(args.file).absolute()
         model_type, _ = fs.get_contextual_model_type(file_path)
         _, _, model = load_distributed(file_path, model_type)
