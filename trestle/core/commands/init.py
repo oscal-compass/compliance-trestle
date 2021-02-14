@@ -65,6 +65,12 @@ class InitCmd(Command):
         # Create directories
         for directory in directory_list:
             directory.mkdir(parents=True, exist_ok=True)
+            file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE
+            try:
+                open(file_path, 'w+')
+            except BaseException as err:
+                logger.error(f'Initialization failed: {err}')
+                pass
 
     def _copy_config_file(self) -> None:
         """Copy the initial config.ini file to .trestle directory."""
