@@ -27,7 +27,6 @@ import trestle.core.err as err
 from trestle.core import generators
 from trestle.core.err import TrestleError
 from trestle.core.remote import cache
-from trestle.core.settings import Settings
 from trestle.oscal.catalog import Catalog
 from trestle.utils import fs
 
@@ -309,48 +308,44 @@ def test_fetcher_bad_uri(tmp_trestle_dir):
 
 def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
     """Test that the fetcher factory correctly resolves functionality."""
-    settings = Settings()
-
     local_uri_1 = 'file:///home/user/oscal_file.json'
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_1, settings, False, False)
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_1, False, False)
     assert type(fetcher) == cache.LocalFetcher
 
     local_uri_2 = '/home/user/oscal_file.json'
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_2, settings, False, False)
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_2, False, False)
     assert type(fetcher) == cache.LocalFetcher
 
     local_uri_3 = '../../file.json'
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_3, settings, False, False)
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_3, False, False)
     assert type(fetcher) == cache.LocalFetcher
 
     local_uri_4 = 'C:\\Users\\user\\this.file'
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_4, settings, False, False)
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_4, False, False)
     assert type(fetcher) == cache.LocalFetcher
 
     sftp_uri = 'sftp://user@hostname:/path/to/file.json'
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), sftp_uri, settings, False, False)
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), sftp_uri, False, False)
     assert type(fetcher) == cache.SFTPFetcher
 
     sftp_uri_2 = 'sftp://user@hostname:2000/path/to/file.json'
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), sftp_uri_2, settings, False, False)
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), sftp_uri_2, False, False)
     assert type(fetcher) == cache.SFTPFetcher
 
     https_uri = 'https://placekitten.com/200/300'
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), https_uri, settings, False, False)
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), https_uri, False, False)
     assert type(fetcher) == cache.HTTPSFetcher or True
 
     https_basic_auth = 'https://{{USERNAME}}:{{PASSWORD}}@placekitten.com/200/300'
     try:
-        fetcher = cache.FetcherFactory.get_fetcher(
-            pathlib.Path(tmp_trestle_dir), https_basic_auth, settings, False, False
-        )
+        fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), https_basic_auth, False, False)
     except Exception:
         pass
     assert type(fetcher) == cache.HTTPSFetcher or True
 
     github_url_1 = 'https://github.com/DrJohnWagner/recipes/blob/master/README.md'
     try:
-        fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), github_url_1, settings, False, False)
+        fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), github_url_1, False, False)
     except Exception:
         pass
     assert type(fetcher) == cache.GithubFetcher or True
@@ -361,7 +356,7 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
 
     github_url_2 = 'https://github.ibm.com/aur-mma/ai-for-the-eye/blob/master/README.md'
     try:
-        fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), github_url_2, settings, False, False)
+        fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), github_url_2, False, False)
     except Exception:
         pass
     assert type(fetcher) == cache.GithubFetcher or True

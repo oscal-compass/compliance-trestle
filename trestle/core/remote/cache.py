@@ -40,7 +40,6 @@ from requests.auth import HTTPBasicAuth
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.core.settings import Settings
 from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
@@ -53,7 +52,6 @@ class FetcherBase(ABC):
         self,
         trestle_root: pathlib.Path,
         uri: str,
-        settings: Settings,
         refresh: bool = False,
         fail_hard: bool = True,
         cache_only: bool = False
@@ -65,7 +63,6 @@ class FetcherBase(ABC):
         logger.debug('Initializing FetcherBase')
         self._inst_cache_path: pathlib.Path
         self._uri = uri
-        self._settings = settings
         self._refresh = refresh
         self._fail_hard = fail_hard
         self._cache_only = cache_only
@@ -139,13 +136,12 @@ class LocalFetcher(FetcherBase):
         self,
         trestle_root: pathlib.Path,
         uri: str,
-        settings: Settings,
         refresh: bool = False,
         fail_hard: bool = True,
         cache_only: bool = False
     ) -> None:
         """Initialize local fetcher."""
-        super().__init__(trestle_root, uri, settings, refresh, fail_hard, cache_only)
+        super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
         # Normalize uri to a root file.
         if 'file:///' == uri[0:8]:
             uri = uri[7:]
@@ -177,14 +173,13 @@ class HTTPSFetcher(FetcherBase):
         self,
         trestle_root: pathlib.Path,
         uri: str,
-        settings: Settings,
         refresh: bool = False,
         fail_hard: bool = False,
         cache_only: bool = False
     ) -> None:
         """Initialize HTTPS fetcher."""
         logger.debug('Initializing HTTPSFetcher')
-        super().__init__(trestle_root, uri, settings, refresh, fail_hard, cache_only)
+        super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
         self._furl = furl(uri)
         self._username = None
         self._password = None
@@ -271,13 +266,12 @@ class SFTPFetcher(FetcherBase):
         self,
         trestle_root: pathlib.Path,
         uri: str,
-        settings: Settings,
         refresh: bool = False,
         fail_hard: bool = False,
         cache_only: bool = False
     ) -> None:
         """Initialize STFP fetcher."""
-        super().__init__(trestle_root, uri, settings, refresh, fail_hard, cache_only)
+        super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
         # Is this a valid uri, however? Username and password are optional, of course.
         u = parse.urlparse(self._uri)
         if not u.hostname:
@@ -368,14 +362,13 @@ class GithubFetcher(HTTPSFetcher):
         self,
         trestle_root: pathlib.Path,
         uri: str,
-        settings: Settings,
         refresh: bool = False,
         fail_hard: bool = False,
         cache_only: bool = False
     ) -> None:
         """Initialize github specific fetcher."""
         logger.debug('Initializing GithubFetcher')
-        super().__init__(trestle_root, uri, settings, refresh, fail_hard, cache_only)
+        super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
         host = self._furl.host
         path = self._furl.path.segments
         params = self._furl.query.params
@@ -402,9 +395,6 @@ class GithubFetcher(HTTPSFetcher):
             self._api = 'https://' + host + '/api/graphql'
         #
         self._token = ''
-        if settings is not None and host in settings.GITHUB_TOKENS.keys():
-            self._token = settings.GITHUB_TOKENS[host]
-        #
         self._query = """
             query($owner: String!, $name: String!, $rev: String!) {
                 repository(owner: $owner, name: $name) {
@@ -457,7 +447,6 @@ class FetcherFactory(object):
         cls,
         trestle_root: pathlib.Path,
         uri: str,
-        settings: Settings,
         refresh: bool = False,
         fail_hard: bool = False,
         cache_only: bool = False
@@ -470,17 +459,17 @@ class FetcherFactory(object):
         if uri[0] == '/' or uri[0:3] == '../' or uri[0:2] == './' or 'file:///' == uri[0:8]:
             # Note assumption here is that relative paths are only supported within
             # trestle directories. This simplification is to ensure
-            return LocalFetcher(trestle_root, uri, settings, refresh, fail_hard, cache_only)
+            return LocalFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
         elif 'sftp://' == uri[0:7]:
-            return SFTPFetcher(trestle_root, uri, settings, refresh, fail_hard, cache_only)
+            return SFTPFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
         elif 'https://' == uri[0:8]:
             # Test for github uri assumption - must be first after basic auth (if it exists)
             cleaned = uri[8:]
             # tests for special scenarios
             if cleaned.split('@')[-1][0:7] == 'github.':
-                return GithubFetcher(trestle_root, uri, settings, refresh, fail_hard, cache_only)
+                return GithubFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
             else:
-                return HTTPSFetcher(trestle_root, uri, settings, refresh, fail_hard, cache_only)
+                return HTTPSFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
         elif 'C:\\' == uri[0:3]:
             return LocalFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
         else:
