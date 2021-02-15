@@ -341,32 +341,41 @@ def get_contextual_file_type(path: pathlib.Path) -> FileContentType:
     raise err.TrestleError('No files found in the project.')
 
 
-def model_or_file_to_model_name(model_rep: str) -> pathlib.Path:
+def model_or_file_to_model_name(model_rep: str) -> str:
     """Convert either model path or json/yaml file name to model path."""
     if not model_rep:
         raise err.TrestleError('Cannot convert empty model name to path.')
     path = pathlib.Path(model_rep)
     # if no suffix assume it is a model name
     if not path.suffix:
-        return path
+        return str(path)
     # otherwise return parent as model name
-    return path.parent
+    return str(path.parent)
 
 
-def get_models_of_type(model_type: str) -> List[pathlib.Path]:
+def get_models_of_type(model_type: str) -> List[str]:
     """Get list of model names for requested type in trestle directory."""
     if model_type not in const.MODEL_TYPE_LIST:
         raise err.TrestleError(f'Model type {model_type} is not supported')
     trestle_root = get_trestle_project_root(pathlib.Path.cwd())
     if not trestle_root:
-        logger.error(f'Current working directory {pathlib.Path.cwd()} is not with a trestle project.')
-    if not trestle_root == pathlib.Path.cwd():
-        logger.error(f'Current working directory {pathlib.Path.cwd()} is not the top level trestle project directory.')
+        logger.error(f'Current working directory {pathlib.Path.cwd()} is not within a trestle project.')
+        raise err.TrestleError('Current working directory is not within a trestle project.')
 
     # contruct path to the model file name
     root_model_dir = trestle_root / model_type_to_model_dir(model_type)
     model_list = []
     for f in root_model_dir.glob('*/'):
-        if f.stem[0] != '.':
-            model_list.append(f)
+        if not should_ignore(f.stem):
+            model_list.append(f.stem)
     return model_list
+
+
+def get_all_models() -> List[Tuple[str, str]]:
+    """Get list of all models in trestle directory as tuples (model_type, model_name)."""
+    full_list = []
+    for model_type in const.MODEL_TYPE_LIST:
+        models = get_models_of_type(model_type)
+        for m in models:
+            full_list.append((model_type, m))
+    return full_list

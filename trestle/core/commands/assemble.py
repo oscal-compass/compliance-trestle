@@ -164,7 +164,7 @@ class AssembleCmd(Command):
             return 1
 
         # contruct path to the model file name
-        root_model_dir = Path.cwd() / f'{model_alias}s'
+        root_model_dir = Path.cwd() / fs.model_type_to_model_dir(model_alias)
         try:
             model_file_type = fs.get_contextual_file_type(root_model_dir / args.name)
         except Exception as e:
