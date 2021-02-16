@@ -61,7 +61,7 @@ class CatalogCmd(Command):
 
     def _run(self, args: argparse.Namespace) -> int:
         """Replicate a sample catalog in the trestle directory structure, given an OSCAL schema."""
-        logger.info(f'Replicating catalog {args.file} to: {args.output}')
+        logger.info(f'Replicating catalog {args.name} to: {args.output}')
         return ReplicateCmd.replicate_object(self.name, catalog.Catalog, args)
 
 
@@ -71,7 +71,7 @@ class ProfileCmd(Command):
     name = 'profile'
 
     def _run(self, args: argparse.Namespace) -> int:
-        logger.info(f'Replicating profile {args.file} to: {args.output}')
+        logger.info(f'Replicating profile {args.name} to: {args.output}')
         return ReplicateCmd.replicate_object(self.name, profile.Profile, args)
 
 
@@ -147,7 +147,8 @@ class ReplicateCmd(Command):
 
     def _init_arguments(self) -> None:
         logger.debug('Init arguments')
-        self.add_argument('-f', '--file', help='OSCAL model to replicate.', type=str, required=True)
+
+        self.add_argument('-n', '--name', help='Name of model to replicate.', type=str, required=True)
 
         self.add_argument('-o', '--output', help='Name of replicated model.', type=str, required=True)
 
@@ -185,10 +186,10 @@ class ReplicateCmd(Command):
 
         # 1.1 Check that input file given exists.
 
-        input_file_stem = trestle_root / plural_path / args.file / model_alias
+        input_file_stem = trestle_root / plural_path / args.name / model_alias
         content_type = FileContentType.path_to_content_type(input_file_stem)
         if content_type == FileContentType.UNKNOWN:
-            logger.error(f'Input file {args.file} has no json or yaml file at expected location {input_file_stem}.')
+            logger.error(f'Input file {args.name} has no json or yaml file at expected location {input_file_stem}.')
             return 1
 
         input_file = input_file_stem.with_suffix(FileContentType.to_file_extension(content_type))

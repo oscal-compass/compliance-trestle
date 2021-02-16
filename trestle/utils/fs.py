@@ -357,6 +357,7 @@ def get_models_of_type(model_type: str) -> List[str]:
     """Get list of model names for requested type in trestle directory."""
     if model_type not in const.MODEL_TYPE_LIST:
         raise err.TrestleError(f'Model type {model_type} is not supported')
+    # search relative to project root
     trestle_root = get_trestle_project_root(pathlib.Path.cwd())
     if not trestle_root:
         logger.error(f'Current working directory {pathlib.Path.cwd()} is not within a trestle project.')

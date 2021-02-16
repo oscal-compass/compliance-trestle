@@ -78,6 +78,14 @@ def test_target_dups(tmp_trestle_dir: pathlib.Path) -> None:
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 0
 
+    # now validate all models
+    testcmd = 'trestle validate -a -m duplicates -i uuid'
+    with patch.object(sys, 'argv', testcmd.split()):
+        with pytest.raises(SystemExit) as pytest_wrapped_e:
+            cli.run()
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code == 0
+
     shutil.copyfile(test_data_dir / 'yaml/bad_target_dup_uuid.yaml', model_def_file)
 
     testcmd = f'trestle validate -f {model_def_file} -m duplicates -i uuid'
