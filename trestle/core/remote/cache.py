@@ -1,6 +1,6 @@
 # -*- mode:python; coding:utf-8 -*-
 
-# Copyright (c) 2020 IBM Corp. All rights reserved.
+# Copyright (c) 2021 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,31 +48,24 @@ logger = logging.getLogger(__name__)
 class FetcherBase(ABC):
     """FetcherBase - base class for fetching remote oscal objects."""
 
-    def __init__(
-        self,
-        trestle_root: pathlib.Path,
-        uri: str,
-        refresh: bool = False,
-        fail_hard: bool = True,
-        cache_only: bool = False
-    ) -> None:
+    def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
         """Intialize fetcher base.
 
-        Refresh: whether or not the cache should be refreshed
+        Attributes:
+          * trestle_root: of the Trestle project path, i.e., within which .trestle is to be found
+          * uri: remote source object
+          * refresh: whether or not the cache should be refreshed
+          * cache_only: whether or not the operation should only target the cache copy
         """
         logger.debug('Initializing FetcherBase')
         self._inst_cache_path: pathlib.Path
         self._uri = uri
         self._refresh = refresh
-        self._fail_hard = fail_hard
         self._cache_only = cache_only
         self._trestle_cache_path: pathlib.Path = trestle_root / const.TRESTLE_CONFIG_DIR / 'cache'
         # ensure trestle cache directory exists.
         self._trestle_cache_path.mkdir(exist_ok=True)
 
-    # Eventually we will move the _update_cache impl in LocalFetcher
-    # to FetcherBase and it will call this abstract method _sync_cache
-    # which will then be implemented in each subclass...
     @abstractmethod
     def _sync_cache(self) -> None:
         """Fetch a object from a remote source.
@@ -82,6 +75,10 @@ class FetcherBase(ABC):
         pass
 
     def _update_cache(self) -> None:
+        """Update the cache by fetching the target remote object, if _cache_only is false.
+
+        Actual update logic is implemented in sync_cache.
+        """
         # First discover whether...
         if self._cache_only:
             # Don't update if cache only...
@@ -95,7 +92,7 @@ class FetcherBase(ABC):
                 raise TrestleError(f'Cache update failure for {self._uri}') from e
 
     def get_raw(self) -> Dict[str, Any]:
-        """Get the raw dictionary representing the underlying object."""
+        """Retrieve the raw dictionary representing the underlying object."""
         try:
             self._update_cache()
         except TrestleError as e:
@@ -132,16 +129,9 @@ class FetcherBase(ABC):
 class LocalFetcher(FetcherBase):
     """Fetcher for local content."""
 
-    def __init__(
-        self,
-        trestle_root: pathlib.Path,
-        uri: str,
-        refresh: bool = False,
-        fail_hard: bool = True,
-        cache_only: bool = False
-    ) -> None:
-        """Initialize local fetcher."""
-        super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
+    def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
+        """Initialize local fetcher. Update the expected cache path as per caching specs."""
+        super().__init__(trestle_root, uri, refresh, cache_only)
         # Normalize uri to a root file.
         if 'file:///' == uri[0:8]:
             uri = uri[7:]
@@ -162,24 +152,17 @@ class LocalFetcher(FetcherBase):
         self._inst_cache_path = localhost_cached_dir / pathlib.Path(pathlib.Path(self._uri).name)
 
     def _sync_cache(self) -> None:
+        """Copy the local resource into the cache."""
         shutil.copy(self._abs_path, self._inst_cache_path)
 
 
 class HTTPSFetcher(FetcherBase):
     """Fetcher for https content."""
 
-    # Use request: https://requests.readthedocs.io/en/master/
-    def __init__(
-        self,
-        trestle_root: pathlib.Path,
-        uri: str,
-        refresh: bool = False,
-        fail_hard: bool = False,
-        cache_only: bool = False
-    ) -> None:
-        """Initialize HTTPS fetcher."""
+    def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
+        """Initialize HTTPS fetcher. Update the expected cache path as per caching specs."""
         logger.debug('Initializing HTTPSFetcher')
-        super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
+        super().__init__(trestle_root, uri, refresh, cache_only)
         self._furl = furl(uri)
         self._username = None
         self._password = None
@@ -241,6 +224,7 @@ class HTTPSFetcher(FetcherBase):
         self._inst_cache_path = localhost_cached_dir / pathlib.Path(pathlib.Path(fpath).name)
 
     def _sync_cache(self) -> None:
+        """Fetch remote object and update the cache if appropriate and possible to do so."""
         auth = None
         if self._username is not None and self._password is not None:
             auth = HTTPBasicAuth(self._username, self._password)
@@ -260,18 +244,9 @@ class HTTPSFetcher(FetcherBase):
 class SFTPFetcher(FetcherBase):
     """Fetcher for SFTP content."""
 
-    # STFP method: https://stackoverflow.com/questions/7563496/open-a-remote-file-using-paramiko-in-python-slow#7563551
-    # For SFTP fetch into memory.
-    def __init__(
-        self,
-        trestle_root: pathlib.Path,
-        uri: str,
-        refresh: bool = False,
-        fail_hard: bool = False,
-        cache_only: bool = False
-    ) -> None:
-        """Initialize STFP fetcher."""
-        super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
+    def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
+        """Initialize SFTP fetcher. Update the expected cache path as per caching specs."""
+        super().__init__(trestle_root, uri, refresh, cache_only)
         # Is this a valid uri, however? Username and password are optional, of course.
         u = parse.urlparse(self._uri)
         if not u.hostname:
@@ -292,6 +267,11 @@ class SFTPFetcher(FetcherBase):
         self._inst_cache_path = localhost_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
 
     def _sync_cache(self) -> None:
+        """Fetch remote object and update the cache if appropriate and possible to do so.
+
+        Authentication relies on the user's private key being either active via ssh-agent or
+        supplied via environment variable SSH_KEY. In the latter case, it must not require a passphrase prompt.
+        """
         u = parse.urlparse(self._uri)
         client = paramiko.SSHClient()
 
@@ -358,17 +338,10 @@ class SFTPFetcher(FetcherBase):
 class GithubFetcher(HTTPSFetcher):
     """Github fetcher which supports both github and GHE URLs."""
 
-    def __init__(
-        self,
-        trestle_root: pathlib.Path,
-        uri: str,
-        refresh: bool = False,
-        fail_hard: bool = False,
-        cache_only: bool = False
-    ) -> None:
-        """Initialize github specific fetcher."""
+    def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
+        """Initialize github-specific fetcher. Update the expected cache path as per caching specs."""
         logger.debug('Initializing GithubFetcher')
-        super().__init__(trestle_root, uri, refresh, fail_hard, cache_only)
+        super().__init__(trestle_root, uri, refresh, cache_only)
         host = self._furl.host
         path = self._furl.path.segments
         params = self._furl.query.params
@@ -444,12 +417,7 @@ class FetcherFactory(object):
 
     @classmethod
     def get_fetcher(
-        cls,
-        trestle_root: pathlib.Path,
-        uri: str,
-        refresh: bool = False,
-        fail_hard: bool = False,
-        cache_only: bool = False
+        cls, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False
     ) -> FetcherBase:
         """Return an instantiated fetcher object based on the uri."""
         # Basic correctness test
@@ -459,18 +427,18 @@ class FetcherFactory(object):
         if uri[0] == '/' or uri[0:3] == '../' or uri[0:2] == './' or 'file:///' == uri[0:8]:
             # Note assumption here is that relative paths are only supported within
             # trestle directories. This simplification is to ensure
-            return LocalFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
+            return LocalFetcher(trestle_root, uri, refresh, cache_only)
         elif 'sftp://' == uri[0:7]:
-            return SFTPFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
+            return SFTPFetcher(trestle_root, uri, refresh, cache_only)
         elif 'https://' == uri[0:8]:
             # Test for github uri assumption - must be first after basic auth (if it exists)
             cleaned = uri[8:]
             # tests for special scenarios
             if cleaned.split('@')[-1][0:7] == 'github.':
-                return GithubFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
+                return GithubFetcher(trestle_root, uri, refresh, cache_only)
             else:
-                return HTTPSFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
+                return HTTPSFetcher(trestle_root, uri, refresh, cache_only)
         elif 'C:\\' == uri[0:3]:
-            return LocalFetcher(trestle_root, uri, refresh, fail_hard, cache_only)
+            return LocalFetcher(trestle_root, uri, refresh, cache_only)
         else:
             raise TrestleError(f'Unable to fetch uri: {uri} as the uri did not match a suppported format.')
