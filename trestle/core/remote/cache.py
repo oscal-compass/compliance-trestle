@@ -51,11 +51,15 @@ class FetcherBase(ABC):
     def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
         """Intialize fetcher base.
 
-        Attributes:
-          * trestle_root: of the Trestle project path, i.e., within which .trestle is to be found
-          * uri: remote source object
-          * refresh: whether or not the cache should be refreshed
-          * cache_only: whether or not the operation should only target the cache copy
+        Arguments:
+        trestle_root: pathlib.Path
+            Path of the Trestle project path, i.e., within which .trestle is to be found.
+        uri: str
+            Reference to the source object to cache.
+        refresh: bool
+            Whether or not the cache should be refreshed
+        cache_only: bool
+            Whether or not the operation should only target the cache copy
         """
         logger.debug('Initializing FetcherBase')
         self._inst_cache_path: pathlib.Path
@@ -108,7 +112,13 @@ class FetcherBase(ABC):
             raise TrestleError(f'Cache get failure for {self._uri}') from e
 
     def get_oscal(self, model_type: Type[OscalBaseModel]) -> OscalBaseModel:
-        """Retrieve the cached file as a particular OSCAL model."""
+        """Retrieve the cached file as a particular OSCAL model.
+
+        Argument:
+        ---------
+        model_type: Type[OscalBaseModel]
+            Identifies what OSCAL model to cast the retrieved object as.
+        """
         cache_file = self._inst_cache_path
         if cache_file.exists():
             try:
@@ -130,7 +140,19 @@ class LocalFetcher(FetcherBase):
     """Fetcher for local content."""
 
     def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
-        """Initialize local fetcher. Update the expected cache path as per caching specs."""
+        """Initialize local fetcher. Update the expected cache path as per caching specs.
+
+        Arguments:
+        ----------
+        trestle_root: pathlib.Path
+            Path of the Trestle project path, i.e., within which .trestle is to be found.
+        uri: str
+            Reference to the file in the local filesystem to cache, which must be outside trestle_root.
+        refresh: bool
+            Whether or not the cache should be refreshed
+        cache_only: bool
+            Whether or not the operation should only target the cache copy
+        """
         super().__init__(trestle_root, uri, refresh, cache_only)
         # Normalize uri to a root file.
         if 'file:///' == uri[0:8]:
@@ -160,13 +182,25 @@ class HTTPSFetcher(FetcherBase):
     """Fetcher for https content."""
 
     def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
-        """Initialize HTTPS fetcher. Update the expected cache path as per caching specs."""
+        """Initialize HTTPS fetcher. Update the expected cache path as per caching specs.
+
+        Arguments:
+        ----------
+        trestle_root: pathlib.Path
+            Path of the Trestle project path, i.e., within which .trestle is to be found.
+        uri: str
+            Reference to the remote object to cache that can be fetched using the https:// scheme.
+        refresh: bool
+            Whether or not the cache should be refreshed
+        cache_only: bool
+            Whether or not the operation should only target the cache copy
+        """
         logger.debug('Initializing HTTPSFetcher')
         super().__init__(trestle_root, uri, refresh, cache_only)
         self._furl = furl(uri)
         self._username = None
         self._password = None
-        #
+
         username = self._furl.username
         password = self._furl.password
         if username is not None:
@@ -245,7 +279,19 @@ class SFTPFetcher(FetcherBase):
     """Fetcher for SFTP content."""
 
     def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
-        """Initialize SFTP fetcher. Update the expected cache path as per caching specs."""
+        """Initialize SFTP fetcher. Update the expected cache path as per caching specs.
+
+        Arguments:
+        ----------
+        trestle_root: pathlib.Path
+            Path of the Trestle project path, i.e., within which .trestle is to be found.
+        uri: str
+            Reference to the remote file to cache that can be fetched using the sftp:// scheme.
+        refresh: bool
+            Whether or not the cache should be refreshed
+        cache_only: bool
+            Whether or not the operation should only target the cache copy
+        """
         super().__init__(trestle_root, uri, refresh, cache_only)
         # Is this a valid uri, however? Username and password are optional, of course.
         u = parse.urlparse(self._uri)
@@ -339,13 +385,24 @@ class GithubFetcher(HTTPSFetcher):
     """Github fetcher which supports both github and GHE URLs."""
 
     def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
-        """Initialize github-specific fetcher. Update the expected cache path as per caching specs."""
+        """Initialize github-specific fetcher. Update the expected cache path as per caching specs.
+
+        Arguments:
+        trestle_root: pathlib.Path
+            Path of the Trestle project path, i.e., within which .trestle is to be found.
+        uri: str
+            Reference to the remote file to cache, which can be fetched from GitHub.
+        refresh: bool
+            Whether or not the cache should be refreshed
+        cache_only: bool
+            Whether or not the operation should only target the cache copy
+        """
         logger.debug('Initializing GithubFetcher')
         super().__init__(trestle_root, uri, refresh, cache_only)
         host = self._furl.host
         path = self._furl.path.segments
         params = self._furl.query.params
-        #
+
         if self._furl.username is not None or self._furl.password is not None:
             raise TrestleError(f'Username/password authentication is not supported for Github URIs {uri}')
         if len(path) < 5:
@@ -353,20 +410,20 @@ class GithubFetcher(HTTPSFetcher):
         if params.get('token') is not None:
             logger.warn(f'Token in uri will be ignored {uri}')
         assert path[2] == 'blob'
-        #
+
         owner = path[0]
         name = path[1]
         rev = path[3]
-        #
+
         src_filepath = pathlib.Path('/'.join(path[4:]))
         dst_directory = pathlib.Path(self._trestle_cache_path / host / owner / name).absolute()
         dst_directory.mkdir(parents=True, exist_ok=True)
         self._inst_cache_path = dst_directory / src_filepath
-        #
+
         self._api = 'https://api.github.com/graphql'
         if host != 'github.com':
             self._api = 'https://' + host + '/api/graphql'
-        #
+
         self._token = ''
         self._query = """
             query($owner: String!, $name: String!, $rev: String!) {
