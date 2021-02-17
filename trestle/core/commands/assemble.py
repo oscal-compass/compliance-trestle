@@ -164,7 +164,7 @@ class AssembleCmd(Command):
             return 1
 
         # contruct path to the model file name
-        root_model_dir = Path.cwd() / f'{model_alias}s'
+        root_model_dir = Path.cwd() / fs.model_type_to_model_dir(model_alias)
         try:
             model_file_type = fs.get_contextual_file_type(root_model_dir / args.name)
         except Exception as e:
@@ -181,7 +181,8 @@ class AssembleCmd(Command):
 
         # distributed load
         _, _, assembled_model = load_distributed(root_model_filepath)
-        plural_alias = model_alias if model_alias[-1] == 's' else model_alias + 's'
+        plural_alias = fs.model_type_to_model_dir(model_alias)
+
         assembled_model_dir = trestle_root / const.TRESTLE_DIST_DIR / plural_alias
 
         assembled_model_filepath = assembled_model_dir / f'{args.name}.{args.extension}'

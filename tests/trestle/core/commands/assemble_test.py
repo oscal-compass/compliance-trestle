@@ -23,20 +23,12 @@ from unittest import mock
 
 import trestle.core.err as err
 from trestle.cli import Trestle
+from trestle.core import const
 from trestle.core.commands.assemble import AssembleCmd
 from trestle.oscal.catalog import Catalog
 from trestle.utils.load_distributed import load_distributed
 
-subcommand_list = [
-    'catalog',
-    'profile',
-    'target-definition',
-    'component-definition',
-    'system-security-plan',
-    'assessment-plan',
-    'assessment-results',
-    'plan-of-action-and-milestones'
-]
+subcommand_list = const.MODEL_TYPE_LIST
 
 
 def test_run_and_missing_model(tmp_trestle_dir: pathlib.Path) -> None:

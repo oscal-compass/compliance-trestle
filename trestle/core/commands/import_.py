@@ -127,11 +127,7 @@ class ImportCmd(Command):
             return 1
 
         # 5. Work out output directory and file
-        plural_path: str
-        plural_path = parent_alias
-        # Cater to POAM
-        if parent_alias[-1] != 's':
-            plural_path = parent_alias + 's'
+        plural_path = fs.model_type_to_model_dir(parent_alias)
 
         desired_model_dir = trestle_root / plural_path
         # args.output is presumed to be assured as it is declared to be required
