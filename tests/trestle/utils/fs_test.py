@@ -512,6 +512,14 @@ def test_get_models_of_type(tmp_trestle_dir) -> None:
     assert ('catalog', 'mycatalog') in all_models
     assert ('catalog', 'mycatalog2') in all_models
     assert ('target-definition', 'mytarget') in all_models
+    with pytest.raises(TrestleError):
+        fs.get_models_of_type('foo')
+
+
+def test_get_models_of_type_bad_cwd(tmp_path) -> None:
+    """Test fs.get_models_of_type() from outside trestle dir."""
+    with pytest.raises(TrestleError):
+        fs.get_models_of_type('catalog')
 
 
 def test_model_or_file_to_model_name(tmp_trestle_dir) -> None:
