@@ -445,6 +445,7 @@ class GithubFetcher(HTTPSFetcher):
         self._variables = {'owner': owner, 'name': name, 'rev': rev + ':' + str(src_filepath)}
 
     def _sync_cache(self) -> None:
+        """Fetch github object and update the cache if appropriate and possible to do so."""
         request = requests.post(
             self._api,
             json={
@@ -476,7 +477,18 @@ class FetcherFactory(object):
     def get_fetcher(
         cls, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False
     ) -> FetcherBase:
-        """Return an instantiated fetcher object based on the uri."""
+        """Return an instantiated fetcher object based on the uri.
+
+        Arguments:
+        trestle_root: pathlib.Path
+            Path of the Trestle project path, i.e., within which .trestle is to be found.
+        uri: str
+            Reference to the remote object to cache.
+        refresh: bool
+            Whether or not the cache should be refreshed
+        cache_only: bool
+            Whether or not the operation should only target the cache copy
+        """
         # Basic correctness test
         if len(uri) <= 9 or ('/' not in uri and re.match('[A-Za-z]:\\\\', uri) is None):
             raise TrestleError(f'Unable to fetch uri as it appears to be invalid {uri}')
