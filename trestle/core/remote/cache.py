@@ -302,9 +302,6 @@ class SFTPFetcher(FetcherBase):
         if not u.path:
             logger.error(f'Malformed URI, cannot parse path in URL {self._uri}')
             raise TrestleError(f'Cache request for invalid input URI: missing file path {self._uri}')
-        if u.password and not u.username:
-            logger.error(f'Malformed URI, password found but username missing in URL {self._uri}')
-            raise TrestleError(f'Cache request for invalid input URI: password found but username missing {self._uri}')
 
         sftp_cached_dir = self._trestle_cache_path / u.hostname
         # Skip any number of back- or forward slashes preceding the url path (u.path)
