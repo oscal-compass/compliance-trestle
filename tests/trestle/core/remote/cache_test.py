@@ -305,9 +305,7 @@ def test_sftp_fetcher_get_fails(tmp_trestle_dir, monkeypatch):
 
 def test_sftp_fetcher_bad_uri(tmp_trestle_dir):
     """Test get_fetcher handling of bad SFTP URI."""
-    for uri in ['sftp://blah.com',
-                'sftp:///path/to/file.json',
-                'sftp://user:pass@hostname.com\\path\\to\\file.json']:
+    for uri in ['sftp://blah.com', 'sftp:///path/to/file.json', 'sftp://user:pass@hostname.com\\path\\to\\file.json']:
         with pytest.raises(TrestleError):
             cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
 
