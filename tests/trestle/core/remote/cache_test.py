@@ -110,10 +110,24 @@ def test_local_fetcher_get_fails(tmp_trestle_dir):
         fetcher.get_oscal(Catalog)
 
 
-def test_local_fetcher(tmp_trestle_dir):
+def test_local_fetcher_absolute(tmp_trestle_dir):
     """Test the local fetcher."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     catalog_file = pathlib.Path(tmp_trestle_dir / f'{rand_str}.json').__str__()
+    catalog_data = generators.generate_sample_model(Catalog)
+    catalog_data.oscal_write(pathlib.Path(catalog_file))
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    fetcher._update_cache()
+    assert fetcher._inst_cache_path.exists()
+
+
+def test_local_fetcher_relative(tmp_trestle_dir):
+    """Test the local fetcher."""
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    pth = f'../{tmp_trestle_dir.name}/{rand_str}.json'
+    catalog_file = pathlib.Path(pth).__str__()
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)

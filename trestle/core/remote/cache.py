@@ -157,10 +157,13 @@ class LocalFetcher(FetcherBase):
         # Normalize uri to a root file.
         if 'file:///' == uri[0:8]:
             uri = uri[7:]
+
+        # TODO (#365): Update this to allow for relative paths. Maybe.
         path = pathlib.Path(uri).absolute()
         self._abs_path = path
         localhost_cached_dir = self._trestle_cache_path / 'localhost'
         localhost_cached_dir = localhost_cached_dir / '__abs__' / '__root__'
+
         # Use the uri's path.parent to set a cache location
         cache_location_string = path.parent.__str__()
         # Remove the drive letter for Windows/DOS paths:
@@ -247,8 +250,6 @@ class HTTPSFetcher(FetcherBase):
                 raise TrestleError(
                     f'Cache request for invalid input URI: basic authentication requires https {self._uri}'
                 )
-        self._furl.username = None
-        self._furl.password = None
         https_cached_dir = self._trestle_cache_path / self._furl.host
         # Skip any number of back- or forward slashes preceding the url path
         fpath = str(self._furl.path)
