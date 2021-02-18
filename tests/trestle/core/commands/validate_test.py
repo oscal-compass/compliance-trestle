@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for cli module command validate."""
-import os
 import pathlib
 import shutil
 import sys
@@ -39,7 +38,6 @@ def test_target_dups(tmp_trestle_dir: pathlib.Path) -> None:
     model_ref = ostarget.TargetDefinition
 
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
-    os.chdir(tmp_trestle_dir)
 
     file_ext = FileContentType.to_file_extension(content_type)
     models_full_path = tmp_trestle_dir / models_dir_name / 'my_test_model'
@@ -57,6 +55,14 @@ def test_target_dups(tmp_trestle_dir: pathlib.Path) -> None:
 
     # first validate the single file
     testcmd = f'trestle validate -f {model_def_file} -m duplicates -i uuid'
+    with patch.object(sys, 'argv', testcmd.split()):
+        with pytest.raises(SystemExit) as pytest_wrapped_e:
+            cli.run()
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code == 0
+
+    # validate the single file by type and name
+    testcmd = f'trestle validate -t {model_alias} -n my_test_model -m duplicates -i uuid'
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()
@@ -89,6 +95,34 @@ def test_target_dups(tmp_trestle_dir: pathlib.Path) -> None:
     shutil.copyfile(test_data_dir / 'yaml/bad_target_dup_uuid.yaml', model_def_file)
 
     testcmd = f'trestle validate -f {model_def_file} -m duplicates -i uuid'
+    with patch.object(sys, 'argv', testcmd.split()):
+        with pytest.raises(SystemExit) as pytest_wrapped_e:
+            cli.run()
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code == 1
+
+    testcmd = f'trestle validate -t {model_alias} -n my_test_model -m duplicates -i uuid'
+    with patch.object(sys, 'argv', testcmd.split()):
+        with pytest.raises(SystemExit) as pytest_wrapped_e:
+            cli.run()
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code == 1
+
+    testcmd = f'trestle validate -t {model_alias} -m duplicates -i uuid'
+    with patch.object(sys, 'argv', testcmd.split()):
+        with pytest.raises(SystemExit) as pytest_wrapped_e:
+            cli.run()
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code == 1
+
+    testcmd = 'trestle validate -a -m duplicates -i uuid'
+    with patch.object(sys, 'argv', testcmd.split()):
+        with pytest.raises(SystemExit) as pytest_wrapped_e:
+            cli.run()
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code == 1
+
+    testcmd = 'trestle validate -f foo -m duplicates -i uuid'
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()

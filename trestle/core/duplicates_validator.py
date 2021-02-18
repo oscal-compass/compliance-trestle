@@ -71,5 +71,3 @@ class DuplicatesValidator(Validator):
             if not has_no_duplicate_values_by_name(model, args.item):
                 return 1
             return 0
-
-        return 1
