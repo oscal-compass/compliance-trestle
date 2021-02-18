@@ -249,13 +249,13 @@ class HTTPSFetcher(FetcherBase):
                 )
         self._furl.username = None
         self._furl.password = None
-        localhost_cached_dir = self._trestle_cache_path / self._furl.host
+        https_cached_dir = self._trestle_cache_path / self._furl.host
         # Skip any number of back- or forward slashes preceding the url path
         fpath = str(self._furl.path)
         path_parent = pathlib.Path(fpath[re.search('[^/\\\\]', fpath).span()[0]:]).parent
-        localhost_cached_dir = localhost_cached_dir / path_parent
-        localhost_cached_dir.mkdir(parents=True, exist_ok=True)
-        self._inst_cache_path = localhost_cached_dir / pathlib.Path(pathlib.Path(fpath).name)
+        https_cached_dir = https_cached_dir / path_parent
+        https_cached_dir.mkdir(parents=True, exist_ok=True)
+        self._inst_cache_path = https_cached_dir / pathlib.Path(pathlib.Path(fpath).name)
 
     def _sync_cache(self) -> None:
         """Fetch remote object and update the cache if appropriate and possible to do so."""
@@ -305,12 +305,12 @@ class SFTPFetcher(FetcherBase):
             logger.error(f'Malformed URI, password found but username missing in URL {self._uri}')
             raise TrestleError(f'Cache request for invalid input URI: password found but username missing {self._uri}')
 
-        localhost_cached_dir = self._trestle_cache_path / u.hostname
+        sftp_cached_dir = self._trestle_cache_path / u.hostname
         # Skip any number of back- or forward slashes preceding the url path (u.path)
         path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0]:]).parent
-        localhost_cached_dir = localhost_cached_dir / path_parent
-        localhost_cached_dir.mkdir(parents=True, exist_ok=True)
-        self._inst_cache_path = localhost_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
+        sftp_cached_dir = sftp_cached_dir / path_parent
+        sftp_cached_dir.mkdir(parents=True, exist_ok=True)
+        self._inst_cache_path = sftp_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
 
     def _sync_cache(self) -> None:
         """Fetch remote object and update the cache if appropriate and possible to do so.
