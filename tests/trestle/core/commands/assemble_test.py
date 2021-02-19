@@ -111,3 +111,29 @@ def test_assemble_missing_top_model(testdata_dir: pathlib.Path, tmp_trestle_dir:
     with mock.patch.object(sys, 'argv', testargs):
         rc = Trestle().run()
         assert rc == 1
+
+
+def test_assemble_catalog_all(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test assembling all catalogs in trestle dir."""
+    shutil.rmtree(pathlib.Path('dist'))
+    catalogs_dir = pathlib.Path('catalogs')
+    my_names = ['mycatalog1', 'mycatalog2', 'mycatalog3']
+    for my_name in my_names:
+        test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs/mycatalog'
+        shutil.copytree(test_data_source, catalogs_dir / my_name)
+
+    testargs = ['trestle', 'assemble', 'catalog', '-t', '-x', 'json']
+    with mock.patch.object(sys, 'argv', testargs):
+        rc = Trestle().run()
+        assert rc == 0
+
+    # Read assembled model
+    for my_name in my_names:
+        _, _, expected_model = load_distributed(catalogs_dir / f'{my_name}/catalog.json')
+        actual_model = Catalog.oscal_read(pathlib.Path(f'dist/catalogs/{my_name}.json'))
+        assert actual_model == expected_model
+
+    testargs = ['trestle', 'assemble', 'profile', '-t', '-x', 'json']
+    with mock.patch.object(sys, 'argv', testargs):
+        rc = Trestle().run()
+        assert rc == 1
