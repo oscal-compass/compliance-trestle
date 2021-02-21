@@ -172,8 +172,8 @@ class AssembleCmd(Command):
             nmodels = len(model_names)
             logger.info(f'Assembling {nmodels} found models of type {model_alias}.')
         if len(model_names) == 0:
-            logger.error(f'No models found to assemble of type {model_alias}.')
-            return 1
+            logger.info(f'No models found to assemble of type {model_alias}.')
+            return 0
 
         for model_name in model_names:
             # contruct path to the model file name
