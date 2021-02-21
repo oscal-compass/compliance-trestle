@@ -318,23 +318,20 @@ class SFTPFetcher(FetcherBase):
         """
         u = parse.urlparse(self._uri)
         client = paramiko.SSHClient()
-
-        if 'SSH_KEY' in os.environ and self._refresh:
-            ssh_key_file = os.environ['SSH_KEY']
-            try:
-                client.load_host_keys(ssh_key_file)
-            except Exception as e:
-                logger.error(f'Error loading host keys from {ssh_key_file}.')
-                logger.debug(e)
-                raise TrestleError(f'Cache update failure for {self._uri}')
-
-        elif 'SSH_KEY' not in os.environ and self._inst_cache_path.parent.exists() and self._refresh:
-            try:
-                client.load_system_host_keys()
-            except Exception as e:
-                logger.error('Error loading system host keys.')
-                logger.debug(e)
-                raise TrestleError(f'Cache update failure for {self._uri}')
+        # Must pick up host keys from the default known_hosts on this environment:
+        try:
+            client.load_system_host_keys()
+        except Exception as e:
+            logger.error('Error loading system host keys.')
+            logger.debug(e)
+            raise TrestleError(f'Cache update failure for {self._uri}')
+        # Use the supplied private key file if given, or look for keys in default path.
+        if 'SSH_KEY' in os.environ:
+            key_filename = os.environ['SSH_KEY']
+            look_for_keys = False
+        else:
+            key_filename = None
+            look_for_keys = True
 
         username = getpass.getuser() if not u.username else u.username
         if u.password:
@@ -343,6 +340,8 @@ class SFTPFetcher(FetcherBase):
                     u.hostname,
                     username=username,
                     password=u.password,
+                    key_filename=key_filename,
+                    look_for_keys=look_for_keys,
                     port=22 if not u.port else u.port,
                 )
             except Exception as e:
