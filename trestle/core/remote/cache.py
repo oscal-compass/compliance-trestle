@@ -491,9 +491,9 @@ class FetcherFactory(object):
         if len(uri) <= 9 or ('/' not in uri and re.match('[A-Za-z]:\\\\', uri) is None):
             raise TrestleError(f'Unable to fetch uri as it appears to be invalid {uri}')
 
-        if uri[0] == '/' or uri[0:3] == '../' or uri[0:2] == './' or 'file:///' == uri[0:8]:
-            # Note assumption here is that relative paths are only supported within
-            # trestle directories. This simplification is to ensure
+        if uri[0] == '/' or 'file:///' == uri[0:8]:
+            # Note assumption here is that relative paths are not yet supported
+            # so these are not allowed for just yet: uri[0:3] == '../' or uri[0:2] == './'
             return LocalFetcher(trestle_root, uri, refresh, cache_only)
         elif 'sftp://' == uri[0:7]:
             return SFTPFetcher(trestle_root, uri, refresh, cache_only)

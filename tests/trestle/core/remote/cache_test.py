@@ -313,9 +313,7 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_2, False, False)
     assert type(fetcher) == cache.LocalFetcher
 
-    local_uri_3 = '../../file.json'
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_3, False, False)
-    assert type(fetcher) == cache.LocalFetcher
+    # Relative paths are not yet supported, e.g., local_uri_3 = '../../file.json', but should come soon.
 
     local_uri_4 = 'C:\\Users\\user\\this.file'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_4, False, False)
