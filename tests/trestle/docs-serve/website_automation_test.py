@@ -15,23 +15,30 @@
 """website automation tests."""
 
 import http.client
-import multiprocessing
+import subprocess
 import time
 
-from click.testing import CliRunner
 
-from mkdocs import __main__ as cli
-
-
-def _webserver():
-    CliRunner().invoke(cli.cli, ['serve'], catch_exceptions=False)
-
-
-def test_website_automation(tmpdir):
-    """Test website boot and usability."""
-    p = multiprocessing.Process(target=_webserver)
-    p.start()
+def _ensure_not_running() -> None:
+    """Ensure test website not running."""
+    response = None
     try:
+        connection = http.client.HTTPConnection('localhost', 8000, timeout=60)
+        connection.request('GET', '/')
+        response = connection.getresponse()
+    except Exception:
+        pass
+    if response is not None:
+        raise Exception('mkdocs server running')
+
+
+def test_website_automation(tmpdir) -> None:
+    """Test website boot and usability."""
+    _ensure_not_running()
+    try:
+        # launch webserver
+        p = subprocess.Popen(['mkdocs', 'serve'])
+        # try connect to and fetch data from webserver
         retrys_max = 90
         retrys = 0
         while retrys < retrys_max:
@@ -45,6 +52,7 @@ def test_website_automation(tmpdir):
                 if retrys >= retrys_max:
                     raise e
                 time.sleep(1)
+        # assure expected response
         if response.status != 200:
             raise Exception(f'status: {response.status}')
         if response.reason != 'OK':
@@ -52,5 +60,8 @@ def test_website_automation(tmpdir):
         body = response.read().decode('utf-8')
         if '<meta name="description" content="Documentation for compliance-trestle package.">' not in body:
             raise Exception(f'body: {body}')
+    # stop webserver
     finally:
         p.terminate()
+        p.wait()
+        _ensure_not_running()

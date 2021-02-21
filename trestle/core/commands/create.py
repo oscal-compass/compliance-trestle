@@ -160,12 +160,7 @@ class CreateCmd(Command):
         if not trestle_root:
             logger.error(f'Current working directory {Path.cwd()} is not with a trestle project.')
             return 1
-        plural_path: str
-        # Cater to POAM
-        if model_alias[-1] == 's':
-            plural_path = model_alias
-        else:
-            plural_path = model_alias + 's'
+        plural_path = fs.model_type_to_model_dir(model_alias)
 
         desired_model_dir = trestle_root / plural_path / args.output
 

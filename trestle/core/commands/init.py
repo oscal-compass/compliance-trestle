@@ -58,13 +58,19 @@ class InitCmd(Command):
         """Create the directory tree if it does not exist."""
         # Prepare directory list to be created
         directory_list = [pathlib.Path(const.TRESTLE_CONFIG_DIR)]
-        for model_dir in const.MODELTYPE_TO_MODELMODULE.keys():
+        for model_dir in const.MODEL_TYPE_TO_MODEL_MODULE.keys():
             directory_list.append(pathlib.Path(model_dir))
             directory_list.append(pathlib.Path(const.TRESTLE_DIST_DIR) / model_dir)
 
         # Create directories
         for directory in directory_list:
             directory.mkdir(parents=True, exist_ok=True)
+            file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE
+            try:
+                open(file_path, 'w+')
+            except BaseException as err:
+                logger.error(f'Initialization failed: {err}')
+                pass
 
     def _copy_config_file(self) -> None:
         """Copy the initial config.ini file to .trestle directory."""
