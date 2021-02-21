@@ -134,6 +134,7 @@ def test_assemble_catalog_all(testdata_dir: pathlib.Path, tmp_trestle_dir: pathl
         assert actual_model == expected_model
 
     testargs = ['trestle', 'assemble', 'profile', '-t', '-x', 'json']
+    # Tests should pass on empty set of directories.
     with mock.patch.object(sys, 'argv', testargs):
         rc = Trestle().run()
-        assert rc == 1
+        assert rc == 0
