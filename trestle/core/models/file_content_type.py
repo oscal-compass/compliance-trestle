@@ -27,8 +27,11 @@ class FileContentType(Enum):
     # YAML formatted content
     YAML = 2
 
+    # No extension and possibly a DIR
+    DIRLIKE = 3
+
     # Type could not be determined
-    UNKNOWN = 3
+    UNKNOWN = 4
 
     @classmethod
     def to_file_extension(cls, content_type: 'FileContentType') -> str:
@@ -46,6 +49,8 @@ class FileContentType(Enum):
             return FileContentType.JSON
         elif file_extension == '.yaml' or file_extension == '.yml':
             return FileContentType.YAML
+        elif not file_extension:
+            return FileContentType.DIRLIKE
 
         raise TrestleError(f'Unsupported file extension {file_extension}')
 
@@ -59,3 +64,14 @@ class FileContentType(Enum):
         if file_path.with_suffix('.yml').exists():
             return FileContentType.YAML
         return FileContentType.UNKNOWN
+
+    @classmethod
+    def path_to_file_extension(cls, file_path: Path) -> str:
+        """Get extension from file path looking for extension."""
+        if file_path.with_suffix('.json').exists():
+            return '.json'
+        if file_path.with_suffix('.yaml').exists():
+            return '.yaml'
+        if file_path.with_suffix('.yml').exists():
+            return '.yml'
+        return ''

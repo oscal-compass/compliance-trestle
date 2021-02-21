@@ -22,25 +22,17 @@ from tests import test_utils
 
 import trestle.core.err as err
 from trestle.cli import Trestle
+from trestle.core import const
 from trestle.core.commands.replicate import ReplicateCmd
 from trestle.oscal.catalog import Catalog
 from trestle.utils import fs
 from trestle.utils.load_distributed import load_distributed
 
-subcommand_list = [
-    'catalog',
-    'profile',
-    'target-definition',
-    'component-definition',
-    'system-security-plan',
-    'assessment-plan',
-    'assessment-results',
-    'plan-of-action-and-milestones'
-]
+subcommand_list = const.MODEL_TYPE_LIST
 
 
 def _copy_local(source_model_path, source_model_name, model_alias):
-    plural_alias = model_alias if model_alias[-1] == 's' else model_alias + 's'
+    plural_alias = fs.model_type_to_model_dir(model_alias)
     full_model_path = source_model_path / plural_alias / source_model_name
     local_model_path = Path(plural_alias) / source_model_name
     shutil.rmtree(local_model_path, ignore_errors=True)
@@ -50,7 +42,7 @@ def _copy_local(source_model_path, source_model_name, model_alias):
 def test_replicate_cmd_no_file(tmp_trestle_dir: Path) -> None:
     """Confirm failure when file does not exist."""
     for subcommand in subcommand_list:
-        test_args = f'trestle replicate {subcommand} -f mock_file_name -o random_named_{subcommand}'.split()
+        test_args = f'trestle replicate {subcommand} -n mock_file_name -o random_named_{subcommand}'.split()
         with mock.patch.object(sys, 'argv', test_args):
             rc = Trestle().run()
             assert rc != 0
@@ -71,7 +63,7 @@ def test_replicate_cmd(testdata_dir, tmp_trestle_dir) -> None:
     rep_file = catalogs_dir / rep_name / 'catalog.json'
 
     # execute the command to replicate the model into replicated
-    test_args = f'trestle replicate catalog -f {source_name} -o {rep_name}'.split()
+    test_args = f'trestle replicate catalog -n {source_name} -o {rep_name}'.split()
     with mock.patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
@@ -107,14 +99,14 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir) -> None:
     # now create pre-existing replica to force error
     rep_file.touch()
 
-    test_args = f'trestle replicate catalog -f {source_name} -o {rep_name}'.split()
+    test_args = f'trestle replicate catalog -n {source_name} -o {rep_name}'.split()
     with mock.patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 1
 
     shutil.rmtree(catalogs_dir / rep_name, ignore_errors=True)
 
-    args = argparse.Namespace(file=source_name, output=rep_name, verbose=False)
+    args = argparse.Namespace(name=source_name, output=rep_name, verbose=False)
 
     # Force PermissionError:
     with mock.patch('trestle.core.commands.replicate.load_distributed') as load_distributed_mock:
@@ -157,7 +149,7 @@ def test_replicate_load_file_failure(tmp_trestle_dir: Path) -> None:
     bad_file.write(sample_data)
     bad_file.close()
 
-    args = 'trestle replicate catalog -f bad_catalog -o rep_bad_catalog'.split()
+    args = 'trestle replicate catalog -n bad_catalog -o rep_bad_catalog'.split()
     with mock.patch.object(sys, 'argv', args):
         rc = Trestle().run()
         assert rc == 1
@@ -167,7 +159,7 @@ def test_replicate_file_system(tmp_trestle_dir: Path) -> None:
     """Test model load failures."""
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
 
-    args = argparse.Namespace(file='foo', output='bar', verbose=False)
+    args = argparse.Namespace(name='foo', output='bar', verbose=False)
     with mock.patch('trestle.core.commands.replicate.fs.get_trestle_project_root') as get_root_mock:
         get_root_mock.side_effect = [None]
         rc = ReplicateCmd.replicate_object('catalog', Catalog, args)

@@ -23,19 +23,11 @@ import pytest
 
 import trestle.core.err as err
 from trestle.cli import Trestle
+from trestle.core import const
 from trestle.core.commands import create
 from trestle.oscal.catalog import Catalog
 
-subcommand_list = [
-    'catalog',
-    'profile',
-    'target-definition',
-    'component-definition',
-    'system-security-plan',
-    'assessment-plan',
-    'assessment-results',
-    'plan-of-action-and-milestones'
-]
+subcommand_list = const.MODEL_TYPE_LIST
 
 
 def test_create_cmd(tmp_trestle_dir: pathlib.Path) -> None:

@@ -75,12 +75,12 @@ def is_valid_project_model_path(path: pathlib.Path) -> bool:
         return False
 
     relative_path = path.relative_to(str(root_path))
-    if len(relative_path.parts) < 2 or relative_path.parts[0] not in const.MODELTYPE_TO_MODELMODULE:
+    if len(relative_path.parts) < 2 or relative_path.parts[0] not in const.MODEL_TYPE_TO_MODEL_MODULE:
         return False
 
     project_type = relative_path.parts[0]  # catalogs, profiles, etc
 
-    if project_type not in const.MODELTYPE_TO_MODELMODULE.keys():
+    if project_type not in const.MODEL_TYPE_TO_MODEL_MODULE.keys():
         return False
 
     return True
@@ -139,7 +139,7 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBase
 
     relative_path = path.relative_to(str(root_path))
     project_type = relative_path.parts[0]  # catalogs, profiles, etc
-    module_name = const.MODELTYPE_TO_MODELMODULE[project_type]
+    module_name = const.MODEL_TYPE_TO_MODEL_MODULE[project_type]
 
     model_relative_path = pathlib.Path(*relative_path.parts[2:])
 
@@ -283,7 +283,7 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
 
     root_model_alias = path_parts[0]
     found = False
-    for module_name in const.MODELTYPE_TO_MODELMODULE.values():
+    for module_name in const.MODEL_TYPE_TO_MODEL_MODULE.values():
         model_type, model_alias = utils.get_root_model(module_name)
         if root_model_alias == model_alias:
             found = True
@@ -318,6 +318,13 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
     return singular_alias
 
 
+def model_type_to_model_dir(model_type: str) -> str:
+    """Get plural model directory from model type."""
+    if model_type not in const.MODEL_TYPE_LIST:
+        raise err.TrestleError(f'Not a valid model type: {model_type}.')
+    return const.MODEL_TYPE_TO_MODEL_DIR[model_type]
+
+
 def get_contextual_file_type(path: pathlib.Path) -> FileContentType:
     """Return the file content type for files in the given directory, if it's a trestle project."""
     if not is_valid_project_model_path(path):
@@ -332,3 +339,44 @@ def get_contextual_file_type(path: pathlib.Path) -> FileContentType:
             return get_contextual_file_type(file_or_directory)
 
     raise err.TrestleError('No files found in the project.')
+
+
+def model_or_file_to_model_name(model_rep: str) -> str:
+    """Convert either model path or json/yaml file name to model path."""
+    if not model_rep:
+        raise err.TrestleError('Cannot convert empty model name to path.')
+    path = pathlib.Path(model_rep)
+    # if no suffix assume it is a model name
+    if not path.suffix:
+        return str(path)
+    # otherwise return parent as model name
+    return str(path.parent)
+
+
+def get_models_of_type(model_type: str) -> List[str]:
+    """Get list of model names for requested type in trestle directory."""
+    if model_type not in const.MODEL_TYPE_LIST:
+        raise err.TrestleError(f'Model type {model_type} is not supported')
+    # search relative to project root
+    trestle_root = get_trestle_project_root(pathlib.Path.cwd())
+    if not trestle_root:
+        logger.error(f'Current working directory {pathlib.Path.cwd()} is not within a trestle project.')
+        raise err.TrestleError('Current working directory is not within a trestle project.')
+
+    # contruct path to the model file name
+    root_model_dir = trestle_root / model_type_to_model_dir(model_type)
+    model_list = []
+    for f in root_model_dir.glob('*/'):
+        if not should_ignore(f.stem):
+            model_list.append(f.stem)
+    return model_list
+
+
+def get_all_models() -> List[Tuple[str, str]]:
+    """Get list of all models in trestle directory as tuples (model_type, model_name)."""
+    full_list = []
+    for model_type in const.MODEL_TYPE_LIST:
+        models = get_models_of_type(model_type)
+        for m in models:
+            full_list.append((model_type, m))
+    return full_list
