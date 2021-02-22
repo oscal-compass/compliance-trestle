@@ -147,10 +147,8 @@ def test_https_fetcher(tmp_trestle_dir):
     fetcher._cache_only = False
     with patch('requests.models.Response.json') as json_mock:
         json_mock.return_value = {'isBinary': False, 'text': str({'key': 'val'})}
-        try:
-            fetcher._update_cache()
-        except Exception:
-            AssertionError()
+        fetcher._update_cache()
+        assert len(open(fetcher._inst_cache_path).read()) > 0
 
 
 def test_https_fetcher_fails(tmp_trestle_dir):
