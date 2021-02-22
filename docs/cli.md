@@ -619,3 +619,246 @@ Example output OSCAL Observations file contents (snippet):
   ]
 }
 ```
+
+## `trestle task tanium-to-oscal`
+
+The *trestle task tanium-to-oscal* command facilitates transformation of Tanuim reports, each 
+input file comprising individual lines consumable as *json*, into OSCAL partial results *.json* files. 
+Specify required config parameters to indicate the location of the input and the output. Specify optional config parameter to indicate whether overwriting of existing output is permitted.
+
+<span style="color:green">
+Example command invocation:
+</span>
+
+> `$TRESTLE_BASEDIR$ trestle task tanium-to-oscal -c /home/user/task.config`
+
+
+<span style="color:green">
+Example config:
+</span>
+
+*/home/user/task.config*
+
+```
+[task.tanium-to-oscal]
+
+input-dir =  /home/user/git/evidence/tanium/input
+output-dir = /home/user/git/evidence/oscal/output
+output-overwrite = true
+```
+**input**
+
+<span style="color:green">
+Example input directory contents listing:
+</span>
+
+*/home/user/git/evidence/tanium/input*
+
+```
+-rw-rw-r--. 1 degenaro degenaro 1426 Feb 19 15:27 Tanium.comply-nist-results
+
+```
+
+
+*Tanium.comply-nist-results*
+
+```
+{"IP Address":"fe80::3cd5:564b:940e:49ab","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords","Result":"pass","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
+{"IP Address":"10.8.69.11","Computer Name":"","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0","Result":"pass","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
+{"IP Address":"10.8.69.11","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"","Benchmark Version":"","Profile":"","ID":"win_security_ps","Result":"pass","Custom ID":"","Version":""}],"Count":"1","Age":"600"}
+{"IP Address":"10.8.69.11","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"","Benchmark Version":"","Profile":"","ID":"av_service","Result":"fail","Custom ID":"","Version":""}],"Count":"1","Age":"600"}
+
+```
+**output**
+
+<span style="color:green">
+Example output directory contents listing:
+</span>
+
+*/home/user/git/evidence/tanium/output*
+
+```
+-rw-rw-r--. 1 degenaro degenaro 5031 Feb 22 15:01 Tanium.oscal.json
+
+```
+
+
+*Tanium.oscal.json*
+
+```
+{
+  "observations": [
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "MUST HAVE"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2106.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "fe80::3cd5:564b:940e:49ab"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "MUST HAVE"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": ""
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.69.11"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "win_security_ps",
+      "description": "win_security_ps",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": ", version ",
+          "props": [
+            {
+              "name": "rule",
+              "class": "id",
+              "value": "win_security_ps"
+            },
+            {
+              "name": "result",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "class": "timestamp",
+              "value": "MUST HAVE"
+            },
+            {
+              "name": "target",
+              "class": "computer-name",
+              "value": "cmp-wn-2106.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "class": "computer-ip",
+              "value": "10.8.69.11"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "av_service",
+      "description": "av_service",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": ", version ",
+          "props": [
+            {
+              "name": "rule",
+              "class": "id",
+              "value": "av_service"
+            },
+            {
+              "name": "result",
+              "class": "result",
+              "value": "fail"
+            },
+            {
+              "name": "time",
+              "class": "timestamp",
+              "value": "MUST HAVE"
+            },
+            {
+              "name": "target",
+              "class": "computer-name",
+              "value": "cmp-wn-2106.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "class": "computer-ip",
+              "value": "10.8.69.11"
+            }
+          ]
+        }
+      ]
+    },
+    
+  ]
+}
+```
