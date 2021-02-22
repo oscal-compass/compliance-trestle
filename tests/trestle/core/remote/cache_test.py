@@ -15,7 +15,6 @@
 # limitations under the License.
 """Testing for cache functionality."""
 
-import os
 import pathlib
 import random
 import string
@@ -134,41 +133,6 @@ def test_local_fetcher_absolute(tmp_trestle_dir):
     fetcher._cache_only = False
     fetcher._update_cache()
     assert fetcher._inst_cache_path.exists()
-
-
-def test_https_fetcher(tmp_trestle_dir):
-    """Test the https fetcher."""
-    os.environ['fetcher_user'] = 'fetcher'
-    os.environ['fetcher_pass'] = 'secret'
-    # This is a real, live URL:
-    uri = 'https://{{fetcher_user}}:{{fetcher_pass}}@placekitten.com/200/300'
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
-    fetcher._refresh = True
-    fetcher._cache_only = False
-    with patch('requests.models.Response.json') as json_mock:
-        json_mock.return_value = {'isBinary': False, 'text': str({'key': 'val'})}
-        fetcher._update_cache()
-        assert len(open(fetcher._inst_cache_path).read()) > 0
-
-
-def test_https_fetcher_fails(tmp_trestle_dir):
-    """Test the https fetcher failures."""
-    os.environ['fetcher_user'] = 'fetcher'
-    os.environ['fetcher_pass'] = 'secret'
-    uri = 'https://{{fetcher_user}}:{{fetcher_pass}}@placekitten.com/200/300'
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
-    fetcher._refresh = True
-    fetcher._cache_only = False
-    with patch('requests.auth.HTTPBasicAuth') as auth_mock:
-        auth_mock.return_value = None
-        with patch('requests.models.Response.json') as json_mock:
-            json_mock.return_value = None
-            with pytest.raises(err.TrestleError):
-                fetcher._update_cache()
-        with patch('requests.models.Response.json') as json_mock:
-            json_mock.return_value = {'isBinary': True}
-            with pytest.raises(err.TrestleError):
-                fetcher._update_cache()
 
 
 def test_sftp_fetcher(tmp_trestle_dir):
@@ -309,7 +273,7 @@ def test_sftp_fetcher_bad_uri(tmp_trestle_dir):
 
 def test_fetcher_bad_uri(tmp_trestle_dir):
     """Test fetcher factory with bad URI."""
-    for uri in ['', 'sftp://', '..', 'ftp://some.host/this.file']:
+    for uri in ['', 'sftp://', '..', 'ftp://some.host/this.file', 'https://github.com/IBM/test/file']:
         with pytest.raises(TrestleError):
             cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
 
@@ -337,36 +301,3 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
     sftp_uri_2 = 'sftp://user@hostname:2000/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), sftp_uri_2, False, False)
     assert type(fetcher) == cache.SFTPFetcher
-
-    https_uri = 'https://placekitten.com/200/300'
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), https_uri, False, False)
-    assert type(fetcher) == cache.HTTPSFetcher or True
-
-    https_basic_auth = 'https://{{USERNAME}}:{{PASSWORD}}@placekitten.com/200/300'
-    try:
-        fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), https_basic_auth, False, False)
-    except Exception:
-        pass
-    assert type(fetcher) == cache.HTTPSFetcher or True
-
-    github_url_1 = 'https://github.com/DrJohnWagner/recipes/blob/master/README.md'
-    try:
-        fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), github_url_1, False, False)
-    except Exception:
-        pass
-    assert type(fetcher) == cache.GithubFetcher or True
-    try:
-        fetcher._sync_cache()
-    except Exception:
-        pass
-
-    github_url_2 = 'https://github.ibm.com/aur-mma/ai-for-the-eye/blob/master/README.md'
-    try:
-        fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), github_url_2, False, False)
-    except Exception:
-        pass
-    assert type(fetcher) == cache.GithubFetcher or True
-    try:
-        fetcher._sync_cache()
-    except Exception:
-        pass
