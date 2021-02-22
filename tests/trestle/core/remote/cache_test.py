@@ -35,7 +35,7 @@ def test_fetcher_oscal(tmp_trestle_dir):
     """Test whether fetcher can get an object from the cache as an oscal model."""
     # Fetch from local content, expecting it to be cached and then fetched as an oscal model.
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = pathlib.Path(tmp_trestle_dir / f'{rand_str}.json').__str__()
+    catalog_file = pathlib.Path(tmp_trestle_dir.parent / f'{rand_str}.json').__str__()
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)
@@ -53,7 +53,7 @@ def test_fetcher_oscal_fails(tmp_trestle_dir):
     """Test whether fetcher can get an object from the cache as an oscal model."""
     # Fetch from local content, expecting it to be cached and then fetched as an oscal model.
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = pathlib.Path(tmp_trestle_dir / f'{rand_str}.json').__str__()
+    catalog_file = pathlib.Path(tmp_trestle_dir.parent / f'{rand_str}.json').__str__()
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)
@@ -79,7 +79,7 @@ def test_fetcher_base(tmp_trestle_dir):
     """Test whether fetcher can get an object from the cache."""
     # Fetch from local content, expecting it to be cached and then fetched.
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = pathlib.Path(tmp_trestle_dir / f'{rand_str}.json').__str__()
+    catalog_file = pathlib.Path(tmp_trestle_dir.parent / f'{rand_str}.json').__str__()
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     saved_data = fs.load_file(pathlib.Path(catalog_file))
@@ -97,9 +97,9 @@ def test_github_fetcher():
 
 
 def test_local_fetcher_get_fails(tmp_trestle_dir):
-    """Test the local fetcher."""
+    """Test the local fetcher get failure."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = pathlib.Path(tmp_trestle_dir / f'{rand_str}.json').__str__()
+    catalog_file = pathlib.Path(tmp_trestle_dir.parent / f'{rand_str}.json').__str__()
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)
@@ -110,10 +110,23 @@ def test_local_fetcher_get_fails(tmp_trestle_dir):
         fetcher.get_oscal(Catalog)
 
 
-def test_local_fetcher_absolute(tmp_trestle_dir):
-    """Test the local fetcher."""
+def test_local_fetcher_bad_uri_in_trestle_project(tmp_trestle_dir):
+    """Test the local fetcher for bad uri inside a trestle project."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     catalog_file = pathlib.Path(tmp_trestle_dir / f'{rand_str}.json').__str__()
+    catalog_data = generators.generate_sample_model(Catalog)
+    catalog_data.oscal_write(pathlib.Path(catalog_file))
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with pytest.raises(err.TrestleError):
+        fetcher._update_cache()
+
+
+def test_local_fetcher_absolute(tmp_trestle_dir):
+    """Test the local fetcher for an object with a non-relative path, i.e., an aboslute path."""
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    catalog_file = pathlib.Path(tmp_trestle_dir.parent / f'{rand_str}.json').__str__()
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, False, False)

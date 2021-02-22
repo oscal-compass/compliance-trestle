@@ -178,6 +178,13 @@ class LocalFetcher(FetcherBase):
 
     def _sync_cache(self) -> None:
         """Copy the local resource into the cache."""
+        # Do not allow remote fetch from a trestle project:
+        if fs.get_trestle_project_root(self._abs_path) is not None:
+            logger.error(f'Attempt to cache from location within a trestle project: {self._uri}')
+            raise TrestleError(
+                'Cache request for invalid input URI:'
+                f'Attempt to cache from location within a trestle project {self._uri}'
+            )
         shutil.copy(self._abs_path, self._inst_cache_path)
 
 
