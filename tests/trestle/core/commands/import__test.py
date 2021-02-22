@@ -59,7 +59,7 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
 
 
 def test_import_run(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test successful _run() on valid and invalid."""
+    """Test successful _run() on valid input."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     catalog_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)
@@ -70,10 +70,60 @@ def test_import_run(tmp_trestle_dir: pathlib.Path) -> None:
     assert rc == 0
 
 
+def test_import_run_rollback(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test successful _run() on invalid input with good or failed rollback."""
+    dup_cat = {
+        'catalog': {
+            'uuid': '525f94af-8007-4376-8069-aa40179e0f6e',
+            'metadata': {
+                'title': 'Generic catalog created by trestle.',
+                'last-modified': '2020-12-11T02:04:51.053+00:00',
+                'version': '0.0.0',
+                'oscal-version': 'v1.0.0-milestone3'
+            },
+            'back-matter': {
+                'resources': [
+                    {
+                        'uuid': 'b1101385-9e36-44a3-ba03-98b6ebe0a367'
+                    }, {
+                        'uuid': 'b1101385-9e36-44a3-ba03-98b6ebe0a367'
+                    }
+                ]
+            }
+        }
+    }
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    dup_file_name = f'{tmp_trestle_dir.parent}/dup-{rand_str}.json'
+    dup_file = pathlib.Path(dup_file_name).open('w+', encoding='utf8')
+    dup_file.write(json.dumps(dup_cat))
+    dup_file.close()
+    j = importcmd.ImportCmd()
+    args = argparse.Namespace(file=dup_file_name, output=f'dup-{rand_str}', verbose=True)
+    # 1. Validation rejects above import, which results in non-zero exit code for import.
+    rc = j._run(args)
+    assert rc > 0
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    # 2. ValidateCmd raises run (mocked), so import returns non-zero exit code.
+    j = importcmd.ImportCmd()
+    args = argparse.Namespace(file=dup_file_name, output=f'dup-{rand_str}', verbose=True)
+    with patch('trestle.core.commands.validate.ValidateCmd._run') as validate_import_mock:
+        validate_import_mock.side_effect = err.TrestleError('validate run error')
+        rc = j._run(args)
+        assert rc > 0
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    # 3. Rollback raises exception, so import returns non-zero exit code:
+    j = importcmd.ImportCmd()
+    args = argparse.Namespace(file=dup_file_name, output=f'dup-{rand_str}', verbose=True)
+    with patch('trestle.core.models.plans.Plan.rollback') as rollback_mock:
+        rollback_mock.side_effect = [None, err.TrestleError('rollback error')]
+        rc = j._run(args)
+        assert rc > 0
+
+
 def test_import_clash_on_output(tmp_trestle_dir: pathlib.Path) -> None:
     """Test an attempt to import into an existing trestle file."""
     # 1. Create a sample catalog,
-    args = argparse.Namespace(name='my-catalog', extension='json', verbose=True)
+    args = argparse.Namespace(output='my-catalog', extension='json', verbose=True)
     create.CreateCmd.create_object('catalog', Catalog, args)
     # 2. Create a valid oscal object in tmp_trestle_dir.parent,
     sample_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)

@@ -13,6 +13,7 @@
 # limitations under the License.
 """Action wrapper of a command."""
 from enum import Enum
+from pathlib import Path
 
 from trestle.core.err import TrestleError
 
@@ -26,6 +27,12 @@ class FileContentType(Enum):
     # YAML formatted content
     YAML = 2
 
+    # No extension and possibly a DIR
+    DIRLIKE = 3
+
+    # Type could not be determined
+    UNKNOWN = 4
+
     @classmethod
     def to_file_extension(cls, content_type: 'FileContentType') -> str:
         """Get file extension for the type."""
@@ -33,7 +40,6 @@ class FileContentType(Enum):
             return '.yaml'
         elif content_type == FileContentType.JSON:
             return '.json'
-
         raise TrestleError(f'Invalid file content type {content_type}')
 
     @classmethod
@@ -43,5 +49,29 @@ class FileContentType(Enum):
             return FileContentType.JSON
         elif file_extension == '.yaml' or file_extension == '.yml':
             return FileContentType.YAML
+        elif not file_extension:
+            return FileContentType.DIRLIKE
 
         raise TrestleError(f'Unsupported file extension {file_extension}')
+
+    @classmethod
+    def path_to_content_type(cls, file_path: Path) -> 'FileContentType':
+        """Get content type from file path looking for extension."""
+        if file_path.with_suffix('.json').exists():
+            return FileContentType.JSON
+        if file_path.with_suffix('.yaml').exists():
+            return FileContentType.YAML
+        if file_path.with_suffix('.yml').exists():
+            return FileContentType.YAML
+        return FileContentType.UNKNOWN
+
+    @classmethod
+    def path_to_file_extension(cls, file_path: Path) -> str:
+        """Get extension from file path looking for extension."""
+        if file_path.with_suffix('.json').exists():
+            return '.json'
+        if file_path.with_suffix('.yaml').exists():
+            return '.yaml'
+        if file_path.with_suffix('.yml').exists():
+            return '.yml'
+        return ''

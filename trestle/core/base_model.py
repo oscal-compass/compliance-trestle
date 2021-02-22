@@ -260,6 +260,12 @@ class OscalBaseModel(BaseModel):
 
         content_type = FileContentType.to_content_type(path.suffix)
 
+        if content_type == FileContentType.DIRLIKE:
+            path = path / alias
+            content_type = FileContentType.path_to_content_type(path)
+            extension = FileContentType.path_to_file_extension(path)
+            path = path.with_suffix(extension)
+
         if content_type == FileContentType.YAML:
             return cls.parse_obj(yaml.safe_load(path.open())[alias])
         elif content_type == FileContentType.JSON:

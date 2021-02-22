@@ -492,3 +492,39 @@ def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
     (mycatalog_dir / 'catalog/groups').mkdir()
     (mycatalog_dir / 'catalog/groups/file4.yaml').touch()
     assert fs.get_contextual_file_type(mycatalog_dir) == FileContentType.YAML
+
+
+def test_get_models_of_type(tmp_trestle_dir) -> None:
+    """Test fs.get_models_of_type()."""
+    create_sample_catalog_project(tmp_trestle_dir)
+    catalogs_dir = tmp_trestle_dir.absolute() / 'catalogs'
+    targets_dir = tmp_trestle_dir.absolute() / 'target-definitions'
+    # mycatalog is already there
+    (catalogs_dir / 'mycatalog2').mkdir()
+    (catalogs_dir / '.myfile').touch()
+    (targets_dir / 'mytarget').mkdir()
+    models = fs.get_models_of_type('catalog')
+    assert len(models) == 2
+    assert 'mycatalog' in models
+    assert 'mycatalog2' in models
+    all_models = fs.get_all_models()
+    assert len(all_models) == 3
+    assert ('catalog', 'mycatalog') in all_models
+    assert ('catalog', 'mycatalog2') in all_models
+    assert ('target-definition', 'mytarget') in all_models
+    with pytest.raises(TrestleError):
+        fs.get_models_of_type('foo')
+
+
+def test_get_models_of_type_bad_cwd(tmp_path) -> None:
+    """Test fs.get_models_of_type() from outside trestle dir."""
+    with pytest.raises(TrestleError):
+        fs.get_models_of_type('catalog')
+
+
+def test_model_or_file_to_model_name(tmp_trestle_dir) -> None:
+    """Test fs.model_or_file_to_model_name()."""
+    assert fs.model_or_file_to_model_name('mycatalog') == 'mycatalog'
+    assert fs.model_or_file_to_model_name('mycatalog/catalog.json') == 'mycatalog'
+    with pytest.raises(TrestleError):
+        fs.model_or_file_to_model_name('')

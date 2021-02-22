@@ -40,4 +40,8 @@ class ValidateCmd(Command):
 
         validator = vfact.validator_factory.get(args)
 
-        return validator.validate(self, args)
+        try:
+            return validator.validate(self, args)
+        except Exception as e:
+            logger.error(f'Error in trestle validate: {e}')
+        return 1

@@ -62,7 +62,7 @@ class CatalogCmd(Command):
 
     def _run(self, args: argparse.Namespace) -> int:
         """Create a sample catalog in the trestle directory structure, given an OSCAL schema."""
-        logger.info(f'Creating catalog titled: {args.name}')
+        logger.info(f'Creating catalog titled: {args.output}')
         return CreateCmd.create_object(self.name, catalog.Catalog, args)
 
 
@@ -72,7 +72,7 @@ class ProfileCmd(Command):
     name = 'profile'
 
     def _run(self, args: argparse.Namespace) -> int:
-        logger.info(f'Creating profile titled: {args.name}')
+        logger.info(f'Creating profile titled: {args.output}')
         return CreateCmd.create_object(self.name, profile.Profile, args)
 
 
@@ -147,7 +147,7 @@ class CreateCmd(Command):
     ]
 
     def _init_arguments(self) -> None:
-        self.add_argument('-n', '--name', help='Name of the model.', required=True)
+        self.add_argument('-o', '--output', help='Name of the output created model.', required=True)
         self.add_argument(
             '-x', '--extension', help='Type of file output.', choices=['json', 'yaml', 'yml'], default='json'
         )
@@ -160,14 +160,9 @@ class CreateCmd(Command):
         if not trestle_root:
             logger.error(f'Current working directory {Path.cwd()} is not with a trestle project.')
             return 1
-        plural_path: str
-        # Cater to POAM
-        if model_alias[-1] == 's':
-            plural_path = model_alias
-        else:
-            plural_path = model_alias + 's'
+        plural_path = fs.model_type_to_model_dir(model_alias)
 
-        desired_model_dir = trestle_root / plural_path / args.name
+        desired_model_dir = trestle_root / plural_path / args.output
 
         desired_model_path = desired_model_dir / (model_alias + '.' + args.extension)
 

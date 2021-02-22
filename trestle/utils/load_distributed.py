@@ -20,6 +20,7 @@ from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
 
 
@@ -90,7 +91,8 @@ def load_distributed(
     primary_model_dict = primary_model_instance.__dict__
 
     # Is model decomposed?
-    file_dir = file_path.parent
+    content_type = FileContentType.path_to_content_type(file_path)
+    file_dir = file_path if content_type == FileContentType.UNKNOWN else file_path.parent
     decomposed_dir = file_dir / file_path.parts[-1].split('.')[0]
 
     if decomposed_dir.exists():
