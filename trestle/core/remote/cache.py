@@ -19,7 +19,6 @@ Trestle cache operations library.
 Allows for using uris to reference external directories and then expand.
 """
 
-import errno
 import getpass
 import logging
 import os
@@ -30,12 +29,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, Type
 from urllib import parse
 
-from furl import furl
-
 import paramiko
-
-import requests
-from requests.auth import HTTPBasicAuth
 
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
