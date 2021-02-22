@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.assemble/">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.7">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
     
     
       
@@ -1734,6 +1734,7 @@
 <span class="k">def</span> <span class="nf">assemble_model</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">model_alias</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">object_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">TLO</span><span class="p">],</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">"""Assemble a top level OSCAL model within the trestle dist directory."""</span>
     <span class="n">log</span><span class="o">.</span><span class="n">set_log_level_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Assembling models of type </span><span class="si">{</span><span class="n">model_alias</span><span class="si">}</span><span class="s1">.'</span><span class="p">)</span>
     <span class="n">trestle_root</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_trestle_project_root</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">())</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">trestle_root</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Current working directory </span><span class="si">{</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="si">}</span><span class="s1"> is not with a trestle project.'</span><span class="p">)</span>
@@ -1742,47 +1743,61 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Current working directory </span><span class="si">{</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="si">}</span><span class="s1"> is not the top level trestle project directory.'</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">1</span>
 
-    <span class="c1"># contruct path to the model file name</span>
-    <span class="n">root_model_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">model_alias</span><span class="si">}</span><span class="s1">s'</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">model_file_type</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_contextual_file_type</span><span class="p">(</span><span class="n">root_model_dir</span> <span class="o">/</span> <span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">'No files found in the specified model directory.'</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="k">return</span> <span class="mi">1</span>
-
-    <span class="n">model_file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">model_alias</span><span class="si">}{</span><span class="n">FileContentType</span><span class="o">.</span><span class="n">to_file_extension</span><span class="p">(</span><span class="n">model_file_type</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span>
-    <span class="n">root_model_filepath</span> <span class="o">=</span> <span class="n">root_model_dir</span> <span class="o">/</span> <span class="n">args</span><span class="o">.</span><span class="n">name</span> <span class="o">/</span> <span class="n">model_file_name</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">root_model_filepath</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">'No top level model file at </span><span class="si">{</span><span class="n">root_model_dir</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-        <span class="k">return</span> <span class="mi">1</span>
-
-    <span class="c1"># distributed load</span>
-    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">assembled_model</span> <span class="o">=</span> <span class="n">load_distributed</span><span class="p">(</span><span class="n">root_model_filepath</span><span class="p">)</span>
-    <span class="n">plural_alias</span> <span class="o">=</span> <span class="n">model_alias</span> <span class="k">if</span> <span class="n">model_alias</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'s'</span> <span class="k">else</span> <span class="n">model_alias</span> <span class="o">+</span> <span class="s1">'s'</span>
-    <span class="n">assembled_model_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_DIST_DIR</span> <span class="o">/</span> <span class="n">plural_alias</span>
-
-    <span class="n">assembled_model_filepath</span> <span class="o">=</span> <span class="n">assembled_model_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">extension</span><span class="si">}</span><span class="s1">'</span>
-
-    <span class="n">plan</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">()</span>
-    <span class="n">plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">CreatePathAction</span><span class="p">(</span><span class="n">assembled_model_filepath</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
-    <span class="n">plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span>
-        <span class="n">WriteFileAction</span><span class="p">(</span>
-            <span class="n">assembled_model_filepath</span><span class="p">,</span>
-            <span class="n">Element</span><span class="p">(</span><span class="n">assembled_model</span><span class="p">),</span>
-            <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_content_type</span><span class="p">(</span><span class="sa">f</span><span class="s1">'.</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">extension</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-        <span class="p">)</span>
-    <span class="p">)</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">plan</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
-        <span class="n">plan</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+    <span class="n">model_names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="s1">'name'</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+        <span class="n">model_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Assembling single model of type </span><span class="si">{</span><span class="n">model_alias</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.'</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model_names</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_models_of_type</span><span class="p">(</span><span class="n">model_alias</span><span class="p">)</span>
+        <span class="n">nmodels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">model_names</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Assembling </span><span class="si">{</span><span class="n">nmodels</span><span class="si">}</span><span class="s1"> found models of type </span><span class="si">{</span><span class="n">model_alias</span><span class="si">}</span><span class="s1">.'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">model_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">'No models found to assemble of type </span><span class="si">{</span><span class="n">model_alias</span><span class="si">}</span><span class="s1">.'</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">0</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">'Unknown error executing trestle create operations. Rolling back.'</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">model_name</span> <span class="ow">in</span> <span class="n">model_names</span><span class="p">:</span>
+        <span class="c1"># contruct path to the model file name</span>
+        <span class="n">root_model_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span> <span class="o">/</span> <span class="n">fs</span><span class="o">.</span><span class="n">model_type_to_model_dir</span><span class="p">(</span><span class="n">model_alias</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">model_file_type</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_contextual_file_type</span><span class="p">(</span><span class="n">root_model_dir</span> <span class="o">/</span> <span class="n">model_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">'No files found in the specified model directory.'</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">1</span>
+
+        <span class="n">model_file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">model_alias</span><span class="si">}{</span><span class="n">FileContentType</span><span class="o">.</span><span class="n">to_file_extension</span><span class="p">(</span><span class="n">model_file_type</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span>
+        <span class="n">root_model_filepath</span> <span class="o">=</span> <span class="n">root_model_dir</span> <span class="o">/</span> <span class="n">model_name</span> <span class="o">/</span> <span class="n">model_file_name</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">root_model_filepath</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">'No top level model file at </span><span class="si">{</span><span class="n">root_model_dir</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">1</span>
+
+        <span class="c1"># distributed load</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">assembled_model</span> <span class="o">=</span> <span class="n">load_distributed</span><span class="p">(</span><span class="n">root_model_filepath</span><span class="p">)</span>
+        <span class="n">plural_alias</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">model_type_to_model_dir</span><span class="p">(</span><span class="n">model_alias</span><span class="p">)</span>
+
+        <span class="n">assembled_model_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_DIST_DIR</span> <span class="o">/</span> <span class="n">plural_alias</span>
+
+        <span class="n">assembled_model_filepath</span> <span class="o">=</span> <span class="n">assembled_model_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">extension</span><span class="si">}</span><span class="s1">'</span>
+
+        <span class="n">plan</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">()</span>
+        <span class="n">plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">CreatePathAction</span><span class="p">(</span><span class="n">assembled_model_filepath</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+        <span class="n">plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span>
+            <span class="n">WriteFileAction</span><span class="p">(</span>
+                <span class="n">assembled_model_filepath</span><span class="p">,</span>
+                <span class="n">Element</span><span class="p">(</span><span class="n">assembled_model</span><span class="p">),</span>
+                <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_content_type</span><span class="p">(</span><span class="sa">f</span><span class="s1">'.</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">extension</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">plan</span><span class="o">.</span><span class="n">simulate</span><span class="p">()</span>
+            <span class="n">plan</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">'Unknown error executing trestle create operations. Rolling back.'</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="mi">0</span>
 </code></pre>
 </div>
 </details>
@@ -2061,8 +2076,8 @@
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.53cc9318.min.js"></script>
-      <script src="../../assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({

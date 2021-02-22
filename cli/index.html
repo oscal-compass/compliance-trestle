@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/cli/">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.7">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
     
     
       
@@ -351,6 +351,13 @@
         <li class="md-nav__item">
   <a href="#trestle-tasks" class="md-nav__link">
     trestle tasks
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-task-osco-to-oscal" class="md-nav__link">
+    trestle task osco-to-oscal
   </a>
   
 </li>
@@ -1340,6 +1347,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#trestle-task-osco-to-oscal" class="md-nav__link">
+    trestle task osco-to-oscal
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1620,6 +1634,267 @@ remote system state.</p>
 </tbody>
 </table>
 <h2 id="trestle-tasks"><code>trestle tasks</code><a class="headerlink" href="#trestle-tasks" title="Permanent link">¤</a></h2>
+<p>TBD.</p>
+<h2 id="trestle-task-osco-to-oscal"><code>trestle task osco-to-oscal</code><a class="headerlink" href="#trestle-task-osco-to-oscal" title="Permanent link">¤</a></h2>
+<p>The <em>trestle task osco-to-oscal</em> command facilitates transformation of OpenShift Compliance Operator (OSCO) scan results <em>.yaml</em> files into OSCAL partial results <em>.json</em> files. Specify required config parameters to indicate the location of the input and the output. Specify optional config parameters to indicate the name of the oscal-metadata.yaml file, if any, and whether overwriting of existing output is permitted.</p>
+<p><span style="color:green">
+Example command invocation:
+</span></p>
+<blockquote>
+<p><code>$TRESTLE_BASEDIR$ trestle task osco-to-oscal -c /home/user/task.config</code></p>
+</blockquote>
+<p><span style="color:green">
+Example config:
+</span></p>
+<p><em>/home/user/task.config</em></p>
+<p><div class="highlight"><pre><span></span><code>[task.osco-to-oscal]
+
+input-dir =  /home/user/git/evidence/osco/input
+output-dir = /home/user/git/evidence/oscal/output
+oscal-metadata = oscal-metadata.yaml
+output-overwrite = true
+</code></pre></div>
+<strong>input</strong></p>
+<p><span style="color:green">
+Example input directory contents listing:
+</span></p>
+<p><em>/home/user/git/evidence/osco/input</em></p>
+<div class="highlight"><pre><span></span><code>-rw-rw-r--. 1 user user  3832 Feb  2 09:36 oscal-metadata.yaml
+-rw-rw-r--. 1 user user 49132 Feb  2 06:12 ssg-ocp4-ds-cis-111.222.333.444-pod.yaml
+-rw-rw-r--. 1 user user 52747 Feb  2 06:41 ssg-ocp4-ds-cis-111.222.333.555-pod.yaml
+</code></pre></div>
+<p><span style="color:green">
+Example input OSCO scan result file contents (snippet):
+</span></p>
+<p><em>ssg-ocp4-ds-cis-111.222.333.444-pod.yaml</em></p>
+<div class="highlight"><pre><span></span><code>apiVersion: v1
+data:
+  exit-code: &quot;2&quot;
+  results: |
+    &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+    &lt;TestResult xmlns=&quot;http://checklists.nist.gov/xccdf/1.2&quot; 
+                id=&quot;xccdf_org.open-scap_testresult_xccdf_org.ssgproject.content_profile_cis&quot;
+                start-time=&quot;2020-08-03T02:26:26+00:00&quot; end-time=&quot;2020-08-03T02:26:26+00:00&quot;
+                version=&quot;0.1.52&quot;
+                test-system=&quot;cpe:/a:redhat:openscap:1.3.3&quot;&gt;
+              &lt;benchmark href=&quot;/content/ssg-ocp4-ds.xml&quot; id=&quot;xccdf_org.ssgproject.content_benchmark_OCP-4&quot;/&gt;
+              &lt;title&gt;OSCAP Scan Result&lt;/title&gt;
+              &lt;profile idref=&quot;xccdf_org.ssgproject.content_profile_cis&quot;/&gt;
+              &lt;target&gt;kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp&lt;/target&gt;
+              &lt;target-facts&gt;
+                &lt;fact name=&quot;urn:xccdf:fact:identifier&quot; type=&quot;string&quot;&gt;chroot:///host&lt;/fact&gt;
+                &lt;fact name=&quot;urn:xccdf:fact:scanner:name&quot; type=&quot;string&quot;&gt;OpenSCAP&lt;/fact&gt;
+                &lt;fact name=&quot;urn:xccdf:fact:scanner:version&quot; type=&quot;string&quot;&gt;1.3.3&lt;/fact&gt;
+              &lt;/target-facts&gt;
+              &lt;target-id-ref system=&quot;http://scap.nist.gov/schema/asset-identification/1.1&quot; name=&quot;asset0&quot; href=&quot;&quot;/&gt;
+              &lt;platform idref=&quot;cpe:/a:redhat:openshift_container_platform:4.1&quot;/&gt;
+              &lt;platform idref=&quot;cpe:/a:machine&quot;/&gt;
+              &lt;set-value idref=&quot;xccdf_org.ssgproject.content_value_ocp_data_root&quot;&gt;/kubernetes-api-resources&lt;/set-value&gt;
+              &lt;set-value idref=&quot;xccdf_org.ssgproject.content_value_var_kube_authorization_mode&quot;&gt;Webhook&lt;/set-value&gt;
+              &lt;set-value idref=&quot;xccdf_org.ssgproject.content_value_var_streaming_connection_timeouts&quot;&gt;5m&lt;/set-value&gt;
+              &lt;rule-result idref=&quot;xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd&quot; time=&quot;2020-08-03T02:26:26+00:00&quot; severity=&quot;medium&quot; weight=&quot;1.000000&quot;&gt;
+                &lt;result&gt;notselected&lt;/result&gt;
+                &lt;ident system=&quot;https://nvd.nist.gov/cce/index.cfm&quot;&gt;CCE-84209-6&lt;/ident&gt;
+              &lt;/rule-result&gt;
+              &lt;rule-result idref=&quot;xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens&quot; time=&quot;2020-08-03T02:26:26+00:00&quot; severity=&quot;medium&quot; weight=&quot;1.000000&quot;&gt;
+                &lt;result&gt;notchecked&lt;/result&gt;
+                &lt;message severity=&quot;info&quot;&gt;No candidate or applicable check found.&lt;/message&gt;
+              &lt;/rule-result&gt;
+              &lt;rule-result idref=&quot;xccdf_org.ssgproject.content_rule_accounts_unique_service_account&quot; time=&quot;2020-08-03T02:26:26+00:00&quot; severity=&quot;medium&quot; weight=&quot;1.000000&quot;&gt;
+                &lt;result&gt;notchecked&lt;/result&gt;
+                &lt;message severity=&quot;info&quot;&gt;No candidate or applicable check found.&lt;/message&gt;
+              &lt;/rule-result&gt;
+
+              ...
+
+           &lt;/TestResult&gt;
+kind: ConfigMap
+metadata:
+  annotations:
+    compliance-remediations/processed: &quot;&quot;
+    compliance.openshift.io/scan-error-msg: &quot;&quot;
+    compliance.openshift.io/scan-result: NON-COMPLIANT
+    openscap-scan-result/node: 111.222.333.444
+  creationTimestamp: &quot;2020-08-03T02:26:34Z&quot;
+  labels:
+    compliance-scan: ssg-ocp4-ds-cis
+  name: ssg-ocp4-ds-cis-111.222.333.444-pod
+  namespace: openshift-compliance
+  resourceVersion: &quot;22693328&quot;
+  selfLink: /api/v1/namespaces/openshift-compliance/configmaps/ssg-ocp4-ds-cis-111.222.333.444-pod
+  uid: 1da3ea81-0a25-4512-ad86-7ac360246b5d
+</code></pre></div>
+<p><span style="color:green">
+Example input OSCAL metadata file contents:
+</span></p>
+<p><em>oscal-metadata.yaml</em></p>
+<div class="highlight"><pre><span></span><code>ssg-ocp4-ds-cis-111.222.333.444-pod:
+   locker: https://github.mycorp.com/degenaro/evidence-locker
+   namespace: xccdf
+   subject-references:
+      component:
+         uuid-ref: 56666738-0f9a-4e38-9aac-c0fad00a5821
+         type: component
+         title: Red Hat OpenShift Kubernetes
+      inventory-item:
+         uuid-ref: 46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e
+         type: inventory-item
+         title: Pod
+         properties:
+            target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+            cluster-name: ROKS-OpenSCAP-1
+            cluster-type: openshift
+            cluster-region: us-south
+
+ssg-rhel7-ds-cis-111.222.333.444-pod:
+   locker: https://github.mycorp.com/degenaro/evidence-locker
+   namespace: xccdf
+   subject-references:
+      component:
+         uuid-ref: 89cfe7a7-ce6b-4699-aa7b-2f5739c72001
+         type: component
+         title: RedHat Enterprise Linux 7.8
+      inventory-item:
+         uuid-ref: 46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e
+         type: inventory-item
+         title: VM
+         properties:
+            target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+            cluster-name: ROKS-OpenSCAP-1
+            cluster-type: openshift
+            cluster-region: us-south
+</code></pre></div>
+<p><strong>metadata format</strong></p>
+<p>The <em>oscal_metadata.yaml</em> file comprises one or more mappings. Below is shown the
+format of a single mapping. The items in angle brackets are to be replaced with
+desired values for augmenting the produced OSCAL.</p>
+<p>The mapping whose <em><name></em> matches the <em>[metadata][name]</em> in the evidence for the
+corresponding embedded XML, if any, will be used for augmenting the produced
+OSCAL.</p>
+<p><div class="highlight"><pre><span></span><code>&lt;name&gt;:
+   namespace: &lt;namespace&gt;
+   subject-references:
+      component:
+         uuid-ref: &lt;uuid-ref-component&gt;
+         type: &lt;component-type&gt;
+         title: &lt;component-title&gt;
+      inventory-item:
+         uuid-ref: &lt;uuid-ref-inventory-item&gt;
+         type: &lt;inventory-item-type&gt;
+         title: &lt;inventory-item-title&gt;
+         properties:
+            target: &lt;target&gt;
+            cluster-name: &lt;cluster-name&gt;
+            cluster-type: &lt;cluster-type&gt;
+            cluster-region: &lt;cluster-region&gt;
+</code></pre></div>
+<strong>output</strong></p>
+<p><span style="color:green">
+Example output directory contents listing:
+</span></p>
+<p><em>/home/user/git/evidence/oscal/output</em></p>
+<div class="highlight"><pre><span></span><code>-rw-rw-r--. 1 user user 49132 Feb  3 10:59 ssg-ocp4-ds-cis-111.222.333.444-pod.json
+-rw-rw-r--. 1 user user 52747 Feb  3 10:59 ssg-ocp4-ds-cis-111.222.333.555-pod.json
+</code></pre></div>
+<p><span style="color:green">
+Example output OSCAL Observations file contents (snippet):
+</span></p>
+<p><em>ssg-ocp4-ds-cis-111.222.333.444-pod.json</em></p>
+<div class="highlight"><pre><span></span><code>{
+  &quot;observations&quot;: [
+    {
+      &quot;uuid&quot;: &quot;56666738-0f9a-4e38-9aac-c0fad00a5821&quot;,
+      &quot;title&quot;: &quot;xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd&quot;,
+      &quot;description&quot;: &quot;xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd&quot;,
+      &quot;methods&quot;: [
+        &quot;TEST-AUTOMATED&quot;
+      ],
+      &quot;subjects&quot;: [
+        {
+          &quot;uuid-ref&quot;: &quot;56666738-0f9a-4e38-9aac-c0fad00a5821&quot;,
+          &quot;type&quot;: &quot;component&quot;,
+          &quot;title&quot;: &quot;Red Hat OpenShift Kubernetes&quot;
+        },
+        {
+          &quot;uuid-ref&quot;: &quot;46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e&quot;,
+          &quot;type&quot;: &quot;inventory-item&quot;,
+          &quot;title&quot;: &quot;Pod&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;target&quot;,
+              &quot;value&quot;: &quot;kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp&quot;
+            },
+            {
+              &quot;name&quot;: &quot;cluster-name&quot;,
+              &quot;value&quot;: &quot;ROKS-OpenSCAP-1&quot;
+            },
+            {
+              &quot;name&quot;: &quot;cluster-type&quot;,
+              &quot;value&quot;: &quot;openshift&quot;
+            },
+            {
+              &quot;name&quot;: &quot;cluster-region&quot;,
+              &quot;value&quot;: &quot;us-south&quot;
+            }
+          ]
+        }
+      ],
+      &quot;relevant-evidence&quot;: [
+        {
+          &quot;href&quot;: &quot;https://github.mycorp.com/degenaro/evidence-locker&quot;,
+          &quot;description&quot;: &quot;Evidence location.&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2020-08-03T02:26:26+00:00&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;notselected&quot;
+            },
+            {
+              &quot;name&quot;: &quot;target&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;target&quot;,
+              &quot;value&quot;: &quot;kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp&quot;
+            }
+          ]
+        }
+      ]
+    },
+    {
+      &quot;uuid&quot;: &quot;56666738-0f9a-4e38-9aac-c0fad00a5821&quot;,
+      &quot;title&quot;: &quot;xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens&quot;,
+      &quot;description&quot;: &quot;xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens&quot;,
+      &quot;methods&quot;: [
+        &quot;TEST-AUTOMATED&quot;
+      ],
+      &quot;subjects&quot;: [
+        {
+          &quot;uuid-ref&quot;: &quot;56666738-0f9a-4e38-9aac-c0fad00a5821&quot;,
+          &quot;type&quot;: &quot;component&quot;,
+          &quot;title&quot;: &quot;Red Hat OpenShift Kubernetes&quot;
+        },
+        ...
+      ]
+    },
+    ...
+    {
+      ...
+    }
+  ]
+}
+</code></pre></div>
                 
               
               
@@ -1686,8 +1961,8 @@ remote system state.</p>
       
     </div>
     
-      <script src="../assets/javascripts/vendor.53cc9318.min.js"></script>
-      <script src="../assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({

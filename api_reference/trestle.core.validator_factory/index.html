@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.validator_factory/">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.7">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
     
     
       
@@ -1268,25 +1268,13 @@
           <div class="highlight">
 <pre><span></span><code><span class="k">def</span> <span class="nf">init_arguments</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">Command</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">"""Feed the arguments to the argument parser."""</span>
-    <span class="n">cmd</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s1">'-</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_FILE_SHORT</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-        <span class="sa">f</span><span class="s1">'--</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_FILE</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_DESC_FILE</span> <span class="o">+</span> <span class="s1">' to validate.'</span><span class="p">,</span>
-        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">cmd</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s1">'-</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_ITEM_SHORT</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-        <span class="sa">f</span><span class="s1">'--</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_ITEM</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_DESC_ITEM</span> <span class="o">+</span> <span class="s1">' to validate.'</span><span class="p">,</span>
-        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">cmd</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s1">'-</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_MODE_SHORT</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-        <span class="sa">f</span><span class="s1">'--</span><span class="si">{</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_MODE</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">ARG_DESC_MODE</span> <span class="o">+</span> <span class="s1">' of the validation.'</span><span class="p">,</span>
-        <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="n">const</span><span class="o">.</span><span class="n">VAL_MODE_DUPLICATES</span><span class="p">],</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">VAL_MODE_DUPLICATES</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">add_mutually_exclusive_group</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">'-f'</span><span class="p">,</span> <span class="s1">'--file'</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">'Path of file in trestle directory to validate.'</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">'-t'</span><span class="p">,</span> <span class="s1">'--type'</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_LIST</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">'Validate one or all models of this type.'</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">'-a'</span><span class="p">,</span> <span class="s1">'--all'</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">'store_true'</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">'Validate all models in trestle directory.'</span><span class="p">)</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">'-n'</span><span class="p">,</span> <span class="s1">'--name'</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">'Name of single model to validate (with --type specified).'</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">'-i'</span><span class="p">,</span> <span class="s1">'--item'</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">'uuid'</span><span class="p">],</span> <span class="n">help</span><span class="o">=</span><span class="s1">'Name of item in model to validate.'</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">'-m'</span><span class="p">,</span> <span class="s1">'--mode'</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">'duplicates'</span><span class="p">],</span> <span class="n">help</span><span class="o">=</span><span class="s1">'Mode of validation to use.'</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre>
 </div>
 </details>
@@ -1362,8 +1350,8 @@
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.53cc9318.min.js"></script>
-      <script src="../../assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({

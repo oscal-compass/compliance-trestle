@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.utils.fs/">
       
       <link rel="shortcut icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.7">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
     
     
       
@@ -986,6 +986,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.utils.fs.get_all_models" class="md-nav__link">
+    get_all_models()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.utils.fs.get_contextual_file_type" class="md-nav__link">
     get_contextual_file_type()
   </a>
@@ -995,6 +1002,13 @@
           <li class="md-nav__item">
   <a href="#trestle.utils.fs.get_contextual_model_type" class="md-nav__link">
     get_contextual_model_type()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.utils.fs.get_models_of_type" class="md-nav__link">
+    get_models_of_type()
   </a>
   
 </li>
@@ -1058,6 +1072,20 @@
           <li class="md-nav__item">
   <a href="#trestle.utils.fs.load_file" class="md-nav__link">
     load_file()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.utils.fs.model_or_file_to_model_name" class="md-nav__link">
+    model_or_file_to_model_name()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.utils.fs.model_type_to_model_dir" class="md-nav__link">
+    model_type_to_model_dir()
   </a>
   
 </li>
@@ -1301,6 +1329,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.utils.fs.get_all_models" class="md-nav__link">
+    get_all_models()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.utils.fs.get_contextual_file_type" class="md-nav__link">
     get_contextual_file_type()
   </a>
@@ -1310,6 +1345,13 @@
           <li class="md-nav__item">
   <a href="#trestle.utils.fs.get_contextual_model_type" class="md-nav__link">
     get_contextual_model_type()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.utils.fs.get_models_of_type" class="md-nav__link">
+    get_models_of_type()
   </a>
   
 </li>
@@ -1373,6 +1415,20 @@
           <li class="md-nav__item">
   <a href="#trestle.utils.fs.load_file" class="md-nav__link">
     load_file()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.utils.fs.model_or_file_to_model_name" class="md-nav__link">
+    model_or_file_to_model_name()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.utils.fs.model_type_to_model_dir" class="md-nav__link">
+    model_type_to_model_dir()
   </a>
   
 </li>
@@ -1498,6 +1554,31 @@
 </div>
 </div>
 <div class="doc doc-object doc-function">
+<h4 class="doc doc-heading" id="trestle.utils.fs.get_all_models">
+
+<code class="highlight language-python"><span class="n">get_all_models</span><span class="p">()</span></code>
+
+
+      <a class="headerlink" href="#trestle.utils.fs.get_all_models" title="Permanent link">¤</a></h4>
+<div class="doc doc-contents ">
+<p>Get list of all models in trestle directory as tuples (model_type, model_name).</p>
+<details class="quote">
+          <summary>Source code in <code>trestle/utils/fs.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">get_all_models</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+    <span class="sd">"""Get list of all models in trestle directory as tuples (model_type, model_name)."""</span>
+    <span class="n">full_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">model_type</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_LIST</span><span class="p">:</span>
+        <span class="n">models</span> <span class="o">=</span> <span class="n">get_models_of_type</span><span class="p">(</span><span class="n">model_type</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+            <span class="n">full_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">model_type</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">full_list</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-function">
 <h4 class="doc doc-heading" id="trestle.utils.fs.get_contextual_file_type">
 
 <code class="highlight language-python"><span class="n">get_contextual_file_type</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></code>
@@ -1556,7 +1637,7 @@
 
     <span class="n">relative_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">root_path</span><span class="p">))</span>
     <span class="n">project_type</span> <span class="o">=</span> <span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># catalogs, profiles, etc</span>
-    <span class="n">module_name</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">MODELTYPE_TO_MODELMODULE</span><span class="p">[</span><span class="n">project_type</span><span class="p">]</span>
+    <span class="n">module_name</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_TO_MODEL_MODULE</span><span class="p">[</span><span class="n">project_type</span><span class="p">]</span>
 
     <span class="n">model_relative_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="o">*</span><span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
 
@@ -1576,6 +1657,40 @@
                 <span class="n">model_type</span> <span class="o">=</span> <span class="n">model_type</span><span class="o">.</span><span class="n">alias_to_field_map</span><span class="p">()[</span><span class="n">alias</span><span class="p">]</span><span class="o">.</span><span class="n">outer_type_</span>
 
     <span class="k">return</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">full_alias</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h4 class="doc doc-heading" id="trestle.utils.fs.get_models_of_type">
+
+<code class="highlight language-python"><span class="n">get_models_of_type</span><span class="p">(</span><span class="n">model_type</span><span class="p">)</span></code>
+
+
+      <a class="headerlink" href="#trestle.utils.fs.get_models_of_type" title="Permanent link">¤</a></h4>
+<div class="doc doc-contents ">
+<p>Get list of model names for requested type in trestle directory.</p>
+<details class="quote">
+          <summary>Source code in <code>trestle/utils/fs.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">get_models_of_type</span><span class="p">(</span><span class="n">model_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">"""Get list of model names for requested type in trestle directory."""</span>
+    <span class="k">if</span> <span class="n">model_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_LIST</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Model type </span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s1"> is not supported'</span><span class="p">)</span>
+    <span class="c1"># search relative to project root</span>
+    <span class="n">trestle_root</span> <span class="o">=</span> <span class="n">get_trestle_project_root</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">())</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">trestle_root</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Current working directory </span><span class="si">{</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="si">}</span><span class="s1"> is not within a trestle project.'</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">'Current working directory is not within a trestle project.'</span><span class="p">)</span>
+
+    <span class="c1"># contruct path to the model file name</span>
+    <span class="n">root_model_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">model_type_to_model_dir</span><span class="p">(</span><span class="n">model_type</span><span class="p">)</span>
+    <span class="n">model_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">root_model_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">'*/'</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">should_ignore</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">stem</span><span class="p">):</span>
+            <span class="n">model_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model_list</span>
 </code></pre>
 </div>
 </details>
@@ -1652,7 +1767,7 @@ is running trestle from.</p>
 
     <span class="n">root_model_alias</span> <span class="o">=</span> <span class="n">path_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">for</span> <span class="n">module_name</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODELTYPE_TO_MODELMODULE</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">module_name</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_TO_MODEL_MODULE</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
         <span class="n">model_type</span><span class="p">,</span> <span class="n">model_alias</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_root_model</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">root_model_alias</span> <span class="o">==</span> <span class="n">model_alias</span><span class="p">:</span>
             <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
@@ -1861,12 +1976,12 @@ a parameter.</p>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="n">relative_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">root_path</span><span class="p">))</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODELTYPE_TO_MODELMODULE</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_TO_MODEL_MODULE</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="n">project_type</span> <span class="o">=</span> <span class="n">relative_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># catalogs, profiles, etc</span>
 
-    <span class="k">if</span> <span class="n">project_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODELTYPE_TO_MODELMODULE</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">project_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_TO_MODEL_MODULE</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">return</span> <span class="kc">True</span>
@@ -1929,6 +2044,55 @@ if a OSCAL object type is unknown but the context a user is in.</p>
             <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">content_type</span> <span class="o">==</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h4 class="doc doc-heading" id="trestle.utils.fs.model_or_file_to_model_name">
+
+<code class="highlight language-python"><span class="n">model_or_file_to_model_name</span><span class="p">(</span><span class="n">model_rep</span><span class="p">)</span></code>
+
+
+      <a class="headerlink" href="#trestle.utils.fs.model_or_file_to_model_name" title="Permanent link">¤</a></h4>
+<div class="doc doc-contents ">
+<p>Convert either model path or json/yaml file name to model path.</p>
+<details class="quote">
+          <summary>Source code in <code>trestle/utils/fs.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">model_or_file_to_model_name</span><span class="p">(</span><span class="n">model_rep</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">"""Convert either model path or json/yaml file name to model path."""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">model_rep</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">'Cannot convert empty model name to path.'</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">model_rep</span><span class="p">)</span>
+    <span class="c1"># if no suffix assume it is a model name</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="c1"># otherwise return parent as model name</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+</code></pre>
+</div>
+</details>
+</div>
+</div>
+<div class="doc doc-object doc-function">
+<h4 class="doc doc-heading" id="trestle.utils.fs.model_type_to_model_dir">
+
+<code class="highlight language-python"><span class="n">model_type_to_model_dir</span><span class="p">(</span><span class="n">model_type</span><span class="p">)</span></code>
+
+
+      <a class="headerlink" href="#trestle.utils.fs.model_type_to_model_dir" title="Permanent link">¤</a></h4>
+<div class="doc doc-contents ">
+<p>Get plural model directory from model type.</p>
+<details class="quote">
+          <summary>Source code in <code>trestle/utils/fs.py</code></summary>
+          <div class="highlight">
+<pre><span></span><code><span class="k">def</span> <span class="nf">model_type_to_model_dir</span><span class="p">(</span><span class="n">model_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">"""Get plural model directory from model type."""</span>
+    <span class="k">if</span> <span class="n">model_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_LIST</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Not a valid model type: </span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s1">.'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_TO_MODEL_DIR</span><span class="p">[</span><span class="n">model_type</span><span class="p">]</span>
 </code></pre>
 </div>
 </details>
@@ -2024,8 +2188,8 @@ if a OSCAL object type is unknown but the context a user is in.</p>
       
     </div>
     
-      <script src="../../assets/javascripts/vendor.53cc9318.min.js"></script>
-      <script src="../../assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      <script src="../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
