@@ -32,7 +32,7 @@ from trestle.utils import fs
 logger = logging.getLogger(__name__)
 
 
-def _parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
+def parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
     """Load a model from the data dict.
 
     This functionality is provided for situations when the OSCAL data type is not known ahead of time. Here the model
@@ -89,33 +89,21 @@ def to_class_name(name: str) -> str:
     return ''.join(chars)
 
 
-def to_full_model_name(root_key: str, name: str = None) -> Optional[str]:
-    """Find model name from the root_key in the file."""
+def to_full_model_name(root_key: str) -> Optional[str]:
+    """
+    Find model name from the root_key in the file.
+
+    Args:
+        root_key: root key such as 'system-security-plan' from a top level OSCAL model.
+    """
     try:
-        # process root key and extract model name
-        module_name = root_key.lower()
-        if root_key.find('-') != -1:
-            parts = root_key.split('-')
-            module_name = parts[0]
+        module = const.MODEL_TYPE_TO_MODEL_MODULE[const.MODEL_TYPE_TO_MODEL_DIR[root_key]]
+        # This method has been simplified to rely on the correct behaviour of the dicts above.
+        class_name = to_class_name(root_key)
 
-            for i, part in enumerate(parts):
-                parts[i] = part.capitalize()
-
-            name = ''.join(parts)
-
-        # check for module with the root-key
-        module = importlib.import_module(f'{const.PACKAGE_OSCAL}.{module_name}')
-
-        # prepare class name
-        if name is None:
-            name = module_name
-        class_name = to_class_name(name)
-
-        # check if class exists in the module or not
-        if getattr(module, class_name) is not None:
-            return f'{const.PACKAGE_OSCAL}.{module_name}.{class_name}'
+        return f'{module}.{class_name}'
     except ModuleNotFoundError as ex:
-        logger.error(f'Module {module_name} not found: {ex}')
+        logger.error(f'Module / Class not found for root_key {root_key}, {ex}')
         pass
 
     return None
@@ -136,4 +124,4 @@ def parse_file(file_name: pathlib.Path, model_name: Optional[str]) -> OscalBaseM
     rkey = root_key(data)
     if model_name is None:
         model_name = to_full_model_name(rkey)
-    return _parse_dict(data[rkey], model_name)
+    return parse_dict(data[rkey], model_name)

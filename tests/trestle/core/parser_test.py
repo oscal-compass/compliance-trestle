@@ -32,7 +32,7 @@ def test_parse_dict() -> None:
 
     with open(pathlib.Path.joinpath(yaml_path, file_name), 'r', encoding=encoding) as f:
         data = yaml.load(f, yaml.FullLoader)
-        target = parser._parse_dict(data['target-definition'], 'trestle.oscal.target.TargetDefinition')
+        target = parser.parse_dict(data['target-definition'], 'trestle.oscal.target.TargetDefinition')
         assert target is not None
 
 
@@ -58,30 +58,21 @@ def test_to_full_model_name() -> None:
     tests = [
         {
             'root_key': 'catalog',
-            'name': None,
             'expected': f'{const.PACKAGE_OSCAL}.catalog.Catalog',
         }, {
-            'root_key': 'catalog',
-            'name': 'group',
-            'expected': f'{const.PACKAGE_OSCAL}.catalog.Group',
-        }, {
             'root_key': 'target-definition',
-            'name': None,
             'expected': f'{const.PACKAGE_OSCAL}.target.TargetDefinition',
-        },
-        {
+        }, {
             'root_key': 'target',
-            'name': 'target-definition',
             'expected': f'{const.PACKAGE_OSCAL}.target.TargetDefinition',
         }, {
             'root_key': 'invalid',
-            'name': None,
             'expected': None,
         }
     ]
 
     for test in tests:
-        model_name = parser.to_full_model_name(test['root_key'], test['name'])
+        model_name = parser.to_full_model_name(test['root_key'])
         assert model_name == test['expected']
 
 

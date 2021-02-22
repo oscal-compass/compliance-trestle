@@ -115,11 +115,10 @@ class ImportCmd(CommandPlusDocs):
             logger.debug(f'parser.root_key() failed: {err}')
             logger.error(f'Import failed, failed to parse input file for root key: {err}')
             return 1
-
         # 4.3 parse the model
         parent_model_name = parser.to_full_model_name(parent_alias)
         try:
-            parent_model = parser.parse_file(input_file.absolute(), parent_model_name)
+            parent_model = parser.parse_dict(data[parent_alias], parent_model_name)
         except TrestleError as err:
             logger.debug(f'parser.parse_file() failed: {err}')
             logger.error(f'Import failed, failed to parse valid contents of input file: {err}')
