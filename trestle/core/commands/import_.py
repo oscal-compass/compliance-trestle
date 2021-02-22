@@ -19,10 +19,9 @@ import logging
 import pathlib
 from json.decoder import JSONDecodeError
 
-from ilcli import Command  # type: ignore
-
 import trestle.core.commands.validate as validatecmd
 from trestle.core import parser
+from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
@@ -34,7 +33,7 @@ from trestle.utils import log
 logger = logging.getLogger(__name__)
 
 
-class ImportCmd(Command):
+class ImportCmd(CommandPlusDocs):
     """Import an existing full OSCAL model into the trestle project."""
 
     # The line above comes with the doc string

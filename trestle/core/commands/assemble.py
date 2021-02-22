@@ -20,9 +20,8 @@ import logging
 from pathlib import Path
 from typing import Type, TypeVar
 
-from ilcli import Command  # type: ignore
-
 from trestle.core import const
+from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
@@ -54,7 +53,7 @@ TLO = TypeVar(
 )
 
 
-class CatalogCmd(Command):
+class CatalogCmd(CommandPlusDocs):
     """Assemble a catalog."""
 
     name = 'catalog'
@@ -64,7 +63,7 @@ class CatalogCmd(Command):
         return AssembleCmd.assemble_model(self.name, catalog.Catalog, args)
 
 
-class ProfileCmd(Command):
+class ProfileCmd(CommandPlusDocs):
     """Assemble a profile."""
 
     name = 'profile'
@@ -73,7 +72,7 @@ class ProfileCmd(Command):
         return AssembleCmd.assemble_model(self.name, profile.Profile, args)
 
 
-class TargetDefinitionCmd(Command):
+class TargetDefinitionCmd(CommandPlusDocs):
     """Assemble a target definition."""
 
     name = 'target-definition'
@@ -82,7 +81,7 @@ class TargetDefinitionCmd(Command):
         return AssembleCmd.assemble_model(self.name, target.TargetDefinition, args)
 
 
-class ComponentDefinitionCmd(Command):
+class ComponentDefinitionCmd(CommandPlusDocs):
     """Assemble a component definition."""
 
     name = 'component-definition'
@@ -91,7 +90,7 @@ class ComponentDefinitionCmd(Command):
         return AssembleCmd.assemble_model(self.name, component.ComponentDefinition, args)
 
 
-class SystemSecurityPlanCmd(Command):
+class SystemSecurityPlanCmd(CommandPlusDocs):
     """Assemble a system security plan."""
 
     name = 'system-security-plan'
@@ -100,7 +99,7 @@ class SystemSecurityPlanCmd(Command):
         return AssembleCmd.assemble_model(self.name, ssp.SystemSecurityPlan, args)
 
 
-class AssessmentPlanCmd(Command):
+class AssessmentPlanCmd(CommandPlusDocs):
     """Assemble a  assessment plan."""
 
     name = 'assessment-plan'
@@ -109,7 +108,7 @@ class AssessmentPlanCmd(Command):
         return AssembleCmd.assemble_model(self.name, assessment_plan.AssessmentPlan, args)
 
 
-class AssessmentResultCmd(Command):
+class AssessmentResultCmd(CommandPlusDocs):
     """Assemble a  assessment result."""
 
     name = 'assessment-results'
@@ -118,7 +117,7 @@ class AssessmentResultCmd(Command):
         return AssembleCmd.assemble_model(self.name, assessment_results.AssessmentResults, args)
 
 
-class PlanOfActionAndMilestonesCmd(Command):
+class PlanOfActionAndMilestonesCmd(CommandPlusDocs):
     """Assemble a plan of action and milestones."""
 
     name = 'plan-of-action-and-milestones'
@@ -127,7 +126,7 @@ class PlanOfActionAndMilestonesCmd(Command):
         return AssembleCmd.assemble_model(self.name, poam.PlanOfActionAndMilestones, args)
 
 
-class AssembleCmd(Command):
+class AssembleCmd(CommandPlusDocs):
     """Assemble all subcomponents from a specified trestle model into a single JSON/YAML file under dist."""
 
     name = 'assemble'

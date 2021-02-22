@@ -23,18 +23,17 @@ import pkgutil
 import sys
 from typing import Dict, Optional, Type
 
-from ilcli import Command  # type: ignore
-
 import trestle.core.const
 import trestle.tasks
 import trestle.utils.fs as fs
 import trestle.utils.log as log
+from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.tasks.base_task import TaskBase, TaskOutcome
 
 logger = logging.getLogger(__name__)
 
 
-class TaskCmd(Command):
+class TaskCmd(CommandPlusDocs):
     """Run arbitrary trestle tasks in a simple and extensible methodology."""
 
     name = 'task'
