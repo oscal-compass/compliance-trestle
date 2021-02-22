@@ -18,15 +18,14 @@
 import argparse
 import logging
 
-from ilcli import Command
-
 import trestle.core.validator_factory as vfact
 import trestle.utils.log as log
+from trestle.core.commands.command_docs import CommandPlusDocs
 
 logger = logging.getLogger(__name__)
 
 
-class ValidateCmd(Command):
+class ValidateCmd(CommandPlusDocs):
     """Validate contents of a trestle model in different modes."""
 
     name = 'validate'

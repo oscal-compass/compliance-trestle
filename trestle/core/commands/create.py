@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Trestle Create Command."""
+"""Trestle Create CommandPlusDocs."""
 
 import argparse
 import logging
@@ -21,10 +21,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Type, TypeVar
 
-from ilcli import Command  # type: ignore
-
 import trestle.oscal
 from trestle.core import generators
+from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
@@ -55,7 +54,7 @@ TLO = TypeVar(
 )
 
 
-class CatalogCmd(Command):
+class CatalogCmd(CommandPlusDocs):
     """Create a sample catalog in the trestle directory structure, given an OSCAL schema."""
 
     name = 'catalog'
@@ -66,7 +65,7 @@ class CatalogCmd(Command):
         return CreateCmd.create_object(self.name, catalog.Catalog, args)
 
 
-class ProfileCmd(Command):
+class ProfileCmd(CommandPlusDocs):
     """Create a sample profile."""
 
     name = 'profile'
@@ -76,7 +75,7 @@ class ProfileCmd(Command):
         return CreateCmd.create_object(self.name, profile.Profile, args)
 
 
-class TargetDefinitionCmd(Command):
+class TargetDefinitionCmd(CommandPlusDocs):
     """Create a sample target definition."""
 
     name = 'target-definition'
@@ -85,7 +84,7 @@ class TargetDefinitionCmd(Command):
         return CreateCmd.create_object(self.name, target.TargetDefinition, args)
 
 
-class ComponentDefinitionCmd(Command):
+class ComponentDefinitionCmd(CommandPlusDocs):
     """Create a sample component definition."""
 
     name = 'component-definition'
@@ -94,7 +93,7 @@ class ComponentDefinitionCmd(Command):
         return CreateCmd.create_object(self.name, component.ComponentDefinition, args)
 
 
-class SystemSecurityPlanCmd(Command):
+class SystemSecurityPlanCmd(CommandPlusDocs):
     """Create a sample system security plan."""
 
     name = 'system-security-plan'
@@ -103,7 +102,7 @@ class SystemSecurityPlanCmd(Command):
         return CreateCmd.create_object(self.name, ssp.SystemSecurityPlan, args)
 
 
-class AssessmentPlanCmd(Command):
+class AssessmentPlanCmd(CommandPlusDocs):
     """Create a sample assessment plan."""
 
     name = 'assessment-plan'
@@ -112,7 +111,7 @@ class AssessmentPlanCmd(Command):
         return CreateCmd.create_object(self.name, assessment_plan.AssessmentPlan, args)
 
 
-class AssessmentResultCmd(Command):
+class AssessmentResultCmd(CommandPlusDocs):
     """Create a sample assessment result."""
 
     name = 'assessment-results'
@@ -121,7 +120,7 @@ class AssessmentResultCmd(Command):
         return CreateCmd.create_object(self.name, assessment_results.AssessmentResults, args)
 
 
-class PlanOfActionAndMilestonesCmd(Command):
+class PlanOfActionAndMilestonesCmd(CommandPlusDocs):
     """Create a sample plan of action and milestones."""
 
     name = 'plan-of-action-and-milestones'
@@ -130,7 +129,7 @@ class PlanOfActionAndMilestonesCmd(Command):
         return CreateCmd.create_object(self.name, poam.PlanOfActionAndMilestones, args)
 
 
-class CreateCmd(Command):
+class CreateCmd(CommandPlusDocs):
     """Create a sample OSCAL model in trestle project."""
 
     name = 'create'

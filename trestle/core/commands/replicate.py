@@ -20,8 +20,7 @@ import pathlib
 from json.decoder import JSONDecodeError
 from typing import Type, TypeVar
 
-from ilcli import Command  # type: ignore
-
+from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
@@ -54,7 +53,7 @@ TLO = TypeVar(
 )
 
 
-class CatalogCmd(Command):
+class CatalogCmd(CommandPlusDocs):
     """Replicate a catalog within the trestle directory structure."""
 
     name = 'catalog'
@@ -65,7 +64,7 @@ class CatalogCmd(Command):
         return ReplicateCmd.replicate_object(self.name, catalog.Catalog, args)
 
 
-class ProfileCmd(Command):
+class ProfileCmd(CommandPlusDocs):
     """Replicate a profile within the trestle directory structure."""
 
     name = 'profile'
@@ -75,7 +74,7 @@ class ProfileCmd(Command):
         return ReplicateCmd.replicate_object(self.name, profile.Profile, args)
 
 
-class TargetDefinitionCmd(Command):
+class TargetDefinitionCmd(CommandPlusDocs):
     """Replicate a target within the trestle directory structure."""
 
     name = 'target-definition'
@@ -84,7 +83,7 @@ class TargetDefinitionCmd(Command):
         return ReplicateCmd.replicate_object(self.name, target.TargetDefinition, args)
 
 
-class ComponentDefinitionCmd(Command):
+class ComponentDefinitionCmd(CommandPlusDocs):
     """Replicate a component definition within the trestle directory structure."""
 
     name = 'component-definition'
@@ -93,7 +92,7 @@ class ComponentDefinitionCmd(Command):
         return ReplicateCmd.replicate_object(self.name, component.ComponentDefinition, args)
 
 
-class SystemSecurityPlanCmd(Command):
+class SystemSecurityPlanCmd(CommandPlusDocs):
     """Replicate a system security plan within the trestle directory structure."""
 
     name = 'system-security-plan'
@@ -102,7 +101,7 @@ class SystemSecurityPlanCmd(Command):
         return ReplicateCmd.replicate_object(self.name, ssp.SystemSecurityPlan, args)
 
 
-class AssessmentPlanCmd(Command):
+class AssessmentPlanCmd(CommandPlusDocs):
     """Replicate an assessment plan within the trestle directory structure."""
 
     name = 'assessment-plan'
@@ -111,7 +110,7 @@ class AssessmentPlanCmd(Command):
         return ReplicateCmd.replicate_object(self.name, assessment_plan.AssessmentPlan, args)
 
 
-class AssessmentResultCmd(Command):
+class AssessmentResultCmd(CommandPlusDocs):
     """Replicate an assessment result within the trestle directory structure."""
 
     name = 'assessment-results'
@@ -120,7 +119,7 @@ class AssessmentResultCmd(Command):
         return ReplicateCmd.replicate_object(self.name, assessment_results.AssessmentResults, args)
 
 
-class PlanOfActionAndMilestonesCmd(Command):
+class PlanOfActionAndMilestonesCmd(CommandPlusDocs):
     """Replicate a plan of action and milestones within the trestle directory structure."""
 
     name = 'plan-of-action-and-milestones'
@@ -129,7 +128,7 @@ class PlanOfActionAndMilestonesCmd(Command):
         return ReplicateCmd.replicate_object(self.name, poam.PlanOfActionAndMilestones, args)
 
 
-class ReplicateCmd(Command):
+class ReplicateCmd(CommandPlusDocs):
     """Replicate a top level model within the trestle directory structure."""
 
     name = 'replicate'

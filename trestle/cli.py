@@ -15,11 +15,10 @@
 """Starting point for the Trestle CLI."""
 import logging
 
-from ilcli import Command  # type: ignore
-
 from trestle import __version__
 from trestle.core.commands.add import AddCmd
 from trestle.core.commands.assemble import AssembleCmd
+from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.create import CreateCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.commands.init import InitCmd
@@ -34,7 +33,7 @@ from trestle.utils import log
 logger = logging.getLogger('trestle')
 
 
-class Trestle(Command):
+class Trestle(CommandPlusDocs):
     """Manage OSCAL files in a human friendly manner."""
 
     subcommands = [

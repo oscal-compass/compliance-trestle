@@ -19,12 +19,11 @@ import logging
 import pathlib
 from typing import List
 
-from ilcli import Command  # type: ignore
-
 import trestle.core.const as const
 import trestle.core.err as err
 import trestle.core.generators as gens
 from trestle.core import utils
+from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.models.actions import CreatePathAction, UpdateAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
@@ -35,7 +34,7 @@ from trestle.utils import log
 logger = logging.getLogger(__name__)
 
 
-class AddCmd(Command):
+class AddCmd(CommandPlusDocs):
     """Add a subcomponent to an existing model."""
 
     name = 'add'
