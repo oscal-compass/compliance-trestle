@@ -856,7 +856,7 @@ class ComponentDefinition(OscalBaseModel):
     import_component_definitions: Optional[List[ImportComponentDefinition]] = Field(
         None, alias='import-component-definitions', min_items=1
     )
-    components: Optional[Dict[str, SystemComponent]] = None
+    components: Optional[Dict[str, DefinedComponent]] = None
     capabilities: Optional[Dict[str, Capability]] = None
     back_matter: Optional[BackMatter] = Field(None, alias='back-matter')
 

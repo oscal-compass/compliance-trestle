@@ -102,8 +102,8 @@ def to_full_model_name(root_key: str) -> Optional[str]:
         class_name = to_class_name(root_key)
 
         return f'{module}.{class_name}'
-    except ModuleNotFoundError as ex:
-        logger.error(f'Module / Class not found for root_key {root_key}, {ex}')
+    except Exception as ex:
+        logger.error(f'Module / Class not found for root_key {root_key}, {ex}. Most likely as not a top level model.')
         pass
 
     return None

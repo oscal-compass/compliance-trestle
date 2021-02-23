@@ -63,8 +63,8 @@ def test_to_full_model_name() -> None:
             'root_key': 'target-definition',
             'expected': f'{const.PACKAGE_OSCAL}.target.TargetDefinition',
         }, {
-            'root_key': 'target',
-            'expected': f'{const.PACKAGE_OSCAL}.target.TargetDefinition',
+            'root_key': 'system-security-plan',
+            'expected': f'{const.PACKAGE_OSCAL}.ssp.SystemSecurityPlan',
         }, {
             'root_key': 'invalid',
             'expected': None,
