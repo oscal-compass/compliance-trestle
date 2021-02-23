@@ -40,7 +40,7 @@ def parse_dict(data: Dict[str, Any], model_name: str) -> OscalBaseModel:
 
     Args:
         data: Oscal data loaded into memory in a dictionary with the `root key` removed.
-        model_name: it should be of the form <module>.<class> from trestle.oscal.* modules
+        model_name: it should be of the form 'module.class' from trestle.oscal.* modules
 
     Returns:
         The oscal model of the desired model.
