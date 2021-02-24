@@ -14,6 +14,7 @@
 # limitations under the License.
 """Facilitate Tanium report to NIST OSCAL json transformation."""
 
+import datetime
 import json
 import logging
 import uuid
@@ -82,6 +83,20 @@ def _to_json(observations: List[Observation]) -> str:
 class Rule():
     """Container for one rule + result with associated metadata."""
 
+    default_timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc
+                                                                                  ).isoformat()
+
+    @staticmethod
+    def set_default_timestamp(value):
+        """Set the default timestamp value."""
+        datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S%z')
+        Rule.default_timestamp = value
+
+    @staticmethod
+    def get_default_timestamp():
+        """Get the default timestamp value."""
+        return Rule.default_timestamp
+
     def __init__(self, raw_resource: t_resource) -> None:
         """Initialize given specified args."""
         logger.debug(f'raw: {raw_resource}')
@@ -90,7 +105,6 @@ class Rule():
             if key.startswith('Comply'):
                 key_comply = key
                 break
-        default_value = 'MUST HAVE'
         self.ip = raw_resource['IP Address']
         self.computer = raw_resource['Computer Name']
         self.count = raw_resource['Count']
@@ -102,7 +116,7 @@ class Rule():
         self.result = raw_resource[key_comply][0]['Result']
         self.custom_id = raw_resource[key_comply][0]['Custom ID']
         self.version = raw_resource[key_comply][0]['Version']
-        self.time = raw_resource[key_comply][0].get('Time', default_value)
+        self.time = raw_resource[key_comply][0].get('Timestamp', Rule.default_timestamp)
 
 
 class Rules():

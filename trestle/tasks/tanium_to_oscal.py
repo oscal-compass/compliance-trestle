@@ -59,10 +59,13 @@ class TaniumToOscal(TaskBase):
         logger.info('  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.')
         logger.info('  output-overwrite = (optional) true [default] or false; replace existing output when true.')
         logger.info('  quiet = (optional) true or false [default]; display file creations and rules analysis when false.')
+        logger.info('  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Tanium report is used if present, otherwise current time is used.')                                                       
         logger.info('')
         logger.info('Operation: A transformation is performed on one or more Tanium input files to produce corresponding output files in OSCAL partial results format. Input files are Tanium reports comprising individual lines consumable as json.')
         logger.info('')
         logger.info('All the Tanuim report files in the input-dir are processed, each producing a corresponding .json output-dir file.')
+        logger.info('')
+        logger.info('Expected Tanuim report keys are: { "IP Address", "Computer Name", "Comply", "Benchmark", "Benchmark Version", "ID", "Result", "Timestamp" }')
         
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
@@ -92,6 +95,14 @@ class TaniumToOscal(TaskBase):
         opth = pathlib.Path(odir)
         overwrite = self._config.getboolean('output-overwrite', True)
         quiet = self._config.getboolean('quiet', False)
+        # timestamp
+        timestamp = self._config.get('timestamp')
+        if timestamp is not None:
+            try:
+                tanium.Rule.set_default_datetime(timestamp)
+            except Exception as e:
+                logger.error(f'config invalid "timestamp"')
+                return TaskOutcome(mode+'failure')  
         # insure output folder exists
         opth.mkdir(exist_ok=True, parents=True)
         # examine each file in the input folder

@@ -21,6 +21,7 @@ import uuid
 from unittest.mock import Mock, patch
 
 import trestle.tasks.tanium_to_oscal as tanium_to_oscal
+import trestle.utils.tanium as tanium
 from trestle.tasks.base_task import TaskOutcome
 
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
@@ -102,6 +103,8 @@ def test_simulate_no_ouput_dir(tmpdir):
 @patch(target='uuid.uuid4', new=uuid_mock1)
 def test_execute(tmpdir):
     """Test execute call."""
+    tanium.Rule.set_default_timestamp('2021-02-24T19:31:13+00:00')
+    assert tanium.Rule.get_default_timestamp() == '2021-02-24T19:31:13+00:00'
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
     config.read(config_path)
@@ -124,6 +127,7 @@ def test_execute_no_config(tmpdir):
 
 def test_execute_no_overwrite(tmpdir):
     """Test execute no overwrite call."""
+    tanium.Rule.set_default_timestamp('2021-02-24T19:31:13+00:00')
     execute_no_overwrite_part1(tmpdir)
     execute_no_overwrite_part2(tmpdir)
     f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.json'
@@ -180,3 +184,33 @@ def test_execute_no_ouput_dir(tmpdir):
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
     assert len(os.listdir(str(tmpdir))) == 0
+
+def test_execute_bad_timestamp(tmpdir):
+    """Test execute with bad timestamp."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
+    config.read(config_path)
+    section = config['task.tanium-to-oscal']
+    section['timestamp'] = str('bogus')
+    tgt = tanium_to_oscal.TaniumToOscal(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+    assert len(os.listdir(str(tmpdir))) == 0
+    
+@patch(target='uuid.uuid4', new=uuid_mock1)
+def test_execute_override_timestamp(tmpdir):
+    """Test execute call."""
+    tanium.Rule.set_default_timestamp('2020-02-24T19:31:13+00:00')
+    assert tanium.Rule.get_default_timestamp() == '2020-02-24T19:31:13+00:00'
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
+    config.read(config_path)
+    section = config['task.tanium-to-oscal']
+    section['output-dir'] = str(tmpdir)
+    tgt = tanium_to_oscal.TaniumToOscal(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    assert len(os.listdir(str(tmpdir))) == 1
+    f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.2020.json'
+    f_produced = tmpdir  / 'Tanium.oscal.json'
+    assert [row for row in open(f_produced)] == [row for row in open(f_expected)]

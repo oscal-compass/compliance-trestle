@@ -624,7 +624,9 @@ Example output OSCAL Observations file contents (snippet):
 
 The *trestle task tanium-to-oscal* command facilitates transformation of Tanuim reports, each 
 input file comprising individual lines consumable as *json*, into OSCAL partial results *.json* files. 
-Specify required config parameters to indicate the location of the input and the output. Specify optional config parameter to indicate whether overwriting of existing output is permitted.
+Specify required config parameters to indicate the location of the input and the output. 
+Specify optional config parameter *output-overwrite* to indicate whether overwriting of existing output is permitted.
+Specify optional config parameter *timestamp* as ISO 8601 formated string (e.g., 2021-02-24T19:31:13+00:00) to override the timestamp attached to each Observation.
 
 <span style="color:green">
 Example command invocation:
@@ -715,7 +717,7 @@ Example output directory contents listing:
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "MUST HAVE"
+              "value": "2021-02-24T19:31:13+00:00"
             },
             {
               "name": "target",
@@ -760,7 +762,7 @@ Example output directory contents listing:
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "MUST HAVE"
+              "value": "2021-02-24T19:31:13+00:00"
             },
             {
               "name": "target",
@@ -802,7 +804,7 @@ Example output directory contents listing:
             {
               "name": "time",
               "class": "timestamp",
-              "value": "MUST HAVE"
+              "value": "2021-02-24T19:31:13+00:00"
             },
             {
               "name": "target",
@@ -842,7 +844,7 @@ Example output directory contents listing:
             {
               "name": "time",
               "class": "timestamp",
-              "value": "MUST HAVE"
+              "value": "2021-02-24T19:31:13+00:00"
             },
             {
               "name": "target",
