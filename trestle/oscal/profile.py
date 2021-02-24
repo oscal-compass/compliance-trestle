@@ -22,7 +22,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, constr
+from pydantic import AnyUrl, EmailStr, Field, constr
 from trestle.core.base_model import OscalBaseModel
 
 
