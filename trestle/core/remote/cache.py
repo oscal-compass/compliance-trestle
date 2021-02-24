@@ -26,6 +26,7 @@ import pathlib
 import re
 import shutil
 from abc import ABC, abstractmethod
+from io import StringIO
 from typing import Any, Dict, Type
 from urllib import parse
 
@@ -233,34 +234,26 @@ class SFTPFetcher(FetcherBase):
             raise TrestleError(f'Cache update failure for {self._uri}')
         # Use the supplied private key file if given, or look for keys in default path.
         if 'SSH_KEY' in os.environ:
-            key_filename = os.environ['SSH_KEY']
+            pkey = paramiko.RSAKey.from_private_key(StringIO(os.environ['SSH_KEY']))
             look_for_keys = False
         else:
-            key_filename = None
+            pkey = None
             look_for_keys = True
 
         username = getpass.getuser() if not u.username else u.username
-        if u.password:
-            try:
-                client.connect(
-                    u.hostname,
-                    username=username,
-                    password=u.password,
-                    key_filename=key_filename,
-                    look_for_keys=look_for_keys,
-                    port=22 if not u.port else u.port,
-                )
-            except Exception as e:
-                logger.error(f'Error connecting SSH for {username}@{u.hostname}')
-                logger.debug(e)
-                raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
-        else:
-            try:
-                client.connect(u.hostname, username=username, port=22 if not u.port else u.port, allow_agent=True)
-            except Exception as e:
-                logger.error(f'Error connecting SSH for {username}@{u.hostname}')
-                logger.debug(e)
-                raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
+        try:
+            client.connect(
+                u.hostname,
+                username=username,
+                password=u.password,
+                pkey=pkey,
+                look_for_keys=look_for_keys,
+                port=22 if not u.port else u.port,
+            )
+        except Exception as e:
+            logger.error(f'Error connecting SSH for {username}@{u.hostname}')
+            logger.debug(e)
+            raise TrestleError(f'Cache update failure to connect via SSH: {username}@{u.hostname}')
 
         try:
             sftp_client = client.open_sftp()

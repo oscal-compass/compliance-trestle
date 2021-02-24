@@ -177,18 +177,15 @@ def test_sftp_fetcher_load_system_keys_fails(tmp_trestle_dir):
             fetcher._update_cache()
 
 
-def test_sftp_fetcher_load_keys_fails(tmp_trestle_dir, monkeypatch):
-    """Test the sftp fetcher when SSHClient load host keys specified in env var fails."""
-    monkeypatch.setenv('SSH_KEY', 'some_key_file')
+def test_sftp_fetcher_bad_ssh_key(tmp_trestle_dir, monkeypatch):
+    """Test the sftp fetcher when the loaded SSH_KEY env var contains a bad SSH key."""
     uri = 'sftp://username:password@some.host/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
     fetcher._refresh = True
     fetcher._cache_only = False
-    with patch('paramiko.SSHClient.load_host_keys') as ssh_load_host_keys_mock:
-        ssh_load_host_keys_mock.side_effect = OSError('stuff')
-        with pytest.raises(err.TrestleError):
-            fetcher._update_cache()
-            ssh_load_host_keys_mock.assert_called_once()
+    monkeypatch.setenv('SSH_KEY', 'blah')
+    with pytest.raises(err.TrestleError):
+        fetcher._update_cache()
 
 
 def test_sftp_fetcher_connect_fails(tmp_trestle_dir):
