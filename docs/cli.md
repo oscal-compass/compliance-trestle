@@ -261,7 +261,7 @@ The following option is required:
 
 - `-e or --elements`: specifies the properties (JSON/YAML path) that will be merged, relative to the current working directory. This must contain at least 2 elements, where the last element is the model/sub-component to be merged into the second from last component.
 
-For example, in the command `trestle merge -e catalog.metadata`, executed in the same directory where `catalog.json` or splitted `catalog` directory exists, the property `metadata` from `metadata.json` or `metadata.yaml` would be moved/merged into `catalog.json`. If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into `metadata`, before merging `metadata` subcomponent into `catalog.json`. To specify merging every sub-component split from a component, `.*` can be used. For example, `trestle merge -e catalog.*` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`. 
+For example, in the command `trestle merge -e catalog.metadata`, executed in the same directory where `catalog.json` or splitted `catalog` directory exists, the property `metadata` from `metadata.json` or `metadata.yaml` would be moved/merged into `catalog.json`. If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into `metadata`, before merging `metadata` subcomponent into `catalog.json`. To specify merging every sub-component split from a component, `.*` can be used. For example, `trestle merge -e catalog.*` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`.
 
 ## `trestle assemble`
 
@@ -308,7 +308,7 @@ Trestle validate is designed to perform a function to ensure integrity of a set 
 a schema validation within a single file or as complex as ensuring the integrity of a 'stack' of OSCAL files including potentially
 remote system state.
 
-Trestle validate the form \`trestle validate -f FILE -i SPECIFIC\_ITEM\_OR\_VALUE, --mode {duplicate or similar}
+Trestle validate the form \`trestle validate -f FILE -i SPECIFIC_ITEM_OR_VALUE, --mode {duplicate or similar}
 
 and returns a non-zero return code on a validation failure. Mode is a list of validation modes that will be implemented as shown in the table below.
 
@@ -320,7 +320,6 @@ and returns a non-zero return code on a validation failure. Mode is a list of va
 
 TBD.
 
-
 ## `trestle task osco-to-oscal`
 
 The *trestle task osco-to-oscal* command facilitates transformation of OpenShift Compliance Operator (OSCO) scan results *.yaml* files into OSCAL partial results *.json* files. Specify required config parameters to indicate the location of the input and the output. Specify optional config parameters to indicate the name of the oscal-metadata.yaml file, if any, and whether overwriting of existing output is permitted.
@@ -330,7 +329,6 @@ Example command invocation:
 </span>
 
 > `$TRESTLE_BASEDIR$ trestle task osco-to-oscal -c /home/user/task.config`
-
 
 <span style="color:green">
 Example config:
@@ -346,12 +344,12 @@ output-dir = /home/user/git/evidence/oscal/output
 oscal-metadata = oscal-metadata.yaml
 output-overwrite = true
 ```
+
 **input**
 
 <span style="color:green">
 Example input directory contents listing:
 </span>
-
 
 */home/user/git/evidence/osco/input*
 
@@ -478,7 +476,7 @@ The *oscal_metadata.yaml* file comprises one or more mappings. Below is shown th
 format of a single mapping. The items in angle brackets are to be replaced with
 desired values for augmenting the produced OSCAL.
 
-The mapping whose *<name>* matches the *[metadata][name]* in the evidence for the
+The mapping whose *<name>* matches the *\[metadata\]\[name\]* in the evidence for the
 corresponding embedded XML, if any, will be used for augmenting the produced
 OSCAL.
 
@@ -500,12 +498,12 @@ OSCAL.
             cluster-type: <cluster-type>
             cluster-region: <cluster-region>
 ```
+
 **output**
 
 <span style="color:green">
 Example output directory contents listing:
 </span>
-
 
 */home/user/git/evidence/oscal/output*
 
@@ -515,13 +513,11 @@ Example output directory contents listing:
 
 ```
 
-
 <span style="color:green">
 Example output OSCAL Observations file contents (snippet):
 </span>
 
 *ssg-ocp4-ds-cis-111.222.333.444-pod.json*
-
 
 ```
 {

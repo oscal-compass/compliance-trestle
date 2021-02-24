@@ -19,12 +19,11 @@ import logging
 import pathlib
 from typing import List, Tuple, Type
 
-from ilcli import Command  # type: ignore
-
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemoveAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
@@ -36,7 +35,7 @@ from trestle.utils import log
 logger = logging.getLogger(__name__)
 
 
-class RemoveCmd(Command):
+class RemoveCmd(CommandPlusDocs):
     """Remove a subcomponent to an existing model."""
 
     name = 'remove'

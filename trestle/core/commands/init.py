@@ -20,17 +20,16 @@ import os
 import pathlib
 from shutil import copyfile
 
-from ilcli import Command  # type: ignore
-
 from pkg_resources import resource_filename
 
 import trestle.core.const as const
 import trestle.utils.log as log
+from trestle.core.commands.command_docs import CommandPlusDocs
 
 logger = logging.getLogger(__name__)
 
 
-class InitCmd(Command):
+class InitCmd(CommandPlusDocs):
     """Initialize a trestle working directory."""
 
     name = 'init'
