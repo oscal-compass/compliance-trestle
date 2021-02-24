@@ -19,10 +19,9 @@ import logging
 import pathlib
 from json.decoder import JSONDecodeError
 
-from ilcli import Command  # type: ignore
-
 import trestle.core.commands.validate as validatecmd
 from trestle.core import parser
+from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
@@ -34,7 +33,7 @@ from trestle.utils import log
 logger = logging.getLogger(__name__)
 
 
-class ImportCmd(Command):
+class ImportCmd(CommandPlusDocs):
     """Import an existing full OSCAL model into the trestle project."""
 
     # The line above comes with the doc string
@@ -116,11 +115,10 @@ class ImportCmd(Command):
             logger.debug(f'parser.root_key() failed: {err}')
             logger.error(f'Import failed, failed to parse input file for root key: {err}')
             return 1
-
         # 4.3 parse the model
         parent_model_name = parser.to_full_model_name(parent_alias)
         try:
-            parent_model = parser.parse_file(input_file.absolute(), parent_model_name)
+            parent_model = parser.parse_dict(data[parent_alias], parent_model_name)
         except TrestleError as err:
             logger.debug(f'parser.parse_file() failed: {err}')
             logger.error(f'Import failed, failed to parse valid contents of input file: {err}')

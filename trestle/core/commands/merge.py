@@ -19,9 +19,8 @@ import logging
 import os
 from pathlib import Path
 
-from ilcli import Command  # type: ignore
-
 from trestle.core import const, utils
+from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
@@ -33,7 +32,7 @@ from trestle.utils import log
 logger = logging.getLogger(__name__)
 
 
-class MergeCmd(Command):
+class MergeCmd(CommandPlusDocs):
     """Merge subcomponents on a trestle model."""
 
     name = 'merge'
