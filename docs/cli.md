@@ -318,7 +318,7 @@ and returns a non-zero return code on a validation failure. Mode is a list of va
 
 ## `trestle tasks`
 
-TBD.
+Open Shift Compliance Operator and Tanium are supported as 3rd party tools.
 
 
 ## `trestle task osco-to-oscal`
