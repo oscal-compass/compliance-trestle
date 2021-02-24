@@ -22,7 +22,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Field, conint, constr
 from trestle.core.base_model import OscalBaseModel
 
 
@@ -737,24 +737,6 @@ class RelatedAction(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class RelatedResponse(OscalBaseModel):
-    response_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        alias='response-uuid',
-        description='References a unique risk response by UUID.',
-        title='Response Universally Unique Identifier Reference',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    related_actions: Optional[List[RelatedAction]] = Field(
-        None, alias='related-actions', min_items=1
-    )
-    remarks: Optional[Remarks] = None
-
-
 class Protocol(OscalBaseModel):
     uuid: Optional[
         constr(
@@ -1419,6 +1401,24 @@ class RelatedTask(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
+class RelatedResponse(OscalBaseModel):
+    response_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='response-uuid',
+        description='References a unique risk response by UUID.',
+        title='Response Universally Unique Identifier Reference',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    related_actions: Optional[List[RelatedAction]] = Field(
+        None, alias='related-actions', min_items=1
+    )
+    remarks: Optional[Remarks] = None
+
+
 class Origin(OscalBaseModel):
     actors: List[Actor] = Field(..., min_items=1)
     related_actions: Optional[List[RelatedAction]] = Field(
@@ -1558,7 +1558,7 @@ class Entry(OscalBaseModel):
     ) = Field(
         ...,
         description='Uniquely identifies an assessment event. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. A UUID should be consistantly used for this schedule across revisions of the document.',
-        title='Assessment Log Entry Universally Unique Identifier',
+        title='Risk Log Entry Universally Unique Identifier',
     )
     title: Optional[str] = Field(
         None, description='The title for this event.', title='Action Title'
@@ -1582,11 +1582,9 @@ class Entry(OscalBaseModel):
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
     logged_by: Optional[List[LoggedBy]] = Field(None, alias='logged-by', min_items=1)
-    related_actions: Optional[List[RelatedAction]] = Field(
-        None, alias='related-actions', min_items=1
-    )
-    related_tasks: Optional[List[RelatedTask]] = Field(
-        None, alias='related-tasks', min_items=1
+    status_change: Optional[RiskStatus] = Field(None, alias='status-change')
+    related_responses: Optional[List[RelatedResponse]] = Field(
+        None, alias='related-responses', min_items=1
     )
     remarks: Optional[Remarks] = None
 

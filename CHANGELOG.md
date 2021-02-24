@@ -3,6 +3,25 @@
 
 <!--next-version-placeholder-->
 
+## v0.8.1 (2021-02-24)
+### Fix
+* Import issues with hyphen named files ([#371](https://github.com/IBM/compliance-trestle/issues/371)) ([`07493ad`](https://github.com/IBM/compliance-trestle/commit/07493ad76f720503d756c54d67a1199abe181693))
+
+## v0.8.0 (2021-02-22)
+### Feature
+* Added bulk operations for assemble ([#367](https://github.com/IBM/compliance-trestle/issues/367)) ([`771d54e`](https://github.com/IBM/compliance-trestle/commit/771d54e29ee839d38330929001c908b6ad669f8f))
+* Utility to transform OSCO yaml data into OSCAL observations json data. ([#348](https://github.com/IBM/compliance-trestle/issues/348)) ([`488a75a`](https://github.com/IBM/compliance-trestle/commit/488a75a7fa5f259b2655b624ba7e3643c4ab7b28))
+* Validate duplicates now loads distributed models ([#346](https://github.com/IBM/compliance-trestle/issues/346)) ([`1d54353`](https://github.com/IBM/compliance-trestle/commit/1d54353e595a502a3f1d0f4410f9da38f501daaa))
+
+### Fix
+* Allow assemble to succeed when no model is found. ([#368](https://github.com/IBM/compliance-trestle/issues/368)) ([`fe7a288`](https://github.com/IBM/compliance-trestle/commit/fe7a2882f447a628a30a08d1c089fac752d16579))
+* To website automation test on windows ([#366](https://github.com/IBM/compliance-trestle/issues/366)) ([`8e3ecbf`](https://github.com/IBM/compliance-trestle/commit/8e3ecbf5f9acb8db4e200f7769cefcb20941a410))
+* Fix merge main to back to develop automatically.(#332) ([`b64dd9f`](https://github.com/IBM/compliance-trestle/commit/b64dd9f5d1183109fe18bd3a75f5953af269d985))
+* Corrected assemble to push files into the correct location. ([`f3bc0e5`](https://github.com/IBM/compliance-trestle/commit/f3bc0e5df22430d396ca0d82bc70624db34a6986))
+
+### Documentation
+* Website documentation for trestle task osco-to-oscal ([#336](https://github.com/IBM/compliance-trestle/issues/336)) ([`95c5c09`](https://github.com/IBM/compliance-trestle/commit/95c5c09b9f6f56aa4697609459f1369e06b7f3c2))
+
 ## v0.7.2 (2021-02-02)
 ### Fix
 * DevOps fixes onto main ([#334](https://github.com/IBM/compliance-trestle/issues/334)) ([`74df375`](https://github.com/IBM/compliance-trestle/commit/74df375c15ad0bc2f0fb8c54e1ed83faf11d66e4))

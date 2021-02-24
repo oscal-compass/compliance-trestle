@@ -19,13 +19,12 @@ import logging
 import pathlib
 from typing import Dict, List
 
-from ilcli import Command
-
 import trestle.utils.log as log
 from trestle.core import const
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands import cmd_utils
+from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import Action, CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
@@ -36,7 +35,7 @@ from trestle.utils import fs, trash
 logger = logging.getLogger(__name__)
 
 
-class SplitCmd(Command):
+class SplitCmd(CommandPlusDocs):
     """Split subcomponents on a trestle model."""
 
     name = 'split'

@@ -40,11 +40,13 @@ def load_git():
         # silently ignore already existing module
         pass
     try:
-        check_call('git submodule update --init'.split())
+        # check_call('git submodule update --init'.split())
+        print('Skipping submodule init due to recent issues with nist source.')
     except CalledProcessError as error:
         print(f'Error updating the oscal git submodule {error}')
     try:
-        check_call('git submodule update --remote --merge'.split())
+        # check_call('git submodule update --remote --merge'.split())
+        print('Skipping submodule merge due to recent issues with nist source.')
     except CalledProcessError as error:
         print(f'Error updating the oscal git submodule {error}')
 
@@ -59,6 +61,7 @@ def generate_model(full_name, out_full_name):
     except CalledProcessError as error:
         print(f'Error calling datamodel-codegen for file {full_name} error {error}')
     else:
+        # shutil.copy(out_full_name, out_full_name.parent / (out_full_name.stem + '_b4fix.py'))
         fix_file(str(out_full_name))
 
 
@@ -76,7 +79,7 @@ def generate_model_flat(full_name, out_full_name):
         print(f'Error calling datamodel-codegen for file {full_name} error {error}')
     else:
         print('fix the python')
-        shutil.copy(new_py, new_py + 'b4fix.py')
+        # shutil.copy(new_py, new_py + 'b4fix.py')
         fix_file(new_py)
         print('done')
 
@@ -108,7 +111,7 @@ def generate_models():
         out_fname = oscal_name + '.py'
         out_full_name = out_dir / out_fname
         generate_model(full_name, out_full_name)
-    generate_model('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', str(out_dir / 'target.py'))
+    generate_model('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', out_dir / 'target.py')
 
 
 def main():
