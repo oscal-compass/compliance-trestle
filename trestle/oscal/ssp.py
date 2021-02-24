@@ -22,7 +22,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Field, conint, constr
 from trestle.core.base_model import OscalBaseModel
 
 
@@ -1118,10 +1118,47 @@ class Statement(OscalBaseModel):
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
-    by_components: Optional[Dict[str, ByComponent]] = Field(
-        None, alias='by-components'
-    )
+    by_components: Optional[Dict[str, ByComponent]] = Field(None, alias='by-components')
     remarks: Optional[Remarks] = None
+
+
+class ImplementedRequirement(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A globally unique identifier that can be used to reference this control requirement entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        title='Control Requirement Universally Unique Identifier',
+    )
+    control_id: str = Field(
+        ...,
+        alias='control-id',
+        description='A reference to a control identifier.',
+        title='Control Identifier Reference',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    parameter_settings: Optional[Dict[str, SetParameter]] = Field(
+        None, alias='parameter-settings'
+    )
+    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
+        None, alias='responsible-roles'
+    )
+    by_components: Optional[Dict[str, ByComponent]] = Field(None, alias='by-components')
+    statements: Optional[Dict[str, Statement]] = None
+    remarks: Optional[Remarks] = None
+
+
+class ControlImplementation(OscalBaseModel):
+    description: str = Field(
+        ...,
+        description='A statement describing important things to know about how this set of control satisfaction documentation is approached.',
+        title='Control Implementation Description',
+    )
+    implemented_requirements: List[ImplementedRequirement] = Field(
+        ..., alias='implemented-requirements', min_items=1
+    )
 
 
 class BackMatter(OscalBaseModel):
@@ -1199,47 +1236,6 @@ class SystemImplementation(OscalBaseModel):
         None, alias='inventory-items', min_items=1
     )
     remarks: Optional[Remarks] = None
-
-
-class ImplementedRequirement(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A globally unique identifier that can be used to reference this control requirement entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
-        title='Control Requirement Universally Unique Identifier',
-    )
-    control_id: str = Field(
-        ...,
-        alias='control-id',
-        description='A reference to a control identifier.',
-        title='Control Identifier Reference',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    parameter_settings: Optional[Dict[str, SetParameter]] = Field(
-        None, alias='parameter-settings'
-    )
-    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    by_components: Optional[Dict[str, ByComponent]] = Field(
-        None, alias='by-components'
-    )
-    statements: Optional[Dict[str, Statement]] = None
-    remarks: Optional[Remarks] = None
-
-
-class ControlImplementation(OscalBaseModel):
-    description: str = Field(
-        ...,
-        description='A statement describing important things to know about how this set of control satisfaction documentation is approached.',
-        title='Control Implementation Description',
-    )
-    implemented_requirements: List[ImplementedRequirement] = Field(
-        ..., alias='implemented-requirements', min_items=1
-    )
 
 
 class SystemSecurityPlan(OscalBaseModel):

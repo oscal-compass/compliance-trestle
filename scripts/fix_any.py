@@ -113,6 +113,8 @@ class ClassText():
 
     def add_ref_if_good(self, ref_name):
         """Add refs after removing digits and/or singleton string."""
+        if not ref_name:
+            return
         if ref_name == 'Base64':
             self.refs.add(ref_name)
             return
@@ -154,6 +156,8 @@ class ClassText():
         self.add_ref_pattern(p, line)
         # find objects in one or more bracket sets with possible first token and comma
         p = re.compile(r'.*\[(?:(.*),\s*)?((?:\[??[^\[]*?))\]')
+        self.add_ref_pattern(p, line)
+        p = re.compile(r'.*Optional\[Union\[([^,]+)')
         self.add_ref_pattern(p, line)
         return line
 
@@ -395,11 +399,15 @@ def fix_file(fname):
                         match = re.search(r'Optional\[Dict\[str, (.+?)\]\]', r)
                         if match:
                             plural = match.group(1)
-                            if plural != 'Any':
+                            if plural != 'Any' and plural in plural_lut:
                                 r = r.replace(plural, plural_lut[plural])
                     for special in special_plurals:
                         if r.find(f'Dict[str, {special}]') >= 0:
                             r = r.replace(special, plural_lut[special])
+                    p = re.compile(r'.*Optional\[Union\[([^,]+),.*List\[Any\]')
+                    refs = p.findall(r)
+                    if len(refs) == 1:
+                        r = r.replace('List[Any]', f'List[{refs[0]}]')
                     # mark regex strings as raw
                     r = re.sub(r"(\s*regex\s*=\s*)\'(.*)", r"\1r'\2", r)
                     class_text.add_all_refs(r)
@@ -433,3 +441,7 @@ def fix_file(fname):
                 out_file.writelines('\n'.join(c.lines) + '\n')
                 classes_written.add(c.name)
         out_file.writelines('\n'.join(forward_refs) + '\n')
+
+
+if __name__ == '__main__':
+    fix_file('trestle/oscal/assessment_plan.py')

@@ -22,7 +22,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Field, conint, constr
 from trestle.core.base_model import OscalBaseModel
 
 
@@ -789,6 +789,27 @@ class ControlImplementation(OscalBaseModel):
     )
 
 
+class Capability(OscalBaseModel):
+    name: str = Field(
+        ...,
+        description="The capability's human-readable name.",
+        title='Capability Name',
+    )
+    description: str = Field(
+        ..., description='A summary of the capability.', title='Capability Description'
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    incorporates_components: Optional[Dict[str, IncorporatesComponent]] = Field(
+        None, alias='incorporates-components'
+    )
+    control_implementations: Optional[List[ControlImplementation]] = Field(
+        None, alias='control-implementations', min_items=1
+    )
+    remarks: Optional[Remarks] = None
+
+
 class DefinedComponent(OscalBaseModel):
     type: str = Field(
         ...,
@@ -817,27 +838,6 @@ class DefinedComponent(OscalBaseModel):
         None, alias='responsible-roles'
     )
     protocols: Optional[List[Protocol]] = Field(None, min_items=1)
-    control_implementations: Optional[List[ControlImplementation]] = Field(
-        None, alias='control-implementations', min_items=1
-    )
-    remarks: Optional[Remarks] = None
-
-
-class Capability(OscalBaseModel):
-    name: str = Field(
-        ...,
-        description="The capability's human-readable name.",
-        title='Capability Name',
-    )
-    description: str = Field(
-        ..., description='A summary of the capability.', title='Capability Description'
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    incorporates_components: Optional[Dict[str, IncorporatesComponent]] = Field(
-        None, alias='incorporates-components'
-    )
     control_implementations: Optional[List[ControlImplementation]] = Field(
         None, alias='control-implementations', min_items=1
     )
