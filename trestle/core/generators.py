@@ -26,6 +26,7 @@ from pydantic import ConstrainedStr
 import trestle.core.err as err
 import trestle.core.utils as utils
 from trestle.core.base_model import OscalBaseModel
+from trestle.oscal import OSCAL_VERSION
 
 logger = logging.getLogger(__name__)
 
@@ -53,11 +54,13 @@ def generate_sample_value_by_type(
         return 0.00
     elif issubclass(type_, ConstrainedStr) or 'ConstrainedStr' in type_.__name__:
         # This code here is messy. we need to meet a set of constraints. If we do
-        # TODO: explore whether there is a
+        # TODO: handle regex directly
         if 'uuid' == field_name:
             return str(uuid.uuid4())
         elif field_name == 'date_authorized':
             return date.today().isoformat()
+        elif field_name == 'oscal_version':
+            return OSCAL_VERSION
         return '00000000-0000-4000-8000-000000000000'
     elif 'ConstrainedIntValue' in type_.__name__:
         # create an int value as close to the floor as possible does not test upper bound

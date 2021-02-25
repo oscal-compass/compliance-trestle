@@ -15,5 +15,6 @@
 # limitations under the License.
 
 #TODO: Ensure this is automatically updated successfully.
-OSCAL_VERSION = '1.0.0rc1'
+OSCAL_VERSION = '1.0.0-rc1'
+OSCAL_VERSION_REGEX =  'r\'1\.0\.0[ -]*rc[ -]*1\''
 
