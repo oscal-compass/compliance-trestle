@@ -61,7 +61,7 @@ def generate_model(full_name, out_full_name):
     except CalledProcessError as error:
         print(f'Error calling datamodel-codegen for file {full_name} error {error}')
     else:
-        # shutil.copy(out_full_name, out_full_name.parent / (out_full_name.stem + '_b4fix.py'))
+        # shutil.copy(out_full_name, out_full_name.parent / 'b4_fix' / out_full_name.name)
         fix_file(str(out_full_name))
 
 
@@ -97,6 +97,13 @@ def generate_models():
     out_dir.mkdir(exist_ok=True, parents=True)
     out_init = out_dir / '__init__.py'
     out_init.touch(exist_ok=True)
+
+    # ver_file = out_dir / 'b4_fix' / 'datamodel-codegen-version.txt'
+
+    # try:
+    #     check_call(f'datamodel-codegen --version >> {ver_file}'.split(), shell=True)
+    # except CalledProcessError as error:
+    #     print(f'Error calling datamodel-codegen for version: error {error}')
 
     in_dir = Path('nist-source/json/schema')
     for full_name in in_dir.glob('oscal_*_schema.json'):

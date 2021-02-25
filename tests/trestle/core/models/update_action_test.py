@@ -20,7 +20,7 @@ from typing import List
 
 from trestle.core.models.actions import UpdateAction
 from trestle.core.models.elements import Element, ElementPath
-from trestle.oscal import target
+from trestle.oscal import OSCAL_VERSION, target
 
 
 def test_update_action(sample_target_def):
@@ -32,7 +32,7 @@ def test_update_action(sample_target_def):
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
-            'oscal-version': '1.0.0-Milestone3'
+            'oscal-version': OSCAL_VERSION
         }
     )
 

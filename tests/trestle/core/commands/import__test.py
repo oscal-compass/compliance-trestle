@@ -79,7 +79,7 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path) -> None:
                 'title': 'Generic catalog created by trestle.',
                 'last-modified': '2020-12-11T02:04:51.053+00:00',
                 'version': '0.0.0',
-                'oscal-version': 'v1.0.0-milestone3'
+                'oscal-version': trestle.oscal.OSCAL_VERSION
             },
             'back-matter': {
                 'resources': [
