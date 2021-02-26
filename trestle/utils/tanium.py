@@ -87,13 +87,13 @@ class Rule():
                                                                                   ).isoformat()
 
     @staticmethod
-    def set_default_timestamp(value):
+    def set_default_timestamp(value: str) -> None:
         """Set the default timestamp value."""
         datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S%z')
         Rule.default_timestamp = value
 
     @staticmethod
-    def get_default_timestamp():
+    def get_default_timestamp() -> str:
         """Get the default timestamp value."""
         return Rule.default_timestamp
 
