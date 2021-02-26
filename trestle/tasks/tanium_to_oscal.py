@@ -75,7 +75,7 @@ class TaniumToOscal(TaskBase):
         """Provide an actual outcome."""
         return self._transform(False)
 
-    def _transform(self, simulate: bool = False):
+    def _transform(self, simulate: bool = False) -> TaskOutcome:
         mode = ''
         if simulate:
             mode = 'simulated-'
