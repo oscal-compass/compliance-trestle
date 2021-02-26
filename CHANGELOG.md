@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.8.1 (2021-02-24)
+### Fix
+* Import issues with hyphen named files ([#371](https://github.com/IBM/compliance-trestle/issues/371)) ([`07493ad`](https://github.com/IBM/compliance-trestle/commit/07493ad76f720503d756c54d67a1199abe181693))
+
 ## v0.8.0 (2021-02-22)
 ### Feature
 * Added bulk operations for assemble ([#367](https://github.com/IBM/compliance-trestle/issues/367)) ([`771d54e`](https://github.com/IBM/compliance-trestle/commit/771d54e29ee839d38330929001c908b6ad669f8f))

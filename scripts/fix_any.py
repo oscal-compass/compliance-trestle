@@ -28,6 +28,8 @@ import operator
 import re
 import string
 
+from trestle.oscal import OSCAL_VERSION_REGEX
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
@@ -359,6 +361,21 @@ def fix_bad_minitems(class_list):
     return class_list
 
 
+def constrain_oscal_version(class_list):
+    """Constrain allowed oscal version."""
+    for j in range(len(class_list)):
+        cls = class_list[j]
+        for i in range(len(cls.lines)):
+            line = cls.lines[i]
+            nstart = line.find('oscal_version:')
+            if nstart >= 0:
+                nstr = line.find('str')
+                if nstr >= 0:
+                    cls.lines[i] = line.replace('str', f'constr(regex={OSCAL_VERSION_REGEX})')
+                    class_list[j] = cls
+    return class_list
+
+
 def fix_file(fname):
     """Fix the Anys in this file and reorder to avoid forward dependencies."""
     all_classes = []
@@ -420,6 +437,8 @@ def fix_file(fname):
     all_classes = clean_classes(all_classes)
 
     all_classes = fix_bad_minitems(all_classes)
+
+    all_classes = constrain_oscal_version(all_classes)
 
     # sort the classes by name in case new versions of DMCG change order of class output
     sorted_classes = sorted(all_classes, key=operator.attrgetter('name'))

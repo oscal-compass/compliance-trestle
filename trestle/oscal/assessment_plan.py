@@ -656,7 +656,7 @@ class Revision(OscalBaseModel):
         description='A string used to distinguish the current version of the document from other previous (and future) versions.',
         title='Document Version',
     )
-    oscal_version: Optional[str] = Field(
+    oscal_version: Optional[constr(regex=r'1\.0\.0[ -]*rc[ -]*1')] = Field(
         None,
         alias='oscal-version',
         description='The OSCAL model version the document was authored against.',
@@ -1476,7 +1476,7 @@ class Metadata(OscalBaseModel):
         description='A string used to distinguish the current version of the document from other previous (and future) versions.',
         title='Document Version',
     )
-    oscal_version: str = Field(
+    oscal_version: constr(regex=r'1\.0\.0[ -]*rc[ -]*1') = Field(
         ...,
         alias='oscal-version',
         description='The OSCAL model version the document was authored against.',
