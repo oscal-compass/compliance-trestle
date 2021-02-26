@@ -74,24 +74,24 @@ class TaniumToOscal(TaskBase):
     def execute(self) -> TaskOutcome:
         """Provide an actual outcome."""
         return self._transform(False)
-    
-    def _transform(self, simulate:bool=False):
+
+    def _transform(self, simulate: bool = False):
         mode = ''
         if simulate:
             mode = 'simulated-'
         if not self._config:
             logger.error(f'config missing')
-            return TaskOutcome(mode+'failure') 
+            return TaskOutcome(mode + 'failure')
         # process config
         idir = self._config.get('input-dir')
         if idir is None:
             logger.error(f'config missing "input-dir"')
-            return TaskOutcome(mode+'failure')
+            return TaskOutcome(mode + 'failure')
         ipth = pathlib.Path(idir)
         odir = self._config.get('output-dir')
         if odir is None:
             logger.error(f'config missing "output-dir"')
-            return TaskOutcome(mode+'failure')
+            return TaskOutcome(mode + 'failure')
         opth = pathlib.Path(odir)
         overwrite = self._config.getboolean('output-overwrite', True)
         quiet = self._config.getboolean('quiet', False)
@@ -102,7 +102,7 @@ class TaniumToOscal(TaskBase):
                 tanium.Rule.set_default_datetime(timestamp)
             except Exception as e:
                 logger.error(f'config invalid "timestamp"')
-                return TaskOutcome(mode+'failure')  
+                return TaskOutcome(mode + 'failure')
         # insure output folder exists
         opth.mkdir(exist_ok=True, parents=True)
         # examine each file in the input folder
@@ -110,7 +110,7 @@ class TaniumToOscal(TaskBase):
             # assemble collection comprising output file name to unprocessed content
             collection = self._assemble(ifile)
             observations, analysis = tanium.get_observations(collection, 'json')
-            oname = ifile.with_suffix('').name+'.oscal'+'.json'
+            oname = ifile.with_suffix('').name + '.oscal' + '.json'
             ofile = opth / pathlib.Path(oname)
             # only allow writing output file if either:
             # a) it does not already exist, or
@@ -118,7 +118,7 @@ class TaniumToOscal(TaskBase):
             if not overwrite:
                 if ofile.exists():
                     logger.error(f'file exists: {ofile}')
-                    return TaskOutcome(mode+'failure')
+                    return TaskOutcome(mode + 'failure')
             if not simulate:
                 if not quiet:
                     logger.info(f'create: {ofile}')
@@ -131,8 +131,8 @@ class TaniumToOscal(TaskBase):
                     logger.info(f'rules [dispatched]: {analysis["dispatched_rules"]}')
                     logger.info(f'rules [unique]: {analysis["unique_rules"]}')
                     logger.info(f'results: {analysis["results"]}')
-        return TaskOutcome(mode+'success')
-    
+        return TaskOutcome(mode + 'success')
+
     def _assemble(self, ifile: pathlib.Path) -> Dict[str, Any]:
         """Formulate collection comprising output file name to unprocessed content."""
         collection = []
