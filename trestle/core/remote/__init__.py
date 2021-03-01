@@ -13,8 +13,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-#TODO: Ensure this is automatically updated successfully.
-OSCAL_VERSION = '1.0.0-rc1'
-OSCAL_VERSION_REGEX =  'r\'1\.0\.0[ -]*rc[ -]*1\''
-
+"""Testing for cache functionality."""
