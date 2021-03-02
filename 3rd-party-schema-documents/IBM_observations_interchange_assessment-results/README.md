@@ -1,9 +1,27 @@
 # Schema of Assessment Results
 
-The following depicts what is otherwise an OSCAL 1.0.0-rc1 *observation* but customized to include two further properties: *remediation-group* and *parameter-settings*, both discussed below the diagram.
+This depicts the structure of the interchange object which consists of custom *observations* and OSCAL *metadata*:
 
 ```
-observation
+interchange
+|
++---- observations[] (required)
+|        |
+|        +---- [0] (custom observation)
+|        |
+|        +---- [1] (custom observation)
+|        .
+|        .
+|        +---- [n] (custom observation)
+|
++---- metadata
+```
+
+Unlike an OSCAL *result* that contains *observations*, the custom interchange object contains *observations* and *metadata*, the first customized, the second as defined in OSCAL. The interchange *observation* includes two custom properties, *remediation-group* and *parameter-settings*, each as defined by OSCAL.
+
+
+```
+observation (custom)
 |
 +---- uuid (required)
 |
@@ -31,14 +49,14 @@ observation
 |
 +---- remarks
 |
-+---- parameter-settings
++---- remediation-group[] (required, custom)
 |
-+---- remediation-group[] (required)
++---- parameter-settings (custom)
 ```
 
-The deviations from OSCAL are in the bottom two properties:
+1. The OSCAL *metadata* object MAY be included. An example of its purpose is to specify the schema if tools require or expect it in the actual interchange results.
 
-1. An array called *remediation-group* containing [remediation](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/#remediation) objects, to accommodate test results generated that do not conform to OSCAL. This avoids having to use some "foreign key" property to associate remediations with an observation. In OSCAL [assessment-results](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/), this corresponds to a [response](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/#global_oscal-assessment-common-response) or *global\_oscal-assessment-common-response* in an array property, *remediations, which goes inside a [risk](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/#global_risk) *.
+1. An array called *remediation-group* containing [remediation](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/#remediation) objects, to accommodate test results that do not conform to OSCAL. This avoids having to use some "foreign key" property to associate remediations with an observation. In OSCAL [assessment-results](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/), this corresponds to the *remediations* array of [response or oscal-assessment-common-response](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/#global_oscal-assessment-common-response) objects. OSCAL defines *remediation* within a [risk](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/#global_risk).
 
    A sample is found in [toolchain\_result\_observation14.json](toolchain_result_observation14.json), e.g.,
 
@@ -66,7 +84,7 @@ The deviations from OSCAL are in the bottom two properties:
     ]
    ```
 
-   The above references records of issues that describe the remediation in detail. 
+   The above references records of issues that describe the remediation in detail.
 
 1. A *parameter-settings* object containing one or more [set-parameter](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/#global_set-parameter_h2) objects, which normally goes inside [modify](https://pages.nist.gov/OSCAL/documentation/schema/profile-layer/profile/json-schema/#global_modify_h2) in an OSCAL [profile](https://pages.nist.gov/OSCAL/documentation/schema/profile-layer/profile/json-schema/), or in an [implemented-requirement](https://pages.nist.gov/OSCAL/documentation/schema/implementation-layer/ssp/json-schema/#global_implemented-requirement) in OSCAL [SSPs](https://pages.nist.gov/OSCAL/documentation/schema/implementation-layer/ssp/json-schema/)
 
@@ -257,7 +275,7 @@ The deviations from OSCAL are in the bottom two properties:
                         "value" : "12345"
                     },
    ```
-                    
+
 1. Likewise, the run timestamp MUST also become a property, with *"class":"timestamp"* and *"name":"time"* with the actual timestamp in the *"value"* key, e.g.,
 
    ```
