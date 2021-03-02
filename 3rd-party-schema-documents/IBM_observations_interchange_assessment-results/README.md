@@ -19,7 +19,6 @@ interchange
 
 Unlike an OSCAL *result* that contains *observations*, the custom interchange object contains *observations* and *metadata*, the first customized, the second as defined in OSCAL. The interchange *observation* includes two custom properties, *remediation-group* and *parameter-settings*, each as defined by OSCAL.
 
-
 ```
 observation (custom)
 |
@@ -58,7 +57,7 @@ observation (custom)
 
 1. An array called *remediation-group* containing [remediation](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/#remediation) objects, to accommodate test results that do not conform to OSCAL. This avoids having to use some "foreign key" property to associate remediations with an observation. In OSCAL [assessment-results](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/), this corresponds to the *remediations* array of [response or oscal-assessment-common-response](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/#global_oscal-assessment-common-response) objects. OSCAL defines *remediation* within a [risk](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/#global_risk).
 
-   A sample is found in [toolchain\_result\_observation14.json](toolchain_result_observation14.json), e.g.,
+   A sample is found in [toolchain_result_observation14.json](toolchain_result_observation14.json), e.g.,
 
    ```
     "remediation-group" : [
@@ -88,7 +87,7 @@ observation (custom)
 
 1. A *parameter-settings* object containing one or more [set-parameter](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/assessment-results/json-schema/#global_set-parameter_h2) objects, which normally goes inside [modify](https://pages.nist.gov/OSCAL/documentation/schema/profile-layer/profile/json-schema/#global_modify_h2) in an OSCAL [profile](https://pages.nist.gov/OSCAL/documentation/schema/profile-layer/profile/json-schema/), or in an [implemented-requirement](https://pages.nist.gov/OSCAL/documentation/schema/implementation-layer/ssp/json-schema/#global_implemented-requirement) in OSCAL [SSPs](https://pages.nist.gov/OSCAL/documentation/schema/implementation-layer/ssp/json-schema/)
 
-   A sample is found in the same [toolchain\_result\_observation14.json](toolchain_result_observation14.json), e.g.,
+   A sample is found in the same [toolchain_result_observation14.json](toolchain_result_observation14.json), e.g.,
 
    ```
     "parameter-settings": {
@@ -158,7 +157,7 @@ observation (custom)
 
 1. All IBM Cloud resources MUST be identified with valid *crn* values. In the property that specifies such a resource, the property class is *id* and the property name is *crn*.
 
-1. An IBM Service ID appearing in a *subject-reference* MUST be presented with valid uuid values, with property class *id* and the property name MUST correspond with the IBM Cloud identifier type, e.g., "pipeline\_id" or "pipeline\_run\_id". ???
+1. An IBM Service ID appearing in a *subject-reference* MUST be presented with valid uuid values, with property class *id* and the property name MUST correspond with the IBM Cloud identifier type, e.g., "pipeline_id" or "pipeline_run_id". ???
 
 1. A result MUST be rendered unique by aggregating, where applicable, the rule-specific identifiers in the OSCAL *observation* properties, in the specific result in the *relevant-evidence*, and subject-specific identifiers in *subject-reference* properties.
 
@@ -222,11 +221,11 @@ observation (custom)
 
 ## Draft: from Toolchain OPA test results
 
-1. One OPA test result document roughly corresponds with an OSCAL *observation*. Uniqueness of one result document is a combination of the *pipeline\_id*, *pipeline\_run\_id*, *toolchain\_crn* and *date*.
+1. One OPA test result document roughly corresponds with an OSCAL *observation*. Uniqueness of one result document is a combination of the *pipeline_id*, *pipeline_run_id*, *toolchain_crn* and *date*.
 
 1. The IBM toolchain identifier MUST be an *id* class property with *"name":"crn"* of a given *subject-reference*.
 
-1. The IBM toolchain UUID value SHOULD be further identified as a *subject-reference* property with *"class":"id"* and *"name":"pipeline\_id*.
+1. The IBM toolchain UUID value SHOULD be further identified as a *subject-reference* property with *"class":"id"* and *"name":"pipeline_id*.
 
    ```
         "subjects" : [
@@ -252,9 +251,9 @@ observation (custom)
         ],
    ```
 
-1. The toolchain's *pipeline\_id* must be defined as a property of a *relevant-evidence* exactly as already defined in the corresponding *subject-reference*, in order to maintain the reference.
+1. The toolchain's *pipeline_id* must be defined as a property of a *relevant-evidence* exactly as already defined in the corresponding *subject-reference*, in order to maintain the reference.
 
-1. The instance/run identifier MUST be defined as another property, e.g., *"class":"id"* and *"name":"pipeline\_run\_id"*.
+1. The instance/run identifier MUST be defined as another property, e.g., *"class":"id"* and *"name":"pipeline_run_id"*.
 
    ```
         "relevant-evidence" : [
@@ -291,7 +290,7 @@ observation (custom)
 
 1. Other bits of relevant evidence SHOULD appear under annotations of the relevant-evidence.
 
-An example observation for Toolchain OPA results can be found here: [toolchain\_result\_observation14.json](toolchain_result_observation14.json).
+An example observation for Toolchain OPA results can be found here: [toolchain_result_observation14.json](toolchain_result_observation14.json).
 
 ## Draft: from XCCDF TestResult
 
@@ -369,13 +368,13 @@ An example observation for Toolchain OPA results can be found here: [toolchain\_
 
 1. Other XCCDF rule-result data MAY be included in the *annotations* of the *relevant-evidence*.
 
-An example observation for XCCDF TestResults can be found here: [benchmark\_xccdf\_observation14.json](benchmark_xccdf_observation14.json).
+An example observation for XCCDF TestResults can be found here: [benchmark_xccdf_observation14.json](benchmark_xccdf_observation14.json).
 
 ## Draft: IBM Cloud Compliance and Security Centre (Spanugo) scan results
 
 1. The scan's profile, i.e., benchmark, MUST be indicated in a property of the OSCAL assessment-result *observation* with *"class":"id"* and *"name":"scan"*.
 
-1. The scan's *IT\_resource* MUST be indicated as  a *subject-reference* property where *"class":"id"* and *"name":"IT-resource"* (see below).
+1. The scan's *IT_resource* MUST be indicated as  a *subject-reference* property where *"class":"id"* and *"name":"IT-resource"* (see below).
 
 1. The scan's *Control Target* MUST be indicated as another *subject-reference* property with *"class":"id"* and *"name":"control-target"*. For example, this *subject-reference*:
 
@@ -450,7 +449,7 @@ An example observation for XCCDF TestResults can be found here: [benchmark\_xccd
             }
    ```
 
-An example observation from the scan results in IBM Security and Compliance Center can be found in [collector\_system\_multi-observations\_OSCAL.json](collector_system_multi-observations_OSCAL.json).
+An example observation from the scan results in IBM Security and Compliance Center can be found in [collector_system_multi-observations_OSCAL.json](collector_system_multi-observations_OSCAL.json).
 
 ## Notes:
 
