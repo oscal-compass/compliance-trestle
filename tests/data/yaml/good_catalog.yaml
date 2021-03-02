@@ -4,7 +4,7 @@ catalog:
   title: "NIST Special Publication 800-53: Security and Privacy Controls for Federal Information\n         Systems and Organizations, Revision 5 Final Public Draft"
   "last-modified": "2020-03-16T13:24:48.516-04:00"
   version: "Revision 5"
-  "oscal-version": "1.0.0-Milestone3"
+  "oscal-version": "1.0.0-rc1"
   properties: 
    - 
    name: keywords

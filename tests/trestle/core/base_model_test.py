@@ -22,12 +22,12 @@ import pytest
 
 import trestle.core.base_model as ospydantic
 import trestle.core.err as err
+import trestle.oscal
 import trestle.oscal.catalog as oscatalog
 import trestle.oscal.component as component
 import trestle.oscal.poam as poam
 import trestle.oscal.target as ostarget
 from trestle.core.base_model import OscalBaseModel
-from trestle.oscal.target import TargetDefinition
 
 
 def test_echo_tmp_path(tmp_path) -> None:
@@ -43,7 +43,7 @@ def simple_catalog() -> oscatalog.Catalog:
             'title': 'My simple catalog',
             'last-modified': datetime.now(),
             'version': '0.0.0',
-            'oscal-version': '1.0.0-Milestone3'
+            'oscal-version': trestle.oscal.OSCAL_VERSION
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -57,7 +57,7 @@ def simple_catalog_with_tz() -> oscatalog.Catalog:
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
-            'oscal-version': '1.0.0-Milestone3'
+            'oscal-version': trestle.oscal.OSCAL_VERSION
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -119,7 +119,7 @@ def test_broken_tz() -> None:
             'title': 'My simple catalog',
             'last-modified': datetime.now(tz=taz),
             'version': '0.0.0',
-            'oscal-version': '1.0.0-Milestone3'
+            'oscal-version': trestle.oscal.OSCAL_VERSION
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -223,7 +223,7 @@ def test_copy_to() -> None:
             'title': 'My simple catalog',
             'last-modified': datetime.now(),
             'version': '0.0.0',
-            'oscal-version': '1.0.0-Milestone3'
+            'oscal-version': trestle.oscal.OSCAL_VERSION
         }
     )
 
@@ -248,7 +248,7 @@ def test_copy_from() -> None:
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
-            'oscal-version': '1.0.0-Milestone3'
+            'oscal-version': trestle.oscal.OSCAL_VERSION
         }
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
@@ -258,7 +258,7 @@ def test_copy_from() -> None:
             'title': 'My simple target_title',
             'last-modified': datetime.now().astimezone(),
             'version': '99.0.0',
-            'oscal-version': '1.0.0-Milestone3'
+            'oscal-version': trestle.oscal.OSCAL_VERSION
         }
     )
     catalog.metadata.copy_from(target_md)
@@ -296,13 +296,13 @@ def test_oscal_write(tmp_path: pathlib.Path) -> None:
         target2.oscal_write(tmp_path / 'target.borked')
 
 
-def test_get_field_value(sample_target_def: TargetDefinition) -> None:
+def test_get_field_value(sample_target_def: ostarget.TargetDefinition) -> None:
     """Test get field value method."""
     assert sample_target_def.metadata.get_field_value('last-modified') == sample_target_def.metadata.last_modified
     assert sample_target_def.metadata.get_field_value('last_modified') == sample_target_def.metadata.last_modified
 
 
-def test_get_field_value_by_alias(sample_target_def: TargetDefinition) -> None:
+def test_get_field_value_by_alias(sample_target_def: ostarget.TargetDefinition) -> None:
     """Test get attribute by alias method."""
     assert sample_target_def.metadata.get_field_value_by_alias(
         'last-modified'
@@ -310,7 +310,7 @@ def test_get_field_value_by_alias(sample_target_def: TargetDefinition) -> None:
     assert sample_target_def.metadata.get_field_value_by_alias('last_modified') is None
 
 
-def test_get_field_by_alias(sample_target_def: TargetDefinition) -> None:
+def test_get_field_by_alias(sample_target_def: ostarget.TargetDefinition) -> None:
     """Test get field for field alias."""
     assert sample_target_def.metadata.get_field_by_alias('last-modified').name == 'last_modified'
     assert sample_target_def.metadata.get_field_by_alias('last_modified') is None
