@@ -14,6 +14,9 @@
 # limitations under the License.
 """Utilities for dealing with models."""
 
+import re
+import inspect
+
 from typing import Any, List, Type, TypeVar
 
 import pydantic
@@ -125,7 +128,60 @@ def find_values_by_name(object_of_interest: Any, name_of_interest: str) -> List[
     return loe
 
 
+def find_attribs_by_regex(object_of_interest: Any, regex_of_interest: str):
+    """Find attributes of object matching regex expression."""
+    matches = []
+    p = re.compile(regex_of_interest)
+    for i in inspect.getmembers(object_of_interest):
+        if i[0].startswith('_') or inspect.ismethod(i[1]):
+            continue
+        hits = p.findall(i[0])
+        if hits:
+            matches.append(i)
+    return matches
+
+
+def find_all_attribs_by_regex(object_of_interest: Any, regex_of_interest: str):
+    """Find all attributes in object matching regex expression."""
+    all_attrs = []
+    if isinstance(object_of_interest, pydantic.BaseModel):
+        attrs = find_attribs_by_regex(object_of_interest, regex_of_interest)
+        all_attrs.extend(attrs)
+        fields = getattr(object_of_interest, '__fields_set__', None)
+        if fields is not None:
+            for field in fields:
+                all_attrs.extend(find_attribs_by_regex(getattr(object_of_interest, field, None), regex_of_interest))
+    elif type(object_of_interest) is list:
+        for item in object_of_interest:
+            all_attrs.extend(find_attribs_by_regex(item, regex_of_interest))
+    elif type(object_of_interest) is dict:
+        for item in object_of_interest.values():
+            all_attrs.extend(find_attribs_by_regex(item, regex_of_interest))
+    return all_attrs
+
+
 def has_no_duplicate_values_by_name(object_of_interest: Any, name_of_interest: str) -> bool:
     """Determine if duplicate values of type exist in object."""
     loe = find_values_by_name(object_of_interest, name_of_interest)
     return len(loe) == len(set(loe))
+
+
+def regenerate_uuids(object_of_interest: Any) -> Any:
+    """Regenerate all uuids in model that require updating."""
+    loe = []
+    if isinstance(object_of_interest, pydantic.BaseModel):
+        value = getattr(object_of_interest, name_of_interest, None)
+        if value is not None:
+            loe.append(value)
+        fields = getattr(object_of_interest, '__fields_set__', None)
+        if fields is not None:
+            for field in fields:
+                loe.extend(find_values_by_name(getattr(object_of_interest, field, None), name_of_interest))
+    elif type(object_of_interest) is list:
+        for item in object_of_interest:
+            loe.extend(find_values_by_name(item, name_of_interest))
+    elif type(object_of_interest) is dict:
+        for item in object_of_interest.values():
+            loe.extend(find_values_by_name(item, name_of_interest))
+    return loe
+

@@ -20,12 +20,14 @@ import pathlib
 from json.decoder import JSONDecodeError
 from typing import Type, TypeVar
 
+from trestle.core import const
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
+from trestle.core.validator_helper import find_all_attribs_by_regex
 from trestle.oscal import assessment_plan
 from trestle.oscal import assessment_results
 from trestle.oscal import catalog
@@ -209,6 +211,9 @@ class ReplicateCmd(CommandPlusDocs):
             logger.debug(f'load_distributed() failed: {err}')
             logger.error(f'Replicate failed, access permission error loading file: {err}')
             return 1
+
+        all_attribs = find_all_attribs_by_regex(model_instance, r'(?i)UUID')
+        print(all_attribs)
 
         rep_model_path = trestle_root / plural_path / args.output / (
             model_alias + FileContentType.to_file_extension(content_type)
