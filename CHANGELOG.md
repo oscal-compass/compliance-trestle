@@ -3,6 +3,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.9.0 (2021-03-02)
+### Feature
+* Tanium export to oscal conversion task. ([`5f7bcbf`](https://github.com/IBM/compliance-trestle/commit/5f7bcbf885b5fcb77da054917b6e66fa83ce66e9))
+
+### Fix
+* Enforce oscal version in models and tests ([#377](https://github.com/IBM/compliance-trestle/issues/377)) ([`7fc08e1`](https://github.com/IBM/compliance-trestle/commit/7fc08e10b78b658359dc119080d64d44b09a572d))
+
 ## v0.8.1 (2021-02-24)
 ### Fix
 * Import issues with hyphen named files ([#371](https://github.com/IBM/compliance-trestle/issues/371)) ([`07493ad`](https://github.com/IBM/compliance-trestle/commit/07493ad76f720503d756c54d67a1199abe181693))
