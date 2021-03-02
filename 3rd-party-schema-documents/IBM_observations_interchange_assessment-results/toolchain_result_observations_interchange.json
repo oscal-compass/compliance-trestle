@@ -1,0 +1,153 @@
+{
+    "observations": [
+        {
+            "uuid" : "00000000-0000-4000-9999-000000000016",
+            "title" : "",
+            "description" : "Detect Secret observation 2007-09-25",
+            "props" : [
+                {
+                    "ns" : "IBM",
+                    "class" : "id",
+                    "name" : "rule",
+                    "value" : "com.ibm.detect_secret"
+                }
+            ],
+            "methods" : [
+                "detect_secret"
+            ],
+            "relevant-evidence" : [
+                {
+                    "href" : "",
+                    "description" : "",
+                    "props" : [
+                        {
+                            "ns" : "IBM",
+                            "class" : "id",
+                            "name" : "pipeline_id",
+                            "value" : "00000000-0000-4000-9999-000000000017"
+                        },
+                        {
+                            "ns" : "IBM",
+                            "class" : "id",
+                            "name" : "pipeline_run_id",
+                            "value" : "12345"
+                        },
+                        {
+                            "ns" : "IBM",
+                            "class" : "result",
+                            "name" : "result",
+                            "value" : "passed"
+                        },
+                        {
+                            "ns" : "IBM",
+                            "class" : "timestamp",
+                            "name" : "time",
+                            "value" : "2020-05-06T12:00:00-00:00"
+                        }
+                    ],
+                    "annotations" : [
+                        {
+                            "ns" : "IBM",
+                            "name" : "issue",
+                            "value" : "https://acme.org/foo/123"
+                        },
+                        {
+                            "ns" : "IBM",
+                            "name" : "issue",
+                            "value" : "https://acme.org/foo/125"
+                        },
+                        {
+                            "ns" : "IBM",
+                            "name" : "logs",
+                            "value" : "https://acme.org/log.txt"
+                        },
+                        {
+                            "ns" : "IBM",
+                            "name" : "repository_url",
+                            "value" : "https://git.acme.org/acme-repo"
+                        },
+                        {
+                            "ns" : "IBM",
+                            "name" : "repository_revision",
+                            "value" : "asz33dkejkkjdkkl34"
+                        },
+                        {
+                            "ns" : "IBM",
+                            "name" : "repository_branch",
+                            "value" : "master"
+                        },
+                        {
+                            "ns" : "IBM",
+                            "name" : "required",
+                            "value" : "yes"
+                        }
+                    ]
+                }
+            ],
+            "subjects" : [
+                {
+                    "uuid-ref" : "00000000-0000-4000-9999-000000000018",
+                    "type" : "inventory-item",
+                    "title" : "Toolchain",
+                    "props" : [
+                        {
+                            "ns" : "IBM",
+                            "class" : "id",
+                            "name" : "crn",
+                            "value" : "crn:v1:bluemix:public:is:au-syd:a/00000000000000000000000000000000::key:00000000-0000-0000-0000-000000000000"
+                        },
+                        {
+                            "ns" : "IBM",
+                            "class" : "id",
+                            "name" : "pipeline_id",
+                            "value" : "00000000-0000-4000-9999-000000000017"
+                        }
+                    ]
+                }
+            ],
+            "remediation-group" : [
+                {
+                    "uuid" : "00000000-0000-4000-9999-000000000019",
+                    "description" : "",
+                    "title" : "",
+                    "lifecycle": "recommendation",
+                    "props" : [
+                        {
+                            "ns" : "IBM",
+                            "class" : "id",
+                            "name" : "issue",
+                            "value" : "https://acme.org/foo/123"
+                        },
+                        {
+                            "ns" : "IBM",
+                            "class" : "id",
+                            "name" : "issue",
+                            "value" : "https://acme.org/foo/125"
+                        }
+                    ]
+                }
+            ],
+            "methods" : [
+                "TEST-AUTOMATED"
+            ],
+            "parameter-settings": {
+                "reboot": {
+                    "values": [ "true" ]
+                }
+            }
+        }
+    ],
+    "metadata": {
+        "title": "Toolchain Results OSCAL",
+        "last-modified": "2020-10-22T09:46:21.745+00:00",
+        "version": "2.0",
+        "oscal-version": "1.0.0-rc-1",
+        "responsible-parties": {
+            "organisation": {
+                "party-uuids": [
+                    "00000000-0000-4000-8000-000000000000"
+                ]
+            }
+        }
+    }
+}

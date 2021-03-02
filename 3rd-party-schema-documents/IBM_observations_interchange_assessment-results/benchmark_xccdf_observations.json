@@ -1,0 +1,336 @@
+{
+    "observations" : [
+        {
+            "uuid":"00000000-0000-4000-9999-000000000000",
+            "title":"Sample Observation Block",
+            "description":"Sample XCCDF TestResult cast into an OSCAL observation",
+            "props":[
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "benchmark-id",
+                    "value": "xccdf_org.example_benchmark_ios-test-benchmark"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "TestResult-id",
+                    "value": "xccdf_org.example_testresult_ios-test5"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "rule",
+                    "value": "xccdf_org.example_rule_ios12-no-finger-service"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "timestamp",
+                    "name": "time",
+                    "value": "2007-09-25T13:45:00-04:00"
+                }
+            ],
+            "annotations": [
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:href",
+                    "value": "ios-sample-12.4.xccdf.xml"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:remark",
+                    "value": "Test run by Bob on Sept 25, 2007"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:organization",
+                    "value": "Department of Commerce"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:organization",
+                    "value": "National Institute of Standards and Technology"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:identity",
+                    "value": "admin_bob"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:identity.authenticated",
+                    "value": "1"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:identity.privileged",
+                    "value": "1"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:score",
+                    "value": "67.5"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "urn:xccdf:scoring:absolute",
+                    "value": "0"
+                },
+                {
+                    "ns": "IBM",
+                    "remarks": "set-value",
+                    "name": "xccdf_org.example_rule_ios12-no-finger-service",
+                    "value": "10"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:end-time",
+                    "value": "2007-09-25T7:45:02-04:00"
+                }
+            ],
+            "methods":[
+                "TEST-AUTOMATED"
+            ],
+            "subjects": [
+                {
+                    "uuid-ref":"00000000-0000-4000-9999-000000000001",
+                    "type":"component",
+                    "title":"lower.test.net",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "xccdf:target-address",
+                            "value": "192.168.248.1"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "xccdf:target-address",
+                            "value": "2001:8::1"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "urn:xccdf:fact:ethernet:MAC",
+                            "value": "02:50:e6:c0:14:39"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "urn:xccdf:fact:ethernet:MAC",
+                            "value": "02:50:e6:1f:33:b0"
+                        }
+                    ]
+                }
+            ],
+            "remediation-group": [],
+            "relevant-evidence": [
+                {
+                    "href":"",
+                    "description":"XCCDF rule-result: xccdf_org.example_rule_ios12-no-finger-service",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "timestamp",
+                            "name": "time",
+                            "value": "2007-09-25T13:45:00-04:00"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "pass"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid":"00000000-0000-4000-9999-000000000002",
+            "title":"Sample Observation Block with Remediation",
+            "description":"Sample XCCDF TestResult cast into an OSCAL observation",
+            "props":[
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "xccdf:benchmark.id",
+                    "value": "xccdf_org.example_benchmark_ios-test-benchmark"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "xccdf:TestResult.id",
+                    "value": "xccdf_org.example_testresult_ios-test5"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "rule",
+                    "value": "xccdf_org.example_rule_req-exec-timeout"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "timestamp",
+                    "name": "time",
+                    "value": "2007-09-25T13:45:06-04:00"
+                }
+            ],
+            "annotations": [
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:href",
+                    "value": "ios-sample-12.4.xccdf.xml"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:remark",
+                    "value": "Test run by Bob on Sept 25, 2007"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:organization",
+                    "value": "Department of Commerce"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:organization",
+                    "value": "National Institute of Standards and Technology"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:identity",
+                    "value": "admin_bob"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:identity.authenticated",
+                    "value": "1"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:identity.privileged",
+                    "value": "1"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:score",
+                    "value": "67.5"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "urn:xccdf:scoring:absolute",
+                    "value": "0"
+                },
+                {
+                    "ns": "IBM",
+                    "remarks": "set-value",
+                    "name": "xccdf:xccdf_org.example_value_exec-timeout-time",
+                    "value": "10"
+                },
+                {
+                    "ns": "IBM",
+                    "name": "xccdf:end-time",
+                    "value": "2007-09-25T7:45:02-04:00"
+                }
+            ],
+            "methods":[
+                "TEST-AUTOMATED"
+            ],
+            "subjects": [
+                {
+                    "uuid-ref":"00000000-0000-4000-9999-000000000004",
+                    "type":"component",
+                    "title":"lower.test.net",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "xccdf:target-address",
+                            "value": "192.168.248.1"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "xccdf:target-address",
+                            "value": "2001:8::1"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "urn:xccdf:fact:ethernet:MAC",
+                            "value": "02:50:e6:c0:14:39"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "urn:xccdf:fact:ethernet:MAC",
+                            "value": "02:50:e6:1f:33:b0"
+                        }
+                    ]
+                }
+            ],
+            "relevant-evidence": [
+                {
+                    "href":"",
+                    "description":"XCCDF rule-result: xccdf_org.example_rule_req-exec-timeout",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "timestamp",
+                            "name": "time",
+                            "value": "2019-09-25T13:45:06-04:00"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "fail"
+                        }
+                    ],
+                    "annotations":[
+                        {
+                            "ns": "IBM",
+                            "name": "xccdf:instance",
+                            "value": "console"
+                        }
+                    ]
+                }
+            ],
+            "remediation-group" : [
+                {
+                    "uuid" : "00000000-0000-4000-9999-000000000003",
+                    "title" : "Sample remediation group",
+                    "description" : "Sample remediation group",
+                    "lifecycle": "recommendation",
+                    "props" : [
+                        {
+                            "ns": "IBM",
+                            "class":"info",
+                            "name": "xccdf:fix.system",
+                            "value": "urn:xccdf:fix:commands"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class":"info",
+                            "name": "xccdf:fix.reboot",
+                            "value": "0"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class":"info",
+                            "name": "xccdf:fix.disruption",
+                            "value": "low"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class":"info",
+                            "name": "xccdf:fix",
+                            "value": "line console\nexec-timeout 10 0\n"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
