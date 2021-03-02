@@ -20,11 +20,28 @@ Umbrella command for all markdown related transformations
 """
 import argparse
 import logging
+import pathlib
 
+import trestle.core.const as const
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.utils import log
 
 logger = logging.getLogger(__name__)
+
+
+def allowed_task_name(name: str, trestle_root: pathlib.Path) -> bool:
+    """Determine whether a task / directory name is prohibited from use."""
+    # Task must not use an OSCAL directory
+
+    # Task must not use another template's name
+
+    # Task must not self-interfere with a project
+
+    if name in const.MODEL_TYPE_TO_MODEL_DIR.values():
+        return False
+    elif name == '.trestle':
+        return False
+    return True
 
 
 class CIDD(CommandPlusDocs):
@@ -66,7 +83,14 @@ class GovernedDocs(CommandPlusDocs):
     name = 'governed-docs'
 
     def _init_arguments(self) -> None:
-        pass
+        help_str = """
+        The name of the the task to be governed.
+        The template file is at .trestle/md/[task-name].md
+
+        Note that by default this will automatically enforce the task.
+        """
+        self.add_argument('-tn', '--task-name', help=help_str, required=True, type=str)
+        self.add_argument('--template-validate', action='store_true')
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
