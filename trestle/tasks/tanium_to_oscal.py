@@ -72,15 +72,17 @@ class TaniumToOscal(TaskBase):
         
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
-        return self._transform(True)
+        self._simulate = True
+        return self._transform()
         
     def execute(self) -> TaskOutcome:
         """Provide an actual outcome."""
-        return self._transform(False)
+        self._simulate = False
+        return self._transform()
 
-    def _transform(self, simulate: bool = False) -> TaskOutcome:
+    def _transform(self) -> TaskOutcome:
         mode = ''
-        if simulate:
+        if self._simulate:
             mode = 'simulated-'
         if not self._config:
             logger.error(f'config missing')
@@ -101,7 +103,7 @@ class TaniumToOscal(TaskBase):
             return TaskOutcome(mode + 'failure')
         overwrite = self._config.getboolean('output-overwrite', True)
         quiet = self._config.get('quiet', False)
-        self._verbose = not simulate and not quiet
+        self._verbose = not self._simulate and not quiet
         # timestamp
         timestamp = self._config.get('timestamp')
         if timestamp is not None:
@@ -143,17 +145,19 @@ class TaniumToOscal(TaskBase):
 
     def _write_file(self, results_mgr: t_results_mgr, ofile: t_filename) -> None:
         """Write oscal results file."""
-        if self._verbose:
-            logger.info(f'outout: {ofile}') 
-        write_file = pathlib.Path(ofile).open('w', encoding=const.FILE_ENCODING)
-        write_file.write(results_mgr.json)
+        if not self._simulate:
+            if self._verbose:
+                logger.info(f'outout: {ofile}') 
+            write_file = pathlib.Path(ofile).open('w', encoding=const.FILE_ENCODING)
+            write_file.write(results_mgr.json)
     
     def _show_analysis(self, results_mgr: t_results_mgr) -> None:
         """Show analysis."""
-        if self._verbose:
-            analysis = results_mgr.analysis
-            for line in analysis:
-                logger.info(line)
+        if not self._simulate:
+            if self._verbose:
+                analysis = results_mgr.analysis
+                for line in analysis:
+                    logger.info(line)
         
     def _assemble(self, ifile: pathlib.Path) -> List[t_collection]:
         """Formulate collection comprising output file name to unprocessed content."""
