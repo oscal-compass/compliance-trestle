@@ -15,151 +15,256 @@
 """Facilitate Tanium report to NIST OSCAL json transformation."""
 
 import datetime
-import json
 import logging
 import uuid
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Union, ValuesView
 
+from trestle.oscal.assessment_results import ControlSelection
+from trestle.oscal.assessment_results import Finding
+from trestle.oscal.assessment_results import Inventory
+from trestle.oscal.assessment_results import LocalDefinitions
 from trestle.oscal.assessment_results import Observation
 from trestle.oscal.assessment_results import Property
-from trestle.oscal.assessment_results import RelevantEvidence
+from trestle.oscal.assessment_results import RelatedObservation
+from trestle.oscal.assessment_results import Result
+from trestle.oscal.assessment_results import ReviewedControls
+from trestle.oscal.assessment_results import Subject
 
 logger = logging.getLogger(__name__)
 
 t_analysis = Dict[str, Any]
+t_control = str
+t_control_selection = ControlSelection
+t_finding = Finding
+t_inventory = Inventory
+t_inventory_ref = str
+t_ip = str
+t_json = str
+t_local_definitions = LocalDefinitions
+t_observation = Observation
 t_oscal = Union[str, Dict[str, Any]]
-t_tanium = Dict[str, Any]
+t_tanium_row = Dict[str, Any]
+t_timestamp = str
 t_resource = Dict[str, Any]
+t_result = Result
+t_reviewed_controls = ReviewedControls
+
+t_inventory_map = Dict[t_ip, t_inventory]
+t_observation_list = List[Observation]
+t_findings_map = Dict[t_control, Any]
 
 
-def get_observations(tanium: t_tanium, fmt: str = 'object') -> Tuple[t_oscal, t_analysis]:
-    """Transform Tanium data to NIST OSCAL with statistics.
+class RuleUse():
+    """Represents one row of Tanium data."""
 
-    Transforms the given Tanium data into OSCAL-like Assessment Results Observations.
-
-    Args:
-        tanuim: Tanium data to be transformed into observations.
-        fmt: specify return value format, one of ['object', 'json']
-
-    Returns:
-        observations: comprises OSCAL-like Assessment Results observations.
-        analysis: comprises statistics about the transformation.
-    """
-    observations = []
-    rules = Rules(tanium)
-    for rule in rules.list_all:
-        observation = Observation(uuid=str(uuid.uuid4()), description=rule.id, methods=['TEST-AUTOMATED'])
-        observation.title = rule.id
-        description = rule.benchmark + ', version ' + rule.benchmark_version
-        ns = None
-        # intuit namespace
-        if rule.id.startswith('xccdf'):
-            ns = 'dns://xccdf'
-        props = [
-            Property(name='rule', value=rule.id, ns=ns, class_='id'),
-            Property(name='result', value=rule.result, ns=ns, class_='result'),
-            Property(name='time', value=rule.time, ns=ns, class_='timestamp'),
-            Property(name='target', value=rule.computer, ns=ns, class_='computer-name'),
-            Property(name='target', value=rule.ip, ns=ns, class_='computer-ip'),
-        ]
-        relevant_evidence = RelevantEvidence(description=description, props=props)
-        observation.relevant_evidence = [relevant_evidence]
-        observations.append(observation)
-    if fmt == 'json':
-        observations = _to_json(observations)
-    return observations, rules.analysis
-
-
-def _to_json(observations: List[Observation]) -> str:
-    """Convert observation object list into json string."""
-    observation_list = []
-    for observation_model in observations:
-        observation_json = json.loads(observation_model.json(exclude_none=True, by_alias=True, indent=2))
-        observation_list.append(observation_json)
-    observation_dict = json.dumps({'observations': observation_list}, indent=2)
-    return observation_dict
-
-
-class Rule():
-    """Container for one rule + result with associated metadata."""
-
-    default_timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc
-                                                                                  ).isoformat()
-
-    @staticmethod
-    def set_default_timestamp(value: str) -> None:
-        """Set the default timestamp value."""
-        datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S%z')
-        Rule.default_timestamp = value
-
-    @staticmethod
-    def get_default_timestamp() -> str:
-        """Get the default timestamp value."""
-        return Rule.default_timestamp
-
-    def __init__(self, raw_resource: t_resource) -> None:
+    def __init__(self, tanium_row: t_tanium_row, default_timestamp: t_timestamp) -> None:
         """Initialize given specified args."""
-        logger.debug(f'raw: {raw_resource}')
-        keys = raw_resource.keys()
+        logger.debug(f'tanium-row: {tanium_row}')
+        keys = tanium_row.keys()
         for key in keys:
             if key.startswith('Comply'):
                 key_comply = key
                 break
-        self.ip = raw_resource['IP Address']
-        self.computer = raw_resource['Computer Name']
-        self.count = raw_resource['Count']
-        self.age = raw_resource['Age']
-        self.benchmark = raw_resource[key_comply][0]['Benchmark']
-        self.benchmark_version = raw_resource[key_comply][0]['Benchmark Version']
-        self.profile = raw_resource[key_comply][0]['Profile']
-        self.id = raw_resource[key_comply][0]['ID']
-        self.result = raw_resource[key_comply][0]['Result']
-        self.custom_id = raw_resource[key_comply][0]['Custom ID']
-        self.version = raw_resource[key_comply][0]['Version']
-        self.time = raw_resource[key_comply][0].get('Timestamp', Rule.default_timestamp)
+        self.ip = tanium_row['IP Address']
+        self.computer = tanium_row['Computer Name']
+        self.count = tanium_row['Count']
+        self.age = tanium_row['Age']
+        self.benchmark = tanium_row[key_comply][0]['Benchmark']
+        self.benchmark_version = tanium_row[key_comply][0]['Benchmark Version']
+        self.profile = tanium_row[key_comply][0]['Profile']
+        self.id = tanium_row[key_comply][0]['ID']
+        self.result = tanium_row[key_comply][0]['Result']
+        self.custom_id = tanium_row[key_comply][0]['Custom ID']
+        self.version = tanium_row[key_comply][0]['Version']
+        self.time = tanium_row[key_comply][0].get('Timestamp', default_timestamp)
 
 
-class Rules():
-    """Create and accumulate list of rule + result pairs with associated metadata."""
+class ResultsMgr():
+    """Represents collection of data to be transformed into an AssessmentResult.results."""
 
-    def __init__(self, tanium: t_tanium) -> None:
-        """Initialize given specified args."""
-        # Perform rules extraction.
-        self._rule_list = []
-        self._unique_rules = []
-        self._results = {}
-        self._extract_rules(tanium)
+    # the current time for consistent timestamping
+    timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc).isoformat()
+
+    @staticmethod
+    def set_timestamp(value: str) -> None:
+        """Set the default timestamp value."""
+        datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S%z')
+        ResultsMgr.timestamp = value
+
+    @staticmethod
+    def get_timestamp() -> str:
+        """Get the default timestamp value."""
+        return ResultsMgr.timestamp
+
+    def __init__(self) -> None:
+        """Initialize."""
+        self.inventory_map: t_inventory_map = {}
+        self.observation_list: t_observation_list = []
+        self.findings_map: t_findings_map = {}
 
     @property
-    def list_all(self) -> List[Rule]:
-        """Get the list of Rule instances."""
-        return self._rule_list
+    def inventory(self) -> ValuesView[Inventory]:
+        """OSCAL inventory."""
+        return self.inventory_map.values()
 
     @property
-    def analysis(self) -> t_analysis:
-        """Get the analysis info."""
-        return {
-            'dispatched_rules': len(self._rule_list), 'unique_rules': len(self._unique_rules), 'results': self._results
-        }
+    def observations(self) -> List[t_observation]:
+        """OSCAL observations."""
+        return self.observation_list
 
-    def _extract_rules(self, tanium: t_tanium) -> None:
-        """Extract the rules from the input data."""
-        for raw_resource in tanium:
-            resource = Rule(raw_resource)
-            logger.debug(f'ip: {resource.ip}')
-            logger.debug(f'computer: {resource.computer}')
-            logger.debug(f'count: {resource.count}')
-            logger.debug(f'age: {resource.age}')
-            logger.debug(f'benchmark: {resource.benchmark}')
-            logger.debug(f'profile: {resource.profile}')
-            logger.debug(f'id: {resource.id}')
-            logger.debug(f'result: {resource.result}')
-            self._rule_list.append(resource)
-            if resource.id not in self._unique_rules:
-                self._unique_rules.append(resource.id)
-            if resource.result not in self._results.keys():
-                self._results[resource.result] = 0
-            self._results[resource.result] += 1
-        logger.debug(f'rules [dispatched]: {len(self._rule_list)}')
-        logger.debug(f'rules [unique]: {len(self._unique_rules)}')
-        logger.debug(f'results: {self._results}')
+    @property
+    def control_selections(self) -> List[t_control_selection]:
+        """OSCAL control selections."""
+        prop = []
+        prop.append(ControlSelection())
+        return prop
+
+    def normalize(self, value: str) -> str:
+        """Normalize result value."""
+        result = None
+        if value is not None:
+            result = value.upper()
+            if result not in ['PASS', 'FAIL']:
+                result = 'ERROR'
+        return result
+
+    def aggregator(self, prev: str, curr: str) -> str:
+        """Aggregate an overall result.
+
+        If any FAIL then FAIL
+        else if any ERROR then ERROR
+        else any not PASS then ERROR
+        else PASS
+        """
+        result = None
+        nprev = self.normalize(prev)
+        ncurr = self.normalize(curr)
+        if nprev is None:
+            result = ncurr
+        elif 'FAIL' in [nprev, ncurr]:
+            result = 'FAIL'
+        elif 'ERROR' in [nprev, ncurr]:
+            result = 'ERROR'
+        elif nprev == 'PASS' and ncurr == 'PASS':
+            result = 'PASS'
+        else:
+            result = 'ERROR'
+        return result
+
+    @property
+    def findings(self) -> List[t_finding]:
+        """OSCAL findings."""
+        prop = []
+        for control in self.findings_map.keys():
+            aggregate = None
+            related_observations = []
+            finding = Finding(
+                uuid=str(uuid.uuid4()), title=control, description=control, collected=ResultsMgr.timestamp
+            )
+            prop.append(finding)
+            for rule in self.findings_map[control].keys():
+                for rule_use in self.findings_map[control][rule]:
+                    related_observations.append(RelatedObservation(observation_uuid=rule_use.observation.uuid))
+                    aggregate = self.aggregator(aggregate, rule_use.result)
+                    break
+            props = [Property(name='result', value=aggregate, class_='STRVALUE')]
+            finding.props = props
+            logger.debug(f'{control}: {aggregate}')
+            finding.related_observations = related_observations
+        return prop
+
+    @property
+    def local_definitions(self) -> t_local_definitions:
+        """OSCAL local definitions."""
+        prop = LocalDefinitions()
+        prop.inventory_items = list(self.inventory)
+        return prop
+
+    @property
+    def reviewed_controls(self) -> t_reviewed_controls:
+        """OSCAL reviewed controls."""
+        prop = ReviewedControls(control_selections=self.control_selections)
+        return prop
+
+    @property
+    def results(self) -> t_result:
+        """OSCAL results."""
+        prop = Result(
+            uuid=str(uuid.uuid4()),
+            title='Tanium',
+            description='Tanium',
+            start=ResultsMgr.timestamp,
+            reviewed_controls=self.reviewed_controls,
+            findings=self.findings,
+            local_definitions=self.local_definitions,
+            observations=self.observations
+        )
+        return prop
+
+    @property
+    def analysis(self) -> List[str]:
+        """OSCAL statistics."""
+        analysis = []
+        analysis.append(f'inventory: {len(self.inventory)}')
+        analysis.append(f'observations: {len(self.observations)}')
+        analysis.append(f'findings: {len(self.findings_map)}')
+        return analysis
+
+    @property
+    def json(self) -> t_json:
+        """OSCAL results as json."""
+        return self.results.json(exclude_none=True, by_alias=True, indent=2)
+
+    def get_inventroy_ref(self, ip: t_ip) -> t_inventory_ref:
+        """Get inventory reference for specified IP."""
+        return self.inventory_map[ip].uuid
+
+    def inventory_extract(self, rule_use: RuleUse) -> None:
+        """Extract inventory from Tanium row."""
+        if rule_use.ip not in self.inventory_map.keys():
+            inventory = Inventory(uuid=str(uuid.uuid4()), description='?')
+            inventory.props = [
+                Property(name='target', value=rule_use.computer, class_='computer-name'),
+                Property(name='target', value=rule_use.ip, class_='computer-ip'),
+            ]
+            self.inventory_map[rule_use.ip] = inventory
+        rule_use.inventory = self.inventory_map[rule_use.ip]
+
+    def observation_extract(self, rule_use: RuleUse) -> None:
+        """Extract observation from Tanuim row."""
+        observation = Observation(uuid=str(uuid.uuid4()), description=rule_use.id, methods=['TEST-AUTOMATED'])
+        subject = Subject(uuid_ref=self.get_inventroy_ref(rule_use.ip), type='inventory-item')
+        observation.subjects = [subject]
+        if rule_use.id.startswith('yxccdf'):
+            ns = 'dns://xccdf'
+            props = [
+                Property(name='rule', value=rule_use.id, ns=ns, class_='id'),
+                Property(name='result', value=rule_use.result, ns=ns, class_='result'),
+                Property(name='time', value=rule_use.time, ns=ns, class_='timestamp'),
+            ]
+        else:
+            props = [
+                Property(name='rule', value=rule_use.id, class_='id'),
+                Property(name='result', value=rule_use.result, class_='result'),
+                Property(name='time', value=rule_use.time, class_='timestamp'),
+            ]
+        observation.props = props
+        self.observation_list.append(observation)
+        rule_use.observation = observation
+
+    def finding_extract(self, rule_use: RuleUse) -> None:
+        """Extract finding from Tanuim row."""
+        control = rule_use.custom_id
+        if control not in self.findings_map.keys():
+            self.findings_map[control] = {}
+        rule = rule_use.id
+        if rule not in self.findings_map[control].keys():
+            self.findings_map[control][rule] = []
+        self.findings_map[control][rule].append(rule_use)
+
+    def ingest(self, tanium: t_tanium_row) -> None:
+        """Process one row of Tanium."""
+        rule_use = RuleUse(tanium, ResultsMgr.timestamp)
+        self.inventory_extract(rule_use)
+        self.observation_extract(rule_use)
+        self.finding_extract(rule_use)
