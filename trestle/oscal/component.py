@@ -550,18 +550,18 @@ class ImplementedComponent(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class Inventory(OscalBaseModel):
+class InventoryItem(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description='A globally unique identifier that can be used to reference this inventory item entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
-        title='Inventory  Universally Unique Identifier',
+        title='Inventory Item Universally Unique Identifier',
     )
     description: str = Field(
         ...,
         description='A summary of the inventory item stating its purpose within the system.',
-        title='Inventory  Description',
+        title='Inventory Item Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)

@@ -53,25 +53,25 @@ class Remove(OscalBaseModel):
     name_ref: Optional[str] = Field(
         None,
         alias='name-ref',
-        description='s to remove, by assigned name',
+        description='Items to remove, by assigned name',
         title='Reference by (assigned) name',
     )
     class_ref: Optional[str] = Field(
         None,
         alias='class-ref',
-        description='s to remove, by class. A token match.',
+        description='Items to remove, by class. A token match.',
         title='Reference by class',
     )
     id_ref: Optional[str] = Field(
         None,
         alias='id-ref',
-        description='s to remove, indicated by their IDs',
+        description='Items to remove, indicated by their IDs',
         title='Reference by ID',
     )
     item_name: Optional[str] = Field(
         None,
         alias='item-name',
-        description="s to remove, by the name of the item's type, or generic identifier, e.g. title or prop",
+        description="Items to remove, by the name of the item's type, or generic identifier, e.g. title or prop",
         title='References by item name or generic identifier',
     )
 
@@ -182,7 +182,7 @@ class Match(OscalBaseModel):
         None,
         alias='with-child-controls',
         description='When a control is included, whether its child (dependent) controls are also included.',
-        title=' contained controls with control',
+        title='Include contained controls with control',
     )
 
 
@@ -266,7 +266,7 @@ class Call(OscalBaseModel):
         None,
         alias='with-child-controls',
         description='When a control is included, whether its child (dependent) controls are also included.',
-        title=' contained controls with control',
+        title='Include contained controls with control',
     )
 
 
@@ -325,7 +325,7 @@ class All(OscalBaseModel):
         None,
         alias='with-child-controls',
         description='When a control is included, whether its child (dependent) controls are also included.',
-        title=' contained controls with control',
+        title='Include contained controls with control',
     )
 
 

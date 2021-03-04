@@ -297,6 +297,16 @@ class Link(OscalBaseModel):
     )
 
 
+class IncludeControl(OscalBaseModel):
+    control_id: str = Field(
+        ...,
+        alias='control-id',
+        description='A reference to a control identifier.',
+        title='Control Identifier Reference',
+    )
+    statement_ids: Optional[List[str]] = Field(None, alias='statement-ids', min_items=1)
+
+
 class ImportSsp(OscalBaseModel):
     href: str = Field(
         ...,
@@ -329,6 +339,16 @@ class ExternalId(OscalBaseModel):
     id: str
 
 
+class ExcludeControl(OscalBaseModel):
+    control_id: str = Field(
+        ...,
+        alias='control-id',
+        description='A reference to a control identifier.',
+        title='Control Identifier Reference',
+    )
+    statement_ids: Optional[List[str]] = Field(None, alias='statement-ids', min_items=1)
+
+
 class EmailAddress(OscalBaseModel):
     __root__: EmailStr = Field(
         ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
@@ -342,16 +362,6 @@ class DocumentId(OscalBaseModel):
         title='Document Identification Scheme',
     )
     identifier: str
-
-
-class Control(OscalBaseModel):
-    control_id: str = Field(
-        ...,
-        alias='control-id',
-        description='A reference to a control identifier.',
-        title='Control Identifier Reference',
-    )
-    statement_ids: Optional[List[str]] = Field(None, alias='statement-ids', min_items=1)
 
 
 class Base64(OscalBaseModel):
@@ -1091,10 +1101,10 @@ class ControlSelection(OscalBaseModel):
         description='A key word to indicate all.',
         title='All',
     )
-    include_controls: Optional[List[Control]] = Field(
+    include_controls: Optional[List[IncludeControl]] = Field(
         None, alias='include-controls', min_items=1
     )
-    exclude_controls: Optional[List[Control]] = Field(
+    exclude_controls: Optional[List[ExcludeControl]] = Field(
         None, alias='exclude-controls', min_items=1
     )
     remarks: Optional[Remarks] = None
@@ -1159,7 +1169,7 @@ class AssessmentSubject(OscalBaseModel):
     description: Optional[str] = Field(
         None,
         description='A human-readable description of the collection of subjects being included in this assessment.',
-        title=' Subjects Description',
+        title='Include Subjects Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
@@ -1480,7 +1490,7 @@ class Origin(OscalBaseModel):
     )
 
 
-class Poam(OscalBaseModel):
+class PoamItem(OscalBaseModel):
     uuid: Optional[
         constr(
             regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -1488,17 +1498,17 @@ class Poam(OscalBaseModel):
     ] = Field(
         None,
         description='Uniquely identifies the POA&M entry. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. A UUID should be consistantly used for a given POA&M item across revisions of the document.',
-        title='POA&M  Universally Unique Identifier',
+        title='POA&M Item Universally Unique Identifier',
     )
     title: str = Field(
         ...,
         description='The title or name for this POA&M item .',
-        title='POA&M  Title',
+        title='POA&M Item Title',
     )
     description: str = Field(
         ...,
         description='A human-readable description of POA&M item.',
-        title='POA&M  Description',
+        title='POA&M Item Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
@@ -1552,18 +1562,18 @@ class Observation(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class Inventory(OscalBaseModel):
+class InventoryItem(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description='A globally unique identifier that can be used to reference this inventory item entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
-        title='Inventory  Universally Unique Identifier',
+        title='Inventory Item Universally Unique Identifier',
     )
     description: str = Field(
         ...,
         description='A summary of the inventory item stating its purpose within the system.',
-        title='Inventory  Description',
+        title='Inventory Item Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
@@ -1579,7 +1589,7 @@ class Inventory(OscalBaseModel):
 
 class LocalDefinitions(OscalBaseModel):
     components: Optional[Dict[str, SystemComponent]] = None
-    inventory_items: Optional[List[Inventory]] = Field(
+    inventory_items: Optional[List[InventoryItem]] = Field(
         None, alias='inventory-items', min_items=1
     )
     remarks: Optional[Remarks] = None
@@ -1703,12 +1713,12 @@ class Activity(OscalBaseModel):
     title: Optional[str] = Field(
         None,
         description='The title for this included activity.',
-        title='d Activity Title',
+        title='Included Activity Title',
     )
     description: str = Field(
         ...,
         description='A human-readable description of this included activity.',
-        title='d Activity Description',
+        title='Included Activity Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
@@ -1817,7 +1827,7 @@ class PlanOfActionAndMilestones(OscalBaseModel):
     )
     observations: Optional[List[Observation]] = Field(None, min_items=1)
     risks: Optional[List[Risk]] = Field(None, min_items=1)
-    poam_items: List[Poam] = Field(..., alias='poam-items', min_items=1)
+    poam_items: List[PoamItem] = Field(..., alias='poam-items', min_items=1)
     back_matter: Optional[BackMatter] = Field(None, alias='back-matter')
 
 
