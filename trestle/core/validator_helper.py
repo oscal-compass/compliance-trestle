@@ -166,22 +166,71 @@ def has_no_duplicate_values_by_name(object_of_interest: Any, name_of_interest: s
     return len(loe) == len(set(loe))
 
 
-def regenerate_uuids(object_of_interest: Any) -> Any:
-    """Regenerate all uuids in model that require updating."""
-    loe = []
+def regenerate_uuids_in_place(object_of_interest: Any, uuid_lut: Any = None) -> Any:
+    """Update all uuids in model that require updating."""
+    if uuid_lut is None:
+        uuid_lut = {}
+    uuid_str = 'uuid'
     if isinstance(object_of_interest, pydantic.BaseModel):
-        value = getattr(object_of_interest, name_of_interest, None)
+        value = getattr(object_of_interest, uuid_str, None)
         if value is not None:
-            loe.append(value)
+            new_uuid = uuid.uuid4()
+            uuid_lut[value] = new_uuid
+            object_of_interest[uuid_str] = new_uuid
+            return object_of_interest, uuid_lut
         fields = getattr(object_of_interest, '__fields_set__', None)
-        if fields is not None:
-            for field in fields:
-                loe.extend(find_values_by_name(getattr(object_of_interest, field, None), name_of_interest))
+        for field in fields:
+            new_object, uuid_lut = regenerate_uuids_in_place(object_of_interest[field], uuid_lut)
+            object_of_interest[field] = new_object
+        return object_of_interest, uuid_lut
     elif type(object_of_interest) is list:
+        new_list = []
         for item in object_of_interest:
-            loe.extend(find_values_by_name(item, name_of_interest))
+            new_item, uuid_lut = regenerate_uuids(item, uuid_lut)
+            new_list.append(new_item)
+        return new_list, uuid_lut
     elif type(object_of_interest) is dict:
-        for item in object_of_interest.values():
-            loe.extend(find_values_by_name(item, name_of_interest))
-    return loe
+        new_dict = {}
+        for key, value in object_of_interest.items():
+            if key == uuid_str:
+                new_val = uuid.uuid4()
+                new_dict[uuid_str] = new_val
+                uuid_lut[value] = new_val
+            else:
+                new_value, uuid_lut = regenerate_uuid(value, uuid_lut)
+                new_dict[key] = new_value
+        return new_dict, uuid_lut
+    return object_of_interest, uuid_lut
+
+def update_new_uuid_refs(object_of_interest: Any, uuid_lut: Any):
+    if uuid_lut is None:
+        return object_of_interest
+    if isinstance(object_of_interest, pydantic.BaseModel):
+        for attr, value in object_of_interest.__dict__.items():
+            
+        fields = getattr(object_of_interest, '__fields_set__', None)
+        for field in fields:
+            new_object, uuid_lut = regenerate_uuids_in_place(object_of_interest[field], uuid_lut)
+            object_of_interest[field] = new_object
+        return object_of_interest, uuid_lut
+    elif type(object_of_interest) is list:
+        new_list = []
+        for item in object_of_interest:
+            new_item, uuid_lut = regenerate_uuids(item, uuid_lut)
+            new_list.append(new_item)
+        return new_list, uuid_lut
+    elif type(object_of_interest) is dict:
+        new_dict = {}
+        for key, value in object_of_interest.items():
+            if key == uuid_str:
+                new_val = uuid.uuid4()
+                new_dict[uuid_str] = new_val
+                uuid_lut[value] = new_val
+            else:
+                new_value, uuid_lut = regenerate_uuid(value, uuid_lut)
+                new_dict[key] = new_value
+        return new_dict, uuid_lut
+    return object_of_interest, uuid_lut
+
+
 
