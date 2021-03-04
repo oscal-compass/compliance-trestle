@@ -231,11 +231,11 @@ class ResultsMgr():
         rule_use.inventory = self.inventory_map[rule_use.ip]
 
     def observation_extract(self, rule_use: RuleUse) -> None:
-        """Extract observation from Tanuim row."""
+        """Extract observation from Tanium row."""
         observation = Observation(uuid=str(uuid.uuid4()), description=rule_use.id, methods=['TEST-AUTOMATED'])
         subject = Subject(uuid_ref=self.get_inventroy_ref(rule_use.ip), type='inventory-item')
         observation.subjects = [subject]
-        if rule_use.id.startswith('yxccdf'):
+        if rule_use.id.startswith('xccdf'):
             ns = 'dns://xccdf'
             props = [
                 Property(name='rule', value=rule_use.id, ns=ns, class_='id'),
@@ -253,7 +253,7 @@ class ResultsMgr():
         rule_use.observation = observation
 
     def finding_extract(self, rule_use: RuleUse) -> None:
-        """Extract finding from Tanuim row."""
+        """Extract finding from Tanium row."""
         control = rule_use.custom_id
         if control not in self.findings_map.keys():
             self.findings_map[control] = {}
