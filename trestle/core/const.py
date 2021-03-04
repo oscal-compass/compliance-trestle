@@ -89,5 +89,3 @@ ARG_DESC_ITEM = 'Item used'
 VAL_MODE_DUPLICATES = 'duplicates'
 
 FILE_ENCODING = 'utf8'
-
-UUID_REGEX = r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'

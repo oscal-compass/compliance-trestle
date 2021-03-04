@@ -347,7 +347,6 @@ def fix_file(fname):
                     p = re.compile(r'.*Optional\[Union\[([^,]+),.*List\[Any\]')
                     refs = p.findall(r)
                     if len(refs) == 1:
-                        print('Found an Any to fix:', r)
                         r = r.replace('List[Any]', f'List[{refs[0]}]')
                     class_text.add_all_refs(r)
                     class_text.add_line(r.rstrip())

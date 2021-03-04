@@ -14,14 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Script to allow comparison of files before and after applying fix_any.py
+Script to allow comparison of files before and after applying fix_any.py.
 
 Load every class in a file as lines of text and output them sorted by class name.
 This allows a standard diff to reveal changes in class content without regard to order.
 Missing classes are also revealed.
 """
-import sys
 import operator
+import sys
+
 from fix_any import ClassText
 
 all_classes = []
@@ -32,8 +33,6 @@ class_text = None
 done_header = False
 
 if len(sys.argv) < 2:
-    print('usage: order_classes.py fname.py')
-    print('creates new file fname_ordered.py')
     exit()
 
 fname = sys.argv[1]
@@ -64,4 +63,3 @@ with open(outname, 'w') as f:
     for c in sorted_classes:
         f.writelines('\n'.join(c.lines) + '\n')
     f.writelines(sorted_forwards)
-

@@ -14,9 +14,6 @@
 # limitations under the License.
 """Utilities for dealing with models."""
 
-import re
-import inspect
-
 from typing import Any, List, Type, TypeVar
 
 import pydantic
@@ -128,109 +125,7 @@ def find_values_by_name(object_of_interest: Any, name_of_interest: str) -> List[
     return loe
 
 
-def find_attribs_by_regex(object_of_interest: Any, regex_of_interest: str):
-    """Find attributes of object matching regex expression."""
-    matches = []
-    p = re.compile(regex_of_interest)
-    for i in inspect.getmembers(object_of_interest):
-        if i[0].startswith('_') or inspect.ismethod(i[1]):
-            continue
-        hits = p.findall(i[0])
-        if hits:
-            matches.append(i)
-    return matches
-
-
-def find_all_attribs_by_regex(object_of_interest: Any, regex_of_interest: str):
-    """Find all attributes in object matching regex expression."""
-    all_attrs = []
-    if isinstance(object_of_interest, pydantic.BaseModel):
-        attrs = find_attribs_by_regex(object_of_interest, regex_of_interest)
-        all_attrs.extend(attrs)
-        fields = getattr(object_of_interest, '__fields_set__', None)
-        if fields is not None:
-            for field in fields:
-                all_attrs.extend(find_attribs_by_regex(getattr(object_of_interest, field, None), regex_of_interest))
-    elif type(object_of_interest) is list:
-        for item in object_of_interest:
-            all_attrs.extend(find_attribs_by_regex(item, regex_of_interest))
-    elif type(object_of_interest) is dict:
-        for item in object_of_interest.values():
-            all_attrs.extend(find_attribs_by_regex(item, regex_of_interest))
-    return all_attrs
-
-
 def has_no_duplicate_values_by_name(object_of_interest: Any, name_of_interest: str) -> bool:
     """Determine if duplicate values of type exist in object."""
     loe = find_values_by_name(object_of_interest, name_of_interest)
     return len(loe) == len(set(loe))
-
-
-def regenerate_uuids_in_place(object_of_interest: Any, uuid_lut: Any = None) -> Any:
-    """Update all uuids in model that require updating."""
-    if uuid_lut is None:
-        uuid_lut = {}
-    uuid_str = 'uuid'
-    if isinstance(object_of_interest, pydantic.BaseModel):
-        value = getattr(object_of_interest, uuid_str, None)
-        if value is not None:
-            new_uuid = uuid.uuid4()
-            uuid_lut[value] = new_uuid
-            object_of_interest[uuid_str] = new_uuid
-            return object_of_interest, uuid_lut
-        fields = getattr(object_of_interest, '__fields_set__', None)
-        for field in fields:
-            new_object, uuid_lut = regenerate_uuids_in_place(object_of_interest[field], uuid_lut)
-            object_of_interest[field] = new_object
-        return object_of_interest, uuid_lut
-    elif type(object_of_interest) is list:
-        new_list = []
-        for item in object_of_interest:
-            new_item, uuid_lut = regenerate_uuids(item, uuid_lut)
-            new_list.append(new_item)
-        return new_list, uuid_lut
-    elif type(object_of_interest) is dict:
-        new_dict = {}
-        for key, value in object_of_interest.items():
-            if key == uuid_str:
-                new_val = uuid.uuid4()
-                new_dict[uuid_str] = new_val
-                uuid_lut[value] = new_val
-            else:
-                new_value, uuid_lut = regenerate_uuid(value, uuid_lut)
-                new_dict[key] = new_value
-        return new_dict, uuid_lut
-    return object_of_interest, uuid_lut
-
-def update_new_uuid_refs(object_of_interest: Any, uuid_lut: Any):
-    if uuid_lut is None:
-        return object_of_interest
-    if isinstance(object_of_interest, pydantic.BaseModel):
-        for attr, value in object_of_interest.__dict__.items():
-            
-        fields = getattr(object_of_interest, '__fields_set__', None)
-        for field in fields:
-            new_object, uuid_lut = regenerate_uuids_in_place(object_of_interest[field], uuid_lut)
-            object_of_interest[field] = new_object
-        return object_of_interest, uuid_lut
-    elif type(object_of_interest) is list:
-        new_list = []
-        for item in object_of_interest:
-            new_item, uuid_lut = regenerate_uuids(item, uuid_lut)
-            new_list.append(new_item)
-        return new_list, uuid_lut
-    elif type(object_of_interest) is dict:
-        new_dict = {}
-        for key, value in object_of_interest.items():
-            if key == uuid_str:
-                new_val = uuid.uuid4()
-                new_dict[uuid_str] = new_val
-                uuid_lut[value] = new_val
-            else:
-                new_value, uuid_lut = regenerate_uuid(value, uuid_lut)
-                new_dict[key] = new_value
-        return new_dict, uuid_lut
-    return object_of_interest, uuid_lut
-
-
-
