@@ -26,7 +26,6 @@ This script is normally called by gen_oscal.py when models are generated.
 import logging
 import operator
 import re
-import string
 
 from trestle.oscal import OSCAL_VERSION_REGEX
 
@@ -83,13 +82,9 @@ class ClassText():
         self.lines.append(line)
 
     def add_ref_if_good(self, ref_name):
-        """Add refs after removing digits and/or singleton string."""
-        if not ref_name:
-            return
-        if ref_name == base64_str:
+        """Add non-empty refs."""
+        if ref_name:
             self.refs.add(ref_name)
-            return
-        self.refs.add(ref_name.rstrip(string.digits))
 
     def add_ref_pattern(self, p, line):
         """Add new class names found based on pattern."""
@@ -180,11 +175,6 @@ class ClassText():
             return False
         if self.name.find('min_items') >= 0:
             return False
-        if self.name == base64_str:
-            return True
-        # any other class ending with digit is assumed bad
-        if self.name != self.name.rstrip(string.digits):
-            return False
         return True
 
 
@@ -253,6 +243,7 @@ def reorder(class_list):
 
 def fix_header(header):
     """Fix imports and remove timestamp from header."""
+    '--disable-timestamp should work but had no effect.'
     new_header = []
     for r in header:
         if r.find(' timestamp: ') >= 0:
@@ -276,12 +267,8 @@ def clean_classes(class_list):
         cls = class_list[j]
         for i in range(len(cls.lines)):
             line = cls.lines[i]
-            for c2 in class_list:
-                cname = c2.name
-                pattern = cname + '[0-9]*'
-                line = re.sub(pattern, cname, line)
-                for bad_item in bad_items:
-                    line = line.replace(f'{bad_item}Item', bad_item)
+            for bad_item in bad_items:
+                line = line.replace(f'{bad_item}Item', bad_item)
             cls.lines[i] = line
         for bad_item in bad_items:
             if cls.name == f'{bad_item}Item':

@@ -54,6 +54,34 @@ class Address(OscalBaseModel):
     )
 
 
+class Address1(OscalBaseModel):
+    type: Optional[str] = Field(
+        None, description='Indicates the type of address.', title='Address Type'
+    )
+    addr_lines: Optional[List[str]] = Field(None, alias='addr-lines', min_items=1)
+    city: Optional[str] = Field(
+        None,
+        description='City, town or geographical region for the mailing address.',
+        title='City',
+    )
+    state: Optional[str] = Field(
+        None,
+        description='State, province or analogous geographical region for mailing address',
+        title='State',
+    )
+    postal_code: Optional[str] = Field(
+        None,
+        alias='postal-code',
+        description='Postal or ZIP code for mailing address',
+        title='Postal Code',
+    )
+    country: Optional[str] = Field(
+        None,
+        description='The ISO 3166-1 alpha-2 country code for the mailing address.',
+        title='Country Code',
+    )
+
+
 class Type(Enum):
     person = 'person'
     organization = 'organization'
@@ -62,6 +90,13 @@ class Type(Enum):
 class Transport(Enum):
     TCP = 'TCP'
     UDP = 'UDP'
+
+
+class TelephoneNumber1(OscalBaseModel):
+    type: Optional[str] = Field(
+        None, description='Indicates the type of phone number.', title='type flag'
+    )
+    number: str
 
 
 class TelephoneNumber(OscalBaseModel):
@@ -79,6 +114,14 @@ class SystemId(OscalBaseModel):
         title='Identification System Type',
     )
     id: str
+
+
+class State1(Enum):
+    operational = 'operational'
+    under_development = 'under-development'
+    under_major_modification = 'under-major-modification'
+    disposition = 'disposition'
+    other = 'other'
 
 
 class State(Enum):
@@ -247,10 +290,25 @@ class ExternalId(OscalBaseModel):
     id: str
 
 
+class EmailAddress1(OscalBaseModel):
+    __root__: EmailStr = Field(
+        ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
+    )
+
+
 class EmailAddress(OscalBaseModel):
     __root__: EmailStr = Field(
         ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
     )
+
+
+class DocumentId1(OscalBaseModel):
+    scheme: AnyUrl = Field(
+        ...,
+        description='Qualifies the kind of document identifier.',
+        title='Document Identification Scheme',
+    )
+    identifier: str
 
 
 class DocumentId(OscalBaseModel):
@@ -353,6 +411,13 @@ class SystemUser(OscalBaseModel):
     role_ids: Optional[List[RoleId]] = Field(None, alias='role-ids', min_items=1)
     authorized_privileges: Optional[List[AuthorizedPrivilege]] = Field(
         None, alias='authorized-privileges', min_items=1
+    )
+    remarks: Optional[Remarks] = None
+
+
+class Status1(OscalBaseModel):
+    state: State1 = Field(
+        ..., description='The current operating status.', title='State'
     )
     remarks: Optional[Remarks] = None
 
@@ -598,13 +663,13 @@ class Party(OscalBaseModel):
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
-    email_addresses: Optional[List[EmailAddress]] = Field(
+    email_addresses: Optional[List[EmailAddress1]] = Field(
         None, alias='email-addresses', min_items=1
     )
-    telephone_numbers: Optional[List[TelephoneNumber]] = Field(
+    telephone_numbers: Optional[List[TelephoneNumber1]] = Field(
         None, alias='telephone-numbers', min_items=1
     )
-    addresses: Optional[List[Address]] = Field(None, min_items=1)
+    addresses: Optional[List[Address1]] = Field(None, min_items=1)
     location_uuids: Optional[List[LocationUuid]] = Field(
         None, alias='location-uuids', min_items=1
     )
@@ -1058,7 +1123,7 @@ class Resource(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    document_ids: Optional[List[DocumentId]] = Field(
+    document_ids: Optional[List[DocumentId1]] = Field(
         None, alias='document-ids', min_items=1
     )
     citation: Optional[Citation] = Field(
@@ -1205,7 +1270,7 @@ class SystemCharacteristics(OscalBaseModel):
     security_impact_level: SecurityImpactLevel = Field(
         ..., alias='security-impact-level'
     )
-    status: Status = Field(
+    status: Status1 = Field(
         ...,
         description='Describes the operational status of the system.',
         title='Status',
