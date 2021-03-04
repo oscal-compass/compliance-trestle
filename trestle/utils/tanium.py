@@ -15,6 +15,7 @@
 """Facilitate Tanium report to NIST OSCAL json transformation."""
 
 import datetime
+import json
 import logging
 import uuid
 from typing import Any, Dict, List, Union, ValuesView
@@ -187,8 +188,8 @@ class ResultsMgr():
         return prop
 
     @property
-    def results(self) -> t_result:
-        """OSCAL results."""
+    def result(self) -> t_result:
+        """OSCAL result."""
         prop = Result(
             uuid=str(uuid.uuid4()),
             title='Tanium',
@@ -213,7 +214,11 @@ class ResultsMgr():
     @property
     def json(self) -> t_json:
         """OSCAL results as json."""
-        return self.results.json(exclude_none=True, by_alias=True, indent=2)
+        jstring = self.result.json(exclude_none=True, by_alias=True, indent=2)
+        jobject = json.loads(jstring)
+        jobject = {'results': [jobject]}
+        jstring = json.dumps(jobject, indent=2)
+        return jstring
 
     def get_inventroy_ref(self, ip: t_ip) -> t_inventory_ref:
         """Get inventory reference for specified IP."""
