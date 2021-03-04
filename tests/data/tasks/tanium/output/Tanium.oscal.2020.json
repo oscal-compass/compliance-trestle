@@ -1,0 +1,1229 @@
+{
+  "observations": [
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2106.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "fe80::3cd5:564b:940e:49ab"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": ""
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.69.11"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "win_security_ps",
+      "description": "win_security_ps",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": ", version ",
+          "props": [
+            {
+              "name": "rule",
+              "class": "id",
+              "value": "win_security_ps"
+            },
+            {
+              "name": "result",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "class": "computer-name",
+              "value": "cmp-wn-2106.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "class": "computer-ip",
+              "value": "10.8.69.11"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "av_service",
+      "description": "av_service",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": ", version ",
+          "props": [
+            {
+              "name": "rule",
+              "class": "id",
+              "value": "av_service"
+            },
+            {
+              "name": "result",
+              "class": "result",
+              "value": "fail"
+            },
+            {
+              "name": "time",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "class": "computer-name",
+              "value": "cmp-wn-2106.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "class": "computer-ip",
+              "value": "10.8.69.11"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2115.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "fe80::21f6:c36a:3f45:ac95"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2115.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.68.218"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "fail"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2115.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.68.218"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_19.7.44.2.1_L2_Ensure_Prevent_Codec_Download_is_set_to_Enabled",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_19.7.44.2.1_L2_Ensure_Prevent_Codec_Download_is_set_to_Enabled",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_19.7.44.2.1_L2_Ensure_Prevent_Codec_Download_is_set_to_Enabled"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "fail"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2115.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.68.218"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2105.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "fe80::186d:aba0:846b:f858"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2105.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.69.7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "fail"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2105.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.69.7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "win_security_ps",
+      "description": "win_security_ps",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": ", version ",
+          "props": [
+            {
+              "name": "rule",
+              "class": "id",
+              "value": "win_security_ps"
+            },
+            {
+              "name": "result",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "class": "computer-name",
+              "value": "cmp-wn-2105.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "class": "computer-ip",
+              "value": "10.8.69.7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2108.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "fe80::fcb4:14fa:b62d:ad"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2108.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.68.160"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "fail"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2108.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.68.160"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "av_service",
+      "description": "av_service",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": ", version ",
+          "props": [
+            {
+              "name": "rule",
+              "class": "id",
+              "value": "av_service"
+            },
+            {
+              "name": "result",
+              "class": "result",
+              "value": "fail"
+            },
+            {
+              "name": "time",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "class": "computer-name",
+              "value": "cmp-wn-2108.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "class": "computer-ip",
+              "value": "10.8.68.160"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2109.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "fe80::20cf:636b:5fe7:b0ff"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2109.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.77.220"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "fail"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2109.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.77.220"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "win_security_ps",
+      "description": "win_security_ps",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": ", version ",
+          "props": [
+            {
+              "name": "rule",
+              "class": "id",
+              "value": "win_security_ps"
+            },
+            {
+              "name": "result",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "class": "computer-name",
+              "value": "cmp-wn-2109.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "class": "computer-ip",
+              "value": "10.8.77.220"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2107.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "fe80::2585:c75f:8e0:666c"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2107.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.68.184"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "fail"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2107.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.68.184"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "win_security_ps",
+      "description": "win_security_ps",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": ", version ",
+          "props": [
+            {
+              "name": "rule",
+              "class": "id",
+              "value": "win_security_ps"
+            },
+            {
+              "name": "result",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "class": "computer-name",
+              "value": "cmp-wn-2107.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "class": "computer-ip",
+              "value": "10.8.68.184"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2116.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "fe80::ed25:77c3:b611:eedc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2116.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.68.219"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "fail"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-name",
+              "value": "cmp-wn-2116.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "computer-ip",
+              "value": "10.8.68.219"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "win_security_ps",
+      "description": "win_security_ps",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "relevant-evidence": [
+        {
+          "description": ", version ",
+          "props": [
+            {
+              "name": "rule",
+              "class": "id",
+              "value": "win_security_ps"
+            },
+            {
+              "name": "result",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "class": "timestamp",
+              "value": "2020-02-24T19:31:13+00:00"
+            },
+            {
+              "name": "target",
+              "class": "computer-name",
+              "value": "cmp-wn-2116.demo.tanium.local"
+            },
+            {
+              "name": "target",
+              "class": "computer-ip",
+              "value": "10.8.68.219"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
