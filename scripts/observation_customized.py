@@ -17,16 +17,19 @@
 This script creates the IBM custom interchange json schema.
 
 It uses an observations list to convey results from some source collection.
-Given the default output target (/dev/stdout), this script will not work on Windows.
+The default output target is either (/dev/)stdout or, if that does not exists,
+e.g., in Windows environments, then save to file ./output.json.
 
 Arguments:
 output_file: str
-    Indicates the file to write the schema to. Defaults to /dev/stdout if omitted.
+    Indicates the file to write the schema to.
+    If omitted, defaults to /dev/stdout or, if that does not exist, ./output.json.
 schema_title: str (optional)
     The title to set. If omitted, a default is used.
 """
 import argparse
 import json
+import pathlib
 from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
@@ -55,19 +58,29 @@ class IBMObservationsInterchange(BaseModel):
 
 
 preferred_title = 'ibm_observations_interchange'
-default_output = '/dev/stdout'
+default_output = '/dev/stdout' if pathlib.Path('/dev/stdout').exists() else './output.json'
 
 parser = argparse.ArgumentParser(description='Generate custom schema.')
 parser.add_argument(
-    '--out', dest='output_file', action='store', default=default_output, help='output target for schema'
+    '--out',
+    dest='output_file',
+    action='store',
+    default=default_output,
+    help=f'output target for schema, defaults to {default_output} if omitted'
 )
-parser.add_argument('--title', dest='schema_title', action='store', default=preferred_title, help='title for schema')
+parser.add_argument(
+    '--title',
+    dest='schema_title',
+    action='store',
+    default=preferred_title,
+    help=f'title for schema, defaults to "{preferred_title}" if omitted'
+)
 args = parser.parse_args()
 
 interchange_schema_dict = json.loads(IBMObservationsInterchange.schema_json())
 interchange_schema_dict['title'] = args.schema_title
 
-outfile = open(args.output_file, 'w+')
+outfile = open(args.output_file, 'w')
 try:
     outfile.write(json.dumps(interchange_schema_dict, indent=4))
 except Exception as err:
