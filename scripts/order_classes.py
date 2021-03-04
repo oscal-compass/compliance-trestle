@@ -62,6 +62,6 @@ outname = fname.replace('.py', '_sorted.py')
 
 with open(outname, 'w') as f:
     for c in sorted_classes:
-        f.writelines('\n'.join(c.lines))
+        f.writelines('\n'.join(c.lines) + '\n')
     f.writelines(sorted_forwards)
 
