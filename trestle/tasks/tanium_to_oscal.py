@@ -52,16 +52,16 @@ class TaniumToOscal(TaskBase):
         """Print the help string."""
         logger.info(f'Help information for {self.name} task.')
         logger.info('')
-        logger.info('Purpose: Transform Tanium files into Open Security Controls Assessment Language (OSCAL) partial results files.')
+        logger.info('Purpose: Transform Tanium files into Open Security Controls Assessment Language (OSCAL) partial results file.')
         logger.info('')
         logger.info('Configuration flags sit under [task.tanium-to-oscal]:')
         logger.info('  input-dir = (required) the path of the input directory comprising Tanium reports.')
-        logger.info('  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.')
+        logger.info('  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json file.')
         logger.info('  output-overwrite = (optional) true [default] or false; replace existing output when true.')
         logger.info('  quiet = (optional) true or false [default]; display file creations and rules analysis when false.')
         logger.info('  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Tanium report is used if present, otherwise current time is used.')                                                       
         logger.info('')
-        logger.info('Operation: A transformation is performed on one or more Tanium input files to produce corresponding output files in OSCAL partial results format. Input files are Tanium reports comprising individual lines consumable as json.')
+        logger.info('Operation: A transformation is performed on one or more Tanium input files to produce corresponding output file in OSCAL partial results format. Input files are Tanium reports comprising individual lines consumable as json.')
         logger.info('')
         logger.info('All the Tanuim report files in the input-dir are processed, each producing a corresponding .json output-dir file.')
         logger.info('')
@@ -99,38 +99,26 @@ class TaniumToOscal(TaskBase):
         timestamp = self._config.get('timestamp')
         if timestamp is not None:
             try:
-                tanium.Rule.set_default_datetime(timestamp)
+                tanium.ResultsMgr.set_timestamp(timestamp)
             except Exception as e:
                 logger.error(f'config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
-        # insure output folder exists
-        opth.mkdir(exist_ok=True, parents=True)
-        # examine each file in the input folder
-        for ifile in sorted(ipth.iterdir()):
+        results_mgr = tanium.ResultsMgr()
+        for ifile in sorted(ipth.iterdir()):        
+            logger.debug(f'input: {ifile}')
             # assemble collection comprising output file name to unprocessed content
             collection = self._assemble(ifile)
-            observations, analysis = tanium.get_observations(collection, 'json')
-            oname = ifile.with_suffix('').name + '.oscal' + '.json'
-            ofile = opth / pathlib.Path(oname)
-            # only allow writing output file if either:
-            # a) it does not already exist, or
-            # b) output-overwrite flag is True
-            if not overwrite:
-                if ofile.exists():
-                    logger.error(f'file exists: {ofile}')
-                    return TaskOutcome(mode + 'failure')
-            if not simulate:
-                if not quiet:
-                    logger.info(f'create: {ofile}')
-                # write the OSCAL to the output file
-                write_file = pathlib.Path(ofile).open('w', encoding=const.FILE_ENCODING)
-                write_file.write(observations)
-                # display analysis
-                if not quiet:
-                    logger.info(f'Rules Analysis:')
-                    logger.info(f'rules [dispatched]: {analysis["dispatched_rules"]}')
-                    logger.info(f'rules [unique]: {analysis["unique_rules"]}')
-                    logger.info(f'results: {analysis["results"]}')
+            for row in collection:
+                results_mgr.ingest(row)
+        oname = 'Tanium' + '.oscal' + '.results' + '.json'
+        ofile = opth / pathlib.Path(oname)
+        logger.debug(f'outout: {ofile}') 
+        write_file = pathlib.Path(ofile).open('w', encoding=const.FILE_ENCODING)
+        write_file.write(results_mgr.json)
+        analysis = results_mgr.analysis
+        if not simulate:
+            for line in analysis:
+                logger.info(line)
         return TaskOutcome(mode + 'success')
 
     def _assemble(self, ifile: pathlib.Path) -> Dict[str, Any]:
