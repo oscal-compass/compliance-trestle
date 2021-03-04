@@ -286,6 +286,16 @@ class Link(OscalBaseModel):
     )
 
 
+class IncludeControl(OscalBaseModel):
+    control_id: str = Field(
+        ...,
+        alias='control-id',
+        description='A reference to a control identifier.',
+        title='Control Identifier Reference',
+    )
+    statement_ids: Optional[List[str]] = Field(None, alias='statement-ids', min_items=1)
+
+
 class ImportSsp(OscalBaseModel):
     href: str = Field(
         ...,
@@ -318,6 +328,16 @@ class ExternalId(OscalBaseModel):
     id: str
 
 
+class ExcludeControl(OscalBaseModel):
+    control_id: str = Field(
+        ...,
+        alias='control-id',
+        description='A reference to a control identifier.',
+        title='Control Identifier Reference',
+    )
+    statement_ids: Optional[List[str]] = Field(None, alias='statement-ids', min_items=1)
+
+
 class EmailAddress(OscalBaseModel):
     __root__: EmailStr = Field(
         ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
@@ -331,16 +351,6 @@ class DocumentId(OscalBaseModel):
         title='Document Identification Scheme',
     )
     identifier: str
-
-
-class Control(OscalBaseModel):
-    control_id: str = Field(
-        ...,
-        alias='control-id',
-        description='A reference to a control identifier.',
-        title='Control Identifier Reference',
-    )
-    statement_ids: Optional[List[str]] = Field(None, alias='statement-ids', min_items=1)
 
 
 class Base64(OscalBaseModel):
@@ -1001,18 +1011,18 @@ class ImplementedComponent(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class Inventory(OscalBaseModel):
+class InventoryItem(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description='A globally unique identifier that can be used to reference this inventory item entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
-        title='Inventory  Universally Unique Identifier',
+        title='Inventory Item Universally Unique Identifier',
     )
     description: str = Field(
         ...,
         description='A summary of the inventory item stating its purpose within the system.',
-        title='Inventory  Description',
+        title='Inventory Item Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
@@ -1061,10 +1071,10 @@ class ControlSelection(OscalBaseModel):
         description='A key word to indicate all.',
         title='All',
     )
-    include_controls: Optional[List[Control]] = Field(
+    include_controls: Optional[List[IncludeControl]] = Field(
         None, alias='include-controls', min_items=1
     )
-    exclude_controls: Optional[List[Control]] = Field(
+    exclude_controls: Optional[List[ExcludeControl]] = Field(
         None, alias='exclude-controls', min_items=1
     )
     remarks: Optional[Remarks] = None
@@ -1166,7 +1176,7 @@ class AssessmentSubject(OscalBaseModel):
     description: Optional[str] = Field(
         None,
         description='A human-readable description of the collection of subjects being included in this assessment.',
-        title=' Subjects Description',
+        title='Include Subjects Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
@@ -1454,6 +1464,35 @@ class Origin(OscalBaseModel):
     )
 
 
+class Observation(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='Uniquely identifies this observation. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. Once assigned, a UUID should be consistantly used for a given observation across revisions.',
+        title='Observation Universally Unique Identifier',
+    )
+    title: Optional[str] = Field(
+        None, description='The title for this observation.', title='Observation Title'
+    )
+    description: str = Field(
+        ...,
+        description='A human-readable description of this assessment observation.',
+        title='Observaton Description',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    methods: List[str] = Field(..., min_items=1)
+    types: Optional[List[str]] = Field(None, min_items=1)
+    origins: Optional[List[Origin]] = Field(None, min_items=1)
+    subjects: Optional[List[Subject]] = Field(None, min_items=1)
+    relevant_evidence: Optional[List[RelevantEvidence]] = Field(
+        None, alias='relevant-evidence', min_items=1
+    )
+    remarks: Optional[Remarks] = None
+
+
 class Metadata(OscalBaseModel):
     title: str = Field(
         ...,
@@ -1616,12 +1655,12 @@ class Activity(OscalBaseModel):
     title: Optional[str] = Field(
         None,
         description='The title for this included activity.',
-        title='d Activity Title',
+        title='Included Activity Title',
     )
     description: str = Field(
         ...,
         description='A human-readable description of this included activity.',
-        title='d Activity Description',
+        title='Included Activity Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
@@ -1714,38 +1753,9 @@ class Risk(OscalBaseModel):
     )
 
 
-class Observation(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='Uniquely identifies this observation. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. Once assigned, a UUID should be consistantly used for a given observation across revisions.',
-        title='Observation Universally Unique Identifier',
-    )
-    title: Optional[str] = Field(
-        None, description='The title for this observation.', title='Observation Title'
-    )
-    description: str = Field(
-        ...,
-        description='A human-readable description of this assessment observation.',
-        title='Observaton Description',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    methods: List[str] = Field(..., min_items=1)
-    types: Optional[List[str]] = Field(None, min_items=1)
-    origins: Optional[List[Origin]] = Field(None, min_items=1)
-    subjects: Optional[List[Subject]] = Field(None, min_items=1)
-    relevant_evidence: Optional[List[RelevantEvidence]] = Field(
-        None, alias='relevant-evidence', min_items=1
-    )
-    remarks: Optional[Remarks] = None
-
-
 class LocalDefinitions(OscalBaseModel):
     components: Optional[Dict[str, SystemComponent]] = None
-    inventory_items: Optional[List[Inventory]] = Field(
+    inventory_items: Optional[List[InventoryItem]] = Field(
         None, alias='inventory-items', min_items=1
     )
     users: Optional[Dict[str, SystemUser]] = None
