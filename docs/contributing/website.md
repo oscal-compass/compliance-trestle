@@ -74,7 +74,7 @@ The resulting models have some side effects that users and developers should be 
 - The generated files have many classes that simply have a ```__root__``` element defined, along with a description.  Such classes don't have particular value in such a simple form and could instead simply be defined in the parent class.
 
 ### Seeing the changes induced by ```fix_any.py``` on the classes.
-As a convenience for developers a separate script, ```scripts/order_classes.py``` is available 
+As a convenience for developers, a separate script, ```scripts/order_classes.py``` is available, which orders the classes in a given file alphabetically.  This way, if you use the script on files before and after applying ```fix_any.py``` you can use a normal diff tool to see the changes made.  This is strictly as a development tool for doing the comparison and the resulting files will not work since they will have forward references. 
 
 
 ## Expectations on developers of trestle functionality
