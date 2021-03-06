@@ -53,6 +53,7 @@ t_reviewed_controls = ReviewedControls
 t_inventory_map = Dict[t_ip, t_inventory]
 t_observation_list = List[Observation]
 t_findings_map = Dict[t_control, Any]
+t_results_map = Dict[str, Any]
 
 
 class RuleUse():
@@ -78,10 +79,13 @@ class RuleUse():
         self.custom_id = tanium_row[key_comply][0]['Custom ID']
         self.version = tanium_row[key_comply][0]['Version']
         self.time = tanium_row[key_comply][0].get('Timestamp', default_timestamp)
+        # if no control, then control is rule
+        if len(self.custom_id) == 0:
+            self.custom_id = self.id
 
 
 class ResultsMgr():
-    """Represents collection of data to be transformed into an AssessmentResult.results."""
+    """Represents collection of data to transformed into an AssessmentResult.results."""
 
     # the current time for consistent timestamping
     timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc).isoformat()
@@ -102,6 +106,7 @@ class ResultsMgr():
         self.inventory_map: t_inventory_map = {}
         self.observation_list: t_observation_list = []
         self.findings_map: t_findings_map = {}
+        self.results_map: t_findings_map = {}
 
     @property
     def inventory(self) -> ValuesView[Inventory]:
@@ -120,7 +125,7 @@ class ResultsMgr():
         prop.append(ControlSelection())
         return prop
 
-    def normalize(self, value: str) -> str:
+    def _normalize(self, value: str) -> str:
         """Normalize result value."""
         result = None
         if value is not None:
@@ -129,7 +134,7 @@ class ResultsMgr():
                 result = 'ERROR'
         return result
 
-    def aggregator(self, prev: str, curr: str) -> str:
+    def _aggregator(self, prev: str, curr: str) -> str:
         """Aggregate an overall result.
 
         If any FAIL then FAIL
@@ -137,9 +142,9 @@ class ResultsMgr():
         else any not PASS then ERROR
         else PASS
         """
-        result = None
-        nprev = self.normalize(prev)
-        ncurr = self.normalize(curr)
+        result = 'ERROR'
+        nprev = self._normalize(prev)
+        ncurr = self._normalize(curr)
         if nprev is None:
             result = ncurr
         elif 'FAIL' in [nprev, ncurr]:
@@ -148,16 +153,14 @@ class ResultsMgr():
             result = 'ERROR'
         elif nprev == 'PASS' and ncurr == 'PASS':
             result = 'PASS'
-        else:
-            result = 'ERROR'
         return result
 
     @property
     def findings(self) -> List[t_finding]:
         """OSCAL findings."""
         prop = []
+        aggregate = None
         for control in self.findings_map.keys():
-            aggregate = None
             related_observations = []
             finding = Finding(
                 uuid=str(uuid.uuid4()), title=control, description=control, collected=ResultsMgr.timestamp
@@ -165,12 +168,14 @@ class ResultsMgr():
             prop.append(finding)
             for rule in self.findings_map[control].keys():
                 for rule_use in self.findings_map[control][rule]:
+                    if rule_use.result not in self.results_map.keys():
+                        self.results_map[rule_use.result] = 0
+                    self.results_map[rule_use.result] += 1
                     related_observations.append(RelatedObservation(observation_uuid=rule_use.observation.uuid))
-                    aggregate = self.aggregator(aggregate, rule_use.result)
-                    break
+                    aggregate = self._aggregator(aggregate, rule_use.result)
+                    logger.debug(f'{control} {rule} {rule_use.result} {aggregate}')
             props = [Property(name='result', value=aggregate, class_='STRVALUE')]
             finding.props = props
-            logger.debug(f'{control}: {aggregate}')
             finding.related_observations = related_observations
         return prop
 
@@ -209,6 +214,7 @@ class ResultsMgr():
         analysis.append(f'inventory: {len(self.inventory)}')
         analysis.append(f'observations: {len(self.observations)}')
         analysis.append(f'findings: {len(self.findings_map)}')
+        analysis.append(f'results: {self.results_map}')
         return analysis
 
     @property
@@ -220,14 +226,14 @@ class ResultsMgr():
         jstring = json.dumps(jobject, indent=2)
         return jstring
 
-    def get_inventroy_ref(self, ip: t_ip) -> t_inventory_ref:
+    def _get_inventroy_ref(self, ip: t_ip) -> t_inventory_ref:
         """Get inventory reference for specified IP."""
         return self.inventory_map[ip].uuid
 
-    def inventory_extract(self, rule_use: RuleUse) -> None:
+    def _inventory_extract(self, rule_use: RuleUse) -> None:
         """Extract inventory from Tanium row."""
         if rule_use.ip not in self.inventory_map.keys():
-            inventory = Inventory(uuid=str(uuid.uuid4()), description='?')
+            inventory = Inventory(uuid=str(uuid.uuid4()), description='inventory')
             inventory.props = [
                 Property(name='target', value=rule_use.computer, class_='computer-name'),
                 Property(name='target', value=rule_use.ip, class_='computer-ip'),
@@ -235,10 +241,10 @@ class ResultsMgr():
             self.inventory_map[rule_use.ip] = inventory
         rule_use.inventory = self.inventory_map[rule_use.ip]
 
-    def observation_extract(self, rule_use: RuleUse) -> None:
+    def _observation_extract(self, rule_use: RuleUse) -> None:
         """Extract observation from Tanium row."""
         observation = Observation(uuid=str(uuid.uuid4()), description=rule_use.id, methods=['TEST-AUTOMATED'])
-        subject = Subject(uuid_ref=self.get_inventroy_ref(rule_use.ip), type='inventory-item')
+        subject = Subject(uuid_ref=self._get_inventroy_ref(rule_use.ip), type='inventory-item')
         observation.subjects = [subject]
         if rule_use.id.startswith('xccdf'):
             ns = 'dns://xccdf'
@@ -257,7 +263,7 @@ class ResultsMgr():
         self.observation_list.append(observation)
         rule_use.observation = observation
 
-    def finding_extract(self, rule_use: RuleUse) -> None:
+    def _finding_extract(self, rule_use: RuleUse) -> None:
         """Extract finding from Tanium row."""
         control = rule_use.custom_id
         if control not in self.findings_map.keys():
@@ -270,6 +276,6 @@ class ResultsMgr():
     def ingest(self, tanium: t_tanium_row) -> None:
         """Process one row of Tanium."""
         rule_use = RuleUse(tanium, ResultsMgr.timestamp)
-        self.inventory_extract(rule_use)
-        self.observation_extract(rule_use)
-        self.finding_extract(rule_use)
+        self._inventory_extract(rule_use)
+        self._observation_extract(rule_use)
+        self._finding_extract(rule_use)
