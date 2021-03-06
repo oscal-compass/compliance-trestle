@@ -101,7 +101,7 @@ class TaniumToOscal(TaskBase):
         if odir is None and ofile is None:
             logger.error(f'config "output-dir" or "output-file" is missing')
             return TaskOutcome(mode + 'failure')
-        overwrite = self._config.getboolean('output-overwrite', True)
+        self._overwrite = self._config.getboolean('output-overwrite', True)
         quiet = self._config.get('quiet', False)
         self._verbose = not self._simulate and not quiet
         # timestamp
@@ -117,7 +117,7 @@ class TaniumToOscal(TaskBase):
             opth = pathlib.Path(odir)
             merge = False
         if ofile is not None:
-            opth = pathlib.Path(odir).parent
+            opth = pathlib.Path(ofile).parent
             merge = True
         # insure output dir exists
         opth.mkdir(exist_ok=True, parents=True)
@@ -131,14 +131,20 @@ class TaniumToOscal(TaskBase):
             for row in collection:
                 results_mgr.ingest(row)
             if not merge:
-                oname = ifile.name + '.oscal' + '.json'
+                oname = ifile.stem + '.oscal' + '.json'
                 ofile = opth / oname
+                if not self._overwrite and pathlib.Path(ofile).exists():
+                    logger.error(f'output: {ofile} already exists')
+                    return TaskOutcome(mode + 'failure')
                 self._write_file(results_mgr, ofile)
                 self._show_analysis(results_mgr)
                 results_mgr = tanium.ResultsMgr()
         if merge:
             oname = 'Tanium' + '.oscal' + '.json'
             ofile = opth / pathlib.Path(oname)
+            if not self._overwrite and pathlib.Path(ofile).exists():
+                logger.error(f'output: {ofile} already exists')
+                return TaskOutcome(mode + 'failure')
             self._write_file(results_mgr, ofile)
             self._show_analysis(results_mgr)
         return TaskOutcome(mode + 'success')
