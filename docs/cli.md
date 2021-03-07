@@ -640,8 +640,8 @@ Example config:
 ```
 [task.tanium-to-oscal]
 
-input-dir =  /home/user/git/evidence/tanium/input
-output-dir = /home/user/git/evidence/oscal/output
+input-dir =  /home/user/git/compliance/tanium/input
+output-dir = /home/user/git/compliance/oscal/output
 output-overwrite = true
 ```
 **input**
@@ -650,10 +650,10 @@ output-overwrite = true
 Example input directory contents listing:
 </span>
 
-*/home/user/git/evidence/tanium/input*
+*/home/user/git/compliance/tanium/input*
 
 ```
--rw-rw-r--. 1 degenaro degenaro 1426 Feb 19 15:27 Tanium.comply-nist-results
+-rw-rw-r--. 1 degenaro degenaro 1830 Mar  7 08:23 Tanium.comply-nist-results
 
 ```
 
@@ -663,8 +663,8 @@ Example input directory contents listing:
 ```
 {"IP Address":"fe80::3cd5:564b:940e:49ab","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords","Result":"pass","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
 {"IP Address":"10.8.69.11","Computer Name":"","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0","Result":"pass","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
-{"IP Address":"10.8.69.11","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"","Benchmark Version":"","Profile":"","ID":"win_security_ps","Result":"pass","Custom ID":"","Version":""}],"Count":"1","Age":"600"}
-{"IP Address":"10.8.69.11","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"","Benchmark Version":"","Profile":"","ID":"av_service","Result":"fail","Custom ID":"","Version":""}],"Count":"1","Age":"600"}
+{"IP Address":"10.8.69.11","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days","Result":"fail","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
+{"IP Address":"10.8.69.11","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.4_L1_Ensure_Minimum_password_length_is_set_to_14_or_more_characters","Result":"pass","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
 
 ```
 **output**
@@ -673,10 +673,10 @@ Example input directory contents listing:
 Example output directory contents listing:
 </span>
 
-*/home/user/git/evidence/tanium/output*
+*/home/user/git/compliance/oscal/output*
 
 ```
--rw-rw-r--. 1 degenaro degenaro 5031 Feb 22 15:01 Tanium.oscal.json
+-rw-rw-r--. 1 degenaro degenaro 6479 Mar  7 08:25 Tanium.oscal.json
 
 ```
 
@@ -685,17 +685,57 @@ Example output directory contents listing:
 
 ```
 {
-  "observations": [
+  "results": [
     {
-      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
-      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
-      "methods": [
-        "TEST-AUTOMATED"
-      ],
-      "relevant-evidence": [
+      "uuid": "1785818a-7f80-4261-98de-db782492fa11",
+      "title": "Tanium",
+      "description": "Tanium",
+      "start": "2021-03-07T13:25:24.000+00:00",
+      "local-definitions": {
+        "inventory-items": [
+          {
+            "uuid": "bc2375a3-3754-489b-b1a7-ae0af3e9a404",
+            "description": "inventory",
+            "props": [
+              {
+                "name": "target",
+                "class": "computer-name",
+                "value": "cmp-wn-2106.demo.tanium.local"
+              },
+              {
+                "name": "target",
+                "class": "computer-ip",
+                "value": "fe80::3cd5:564b:940e:49ab"
+              }
+            ]
+          },
+          {
+            "uuid": "13bb801f-7b8d-4c9e-9dee-c081db619241",
+            "description": "inventory",
+            "props": [
+              {
+                "name": "target",
+                "class": "computer-name",
+                "value": ""
+              },
+              {
+                "name": "target",
+                "class": "computer-ip",
+                "value": "10.8.69.11"
+              }
+            ]
+          }
+        ]
+      },
+      "reviewed-controls": {
+        "control-selections": [
+          {}
+        ]
+      },
+      "observations": [
         {
-          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "uuid": "7ee59eff-acea-4e04-bdd0-0d09bdde8aa3",
+          "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
           "props": [
             {
               "name": "rule",
@@ -713,34 +753,22 @@ Example output directory contents listing:
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2021-02-24T19:31:13+00:00"
-            },
+              "value": "2021-03-07T13:25:24+00:00"
+            }
+          ],
+          "methods": [
+            "TEST-AUTOMATED"
+          ],
+          "subjects": [
             {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "computer-name",
-              "value": "cmp-wn-2106.demo.tanium.local"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "computer-ip",
-              "value": "fe80::3cd5:564b:940e:49ab"
+              "uuid-ref": "bc2375a3-3754-489b-b1a7-ae0af3e9a404",
+              "type": "inventory-item"
             }
           ]
-        }
-      ]
-    },
-    {
-      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-      "title": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
-      "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
-      "methods": [
-        "TEST-AUTOMATED"
-      ],
-      "relevant-evidence": [
+        },
         {
-          "description": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark, version 1.5.0.1",
+          "uuid": "01713f30-c82e-41b5-a9d0-cb9376badb0f",
+          "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
           "props": [
             {
               "name": "rule",
@@ -758,105 +786,116 @@ Example output directory contents listing:
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2021-02-24T19:31:13+00:00"
-            },
+              "value": "2021-03-07T13:25:24+00:00"
+            }
+          ],
+          "methods": [
+            "TEST-AUTOMATED"
+          ],
+          "subjects": [
             {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "computer-name",
-              "value": ""
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "computer-ip",
-              "value": "10.8.69.11"
+              "uuid-ref": "13bb801f-7b8d-4c9e-9dee-c081db619241",
+              "type": "inventory-item"
             }
           ]
-        }
-      ]
-    },
-    {
-      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-      "title": "win_security_ps",
-      "description": "win_security_ps",
-      "methods": [
-        "TEST-AUTOMATED"
-      ],
-      "relevant-evidence": [
+        },
         {
-          "description": ", version ",
+          "uuid": "7f60c6bb-82f3-4b01-90ad-c268012f6602",
+          "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
           "props": [
             {
               "name": "rule",
+              "ns": "dns://xccdf",
               "class": "id",
-              "value": "win_security_ps"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
             },
             {
               "name": "result",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "class": "timestamp",
-              "value": "2021-02-24T19:31:13+00:00"
-            },
-            {
-              "name": "target",
-              "class": "computer-name",
-              "value": "cmp-wn-2106.demo.tanium.local"
-            },
-            {
-              "name": "target",
-              "class": "computer-ip",
-              "value": "10.8.69.11"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-      "title": "av_service",
-      "description": "av_service",
-      "methods": [
-        "TEST-AUTOMATED"
-      ],
-      "relevant-evidence": [
-        {
-          "description": ", version ",
-          "props": [
-            {
-              "name": "rule",
-              "class": "id",
-              "value": "av_service"
-            },
-            {
-              "name": "result",
+              "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
             },
             {
               "name": "time",
+              "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2021-02-24T19:31:13+00:00"
+              "value": "2021-03-07T13:25:24+00:00"
+            }
+          ],
+          "methods": [
+            "TEST-AUTOMATED"
+          ],
+          "subjects": [
+            {
+              "uuid-ref": "13bb801f-7b8d-4c9e-9dee-c081db619241",
+              "type": "inventory-item"
+            }
+          ]
+        },
+        {
+          "uuid": "698e882f-6e79-470a-819f-dbf5b03af33d",
+          "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.4_L1_Ensure_Minimum_password_length_is_set_to_14_or_more_characters",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.4_L1_Ensure_Minimum_password_length_is_set_to_14_or_more_characters"
             },
             {
-              "name": "target",
-              "class": "computer-name",
-              "value": "cmp-wn-2106.demo.tanium.local"
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
             },
             {
-              "name": "target",
-              "class": "computer-ip",
-              "value": "10.8.69.11"
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2021-03-07T13:25:24+00:00"
+            }
+          ],
+          "methods": [
+            "TEST-AUTOMATED"
+          ],
+          "subjects": [
+            {
+              "uuid-ref": "13bb801f-7b8d-4c9e-9dee-c081db619241",
+              "type": "inventory-item"
+            }
+          ]
+        }
+      ],
+      "findings": [
+        {
+          "uuid": "a929c025-5985-4515-913e-f29c0e8ac80f",
+          "title": "800-53: IA-5",
+          "description": "800-53: IA-5",
+          "props": [
+            {
+              "name": "result",
+              "class": "STRVALUE",
+              "value": "FAIL"
+            }
+          ],
+          "collected": "2021-03-07T13:25:24.000+00:00",
+          "related-observations": [
+            {
+              "observation-uuid": "7ee59eff-acea-4e04-bdd0-0d09bdde8aa3"
+            },
+            {
+              "observation-uuid": "01713f30-c82e-41b5-a9d0-cb9376badb0f"
+            },
+            {
+              "observation-uuid": "7f60c6bb-82f3-4b01-90ad-c268012f6602"
+            },
+            {
+              "observation-uuid": "698e882f-6e79-470a-819f-dbf5b03af33d"
             }
           ]
         }
       ]
-    },
-    
+    }
   ]
 }
 ```
