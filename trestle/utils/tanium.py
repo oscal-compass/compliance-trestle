@@ -22,8 +22,8 @@ from typing import Any, Dict, List, Union, ValuesView
 
 from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import Finding
-from trestle.oscal.assessment_results import Inventory
-from trestle.oscal.assessment_results import LocalDefinitions
+from trestle.oscal.assessment_results import InventoryItem
+from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
 from trestle.oscal.assessment_results import Property
 from trestle.oscal.assessment_results import RelatedObservation
@@ -37,11 +37,11 @@ t_analysis = Dict[str, Any]
 t_control = str
 t_control_selection = ControlSelection
 t_finding = Finding
-t_inventory = Inventory
+t_inventory = InventoryItem
 t_inventory_ref = str
 t_ip = str
 t_json = str
-t_local_definitions = LocalDefinitions
+t_local_definitions = LocalDefinitions1
 t_observation = Observation
 t_oscal = Union[str, Dict[str, Any]]
 t_tanium_row = Dict[str, Any]
@@ -109,7 +109,7 @@ class ResultsMgr():
         self.results_map: t_findings_map = {}
 
     @property
-    def inventory(self) -> ValuesView[Inventory]:
+    def inventory(self) -> ValuesView[InventoryItem]:
         """OSCAL inventory."""
         return self.inventory_map.values()
 
@@ -182,7 +182,7 @@ class ResultsMgr():
     @property
     def local_definitions(self) -> t_local_definitions:
         """OSCAL local definitions."""
-        prop = LocalDefinitions()
+        prop = LocalDefinitions1()
         prop.inventory_items = list(self.inventory)
         return prop
 
@@ -233,7 +233,7 @@ class ResultsMgr():
     def _inventory_extract(self, rule_use: RuleUse) -> None:
         """Extract inventory from Tanium row."""
         if rule_use.ip not in self.inventory_map.keys():
-            inventory = Inventory(uuid=str(uuid.uuid4()), description='inventory')
+            inventory = InventoryItem(uuid=str(uuid.uuid4()), description='inventory')
             inventory.props = [
                 Property(name='target', value=rule_use.computer, class_='computer-name'),
                 Property(name='target', value=rule_use.ip, class_='computer-ip'),

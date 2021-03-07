@@ -6,7 +6,7 @@
       "description": "Tanium",
       "start": "2021-02-24T19:31:13.000+00:00",
       "local-definitions": {
-        "inventory_items": [
+        "inventory-items": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
             "description": "inventory",
