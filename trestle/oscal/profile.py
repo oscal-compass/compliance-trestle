@@ -26,6 +26,16 @@ from pydantic import AnyUrl, EmailStr, Field, constr
 from trestle.core.base_model import OscalBaseModel
 
 
+class WithChildControls2(Enum):
+    yes = 'yes'
+    no = 'no'
+
+
+class WithChildControls1(Enum):
+    yes = 'yes'
+    no = 'no'
+
+
 class WithChildControls(Enum):
     yes = 'yes'
     no = 'no'
@@ -34,6 +44,13 @@ class WithChildControls(Enum):
 class Type(Enum):
     person = 'person'
     organization = 'organization'
+
+
+class TelephoneNumber1(OscalBaseModel):
+    type: Optional[str] = Field(
+        None, description='Indicates the type of phone number.', title='type flag'
+    )
+    number: str
 
 
 class TelephoneNumber(OscalBaseModel):
@@ -53,25 +70,25 @@ class Remove(OscalBaseModel):
     name_ref: Optional[str] = Field(
         None,
         alias='name-ref',
-        description='s to remove, by assigned name',
+        description='Items to remove, by assigned name',
         title='Reference by (assigned) name',
     )
     class_ref: Optional[str] = Field(
         None,
         alias='class-ref',
-        description='s to remove, by class. A token match.',
+        description='Items to remove, by class. A token match.',
         title='Reference by class',
     )
     id_ref: Optional[str] = Field(
         None,
         alias='id-ref',
-        description='s to remove, indicated by their IDs',
+        description='Items to remove, indicated by their IDs',
         title='Reference by ID',
     )
     item_name: Optional[str] = Field(
         None,
         alias='item-name',
-        description="s to remove, by the name of the item's type, or generic identifier, e.g. title or prop",
+        description="Items to remove, by the name of the item's type, or generic identifier, e.g. title or prop",
         title='References by item name or generic identifier',
     )
 
@@ -178,11 +195,11 @@ class Match(OscalBaseModel):
         description='A designation of how a selection of controls in a profile is to be ordered.',
         title='Order',
     )
-    with_child_controls: Optional[WithChildControls] = Field(
+    with_child_controls: Optional[WithChildControls2] = Field(
         None,
         alias='with-child-controls',
         description='When a control is included, whether its child (dependent) controls are also included.',
-        title=' contained controls with control',
+        title='Include contained controls with control',
     )
 
 
@@ -232,10 +249,25 @@ class ExternalId(OscalBaseModel):
     id: str
 
 
+class EmailAddress1(OscalBaseModel):
+    __root__: EmailStr = Field(
+        ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
+    )
+
+
 class EmailAddress(OscalBaseModel):
     __root__: EmailStr = Field(
         ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
     )
+
+
+class DocumentId1(OscalBaseModel):
+    scheme: AnyUrl = Field(
+        ...,
+        description='Qualifies the kind of document identifier.',
+        title='Document Identification Scheme',
+    )
+    identifier: str
 
 
 class DocumentId(OscalBaseModel):
@@ -262,11 +294,11 @@ class Call(OscalBaseModel):
         description="Value of the 'id' flag on a target control",
         title='Control ID',
     )
-    with_child_controls: Optional[WithChildControls] = Field(
+    with_child_controls: Optional[WithChildControls1] = Field(
         None,
         alias='with-child-controls',
         description='When a control is included, whether its child (dependent) controls are also included.',
-        title=' contained controls with control',
+        title='Include contained controls with control',
     )
 
 
@@ -325,7 +357,35 @@ class All(OscalBaseModel):
         None,
         alias='with-child-controls',
         description='When a control is included, whether its child (dependent) controls are also included.',
-        title=' contained controls with control',
+        title='Include contained controls with control',
+    )
+
+
+class Address1(OscalBaseModel):
+    type: Optional[str] = Field(
+        None, description='Indicates the type of address.', title='Address Type'
+    )
+    addr_lines: Optional[List[str]] = Field(None, alias='addr-lines', min_items=1)
+    city: Optional[str] = Field(
+        None,
+        description='City, town or geographical region for the mailing address.',
+        title='City',
+    )
+    state: Optional[str] = Field(
+        None,
+        description='State, province or analogous geographical region for mailing address',
+        title='State',
+    )
+    postal_code: Optional[str] = Field(
+        None,
+        alias='postal-code',
+        description='Postal or ZIP code for mailing address',
+        title='Postal Code',
+    )
+    country: Optional[str] = Field(
+        None,
+        description='The ISO 3166-1 alpha-2 country code for the mailing address.',
+        title='Country Code',
     )
 
 
@@ -491,13 +551,13 @@ class Party(OscalBaseModel):
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
-    email_addresses: Optional[List[EmailAddress]] = Field(
+    email_addresses: Optional[List[EmailAddress1]] = Field(
         None, alias='email-addresses', min_items=1
     )
-    telephone_numbers: Optional[List[TelephoneNumber]] = Field(
+    telephone_numbers: Optional[List[TelephoneNumber1]] = Field(
         None, alias='telephone-numbers', min_items=1
     )
-    addresses: Optional[List[Address]] = Field(None, min_items=1)
+    addresses: Optional[List[Address1]] = Field(None, min_items=1)
     location_uuids: Optional[List[LocationUuid]] = Field(
         None, alias='location-uuids', min_items=1
     )
@@ -740,7 +800,7 @@ class Resource(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    document_ids: Optional[List[DocumentId]] = Field(
+    document_ids: Optional[List[DocumentId1]] = Field(
         None, alias='document-ids', min_items=1
     )
     citation: Optional[Citation] = Field(
