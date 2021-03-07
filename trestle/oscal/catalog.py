@@ -54,9 +54,44 @@ class Address(OscalBaseModel):
     )
 
 
+class Address1(OscalBaseModel):
+    type: Optional[str] = Field(
+        None, description='Indicates the type of address.', title='Address Type'
+    )
+    addr_lines: Optional[List[str]] = Field(None, alias='addr-lines', min_items=1)
+    city: Optional[str] = Field(
+        None,
+        description='City, town or geographical region for the mailing address.',
+        title='City',
+    )
+    state: Optional[str] = Field(
+        None,
+        description='State, province or analogous geographical region for mailing address',
+        title='State',
+    )
+    postal_code: Optional[str] = Field(
+        None,
+        alias='postal-code',
+        description='Postal or ZIP code for mailing address',
+        title='Postal Code',
+    )
+    country: Optional[str] = Field(
+        None,
+        description='The ISO 3166-1 alpha-2 country code for the mailing address.',
+        title='Country Code',
+    )
+
+
 class Type(Enum):
     person = 'person'
     organization = 'organization'
+
+
+class TelephoneNumber1(OscalBaseModel):
+    type: Optional[str] = Field(
+        None, description='Indicates the type of phone number.', title='type flag'
+    )
+    number: str
 
 
 class TelephoneNumber(OscalBaseModel):
@@ -190,10 +225,25 @@ class ExternalId(OscalBaseModel):
     id: str
 
 
+class EmailAddress1(OscalBaseModel):
+    __root__: EmailStr = Field(
+        ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
+    )
+
+
 class EmailAddress(OscalBaseModel):
     __root__: EmailStr = Field(
         ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
     )
+
+
+class DocumentId1(OscalBaseModel):
+    scheme: AnyUrl = Field(
+        ...,
+        description='Qualifies the kind of document identifier.',
+        title='Document Identification Scheme',
+    )
+    identifier: str
 
 
 class DocumentId(OscalBaseModel):
@@ -382,13 +432,13 @@ class Party(OscalBaseModel):
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
-    email_addresses: Optional[List[EmailAddress]] = Field(
+    email_addresses: Optional[List[EmailAddress1]] = Field(
         None, alias='email-addresses', min_items=1
     )
-    telephone_numbers: Optional[List[TelephoneNumber]] = Field(
+    telephone_numbers: Optional[List[TelephoneNumber1]] = Field(
         None, alias='telephone-numbers', min_items=1
     )
-    addresses: Optional[List[Address]] = Field(None, min_items=1)
+    addresses: Optional[List[Address1]] = Field(None, min_items=1)
     location_uuids: Optional[List[LocationUuid]] = Field(
         None, alias='location-uuids', min_items=1
     )
@@ -445,6 +495,48 @@ class ParameterConstraint(OscalBaseModel):
     tests: Optional[List[Test]] = Field(None, min_items=1)
 
 
+class Location(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.',
+        title='Location Universally Unique Identifier',
+    )
+    title: Optional[str] = Field(
+        None,
+        description='A name given to the location, which may be used by a tool for display and navigation.',
+        title='Location Title',
+    )
+    address: Address = Field(
+        ..., description='A postal address for the location.', title='Address'
+    )
+    email_addresses: Optional[List[EmailAddress]] = Field(
+        None, alias='email-addresses', min_items=1
+    )
+    telephone_numbers: Optional[List[TelephoneNumber]] = Field(
+        None, alias='telephone-numbers', min_items=1
+    )
+    urls: Optional[List[AnyUrl]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    remarks: Optional[Remarks] = None
+
+
+class Citation(OscalBaseModel):
+    text: str = Field(
+        ..., description='A line of citation text.', title='Citation Text'
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    biblio: Optional[Dict[str, Any]] = Field(
+        None,
+        description='A container for structured bibliographic information. The model of this information is undefined by OSCAL.',
+        title='Bibliographic Definition',
+    )
+
+
 class Parameter(OscalBaseModel):
     id: str = Field(
         ...,
@@ -482,73 +574,6 @@ class Parameter(OscalBaseModel):
     select: Optional[ParameterSelection] = None
 
 
-class Location(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.',
-        title='Location Universally Unique Identifier',
-    )
-    title: Optional[str] = Field(
-        None,
-        description='A name given to the location, which may be used by a tool for display and navigation.',
-        title='Location Title',
-    )
-    address: Address = Field(
-        ..., description='A postal address for the location.', title='Address'
-    )
-    email_addresses: Optional[List[EmailAddress]] = Field(
-        None, alias='email-addresses', min_items=1
-    )
-    telephone_numbers: Optional[List[TelephoneNumber]] = Field(
-        None, alias='telephone-numbers', min_items=1
-    )
-    urls: Optional[List[AnyUrl]] = Field(None, min_items=1)
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    remarks: Optional[Remarks] = None
-
-
-class Control(OscalBaseModel):
-    id: str = Field(
-        ...,
-        description="A unique identifier for a specific control instance that can be used to reference the control in other OSCAL documents. This identifier's uniqueness is document scoped and is intended to be consistent for the same control across minor revisions of the document.",
-        title='Control Identifier',
-    )
-    class_: Optional[str] = Field(
-        None,
-        alias='class',
-        description='A textual label that provides a sub-type or characterization of the control.',
-        title='Control Class',
-    )
-    title: str = Field(
-        ...,
-        description='A name given to the control, which may be used by a tool for display and navigation.',
-        title='Control Title',
-    )
-    params: Optional[List[Parameter]] = Field(None, min_items=1)
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    parts: Optional[List[Part]] = Field(None, min_items=1)
-    controls: Optional[List[Control]] = None
-
-
-class Citation(OscalBaseModel):
-    text: str = Field(
-        ..., description='A line of citation text.', title='Citation Text'
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    biblio: Optional[Dict[str, Any]] = Field(
-        None,
-        description='A container for structured bibliographic information. The model of this information is undefined by OSCAL.',
-        title='Bibliographic Definition',
-    )
-
-
 class Resource(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -569,7 +594,7 @@ class Resource(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    document_ids: Optional[List[DocumentId]] = Field(
+    document_ids: Optional[List[DocumentId1]] = Field(
         None, alias='document-ids', min_items=1
     )
     citation: Optional[Citation] = Field(
@@ -630,6 +655,35 @@ class Metadata(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
+class Control(OscalBaseModel):
+    id: str = Field(
+        ...,
+        description="A unique identifier for a specific control instance that can be used to reference the control in other OSCAL documents. This identifier's uniqueness is document scoped and is intended to be consistent for the same control across minor revisions of the document.",
+        title='Control Identifier',
+    )
+    class_: Optional[str] = Field(
+        None,
+        alias='class',
+        description='A textual label that provides a sub-type or characterization of the control.',
+        title='Control Class',
+    )
+    title: str = Field(
+        ...,
+        description='A name given to the control, which may be used by a tool for display and navigation.',
+        title='Control Title',
+    )
+    params: Optional[List[Parameter]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    parts: Optional[List[Part]] = Field(None, min_items=1)
+    controls: Optional[List[Control]] = None
+
+
+class BackMatter(OscalBaseModel):
+    resources: Optional[List[Resource]] = Field(None, min_items=1)
+
+
 class Group(OscalBaseModel):
     id: Optional[str] = Field(
         None,
@@ -654,10 +708,6 @@ class Group(OscalBaseModel):
     parts: Optional[List[Part]] = Field(None, min_items=1)
     groups: Optional[List[Group]] = None
     controls: Optional[List[Control]] = Field(None, min_items=1)
-
-
-class BackMatter(OscalBaseModel):
-    resources: Optional[List[Resource]] = Field(None, min_items=1)
 
 
 class Catalog(OscalBaseModel):

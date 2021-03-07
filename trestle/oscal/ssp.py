@@ -54,6 +54,34 @@ class Address(OscalBaseModel):
     )
 
 
+class Address1(OscalBaseModel):
+    type: Optional[str] = Field(
+        None, description='Indicates the type of address.', title='Address Type'
+    )
+    addr_lines: Optional[List[str]] = Field(None, alias='addr-lines', min_items=1)
+    city: Optional[str] = Field(
+        None,
+        description='City, town or geographical region for the mailing address.',
+        title='City',
+    )
+    state: Optional[str] = Field(
+        None,
+        description='State, province or analogous geographical region for mailing address',
+        title='State',
+    )
+    postal_code: Optional[str] = Field(
+        None,
+        alias='postal-code',
+        description='Postal or ZIP code for mailing address',
+        title='Postal Code',
+    )
+    country: Optional[str] = Field(
+        None,
+        description='The ISO 3166-1 alpha-2 country code for the mailing address.',
+        title='Country Code',
+    )
+
+
 class Type(Enum):
     person = 'person'
     organization = 'organization'
@@ -62,6 +90,13 @@ class Type(Enum):
 class Transport(Enum):
     TCP = 'TCP'
     UDP = 'UDP'
+
+
+class TelephoneNumber1(OscalBaseModel):
+    type: Optional[str] = Field(
+        None, description='Indicates the type of phone number.', title='type flag'
+    )
+    number: str
 
 
 class TelephoneNumber(OscalBaseModel):
@@ -79,6 +114,14 @@ class SystemId(OscalBaseModel):
         title='Identification System Type',
     )
     id: str
+
+
+class State1(Enum):
+    operational = 'operational'
+    under_development = 'under-development'
+    under_major_modification = 'under-major-modification'
+    disposition = 'disposition'
+    other = 'other'
 
 
 class State(Enum):
@@ -247,10 +290,25 @@ class ExternalId(OscalBaseModel):
     id: str
 
 
+class EmailAddress1(OscalBaseModel):
+    __root__: EmailStr = Field(
+        ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
+    )
+
+
 class EmailAddress(OscalBaseModel):
     __root__: EmailStr = Field(
         ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
     )
+
+
+class DocumentId1(OscalBaseModel):
+    scheme: AnyUrl = Field(
+        ...,
+        description='Qualifies the kind of document identifier.',
+        title='Document Identification Scheme',
+    )
+    identifier: str
 
 
 class DocumentId(OscalBaseModel):
@@ -357,6 +415,13 @@ class SystemUser(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
+class Status1(OscalBaseModel):
+    state: State1 = Field(
+        ..., description='The current operating status.', title='State'
+    )
+    remarks: Optional[Remarks] = None
+
+
 class Status(OscalBaseModel):
     state: State = Field(..., description='The operational status.', title='State')
     remarks: Optional[Remarks] = None
@@ -445,6 +510,38 @@ class ResponsibleRole(OscalBaseModel):
     links: Optional[List[Link]] = Field(None, min_items=1)
     party_uuids: Optional[List[PartyUuid]] = Field(
         None, alias='party-uuids', min_items=1
+    )
+    remarks: Optional[Remarks] = None
+
+
+class Satisfied(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A globally unique identifier that can be used to reference this satisfied entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        title='Satisfied Universally Unique Identifier',
+    )
+    responsibility_uuid: Optional[
+        constr(
+            regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+        )
+    ] = Field(
+        None,
+        alias='responsibility-uuid',
+        description="Identifies a 'provided' assembly associated with this assembly.",
+        title='Provided UUID',
+    )
+    description: str = Field(
+        ...,
+        description='An implementation statement that describes the aspects of a control or control statement implementation that a leveraging system is implementing based on a requirement from a leveraged system.',
+        title='Satisfied Control Implementation Responsibility Description',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
+        None, alias='responsible-roles'
     )
     remarks: Optional[Remarks] = None
 
@@ -566,13 +663,13 @@ class Party(OscalBaseModel):
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
-    email_addresses: Optional[List[EmailAddress]] = Field(
+    email_addresses: Optional[List[EmailAddress1]] = Field(
         None, alias='email-addresses', min_items=1
     )
-    telephone_numbers: Optional[List[TelephoneNumber]] = Field(
+    telephone_numbers: Optional[List[TelephoneNumber1]] = Field(
         None, alias='telephone-numbers', min_items=1
     )
-    addresses: Optional[List[Address]] = Field(None, min_items=1)
+    addresses: Optional[List[Address1]] = Field(None, min_items=1)
     location_uuids: Optional[List[LocationUuid]] = Field(
         None, alias='location-uuids', min_items=1
     )
@@ -840,6 +937,38 @@ class Citation(OscalBaseModel):
     )
 
 
+class ByComponent(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A globally unique identifier that can be used to reference this by-component entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        title='By-Component Universally Unique Identifier',
+    )
+    description: str = Field(
+        ...,
+        description='An implementation statement that describes how a control or a control statement is implemented within the referenced system component.',
+        title='Control Implementation Description',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    parameter_settings: Optional[Dict[str, SetParameter]] = Field(
+        None, alias='parameter-settings'
+    )
+    export: Optional[Export] = Field(
+        None,
+        description='Identifies content intended for external consumption, such as with leveraged organizations.',
+        title='Export',
+    )
+    inherited: Optional[List[Inherited]] = Field(None, min_items=1)
+    satisfied: Optional[List[Satisfied]] = Field(None, min_items=1)
+    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
+        None, alias='responsible-roles'
+    )
+    remarks: Optional[Remarks] = None
+
+
 class AvailabilityImpact(OscalBaseModel):
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
@@ -959,67 +1088,18 @@ class SystemComponent(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class Satisfied(OscalBaseModel):
+class Statement(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this satisfied entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
-        title='Satisfied Universally Unique Identifier',
-    )
-    responsibility_uuid: Optional[
-        constr(
-            regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-        )
-    ] = Field(
-        None,
-        alias='responsibility-uuid',
-        description="Identifies a 'provided' assembly associated with this assembly.",
-        title='Provided UUID',
-    )
-    description: str = Field(
-        ...,
-        description='An implementation statement that describes the aspects of a control or control statement implementation that a leveraging system is implementing based on a requirement from a leveraged system.',
-        title='Satisfied Control Implementation Responsibility Description',
+        description='A globally unique identifier that can be used to reference this control statement entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        title='Control Statement Reference Universally Unique Identifier',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
-    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    remarks: Optional[Remarks] = None
-
-
-class ByComponent(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A globally unique identifier that can be used to reference this by-component entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
-        title='By-Component Universally Unique Identifier',
-    )
-    description: str = Field(
-        ...,
-        description='An implementation statement that describes how a control or a control statement is implemented within the referenced system component.',
-        title='Control Implementation Description',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    parameter_settings: Optional[Dict[str, SetParameter]] = Field(
-        None, alias='parameter-settings'
-    )
-    export: Optional[Export] = Field(
-        None,
-        description='Identifies content intended for external consumption, such as with leveraged organizations.',
-        title='Export',
-    )
-    inherited: Optional[List[Inherited]] = Field(None, min_items=1)
-    satisfied: Optional[List[Satisfied]] = Field(None, min_items=1)
-    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
+    by_components: Optional[Dict[str, ByComponent]] = Field(None, alias='by-components')
     remarks: Optional[Remarks] = None
 
 
@@ -1043,7 +1123,7 @@ class Resource(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    document_ids: Optional[List[DocumentId]] = Field(
+    document_ids: Optional[List[DocumentId1]] = Field(
         None, alias='document-ids', min_items=1
     )
     citation: Optional[Citation] = Field(
@@ -1073,18 +1153,18 @@ class NetworkArchitecture(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class Inventory(OscalBaseModel):
+class InventoryItem(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
         description='A globally unique identifier that can be used to reference this inventory item entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
-        title='Inventory  Universally Unique Identifier',
+        title='Inventory Item Universally Unique Identifier',
     )
     description: str = Field(
         ...,
         description='A summary of the inventory item stating its purpose within the system.',
-        title='Inventory  Description',
+        title='Inventory Item Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
@@ -1107,19 +1187,43 @@ class SystemInformation(OscalBaseModel):
     )
 
 
-class Statement(OscalBaseModel):
+class ImplementedRequirement(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this control statement entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
-        title='Control Statement Reference Universally Unique Identifier',
+        description='A globally unique identifier that can be used to reference this control requirement entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        title='Control Requirement Universally Unique Identifier',
+    )
+    control_id: str = Field(
+        ...,
+        alias='control-id',
+        description='A reference to a control identifier.',
+        title='Control Identifier Reference',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
+    parameter_settings: Optional[Dict[str, SetParameter]] = Field(
+        None, alias='parameter-settings'
+    )
+    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
+        None, alias='responsible-roles'
+    )
     by_components: Optional[Dict[str, ByComponent]] = Field(None, alias='by-components')
+    statements: Optional[Dict[str, Statement]] = None
     remarks: Optional[Remarks] = None
+
+
+class ControlImplementation(OscalBaseModel):
+    description: str = Field(
+        ...,
+        description='A statement describing important things to know about how this set of control satisfaction documentation is approached.',
+        title='Control Implementation Description',
+    )
+    implemented_requirements: List[ImplementedRequirement] = Field(
+        ..., alias='implemented-requirements', min_items=1
+    )
 
 
 class BackMatter(OscalBaseModel):
@@ -1166,7 +1270,7 @@ class SystemCharacteristics(OscalBaseModel):
     security_impact_level: SecurityImpactLevel = Field(
         ..., alias='security-impact-level'
     )
-    status: Status = Field(
+    status: Status1 = Field(
         ...,
         description='Describes the operational status of the system.',
         title='Status',
@@ -1193,49 +1297,10 @@ class SystemImplementation(OscalBaseModel):
     )
     users: Dict[str, SystemUser]
     components: Dict[str, SystemComponent]
-    inventory_items: Optional[List[Inventory]] = Field(
+    inventory_items: Optional[List[InventoryItem]] = Field(
         None, alias='inventory-items', min_items=1
     )
     remarks: Optional[Remarks] = None
-
-
-class ImplementedRequirement(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A globally unique identifier that can be used to reference this control requirement entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
-        title='Control Requirement Universally Unique Identifier',
-    )
-    control_id: str = Field(
-        ...,
-        alias='control-id',
-        description='A reference to a control identifier.',
-        title='Control Identifier Reference',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    parameter_settings: Optional[Dict[str, SetParameter]] = Field(
-        None, alias='parameter-settings'
-    )
-    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    by_components: Optional[Dict[str, ByComponent]] = Field(None, alias='by-components')
-    statements: Optional[Dict[str, Statement]] = None
-    remarks: Optional[Remarks] = None
-
-
-class ControlImplementation(OscalBaseModel):
-    description: str = Field(
-        ...,
-        description='A statement describing important things to know about how this set of control satisfaction documentation is approached.',
-        title='Control Implementation Description',
-    )
-    implemented_requirements: List[ImplementedRequirement] = Field(
-        ..., alias='implemented-requirements', min_items=1
-    )
 
 
 class SystemSecurityPlan(OscalBaseModel):
