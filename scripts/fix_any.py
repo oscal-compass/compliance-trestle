@@ -33,7 +33,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
-bad_items = ['RelevantEvidence', 'Provided', 'Inherited', 'Satisfied']
 base64_str = 'Base64'
 class_header = 'class '
 
@@ -118,20 +117,6 @@ class ClassText():
         self.add_ref_pattern(p, line)
         return line
 
-    def get_linked_refs(self, class_text_list, known_refs):
-        """Follow all refs to find their refs."""
-        if self.name in known_refs:
-            return set()
-        refs = self.full_refs
-        if self.found_all_links:
-            return refs
-        new_refs = refs.copy()
-        for r in refs:
-            i = ClassText.find_index(class_text_list, r)
-            new_refs = new_refs.union(class_text_list[i].get_linked_refs(class_text_list, refs))
-        self.found_all_links = True
-        return new_refs
-
     def find_direct_refs(self, class_names_list):
         """Find direct refs without recursion."""
         for ref in self.refs:
@@ -141,16 +126,6 @@ class ClassText():
                 self.full_refs.add(ref)
         if len(self.full_refs) == 0:
             self.found_all_links = True
-
-    def find_full_refs(self, class_text_list):
-        """Find full refs with recursion."""
-        sub_refs = set()
-        for ref in self.full_refs:
-            # find the class named ref
-            i = ClassText.find_index(class_text_list, ref)
-            # accumulate all references associated with each ref in that class
-            sub_refs = sub_refs.union(class_text_list[i].get_linked_refs(class_text_list, sub_refs))
-        return self.full_refs.union(sub_refs)
 
     def find_order(self, class_text_list):
         """Find latest dep and earliest reference."""
@@ -168,14 +143,6 @@ class ClassText():
             if n > ro.latest_dep:
                 ro.latest_dep = n
         return ro
-
-    def is_good(self):
-        """Is this class on that should be retained in output."""
-        if not self.name:
-            return False
-        if self.name.find('min_items') >= 0:
-            return False
-        return True
 
 
 def find_forward_refs(class_list, orders):
@@ -207,11 +174,6 @@ def reorder(class_list):
         c.find_direct_refs(all_class_names)
         class_list[n] = c
 
-    # find full references for each class in list with recursion on each ref
-    for n, c in enumerate(class_list):
-        c.full_refs = c.find_full_refs(class_list)
-        class_list[n] = c
-
     # with full dependency info, now reorder the classes to remove forward refs
     did_swap = True
     loop_num = 0
@@ -241,57 +203,6 @@ def reorder(class_list):
     return class_list, forward_refs
 
 
-def fix_header(header):
-    """Fix imports and remove timestamp from header."""
-    '--disable-timestamp should work but had no effect.'
-    new_header = []
-    for r in header:
-        if r.find(' timestamp: ') >= 0:
-            continue
-        new_header.append(r)
-    return new_header
-
-
-def good_classes(class_list):
-    """Create the list of good classes from the full list."""
-    good = []
-    for c in class_list:
-        if c.is_good():
-            good.append(c)
-    return good
-
-
-def clean_classes(class_list):
-    """Clean all lines of text in each class for endings that should be removed."""
-    for j in range(len(class_list)):
-        cls = class_list[j]
-        for i in range(len(cls.lines)):
-            line = cls.lines[i]
-            for bad_item in bad_items:
-                line = line.replace(f'{bad_item}Item', bad_item)
-            cls.lines[i] = line
-        for bad_item in bad_items:
-            if cls.name == f'{bad_item}Item':
-                cls.name = bad_item
-        class_list[j] = cls
-    return class_list
-
-
-def fix_bad_minitems(class_list):
-    """Correct behaviour where minitems errors due to optional behaviour."""
-    for j in range(len(class_list)):
-        cls = class_list[j]
-        for i in range(len(cls.lines)):
-            line = cls.lines[i]
-            neq = line.find('= Field(None')
-            if neq > 0 and line.find(cls.name) >= 0:
-                cls.lines[i] = line[:neq] + '= None'
-            if neq > 0 and line.find(f'List[{base64_str}]') >= 0:
-                cls.lines[i] = line[:neq] + '= None'
-        class_list[j] = cls
-    return class_list
-
-
 def constrain_oscal_version(class_list):
     """Constrain allowed oscal version."""
     for j in range(len(class_list)):
@@ -305,6 +216,42 @@ def constrain_oscal_version(class_list):
                     cls.lines[i] = line.replace('str', f'constr(regex={OSCAL_VERSION_REGEX})')
                     class_list[j] = cls
     return class_list
+
+
+def remove_duplicate_classes(class_list):
+    """Remove duplicate classes with name ending 1, 2 etc. and fix all refs to them."""
+    replaced_names = {}
+    new_list = []
+    for c in class_list:
+        if c.name == base64_str:
+            continue
+        if c.name[-1].isdigit():
+            base_name = c.name[:-1]
+            base_index = ClassText.find_index(class_list, base_name)
+            c_base = class_list[base_index]
+            if len(c_base.lines) != len(c.lines):
+                continue
+            different = False
+            for i in range(1, len(c_base.lines)):
+                if c_base.lines[i] != c.lines[i]:
+                    different = True
+                    break
+            if not different:
+                replaced_names[c.name] = c_base.name
+    # now have list of duplicate classes that should be culled
+    for c in class_list:
+        if c.name in replaced_names.keys():
+            continue
+        new_list.append(c)
+    final_list = []
+    for c in new_list:
+        for i in range(len(c.lines)):
+            line = c.lines[i]
+            for key, value in replaced_names.items():
+                line = line.replace(key, value)
+            c.lines[i] = line
+        final_list.append(c)
+    return final_list
 
 
 def fix_file(fname):
@@ -340,13 +287,9 @@ def fix_file(fname):
 
     all_classes.append(class_text)  # don't forget final class
 
-    all_classes = good_classes(all_classes)
-
-    all_classes = clean_classes(all_classes)
-
-    all_classes = fix_bad_minitems(all_classes)
-
     all_classes = constrain_oscal_version(all_classes)
+
+    all_classes = remove_duplicate_classes(all_classes)
 
     # sort the classes by name in case new versions of DMCG change order of class output
     sorted_classes = sorted(all_classes, key=operator.attrgetter('name'))
@@ -354,8 +297,6 @@ def fix_file(fname):
     # reorder the classes to remove forward references as much as possible
     # then find any required forward refs and replace the original list with the new ones
     reordered_classes, forward_refs = reorder(sorted_classes)
-
-    header = fix_header(header)
 
     # write the classes out in the fixed order
     with open(fname, 'w') as out_file:
