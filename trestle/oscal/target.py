@@ -54,34 +54,6 @@ class Address(OscalBaseModel):
     )
 
 
-class Address1(OscalBaseModel):
-    type: Optional[str] = Field(
-        None, description='Indicates the type of address.', title='Address Type'
-    )
-    addr_lines: Optional[List[str]] = Field(None, alias='addr-lines', min_items=1)
-    city: Optional[str] = Field(
-        None,
-        description='City, town or geographical region for the mailing address.',
-        title='City',
-    )
-    state: Optional[str] = Field(
-        None,
-        description='State, province or analogous geographical region for mailing address',
-        title='State',
-    )
-    postal_code: Optional[str] = Field(
-        None,
-        alias='postal-code',
-        description='Postal or ZIP code for mailing address',
-        title='Postal Code',
-    )
-    country: Optional[str] = Field(
-        None,
-        description='The ISO 3166-1 alpha-2 country code for the mailing address.',
-        title='Country Code',
-    )
-
-
 class Type(Enum):
     person = 'person'
     organization = 'organization'
@@ -90,13 +62,6 @@ class Type(Enum):
 class Transport(Enum):
     TCP = 'TCP'
     UDP = 'UDP'
-
-
-class TelephoneNumber1(OscalBaseModel):
-    type: Optional[str] = Field(
-        None, description='Indicates the type of phone number.', title='type flag'
-    )
-    number: str
 
 
 class TelephoneNumber(OscalBaseModel):
@@ -290,25 +255,10 @@ class ExternalId(OscalBaseModel):
     id: str
 
 
-class EmailAddress1(OscalBaseModel):
-    __root__: EmailStr = Field(
-        ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
-    )
-
-
 class EmailAddress(OscalBaseModel):
     __root__: EmailStr = Field(
         ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
     )
-
-
-class DocumentId1(OscalBaseModel):
-    scheme: AnyUrl = Field(
-        ...,
-        description='Qualifies the kind of document identifier.',
-        title='Document Identification Scheme',
-    )
-    identifier: str
 
 
 class DocumentId(OscalBaseModel):
@@ -384,6 +334,52 @@ class Test(OscalBaseModel):
         title='Constraint test',
     )
     remarks: Optional[Remarks] = None
+
+
+class ParameterConstraint(OscalBaseModel):
+    description: Optional[str] = Field(
+        None,
+        description='A textual summary of the constraint to be applied.',
+        title='Constraint Description',
+    )
+    tests: Optional[List[Test]] = Field(None, min_items=1)
+
+
+class Parameter(OscalBaseModel):
+    id: str = Field(
+        ...,
+        description="A unique identifier for a specific parameter instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same parameter across minor revisions of the document.",
+        title='Parameter Identifier',
+    )
+    class_: Optional[str] = Field(
+        None,
+        alias='class',
+        description='A textual label that provides a characterization of the parameter.',
+        title='Parameter Class',
+    )
+    depends_on: Optional[str] = Field(
+        None,
+        alias='depends-on',
+        description='Another parameter invoking this one',
+        title='Depends on',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    label: Optional[str] = Field(
+        None,
+        description='A short, placeholder name for the parameter, which can be used as a subsitute for a value if no value is assigned.',
+        title='Parameter Label',
+    )
+    usage: Optional[str] = Field(
+        None,
+        description='Describes the purpose and use of a parameter',
+        title='Parameter Usage Description',
+    )
+    constraints: Optional[List[ParameterConstraint]] = Field(None, min_items=1)
+    guidelines: Optional[List[ParameterGuideline]] = Field(None, min_items=1)
+    values: Optional[List[ParameterValue]] = Field(None, min_items=1)
+    select: Optional[ParameterSelection] = None
 
 
 class SystemUser(OscalBaseModel):
@@ -538,6 +534,43 @@ class Protocol(OscalBaseModel):
     )
 
 
+class SystemTarget(OscalBaseModel):
+    type: str = Field(
+        ...,
+        description='A category describing the purpose of the target.',
+        title='Target Type',
+    )
+    title: str = Field(
+        ...,
+        description='A human readable name for the system target.',
+        title='Target Title',
+    )
+    description: str = Field(
+        ...,
+        description='A description of the target, including information about its function.',
+        title='Target Description',
+    )
+    purpose: Optional[str] = Field(
+        None,
+        description='A summary of the technological or business purpose of the target.',
+        title='Purpose',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    params: Optional[List[Parameter]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    status: Status = Field(
+        ...,
+        description='Describes the operational status of the system target.',
+        title='Status',
+    )
+    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
+        None, alias='responsible-roles'
+    )
+    protocols: Optional[List[Protocol]] = Field(None, min_items=1)
+    remarks: Optional[Remarks] = None
+
+
 class Party(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -568,13 +601,13 @@ class Party(OscalBaseModel):
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
-    email_addresses: Optional[List[EmailAddress1]] = Field(
+    email_addresses: Optional[List[EmailAddress]] = Field(
         None, alias='email-addresses', min_items=1
     )
-    telephone_numbers: Optional[List[TelephoneNumber1]] = Field(
+    telephone_numbers: Optional[List[TelephoneNumber]] = Field(
         None, alias='telephone-numbers', min_items=1
     )
-    addresses: Optional[List[Address1]] = Field(None, min_items=1)
+    addresses: Optional[List[Address]] = Field(None, min_items=1)
     location_uuids: Optional[List[LocationUuid]] = Field(
         None, alias='location-uuids', min_items=1
     )
@@ -582,15 +615,6 @@ class Party(OscalBaseModel):
         None, alias='member-of-organizations', min_items=1
     )
     remarks: Optional[Remarks] = None
-
-
-class ParameterConstraint(OscalBaseModel):
-    description: Optional[str] = Field(
-        None,
-        description='A textual summary of the constraint to be applied.',
-        title='Constraint Description',
-    )
-    tests: Optional[List[Test]] = Field(None, min_items=1)
 
 
 class Location(OscalBaseModel):
@@ -666,6 +690,50 @@ class Metadata(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
+class ImplementedTarget(OscalBaseModel):
+    target_uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        alias='target-uuid',
+        description='A reference to a target that is implemented as part of an inventory item.',
+        title='Target Universally Unique Identifier Reference',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    params: Optional[List[Parameter]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    responsible_parties: Optional[Dict[str, ResponsibleParty]] = Field(
+        None, alias='responsible-parties'
+    )
+    remarks: Optional[Remarks] = None
+
+
+class InventoryItem(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A globally unique identifier that can be used to reference this inventory item entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        title='Inventory Item Universally Unique Identifier',
+    )
+    description: str = Field(
+        ...,
+        description='A summary of the inventory item stating its purpose within the system.',
+        title='Inventory Item Description',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    responsible_parties: Optional[Dict[str, ResponsibleParty]] = Field(
+        None, alias='responsible-parties'
+    )
+    implemented_targets: Optional[List[ImplementedTarget]] = Field(
+        None, alias='implemented-targets', min_items=1
+    )
+    remarks: Optional[Remarks] = None
+
+
 class Citation(OscalBaseModel):
     text: str = Field(
         ..., description='A line of citation text.', title='Citation Text'
@@ -679,78 +747,45 @@ class Citation(OscalBaseModel):
     )
 
 
-class Parameter(OscalBaseModel):
-    id: str = Field(
+class Resource(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
         ...,
-        description="A unique identifier for a specific parameter instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same parameter across minor revisions of the document.",
-        title='Parameter Identifier',
+        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        title='Resource Universally Unique Identifier',
     )
-    class_: Optional[str] = Field(
+    title: Optional[str] = Field(
         None,
-        alias='class',
-        description='A textual label that provides a characterization of the parameter.',
-        title='Parameter Class',
+        description='A name given to the resource, which may be used by a tool for display and navigation.',
+        title='Resource Title',
     )
-    depends_on: Optional[str] = Field(
+    description: Optional[str] = Field(
         None,
-        alias='depends-on',
-        description='Another parameter invoking this one',
-        title='Depends on',
+        description='A short summary of the resource used to indicate the purpose of the resource.',
+        title='Resource Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    label: Optional[str] = Field(
+    document_ids: Optional[List[DocumentId]] = Field(
+        None, alias='document-ids', min_items=1
+    )
+    citation: Optional[Citation] = Field(
         None,
-        description='A short, placeholder name for the parameter, which can be used as a subsitute for a value if no value is assigned.',
-        title='Parameter Label',
+        description='A citation consisting of end note text and optional structured bibliographic data.',
+        title='Citation',
     )
-    usage: Optional[str] = Field(
+    rlinks: Optional[List[Rlink]] = Field(None, min_items=1)
+    base64: Optional[Base64] = Field(
         None,
-        description='Describes the purpose and use of a parameter',
-        title='Parameter Usage Description',
+        description='The Base64 alphabet in RFC 2045 - aligned with XSD.',
+        title='Base64',
     )
-    constraints: Optional[List[ParameterConstraint]] = None
-    guidelines: Optional[List[ParameterGuideline]] = None
-    values: Optional[List[ParameterValue]] = None
-    select: Optional[ParameterSelection] = None
-
-
-class SystemTarget(OscalBaseModel):
-    type: str = Field(
-        ...,
-        description='A category describing the purpose of the target.',
-        title='Target Type',
-    )
-    title: str = Field(
-        ...,
-        description='A human readable name for the system target.',
-        title='Target Title',
-    )
-    description: str = Field(
-        ...,
-        description='A description of the target, including information about its function.',
-        title='Target Description',
-    )
-    purpose: Optional[str] = Field(
-        None,
-        description='A summary of the technological or business purpose of the target.',
-        title='Purpose',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    params: Optional[List[Parameter]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    status: Status = Field(
-        ...,
-        description='Describes the operational status of the system target.',
-        title='Status',
-    )
-    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    protocols: Optional[List[Protocol]] = Field(None, min_items=1)
     remarks: Optional[Remarks] = None
+
+
+class BackMatter(OscalBaseModel):
+    resources: Optional[List[Resource]] = Field(None, min_items=1)
 
 
 class Statement(OscalBaseModel):
@@ -807,47 +842,6 @@ class ImplementedRequirement(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class Resource(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
-        title='Resource Universally Unique Identifier',
-    )
-    title: Optional[str] = Field(
-        None,
-        description='A name given to the resource, which may be used by a tool for display and navigation.',
-        title='Resource Title',
-    )
-    description: Optional[str] = Field(
-        None,
-        description='A short summary of the resource used to indicate the purpose of the resource.',
-        title='Resource Description',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    document_ids: Optional[List[DocumentId1]] = Field(
-        None, alias='document-ids', min_items=1
-    )
-    citation: Optional[Citation] = Field(
-        None,
-        description='A citation consisting of end note text and optional structured bibliographic data.',
-        title='Citation',
-    )
-    rlinks: Optional[List[Rlink]] = Field(None, min_items=1)
-    base64: Optional[Base64] = Field(
-        None,
-        description='The Base64 alphabet in RFC 2045 - aligned with XSD.',
-        title='Base64',
-    )
-    remarks: Optional[Remarks] = None
-
-
-class BackMatter(OscalBaseModel):
-    resources: Optional[List[Resource]] = Field(None, min_items=1)
-
-
 class TargetControlImplementation(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -873,71 +867,6 @@ class TargetControlImplementation(OscalBaseModel):
     implemented_requirements: List[ImplementedRequirement] = Field(
         ..., alias='implemented-requirements', min_items=1
     )
-
-
-class Capability(OscalBaseModel):
-    name: str = Field(
-        ...,
-        description="The capability's human-readable name.",
-        title='Capability Name',
-    )
-    description: str = Field(
-        ..., description='A summary of the capability.', title='Capability Description'
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    incorporates_targets: Optional[Dict[str, IncorporatesTarget]] = Field(
-        None, alias='incorporates-targets'
-    )
-    target_control_implementations: Optional[List[TargetControlImplementation]] = Field(
-        None, alias='target-control-implementations', min_items=1
-    )
-    remarks: Optional[Remarks] = None
-
-
-class ImplementedTarget(OscalBaseModel):
-    target_uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        alias='target-uuid',
-        description='A reference to a target that is implemented as part of an inventory item.',
-        title='Target Universally Unique Identifier Reference',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    params: Optional[List[Parameter]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    responsible_parties: Optional[Dict[str, ResponsibleParty]] = Field(
-        None, alias='responsible-parties'
-    )
-    remarks: Optional[Remarks] = None
-
-
-class InventoryItem(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A globally unique identifier that can be used to reference this inventory item entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
-        title='Inventory Item Universally Unique Identifier',
-    )
-    description: str = Field(
-        ...,
-        description='A summary of the inventory item stating its purpose within the system.',
-        title='Inventory Item Description',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    responsible_parties: Optional[Dict[str, ResponsibleParty]] = Field(
-        None, alias='responsible-parties'
-    )
-    implemented_targets: Optional[List[ImplementedTarget]] = Field(
-        None, alias='implemented-targets', min_items=1
-    )
-    remarks: Optional[Remarks] = None
 
 
 class DefinedTarget(OscalBaseModel):
@@ -967,6 +896,27 @@ class DefinedTarget(OscalBaseModel):
         None, alias='responsible-roles'
     )
     protocols: Optional[List[Protocol]] = Field(None, min_items=1)
+    target_control_implementations: Optional[List[TargetControlImplementation]] = Field(
+        None, alias='target-control-implementations', min_items=1
+    )
+    remarks: Optional[Remarks] = None
+
+
+class Capability(OscalBaseModel):
+    name: str = Field(
+        ...,
+        description="The capability's human-readable name.",
+        title='Capability Name',
+    )
+    description: str = Field(
+        ..., description='A summary of the capability.', title='Capability Description'
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    incorporates_targets: Optional[Dict[str, IncorporatesTarget]] = Field(
+        None, alias='incorporates-targets'
+    )
     target_control_implementations: Optional[List[TargetControlImplementation]] = Field(
         None, alias='target-control-implementations', min_items=1
     )
