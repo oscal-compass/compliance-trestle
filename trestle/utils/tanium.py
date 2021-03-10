@@ -24,11 +24,13 @@ from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import Finding
 from trestle.oscal.assessment_results import InventoryItem
 from trestle.oscal.assessment_results import LocalDefinitions1
+from trestle.oscal.assessment_results import ObjectiveStatus
 from trestle.oscal.assessment_results import Observation
 from trestle.oscal.assessment_results import Property
 from trestle.oscal.assessment_results import RelatedObservation
 from trestle.oscal.assessment_results import Result
 from trestle.oscal.assessment_results import ReviewedControls
+from trestle.oscal.assessment_results import Status1
 from trestle.oscal.assessment_results import Subject
 
 logger = logging.getLogger(__name__)
@@ -82,6 +84,16 @@ class RuleUse():
         # if no control, then control is rule
         if len(self.custom_id) == 0:
             self.custom_id = self.id
+        if '-' in self.profile:
+            self.profile_catalog = self.profile.split('-', 1)[1].strip()
+            self.profile_segment = self.profile.split('-', 1)[0].strip()
+        else:
+            self.profile_catalog = 'N/A'
+            self.profile_segment = 'N/A'
+        if ' ' in self.custom_id:
+            self.id_ref = self.custom_id.split()[1].strip()
+        else:
+            self.id_ref = self.custom_id
 
 
 class ResultsMgr():
@@ -134,7 +146,7 @@ class ResultsMgr():
                 result = 'ERROR'
         return result
 
-    def _aggregator(self, prev: str, curr: str) -> str:
+    def _aggregator(self, control, prev: str, curr: str) -> str:
         """Aggregate an overall result.
 
         If any FAIL then FAIL
@@ -153,29 +165,43 @@ class ResultsMgr():
             result = 'ERROR'
         elif nprev == 'PASS' and ncurr == 'PASS':
             result = 'PASS'
+        logger.debug(f'{control} {result} {prev} {curr}')
         return result
 
     @property
     def findings(self) -> List[t_finding]:
         """OSCAL findings."""
         prop = []
-        aggregate = None
         for control in self.findings_map.keys():
             related_observations = []
             finding = Finding(
                 uuid=str(uuid.uuid4()), title=control, description=control, collected=ResultsMgr.timestamp
             )
             prop.append(finding)
+            aggregate = None
             for rule in self.findings_map[control].keys():
                 for rule_use in self.findings_map[control][rule]:
                     if rule_use.result not in self.results_map.keys():
                         self.results_map[rule_use.result] = 0
                     self.results_map[rule_use.result] += 1
+                    profile_catalog = rule_use.profile_catalog
+                    id_ref = rule_use.id_ref
                     related_observations.append(RelatedObservation(observation_uuid=rule_use.observation.uuid))
-                    aggregate = self._aggregator(aggregate, rule_use.result)
+                    aggregate = self._aggregator(control, aggregate, rule_use.result)
                     logger.debug(f'{control} {rule} {rule_use.result} {aggregate}')
-            props = [Property(name='result', value=aggregate, class_='STRVALUE')]
-            finding.props = props
+            if aggregate == 'PASS':
+                status = Status1.satisfied
+            else:
+                status = Status1.not_satisfied
+            logger.debug(f'{control} {status} {aggregate}')
+            objective_status = ObjectiveStatus(status=status)
+            props = [
+                Property(name='profile', value=profile_catalog, ns='dns://tanium', class_='source'),
+                Property(name='id-ref', value=id_ref, ns='dns://tanium', class_='source'),
+                Property(name='result', value=aggregate, ns='dns://xccdf', class_='STRVALUE')
+            ]
+            objective_status.props = props
+            finding.objective_status = objective_status
             finding.related_observations = related_observations
         return prop
 
@@ -235,8 +261,9 @@ class ResultsMgr():
         if rule_use.ip not in self.inventory_map.keys():
             inventory = InventoryItem(uuid=str(uuid.uuid4()), description='inventory')
             inventory.props = [
-                Property(name='target', value=rule_use.computer, class_='computer-name'),
-                Property(name='target', value=rule_use.ip, class_='computer-ip'),
+                Property(name='computer-name', value=rule_use.computer, ns='dns://tanium', class_=' inventory-item'),
+                Property(name='computer-ip', value=rule_use.ip, ns='dns://tanium', class_=' inventory-item'),
+                Property(name='profile', value=rule_use.profile_segment, ns='dns://tanium', class_=' inventory-item'),
             ]
             self.inventory_map[rule_use.ip] = inventory
         rule_use.inventory = self.inventory_map[rule_use.ip]
@@ -248,17 +275,14 @@ class ResultsMgr():
         observation.subjects = [subject]
         if rule_use.id.startswith('xccdf'):
             ns = 'dns://xccdf'
-            props = [
-                Property(name='rule', value=rule_use.id, ns=ns, class_='id'),
-                Property(name='result', value=rule_use.result, ns=ns, class_='result'),
-                Property(name='time', value=rule_use.time, ns=ns, class_='timestamp'),
-            ]
         else:
-            props = [
-                Property(name='rule', value=rule_use.id, class_='id'),
-                Property(name='result', value=rule_use.result, class_='result'),
-                Property(name='time', value=rule_use.time, class_='timestamp'),
-            ]
+            ns = 'dns://tanium'
+        props = [
+            Property(name='benchmark', value=rule_use.benchmark, ns='dns://tanium', class_='source'),
+            Property(name='rule', value=rule_use.id, ns=ns, class_='id'),
+            Property(name='result', value=rule_use.result, ns=ns, class_='result'),
+            Property(name='time', value=rule_use.time, ns=ns, class_='timestamp'),
+        ]
         observation.props = props
         self.observation_list.append(observation)
         rule_use.observation = observation
