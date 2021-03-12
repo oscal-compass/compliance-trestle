@@ -20,18 +20,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -59,12 +67,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notselected"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -90,18 +92,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -129,12 +139,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -160,18 +164,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -199,12 +211,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -230,18 +236,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -269,12 +283,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -300,18 +308,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -339,12 +355,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -370,18 +380,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -409,12 +427,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -440,18 +452,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -479,12 +499,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -510,18 +524,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -549,12 +571,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -580,18 +596,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -619,12 +643,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -650,18 +668,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -689,12 +715,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -720,18 +740,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -759,12 +787,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -790,18 +812,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -829,12 +859,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -860,18 +884,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -899,12 +931,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -930,18 +956,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -969,12 +1003,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1000,18 +1028,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1039,12 +1075,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1070,18 +1100,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1109,12 +1147,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1140,18 +1172,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1179,12 +1219,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1210,18 +1244,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1249,12 +1291,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1280,18 +1316,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1319,12 +1363,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1350,18 +1388,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1389,12 +1435,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1420,18 +1460,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1459,12 +1507,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1490,18 +1532,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1529,12 +1579,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1560,18 +1604,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1599,12 +1651,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "pass"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1630,18 +1676,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1669,12 +1723,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "pass"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1700,18 +1748,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1739,12 +1795,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1770,18 +1820,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1809,12 +1867,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1840,18 +1892,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1879,12 +1939,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1910,18 +1964,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -1949,12 +2011,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -1980,18 +2036,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2019,12 +2083,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2050,18 +2108,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2089,12 +2155,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2120,18 +2180,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2159,12 +2227,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2190,18 +2252,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2229,12 +2299,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2260,18 +2324,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2299,12 +2371,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2330,18 +2396,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2369,12 +2443,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2400,18 +2468,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2439,12 +2515,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2470,18 +2540,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2509,12 +2587,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2540,18 +2612,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2579,12 +2659,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2610,18 +2684,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2649,12 +2731,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2680,18 +2756,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2719,12 +2803,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2750,18 +2828,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2789,12 +2875,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2820,18 +2900,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2859,12 +2947,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2890,18 +2972,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2929,12 +3019,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -2960,18 +3044,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -2999,12 +3091,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "pass"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3030,18 +3116,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3069,12 +3163,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3100,18 +3188,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3139,12 +3235,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3170,18 +3260,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3209,12 +3307,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3240,18 +3332,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3279,12 +3379,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3310,18 +3404,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3349,12 +3451,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3380,18 +3476,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3419,12 +3523,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3450,18 +3548,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3489,12 +3595,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3520,18 +3620,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3559,12 +3667,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3590,18 +3692,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3629,12 +3739,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notselected"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3660,18 +3764,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3699,12 +3811,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3730,18 +3836,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3769,12 +3883,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3800,18 +3908,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3839,12 +3955,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3870,18 +3980,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3909,12 +4027,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -3940,18 +4052,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -3979,12 +4099,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4010,18 +4124,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4049,12 +4171,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4080,18 +4196,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4119,12 +4243,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4150,18 +4268,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4189,12 +4315,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4220,18 +4340,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4259,12 +4387,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4290,18 +4412,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4329,12 +4459,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "pass"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4360,18 +4484,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4399,12 +4531,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4430,18 +4556,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4469,12 +4603,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4500,18 +4628,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4539,12 +4675,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4570,18 +4700,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4609,12 +4747,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4640,18 +4772,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4679,12 +4819,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4710,18 +4844,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4749,12 +4891,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4780,18 +4916,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4819,12 +4963,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4850,18 +4988,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4889,12 +5035,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4920,18 +5060,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -4959,12 +5107,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -4990,18 +5132,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5029,12 +5179,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5060,18 +5204,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5099,12 +5251,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5130,18 +5276,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5169,12 +5323,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5200,18 +5348,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5239,12 +5395,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5270,18 +5420,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5309,12 +5467,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5340,18 +5492,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5379,12 +5539,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5410,18 +5564,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5449,12 +5611,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5480,18 +5636,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5519,12 +5683,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5550,18 +5708,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5589,12 +5755,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5620,18 +5780,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5659,12 +5827,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5690,18 +5852,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5729,12 +5899,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5760,18 +5924,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5799,12 +5971,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "pass"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5830,18 +5996,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5869,12 +6043,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5900,18 +6068,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -5939,12 +6115,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -5970,18 +6140,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6009,12 +6187,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6040,18 +6212,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6079,12 +6259,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "pass"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6110,18 +6284,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6149,12 +6331,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6180,18 +6356,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6219,12 +6403,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6250,18 +6428,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6289,12 +6475,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notchecked"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6320,18 +6500,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6359,12 +6547,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "pass"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6390,18 +6572,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6429,12 +6619,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6460,18 +6644,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6499,12 +6691,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6530,18 +6716,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6569,12 +6763,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6600,18 +6788,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6639,12 +6835,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6670,18 +6860,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6709,12 +6907,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6740,18 +6932,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6779,12 +6979,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6810,18 +7004,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6849,12 +7051,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "pass"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6880,18 +7076,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6919,12 +7123,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -6950,18 +7148,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -6989,12 +7195,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7020,18 +7220,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7059,12 +7267,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7090,18 +7292,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7129,12 +7339,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "pass"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7160,18 +7364,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7199,12 +7411,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7230,18 +7436,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7269,12 +7483,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "pass"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7300,18 +7508,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7339,12 +7555,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7370,18 +7580,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7409,12 +7627,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7440,18 +7652,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7479,12 +7699,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7510,18 +7724,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7549,12 +7771,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7580,18 +7796,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7619,12 +7843,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7650,18 +7868,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7689,12 +7915,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7720,18 +7940,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7759,12 +7987,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7790,18 +8012,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7829,12 +8059,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7860,18 +8084,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7899,12 +8131,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "pass"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -7930,18 +8156,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -7969,12 +8203,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -8000,18 +8228,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -8039,12 +8275,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -8070,18 +8300,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -8109,12 +8347,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -8140,18 +8372,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -8179,12 +8419,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -8210,18 +8444,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -8249,12 +8491,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -8280,18 +8516,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -8319,12 +8563,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -8350,18 +8588,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -8389,12 +8635,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -8420,18 +8660,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -8459,12 +8707,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -8490,18 +8732,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -8529,12 +8779,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "pass"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -8560,18 +8804,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -8599,12 +8851,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -8630,18 +8876,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -8669,12 +8923,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }
@@ -8700,18 +8948,26 @@
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             },
             {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -8739,12 +8995,6 @@
               "ns": "dns://xccdf",
               "class": "result",
               "value": "fail"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-000001fe.iks.mycorp"
             }
           ]
         }

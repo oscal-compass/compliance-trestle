@@ -366,6 +366,9 @@ Example input OSCO scan result file contents (snippet):
 
 *ssg-ocp4-ds-cis-111.222.333.444-pod.yaml*
 
+<details>
+<summary>display sample</summary>
+
 ```
 apiVersion: v1
 data:
@@ -423,7 +426,10 @@ metadata:
   resourceVersion: "22693328"
   selfLink: /api/v1/namespaces/openshift-compliance/configmaps/ssg-ocp4-ds-cis-111.222.333.444-pod
   uid: 1da3ea81-0a25-4512-ad86-7ac360246b5d
+  
 ```
+</details>
+<br>
 
 <span style="color:green">
 Example input OSCAL metadata file contents:
@@ -431,11 +437,14 @@ Example input OSCAL metadata file contents:
 
 *oscal-metadata.yaml*
 
-```
+<details>
+<summary>display sample</summary>
 
+```
 ssg-ocp4-ds-cis-111.222.333.444-pod:
    locker: https://github.mycorp.com/degenaro/evidence-locker
    namespace: xccdf
+   benchmark: CIS Kubernetes Benchmark
    subject-references:
       component:
          uuid-ref: 56666738-0f9a-4e38-9aac-c0fad00a5821
@@ -447,6 +456,7 @@ ssg-ocp4-ds-cis-111.222.333.444-pod:
          title: Pod
          properties:
             target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+            target-ip: 111.222.333.444
             cluster-name: ROKS-OpenSCAP-1
             cluster-type: openshift
             cluster-region: us-south
@@ -454,6 +464,7 @@ ssg-ocp4-ds-cis-111.222.333.444-pod:
 ssg-rhel7-ds-cis-111.222.333.444-pod:
    locker: https://github.mycorp.com/degenaro/evidence-locker
    namespace: xccdf
+   benchmark: CIS Kubernetes Benchmark
    subject-references:
       component:
          uuid-ref: 89cfe7a7-ce6b-4699-aa7b-2f5739c72001
@@ -465,10 +476,12 @@ ssg-rhel7-ds-cis-111.222.333.444-pod:
          title: VM
          properties:
             target: kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp
+            target-ip: 111.222.333.444
             cluster-name: ROKS-OpenSCAP-1
             cluster-type: openshift
             cluster-region: us-south
 ```
+</details>
 
 **metadata format**
 
@@ -482,7 +495,9 @@ OSCAL.
 
 ```
 <name>:
+   locker: <locker>
    namespace: <namespace>
+   benchmark: <benchmark>
    subject-references:
       component:
          uuid-ref: <uuid-ref-component>
@@ -518,6 +533,8 @@ Example output OSCAL Observations file contents (snippet):
 </span>
 
 *ssg-ocp4-ds-cis-111.222.333.444-pod.json*
+<details>
+<summary>display sample</summary>
 
 ```
 {
@@ -526,6 +543,14 @@ Example output OSCAL Observations file contents (snippet):
       "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
       "title": "xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd",
       "description": "xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd",
+      "props": [
+        {
+          "name": "benchmark",
+          "ns": "dns://osco",
+          "class": "source",
+          "value": "CIS Kubernetes Benchmark"
+        }
+      ],
       "methods": [
         "TEST-AUTOMATED"
       ],
@@ -542,18 +567,32 @@ Example output OSCAL Observations file contents (snippet):
           "props": [
             {
               "name": "target",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             },
             {
+              "name": "target-ip",
+              "ns": "dns://osco",
+              "class": "inventory-item",
+              "value": "111.222.333.444"
+            },
+            {
               "name": "cluster-name",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "ROKS-OpenSCAP-1"
             },
             {
               "name": "cluster-type",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "openshift"
             },
             {
               "name": "cluster-region",
+              "ns": "dns://osco",
+              "class": "inventory-item",
               "value": "us-south"
             }
           ]
@@ -581,40 +620,14 @@ Example output OSCAL Observations file contents (snippet):
               "ns": "dns://xccdf",
               "class": "result",
               "value": "notselected"
-            },
-            {
-              "name": "target",
-              "ns": "dns://xccdf",
-              "class": "target",
-              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
             }
           ]
         }
       ]
     },
-    {
-      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-      "title": "xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens",
-      "description": "xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens",
-      "methods": [
-        "TEST-AUTOMATED"
-      ],
-      "subjects": [
-        {
-          "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-          "type": "component",
-          "title": "Red Hat OpenShift Kubernetes"
-        },
-        ...
-      ]
-    },
     ...
-    {
-      ...
-    }
-  ]
-}
 ```
+</details>
 
 ## `trestle task tanium-to-oscal`
 
