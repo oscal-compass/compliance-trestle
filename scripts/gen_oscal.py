@@ -54,7 +54,8 @@ def load_git():
 def generate_model(full_name, out_full_name):
     """Generate a single model with datamodel-codegen."""
     print(f'generate python model and apply fix_any: {str(full_name)} -> {str(out_full_name)}')
-    args = ['datamodel-codegen', '--input-file-type', 'jsonschema', '--input', str(full_name), '--base-class',
+    args = ['datamodel-codegen', '--disable-timestamp', '--disable-appending-item-suffix', 
+            '--input-file-type', 'jsonschema', '--input', str(full_name), '--base-class',
             'trestle.core.base_model.OscalBaseModel', '--output', str(out_full_name)]
     try:
         check_call(args)
@@ -79,7 +80,6 @@ def generate_model_flat(full_name, out_full_name):
         print(f'Error calling datamodel-codegen for file {full_name} error {error}')
     else:
         print('fix the python')
-        # shutil.copy(new_py, new_py + 'b4fix.py')
         fix_file(new_py)
         print('done')
 
