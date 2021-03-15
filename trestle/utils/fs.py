@@ -268,6 +268,7 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
 
     full_alias_path = alias_path
     if contextual_mode:
+        logger.debug(f'get_singular_alias contextual mode: {str}')
         _, full_model_alias = get_contextual_model_type()
         first_alias_a = full_model_alias.split('.')[-1]
         first_alias_b = alias_path.split('.')[0]
@@ -276,6 +277,7 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
         full_alias_path = '.'.join([full_model_alias, alias_path]).strip('.')
 
     path_parts = full_alias_path.split(const.ALIAS_PATH_SEPARATOR)
+    logger.debug(f'path parts: {path_parts}')
     if len(path_parts) < 2:
         raise err.TrestleError('Invalid jsonpath.')
 
