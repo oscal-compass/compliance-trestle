@@ -77,7 +77,7 @@ class SplitCmd(CommandPlusDocs):
         # FIXME: Handle list/dicts
         model: OscalBaseModel = model_type.oscal_read(file_path)
 
-        element_paths: List[ElementPath] = cmd_utils.parse_element_args(args_raw[const.ARG_ELEMENT].split(','))
+        element_paths: List[ElementPath] = cmd_utils.parse_element_args(args_raw[const.ARG_ELEMENT].split(','), False)
 
         split_plan = self.split_model(
             model, element_paths, base_dir, content_type, root_file_name=args_raw[const.ARG_FILE]

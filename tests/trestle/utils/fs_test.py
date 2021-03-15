@@ -16,6 +16,7 @@
 import os
 import pathlib
 from typing import Dict
+from unittest import mock
 
 import pytest
 
@@ -224,6 +225,11 @@ def test_get_contextual_model_type(tmp_path: pathlib.Path) -> None:
     groups_dir = mycatalog_dir / 'groups'
     group_dir = groups_dir / f'00000{IDX_SEP}group'
     controls_dir = group_dir / 'controls'
+
+    with mock.patch('trestle.utils.fs.get_project_model_path') as get_project_model_path_mock:
+        get_project_model_path_mock.side_effect = [None]
+        with pytest.raises(TrestleError):
+            fs.get_contextual_model_type(mycatalog_dir)
 
     with pytest.raises(TrestleError):
         assert fs.get_contextual_model_type(catalogs_dir) is None
