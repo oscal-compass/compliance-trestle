@@ -1,7 +1,6 @@
-______________________________________________________________________
-
-## bad: header
-
+---
+bad: header
+---
 # Required header 1
 
 Here is stuff I need to write.

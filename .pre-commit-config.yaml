@@ -34,14 +34,15 @@ repos:
         files: "^(trestle|tests|scripts)"
         exclude: "oscal"
         stages: [commit]
-  - repo: https://github.com/hukkinj1/mdformat
-    rev: 0.6.0  # Use the ref you want to point at
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.5.3  # Use the ref you want to point at
     hooks:
     - id: mdformat
       exclude: "CHANGELOG.md|docs/mkdocs_code_of_conduct.md|docs/api_reference"
       additional_dependencies:
       - mdformat-tables
       - mdformat-config
+      - mdformat-frontmatter
 
       
   # - repo: https://github.com/pre-commit/mirrors-mypy

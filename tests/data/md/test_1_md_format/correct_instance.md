@@ -1,7 +1,6 @@
-______________________________________________________________________
-
-## yaml: header
-
+---
+yaml: None
+---
 # Required header 1
 
 Here is stuff I need to write.
