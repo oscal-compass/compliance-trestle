@@ -1,4 +1,4 @@
-# How to build an Oscal Assessment Result with Trestle SDK from your posture result format
+# How to build an Oscal Assessment Results "lite" with Trestle SDK from your posture result format
 
 The compliance-trestle (trestle) project provides helpful modules to assist your standardization efforts.
 Discussed below are some best practices for automated bridging to NIST OSCAL. 
