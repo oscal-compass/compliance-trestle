@@ -65,7 +65,7 @@ For example, if each instance of source data includes not much more than:
 then the best mapping would be to an Observations only.
 
 <details>
-<summary>example instance suitable for mapping to Observation</summary>
+<summary>example snippet: instance suitable for mapping to Observation</summary>
 
 ```
 data:
@@ -74,6 +74,83 @@ data:
   </rule-result>
 metadata:
   name: ssg-ocp4-ds-cis-111.222.333.444-pod
+```
+</details>
+
+<details>
+<summary>example snippet: instance OSCAL Observation</summary>
+
+```
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "xccdf_org.ssgproject.content_rule_scheduler_profiling_argument",
+      "description": "xccdf_org.ssgproject.content_rule_scheduler_profiling_argument",
+      "methods": [
+        "TEST-AUTOMATED"
+      ],
+      "subjects": [
+        {
+          "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+          "type": "component",
+          "title": "Red Hat OpenShift Kubernetes"
+        },
+        {
+          "uuid-ref": "46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e",
+          "type": "inventory-item",
+          "title": "Pod",
+          "props": [
+            {
+              "name": "target",
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
+            },
+            {
+              "name": "cluster-name",
+              "value": "ROKS-OpenSCAP-1"
+            },
+            {
+              "name": "cluster-type",
+              "value": "openshift"
+            },
+            {
+              "name": "cluster-region",
+              "value": "us-south"
+            }
+          ]
+        }
+      ],
+      "relevant-evidence": [
+        {
+          "href": "https://github.mycorp.com/degenaro/evidence-locker",
+          "description": "Evidence location.",
+          "props": [
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.ssgproject.content_rule_scheduler_profiling_argument"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2020-08-03T02:26:26+00:00"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "fail"
+            },
+            {
+              "name": "target",
+              "ns": "dns://xccdf",
+              "class": "target",
+              "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp"
+            }
+          ]
+        }
+      ]
+    },
 ```
 </details>
 
@@ -92,7 +169,7 @@ If each instance of source data includes:
 then the best mapping wound be to Findings with Observations.
 
 <details>
-<summary>example xml instance suitable for mapping to Finding with Observation</summary>
+<summary>example snippet: xml instance suitable for mapping to Finding with Observation</summary>
 
 ```
 
@@ -113,6 +190,134 @@ then the best mapping wound be to Findings with Observations.
   "Age":"600"
 }
 
+```
+</details>
+
+<details>
+<summary>example snippet: instance OSCAL Finding</summary>
+
+```
+      "findings": [
+        {
+          "uuid": "99c0a0de-e34e-4e22-95a1-1d4f24826565",
+          "title": "800-53: IA-5",
+          "description": "800-53: IA-5",
+          "collected": "2021-03-16T13:29:14.000+00:00",
+          "objective-status": {
+            "props": [
+              {
+                "name": "profile",
+                "ns": "dns://tanium",
+                "class": "source",
+                "value": "NIST 800-53"
+              },
+              {
+                "name": "id-ref",
+                "ns": "dns://tanium",
+                "class": "source",
+                "value": "IA-5"
+              },
+              {
+                "name": "result",
+                "ns": "dns://xccdf",
+                "class": "STRVALUE",
+                "value": "FAIL"
+              }
+            ],
+            "status": "not-satisfied"
+          },
+          "related-observations": [
+            {
+              "observation-uuid": "61092735-e365-4638-bc2c-ecd0ed407e73"
+            },
+            {
+              "observation-uuid": "95a20b8e-ed0a-4b6c-bf87-8789265c7158"
+            },
+```
+</details>
+
+<details>
+<summary>example snippet: instance OSCAL Observation</summary>
+
+```
+      "observations": [
+        {
+          "uuid": "61092735-e365-4638-bc2c-ecd0ed407e73",
+          "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+          "props": [
+            {
+              "name": "benchmark",
+              "ns": "dns://tanium",
+              "class": "source",
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+            },
+            {
+              "name": "rule",
+              "ns": "dns://xccdf",
+              "class": "id",
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+            },
+            {
+              "name": "result",
+              "ns": "dns://xccdf",
+              "class": "result",
+              "value": "pass"
+            },
+            {
+              "name": "time",
+              "ns": "dns://xccdf",
+              "class": "timestamp",
+              "value": "2021-03-16T13:29:14+00:00"
+            }
+          ],
+          "methods": [
+            "TEST-AUTOMATED"
+          ],
+          "subjects": [
+            {
+              "uuid-ref": "2650b9ba-e767-4381-9a3f-127d1552d7d2",
+              "type": "inventory-item"
+            }
+          ]
+```
+</details>
+
+<details>
+<summary>example snippet: local definitions</summary>
+
+```
+"results": [
+    {
+      "uuid": "98028241-8705-4211-bf36-71e1f7aa6192",
+      "title": "Tanium",
+      "description": "Tanium",
+      "start": "2021-03-16T13:29:14.000+00:00",
+      "local-definitions": {
+        "inventory-items": [
+          {
+            "uuid": "2650b9ba-e767-4381-9a3f-127d1552d7d2",
+            "description": "inventory",
+            "props": [
+              {
+                "name": "computer-name",
+                "ns": "dns://tanium",
+                "class": " inventory-item",
+                "value": "cmp-wn-2106.demo.tanium.local"
+              },
+              {
+                "name": "computer-ip",
+                "ns": "dns://tanium",
+                "class": " inventory-item",
+                "value": "fe80::3cd5:564b:940e:49ab"
+              },
+              {
+                "name": "profile",
+                "ns": "dns://tanium",
+                "class": " inventory-item",
+                "value": "Windows 10"
+              }
+            ]
+          },
 ```
 </details>
 
