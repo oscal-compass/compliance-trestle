@@ -144,3 +144,23 @@ def test_md_by_hand():
     md_validator = md_.MarkdownValidator(template_path, header_validate)
     result = md_validator.validate(instance_path)
     assert result == status
+
+
+@pytest.mark.parametrize(
+    'template_path, instance_path, status, yaml_header_validate',
+    [
+        (
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/instance.md'),
+            True,
+            False
+        )
+    ]
+)
+def test_md_validator_with_md_header(
+    template_path: pathlib.Path, instance_path: pathlib.Path, status: bool, yaml_header_validate: bool
+) -> None:
+    """Test with validation of heading."""
+    md_validator = md_.MarkdownValidator(template_path, yaml_header_validate, 'Governed Document')
+    result = md_validator.validate(instance_path)
+    assert result == status

@@ -22,7 +22,7 @@ import argparse
 import logging
 import pathlib
 import shutil
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import frontmatter
 
@@ -84,7 +84,7 @@ def compare_tree(template: Dict[str, Any], content: Dict[str, Any]) -> bool:
     - Headers are the only element measured in the template.
     """
     # TODO: Add logging statements to this context.
-    if not template['type'] == 'heading':
+    if not (template['type'] == 'heading'):
         # It's okay as we should not be here:
         return True
     template_heading_level = template['level']
@@ -141,7 +141,12 @@ def allowed_task_name(name: str, trestle_root: pathlib.Path) -> bool:
 class MarkdownValidator:
     """Markdown validator to meet conformance expectations."""
 
-    def __init__(self, template_path: pathlib.Path, header_validate: bool) -> None:
+    def __init__(
+        self,
+        template_path: pathlib.Path,
+        yaml_header_validate: bool,
+        strict_heading_validate: Optional[str] = None
+    ) -> None:
         """
         Initialize markdown validator.
 
@@ -149,7 +154,7 @@ class MarkdownValidator:
             template_path: path to markdown template.
             header_validate: whether to validate a yaml header or not.
         """
-        self._header_validate = header_validate
+        self._yaml_header_validate = yaml_header_validate
         self.template_path = template_path
         if not self.template_path.is_file():
             logger.error(f'Provided template {self.template_path.absolute()} is not a file')
@@ -157,6 +162,7 @@ class MarkdownValidator:
         template_header, template_parse = self._load_markdown_parsetree(self.template_path)
         self._template_header = template_header
         self._template_parse = template_parse
+        self._strict_heading_validate = strict_heading_validate
 
     def _load_markdown_parsetree(self, path: pathlib.Path) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
         """
@@ -194,7 +200,7 @@ class MarkdownValidator:
     def validate(self, candidate: pathlib.Path) -> bool:
         """Run the validation against a candidate file."""
         header_content, mistune_parse_content = self._load_markdown_parsetree(candidate)
-        if self._header_validate:
+        if self._yaml_header_validate:
             header_status = self.compare_keys(self._template_header, header_content)
             if not header_status:
                 logger.warning(f'YAML header mismatch between template {self.template_path} and instance {candidate}')
@@ -203,6 +209,12 @@ class MarkdownValidator:
         w_template_tree = self.wrap_content(template_tree)
         candidate_tree, _ = partition_ast(mistune_parse_content)
         w_candidate_tree = self.wrap_content(candidate_tree)
+
+        if self._strict_heading_validate is not None:
+            status = self.template_heading_validate(w_template_tree, w_candidate_tree, self._strict_heading_validate)
+            if not status:
+                logger.error(f'Heading {self._strict_heading_validate} did not meet templating requirements.')
+                return False
         return compare_tree(w_template_tree, w_candidate_tree)
 
     def compare_keys(self, template, dict_) -> bool:
@@ -215,6 +227,104 @@ class MarkdownValidator:
                         return status
             else:
                 return False
+        return True
+
+    def search_for_heading(self, candidate_tree: Dict[str, Any], heading: str) -> Dict[str, Any]:
+        """Recursively search for a heading within a document and return the children."""
+        answer = {}
+        for candidate in candidate_tree['children']:
+            if candidate['type'] == 'heading':
+                if candidate['children'][0]['text'].strip() == heading.strip():
+                    answer = candidate
+                    break
+                else:
+                    answer = self.search_for_heading(candidate, heading)
+        return answer
+
+    def clean_content(self, parse_tree: Dict[str, Any]) -> List[str]:
+        """
+        Clean a set of content for measurement of header cleanliness.
+
+        Args:
+            parse_tree: AST parse normalized into a hierarchial tree.
+        Returns:
+            List of strings for each line of paragraph content.
+        Raises:
+            TrestleError when unhandled object types are present.
+        Assumptions:
+            - Multiple paragraphs
+            - no sub-headings
+            - tables unhandled
+
+        """
+        items = parse_tree['children']
+        clean_text_lines: List[str] = []
+
+        for index in range(len(items)):
+            # first item is the header title text which we will ignore.
+            if index == 0:
+                continue
+            item = items[index]
+            if item['type'] == 'block_html':
+                # ignore all block HTML
+                continue
+            elif item['type'] == 'paragraph':
+                line_content = ''
+                for child in item['children']:
+                    if child['type'] == 'linebreak':
+                        clean_text_lines.append(line_content)
+                        line_content = ''
+                    elif 'html' in child['type']:
+                        # ignore HTML comment presuming a commment
+                        continue
+                    elif 'strong' in child['type']:
+                        line_content = line_content + child['children'][0]['text']
+                    elif 'text' in child['type']:
+                        line_content = line_content + child['text']
+                    else:
+                        msg = f'Unexpected element type {item["type"]} when flattening a governed header.'
+                        logger.error(msg)
+                        raise err.TrestleError(msg)
+                # handle EoParagraph condition
+                clean_text_lines.append(line_content)
+            else:
+                msg = f'Unexpected element type {item["type"]} when flattening a governed header.'
+                logger.error(msg)
+                raise err.TrestleError(msg)
+        return clean_text_lines
+
+    def _template_heading_validate(self, wrapped_template, wrapped_candidate, title_tag) -> bool:
+        """
+        Validate a markdown document containing a structured header based on a title tag.
+
+        This is an experimental capability which is relatively constrained.
+
+        Assumptions:
+            Header is determined the name of a heading block.
+            Within the header no table exists (e.g. plain paragraphs)
+            Header is valid if the header, excluding inline html comments, is characters 0-M of N in the content.
+            Comparison removes formatting.
+            All inline HTML is presumed to be comments (for now).
+            Header is at the top level (e.g. heading level 1).
+        """
+        # Find the correct header
+        template_heading = self.search_for_heading(wrapped_template, title_tag)
+        if template_heading == {}:
+            logger.error('Governed header tag provided but not found in the template - failing validation')
+            return False
+        candidate_heading = self.search_for_heading(wrapped_template, title_tag)
+        if candidate_heading == {}:
+            logger.error('Governed header tag provided but not found in the content - failing validation')
+            return False
+        template_lines = self.clean_content(template_heading)
+        content_lines = self.clean_content(candidate_heading)
+        # Strict parsing
+        for index in range(len(template_lines)):
+            if not content_lines[index][0:len(template_lines[index])] == template_lines[index]:
+                logger.warning('Mismatch in governed heading')
+                logger.warning(f'Between template {template_lines[index]} and instance {content_lines[index]}')
+                return False
+        # Okay
         return True
 
 
@@ -266,6 +376,9 @@ class GovernedDocs(CommandPlusDocs):
         Note that by default this will automatically enforce the task.
         """
         self.add_argument('-tn', '--task-name', help=help_str, required=True, type=str)
+        heading_help = """
+        Governed heading: Heading where for each line the content is a superset of the template's content."""
+        self.add_argument('-gn', '--governed-heading', help=heading_help, default=None, type=str)
         self.add_argument('mode', choices=['validate', 'template-validate', 'setup-template', 'setup'])
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -279,19 +392,19 @@ class GovernedDocs(CommandPlusDocs):
                 f'Task name {args.task_name} is invalid as it interferes with OSCAL and trestle reserved names.'
             )
             return 1
-
+        status: int = None
         if args.mode == 'setup':
-            return self.setup(args.task_name, trestle_root)
+            status = self.setup(args.task_name, trestle_root)
 
         elif args.mode == 'template-validate':
-            self.template_validate(args.task_name, trestle_root)
+            status = self.template_validate(args.task_name, trestle_root, args.governed_heading)
         elif args.mode == 'setup-template':
-            self.setup_template_governed_docs(args.task_name, trestle_root)
+            status = self.setup_template_governed_docs(args.task_name, trestle_root)
         else:
             # mode is validate
-            self.validate(args.task_name, trestle_root)
+            status = self.validate(args.task_name, trestle_root, args.governed_heading)
 
-        return 0
+        return status
 
     def setup_template_governed_docs(self, task_name: str, trestle_root: pathlib.Path) -> int:
         """Create structure to allow markdown template enforcement."""
@@ -316,7 +429,16 @@ class GovernedDocs(CommandPlusDocs):
 
     def setup(self, task_name: str, trestle_root: pathlib.Path) -> int:
         """Presuming the template exists, copy into a sample markdown file with an index."""
-        template_file = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name / self.template_name
+        template_dir = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name
+        template_file = template_dir / self.template_name
+
+        if not self._validate_template_dir(template_dir):
+            logger.error('Aborting setup')
+            return 1
+        if not template_file.is_file():
+            logger.error('No template file ... exiting.')
+            return 1
+
         index = 0
         while True:
             candidate_task = trestle_root / task_name / f'{task_name}_{index:03d}.md'
@@ -327,8 +449,22 @@ class GovernedDocs(CommandPlusDocs):
                 break
         return 0
 
-    def self_template_validate(self, task_name: str, trestle_root: pathlib.Path) -> int:
+    def template_validate(self, task_name: str, trestle_root: pathlib.Path, heading: str) -> int:
         """Validate that the template is acceptable markdown."""
+        template_dir = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name
+        template_file = template_dir / self.template_name
+        if not self._validate_template_dir(template_dir):
+            logger.error('Aborting setup')
+            return 1
+        if not template_file.is_file():
+            logger.error(f'Required template file: {template_file} does not exist. Exiting.')
+            return 1
+        try:
+            _ = MarkdownValidator(template_file, False, heading)
+        except Exception as ex:
+            logger.error(f'Template for task {task_name} failed to validate due to {ex}')
+            return 1
+        return 0
 
     def _validate_template_dir(self, template_dir=pathlib.Path) -> bool:
         """Template directory should only have template file."""
@@ -339,9 +475,27 @@ class GovernedDocs(CommandPlusDocs):
                 return False
         return True
 
-    def validate(self, task_name: str, trestle_root: pathlib.Path) -> None:
+    def validate(self, task_name: str, trestle_root: pathlib.Path, governed_heading: str) -> int:
         """Validate task."""
-        pass
+        task_path = trestle_root / task_name
+        if not task_path.is_dir():
+            logger.error(f'Task directory {task_path} does not exist. Exiting validate.')
+        template_dir = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name
+        template_file = template_dir / self.template_name
+        md_validator = MarkdownValidator(template_file, False, governed_heading)
+        if not template_file.is_file():
+            logger.error(f'Required template file: {template_file} does not exist. Exiting.')
+            return 1
+        for potential_md_file in task_path.iterdir():
+            if not potential_md_file.suffix == '.md':
+                logger.warning(f'Unexpected file {potential_md_file} in task {task_name}, exiting.')
+            status = md_validator.validate(potential_md_file)
+            if not status:
+                logger.warning(f'Markdown file {potential_md_file} fails to meet template for task {task_name}.')
+                return 1
+            else:
+                logger.info(f'Markdown file {potential_md_file} is valid for task {task_name}.')
+        return 0
 
 
 class GovernedFolders(CommandPlusDocs):
