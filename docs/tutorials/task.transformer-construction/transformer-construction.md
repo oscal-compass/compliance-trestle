@@ -359,6 +359,13 @@ The module should:
 - transform input into trestle oscal classes hierarchy
 - send transformed OSCAL data in return
 
+For the Observation only case, the transform is straight forward. Code should create one Observation for
+each rule/result pair.
+
+For the Findings case, a bit more logic is required. Code should accumulate Observations for each Finding
+and determine an overall status for it. For example, if 15 Observations are found for Finding control AC-3,
+where 14 have result=PASS and 1 has result=FAIL, then the overall status for the Finding would be `not satisfied` with overall result=FAIL.
+
 ## *Examples*
 
 There are 2 transformers in trestle. 
