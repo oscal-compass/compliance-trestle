@@ -33,6 +33,16 @@ Presumed is an existing method for obtaining the compliance data from the cloud 
 - OSCAL object management and emitter Python code are provided by trestle (green).
 - Transformation Python code (yellow) is to be written by you.
 
+Other possible code stack configurations (not shown):
+
+- write your own command module (file interface), but use trestle logic module (data processing)
+- write your own command and logic modules, but rely on trestle OSCAL support and base
+
+For example, one could create an 
+auditree-arboretum [harvest](https://github.com/ComplianceAsCode/auditree-harvest#report-development)
+report (file interface) that employs the trestle 
+osco-to-oscal transformation (data processing) module.
+
 ## *Choose Mapping Strategy*
 
 There are 3 potential levels of OSCAL Assessment Results that can be emitted by your transformer.
@@ -408,7 +418,3 @@ or
 [auditree-arboretum](https://github.com/ComplianceAsCode/auditree-arboretum/blob/main/CONTRIBUTING.md)
 or
 other appropriate open source repository.
-
-
-
-
