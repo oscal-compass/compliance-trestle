@@ -23,7 +23,7 @@ OpenShift Compliance Operator [OSCO](https://github.com/IBM/compliance-trestle/b
 ## *Overview*
 
 You have a source of compliance data that is in non-OSCAL format (spreadsheet, XML, JSON, database, object-store...) 
-and you would like to convert into standardized form in terms of NIST OSCAL.
+and you would like to transform into standardized form in terms of NIST OSCAL.
 Presumed is an existing method for obtaining the compliance data from the cloud and materializing on disk as one or more files.
 
 ![transformer-construction](transformer-construction.jpg)
@@ -165,45 +165,27 @@ transformer emits OSCAL Findings, a more complex partial result.
 
 Table of approximate lines of code.
 
-<style>
-table {
-  border: 1px solid black;
-  border-collapse: collapse;
-  padding: 15px;
-}
-th {
-  border: 1px solid black;
-  border-collapse: collapse;
-  padding: 15px;
-  background-color: #f1f1c1;
-}
-td {
-  border: 1px solid black;
-  border-collapse: collapse;
-  padding: 15px;
-}
-</style>
 <table>
 <tr>
- <th style="text-align:right">task-name
- <th style="text-align:right">OSCAL type
- <th style="text-align:right">file interface
- <th style="text-align:right">data processing
- <th style="text-align:right">test cases
+ <th style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;background-color: #f1f1c1;">task-name
+ <th style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;background-color: #f1f1c1;">OSCAL type
+ <th style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;background-color: #f1f1c1;">file interface
+ <th style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;background-color: #f1f1c1;">data processing
+ <th style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;background-color: #f1f1c1;">test cases
 
 <tr>
- <td style="text-align:right">osco-to-oscal
- <td style="text-align:right">Observations only
- <td style="text-align:right">275
- <td style="text-align:right">350
- <td style="text-align:right">400
+ <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">osco-to-oscal
+ <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">Observations only
+ <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">275
+ <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">350
+ <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">400
  
 <tr>
- <td style="text-align:right">tanum-to-oscal
- <td style="text-align:right">Findings, with Observations
- <td style="text-align:right">200
- <td style="text-align:right">350
- <td style="text-align:right">300
+ <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">tanum-to-oscal
+ <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">Findings, with Observations
+ <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">200
+ <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">350
+ <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">300
 </table>
 
 ## *Contributing*
