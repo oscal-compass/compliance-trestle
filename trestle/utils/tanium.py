@@ -38,7 +38,7 @@ def get_observations(tanium: t_tanium, fmt: str = 'object') -> Tuple[t_oscal, t_
     Transforms the given Tanium data into OSCAL-like Assessment Results Observations.
 
     Args:
-        tanuim: Tanium data to be transformed into observations.
+        tanium: Tanium data to be transformed into observations.
         fmt: specify return value format, one of ['object', 'json']
 
     Returns:
