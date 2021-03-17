@@ -59,6 +59,7 @@ def partition_ast(content: List[Dict[str, Any]], ref_level=0) -> Tuple[List[Dict
                 break
             if ii + 1 == len(content):
                 new_content.append(content[ii])
+                ii = ii + 1
                 break
             else:
                 sub_content, jj = partition_ast(content[ii + 1:], content[ii]['level'])
@@ -211,7 +212,7 @@ class MarkdownValidator:
         w_candidate_tree = self.wrap_content(candidate_tree)
 
         if self._strict_heading_validate is not None:
-            status = self.template_heading_validate(w_template_tree, w_candidate_tree, self._strict_heading_validate)
+            status = self._template_heading_validate(w_template_tree, w_candidate_tree, self._strict_heading_validate)
             if not status:
                 logger.error(f'Heading {self._strict_heading_validate} did not meet templating requirements.')
                 return False
@@ -318,6 +319,11 @@ class MarkdownValidator:
             return False
         template_lines = self.clean_content(template_heading)
         content_lines = self.clean_content(candidate_heading)
+        if not len(template_lines) == len(content_lines):
+            logger.error(
+                'Governed heading has inconsistent number of content lines between the template and measured file.'
+            )
+            return False
         # Strict parsing
         for index in range(len(template_lines)):
             if not content_lines[index][0:len(template_lines[index])] == template_lines[index]:
@@ -379,7 +385,7 @@ class GovernedDocs(CommandPlusDocs):
         heading_help = """
         Governed heading: Heading where for each line the content is a superset of the template's content."""
         self.add_argument('-gn', '--governed-heading', help=heading_help, default=None, type=str)
-        self.add_argument('mode', choices=['validate', 'template-validate', 'setup-template', 'setup'])
+        self.add_argument('mode', choices=['validate', 'template-validate', 'setup', 'create-sample'])
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -393,12 +399,12 @@ class GovernedDocs(CommandPlusDocs):
             )
             return 1
         status: int = None
-        if args.mode == 'setup':
-            status = self.setup(args.task_name, trestle_root)
+        if args.mode == 'create-sample':
+            status = self.create_sample(args.task_name, trestle_root)
 
         elif args.mode == 'template-validate':
             status = self.template_validate(args.task_name, trestle_root, args.governed_heading)
-        elif args.mode == 'setup-template':
+        elif args.mode == 'setup':
             status = self.setup_template_governed_docs(args.task_name, trestle_root)
         else:
             # mode is validate
@@ -421,13 +427,12 @@ class GovernedDocs(CommandPlusDocs):
         if template_file.is_file():
             return 0
         fh = template_file.open('w')
-        fh.write("""
-        # Template header\n
-        This file is a pro-forma template.\n
-        """)
+        fh.write("""# Template header\nThis file is a pro-forma template.\n""")
+        logger.warning(f'Template file setup for task {task_name} at {template_file}')
+        logger.warning(f'Task directory is {task_path} ')
         return 0
 
-    def setup(self, task_name: str, trestle_root: pathlib.Path) -> int:
+    def create_sample(self, task_name: str, trestle_root: pathlib.Path) -> int:
         """Presuming the template exists, copy into a sample markdown file with an index."""
         template_dir = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name
         template_file = template_dir / self.template_name
@@ -445,7 +450,7 @@ class GovernedDocs(CommandPlusDocs):
             if candidate_task.is_file():
                 index = index + 1
             else:
-                shutil.copy(template_file, candidate_task)
+                shutil.copy(str(template_file), str(candidate_task))
                 break
         return 0
 
@@ -491,7 +496,7 @@ class GovernedDocs(CommandPlusDocs):
                 logger.warning(f'Unexpected file {potential_md_file} in task {task_name}, exiting.')
             status = md_validator.validate(potential_md_file)
             if not status:
-                logger.warning(f'Markdown file {potential_md_file} fails to meet template for task {task_name}.')
+                logger.info(f'Markdown file {potential_md_file} fails to meet template for task {task_name}.')
                 return 1
             else:
                 logger.info(f'Markdown file {potential_md_file} is valid for task {task_name}.')

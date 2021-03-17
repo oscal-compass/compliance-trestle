@@ -73,12 +73,13 @@ def test_partition_ast() -> None:
     import mistune
     import pathlib
     import frontmatter
-    test_data = pathlib.Path('tests/data/md/test_1_md_format/correct_instance_extra_features.md')
+    test_data = pathlib.Path('tests/data/md/test_3_md_hand_edited/decisions_000.md')
     fm = frontmatter.loads(test_data.open('r').read())
     content = fm.content
     mistune_ast_parser = mistune.create_markdown(renderer=mistune.AstRenderer())
     parse = mistune_ast_parser(content)
     tree, index = md_.partition_ast(parse)
+    tree
 
 
 @pytest.mark.parametrize(
@@ -137,11 +138,11 @@ def test_md_validator_pass(template_path, instance_path, status, header_validate
 
 def test_md_by_hand():
     """Simpler test to enable debugging."""
-    template_path = pathlib.Path('tests/data/md/test_1_md_format/template.md')
-    instance_path = pathlib.Path('tests/data/md/test_1_md_format/correct_instance_extra_features.md')
+    template_path = pathlib.Path('tests/data/md/test_3_md_hand_edited/template.md')
+    instance_path = pathlib.Path('tests/data/md/test_3_md_hand_edited/decisions_000.md')
     header_validate = False
     status = True
-    md_validator = md_.MarkdownValidator(template_path, header_validate)
+    md_validator = md_.MarkdownValidator(template_path, header_validate, 'Governed Document')
     result = md_validator.validate(instance_path)
     assert result == status
 
@@ -152,6 +153,24 @@ def test_md_by_hand():
         (
             pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
             pathlib.Path('tests/data/md/test_2_md_with_md_header/instance.md'),
+            True,
+            False
+        ),
+        (
+            pathlib.Path('tests/data/md/test_3_md_hand_edited/template.md'),
+            pathlib.Path('tests/data/md/test_3_md_hand_edited/decisions_000.md'),
+            True,
+            False
+        ),
+        (
+            pathlib.Path('tests/data/md/test_3_md_hand_edited/template.md'),
+            pathlib.Path('tests/data/md/test_3_md_hand_edited/decisions_001.md'),
+            True,
+            False
+        ),
+        (
+            pathlib.Path('tests/data/md/test_3_md_hand_edited/template.md'),
+            pathlib.Path('tests/data/md/test_3_md_hand_edited/decisions_002.md'),
             True,
             False
         )
