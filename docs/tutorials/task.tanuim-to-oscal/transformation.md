@@ -1,4 +1,4 @@
-# Tanium to OSCAL transform tutorial
+# Tutorial: Setup for and use of Tanium to OSCAL transformer
 
 Here are step by step instructions for setup and transformation of [Tanium](https://www.tanium.com/) compliance data files into [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) using the [compliance-trestle](https://github.com/IBM/compliance-trestle/blob/develop/README.md) tool.
 
@@ -11,7 +11,20 @@ The first is a one-time check/set-up of your enviroment.
 The second is a one-command transformation form Tanium to OSCAL.
 
 ## *Step 1: Environment setup*
-<small>(Red Hat Linux 7.x, 8.x)</small>
+
+Linux, Mac
+
+<details>
+<summary>Windows</summary>
+
+Make these changes:
+<ul>
+<li>use backslashes `\` for file paths
+<li>use `md` instead of mkdir -p
+<li>put the url in double quotes for `curl`
+<li>use `more` instead of cat
+</ul>
+</details>
 
 * Insure you have a modern [Python](https://www.python.org/downloads/) (3.7, 3.8, 3.9).
 
