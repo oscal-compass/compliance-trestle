@@ -96,7 +96,7 @@ Users needing to import XML OSCAL artifacts are recommended to look at NIST's XM
 
 ## Tutorials
 
-List of tutorials [here](docs/tutorials/tutorials.md).
+List of tutorials [here](https://ibm.github.io/compliance-trestle/tutorials/tutorials/).
 
 ## Contributing to Trestle
 
