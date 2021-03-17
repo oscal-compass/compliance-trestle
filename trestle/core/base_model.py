@@ -130,7 +130,7 @@ class OscalBaseModel(BaseModel):
             try:
                 excluded_fields = [alias_to_field[key].name for key in stripped_fields_aliases]
             except KeyError as e:
-                raise err.TrestleError(f'Field {str(e)} does not exists in the model')
+                raise err.TrestleError(f'Field {str(e)} does not exist in the model')
 
         current_fields = cls.__fields__
         new_fields_for_model = {}
