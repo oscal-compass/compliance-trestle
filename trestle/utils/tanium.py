@@ -58,7 +58,6 @@ t_findings_map = Dict[t_control, Any]
 t_results_map = Dict[str, Any]
 
 
-
 class RuleUse():
     """Represents one row of Tanium data."""
 
