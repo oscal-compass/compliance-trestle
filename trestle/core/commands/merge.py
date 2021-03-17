@@ -19,12 +19,15 @@ import logging
 import os
 from pathlib import Path
 
+from pydantic import create_model
+
 from trestle.core import const, utils
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
+from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.plans import Plan
 from trestle.utils import fs, load_distributed
 from trestle.utils import log
@@ -48,14 +51,14 @@ class MergeCmd(CommandPlusDocs):
     def _run(self, args: argparse.Namespace) -> int:
         """Merge elements into the parent oscal model."""
         log.set_log_level_from_args(args)
+        element_paths = args.element.split(',')
+        logger.debug(f'merge _run element paths {element_paths}')
         try:
-            # Handle multiple element paths: element_paths = args.element.split(',')
-            if len(args.element.split(',')) > 1:
-                raise TrestleError('Trestle merge -e/-element currently takes only 1 element.')
-
-            plan = self.merge(ElementPath(args.element))
-            plan.simulate()
-            plan.execute()
+            for element_path in element_paths:
+                logger.debug(f'merge {element_path}')
+                plan = self.merge(ElementPath(element_path))
+                plan.simulate()
+                plan.execute()
         except BaseException as err:
             logger.error(f'Merge failed: {err}')
             return 1
@@ -74,7 +77,10 @@ class MergeCmd(CommandPlusDocs):
         destination_model_alias = element_path_list[-2]
         # Destination model filetype
         try:
+            logger.debug(f'merge destination model alias: {destination_model_alias}')
+            logger.debug(f'merge getting contextual file type from cwd')
             file_type = fs.get_contextual_file_type(Path(os.getcwd()))
+            logger.debug(f'contextual file type is {file_type}')
         except Exception as e:
             raise TrestleError(str(e))
         file_ext = FileContentType.to_file_extension(file_type)
@@ -82,7 +88,10 @@ class MergeCmd(CommandPlusDocs):
         destination_model_filename = Path(f'{utils.classname_to_alias(destination_model_alias, "json")}{file_ext}')
         destination_model_type, _ = fs.get_stripped_contextual_model(destination_model_filename.absolute())
 
-        destination_model_object = destination_model_type.oscal_read(destination_model_filename)
+        # if there is no .json file then there is no destination model object at this point, so create empty one
+        destination_model_object: OscalBaseModel = None
+        if destination_model_filename.exists():
+            destination_model_object = destination_model_type.oscal_read(destination_model_filename)
         """1.5. If target is wildcard, load distributed destrination model and replace destination model."""
         # Handle WILDCARD '*' match. Return plan to load the destination model, with it's distributed attributes
         if target_model_alias == '*':
@@ -130,7 +139,9 @@ class MergeCmd(CommandPlusDocs):
         if hasattr(target_model_object, '__dict__') and '__root__' in target_model_object.__dict__:
             target_model_object = target_model_object.__dict__['__root__']
         """3. Insert target model into destination model."""
-        merged_dict = destination_model_object.__dict__
+        merged_dict = {}
+        if destination_model_object is not None:
+            merged_dict = destination_model_object.__dict__
         merged_dict[target_model_alias] = target_model_object
         merged_model_object = merged_model_type(**merged_dict)  # type: ignore
         merged_destination_element = Element(merged_model_object)
@@ -149,3 +160,8 @@ class MergeCmd(CommandPlusDocs):
         # TODO: Destination model directory is empty or already merged? Then clean up.
 
         return plan
+
+if __name__ == '__main__':
+    os.chdir('/tmp/test2/catalogs/mycatalog/catalog')
+    mc = MergeCmd()
+    mc.merge(ElementPath('metadata/roles.*'))

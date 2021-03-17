@@ -16,7 +16,9 @@
 """Module to load distributed model."""
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
+
+from pydantic import create_model
 
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
@@ -87,12 +89,13 @@ def load_distributed(
 
     # Get current model
     primary_model_type, primary_model_alias = fs.get_stripped_contextual_model(file_path.absolute())
-    primary_model_instance = primary_model_type.oscal_read(file_path)
-    primary_model_dict = primary_model_instance.__dict__
+    primary_model_instance: Type[OscalBaseModel] = None
+    if file_path.exists():
+        primary_model_instance = primary_model_type.oscal_read(file_path)
 
     # Is model decomposed?
     content_type = FileContentType.path_to_content_type(file_path)
-    file_dir = file_path if content_type == FileContentType.UNKNOWN else file_path.parent
+    file_dir = Path.cwd() if content_type == FileContentType.UNKNOWN else file_path.parent
     decomposed_dir = file_dir / file_path.parts[-1].split('.')[0]
 
     if decomposed_dir.exists():
@@ -117,7 +120,9 @@ def load_distributed(
                     model_type, model_alias, model_instance = load_distributed(path, collection_type)
                     aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
                     instances_to_be_merged.append(model_instance)
-
+        primary_model_dict = {}
+        if primary_model_instance is not None:
+            primary_model_dict = dict(primary_model_instance.__dict__)
         for i in range(len(aliases_not_to_be_stripped)):
             alias = aliases_not_to_be_stripped[i]
             instance = instances_to_be_merged[i]
