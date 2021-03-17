@@ -164,7 +164,7 @@ def test_execute_compressed(tmpdir):
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     assert len(os.listdir(str(tmpdir))) == 1
-    f_expected = pathlib.Path('tests/data/tasks/osco/output/') / 'ssg-ocp4-ds-cis-111.222.333.444-pod.json'
+    f_expected = pathlib.Path('tests/data/tasks/osco/output-fetcher/') / 'ssg-ocp4-ds-cis-111.222.333.444-pod.json'
     f_produced = tmpdir  / 'ssg-ocp4-ds-cis-111.222.333.444-pod.json'
     assert [row for row in open(f_produced)] == [row for row in open(f_expected)]
     
