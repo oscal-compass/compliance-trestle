@@ -129,13 +129,13 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBase
         path = pathlib.Path.cwd()
 
     if not is_valid_project_model_path(path):
-        raise err.TrestleError(f'Trestle project not found at {path}')
+        raise err.TrestleError(f'Trestle project model not found at {path}')
 
     root_path = get_trestle_project_root(path)
     project_model_path = get_project_model_path(path)
 
     if root_path is None or project_model_path is None:
-        raise err.TrestleError('Trestle project not found')
+        raise err.TrestleError('Trestle project model not found')
 
     relative_path = path.relative_to(str(root_path))
     project_type = relative_path.parts[0]  # catalogs, profiles, etc
@@ -196,6 +196,7 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
     aliases_to_be_stripped = set()
     if split_subdir.exists():
         for f in split_subdir.iterdir():
+            # TODO ignore hidden files
             alias = extract_alias(f)
             if alias not in aliases_not_to_be_stripped:
                 aliases_to_be_stripped.add(alias)

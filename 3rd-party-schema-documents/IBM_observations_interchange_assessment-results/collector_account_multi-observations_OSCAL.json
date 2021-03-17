@@ -1,0 +1,738 @@
+{
+    "observations" : [
+        {
+            "uuid": "00000000-0000-4000-9999-000000000005",
+            "title": "222222222, IBM Cloud Best Practices Controls 1.0:1.1, Oct 14, 2020 at 1:56 AM AEDT",
+            "description": "IBM S&CC scan for IBM Cloud Account 222222222, IBM Cloud Best Practices Controls 1.0:1.1, Oct 14, 2020 at 1:56 AM AEDT",
+            "props":[
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "scan",
+                    "value": "IBM - Oct 14, 2020 at 1 56 AM AEDT"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "profile-name",
+                    "value": "IBM Cloud Best Practices Controls 1.0"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "control-number",
+                    "value": "1.1"
+                }
+            ],
+            "annotations": [
+                {
+                    "ns" : "IBM",
+                    "name" : "issue",
+                    "value" : "https://acme.org/foo/123"
+                }
+            ],
+            "methods":[
+                "TEST-AUTOMATED"
+            ],
+            "subjects": [
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-000000000006",
+                    "type": "component",
+                    "title": "PasswordPolicy",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "account",
+                            "value": "222222222"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "PasswordPolicy"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "Identity and Access Management"
+                        }
+                    ]
+                }
+            ],
+            "remediation-group" : [],
+            "relevant-evidence": [
+                {
+                    "href": "",
+                    "description": "S&CC scan result",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "PasswordPolicy"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "actual-value",
+                            "value": "true"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "expected-value",
+                            "value": "Password policy should be required at least one uppercase letter"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "PASS"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "detail",
+                            "value": "Uppercase configuration is set in IAM password policy"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "00000000-0000-4000-9999-000000000007",
+            "title": "222222222, IBM Cloud Best Practices Controls 1.0:1.4, Oct 14, 2020 at 1:56 AM AEDT",
+            "description": "IBM S&CC scan for IBM Cloud Account 222222222, IBM Cloud Best Practices Controls 1.0:1.4, Oct 14, 2020 at 1:56 AM AEDT",
+            "props":[
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "scan",
+                    "value": "IBM - Oct 14, 2020 at 1 56 AM AEDT"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "profile-name",
+                    "value": "IBM Cloud Best Practices Controls 1.0"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "control-number",
+                    "value": "1.4"
+                }
+            ],
+            "annotations": [
+                {
+                    "ns" : "IBM",
+                    "name" : "issue",
+                    "value" : "https://acme.org/foo/123"
+                }
+            ],
+            "methods":[
+                "TEST-AUTOMATED"
+            ],
+            "subjects": [
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-000000000006",
+                    "type": "component",
+                    "title": "PasswordPolicy",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "account",
+                            "value": "222222222"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "PasswordPolicy"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "Identity and Access Management"
+                        }
+                    ]
+                }
+            ],
+            "remediation-group" : [],
+            "relevant-evidence": [
+                {
+                    "href": "",
+                    "description": "S&CC scan result",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "PasswordPolicy"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "actual-value",
+                            "value": "8"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "expected-value",
+                            "value": "In IAM password policy Minimum Password Length should be set to 8"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "PASS"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "detail",
+                            "value": "In IAM password policy Minimum Password Length is set to 8"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "00000000-0000-4000-9999-000000000008",
+            "title": "222222222, IBM Cloud Best Practices Controls 1.0:1.12, Oct 14, 2020 at 1:56 AM AEDT",
+            "description": "IBM S&CC scan for IBM Cloud Account 222222222, IBM Cloud Best Practices Controls 1.0:1.12, Oct 14, 2020 at 1:56 AM AEDT",
+            "props":[
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "scan",
+                    "value": "IBM - Oct 14, 2020 at 1 56 AM AEDT"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "profile-name",
+                    "value": "IBM Cloud Best Practices Controls 1.0"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "control-number",
+                    "value": "1.12"
+                }
+            ],
+            "annotations": [
+                {
+                    "ns" : "IBM",
+                    "name" : "issue",
+                    "value" : "https://acme.org/foo/123"
+                }
+            ],
+            "methods":[
+                "TEST-AUTOMATED"
+            ],
+            "subjects": [
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-000000000009",
+                    "type": "component",
+                    "title": "@ibm.com",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "account",
+                            "value": "222222222"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "@ibm.com"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "Identity and Access Management:Users"
+                        }
+                    ]
+                },
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-00000000000a",
+                    "type": "component",
+                    "title": "@ibm.com",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "account",
+                            "value": "222222222"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "@ibm.com"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "Identity and Access Management:Users"
+                        }
+                    ]
+                },
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-00000000000b",
+                    "type": "component",
+                    "title": "@ibm.com",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "account",
+                            "value": "222222222"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "@ibm.com"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "Identity and Access Management:Users"
+                        }
+                    ]
+                }
+            ],
+            "remediation-group" : [],
+            "relevant-evidence": [
+                {
+                    "href": "",
+                    "description": "S&CC scan result",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "@ibm.com"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "actual-value",
+                            "value": "{\"2FA\":false}"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "expected-value",
+                            "value": "MFA should be enabled for all users"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "FAIL"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "detail",
+                            "value": "MFA is not enabled"
+                        }
+                    ]
+                },
+                {
+                    "href": "",
+                    "description": "S&CC scan result",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "@ibm.com"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "actual-value",
+                            "value": "{\"2FA\":false}"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "expected-value",
+                            "value": "MFA should be enabled for all users"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "FAIL"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "detail",
+                            "value": "MFA is not enabled"
+                        }
+                    ]
+                },
+                {
+                    "href": "",
+                    "description": "S&CC scan result",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "@ibm.com"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "actual-value",
+                            "value": "{\"2FA\":false}"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "expected-value",
+                            "value": "MFA should be enabled for all users"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "FAIL"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "detail",
+                            "value": "MFA is not enabled"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "00000000-0000-4000-9999-00000000000c",
+            "title": "222222222, IBM Cloud Best Practices Controls 1.0:1.16, Oct 14, 2020 at 1:56 AM AEDT",
+            "description": "IBM S&CC scan for IBM Cloud Account 222222222, IBM Cloud Best Practices Controls 1.0:1.16, Oct 14, 2020 at 1:56 AM AEDT",
+            "props":[
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "scan",
+                    "value": "IBM - Oct 14, 2020 at 1 56 AM AEDT"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "profile-name",
+                    "value": "IBM Cloud Best Practices Controls 1.0"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "control-number",
+                    "value": "1.16"
+                }
+            ],
+            "annotations": [
+                {
+                    "ns" : "IBM",
+                    "name" : "issue",
+                    "value" : "https://acme.org/foo/123"
+                }
+            ],
+            "methods":[
+                "TEST-AUTOMATED"
+            ],
+            "subjects": [
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-00000000000d",
+                    "type": "component",
+                    "title": "PolicyId-00000000-0000-4111-a000-000000000000",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "account",
+                            "value": "222222222"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "PolicyId-00000000-0000-4111-a000-000000000000"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "Identity and Access Management:Policy"
+                        }
+                    ]
+                },
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-00000000000e",
+                    "type": "component",
+                    "title": "PolicyId-00000000-0000-4111-a000-000000000001",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "account",
+                            "value": "222222222"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "PolicyId-00000000-0000-4111-a000-000000000001"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "Identity and Access Management:Policy"
+                        }
+                    ]
+                },
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-00000000000f",
+                    "type": "component",
+                    "title": "PolicyId-00000000-0000-4111-a000-000000000002",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "account",
+                            "value": "222222222"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "PolicyId-00000000-0000-4111-a000-000000000002"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "Identity and Access Management:Policy"
+                        }
+                    ]
+                },
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-000000000010",
+                    "type": "component",
+                    "title": "PolicyId-00000000-0000-4111-a000-000000000003",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "account",
+                            "value": "222222222"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "PolicyId-00000000-0000-4111-a000-000000000003"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "Identity and Access Management:Policy"
+                        }
+                    ]
+                },
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-000000000011",
+                    "type": "component",
+                    "title": "PolicyId-00000000-0000-4111-a000-000000000004",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "account",
+                            "value": "222222222"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "PolicyId-00000000-0000-4111-a000-000000000004"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "Identity and Access Management:Policy"
+                        }
+                    ]
+                }
+            ],
+            "remediation-group" : [],
+            "relevant-evidence": [
+                {
+                    "href": "",
+                    "description": "S&CC scan result",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "PolicyId-00000000-0000-4111-a000-000000000000"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "actual-value",
+                            "value": "{\"group\":[],\"iam\":[\"IBMid-5500081QEX\"]}"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "expected-value",
+                            "value": "IAM Policies should be attached only to groups or roles"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "FAIL"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "detail",
+                            "value": "IAM Policy is neither attached to Access Groups nor to Roles, but found attached to an IAM user"
+                        }
+                    ]
+                },
+                {
+                    "href": "",
+                    "description": "S&CC scan result",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "PolicyId-00000000-0000-4111-a000-000000000001"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "actual-value",
+                            "value": "{\"group\":[],\"iam\":[\"IBMid-310001YTQ8\"]}"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "expected-value",
+                            "value": "IAM Policies should be attached only to groups or roles"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "FAIL"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "detail",
+                            "value": "IAM Policy is neither attached to Access Groups nor to Roles, but found attached to an IAM user"
+                        }
+                    ]
+                },
+                {
+                    "href": "",
+                    "description": "S&CC scan result",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "PolicyId-00000000-0000-4111-a000-000000000002"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "actual-value",
+                            "value": "{\"group\":[],\"iam\":[\"IBMid-270002GMM8\"]}"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "expected-value",
+                            "value": "IAM Policies should be attached only to groups or roles"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "FAIL"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "detail",
+                            "value": "IAM Policy is neither attached to Access Groups nor to Roles, but found attached to an IAM user"
+                        }
+                    ]
+                },
+                {
+                    "href": "",
+                    "description": "S&CC scan result",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "PolicyId-00000000-0000-4111-a000-000000000003"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "actual-value",
+                            "value": "{\"group\":[],\"iam\":[\"IBMid-5500081QEX\"]}"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "expected-value",
+                            "value": "IAM Policies should be attached only to groups or roles"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "FAIL"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "detail",
+                            "value": "IAM Policy is neither attached to Access Groups nor to Roles, but found attached to an IAM user"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

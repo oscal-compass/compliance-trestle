@@ -29,6 +29,7 @@ from trestle.core.commands.replicate import ReplicateCmd
 from trestle.core.commands.split import SplitCmd
 from trestle.core.commands.task import TaskCmd
 from trestle.core.commands.validate import ValidateCmd
+from trestle.oscal import OSCAL_VERSION
 from trestle.utils import log
 
 logger = logging.getLogger('trestle')
@@ -58,7 +59,7 @@ class Trestle(CommandPlusDocs):
             '--version',
             help='Display the version of trestle.',
             action='version',
-            version=f'Trestle version v{__version__}'
+            version=f'Trestle version v{__version__} based on OSCAL version {OSCAL_VERSION}'
         )
         self.add_argument('-v', '--verbose', help='Display verbose output.', action='count', default=0)
 

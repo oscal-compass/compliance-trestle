@@ -26,7 +26,6 @@ This script is normally called by gen_oscal.py when models are generated.
 import logging
 import operator
 import re
-import string
 
 from trestle.oscal import OSCAL_VERSION_REGEX
 
@@ -34,41 +33,9 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
-# these plurals need to be fixed in Dict even when non-optional
-special_plurals = ['Users', 'Components']
-
-plural_lut = {
-    'Annotations': 'Annotation',
-    'AssessmentSubjects': 'AssessmentSubject',
-    'ByComponents': 'ByComponent',
-    'Capabilities': 'Capability',
-    'Components': 'SystemComponent',
-    'Controls': 'Control',
-    'Diagrams': 'Diagram',
-    'EmailAddresses': 'EmailStr',
-    'ImplementedComponents': 'ImplementedComponent',
-    'IncorporatesComponents': 'IncorporatesComponent',
-    'IncorporatesComponentDefnitions': 'IncorporatesComponentDefinition',
-    'IncorporatesTargets': 'IncorporatesTarget',
-    'InformationTypeIds': 'InformationTypeId',
-    'InventoryItems': 'InventoryItem',
-    'Objectives': 'Objective',
-    'ParameterSettings': 'SetParameter',
-    'ResponsibleParties': 'ResponsibleParty',
-    'ResponsibleRoles': 'ResponsibleRole',
-    'SetParameters': 'SetParameter',
-    'Statements': 'Statement',
-    'Tools': 'Tool',
-    'Targets': 'DefinedTarget',
-    'Users': 'SystemUser'
-}
-
-# Class names with this substring are due to confusion in oscal that will go away.
-# For now delete the classes and convert the corresponding unions to conlist
-singleton_suffixes = ['GroupItem', 'Item']
-singleton_prefixes = ['Include', 'Exclude']
-numbered_classes = ['Base64']
+base64_str = 'Base64'
 class_header = 'class '
+
 license_header = (
     '# -*- mode:python; coding:utf-8 -*-\n'
     '# Copyright (c) 2020 IBM Corp. All rights reserved.\n'
@@ -114,22 +81,9 @@ class ClassText():
         self.lines.append(line)
 
     def add_ref_if_good(self, ref_name):
-        """Add refs after removing digits and/or singleton string."""
-        if not ref_name:
-            return
-        if ref_name == 'Base64':
+        """Add non-empty refs."""
+        if ref_name:
             self.refs.add(ref_name)
-            return
-        for suffix in singleton_suffixes:
-            n = ref_name.find(suffix)
-            if n > 0:
-                ref_name = ref_name[:n]
-                break
-        for prefix in singleton_prefixes:
-            n = ref_name.find(prefix)
-            if n == 0 and ref_name != prefix:
-                ref_name = ref_name[len(prefix):]
-        self.refs.add(ref_name.rstrip(string.digits))
 
     def add_ref_pattern(self, p, line):
         """Add new class names found based on pattern."""
@@ -163,20 +117,6 @@ class ClassText():
         self.add_ref_pattern(p, line)
         return line
 
-    def get_linked_refs(self, class_text_list, known_refs):
-        """Follow all refs to find their refs."""
-        if self.name in known_refs:
-            return set()
-        refs = self.full_refs
-        if self.found_all_links:
-            return refs
-        new_refs = refs.copy()
-        for r in refs:
-            i = ClassText.find_index(class_text_list, r)
-            new_refs = new_refs.union(class_text_list[i].get_linked_refs(class_text_list, refs))
-        self.found_all_links = True
-        return new_refs
-
     def find_direct_refs(self, class_names_list):
         """Find direct refs without recursion."""
         for ref in self.refs:
@@ -186,16 +126,6 @@ class ClassText():
                 self.full_refs.add(ref)
         if len(self.full_refs) == 0:
             self.found_all_links = True
-
-    def find_full_refs(self, class_text_list):
-        """Find full refs with recursion."""
-        sub_refs = set()
-        for ref in self.full_refs:
-            # find the class named ref
-            i = ClassText.find_index(class_text_list, ref)
-            # accumulate all references associated with each ref in that class
-            sub_refs = sub_refs.union(class_text_list[i].get_linked_refs(class_text_list, sub_refs))
-        return self.full_refs.union(sub_refs)
 
     def find_order(self, class_text_list):
         """Find latest dep and earliest reference."""
@@ -213,29 +143,6 @@ class ClassText():
             if n > ro.latest_dep:
                 ro.latest_dep = n
         return ro
-
-    def is_good(self):
-        """Is this class on that should be retained in output."""
-        for line in self.lines:
-            """
-            # for now leave __root__ files since some are still needed
-            if line.find('__root__: str') >= 0:
-               return False
-            # But remove all pass files
-            """
-            if line.find('pass') >= 0:
-                return False
-        if not self.name:
-            return False
-        if self.name.find('min_items') >= 0:
-            return False
-        # classes like Base64 are ok
-        if self.name in numbered_classes:
-            return True
-        # but any class ending with digit is assumed bad
-        if self.name != self.name.rstrip(string.digits):
-            return False
-        return True
 
 
 def find_forward_refs(class_list, orders):
@@ -267,11 +174,6 @@ def reorder(class_list):
         c.find_direct_refs(all_class_names)
         class_list[n] = c
 
-    # find full references for each class in list with recursion on each ref
-    for n, c in enumerate(class_list):
-        c.full_refs = c.find_full_refs(class_list)
-        class_list[n] = c
-
     # with full dependency info, now reorder the classes to remove forward refs
     did_swap = True
     loop_num = 0
@@ -301,66 +203,6 @@ def reorder(class_list):
     return class_list, forward_refs
 
 
-def fix_header(header, needs_conlist):
-    """Fix imports and remove timestamp from header."""
-    new_header = []
-    for r in header:
-        # Any is needed for biblio so still need to import it
-        # r = re.sub(' Any, ', ' ', r) # noqa: E800
-        if r.find(' timestamp: ') >= 0:
-            continue
-        if needs_conlist:
-            # add import of conlist for Union[A, A] case
-            r = re.sub(r'^(from\s+pydantic\s+import.*)$', r'\1, conlist', r)
-        new_header.append(r)
-    return new_header
-
-
-def good_classes(class_list):
-    """Create the list of good classes from the full list."""
-    good = []
-    for c in class_list:
-        if c.is_good():
-            good.append(c)
-    return good
-
-
-def clean_classes(class_list):
-    """Clean all lines of text in each class for endings that should be removed."""
-    for j in range(len(class_list)):
-        cls = class_list[j]
-        for singleton in singleton_suffixes + singleton_prefixes:
-            if cls.name != singleton:
-                cls.name = cls.name.replace(singleton, '')
-            for i in range(len(cls.lines)):
-                line = cls.lines[i]
-                if line.find('class ') != 0:
-                    if line.find(f'[{singleton}]') == -1:
-                        line = line.replace(singleton, '')
-                for c2 in class_list:
-                    cname = c2.name
-                    pattern = cname + '[0-9]*'
-                    line = re.sub(pattern, cname, line)
-                cls.lines[i] = line
-        class_list[j] = cls
-    return class_list
-
-
-def fix_bad_minitems(class_list):
-    """Correct behaviour where minitems errors due to optional behaviour."""
-    for j in range(len(class_list)):
-        cls = class_list[j]
-        for i in range(len(cls.lines)):
-            line = cls.lines[i]
-            neq = line.find('= Field(None')
-            if neq > 0 and line.find(cls.name) >= 0:
-                cls.lines[i] = line[:neq] + '= None'
-            if neq > 0 and line.find('List[Base64]') >= 0:
-                cls.lines[i] = line[:neq] + '= None'
-        class_list[j] = cls
-    return class_list
-
-
 def constrain_oscal_version(class_list):
     """Constrain allowed oscal version."""
     for j in range(len(class_list)):
@@ -376,6 +218,42 @@ def constrain_oscal_version(class_list):
     return class_list
 
 
+def remove_duplicate_classes(class_list):
+    """Remove duplicate classes with name ending 1, 2 etc. and fix all refs to them."""
+    replaced_names = {}
+    new_list = []
+    for c in class_list:
+        if c.name == base64_str:
+            continue
+        if c.name[-1].isdigit():
+            base_name = c.name[:-1]
+            base_index = ClassText.find_index(class_list, base_name)
+            c_base = class_list[base_index]
+            if len(c_base.lines) != len(c.lines):
+                continue
+            different = False
+            for i in range(1, len(c_base.lines)):
+                if c_base.lines[i] != c.lines[i]:
+                    different = True
+                    break
+            if not different:
+                replaced_names[c.name] = c_base.name
+    # now have list of duplicate classes that should be culled
+    for c in class_list:
+        if c.name in replaced_names.keys():
+            continue
+        new_list.append(c)
+    final_list = []
+    for c in new_list:
+        for i in range(len(c.lines)):
+            line = c.lines[i]
+            for key, value in replaced_names.items():
+                line = line.replace(key, value)
+            c.lines[i] = line
+        final_list.append(c)
+    return final_list
+
+
 def fix_file(fname):
     """Fix the Anys in this file and reorder to avoid forward dependencies."""
     all_classes = []
@@ -384,7 +262,6 @@ def fix_file(fname):
 
     class_text = None
     done_header = False
-    needs_conlist = False
 
     # Find Any's and replace with appropriate singular class
     # Otherwise accumulate all class dependencies for reordering with no forward refs
@@ -395,50 +272,24 @@ def fix_file(fname):
             elif r.find(class_header) == 0:  # start of new class
                 done_header = True
                 if class_text is not None:  # we are done with current class so add it
-                    # prevent anomalous singletons from appearing in output
-                    for singleton in singleton_prefixes + singleton_suffixes:
-                        if class_text.name.find(singleton) >= 0 and class_text.name != singleton:
-                            class_text.name = class_text.name.replace(singleton, '')
-                            for i in range(len(class_text.lines)):
-                                class_text.lines[i] = class_text.lines[i].replace(singleton, '')
                     all_classes.append(class_text)
                 class_text = ClassText(r)
             else:
                 if not done_header:  # still in header
                     header.append(r.rstrip())
                 else:
-                    # fix any line containing Union[A, A] to Union[A, conlist(A, min_items=2)]
-                    # this may now include Unions that previously involved anomalous singletons
-                    r = re.sub(r'Union\[([^,]*),\s*\1\]', r'Union[\1, conlist(\1, min_items=2)]', r)
-                    if r.find(', conlist(') >= 0:
-                        needs_conlist = True
-                    if r.find('Optional[Dict[str, ') >= 0:
-                        match = re.search(r'Optional\[Dict\[str, (.+?)\]\]', r)
-                        if match:
-                            plural = match.group(1)
-                            if plural != 'Any' and plural in plural_lut:
-                                r = r.replace(plural, plural_lut[plural])
-                    for special in special_plurals:
-                        if r.find(f'Dict[str, {special}]') >= 0:
-                            r = r.replace(special, plural_lut[special])
                     p = re.compile(r'.*Optional\[Union\[([^,]+),.*List\[Any\]')
                     refs = p.findall(r)
                     if len(refs) == 1:
                         r = r.replace('List[Any]', f'List[{refs[0]}]')
-                    # mark regex strings as raw
-                    r = re.sub(r"(\s*regex\s*=\s*)\'(.*)", r"\1r'\2", r)
                     class_text.add_all_refs(r)
                     class_text.add_line(r.rstrip())
 
     all_classes.append(class_text)  # don't forget final class
 
-    all_classes = good_classes(all_classes)
-
-    all_classes = clean_classes(all_classes)
-
-    all_classes = fix_bad_minitems(all_classes)
-
     all_classes = constrain_oscal_version(all_classes)
+
+    all_classes = remove_duplicate_classes(all_classes)
 
     # sort the classes by name in case new versions of DMCG change order of class output
     sorted_classes = sorted(all_classes, key=operator.attrgetter('name'))
@@ -446,8 +297,6 @@ def fix_file(fname):
     # reorder the classes to remove forward references as much as possible
     # then find any required forward refs and replace the original list with the new ones
     reordered_classes, forward_refs = reorder(sorted_classes)
-
-    header = fix_header(header, needs_conlist)
 
     # write the classes out in the fixed order
     with open(fname, 'w') as out_file:

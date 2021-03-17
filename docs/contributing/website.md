@@ -45,4 +45,31 @@ This automation script principally ensures that:
 
 running `make docs-automation` will ensure that the website is ready to deploy.
 
+## Building the models from the OSCAL schemas.
+
+The creation of the OSCAL models in ```trestle/oscal``` is a multi-step process:
+- The oscal schemas are downloaded as modules from NIST into the ```nist-source/json/schema``` directory.
+- The script ```scripts/gen-oscal.py``` loads each schema file and converts it to pydantic/python with ```datamodel-codegen```.
+- The generated python files may need some fixup, so a separate script ```scripts/fix_any.py``` is run on each file.
+- Note that there is one schema specific to IBM needs and it is loaded from ```3rd-party-schema-documents/IBM_target_schema_v1.0.0.json```.
+
+The whole process is handled in the Makefile by ```make code-gen```.  A normal user would never need to run this but developers may need to, particularly if there are changes to the OSCAL schemas.
+
+Also note that the depenedent tools, pydantic and datamodel-codegen, may get updated by doing a fresh ```make install``` or ```make develop```, which may then result in a change to the model files.
+
+### Items handled by ```fix_any.py```.
+The original motivation for this script was to replace numerous situations where the type assigned to a given variable was simply ```Any```, which meant no type enforcement would apply for that variable, defeating the purpose of the strict type enforcement provided by Pydantic.  As of this writing the number of such cases has been reduced to just one - which is handled by the script.
+
+Other issues handled by the script are:
+
+- The current OSCAL schemas have situations where objects are defined within different classes in a schema using the same name, but the contents of those classes may or may not be different.  ```datamodel-codegen``` handles this by creating separate classes as needed and appending 1, 2 etc. to the names, keeping them distinct.  The resulting high level classes that reference them behave as expected, but if components of those classes are added in a granular way by a user or developer, the correct index must be used.
+- To reduce side-effects of the duplicate classes, classes are checked to see if they are identical or not.  If they are identical the separate 1, 2 classes are culled and references to them are pointed to the non-indexed class.
+-  Currently there are 5 classes that require a separate '1' version: ```Status, Type, Entry, LocalDefinitions, and Action```.
+- In order to guarantee there are no induced forward references in the files, the classes are reordered to minimize the need for forwards, and any that can't be avoided are explicitly provided at the bottom of the file.
+- The generated files have many classes that simply have a ```__root__``` element defined, along with a description.  Such classes don't have particular value in such a simple form and could instead simply be defined in the parent class.
+
+### Seeing the changes induced by ```fix_any.py``` on the classes.
+As a convenience for developers, a separate script, ```scripts/order_classes.py``` is available, which orders the classes in a given file alphabetically.  This way, if you use the script on files before and after applying ```fix_any.py``` you can use a normal diff tool to see the changes made.  This is strictly as a development tool for doing the comparison and the resulting files will not work since they will have forward references. 
+
+
 ## Expectations on developers of trestle functionality

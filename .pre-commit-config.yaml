@@ -34,8 +34,8 @@ repos:
         files: "^(trestle|tests|scripts)"
         exclude: "oscal"
         stages: [commit]
-  - repo: https://github.com/executablebooks/mdformat
-    rev: 0.5.3  # Use the ref you want to point at
+  - repo: https://github.com/hukkinj1/mdformat
+    rev: 0.5.3  # Do not change version. 0.6.0 introduces breaking changes.
     hooks:
     - id: mdformat
       exclude: "CHANGELOG.md|docs/mkdocs_code_of_conduct.md|docs/api_reference"
