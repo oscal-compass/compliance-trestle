@@ -375,7 +375,7 @@ class OscalBaseModel(BaseModel):
             The collection type.
 
         Raises:
-            err.TrestleError if not a wrapper of the collection type.
+            err.TrestleError: if not a wrapper of the collection type.
         """
         if not cls.is_collection_container():
             raise err.TrestleError('OscalBaseModel is not wrapping a collection type')
