@@ -360,7 +360,7 @@ class OscalBaseModel(BaseModel):
         When these cases exist we need special handling of the type information.
         """
         # Additional sanity check on field length
-        if len(cls.__fields_set__) == 1 and '__root__' in cls.__fields__.keys():
+        if len(cls.__fields__) == 1 and '__root__' in cls.__fields__.keys():
             # This is now a __root__ key only model
             if is_collection_field_type(cls.__fields__['__root__'].outer_type_):
                 return True
