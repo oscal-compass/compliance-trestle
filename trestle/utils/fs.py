@@ -196,6 +196,7 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
     aliases_to_be_stripped = set()
     if split_subdir.exists():
         for f in split_subdir.iterdir():
+            # TODO ignore hidden files
             alias = extract_alias(f)
             if alias not in aliases_not_to_be_stripped:
                 aliases_to_be_stripped.add(alias)
