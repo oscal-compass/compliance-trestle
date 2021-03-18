@@ -29,6 +29,8 @@ nav:
     - tasks:
       - base_task: api_reference/trestle.tasks.base_task.md
       - transform: api_reference/trestle.tasks.transform.md
+      - osco_to_oscal: api_reference/trestle.tasks.osco_to_oscal.md
+      - tanium_to_oscal: api_reference/trestle.tasks.tanium_to_oscal.md
     - core:
       - validator_helper: api_reference/trestle.core.validator_helper.md
       - models:
@@ -50,6 +52,7 @@ nav:
         - create: api_reference/trestle.core.commands.create.md
         - replicate: api_reference/trestle.core.commands.replicate.md
         - remove: api_reference/trestle.core.commands.remove.md
+        - command_docs: api_reference/trestle.core.commands.command_docs.md
         - assemble: api_reference/trestle.core.commands.assemble.md
         - validate: api_reference/trestle.core.commands.validate.md
         - split: api_reference/trestle.core.commands.split.md
@@ -59,8 +62,12 @@ nav:
       - err: api_reference/trestle.core.err.md
       - const: api_reference/trestle.core.const.md
       - validator_factory: api_reference/trestle.core.validator_factory.md
+      - remote:
+        - cache: api_reference/trestle.core.remote.cache.md
     - utils:
+      - tanium: api_reference/trestle.utils.tanium.md
       - log: api_reference/trestle.utils.log.md
+      - osco: api_reference/trestle.utils.osco.md
       - load_distributed: api_reference/trestle.utils.load_distributed.md
       - trash: api_reference/trestle.utils.trash.md
       - fs: api_reference/trestle.utils.fs.md
