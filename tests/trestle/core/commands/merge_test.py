@@ -181,7 +181,7 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir):
 def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     """Test '$mycatalog$ trestle merge -e catalog.*' when metadata and catalog is already split."""
     # Assume we are running a command like below
-    # trestle merge -e catalog.back-matter
+    # trestle merge -e catalog.*
     content_type = FileContentType.JSON
     fext = FileContentType.to_file_extension(content_type)
 
@@ -349,7 +349,9 @@ def test_split_merge(testdata_dir, tmp_trestle_dir):
     # Merge everything back into the catalog
     # Equivalent to trestle merge -e catalog.*
     args = argparse.Namespace(name='merge', element='catalog.*', verbose=1)
-    MergeCmd()._run(args)
+    rc = MergeCmd()._run(args)
+    assert rc == 1  # FIXME issue #412  this should return 0 but has been passing because it wasn't checked
+
 
     # Check both the catalogs are the same.
     post_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.absolute())

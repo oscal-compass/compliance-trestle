@@ -90,13 +90,16 @@ def load_distributed(
     # Get current model
     primary_model_type, primary_model_alias = fs.get_stripped_contextual_model(file_path.absolute())
     primary_model_instance: Type[OscalBaseModel] = None
-    if file_path.exists():
-        primary_model_instance = primary_model_type.oscal_read(file_path)
 
-    # Is model decomposed?
+    # is this an attempt to load an actual json or yaml file?
     content_type = FileContentType.path_to_content_type(file_path)
-    file_dir = Path.cwd() if content_type == FileContentType.UNKNOWN else file_path.parent
-    decomposed_dir = file_dir / file_path.parts[-1].split('.')[0]
+    # if file is sought but it doesn't exist, ignore and load as decomposed model
+    if FileContentType.is_readable_file(content_type) and file_path.exists():
+        primary_model_instance = primary_model_type.oscal_read(file_path)
+    # Is model decomposed?
+    # file_dir = Path.cwd() if content_type == FileContentType.UNKNOWN else file_path.parent
+    #decomposed_dir = file_dir / file_path.parts[-1].split('.')[0]
+    decomposed_dir = file_path.with_name(file_path.stem)
 
     if decomposed_dir.exists():
         aliases_not_to_be_stripped = []
