@@ -118,12 +118,16 @@ def generate_models():
         out_fname = oscal_name + '.py'
         out_full_name = out_dir / out_fname
         generate_model(full_name, out_full_name)
+    # 3rd party list - include in OSCAL
     generate_model('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', out_dir / 'target.py')
+    # 3rd party - put outside of oscal directory
+    out_dir_3rd_party = Path('trestle/third_party')
+    generate_model('3rd-party-schema-documents/OSCAL-1.0.0-rc1-IBM_observations_interchange_schema.json', out_dir_3rd_party / 'exchange_protocol.py')
 
 
 def main():
     """Load git and generate models."""
-    load_git()
+    # load_git()
     generate_models()
     print('DONE')
 
