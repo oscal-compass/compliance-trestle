@@ -29,7 +29,7 @@ I can write a comment in here and you can even edit on the same line.
 import datetime
 import logging
 import pathlib
-from typing import Any, Dict, List, Optional, Type, cast
+from typing import Any, Dict, List, Optional, Type, Union, cast
 
 from pydantic import BaseModel, Extra, Field, create_model
 from pydantic.fields import ModelField
@@ -38,7 +38,7 @@ from pydantic.parse import load_file
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core.models.file_content_type import FileContentType
-from trestle.core.utils import classname_to_alias
+from trestle.core.utils import classname_to_alias, get_origin, is_collection_field_type
 
 import yaml
 
@@ -342,3 +342,41 @@ class OscalBaseModel(BaseModel):
             alias_to_field[field.alias] = field
 
         return alias_to_field
+
+    @classmethod
+    def is_collection_container(cls) -> bool:
+        """
+        Determine whether a pydantic model has being created to wrap a collection primitive (e.g a list or dict).
+
+        In performing model decomposition it is possible using trestle framework to automatically generate a model
+        which looks like
+
+        class Foo(OscalBaseModel):
+            __root__: List[Bar]
+
+        Returns:
+            Boolean on if it meets the above criteria
+
+        When these cases exist we need special handling of the type information.
+        """
+        # Additional sanity check on field length
+        if len(cls.__fields__) == 1 and '__root__' in cls.__fields__.keys():
+            # This is now a __root__ key only model
+            if is_collection_field_type(cls.__fields__['__root__'].outer_type_):
+                return True
+        return False
+
+    @classmethod
+    def get_collection_type(cls) -> Union[Type[List[Any]], Type[Dict[Any, Any]]]:
+        """
+        If the type wraps an collection, return the collection type.
+
+        Returns:
+            The collection type.
+
+        Raises:
+            err.TrestleError: if not a wrapper of the collection type.
+        """
+        if not cls.is_collection_container():
+            raise err.TrestleError('OscalBaseModel is not wrapping a collection type')
+        return get_origin(cls.__fields__['__root__'].outer_type_)

@@ -18,7 +18,6 @@
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
-from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
@@ -110,10 +109,17 @@ def load_distributed(
                 model_type, model_alias = fs.get_stripped_contextual_model(path.absolute())
                 # Only load the directory if it is a collection model. Otherwise do nothing - it gets loaded when
                 # iterating over the model file
-                if '__root__' in model_type.__fields__.keys() and utils.is_collection_field_type(
-                        model_type.__fields__['__root__'].outer_type_):
+
+                # If a model is just a container for a list e.g.
+                # class Foo(OscalBaseModel):  noqa: E800
+                #      __root__: List[Bar]    noqa: E800
+                # You need to test whether first a root key exists
+                # then whether the outer_type of root is a collection.
+                # Alternative is to do a try except to avoid the error for an unknown key.
+
+                if model_type.is_collection_container():
                     # This directory is a decomposed List or Dict
-                    collection_type = utils.get_origin(model_type.__fields__['__root__'].outer_type_)
+                    collection_type = model_type.get_collection_type()
                     model_type, model_alias, model_instance = load_distributed(path, collection_type)
                     aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
                     instances_to_be_merged.append(model_instance)
