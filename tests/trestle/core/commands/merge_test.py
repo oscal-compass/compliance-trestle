@@ -352,7 +352,6 @@ def test_split_merge(testdata_dir, tmp_trestle_dir):
     rc = MergeCmd()._run(args)
     assert rc == 1  # FIXME issue #412  this should return 0 but has been passing because it wasn't checked
 
-
     # Check both the catalogs are the same.
     post_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.absolute())
     post_merge_catalog = post_catalog_type.oscal_read(catalog_file)

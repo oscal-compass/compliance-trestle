@@ -261,19 +261,10 @@ class OscalBaseModel(BaseModel):
         content_type = FileContentType.to_content_type(path.suffix)
         logger.debug(f'oscal_read content type {content_type} and alias {alias} from {path}')
 
-        # if content_type == FileContentType.DIRLIKE:
-        #     path = path / alias
-        #     content_type = FileContentType.path_to_content_type(path)
-        #     # FIXME Frank - handle case file does not exist and get UNKNOWN
-        #     extension = FileContentType.path_to_file_extension(path)
-        #     path = path.with_suffix(extension)
-        #     logger.debug(f'content_type in oscal_read is dirlike so changed path to {path}')
-
         if not path.exists():
             logger.debug(f'path does not exist in oscal_read: {path}')
             return None
 
-        # FIXME Frank handle object not exist
         if content_type == FileContentType.YAML:
             return cls.parse_obj(yaml.safe_load(path.open())[alias])
         elif content_type == FileContentType.JSON:

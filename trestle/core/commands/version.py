@@ -22,7 +22,6 @@ from trestle import __version__
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.oscal import OSCAL_VERSION
 
-
 logger = logging.getLogger(__name__)
 
 

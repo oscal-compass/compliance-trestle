@@ -19,15 +19,13 @@ import logging
 import os
 from pathlib import Path
 
-from pydantic import create_model
-
 from trestle.core import const, utils
+from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
-from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.plans import Plan
 from trestle.utils import fs, load_distributed
 from trestle.utils import log
@@ -78,7 +76,7 @@ class MergeCmd(CommandPlusDocs):
         # Destination model filetype
         try:
             logger.debug(f'merge destination model alias: {destination_model_alias}')
-            logger.debug(f'merge getting contextual file type from cwd')
+            logger.debug('merge getting contextual file type from cwd')
             file_type = fs.get_contextual_file_type(Path(os.getcwd()))
             logger.debug(f'contextual file type is {file_type}')
         except Exception as e:
@@ -160,8 +158,3 @@ class MergeCmd(CommandPlusDocs):
         # TODO: Destination model directory is empty or already merged? Then clean up.
 
         return plan
-
-if __name__ == '__main__':
-    os.chdir('/tmp/test2/catalogs/mycatalog/catalog')
-    mc = MergeCmd()
-    mc.merge(ElementPath('metadata/roles.*'))

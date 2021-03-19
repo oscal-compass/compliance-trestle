@@ -16,9 +16,7 @@
 """Module to load distributed model."""
 
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
-
-from pydantic import create_model
+from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
@@ -96,8 +94,6 @@ def load_distributed(
     if FileContentType.is_readable_file(content_type) and file_path.exists():
         primary_model_instance = primary_model_type.oscal_read(file_path)
     # Is model decomposed?
-    # file_dir = Path.cwd() if content_type == FileContentType.UNKNOWN else file_path.parent
-    #decomposed_dir = file_dir / file_path.parts[-1].split('.')[0]
     decomposed_dir = file_path.with_name(file_path.stem)
 
     if decomposed_dir.exists():
@@ -131,17 +127,29 @@ def load_distributed(
                     instances_to_be_merged.append(model_instance)
         primary_model_dict = {}
         if primary_model_instance is not None:
-            primary_model_dict = dict(primary_model_instance.__dict__)
+            primary_model_dict = primary_model_instance.__dict__
+
+        merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(
+            file_path.absolute(), aliases_not_to_be_stripped)
+
+        # the following use of top_level is to allow loading of a top level model by name only, e.g. MyCatalog
+        # there is likely to be a better way but the tricky case seems to involve an empty primary model dict
+        # and a merged model type that is top level.
+
+        module_name = merged_model_type.__module__
+        top_level = len(module_name.split('.')) == 3 and module_name.find('trestle.oscal.') == 0
+
         for i in range(len(aliases_not_to_be_stripped)):
             alias = aliases_not_to_be_stripped[i]
             instance = instances_to_be_merged[i]
             if hasattr(instance, '__dict__') and '__root__' in instance.__dict__ and isinstance(instance,
                                                                                                 OscalBaseModel):
                 instance = instance.__dict__['__root__']
-            primary_model_dict[alias] = instance
+            if top_level and not primary_model_dict:
+                primary_model_dict = instance.__dict__
+            else:
+                primary_model_dict[alias] = instance
 
-        merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(
-            file_path.absolute(), aliases_not_to_be_stripped)
         merged_model_instance = merged_model_type(**primary_model_dict)  # type: ignore
         return merged_model_type, merged_model_alias, merged_model_instance
 
