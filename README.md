@@ -72,10 +72,10 @@ trestle -h
 
 ## Supported OSCAL elements and extensions
 
-`trestle` implicitly supports all OSCAL schemas for use within the object model. The development roadmap for `trestle` includes
-adding workflow around specific elements / objects that is opinionated.
+`trestle` implicitly supports all OSCAL schemas for use within the object model. The development roadmap for `trestle` includes adding workflow around specific elements / objects that is opinionated.
 
-`trestle` supports OSCAL version `1.0.0rc1` only.
+`trestle` supports OSCAL version `1.0.0rc1` only at this stage. NIST, in pre-1.0.0 [continuously updating
+](https://github.com/usnistgov/OSCAL/issues/846) their current posture. Trestle will be periodically updating to meet NIST's baseline. On the formal release of OSCAL `1.0.0` the strategy for trestle will be revaluated.
 
 In addition to the core OSCAL objects, trestle supports the definition of a `target`. The `target` (and its container
 `target-definition`) is a generalization of the `component` model that is designed specifically to support configuration.
@@ -83,6 +83,10 @@ In addition to the core OSCAL objects, trestle supports the definition of a `tar
 `catalog` and `profile` objects can define parameters. However, by their nature the parameter definitions are at the
 regulatory level. The `trestle` team has seen a need for an object that can define parameters at the `control-implemenation`
 level, e.g. `component` is an implementation and `target` is the definition of capabilities of the component.
+
+### 3rd party supported elements.
+
+In addition to the core OSCAL models and the `target-definition` trestle provides support for 3rd party schemas for `tasks` and for use as an object model layer. By design these will not be supported by core trestle editing commands (e.g. split / merge).
 
 ## Supported file formats for OSCAL objects.
 
