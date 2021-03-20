@@ -268,13 +268,27 @@ def test_sftp_fetcher_bad_uri(tmp_trestle_dir):
             cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
 
 
-def test_fetcher_bad_uri(tmp_trestle_dir):
+def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, monkeypatch):
     """Test fetcher factory with bad URI."""
+    monkeypatch.setenv('myusername', 'user123')
+    monkeypatch.setenv('mypassword', 'somep4ss')
     for uri in ['',
                 'sftp://',
                 '..',
                 'ftp://some.host/this.file',
+                'https://{{9invalid}}:@github.com/IBM/test/file',
+                'https://{{invalid var}}:@github.com/IBM/test/file',
+                'https://{{invalid-var}}:@github.com/IBM/test/file',
+                'https://{{_}}:@github.com/IBM/test/file',
                 'https://{{myusername}}:@github.com/IBM/test/file',
+                'https://{{myusername}}:passwordstring@github.com/IBM/test/file',
+                'https://{{myusername_not_defined}}:passwordstring@github.com/IBM/test/file',
+                'https://{{myusername}}:{{password_var_not_defined}}@github.com/IBM/test/file',
+                'https://{{myusername}}:{{0invalid}}@github.com/IBM/test/file',
+                'https://{{myusername}}:{{invalid var}}@github.com/IBM/test/file',
+                'https://{{myusername}}:{{invalid-var}}@github.com/IBM/test/file',
+                'https://{{myusername}}:{{_}}@github.com/IBM/test/file',
+                'https://usernamestring:{{mypassword}}@github.com/IBM/test/file',
                 'https://:{{mypassword}}@github.com/IBM/test/file']:
         with pytest.raises(TrestleError):
             cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
