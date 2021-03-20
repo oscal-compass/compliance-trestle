@@ -5,6 +5,9 @@
 coverage:
   range: "80...100"
   status:
+    patch:
+      trestle:
+        target: 80%
     project:
       trestle: # This can be anything, but it needs to exist as the name
         # basic settings
