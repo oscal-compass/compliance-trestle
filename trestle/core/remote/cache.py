@@ -19,6 +19,7 @@ Trestle cache operations library.
 Allows for using uris to reference external directories and then expand.
 """
 
+import errno
 import getpass
 import logging
 import os
@@ -31,6 +32,9 @@ from typing import Any, Dict, Type
 from urllib import parse
 
 import paramiko
+
+import requests
+from requests.auth import HTTPBasicAuth
 
 from trestle.core import const
 from trestle.core.base_model import OscalBaseModel
@@ -183,6 +187,86 @@ class LocalFetcher(FetcherBase):
         shutil.copy(self._abs_path, self._inst_cache_path)
 
 
+class HTTPSFetcher(FetcherBase):
+    """Fetcher for https content."""
+
+    # Use request: https://requests.readthedocs.io/en/master/
+    def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
+        """Initialize HTTPS fetcher."""
+        logger.debug('Initializing HTTPSFetcher')
+        super().__init__(trestle_root, uri, refresh, cache_only)
+        self._username = None
+        self._password = None
+        u = parse.urlparse(self._uri)
+        self._url = f'{u.scheme}://{u.hostname}'
+        if u.username is not None:
+            # This also checks for invalid environment variable name (IEEE 1003.1)
+            if not re.match('{{[a-zA-Z_][a-zA-Z0-9_]*}}', u.username) or u.username == '{{_}}':
+                logger.error('Malformed URI, '
+                             f'username must refer to an environment variable using moustache {self._uri}')
+                raise TrestleError('Cache request for invalid input URI: '
+                                   f'username must refer to an environment variable using moustache {self._uri}')
+            username = u.username[2:-2]
+            if username not in os.environ:
+                logger.error(f'Malformed URI, username not found in the environment {self._uri}')
+                raise TrestleError(
+                    f'Cache request for invalid input URI: username not found in the environment {self._uri}'
+                )
+            self._username = os.environ[username]
+        if u.password is not None:
+            if not u.password.startswith('{{') or not u.password.endswith('}}'):
+                logger.error(
+                    f'Malformed URI, password must refer to an environment variable using moustache {self._uri}'
+                )
+                raise TrestleError('Cache request for invalid input URI: '
+                                   f'password must refer to an environment variable using moustache {self._uri}')
+            password = u.password[2:-2]
+            if password not in os.environ:
+                logger.error(f'Malformed URI, password not found in the environment {self._uri}')
+                raise TrestleError('Cache request for invalid input URI: '
+                                   f'password not found in the environment {self._uri}')
+            self._password = os.environ[password]
+        if self._username and not self._password:
+            logger.error('Malformed URI, username found but valid password not found '
+                         f'via environment variable in URL {self._uri}')
+            raise TrestleError(f'Cache request for invalid input URI: username found '
+                               f'but password not found via environment variable {self._uri}')
+        if self._password and not self._username:
+            logger.error(f'Malformed URI, password found '
+                         f'but valid username environment variable missing in URL {self._uri}')
+            raise TrestleError(f'Cache request for invalid input URI: password found '
+                               f'but username not found via environment variable {self._uri}')
+        if self._username is not None or self._password is not None:
+            if u.scheme != 'https':
+                logger.error(f'Malformed URI, basic authentication requires https {self._uri}')
+                raise TrestleError(
+                    f'Cache request for invalid input URI: basic authentication requires https {self._uri}'
+                )
+        https_cached_dir = self._trestle_cache_path / u.hostname
+        # Skip any number of back- or forward slashes preceding the url path (u.path)
+        path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0]:]).parent
+        https_cached_dir = https_cached_dir / path_parent
+        https_cached_dir.mkdir(parents=True, exist_ok=True)
+        self._inst_cache_path = https_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
+
+    def _sync_cache(self) -> None:
+        auth = None
+        if self._username is not None and self._password is not None:
+            auth = HTTPBasicAuth(self._username, self._password)
+        request = requests.get(self._url, auth=auth)
+        if request.status_code == 200:
+            result = request.json()
+            if result is None:
+                raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), str(self._inst_cache_path))
+            if result['isBinary']:
+                raise NotImplementedError('Binary files are not supported!')
+            else:
+                self._inst_cache_path.write_text(result['text'])
+        else:
+            raise TrestleError(f'Query failed to run by returning code of '
+                               f'{request.status_code}. {self._query}')
+
+
 class SFTPFetcher(FetcherBase):
     """Fetcher for SFTP content."""
 
@@ -308,6 +392,8 @@ class FetcherFactory(object):
             return LocalFetcher(trestle_root, uri, refresh, cache_only)
         elif 'sftp://' == uri[0:7]:
             return SFTPFetcher(trestle_root, uri, refresh, cache_only)
+        elif 'https://' == uri[0:8] is not None:
+            return HTTPSFetcher(trestle_root, uri, refresh, cache_only)
         elif re.match('[A-Za-z]:\\\\', uri) is not None:
             return LocalFetcher(trestle_root, uri, refresh, cache_only)
         else:

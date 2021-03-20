@@ -270,12 +270,17 @@ def test_sftp_fetcher_bad_uri(tmp_trestle_dir):
 
 def test_fetcher_bad_uri(tmp_trestle_dir):
     """Test fetcher factory with bad URI."""
-    for uri in ['', 'sftp://', '..', 'ftp://some.host/this.file', 'https://github.com/IBM/test/file']:
+    for uri in ['',
+                'sftp://',
+                '..',
+                'ftp://some.host/this.file',
+                'https://{{myusername}}:@github.com/IBM/test/file',
+                'https://:{{mypassword}}@github.com/IBM/test/file']:
         with pytest.raises(TrestleError):
             cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
 
 
-def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
+def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch) -> None:
     """Test that the fetcher factory correctly resolves functionality."""
     local_uri_1 = 'file:///home/user/oscal_file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_1, False, False)
@@ -290,6 +295,12 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
     local_uri_4 = 'C:\\Users\\user\\this.file'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_4, False, False)
     assert type(fetcher) == cache.LocalFetcher
+
+    https_uri = 'https://{{myusername}}:{{mypassword}}@this.com/this.file'
+    monkeypatch.setenv('myusername', 'user123')
+    monkeypatch.setenv('mypassword', 'somep4ss')
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), https_uri, False, False)
+    assert type(fetcher) == cache.HTTPSFetcher
 
     sftp_uri = 'sftp://user@hostname:/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), sftp_uri, False, False)
