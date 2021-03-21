@@ -75,3 +75,8 @@ class FileContentType(Enum):
         if file_path.with_suffix('.yml').exists():
             return '.yml'
         return ''
+
+    @classmethod
+    def is_readable_file(cls, content_type: 'FileContentType') -> bool:
+        """Is the file a type that can be read directly."""
+        return content_type == FileContentType.JSON or content_type == FileContentType.YAML

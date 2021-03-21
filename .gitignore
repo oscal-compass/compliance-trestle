@@ -23,6 +23,9 @@ venv
 .vscode/settings.json
 .vscode
 
+# jupyter notebooks for local tests and prototypes
+*.ipynb
+
 _*/
 
 #OS X 
