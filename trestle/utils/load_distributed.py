@@ -132,12 +132,9 @@ def load_distributed(
         merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(
             file_path.absolute(), aliases_not_to_be_stripped)
 
-        # the following use of top_level is to allow loading of a top level model by name only, e.g. MyCatalog
-        # there is likely to be a better way but the tricky case seems to involve an empty primary model dict
-        # and a merged model type that is top level.
-
-        module_name = merged_model_type.__module__
-        top_level = len(module_name.split('.')) == 3 and module_name.find('trestle.oscal.') == 0
+        # The following use of top_level is to allow loading of a top level model by name only, e.g. MyCatalog
+        # There may be a better overall way to approach this.
+        top_level = len(merged_model_alias.split('.')) == 1
 
         for i in range(len(aliases_not_to_be_stripped)):
             alias = aliases_not_to_be_stripped[i]

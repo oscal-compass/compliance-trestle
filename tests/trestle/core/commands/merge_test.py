@@ -244,6 +244,10 @@ def test_bad_merge(testdata_dir, tmp_trestle_dir):
     args = argparse.Namespace(verbose=1, element='catalog.roles')
     assert cmd._run(args) == 1
 
+    # test from outside trestle project
+    os.chdir(testdata_dir)
+    assert cmd._run(args) == 1
+
 
 def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
     """Test '$mycatalog$ trestle merge -e metadata.roles'."""
