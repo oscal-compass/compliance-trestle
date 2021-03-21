@@ -26,11 +26,5 @@ def test_EP_models() -> None:
     clsmembers = inspect.getmembers(trestle.third_party.exchange_protocol, inspect.isclass)
     for _, oscal_cls in clsmembers:
          # This removes some enums and other objects.
-        print(oscal_cls)
         if issubclass(oscal_cls, OscalBaseModel):
             gens.generate_sample_model(oscal_cls)
-
-
-def test_EP_models_md() -> None:
-    """Test we can get all models which exist."""
-    gens.generate_sample_model(trestle.third_party.exchange_protocol.Metadata)

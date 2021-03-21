@@ -1048,7 +1048,6 @@
                 "oscal-version": {
                     "title": "OSCAL version",
                     "description": "The OSCAL model version the document was authored against.",
-                    "pattern": "1\\.0\\.0[ -]*rc[ -]*1",
                     "type": "string"
                 },
                 "props": {
