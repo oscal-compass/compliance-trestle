@@ -49,7 +49,7 @@ class DuplicatesValidator(Validator):
             models_path = trestle_root / fs.model_type_to_model_dir(args.type)
             for m in models:
                 model_path = models_path / m
-                _, _, model = load_distributed(model_path, args.type)
+                _, _, model = load_distributed(model_path)
                 if not has_no_duplicate_values_by_name(model, args.item):
                     return 1
             return 0
@@ -59,7 +59,7 @@ class DuplicatesValidator(Validator):
             model_tups = fs.get_all_models()
             for mt in model_tups:
                 model_path = trestle_root / fs.model_type_to_model_dir(mt[0]) / mt[1]
-                _, _, model = load_distributed(model_path, args.type)
+                _, _, model = load_distributed(model_path)
                 if not has_no_duplicate_values_by_name(model, args.item):
                     return 1
             return 0
