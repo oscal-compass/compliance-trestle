@@ -360,8 +360,7 @@ class RemovePathAction(Action):
         if self.has_executed():
             trash_path = trash.to_trash_path(self._sub_path)
             if trash_path is None or trash_path.exists() is False:
-                # raise FileNotFoundError(f'Trash contents is not found for path "{self._sub_path}"')
-                # FIXME suppress this error message for now until trash/rollback behavior is fixed.  # issue 412
+                # FIXME suppress file contents not found message for now until trash/rollback behavior is fixed.  # issue 412
                 return
             trash.recover(self._sub_path, True)
 
