@@ -12,12 +12,19 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+.settings
+.project
+.pydevproject
+
 # Dependency directories (remove the comment below to include it)
 # vendor/
 venv
 *.egg-info
 .vscode/settings.json
 .vscode
+
+# jupyter notebooks for local tests and prototypes
+*.ipynb
 
 _*/
 

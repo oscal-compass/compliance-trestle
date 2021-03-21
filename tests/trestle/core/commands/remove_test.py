@@ -16,6 +16,7 @@
 """Tests for trestle remove command."""
 import pathlib
 import re
+import shutil
 import sys
 from unittest import mock
 from unittest.mock import patch
@@ -152,8 +153,16 @@ def test_run_failure_nonexistent_element(tmp_path, sample_catalog_minimal):
         test_utils.CATALOGS_DIR
     )
 
-    # 3. self.remove() fails -- Should happen if wildcard is given, or nonexistent element.
+    # 1. self.remove() fails -- Should happen if wildcard is given, or nonexistent element.
     testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.blah']
+    with patch.object(sys, 'argv', testargs):
+        exitcode = Trestle().run()
+        assert exitcode == 1
+
+    # 2. Corrupt json file
+    source_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'bad_simple.json')
+    shutil.copyfile(source_file_path, catalog_def_file)
+    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata.roles']
     with patch.object(sys, 'argv', testargs):
         exitcode = Trestle().run()
         assert exitcode == 1

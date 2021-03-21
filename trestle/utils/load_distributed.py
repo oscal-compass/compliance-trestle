@@ -18,7 +18,6 @@
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
-from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
@@ -87,13 +86,15 @@ def load_distributed(
 
     # Get current model
     primary_model_type, primary_model_alias = fs.get_stripped_contextual_model(file_path.absolute())
-    primary_model_instance = primary_model_type.oscal_read(file_path)
-    primary_model_dict = primary_model_instance.__dict__
+    primary_model_instance: Type[OscalBaseModel] = None
 
-    # Is model decomposed?
+    # is this an attempt to load an actual json or yaml file?
     content_type = FileContentType.path_to_content_type(file_path)
-    file_dir = file_path if content_type == FileContentType.UNKNOWN else file_path.parent
-    decomposed_dir = file_dir / file_path.parts[-1].split('.')[0]
+    # if file is sought but it doesn't exist, ignore and load as decomposed model
+    if FileContentType.is_readable_file(content_type) and file_path.exists():
+        primary_model_instance = primary_model_type.oscal_read(file_path)
+    # Is model decomposed?
+    decomposed_dir = file_path.with_name(file_path.stem)
 
     if decomposed_dir.exists():
         aliases_not_to_be_stripped = []
@@ -110,13 +111,30 @@ def load_distributed(
                 model_type, model_alias = fs.get_stripped_contextual_model(path.absolute())
                 # Only load the directory if it is a collection model. Otherwise do nothing - it gets loaded when
                 # iterating over the model file
-                if '__root__' in model_type.__fields__.keys() and utils.is_collection_field_type(
-                        model_type.__fields__['__root__'].outer_type_):
+
+                # If a model is just a container for a list e.g.
+                # class Foo(OscalBaseModel):  noqa: E800
+                #      __root__: List[Bar]    noqa: E800
+                # You need to test whether first a root key exists
+                # then whether the outer_type of root is a collection.
+                # Alternative is to do a try except to avoid the error for an unknown key.
+
+                if model_type.is_collection_container():
                     # This directory is a decomposed List or Dict
-                    collection_type = utils.get_origin(model_type.__fields__['__root__'].outer_type_)
+                    collection_type = model_type.get_collection_type()
                     model_type, model_alias, model_instance = load_distributed(path, collection_type)
                     aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
                     instances_to_be_merged.append(model_instance)
+        primary_model_dict = {}
+        if primary_model_instance is not None:
+            primary_model_dict = primary_model_instance.__dict__
+
+        merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(
+            file_path.absolute(), aliases_not_to_be_stripped)
+
+        # The following use of top_level is to allow loading of a top level model by name only, e.g. MyCatalog
+        # There may be a better overall way to approach this.
+        top_level = len(merged_model_alias.split('.')) == 1
 
         for i in range(len(aliases_not_to_be_stripped)):
             alias = aliases_not_to_be_stripped[i]
@@ -124,10 +142,11 @@ def load_distributed(
             if hasattr(instance, '__dict__') and '__root__' in instance.__dict__ and isinstance(instance,
                                                                                                 OscalBaseModel):
                 instance = instance.__dict__['__root__']
-            primary_model_dict[alias] = instance
+            if top_level and not primary_model_dict:
+                primary_model_dict = instance.__dict__
+            else:
+                primary_model_dict[alias] = instance
 
-        merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(
-            file_path.absolute(), aliases_not_to_be_stripped)
         merged_model_instance = merged_model_type(**primary_model_dict)  # type: ignore
         return merged_model_type, merged_model_alias, merged_model_instance
 
