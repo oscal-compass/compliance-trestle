@@ -149,7 +149,7 @@ def test_https_fetcher_fails(tmp_trestle_dir, monkeypatch):
         fetcher._update_cache()
 
 
-def test_https_fetcher(tmp_trestle_dir):
+def test_https_fetcher(tmp_trestle_dir, monkeypatch):
     """Test the HTTPS fetcher update, including failures."""
     # This valid uri should work:
     uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/minimal_catalog.json'
@@ -158,6 +158,7 @@ def test_https_fetcher(tmp_trestle_dir):
     fetcher._cache_only = False
     fetcher._update_cache()
     assert len(open(fetcher._inst_cache_path).read()) > 0
+    dummy_existing_file = fetcher._inst_cache_path.__str__()
     # Now we'll patch _update_cache() to fail with JSONDecodeError:
     with patch('requests.Response.json') as json_mock:
         json_mock.side_effect = JSONDecodeError(msg='Extra data:', doc=fetcher._uri, pos=0)
@@ -168,6 +169,14 @@ def test_https_fetcher(tmp_trestle_dir):
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
     fetcher._refresh = True
     fetcher._cache_only = False
+    with pytest.raises(TrestleError):
+        fetcher._update_cache()
+    # Supply CA bundle env var value pointing to no existing file:
+    monkeypatch.setenv('REQUESTS_CA_BUNDLE', './no_such_bundle.crt')
+    with pytest.raises(TrestleError):
+        fetcher._update_cache()
+    # Supply bad CA bundle env var value pointing to a bad bundle file:
+    monkeypatch.setenv('REQUESTS_CA_BUNDLE', dummy_existing_file)
     with pytest.raises(TrestleError):
         fetcher._update_cache()
 

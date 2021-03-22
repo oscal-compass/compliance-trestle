@@ -264,10 +264,21 @@ class HTTPSFetcher(FetcherBase):
 
     def _sync_cache(self) -> None:
         auth = None
+        verify = None
+        # This order reflects requests library behavior: REQUESTS_CA_BUNDLE comes first.
+        for env_var_name in ['REQUESTS_CA_BUNDLE', 'CURL_CA_BUNDLE']:
+            if env_var_name in os.environ:
+                if pathlib.Path(os.environ[env_var_name]).exists():
+                    verify = os.environ[env_var_name]
+                    break
+                else:
+                    err_str = f'Environment variable ${env_var_name} was found but path does not exist: {os.environ[env_var_name]}'
+                    logger.error(err_str)
+                    raise TrestleError(f'Cache update failure with bad inputenv var: {err_str}')
         if self._username is not None and self._password is not None:
             auth = HTTPBasicAuth(self._username, self._password)
         try:
-            response = requests.get(self._url, auth=auth)
+            response = requests.get(self._url, auth=auth, verify=verify)
         except Exception as e:
             logger.error(f'Error connecting to {self._url}: {e}')
             raise TrestleError(f'Cache update failure to connect via HTTPS: {self._url} ({e})')
