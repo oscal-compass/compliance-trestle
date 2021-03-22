@@ -76,6 +76,10 @@ def load_distributed(
             and Instance of the Model. If the model is decomposed/split/distributed, the instance of the model contains
             the decomposed models loaded recursively.
     """
+    # if trying to load file that does not exist, load path instead
+    if not file_path.exists():
+        file_path = file_path.with_name(file_path.stem)
+
     # If the path contains a list type model
     if collection_type is list:
         return _load_list(file_path)
