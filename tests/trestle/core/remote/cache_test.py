@@ -18,6 +18,7 @@
 import pathlib
 import random
 import string
+from json.decoder import JSONDecodeError
 from unittest.mock import patch
 
 import pytest
@@ -133,6 +134,42 @@ def test_local_fetcher_absolute(tmp_trestle_dir):
     fetcher._cache_only = False
     fetcher._update_cache()
     assert fetcher._inst_cache_path.exists()
+
+
+def test_https_fetcher_fails(tmp_trestle_dir, monkeypatch):
+    """Test the HTTPS fetcher failing."""
+    monkeypatch.setenv('myusername', 'user123')
+    monkeypatch.setenv('mypassword', 'somep4ss')
+    # This syntactically valid uri points to nothing and should ConnectTimeout.
+    uri = 'https://{{myusername}}:{{mypassword}}@127.0.0.1/path/to/file.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with pytest.raises(TrestleError):
+        fetcher._update_cache()
+
+
+def test_https_fetcher(tmp_trestle_dir):
+    """Test the HTTPS fetcher update, including failures."""
+    # This valid uri should work:
+    uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/minimal_catalog.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    fetcher._update_cache()
+    assert len(open(fetcher._inst_cache_path).read()) > 0
+    # Now we'll patch _update_cache() to fail with JSONDecodeError:
+    with patch('requests.Response.json') as json_mock:
+        json_mock.side_effect = JSONDecodeError(msg='Extra data:', doc=fetcher._uri, pos=0)
+        with pytest.raises(TrestleError):
+            fetcher._update_cache()
+    # Now we'll get a file that does not exist:
+    uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/not_here.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with pytest.raises(TrestleError):
+        fetcher._update_cache()
 
 
 def test_sftp_fetcher(tmp_trestle_dir):

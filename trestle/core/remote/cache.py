@@ -19,8 +19,8 @@ Trestle cache operations library.
 Allows for using uris to reference external directories and then expand.
 """
 
-import errno
 import getpass
+import json
 import logging
 import os
 import pathlib
@@ -28,6 +28,7 @@ import re
 import shutil
 from abc import ABC, abstractmethod
 from io import StringIO
+from json.decoder import JSONDecodeError
 from typing import Any, Dict, Type
 from urllib import parse
 
@@ -198,8 +199,10 @@ class HTTPSFetcher(FetcherBase):
         self._username = None
         self._password = None
         u = parse.urlparse(self._uri)
-        self._url = f'{u.scheme}://{u.hostname}'
-        if u.username != '':
+        self._url = uri
+        # If the either the username or password is omitted in the url, then the other becomes ''
+        # so we test for either None or ''.
+        if u.username != '' and u.username is not None:
             # This also checks for invalid environment variable name (IEEE 1003.1)
             if not re.match('{{[a-zA-Z_][a-zA-Z0-9_]*}}', u.username) or u.username == '{{_}}':
                 logger.error(
@@ -217,9 +220,8 @@ class HTTPSFetcher(FetcherBase):
                     f'Cache request for invalid input URI: username not found in the environment {self._uri}'
                 )
             self._username = os.environ[username_var]
-        if u.password != '':
+        if u.password != '' and u.password is not None:
             if not re.match('{{[a-zA-Z_][a-zA-Z0-9_]*}}', u.password) or u.password == '{{_}}':
-            # if not u.password.startswith('{{') or not u.password.endswith('}}'):
                 logger.error(
                     f'Malformed URI, password must refer to an environment variable using moustache {self._uri}'
                 )
@@ -235,7 +237,7 @@ class HTTPSFetcher(FetcherBase):
                     f'password not found in the environment {self._uri}'
                 )
             self._password = os.environ[password_var]
-        if self._username and not self._password:
+        if self._username and (self._password == '' or self._password is None):
             logger.error(
                 'Malformed URI, username found but valid password not found '
                 f'via environment variable in URL {self._uri}'
@@ -264,17 +266,26 @@ class HTTPSFetcher(FetcherBase):
         auth = None
         if self._username is not None and self._password is not None:
             auth = HTTPBasicAuth(self._username, self._password)
-        request = requests.get(self._url, auth=auth)
-        if request.status_code == 200:
-            result = request.json()
-            if result is None:
-                raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), str(self._inst_cache_path))
-            if result['isBinary']:
-                raise NotImplementedError('Binary files are not supported!')
+        try:
+            response = requests.get(self._url, auth=auth)
+        except Exception as e:
+            logger.error(f'Error connecting to {self._url}: {e}')
+            raise TrestleError(f'Cache update failure to connect via HTTPS: {self._url} ({e})')
+
+        if response.status_code == 200:
+            outfile = open('/tmp/debug_request_content.out', 'wb')
+            outfile.write(response.content)
+            outfile.close()
+            try:
+                result = response.json()
+            except JSONDecodeError as err:
+                logger.debug(f'HTTPSFetcher._sync_cache() request.json() method failed for url {self._url}: {err}')
+                logger.error(f'HTTPSFetcher sync failed, JSON error from getting url {self._url}: {err}')
+                raise TrestleError(f'Cache update failure with expected JSON via HTTPS: {self._url} ({err})')
             else:
-                self._inst_cache_path.write_text(result['text'])
+                self._inst_cache_path.write_text(json.dumps(result))
         else:
-            raise TrestleError(f'Query failed to run by returning code of {request.status_code}. {self._query}')
+            raise TrestleError(f'GET returned code {response.status_code}: {self._uri}')
 
 
 class SFTPFetcher(FetcherBase):
