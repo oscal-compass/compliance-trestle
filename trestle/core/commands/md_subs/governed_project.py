@@ -21,7 +21,6 @@ import pathlib
 import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.commands.command_docs import CommandPlusDocs
-
 logger = logging.getLogger(__name__)
 
 

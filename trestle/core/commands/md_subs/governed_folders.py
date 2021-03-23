@@ -183,4 +183,5 @@ that directory tree are enforced."""
                     logger.error(f'Governed-folder validation failed for task {task_name} on directory {task_instance}')
                     return 1
             else:
-                logger.info(f'Unexpected file {task_path} indentified in {task_name} directory, ignoring.')
+                logger.info(f'Unexpected file {task_path} identified in {task_name} directory, ignoring.')
+        return 0
