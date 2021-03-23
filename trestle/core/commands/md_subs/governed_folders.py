@@ -76,10 +76,6 @@ that directory tree are enforced."""
         task_path.mkdir(exist_ok=True, parents=True)
         template_dir = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name
         template_dir.mkdir(exist_ok=True, parents=True)
-        logger.debug(template_dir)
-        if not cls._validate_template_dir(template_dir):
-            logger.error('Aborting setup')
-            return 1
         template_file_a = template_dir / 'a_template.md'
         template_file_b = template_dir / 'another_template.md'
         template_content = """---\nyaml:header\n---\n# Template header\nThis file is a pro-forma template.\n"""
