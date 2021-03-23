@@ -49,7 +49,11 @@ class MergeCmd(CommandPlusDocs):
     def _run(self, args: argparse.Namespace) -> int:
         """Merge elements into the parent oscal model."""
         log.set_log_level_from_args(args)
-        element_paths = args.element.split(',')
+
+        # remove any quotes passed in as on windows platforms
+        elements_clean = args.element.strip("'")
+
+        element_paths = elements_clean.split(',')
         logger.debug(f'merge _run element paths {element_paths}')
         try:
             for element_path in element_paths:
@@ -93,14 +97,19 @@ class MergeCmd(CommandPlusDocs):
         """1.5. If target is wildcard, load distributed destrination model and replace destination model."""
         # Handle WILDCARD '*' match. Return plan to load the destination model, with it's distributed attributes
         if target_model_alias == '*':
+            collection_type = None
+            if destination_model_type.is_collection_container():
+                collection_type = destination_model_type.get_collection_type()
+
             merged_model_type, merged_model_alias, merged_model_instance = load_distributed.load_distributed(
-                destination_model_filename)
+                destination_model_filename, collection_type)
             plan = Plan()
             reset_destination_action = CreatePathAction(destination_model_filename.absolute(), clear_content=True)
+            wrapper_alias = destination_model_alias
             write_destination_action = WriteFileAction(
-                destination_model_filename, Element(merged_model_instance), content_type=file_type
+                destination_model_filename, Element(merged_model_instance, wrapper_alias), content_type=file_type
             )
-            delete_target_action = RemovePathAction(Path(merged_model_alias).absolute())
+            delete_target_action = RemovePathAction(Path(destination_model_alias).absolute())
             plan: Plan = Plan()
             plan.add_action(reset_destination_action)
             plan.add_action(write_destination_action)
