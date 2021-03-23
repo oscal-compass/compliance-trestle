@@ -40,7 +40,7 @@ pip 19.2.3 from /home...
 ```
 ## *Install trestle*
 
-* Install [compliance-trestle](https://github.com/IBM/compliance-trestle/blob/develop/README.md).
+* Install [compliance-trestle](https://ibm.github.io/compliance-trestle/).
 
 ```
 (venv.trestle)$ pip install compliance-trestle

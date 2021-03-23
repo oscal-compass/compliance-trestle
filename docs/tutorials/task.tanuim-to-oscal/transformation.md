@@ -1,6 +1,6 @@
 # Tutorial: Setup for and use of Tanium to OSCAL transformer
 
-Here are step by step instructions for setup and transformation of [Tanium](https://www.tanium.com/) compliance data files into [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) using the [compliance-trestle](https://github.com/IBM/compliance-trestle/blob/develop/README.md) tool.
+Here are step by step instructions for setup and transformation of [Tanium](https://www.tanium.com/) compliance data files into [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) using the [compliance-trestle](https://ibm.github.io/compliance-trestle/) tool.
 
 ## *Objective*
 
@@ -48,7 +48,7 @@ $ source venv.trestle/bin/activate
 (venv.trestle)$ pip --version
 pip 19.2.3 from /home...
 ```
-* Install [compliance-trestle](https://github.com/IBM/compliance-trestle/blob/develop/README.md).
+* Install [compliance-trestle](https://ibm.github.io/compliance-trestle/).
 
 ```
 (venv.trestle)$ pip install compliance-trestle

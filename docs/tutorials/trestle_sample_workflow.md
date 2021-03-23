@@ -1,6 +1,6 @@
 # Tutorial: Introduction to trestle commands for manipulating an OSCAL catalog
 
-Here are step-by-step instructions to manipulate a [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) catalog using the [compliance-trestle](https://github.com/IBM/compliance-trestle/blob/develop/README.md) (`"trestle"`) tool.
+Here are step-by-step instructions to manipulate a [NIST](https://www.nist.gov/) standard [OSCAL](https://pages.nist.gov/OSCAL/) catalog using the [compliance-trestle](https://ibm.github.io/compliance-trestle/) (`"trestle"`) tool.
 
 ## *Objective*
 
@@ -15,7 +15,7 @@ The examples shown will work for linux and mac, but Windows will require the fol
 <li>use md instead of mkdir (unless you have mkdir installed)
 </ul>
 
-In this tutorial you will see headings marked with an arrow symbol on the left.  You can click on the arrow to see more details and then click again to hide them.
+In this tutorial you will see sections that contain dropdown that is revealed when you click on them.  Below is an example ("Like this").  Be sure to click on those sections to see their contents - and then close them if you like.
 
 <br>
 <details>
