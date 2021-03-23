@@ -139,17 +139,11 @@ def generate_models():
         generate_model(full_name, out_full_name)
     # 3rd party list - include in OSCAL
     generate_model('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', out_dir / 'target.py')
-<<<<<<< HEAD
-    # 3rd party - put outside of oscal directory
-    out_dir_3rd_party = Path('trestle/third_party')
-    generate_model('3rd-party-schema-documents/OSCAL-1.0.0-rc1-IBM_observations_interchange_schema.json', out_dir_3rd_party / 'exchange_protocol.py')
-=======
-    # Generate model for
+    # Generate model for exchange protocol.
     generate_model(
         '3rd-party-schema-documents/OSCAL-1.0.0-rc1-IBM_observations_interchange_schema.json',
         Path('trestle/third_party') / 'exchange_protocol.py'
     )
->>>>>>> develop
 
 
 def main():

@@ -17,6 +17,7 @@
 
 import json
 import logging
+import os
 import pathlib
 from typing import Any, Dict, List, Optional, Tuple, Type, cast
 
@@ -30,6 +31,10 @@ from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 
 import yaml
+
+if os.name == 'nt':
+    import win32api
+    import win32con
 
 logger = logging.getLogger(__name__)
 
@@ -383,3 +388,51 @@ def get_all_models() -> List[Tuple[str, str]]:
         for m in models:
             full_list.append((model_type, m))
     return full_list
+
+
+def is_hidden(file_path: pathlib.Path) -> bool:
+    """
+    Determine whether a file is hidden based on the appropriate os attributes.
+
+    This function will only work for the current file path only (e.g. not if a parent is hidden).
+
+    Args:
+        file_path: The file path for which we are testing whether the file / directory is hidden.
+
+    Returns:
+        Whether or not the file is file/directory is hidden.
+    """
+    # Handle windows
+    if os.name == 'nt':
+        attribute = win32api.GetFileAttributes(str(file_path))
+        return attribute & (win32con.FILE_ATTRIBUTE_HIDDEN | win32con.FILE_ATTRIBUTE_SYSTEM)
+    else:
+        # Handle unix
+        return file_path.stem.startswith('.')
+
+
+def allowed_task_name(name: str) -> bool:
+    """Determine whether a task, which is a 'non-core-OSCAL activity/directory is allowed.
+
+    args:
+        name: the task name which is assumed may take the form of a relative path for task/subtasks.
+
+    Returns:
+        Whether the task name is allowed or not allowed (interferes with assumed project directories such as catalogs).
+    """
+    # Task must not use an OSCAL directory
+    # Task must not self-interfere with a project
+    pathed_name = pathlib.Path(name)
+
+    root_path = pathed_name.parts[0]
+    if root_path in const.MODEL_TYPE_TO_MODEL_DIR.values():
+        logger.error('Task name is the same as an OSCAL schema name.')
+        return False
+    elif root_path == '.trestle':
+        logger.error('Task name must not use the `.trestle` name.')
+        return False
+    elif pathed_name.suffix != '':
+        # Does it look like a file
+        logger.error('tasks name must not look like a file path (e.g. contain a suffix')
+        return False
+    return True
