@@ -21,6 +21,8 @@ import pathlib
 import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.md_subs.governed_folders import GovernedFolders
+
 logger = logging.getLogger(__name__)
 
 
@@ -30,7 +32,7 @@ class GovernedProject(CommandPlusDocs):
     Governed projects are executed as a special template leveraging the Governed-Folders template.
     """
 
-    name = 'governed-projects'
+    name = 'governed-project'
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -47,20 +49,20 @@ class GovernedProject(CommandPlusDocs):
         # setup governed projects instance:
 
         if args.mode == 'create-sample':
-            status = self.create_sample(args.task_name, trestle_root)
+            status = self.create_sample(trestle_root)
 
         elif args.mode == 'template-validate':
-            status = self.template_validate(args.task_name, trestle_root, args.governed_heading, args.header_validate)
+            status = self.template_validate(trestle_root, args.governed_heading, args.header_validate)
         elif args.mode == 'setup':
-            status = self.setup_template(args.task_name, trestle_root)
+            status = self.setup_template(trestle_root)
         elif args.mode == 'validate':
             # mode is validate
-            status = self.validate(args.task_name, trestle_root, args.governed_heading, args.header_validate)
+            status = self.validate(trestle_root, args.governed_heading, args.header_validate)
         else:
             logger.error('Unknown mode for trestle markdown functionality')
         return status
 
-    def setup_template(self, trestle_root: pathlib.Path) -> int:
+    def setup(self, trestle_root: pathlib.Path) -> int:
         """Create template for the governed project.
 
         Args:
@@ -69,4 +71,24 @@ class GovernedProject(CommandPlusDocs):
         Returns:
             Unix return code.
         """
-        pass
+        status = GovernedFolders.setup_template('governed-project', trestle_root, True)
+        return status
+
+    def create_sample(self, trestle_root: pathlib.Path) -> int:
+        """Create sample for the governed project.
+
+        Args:
+            trestle_root: path of trestle root project.
+
+        Returns:
+            Unix return code.
+        """
+        return 0
+
+    def validate(self, trestle_root: str, governed_heading: str, header_validate: bool) -> int:
+        """Validate the project."""
+        return 0
+
+    def template_validate(self, trestle_root: pathlib.Path, governed_heading: str, header_validate: bool) -> int:
+        """Validate the project template."""
+        return 0
