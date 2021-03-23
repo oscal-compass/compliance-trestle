@@ -32,7 +32,7 @@ from trestle.core.models.file_content_type import FileContentType
 
 import yaml
 
-if os.name == 'nt':
+if os.name == 'nt':  # pragma: no cover
     import win32api
     import win32con
 
@@ -403,7 +403,7 @@ def is_hidden(file_path: pathlib.Path) -> bool:
         Whether or not the file is file/directory is hidden.
     """
     # Handle windows
-    if os.name == 'nt':
+    if os.name == 'nt':  # pragma: no cover
         attribute = win32api.GetFileAttributes(str(file_path))
         return attribute & (win32con.FILE_ATTRIBUTE_HIDDEN | win32con.FILE_ATTRIBUTE_SYSTEM)
     else:
@@ -428,8 +428,8 @@ def allowed_task_name(name: str) -> bool:
     if root_path in const.MODEL_TYPE_TO_MODEL_DIR.values():
         logger.error('Task name is the same as an OSCAL schema name.')
         return False
-    elif root_path == '.trestle':
-        logger.error('Task name must not use the `.trestle` name.')
+    elif root_path[0] == '.':
+        logger.error('Task name must not start with "."')
         return False
     elif pathed_name.suffix != '':
         # Does it look like a file

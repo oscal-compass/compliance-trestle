@@ -534,3 +534,30 @@ def test_model_or_file_to_model_name(tmp_trestle_dir) -> None:
     assert fs.model_or_file_to_model_name('mycatalog/catalog.json') == 'mycatalog'
     with pytest.raises(TrestleError):
         fs.model_or_file_to_model_name('')
+
+
+def test_is_hidden_posix():
+    """Test is_hidden on posix systems."""
+    pass
+    if not os.name == 'nt':
+        pass
+
+
+def test_is_hidden_windows():
+    """Test is_hidden on windows systems."""
+    # FIXME:
+    if os.name == 'nt':
+        pass
+    pass
+
+
+@pytest.mark.parametrize(
+    'task_name, outcome',
+    [
+        ('hello', True), ('.trestle', False), ('task/name', True), ('.bad,', False), ('catalogs', False),
+        ('catalog', True), ('target-definitions', False), ('hello.world', False)
+    ]
+)
+def test_allowed_task_name(task_name: str, outcome: bool) -> None:
+    """Test whether task names are allowed."""
+    assert fs.allowed_task_name(task_name) == outcome
