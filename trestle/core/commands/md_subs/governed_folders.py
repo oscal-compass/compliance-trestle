@@ -17,6 +17,7 @@
 import argparse
 import logging
 import pathlib
+import shutil
 from typing import List
 
 import trestle.utils.fs as fs
@@ -157,6 +158,26 @@ that directory tree are enforced."""
                         logger.error(f'Markdown file {full_path} failed validation.')
                         return False
         return True
+
+    def create_sample(self, task_name: str, trestle_root: pathlib.Path) -> int:
+        """Create a sample folder within the task and populate with template content.
+
+        Args:
+            task_name: the task name to generate content for
+            trestle_root: the root of the trestle project.
+        Returns:
+            Unix return code for running sample as a command.
+        """
+        template_dir = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name
+        task_path = trestle_root / task_name
+        ii = 0
+        while True:
+            sample_path = task_path / f'sample_folder_{ii}'
+            if sample_path.exists():
+                ii = ii + 1
+                continue
+            shutil.copytree(str(template_dir), str(sample_path))
+            return 0
 
     def validate(
         self,

@@ -24,7 +24,6 @@ from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.md_subs.cidd import CIDD
 from trestle.core.commands.md_subs.governed_docs import GovernedDocs
 from trestle.core.commands.md_subs.governed_folders import GovernedFolders
-from trestle.core.commands.md_subs.governed_project import GovernedProject
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +33,7 @@ class MDCmd(CommandPlusDocs):
 
     name = 'md'
 
-    subcommands = [CIDD, GovernedDocs, GovernedFolders, GovernedProject]
+    subcommands = [CIDD, GovernedDocs, GovernedFolders]
 
     def _init_arguments(self) -> None:
         heading_help = """Governed heading: Heading where for each line is a superset of the template's content."""
