@@ -14,6 +14,7 @@ nav:
 - Overview: index.md
 - Trestle cli: cli.md
 - Tutorials:
+  - intro to trestle workflow: tutorials/trestle_sample_workflow.md
   - transformer construction: tutorials/task.transformer-construction/transformer-construction.md
   - task tanium-to-oscal: tutorials/task.tanuim-to-oscal/transformation.md
 - Code of Conduct: mkdocs_code_of_conduct.md
