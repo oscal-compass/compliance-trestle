@@ -51,15 +51,11 @@ class FetcherBase(ABC):
     def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
         """Intialize fetcher base.
 
-        Arguments:
-        trestle_root: pathlib.Path
-            Path of the Trestle project path, i.e., within which .trestle is to be found.
-        uri: str
-            Reference to the source object to cache.
-        refresh: bool
-            Whether or not the cache should be refreshed
-        cache_only: bool
-            Whether or not the operation should only target the cache copy
+        Args:
+            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+            uri: Reference to the source object to cache.
+            refresh: Whether or not the cache should be refreshed.
+            cache_only: Whether or not the operation should only target the cache copy
         """
         logger.debug('Initializing FetcherBase')
         self._inst_cache_path: pathlib.Path
@@ -142,16 +138,11 @@ class LocalFetcher(FetcherBase):
     def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
         """Initialize local fetcher. Update the expected cache path as per caching specs.
 
-        Arguments:
-        ----------
-        trestle_root: pathlib.Path
-            Path of the Trestle project path, i.e., within which .trestle is to be found.
-        uri: str
-            Reference to the file in the local filesystem to cache, which must be outside trestle_root.
-        refresh: bool
-            Whether or not the cache should be refreshed
-        cache_only: bool
-            Whether or not the operation should only target the cache copy
+        Args:
+            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+            uri: Reference to the file in the local filesystem to cache, which must be outside trestle_root.
+            refresh: Whether or not the cache should be refreshed
+            cache_only: Whether or not the operation should only target the cache copy
         """
         super().__init__(trestle_root, uri, refresh, cache_only)
         # Normalize uri to a root file.
@@ -305,16 +296,11 @@ class SFTPFetcher(FetcherBase):
     def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
         """Initialize SFTP fetcher. Update the expected cache path as per caching specs.
 
-        Arguments:
-        ----------
-        trestle_root: pathlib.Path
-            Path of the Trestle project path, i.e., within which .trestle is to be found.
-        uri: str
-            Reference to the remote file to cache that can be fetched using the sftp:// scheme.
-        refresh: bool
-            Whether or not the cache should be refreshed
-        cache_only: bool
-            Whether or not the operation should only target the cache copy
+        Args:
+            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+            uri: Reference to the remote file to cache that can be fetched using the sftp:// scheme.
+            refresh: Whether or not the cache should be refreshed
+            cache_only: Whether or not the operation should only target the cache copy
         """
         super().__init__(trestle_root, uri, refresh, cache_only)
         # Is this a valid uri, however? Username and password are optional, of course.
@@ -404,15 +390,11 @@ class FetcherFactory(object):
     ) -> FetcherBase:
         """Return an instantiated fetcher object based on the uri.
 
-        Arguments:
-        trestle_root: pathlib.Path
-            Path of the Trestle project path, i.e., within which .trestle is to be found.
-        uri: str
-            Reference to the remote object to cache.
-        refresh: bool
-            Whether or not the cache should be refreshed
-        cache_only: bool
-            Whether or not the operation should only target the cache copy
+        Args:
+            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+        uri: Reference to the remote object to cache.
+        refresh: Whether or not the cache should be refreshed
+        cache_only: Whether or not the operation should only target the cache copy
         """
         # Basic correctness test
         if len(uri) <= 9 or ('/' not in uri and re.match('[A-Za-z]:\\\\', uri) is None):

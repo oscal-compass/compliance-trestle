@@ -26,6 +26,7 @@ def test_to_content_type() -> None:
     """Test to_content_type method."""
     assert FileContentType.to_content_type('.json') == FileContentType.JSON
     assert FileContentType.to_content_type('.yaml') == FileContentType.YAML
+    assert FileContentType.to_content_type('') == FileContentType.DIRLIKE
 
     with pytest.raises(TrestleError):
         FileContentType.to_content_type('.invalid')

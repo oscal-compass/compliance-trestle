@@ -40,9 +40,6 @@ def test_merge_invalid_element_path(testdata_dir, tmp_trestle_dir):
     args = argparse.Namespace(verbose=1, element='catalog')
     assert cmd._run(args) == 1
 
-    args = argparse.Namespace(verbose=1, element='catalog.metadata,catalog.metadata.roles')
-    assert cmd._run(args) == 1
-
     args = argparse.Namespace(verbose=1, element='catalog.metadata')
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
@@ -114,7 +111,7 @@ def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
     expected_plan.add_action(write_destination_action)
     expected_plan.add_action(delete_element_action)
 
-    # Call merged()
+    # Call merge()
 
     generated_plan = MergeCmd.merge(ElementPath('catalog.back-matter'))
 
@@ -174,7 +171,7 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir):
     delete_element_action = RemovePathAction(metadata_file.absolute())
     expected_plan.add_action(delete_element_action)
 
-    # Call merged()
+    # Call merge()
     generated_plan = MergeCmd.merge(ElementPath('catalog.metadata'))
 
     # Assert the generated plan matches the expected plan'
@@ -184,7 +181,7 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir):
 def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     """Test '$mycatalog$ trestle merge -e catalog.*' when metadata and catalog is already split."""
     # Assume we are running a command like below
-    # trestle merge -e catalog.back-matter
+    # trestle merge -e catalog.*
     content_type = FileContentType.JSON
     fext = FileContentType.to_file_extension(content_type)
 
@@ -221,7 +218,7 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     delete_element_action = RemovePathAction(Path('catalog').absolute())
     expected_plan.add_action(delete_element_action)
 
-    # Call merged()
+    # Call merge()
     generated_plan = MergeCmd.merge(ElementPath('catalog.*'))
 
     # Assert the generated plan matches the expected plan'
@@ -245,6 +242,10 @@ def test_bad_merge(testdata_dir, tmp_trestle_dir):
     os.chdir(mycatalog_dir)
     cmd = MergeCmd()
     args = argparse.Namespace(verbose=1, element='catalog.roles')
+    assert cmd._run(args) == 1
+
+    # test from outside trestle project
+    os.chdir(testdata_dir)
     assert cmd._run(args) == 1
 
 
@@ -307,7 +308,7 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
     expected_plan.add_action(write_destination_action)
     expected_plan.add_action(delete_element_action)
 
-    # Call merged()
+    # Call merge()
 
     generated_plan = MergeCmd.merge(ElementPath('metadata.roles'))
 
@@ -352,7 +353,8 @@ def test_split_merge(testdata_dir, tmp_trestle_dir):
     # Merge everything back into the catalog
     # Equivalent to trestle merge -e catalog.*
     args = argparse.Namespace(name='merge', element='catalog.*', verbose=1)
-    MergeCmd()._run(args)
+    rc = MergeCmd()._run(args)
+    assert rc == 1  # FIXME issue #412  this should return 0 but has been passing because it wasn't checked
 
     # Check both the catalogs are the same.
     post_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.absolute())
