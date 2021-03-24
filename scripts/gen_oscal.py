@@ -54,9 +54,19 @@ def load_git():
 def generate_model(full_name, out_full_name):
     """Generate a single model with datamodel-codegen."""
     print(f'generate python model and apply fix_any: {str(full_name)} -> {str(out_full_name)}')
-    args = ['datamodel-codegen', '--disable-timestamp', '--disable-appending-item-suffix', 
-            '--input-file-type', 'jsonschema', '--input', str(full_name), '--base-class',
-            'trestle.core.base_model.OscalBaseModel', '--output', str(out_full_name)]
+    args = [
+        'datamodel-codegen',
+        '--disable-timestamp',
+        '--disable-appending-item-suffix',
+        '--input-file-type',
+        'jsonschema',
+        '--input',
+        str(full_name),
+        '--base-class',
+        'trestle.core.base_model.OscalBaseModel',
+        '--output',
+        str(out_full_name)
+    ]
     try:
         check_call(args)
     except CalledProcessError as error:
@@ -72,8 +82,17 @@ def generate_model_flat(full_name, out_full_name):
     print('flatten schema')
     new_py = out_full_name
     print('convert to python')
-    args = ['datamodel-codegen', '--input-file-type', 'jsonschema', '--input', full_name, '--base-class',
-            'trestle.core.base_model.OscalBaseModel', '--output', new_py]
+    args = [
+        'datamodel-codegen',
+        '--input-file-type',
+        'jsonschema',
+        '--input',
+        full_name,
+        '--base-class',
+        'trestle.core.base_model.OscalBaseModel',
+        '--output',
+        new_py
+    ]
     try:
         check_call(args)
     except CalledProcessError as error:
@@ -119,6 +138,11 @@ def generate_models():
         out_full_name = out_dir / out_fname
         generate_model(full_name, out_full_name)
     generate_model('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', out_dir / 'target.py')
+    # Generate model for
+    generate_model(
+        '3rd-party-schema-documents/OSCAL-1.0.0-rc1-IBM_observations_interchange_schema.json',
+        Path('trestle/third_party') / 'exchange_protocol.py'
+    )
 
 
 def main():
