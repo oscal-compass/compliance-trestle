@@ -272,7 +272,7 @@ class HTTPSFetcher(FetcherBase):
                     verify = os.environ[env_var_name]
                     break
                 else:
-                    err_str = f'Environment variable ${env_var_name} was found but path does not exist: {os.environ[env_var_name]}'
+                    err_str = f'Env var ${env_var_name} found but path does not exist: {os.environ[env_var_name]}'
                     logger.error(err_str)
                     raise TrestleError(f'Cache update failure with bad inputenv var: {err_str}')
         if self._username is not None and self._password is not None:
