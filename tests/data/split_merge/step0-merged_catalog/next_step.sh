@@ -7,11 +7,6 @@ trestle split -f ./catalog.json -e 'catalog.metadata,catalog.groups,catalog.back
 # In that case, the -f option would be deprecated and the commands would look like:
 trestle split -e 'catalog.metadata,catalog.groups,catalog.back-matter'
 
-# In order to determine which elements the user can split at this level, the following command can be used:
-trestle split -l
-# which is the same as
-trestle split --list-available-elements
-
 
 REVERSE: 
     trestle merge -e 'catalog.metadata,catalog.groups,catalog.back-matter'

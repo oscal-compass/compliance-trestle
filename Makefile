@@ -19,7 +19,6 @@ develop:
 
 pre-commit: 
 	pre-commit install
-	pre-commit autoupdate
 
 install:
 	python -m pip install  --upgrade pip setuptools

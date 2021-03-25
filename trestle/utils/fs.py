@@ -129,13 +129,13 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBase
         path = pathlib.Path.cwd()
 
     if not is_valid_project_model_path(path):
-        raise err.TrestleError(f'Trestle project not found at {path}')
+        raise err.TrestleError(f'Trestle project model not found at {path}')
 
     root_path = get_trestle_project_root(path)
     project_model_path = get_project_model_path(path)
 
     if root_path is None or project_model_path is None:
-        raise err.TrestleError('Trestle project not found')
+        raise err.TrestleError('Trestle project model not found')
 
     relative_path = path.relative_to(str(root_path))
     project_type = relative_path.parts[0]  # catalogs, profiles, etc
@@ -196,6 +196,7 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
     aliases_to_be_stripped = set()
     if split_subdir.exists():
         for f in split_subdir.iterdir():
+            # TODO ignore hidden files
             alias = extract_alias(f)
             if alias not in aliases_not_to_be_stripped:
                 aliases_to_be_stripped.add(alias)
@@ -268,6 +269,7 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
 
     full_alias_path = alias_path
     if contextual_mode:
+        logger.debug(f'get_singular_alias contextual mode: {str}')
         _, full_model_alias = get_contextual_model_type()
         first_alias_a = full_model_alias.split('.')[-1]
         first_alias_b = alias_path.split('.')[0]
@@ -276,6 +278,7 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
         full_alias_path = '.'.join([full_model_alias, alias_path]).strip('.')
 
     path_parts = full_alias_path.split(const.ALIAS_PATH_SEPARATOR)
+    logger.debug(f'path parts: {path_parts}')
     if len(path_parts) < 2:
         raise err.TrestleError('Invalid jsonpath.')
 

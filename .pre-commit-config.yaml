@@ -5,7 +5,7 @@ repos:
       - id: yapf
         args: [--in-place, --parallel, --recursive, --style, .yapf-config]
         files: "^(trestle|tests|scripts)"
-        exclude: "oscal"
+        exclude: "(oscal|third_party)"
         stages: [commit]
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.8.4
@@ -32,16 +32,17 @@ repos:
             pep8-naming,
           ]
         files: "^(trestle|tests|scripts)"
-        exclude: "oscal"
+        exclude: "(oscal|third_party)"
         stages: [commit]
   - repo: https://github.com/hukkinj1/mdformat
-    rev: 0.6.0  # Use the ref you want to point at
+    rev: 0.5.3  # Do not change version. 0.6.0 introduces breaking changes.
     hooks:
     - id: mdformat
       exclude: "CHANGELOG.md|docs/mkdocs_code_of_conduct.md|docs/api_reference"
       additional_dependencies:
       - mdformat-tables
       - mdformat-config
+      - mdformat-frontmatter
 
       
   # - repo: https://github.com/pre-commit/mirrors-mypy

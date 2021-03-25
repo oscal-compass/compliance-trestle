@@ -72,6 +72,7 @@ class OscoToOscal(TaskBase):
         logger.info('<name>:')
         logger.info('  locker: <locker>')
         logger.info('  namespace: <namespace>')
+        logger.info('  benchmark: <benchmark>')
         logger.info('  subject-references:')
         logger.info('    component:')
         logger.info('      uuid-ref: <uuid-ref>')

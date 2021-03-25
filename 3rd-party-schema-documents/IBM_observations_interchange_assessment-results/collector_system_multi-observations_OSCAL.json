@@ -1,0 +1,304 @@
+{
+    "observations" : [
+        {
+            "uuid": "00000000-0000-4000-9999-000000000012",
+            "title": "CIS CentOS Linux 7 Benchmark 2.2.0:1.1.1.1, Sep 11, 2020 at 5:12 PM AEST",
+            "description": "IBM S&CC scan, CIS CentOS Linux 7 Benchmark 2.2.0:1.1.1.1, 2020-09-11T17:12:00+1000",
+            "props":[
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "scan",
+                    "value": "SGA Centos validation - Sep 11, 2020 at 5_12 PM AEST"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "profile-name",
+                    "value": "CIS CentOS Linux 7 Benchmark 2.2.0"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "control-number",
+                    "value": "1.1.1.1"
+                }
+            ],
+            "annotations": [
+                {
+                    "ns" : "IBM",
+                    "name" : "issue",
+                    "value" : "https://acme.org/foo/123"
+                }
+            ],
+            "methods":[
+                "TEST-AUTOMATED"
+            ],
+            "subjects": [
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-000000000013",
+                    "type": "component",
+                    "title": "192.168.122.4",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "192.168.122.4"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "centos"
+                        }
+                    ]
+                },
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-000000000014",
+                    "type": "component",
+                    "title": "192.168.122.79",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "192.168.122.79"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "centos"
+                        }
+                    ]
+                }
+            ],
+            "remediation-group" : [],
+            "relevant-evidence": [
+                {
+                    "href": "",
+                    "description": "S&CC scan result",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "192.168.122.4"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "actual-value",
+                            "value": "[{\"name\":\"cramfs\", \"status\":\"disabled\", \"value\":\" install /bin/true \"}]"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "expected-value",
+                            "value": "Mounting of cramfs filesystems should be disabled"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "PASS"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "detail",
+                            "value": "Mounting of cramfs filesystems is disabled"
+                        }
+                    ]
+                },
+                {
+                    "href": "",
+                    "description": "S&CC scan result",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "192.168.122.79"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "actual-value",
+                            "value": "[{\"name\":\"cramfs\", \"status\":\"disabled\", \"value\":\" install /bin/true \"}]"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "expected-value",
+                            "value": "Mounting of cramfs filesystems should be disabled"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "PASS"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "detail",
+                            "value": "Mounting of cramfs filesystems is disabled"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "00000000-0000-4000-9999-000000000015",
+            "title": "CIS CentOS Linux 7 Benchmark 2.2.0:1.1.1.2, Sep 11, 2020 at 5:12 PM AEST",
+            "description": "IBM S&CC scan, CIS CentOS Linux 7 Benchmark 2.2.0:1.1.1.2, 2020-09-11T17:12:00+1000",
+            "props":[
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "scan",
+                    "value": "SGA Centos validation - Sep 11, 2020 at 5_12 PM AEST"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "profile-name",
+                    "value": "CIS CentOS Linux 7 Benchmark 2.2.0"
+                },
+                {
+                    "ns": "IBM",
+                    "class": "id",
+                    "name": "control-number",
+                    "value": "1.1.1.2"
+                }
+            ],
+            "annotations": [
+                {
+                    "ns" : "IBM",
+                    "name" : "issue",
+                    "value" : "https://acme.org/foo/123"
+                }
+            ],
+            "methods":[
+                "TEST-AUTOMATED"
+            ],
+            "subjects": [
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-000000000013",
+                    "type": "component",
+                    "title": "192.168.122.4",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "192.168.122.4"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "centos"
+                        }
+                    ]
+                },
+                {
+                    "uuid-ref": "00000000-0000-4000-9999-000000000014",
+                    "type": "component",
+                    "title": "192.168.122.79",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "192.168.122.79"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "control-target",
+                            "value": "centos"
+                        }
+                    ]
+                }
+            ],
+            "remediation-group" : [],
+            "relevant-evidence": [
+                {
+                    "href": "",
+                    "description": "S&CC scan result",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "192.168.122.4"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "actual-value",
+                            "value": "[{\"name\":\"freevxfs\",\"status\":\"disabled\",\"value\":\" install /bin/true \"}]"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "expected-value",
+                            "value": "Mounting of freevxfs filesystems should be disabled"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "PASS"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "detail",
+                            "value": "Mounting of freevxfs filesystems is disabled"
+                        }
+                    ]
+                },
+                {
+                    "href": "",
+                    "description": "S&CC scan result",
+                    "props":[
+                        {
+                            "ns": "IBM",
+                            "class": "id",
+                            "name": "IT-resource",
+                            "value": "192.168.122.79"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "actual-value",
+                            "value": "[{\"name\":\"freevxfs\",\"status\":\"disabled\",\"value\":\" modprobe: FATAL: Module freevxfs not found.\"}]"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "expected-value",
+                            "value": "Mounting of freevxfs filesystems should be disabled"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "result",
+                            "name": "result",
+                            "value": "PASS"
+                        },
+                        {
+                            "ns": "IBM",
+                            "class": "info",
+                            "name": "detail",
+                            "value": "Mounting of freevxfs filesystems is disabled"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -15,7 +15,6 @@
 """Starting point for the Trestle CLI."""
 import logging
 
-from trestle import __version__
 from trestle.core.commands.add import AddCmd
 from trestle.core.commands.assemble import AssembleCmd
 from trestle.core.commands.command_docs import CommandPlusDocs
@@ -28,6 +27,7 @@ from trestle.core.commands.replicate import ReplicateCmd
 from trestle.core.commands.split import SplitCmd
 from trestle.core.commands.task import TaskCmd
 from trestle.core.commands.validate import ValidateCmd
+from trestle.core.commands.version import VersionCmd
 from trestle.utils import log
 
 logger = logging.getLogger('trestle')
@@ -47,17 +47,11 @@ class Trestle(CommandPlusDocs):
         ValidateCmd,
         ImportCmd,
         TaskCmd,
-        AssembleCmd
+        AssembleCmd,
+        VersionCmd
     ]
 
     def _init_arguments(self) -> None:
-        self.add_argument(
-            '-V',
-            '--version',
-            help='Display the version of trestle.',
-            action='version',
-            version=f'Trestle version v{__version__}'
-        )
         self.add_argument('-v', '--verbose', help='Display verbose output.', action='count', default=0)
 
 

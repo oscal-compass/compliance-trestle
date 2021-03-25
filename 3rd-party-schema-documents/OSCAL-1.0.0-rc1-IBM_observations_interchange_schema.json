@@ -1,0 +1,1587 @@
+{
+    "title": "ibm_observations_interchange",
+    "description": "This is the OSCAL-like interchange class.",
+    "type": "object",
+    "properties": {
+        "observations": {
+            "title": "Observations",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Observation"
+            }
+        },
+        "metadata": {
+            "$ref": "#/definitions/Metadata"
+        }
+    },
+    "required": [
+        "observations"
+    ],
+    "definitions": {
+        "Property": {
+            "title": "Property",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "title": "Property Universally Unique Identifier",
+                    "description": "A unique identifier that can be used to reference this property elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                "name": {
+                    "title": "Property Name",
+                    "description": "A textual label that uniquely identifies a specific attribute, characteristic, or quality of the property's containing object.",
+                    "type": "string"
+                },
+                "ns": {
+                    "title": "Property Namespace",
+                    "description": "A namespace qualifying the property's name. This allows different organizations to associate distinct semantics with the same name.",
+                    "minLength": 1,
+                    "maxLength": 65536,
+                    "format": "uri",
+                    "type": "string"
+                },
+                "class": {
+                    "title": "Property Class",
+                    "description": "A textual label that provides a sub-type or characterization of the property's name. This can be used to further distinguish or discriminate between the semantics of multiple properties of the same object with the same name and ns.",
+                    "type": "string"
+                },
+                "value": {
+                    "title": "Value",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "value"
+            ],
+            "additionalProperties": false
+        },
+        "Remarks": {
+            "title": "Remarks",
+            "description": "Additional commentary on the containing object.",
+            "type": "string",
+            "additionalProperties": false
+        },
+        "Annotation": {
+            "title": "Annotation",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "title": "Annotated Property Name",
+                    "description": "A textual label that uniquely identifies a specific attribute, characteristic, or quality of the annotated property's containing object.",
+                    "type": "string"
+                },
+                "uuid": {
+                    "title": "Annotated Property Universally Unique Identifier",
+                    "description": "A unique identifier that can be used to reference this annotated property elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                "ns": {
+                    "title": "Annotated Property Namespace",
+                    "description": "A namespace qualifying the annotated property's name. This allows different organizations to associate distinct semantics with the same name.",
+                    "minLength": 1,
+                    "maxLength": 65536,
+                    "format": "uri",
+                    "type": "string"
+                },
+                "value": {
+                    "title": "Annotated Property Value",
+                    "description": "Indicates the value of the attribute, characteristic, or quality.",
+                    "type": "string"
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "name",
+                "value"
+            ],
+            "additionalProperties": false
+        },
+        "Link": {
+            "title": "Link",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "href": {
+                    "title": "Hypertext Reference",
+                    "description": "A resolvable URL reference to a resource.",
+                    "type": "string"
+                },
+                "rel": {
+                    "title": "Relation",
+                    "description": "Describes the type of relationship provided by the link. This can be an indicator of the link's purpose.",
+                    "type": "string"
+                },
+                "media-type": {
+                    "title": "Media Type",
+                    "description": "Specifies a media type as defined by the Internet Assigned Numbers Authority (IANA) Media Types Registry.",
+                    "type": "string"
+                },
+                "text": {
+                    "title": "Link Text",
+                    "description": "A textual label to associate with the link, which may be used for presentation in a tool.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "href"
+            ],
+            "additionalProperties": false
+        },
+        "Type": {
+            "title": "Type",
+            "description": "An enumeration.",
+            "enum": [
+                "person",
+                "organization"
+            ]
+        },
+        "Actor": {
+            "title": "Actor",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "Actor Type",
+                    "description": "The kind of actor.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Type"
+                        }
+                    ]
+                },
+                "uuid-ref": {
+                    "title": "Actor UUID Reference",
+                    "description": "A pointer to the tool or person based on the associated type.",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                "role-id": {
+                    "title": "Actor Role",
+                    "description": "For a party, this can optionally be used to specify the role the actor was performing.",
+                    "type": "string"
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "uuid-ref"
+            ],
+            "additionalProperties": false
+        },
+        "PartyUuid": {
+            "title": "PartyUuid",
+            "description": "References a party defined in metadata.",
+            "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+            "type": "string",
+            "additionalProperties": false
+        },
+        "ResponsibleParty": {
+            "title": "ResponsibleParty",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "party-uuids": {
+                    "title": "Party-Uuids",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PartyUuid"
+                    }
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "party-uuids"
+            ],
+            "additionalProperties": false
+        },
+        "RelatedAction": {
+            "title": "RelatedAction",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "action-uuid": {
+                    "title": "Action Universally Unique Identifier Reference",
+                    "description": "References a unique action by UUID.",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "responsible-parties": {
+                    "title": "Responsible-Parties",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/ResponsibleParty"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "action-uuid"
+            ],
+            "additionalProperties": false
+        },
+        "SelectSubjectById": {
+            "title": "SelectSubjectById",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "uuid-ref": {
+                    "title": "UUID Reference",
+                    "description": "A pointer to a component, inventory-item, location, party, user, or resource using it's UUID.",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "uuid-ref"
+            ],
+            "additionalProperties": false
+        },
+        "AssessmentSubject": {
+            "title": "AssessmentSubject",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "Subject Type",
+                    "description": "Indicates the type of assessment subject, such as a component, inventory, item, location, or party represented by this selection statement.",
+                    "type": "string"
+                },
+                "description": {
+                    "title": " Subjects Description",
+                    "description": "A human-readable description of the collection of subjects being included in this assessment.",
+                    "type": "string"
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "include-all": {
+                    "title": "All",
+                    "description": "A key word to indicate all.",
+                    "type": "string"
+                },
+                "include-subjects": {
+                    "title": "Include-Subjects",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SelectSubjectById"
+                    }
+                },
+                "exclude-subjects": {
+                    "title": "Exclude-Subjects",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SelectSubjectById"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "type"
+            ],
+            "additionalProperties": false
+        },
+        "RelatedTask": {
+            "title": "RelatedTask",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "task-uuid": {
+                    "title": "Task Universally Unique Identifier Reference",
+                    "description": "References a unique task by UUID.",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "responsible-parties": {
+                    "title": "Responsible-Parties",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/ResponsibleParty"
+                    }
+                },
+                "assessment-subjects": {
+                    "title": "Assessment-Subjects",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AssessmentSubject"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "task-uuid"
+            ],
+            "additionalProperties": false
+        },
+        "Origin": {
+            "title": "Origin",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "actors": {
+                    "title": "Actors",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Actor"
+                    }
+                },
+                "related-actions": {
+                    "title": "Related-Actions",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RelatedAction"
+                    }
+                },
+                "related-tasks": {
+                    "title": "Related-Tasks",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RelatedTask"
+                    }
+                }
+            },
+            "required": [
+                "actors"
+            ],
+            "additionalProperties": false
+        },
+        "Subject": {
+            "title": "Subject",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "uuid-ref": {
+                    "title": "UUID Reference",
+                    "description": "A pointer to a component, inventory-item, location, party, user, or resource using it's UUID.",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "Universally Unique Identifier Reference Type",
+                    "description": "Used to indicate the type of object pointed to by the uuid-ref.",
+                    "type": "string"
+                },
+                "title": {
+                    "title": "Subject Reference Title",
+                    "description": "The title or name for the referenced subject.",
+                    "type": "string"
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "uuid-ref",
+                "type"
+            ],
+            "additionalProperties": false
+        },
+        "RelevantEvidence": {
+            "title": "RelevantEvidence",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "href": {
+                    "title": "Relevant Evidence Reference",
+                    "description": ">A resolvable URL reference to relevant evidence.",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Relevant Evidence Description",
+                    "description": "A human-readable description of this evidence.",
+                    "type": "string"
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "description"
+            ],
+            "additionalProperties": false
+        },
+        "RequiredAsset": {
+            "title": "RequiredAsset",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "title": "Required Universally Unique Identifier",
+                    "description": "Uniquely identifies this required asset. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. Once assigned, a UUID should be consistantly used for a given required asset across revisions.",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                "subjects": {
+                    "title": "Subjects",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Subject"
+                    }
+                },
+                "title": {
+                    "title": "Title for Required Asset",
+                    "description": "The title for this required asset.",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description of Required Asset",
+                    "description": "A human-readable description of this required asset.",
+                    "type": "string"
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "uuid",
+                "description"
+            ],
+            "additionalProperties": false
+        },
+        "ResponsibleRole": {
+            "title": "ResponsibleRole",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "party-uuids": {
+                    "title": "Party-Uuids",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PartyUuid"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "additionalProperties": false
+        },
+        "Task": {
+            "title": "Task",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "title": "Task Universally Unique Identifier",
+                    "description": "Uniquely identifies this assessment task.",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                "title": {
+                    "title": "Task Title",
+                    "description": "The title for this task.",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Task Description",
+                    "description": "A human-readable description of this task.",
+                    "type": "string"
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "start": {
+                    "title": "Task Start Date",
+                    "description": "The task must occur on or after the specified date.",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "end": {
+                    "title": "Task End Date",
+                    "description": "The task must occur on or before the specified date.",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "related-actions": {
+                    "title": "Related-Actions",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RelatedAction"
+                    }
+                },
+                "responsible-roles": {
+                    "title": "Responsible-Roles",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/ResponsibleRole"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "uuid",
+                "title",
+                "start",
+                "end"
+            ],
+            "additionalProperties": false
+        },
+        "Remediation": {
+            "title": "Remediation",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "title": "Remediation Universally Unique Identifier",
+                    "description": "Uniquely identifies this remediation. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. Once assigned, a UUID should be consistantly used for a given remediation across revisions.",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                "lifecycle": {
+                    "title": "Remediation Intent",
+                    "description": "Identifies whether this is a recommendation, such as from an assessor or tool, or an actual plan accepted by the system owner.",
+                    "type": "string"
+                },
+                "title": {
+                    "title": "Response Title",
+                    "description": "The title for this response activity.",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Response Description",
+                    "description": "A human-readable description of this response plan.",
+                    "type": "string"
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "origins": {
+                    "title": "Origins",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Origin"
+                    }
+                },
+                "required-assets": {
+                    "title": "Required-Assets",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RequiredAsset"
+                    }
+                },
+                "tasks": {
+                    "title": "Tasks",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Task"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "uuid",
+                "lifecycle",
+                "title",
+                "description"
+            ],
+            "additionalProperties": false
+        },
+        "SetParameter": {
+            "title": "SetParameter",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "values": {
+                    "title": "Values",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "values"
+            ],
+            "additionalProperties": false
+        },
+        "Observation": {
+            "title": "Observation",
+            "description": "This is a custom Observation class for IBM interchange purposes.\n\nIt is extended with remediation_group and parameter_settings properties.",
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "title": "Observation Universally Unique Identifier",
+                    "description": "Uniquely identifies this observation. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. Once assigned, a UUID should be consistantly used for a given observation across revisions.",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                "title": {
+                    "title": "Observation Title",
+                    "description": "The title for this observation.",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Observaton Description",
+                    "description": "A human-readable description of this assessment observation.",
+                    "type": "string"
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "methods": {
+                    "title": "Methods",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "types": {
+                    "title": "Types",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "origins": {
+                    "title": "Origins",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Origin"
+                    }
+                },
+                "subjects": {
+                    "title": "Subjects",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Subject"
+                    }
+                },
+                "relevant-evidence": {
+                    "title": "Relevant-Evidence",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RelevantEvidence"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                },
+                "remediation-group": {
+                    "title": "Remediation-Group",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Remediation"
+                    }
+                },
+                "parameter-settings": {
+                    "title": "Parameter-Settings",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/SetParameter"
+                    }
+                }
+            },
+            "required": [
+                "uuid",
+                "description",
+                "methods",
+                "remediation-group"
+            ],
+            "additionalProperties": false
+        },
+        "Revision": {
+            "title": "Revision",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "title": {
+                    "title": "Document Title",
+                    "description": "A name given to the document revision, which may be used by a tool for display and navigation.",
+                    "type": "string"
+                },
+                "published": {
+                    "title": "Publication Timestamp",
+                    "description": "The date and time the document was published. The date-time value must be formatted according to RFC 3339 with full time and time zone included.",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "last-modified": {
+                    "title": "Last Modified Timestamp",
+                    "description": "The date and time the document was last modified. The date-time value must be formatted according to RFC 3339 with full time and time zone included.",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "version": {
+                    "title": "Document Version",
+                    "description": "A string used to distinguish the current version of the document from other previous (and future) versions.",
+                    "type": "string"
+                },
+                "oscal-version": {
+                    "title": "OSCAL version",
+                    "description": "The OSCAL model version the document was authored against.",
+                    "type": "string"
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "additionalProperties": false
+        },
+        "DocumentId": {
+            "title": "DocumentId",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "scheme": {
+                    "title": "Document Identification Scheme",
+                    "description": "Qualifies the kind of document identifier.",
+                    "minLength": 1,
+                    "maxLength": 65536,
+                    "format": "uri",
+                    "type": "string"
+                },
+                "identifier": {
+                    "title": "Identifier",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "scheme",
+                "identifier"
+            ],
+            "additionalProperties": false
+        },
+        "Role": {
+            "title": "Role",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "title": "Role Identifier",
+                    "description": "A unique identifier for a specific role instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same role across minor revisions of the document.",
+                    "type": "string"
+                },
+                "title": {
+                    "title": "Role Title",
+                    "description": "A name given to the role, which may be used by a tool for display and navigation.",
+                    "type": "string"
+                },
+                "short-name": {
+                    "title": "Role Short Name",
+                    "description": "A short common name, abbreviation, or acronym for the role.",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Role Description",
+                    "description": "A summary of the role's purpose and associated responsibilities.",
+                    "type": "string"
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "id",
+                "title"
+            ],
+            "additionalProperties": false
+        },
+        "Address": {
+            "title": "Address",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "Address Type",
+                    "description": "Indicates the type of address.",
+                    "type": "string"
+                },
+                "addr-lines": {
+                    "title": "Addr-Lines",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "city": {
+                    "title": "City",
+                    "description": "City, town or geographical region for the mailing address.",
+                    "type": "string"
+                },
+                "state": {
+                    "title": "State",
+                    "description": "State, province or analogous geographical region for mailing address",
+                    "type": "string"
+                },
+                "postal-code": {
+                    "title": "Postal Code",
+                    "description": "Postal or ZIP code for mailing address",
+                    "type": "string"
+                },
+                "country": {
+                    "title": "Country Code",
+                    "description": "The ISO 3166-1 alpha-2 country code for the mailing address.",
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
+        },
+        "EmailAddress": {
+            "title": "EmailAddress",
+            "description": "An email address as defined by RFC 5322 Section 3.4.1.",
+            "type": "string",
+            "format": "email",
+            "additionalProperties": false
+        },
+        "TelephoneNumber": {
+            "title": "TelephoneNumber",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "title": "type flag",
+                    "description": "Indicates the type of phone number.",
+                    "type": "string"
+                },
+                "number": {
+                    "title": "Number",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "number"
+            ],
+            "additionalProperties": false
+        },
+        "Location": {
+            "title": "Location",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "title": "Location Universally Unique Identifier",
+                    "description": "A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                "title": {
+                    "title": "Location Title",
+                    "description": "A name given to the location, which may be used by a tool for display and navigation.",
+                    "type": "string"
+                },
+                "address": {
+                    "title": "Address",
+                    "description": "A postal address for the location.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Address"
+                        }
+                    ]
+                },
+                "email-addresses": {
+                    "title": "Email-Addresses",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/EmailAddress"
+                    }
+                },
+                "telephone-numbers": {
+                    "title": "Telephone-Numbers",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/TelephoneNumber"
+                    }
+                },
+                "urls": {
+                    "title": "Urls",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 65536,
+                        "format": "uri"
+                    }
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "uuid",
+                "address"
+            ],
+            "additionalProperties": false
+        },
+        "ExternalId": {
+            "title": "ExternalId",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "scheme": {
+                    "title": "External Identifier Schema",
+                    "description": "Indicates the type of external identifier.",
+                    "minLength": 1,
+                    "maxLength": 65536,
+                    "format": "uri",
+                    "type": "string"
+                },
+                "id": {
+                    "title": "Id",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "scheme",
+                "id"
+            ],
+            "additionalProperties": false
+        },
+        "LocationUuid": {
+            "title": "LocationUuid",
+            "description": "References a location defined in metadata.",
+            "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+            "type": "string",
+            "additionalProperties": false
+        },
+        "MemberOfOrganization": {
+            "title": "MemberOfOrganization",
+            "description": "Identifies that the party object is a member of the organization associated with the provided UUID.",
+            "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+            "type": "string",
+            "additionalProperties": false
+        },
+        "Party": {
+            "title": "Party",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "title": "Party Universally Unique Identifier",
+                    "description": "A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given party across revisions of the document.",
+                    "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "Party Type",
+                    "description": "A category describing the kind of party the object describes.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Type"
+                        }
+                    ]
+                },
+                "name": {
+                    "title": "Party Name",
+                    "description": "The full name of the party. This is typically the legal name associated with the party.",
+                    "type": "string"
+                },
+                "short-name": {
+                    "title": "Party Short Name",
+                    "description": "A short common name, abbreviation, or acronym for the party.",
+                    "type": "string"
+                },
+                "external-ids": {
+                    "title": "External-Ids",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ExternalId"
+                    }
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "email-addresses": {
+                    "title": "Email-Addresses",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/EmailAddress"
+                    }
+                },
+                "telephone-numbers": {
+                    "title": "Telephone-Numbers",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/TelephoneNumber"
+                    }
+                },
+                "addresses": {
+                    "title": "Addresses",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Address"
+                    }
+                },
+                "location-uuids": {
+                    "title": "Location-Uuids",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LocationUuid"
+                    }
+                },
+                "member-of-organizations": {
+                    "title": "Member-Of-Organizations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/MemberOfOrganization"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "uuid",
+                "type"
+            ],
+            "additionalProperties": false
+        },
+        "Metadata": {
+            "title": "Metadata",
+            "description": "Trestle defined pydantic base model for use with OSCAL pydantic dataclasses.\n\nThis BaseModel provides two types of functionality:\n1. Overrides default configuation of the pydantic library with behaviours required for trestle\n2. Provides utility functions for trestle which are specific to OSCAL and the naming schema associated with it.",
+            "type": "object",
+            "properties": {
+                "title": {
+                    "title": "Document Title",
+                    "description": "A name given to the document, which may be used by a tool for display and navigation.",
+                    "type": "string"
+                },
+                "published": {
+                    "title": "Publication Timestamp",
+                    "description": "The date and time the document was published. The date-time value must be formatted according to RFC 3339 with full time and time zone included.",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "last-modified": {
+                    "title": "Last Modified Timestamp",
+                    "description": "The date and time the document was last modified. The date-time value must be formatted according to RFC 3339 with full time and time zone included.",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "version": {
+                    "title": "Document Version",
+                    "description": "A string used to distinguish the current version of the document from other previous (and future) versions.",
+                    "type": "string"
+                },
+                "oscal-version": {
+                    "title": "OSCAL version",
+                    "description": "The OSCAL model version the document was authored against.",
+                    "pattern": "1\\.0\\.0[ -]*rc[ -]*1",
+                    "type": "string"
+                },
+                "revisions": {
+                    "title": "Revisions",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Revision"
+                    }
+                },
+                "document-ids": {
+                    "title": "Document-Ids",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DocumentId"
+                    }
+                },
+                "props": {
+                    "title": "Props",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Property"
+                    }
+                },
+                "annotations": {
+                    "title": "Annotations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Annotation"
+                    }
+                },
+                "links": {
+                    "title": "Links",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                },
+                "roles": {
+                    "title": "Roles",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Role"
+                    }
+                },
+                "locations": {
+                    "title": "Locations",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Location"
+                    }
+                },
+                "parties": {
+                    "title": "Parties",
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Party"
+                    }
+                },
+                "responsible-parties": {
+                    "title": "Responsible-Parties",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/ResponsibleParty"
+                    }
+                },
+                "remarks": {
+                    "$ref": "#/definitions/Remarks"
+                }
+            },
+            "required": [
+                "title",
+                "last-modified",
+                "version",
+                "oscal-version"
+            ],
+            "additionalProperties": false
+        }
+    }
+}

@@ -105,13 +105,16 @@ def _get_observation(rule: t_rule, oscal_metadata: Optional[t_metadata] = None) 
     value.relevant_evidence = _get_relevant_evidence(rule, oscal_metadata)
     subjects = _get_subjects(rule, oscal_metadata)
     if len(subjects) > 0:
-        value.subjects = _get_subjects(rule, oscal_metadata)
+        value.subjects = subjects
+    props = _get_props(rule, oscal_metadata)
+    if len(props) > 0:
+        value.props = props
     logger.debug(f'_get_observation: {value}')
     return value
 
 
 def _get_relevant_evidence(rule: t_rule, oscal_metadata: Optional[t_metadata] = None) -> List[RelevantEvidence]:
-    """Produce one RelecentEvidence for the specified rule."""
+    """Produce one RelevantEvidence for the specified rule."""
     description = 'Evidence location.'
     href = None
     name = rule['name']
@@ -125,8 +128,7 @@ def _get_relevant_evidence(rule: t_rule, oscal_metadata: Optional[t_metadata] = 
     p1 = _get_property(ns, 'id', 'rule', rule['idref'])
     p2 = _get_property(ns, 'timestamp', 'time', rule['time'])
     p3 = _get_property(ns, 'result', 'result', rule['result_type'])
-    p4 = _get_property(ns, 'target', 'target', rule['target'])
-    props = [p1, p2, p3, p4]
+    props = [p1, p2, p3]
     relevant_evidence = RelevantEvidence(description=description, props=props)
     if href is not None:
         relevant_evidence.href = href
@@ -162,10 +164,22 @@ def _add_subject(subject_list: List[t_subject], subject: t_subject) -> None:
         props = []
         properties = subject['properties']
         for name in properties:
-            prop = _get_property(None, None, name, properties[name])
+            prop = _get_property('osco', 'inventory-item', name, properties[name])
             props.append(prop)
         value.props = props
     subject_list.append(value)
+
+
+def _get_props(rule: t_rule, oscal_metadata: Optional[t_metadata] = None) -> List[Subject]:
+    """Produce one list of Properties for the specified rule."""
+    value = []
+    name = rule['name']
+    entry = _get_entry(name, oscal_metadata)
+    if entry is not None:
+        if 'benchmark' in entry:
+            prop = _get_property('osco', 'source', 'benchmark', entry['benchmark'])
+            value.append(prop)
+    return value
 
 
 def _get_property(ns: str, classification: str, name: str, value: str) -> Property:

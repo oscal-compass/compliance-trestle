@@ -53,25 +53,25 @@ class Remove(OscalBaseModel):
     name_ref: Optional[str] = Field(
         None,
         alias='name-ref',
-        description='s to remove, by assigned name',
+        description='Items to remove, by assigned name',
         title='Reference by (assigned) name',
     )
     class_ref: Optional[str] = Field(
         None,
         alias='class-ref',
-        description='s to remove, by class. A token match.',
+        description='Items to remove, by class. A token match.',
         title='Reference by class',
     )
     id_ref: Optional[str] = Field(
         None,
         alias='id-ref',
-        description='s to remove, indicated by their IDs',
+        description='Items to remove, indicated by their IDs',
         title='Reference by ID',
     )
     item_name: Optional[str] = Field(
         None,
         alias='item-name',
-        description="s to remove, by the name of the item's type, or generic identifier, e.g. title or prop",
+        description="Items to remove, by the name of the item's type, or generic identifier, e.g. title or prop",
         title='References by item name or generic identifier',
     )
 
@@ -182,7 +182,7 @@ class Match(OscalBaseModel):
         None,
         alias='with-child-controls',
         description='When a control is included, whether its child (dependent) controls are also included.',
-        title=' contained controls with control',
+        title='Include contained controls with control',
     )
 
 
@@ -266,7 +266,7 @@ class Call(OscalBaseModel):
         None,
         alias='with-child-controls',
         description='When a control is included, whether its child (dependent) controls are also included.',
-        title=' contained controls with control',
+        title='Include contained controls with control',
     )
 
 
@@ -325,7 +325,7 @@ class All(OscalBaseModel):
         None,
         alias='with-child-controls',
         description='When a control is included, whether its child (dependent) controls are also included.',
-        title=' contained controls with control',
+        title='Include contained controls with control',
     )
 
 
@@ -364,6 +364,84 @@ class Test(OscalBaseModel):
         title='Constraint test',
     )
     remarks: Optional[Remarks] = None
+
+
+class ParameterConstraint(OscalBaseModel):
+    description: Optional[str] = Field(
+        None,
+        description='A textual summary of the constraint to be applied.',
+        title='Constraint Description',
+    )
+    tests: Optional[List[Test]] = Field(None, min_items=1)
+
+
+class Parameter(OscalBaseModel):
+    id: str = Field(
+        ...,
+        description="A unique identifier for a specific parameter instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same parameter across minor revisions of the document.",
+        title='Parameter Identifier',
+    )
+    class_: Optional[str] = Field(
+        None,
+        alias='class',
+        description='A textual label that provides a characterization of the parameter.',
+        title='Parameter Class',
+    )
+    depends_on: Optional[str] = Field(
+        None,
+        alias='depends-on',
+        description='Another parameter invoking this one',
+        title='Depends on',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    label: Optional[str] = Field(
+        None,
+        description='A short, placeholder name for the parameter, which can be used as a subsitute for a value if no value is assigned.',
+        title='Parameter Label',
+    )
+    usage: Optional[str] = Field(
+        None,
+        description='Describes the purpose and use of a parameter',
+        title='Parameter Usage Description',
+    )
+    constraints: Optional[List[ParameterConstraint]] = Field(None, min_items=1)
+    guidelines: Optional[List[ParameterGuideline]] = Field(None, min_items=1)
+    values: Optional[List[ParameterValue]] = Field(None, min_items=1)
+    select: Optional[ParameterSelection] = None
+
+
+class SetParameter(OscalBaseModel):
+    class_: Optional[str] = Field(
+        None,
+        alias='class',
+        description='A textual label that provides a characterization of the parameter.',
+        title='Parameter Class',
+    )
+    depends_on: Optional[str] = Field(
+        None,
+        alias='depends-on',
+        description='Another parameter invoking this one',
+        title='Depends on',
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    label: Optional[str] = Field(
+        None,
+        description='A short, placeholder name for the parameter, which can be used as a subsitute for a value if no value is assigned.',
+        title='Parameter Label',
+    )
+    usage: Optional[str] = Field(
+        None,
+        description='Describes the purpose and use of a parameter',
+        title='Parameter Usage Description',
+    )
+    constraints: Optional[List[ParameterConstraint]] = Field(None, min_items=1)
+    guidelines: Optional[List[ParameterGuideline]] = Field(None, min_items=1)
+    values: Optional[List[ParameterValue]] = Field(None, min_items=1)
+    select: Optional[ParameterSelection] = None
 
 
 class Role(OscalBaseModel):
@@ -545,13 +623,46 @@ class Part(OscalBaseModel):
     links: Optional[List[Link]] = Field(None, min_items=1)
 
 
-class ParameterConstraint(OscalBaseModel):
-    description: Optional[str] = Field(
+class Add(OscalBaseModel):
+    position: Optional[Position] = Field(
         None,
-        description='A textual summary of the constraint to be applied.',
-        title='Constraint Description',
+        description='Where to add the new content with respect to the targeted element (beside it or inside it)',
+        title='Position',
     )
-    tests: Optional[List[Test]] = Field(None, min_items=1)
+    id_ref: Optional[str] = Field(
+        None,
+        alias='id-ref',
+        description='Target location of the addition.',
+        title='Reference by ID',
+    )
+    title: Optional[str] = Field(
+        None,
+        description='A name given to the control, which may be used by a tool for display and navigation.',
+        title='Title Change',
+    )
+    params: Optional[List[Parameter]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    parts: Optional[List[Part]] = Field(None, min_items=1)
+
+
+class Alter(OscalBaseModel):
+    control_id: Optional[str] = Field(
+        None,
+        alias='control-id',
+        description="Value of the 'id' flag on a target control",
+        title='Control ID',
+    )
+    removes: Optional[List[Remove]] = Field(None, min_items=1)
+    adds: Optional[List[Add]] = Field(None, min_items=1)
+
+
+class Modify(OscalBaseModel):
+    set_parameters: Optional[Dict[str, SetParameter]] = Field(
+        None, alias='set-parameters'
+    )
+    alters: Optional[List[Alter]] = Field(None, min_items=1)
 
 
 class Location(OscalBaseModel):
@@ -581,99 +692,6 @@ class Location(OscalBaseModel):
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
     remarks: Optional[Remarks] = None
-
-
-class Include(OscalBaseModel):
-    all: Optional[All] = None
-    calls: Optional[List[Call]] = Field(None, min_items=1)
-    matches: Optional[List[Match]] = Field(None, min_items=1)
-
-
-class Exclude(OscalBaseModel):
-    calls: Optional[List[Call]] = Field(None, min_items=1)
-    matches: Optional[List[Match]] = Field(None, min_items=1)
-
-
-class Citation(OscalBaseModel):
-    text: str = Field(
-        ..., description='A line of citation text.', title='Citation Text'
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    biblio: Optional[Dict[str, Any]] = Field(
-        None,
-        description='A container for structured bibliographic information. The model of this information is undefined by OSCAL.',
-        title='Bibliographic Definition',
-    )
-
-
-class Parameter(OscalBaseModel):
-    id: str = Field(
-        ...,
-        description="A unique identifier for a specific parameter instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same parameter across minor revisions of the document.",
-        title='Parameter Identifier',
-    )
-    class_: Optional[str] = Field(
-        None,
-        alias='class',
-        description='A textual label that provides a characterization of the parameter.',
-        title='Parameter Class',
-    )
-    depends_on: Optional[str] = Field(
-        None,
-        alias='depends-on',
-        description='Another parameter invoking this one',
-        title='Depends on',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    label: Optional[str] = Field(
-        None,
-        description='A short, placeholder name for the parameter, which can be used as a subsitute for a value if no value is assigned.',
-        title='Parameter Label',
-    )
-    usage: Optional[str] = Field(
-        None,
-        description='Describes the purpose and use of a parameter',
-        title='Parameter Usage Description',
-    )
-    constraints: Optional[List[ParameterConstraint]] = None
-    guidelines: Optional[List[ParameterGuideline]] = None
-    values: Optional[List[ParameterValue]] = None
-    select: Optional[ParameterSelection] = None
-
-
-class SetParameter(OscalBaseModel):
-    class_: Optional[str] = Field(
-        None,
-        alias='class',
-        description='A textual label that provides a characterization of the parameter.',
-        title='Parameter Class',
-    )
-    depends_on: Optional[str] = Field(
-        None,
-        alias='depends-on',
-        description='Another parameter invoking this one',
-        title='Depends on',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    label: Optional[str] = Field(
-        None,
-        description='A short, placeholder name for the parameter, which can be used as a subsitute for a value if no value is assigned.',
-        title='Parameter Label',
-    )
-    usage: Optional[str] = Field(
-        None,
-        description='Describes the purpose and use of a parameter',
-        title='Parameter Usage Description',
-    )
-    constraints: Optional[List[ParameterConstraint]] = Field(None, min_items=1)
-    guidelines: Optional[List[ParameterGuideline]] = Field(None, min_items=1)
-    values: Optional[List[ParameterValue]] = Field(None, min_items=1)
-    select: Optional[ParameterSelection] = None
 
 
 class Metadata(OscalBaseModel):
@@ -720,55 +738,10 @@ class Metadata(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class Resource(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
-        title='Resource Universally Unique Identifier',
-    )
-    title: Optional[str] = Field(
-        None,
-        description='A name given to the resource, which may be used by a tool for display and navigation.',
-        title='Resource Title',
-    )
-    description: Optional[str] = Field(
-        None,
-        description='A short summary of the resource used to indicate the purpose of the resource.',
-        title='Resource Description',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    document_ids: Optional[List[DocumentId]] = Field(
-        None, alias='document-ids', min_items=1
-    )
-    citation: Optional[Citation] = Field(
-        None,
-        description='A citation consisting of end note text and optional structured bibliographic data.',
-        title='Citation',
-    )
-    rlinks: Optional[List[Rlink]] = Field(None, min_items=1)
-    base64: Optional[Base64] = Field(
-        None,
-        description='The Base64 alphabet in RFC 2045 - aligned with XSD.',
-        title='Base64',
-    )
-    remarks: Optional[Remarks] = None
-
-
-class BackMatter(OscalBaseModel):
-    resources: Optional[List[Resource]] = Field(None, min_items=1)
-
-
-class Import(OscalBaseModel):
-    href: str = Field(
-        ...,
-        description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.',
-        title='Catalog or Profile Reference',
-    )
-    include: Optional[Include] = None
-    exclude: Optional[Exclude] = None
+class Include(OscalBaseModel):
+    all: Optional[All] = None
+    calls: Optional[List[Call]] = Field(None, min_items=1)
+    matches: Optional[List[Match]] = Field(None, min_items=1)
 
 
 class Group(OscalBaseModel):
@@ -812,46 +785,73 @@ class Merge(OscalBaseModel):
     custom: Optional[Custom] = None
 
 
-class Add(OscalBaseModel):
-    position: Optional[Position] = Field(
-        None,
-        description='Where to add the new content with respect to the targeted element (beside it or inside it)',
-        title='Position',
+class Exclude(OscalBaseModel):
+    calls: Optional[List[Call]] = Field(None, min_items=1)
+    matches: Optional[List[Match]] = Field(None, min_items=1)
+
+
+class Import(OscalBaseModel):
+    href: str = Field(
+        ...,
+        description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.',
+        title='Catalog or Profile Reference',
     )
-    id_ref: Optional[str] = Field(
+    include: Optional[Include] = None
+    exclude: Optional[Exclude] = None
+
+
+class Citation(OscalBaseModel):
+    text: str = Field(
+        ..., description='A line of citation text.', title='Citation Text'
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
+    biblio: Optional[Dict[str, Any]] = Field(
         None,
-        alias='id-ref',
-        description='Target location of the addition.',
-        title='Reference by ID',
+        description='A container for structured bibliographic information. The model of this information is undefined by OSCAL.',
+        title='Bibliographic Definition',
+    )
+
+
+class Resource(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        title='Resource Universally Unique Identifier',
     )
     title: Optional[str] = Field(
         None,
-        description='A name given to the control, which may be used by a tool for display and navigation.',
-        title='Title Change',
+        description='A name given to the resource, which may be used by a tool for display and navigation.',
+        title='Resource Title',
     )
-    params: Optional[List[Parameter]] = Field(None, min_items=1)
+    description: Optional[str] = Field(
+        None,
+        description='A short summary of the resource used to indicate the purpose of the resource.',
+        title='Resource Description',
+    )
     props: Optional[List[Property]] = Field(None, min_items=1)
     annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    parts: Optional[List[Part]] = Field(None, min_items=1)
-
-
-class Alter(OscalBaseModel):
-    control_id: Optional[str] = Field(
+    document_ids: Optional[List[DocumentId]] = Field(
+        None, alias='document-ids', min_items=1
+    )
+    citation: Optional[Citation] = Field(
         None,
-        alias='control-id',
-        description="Value of the 'id' flag on a target control",
-        title='Control ID',
+        description='A citation consisting of end note text and optional structured bibliographic data.',
+        title='Citation',
     )
-    removes: Optional[List[Remove]] = Field(None, min_items=1)
-    adds: Optional[List[Add]] = Field(None, min_items=1)
+    rlinks: Optional[List[Rlink]] = Field(None, min_items=1)
+    base64: Optional[Base64] = Field(
+        None,
+        description='The Base64 alphabet in RFC 2045 - aligned with XSD.',
+        title='Base64',
+    )
+    remarks: Optional[Remarks] = None
 
 
-class Modify(OscalBaseModel):
-    set_parameters: Optional[Dict[str, SetParameter]] = Field(
-        None, alias='set-parameters'
-    )
-    alters: Optional[List[Alter]] = Field(None, min_items=1)
+class BackMatter(OscalBaseModel):
+    resources: Optional[List[Resource]] = Field(None, min_items=1)
 
 
 class Profile(OscalBaseModel):
