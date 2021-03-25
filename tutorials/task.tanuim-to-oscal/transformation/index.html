@@ -1,0 +1,3467 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for compliance-trestle package.">
+      
+      
+      
+      
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/tutorials/task.tanuim-to-oscal/transformation/">
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.6">
+    
+    
+      
+        <title>task tanium-to-oscal - Compliance Trestle</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.2c0c5eaf.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.7fa14f5b.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#009485">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../../css/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="purple">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tutorial-setup-for-and-use-of-tanium-to-oscal-transformer" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Compliance Trestle" class="md-header__button md-logo" aria-label="Compliance Trestle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Compliance Trestle
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              task tanium-to-oscal
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="md-header__options">
+      
+    </div>
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/IBM/compliance-trestle/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Compliance Trestle" class="md-nav__button md-logo" aria-label="Compliance Trestle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Compliance Trestle
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/IBM/compliance-trestle/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cli/" class="md-nav__link">
+        Trestle cli
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      <label class="md-nav__link" for="__nav_3">
+        Tutorials
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python_trestle_setup/" class="md-nav__link">
+        setting up python and trestle
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trestle_sample_workflow/" class="md-nav__link">
+        intro to trestle workflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../task.transformer-construction/transformer-construction/" class="md-nav__link">
+        transformer construction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          task tanium-to-oscal
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        task tanium-to-oscal
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objective" class="md-nav__link">
+    Objective
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-environment-setup" class="md-nav__link">
+    Step 1: Environment setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-transform-sample" class="md-nav__link">
+    Step 2: Transform sample
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../mkdocs_code_of_conduct/" class="md-nav__link">
+        Code of Conduct
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Contributing
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Contributing" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Contributing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/mkdocs_contributing/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/IBM/compliance-trestle/graphs/contributors" class="md-nav__link">
+        Contributors
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maintainers/" class="md-nav__link">
+        Maintainers
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/website/" class="md-nav__link">
+        Documentation website
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/DCO/" class="md-nav__link">
+        Developer Certificate of Originality
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      <label class="md-nav__link" for="__nav_6">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" >
+      
+      <label class="md-nav__link" for="__nav_6_2">
+        trestle
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="trestle" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          trestle
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.cli/" class="md-nav__link">
+        cli
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2" type="checkbox" id="__nav_6_2_2" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2">
+        core
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="core" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.base_model/" class="md-nav__link">
+        base_model
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2_2" type="checkbox" id="__nav_6_2_2_2" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2_2">
+        commands
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="commands" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          commands
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.add/" class="md-nav__link">
+        add
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.assemble/" class="md-nav__link">
+        assemble
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.cmd_utils/" class="md-nav__link">
+        cmd_utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.command_docs/" class="md-nav__link">
+        command_docs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.create/" class="md-nav__link">
+        create
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.import_/" class="md-nav__link">
+        import_
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.init/" class="md-nav__link">
+        init
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.remove/" class="md-nav__link">
+        remove
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.replicate/" class="md-nav__link">
+        replicate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.task/" class="md-nav__link">
+        task
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.validate/" class="md-nav__link">
+        validate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.commands.version/" class="md-nav__link">
+        version
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.const/" class="md-nav__link">
+        const
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.duplicates_validator/" class="md-nav__link">
+        duplicates_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.err/" class="md-nav__link">
+        err
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.generators/" class="md-nav__link">
+        generators
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2_7" type="checkbox" id="__nav_6_2_2_7" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2_7">
+        models
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="models" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_2_7">
+          <span class="md-nav__icon md-icon"></span>
+          models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.models.actions/" class="md-nav__link">
+        actions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.models.elements/" class="md-nav__link">
+        elements
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.models.file_content_type/" class="md-nav__link">
+        file_content_type
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.models.interfaces/" class="md-nav__link">
+        interfaces
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.models.plans/" class="md-nav__link">
+        plans
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.object_factory/" class="md-nav__link">
+        object_factory
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.parser/" class="md-nav__link">
+        parser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2_10" type="checkbox" id="__nav_6_2_2_10" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2_10">
+        remote
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="remote" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_2_10">
+          <span class="md-nav__icon md-icon"></span>
+          remote
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.remote.cache/" class="md-nav__link">
+        cache
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.validator_factory/" class="md-nav__link">
+        validator_factory
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.core.validator_helper/" class="md-nav__link">
+        validator_helper
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_3" type="checkbox" id="__nav_6_2_3" >
+      
+      <label class="md-nav__link" for="__nav_6_2_3">
+        oscal
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="oscal" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          oscal
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.assessment_plan/" class="md-nav__link">
+        assessment_plan
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.catalog/" class="md-nav__link">
+        catalog
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.component/" class="md-nav__link">
+        component
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.poam/" class="md-nav__link">
+        poam
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.profile/" class="md-nav__link">
+        profile
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.ssp/" class="md-nav__link">
+        ssp
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.oscal.target/" class="md-nav__link">
+        target
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_4" type="checkbox" id="__nav_6_2_4" >
+      
+      <label class="md-nav__link" for="__nav_6_2_4">
+        tasks
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          tasks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.tasks.base_task/" class="md-nav__link">
+        base_task
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.tasks.osco_to_oscal/" class="md-nav__link">
+        osco_to_oscal
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.tasks.tanium_to_oscal/" class="md-nav__link">
+        tanium_to_oscal
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.tasks.transform/" class="md-nav__link">
+        transform
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_5" type="checkbox" id="__nav_6_2_5" >
+      
+      <label class="md-nav__link" for="__nav_6_2_5">
+        third_party
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="third_party" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          third_party
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.third_party.exchange_protocol/" class="md-nav__link">
+        exchange_protocol
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_6" type="checkbox" id="__nav_6_2_6" >
+      
+      <label class="md-nav__link" for="__nav_6_2_6">
+        utils
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="utils" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_6">
+          <span class="md-nav__icon md-icon"></span>
+          utils
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.utils.fs/" class="md-nav__link">
+        fs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.utils.load_distributed/" class="md-nav__link">
+        load_distributed
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.utils.log/" class="md-nav__link">
+        log
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.utils.osco/" class="md-nav__link">
+        osco
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.utils.tanium/" class="md-nav__link">
+        tanium
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api_reference/trestle.utils.trash/" class="md-nav__link">
+        trash
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objective" class="md-nav__link">
+    Objective
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-environment-setup" class="md-nav__link">
+    Step 1: Environment setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-transform-sample" class="md-nav__link">
+    Step 2: Transform sample
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/IBM/compliance-trestle/edit/master/docs/tutorials/task.tanuim-to-oscal/transformation.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="tutorial-setup-for-and-use-of-tanium-to-oscal-transformer">Tutorial: Setup for and use of Tanium to OSCAL transformer<a class="headerlink" href="#tutorial-setup-for-and-use-of-tanium-to-oscal-transformer" title="Permanent link">¤</a></h1>
+<p>Here are step by step instructions for setup and transformation of <a href="https://www.tanium.com/">Tanium</a> compliance data files into <a href="https://www.nist.gov/">NIST</a> standard <a href="https://pages.nist.gov/OSCAL/">OSCAL</a> using the <a href="https://ibm.github.io/compliance-trestle/">compliance-trestle</a> tool.</p>
+<h2 id="objective"><em>Objective</em><a class="headerlink" href="#objective" title="Permanent link">¤</a></h2>
+<p>How to transform a <code>Tanium.results</code> compliance file into a standardized <code>OSCAL.json</code> file.</p>
+<p>There are 2 short steps shown below.
+The first is a one-time check/set-up of your enviroment.
+The second is a one-command transformation form Tanium to OSCAL.</p>
+<h2 id="step-1-environment-setup"><em>Step 1: Environment setup</em><a class="headerlink" href="#step-1-environment-setup" title="Permanent link">¤</a></h2>
+<p>Linux, Mac</p>
+<details>
+<summary>Windows</summary>
+
+Make these changes:
+<ul>
+<li>use backslashes `\` for file paths
+<li>use `md` instead of mkdir -p
+<li>put the url in double quotes for `curl`
+<li>use `more` instead of cat
+</ul>
+</details>
+
+<ul>
+<li>Insure you have a modern <a href="https://www.python.org/downloads/">Python</a> (3.7, 3.8, 3.9).</li>
+</ul>
+<div class="highlight"><pre><span></span><code>$ python -V&lt;/code&gt;
+Python 3.8.3&lt;/code&gt;
+</code></pre></div>
+<ul>
+<li>Setup a virtual environment.</li>
+</ul>
+<p><div class="highlight"><pre><span></span><code>$ cd
+$ python -m venv venv.trestle
+$ source venv.trestle/bin/activate
+(venv.trestle)$
+</code></pre></div>
+* Insure you have a modern <a href="https://pip.pypa.io/en/stable/installing/">pip</a> (19.x or greater).</p>
+<p><div class="highlight"><pre><span></span><code>(venv.trestle)$ pip --version
+pip 19.2.3 from /home...
+</code></pre></div>
+* Install <a href="https://ibm.github.io/compliance-trestle/">compliance-trestle</a>.</p>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ pip install compliance-trestle
+Looking in indexes: https://pypi.org/simple,...
+</code></pre></div>
+<ul>
+<li>Check trestle viability (and view help).</li>
+</ul>
+<p><div class="highlight"><pre><span></span><code>(venv.trestle)$ trestle -h
+usage: trestle [-h] {init,create,split,merge,replicate,add,remove,validate,import,task,assemble} ...
+</code></pre></div>
+* Create trestle workspace.</p>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ mkdir trestle.workspace
+(venv.trestle)$ cd trestle.workspace
+(venv.trestle)$ trestle init
+Initialized trestle project successfully in /home/&lt;user&gt;/trestle.workspace
+</code></pre></div>
+<h2 id="step-2-transform-sample"><em>Step 2: Transform sample</em><a class="headerlink" href="#step-2-transform-sample" title="Permanent link">¤</a></h2>
+<ul>
+<li>Create Tanium data folders.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ mkdir -p tanium/tests/data/tasks/tanium/input
+</code></pre></div>
+<ul>
+<li>Fetch sample Tanium data file. It is a "raw" Tanium report for which a transformation to OSCAL is desired.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ curl &#39;https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/input/Tanium.comply-nist-results&#39; &gt; tanium/tests/data/tasks/tanium/input/Tanium.comply-nist-results
+</code></pre></div>
+<details>
+<summary>sample: Tanium.comply-nist-results</summary>
+
+<div class="highlight"><pre><span></span><code>{&quot;IP Address&quot;:&quot;fe80::3cd5:564b:940e:49ab&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2106.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.69.11&quot;,&quot;Computer Name&quot;:&quot;&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.69.11&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2106.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;&quot;,&quot;Benchmark Version&quot;:&quot;&quot;,&quot;Profile&quot;:&quot;&quot;,&quot;ID&quot;:&quot;win_security_ps&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;&quot;,&quot;Version&quot;:&quot;&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.69.11&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2106.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;&quot;,&quot;Benchmark Version&quot;:&quot;&quot;,&quot;Profile&quot;:&quot;&quot;,&quot;ID&quot;:&quot;av_service&quot;,&quot;Result&quot;:&quot;fail&quot;,&quot;Custom ID&quot;:&quot;&quot;,&quot;Version&quot;:&quot;&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;fe80::21f6:c36a:3f45:ac95&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2115.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.68.218&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2115.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.68.218&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2115.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;,&quot;Result&quot;:&quot;fail&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.68.218&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2115.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_19.7.44.2.1_L2_Ensure_Prevent_Codec_Download_is_set_to_Enabled&quot;,&quot;Result&quot;:&quot;fail&quot;,&quot;Custom ID&quot;:&quot;800-53: SC-18&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;fe80::186d:aba0:846b:f858&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2105.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.69.7&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2105.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,&quot;Result&quot;:&quot;skip&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.69.7&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2105.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;,&quot;Result&quot;:&quot;fail&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.69.7&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2105.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;&quot;,&quot;Benchmark Version&quot;:&quot;&quot;,&quot;Profile&quot;:&quot;&quot;,&quot;ID&quot;:&quot;win_security_ps&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;&quot;,&quot;Version&quot;:&quot;&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;fe80::fcb4:14fa:b62d:ad&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2108.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.68.160&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2108.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.68.160&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2108.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;,&quot;Result&quot;:&quot;fail&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.68.160&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2108.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;&quot;,&quot;Benchmark Version&quot;:&quot;&quot;,&quot;Profile&quot;:&quot;&quot;,&quot;ID&quot;:&quot;av_service&quot;,&quot;Result&quot;:&quot;fail&quot;,&quot;Custom ID&quot;:&quot;&quot;,&quot;Version&quot;:&quot;&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;fe80::20cf:636b:5fe7:b0ff&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2109.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.77.220&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2109.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.77.220&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2109.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;,&quot;Result&quot;:&quot;fail&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.77.220&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2109.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;&quot;,&quot;Benchmark Version&quot;:&quot;&quot;,&quot;Profile&quot;:&quot;&quot;,&quot;ID&quot;:&quot;win_security_ps&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;&quot;,&quot;Version&quot;:&quot;&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;fe80::2585:c75f:8e0:666c&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2107.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.68.184&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2107.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.68.184&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2107.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;,&quot;Result&quot;:&quot;fail&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.68.184&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2107.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;&quot;,&quot;Benchmark Version&quot;:&quot;&quot;,&quot;Profile&quot;:&quot;&quot;,&quot;ID&quot;:&quot;win_security_ps&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;&quot;,&quot;Version&quot;:&quot;&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;fe80::ed25:77c3:b611:eedc&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2116.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.68.219&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2116.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.68.219&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2116.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;,&quot;Benchmark Version&quot;:&quot;1.5.0.1&quot;,&quot;Profile&quot;:&quot;Windows 10 - NIST 800-53&quot;,&quot;ID&quot;:&quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;,&quot;Result&quot;:&quot;fail&quot;,&quot;Custom ID&quot;:&quot;800-53: IA-5&quot;,&quot;Version&quot;:&quot;version: 1&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+{&quot;IP Address&quot;:&quot;10.8.68.219&quot;,&quot;Computer Name&quot;:&quot;cmp-wn-2116.demo.tanium.local&quot;,&quot;Comply - JovalCM Results[c2dc8749]&quot;:[{&quot;Benchmark&quot;:&quot;&quot;,&quot;Benchmark Version&quot;:&quot;&quot;,&quot;Profile&quot;:&quot;&quot;,&quot;ID&quot;:&quot;win_security_ps&quot;,&quot;Result&quot;:&quot;pass&quot;,&quot;Custom ID&quot;:&quot;&quot;,&quot;Version&quot;:&quot;&quot;}],&quot;Count&quot;:&quot;1&quot;,&quot;Age&quot;:&quot;600&quot;}
+</code></pre></div>
+</details>
+
+<ul>
+<li>Fetch sample trestle tanium-to-oscal config file. It informs the trestle command where to read input and write output.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ curl &#39;https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/demo-tanium-to-oscal.config&#39; &gt; tanium/demo-tanium-to-oscal.config
+</code></pre></div>
+<details>
+<summary>sample: demo-tanium-to-oscal.config</summary>
+
+<div class="highlight"><pre><span></span><code>[task.tanium-to-oscal]
+
+input-dir =  tests/data/tasks/tanium/input
+output-dir = tests/data/tasks/tanium/runtime
+</code></pre></div>
+</details>
+
+<ul>
+<li>Perform the transform.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ cd tanium
+(venv.trestle)$ trestle task tanium-to-oscal -c demo-tanium-to-oscal.config
+create: tests/data/tasks/tanium/runtime/Tanium.oscal.json
+Rules Analysis:
+rules [dispatched]: 28
+rules [unique]: 6
+results: {&#39;pass&#39;: 18, &#39;fail&#39;: 9, &#39;skip&#39;: 1}
+Task: tanium-to-oscal executed successfully.
+</code></pre></div>
+<ul>
+<li>View the generated OSCAL.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ cat tests/data/tasks/tanium/runtime/Tanium.oscal.json
+</code></pre></div>
+<details>
+<summary>sample:  Tanium.oscal.json</summary>
+
+<div class="highlight"><pre><span></span><code>{
+  &quot;results&quot;: [
+    {
+      &quot;uuid&quot;: &quot;6b035143-6fcb-46f8-ae62-1aa42d06356d&quot;,
+      &quot;title&quot;: &quot;Tanium&quot;,
+      &quot;description&quot;: &quot;Tanium&quot;,
+      &quot;start&quot;: &quot;2021-03-13T15:15:55.000+00:00&quot;,
+      &quot;local-definitions&quot;: {
+        &quot;inventory-items&quot;: [
+          {
+            &quot;uuid&quot;: &quot;92c0992e-c37a-4863-8682-de62666012de&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;cmp-wn-2106.demo.tanium.local&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;fe80::3cd5:564b:940e:49ab&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          },
+          {
+            &quot;uuid&quot;: &quot;794fdc22-ed15-4abf-bf5f-48bebacef2f6&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;10.8.69.11&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          },
+          {
+            &quot;uuid&quot;: &quot;e8642e4e-6cc7-4466-900f-b6d9116810fc&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;cmp-wn-2115.demo.tanium.local&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;fe80::21f6:c36a:3f45:ac95&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          },
+          {
+            &quot;uuid&quot;: &quot;75f579b6-ff78-4c2d-af04-802a1712295f&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;cmp-wn-2115.demo.tanium.local&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;10.8.68.218&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          },
+          {
+            &quot;uuid&quot;: &quot;beb2b8fb-0d30-4501-b762-ecbcf22dc0c3&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;cmp-wn-2105.demo.tanium.local&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;fe80::186d:aba0:846b:f858&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          },
+          {
+            &quot;uuid&quot;: &quot;cfe46a99-6b1d-43cf-9996-18713eca66bf&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;cmp-wn-2105.demo.tanium.local&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;10.8.69.7&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          },
+          {
+            &quot;uuid&quot;: &quot;aaed9c5e-8b67-478f-a2d3-bead5a747333&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;cmp-wn-2108.demo.tanium.local&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;fe80::fcb4:14fa:b62d:ad&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          },
+          {
+            &quot;uuid&quot;: &quot;9593c80e-678f-4e67-9306-b84ec1c6e1a5&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;cmp-wn-2108.demo.tanium.local&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;10.8.68.160&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          },
+          {
+            &quot;uuid&quot;: &quot;dcfb719f-7990-4e30-99c5-c6bfc5ae431e&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;cmp-wn-2109.demo.tanium.local&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;fe80::20cf:636b:5fe7:b0ff&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          },
+          {
+            &quot;uuid&quot;: &quot;eaec04d2-3283-41a7-91df-26724f360342&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;cmp-wn-2109.demo.tanium.local&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;10.8.77.220&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          },
+          {
+            &quot;uuid&quot;: &quot;18162697-08ee-40b9-8cc6-ee72fb09f75b&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;cmp-wn-2107.demo.tanium.local&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;fe80::2585:c75f:8e0:666c&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          },
+          {
+            &quot;uuid&quot;: &quot;f6e60268-1f07-4066-8f4e-a146492f8d0e&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;cmp-wn-2107.demo.tanium.local&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;10.8.68.184&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          },
+          {
+            &quot;uuid&quot;: &quot;1c9206ba-613e-4471-b256-3e1a83b8a417&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;cmp-wn-2116.demo.tanium.local&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;fe80::ed25:77c3:b611:eedc&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          },
+          {
+            &quot;uuid&quot;: &quot;70e3f8b2-150c-41f6-b0a0-c4dfe6174c03&quot;,
+            &quot;description&quot;: &quot;inventory-item&quot;,
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;computer-name&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;cmp-wn-2116.demo.tanium.local&quot;
+              },
+              {
+                &quot;name&quot;: &quot;computer-ip&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;10.8.68.219&quot;
+              },
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot; inventory-item&quot;,
+                &quot;value&quot;: &quot;Windows 10&quot;
+              }
+            ]
+          }
+        ]
+      },
+      &quot;reviewed-controls&quot;: {
+        &quot;control-selections&quot;: [
+          {}
+        ]
+      },
+      &quot;observations&quot;: [
+        {
+          &quot;uuid&quot;: &quot;372d97c9-0c47-4776-890f-316856eebb2c&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;92c0992e-c37a-4863-8682-de62666012de&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;1dbfecb0-0434-42b6-b49e-3699e3373233&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;794fdc22-ed15-4abf-bf5f-48bebacef2f6&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;b420c818-bb03-4570-8731-dd29cfc9a0eb&quot;,
+          &quot;description&quot;: &quot;win_security_ps&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;win_security_ps&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;794fdc22-ed15-4abf-bf5f-48bebacef2f6&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;N/A&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;9e5a7882-7a06-495a-8135-606eaecaa631&quot;,
+          &quot;description&quot;: &quot;av_service&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;av_service&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;fail&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;794fdc22-ed15-4abf-bf5f-48bebacef2f6&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;N/A&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;6800d9cd-7d26-4898-b7a7-56d03a528c96&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;e8642e4e-6cc7-4466-900f-b6d9116810fc&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;ae23c09e-24ac-4bc9-ae9e-d0d9efe3a86f&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;75f579b6-ff78-4c2d-af04-802a1712295f&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;0f7ee272-0dc5-4374-bd79-4ae101d18407&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;fail&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;75f579b6-ff78-4c2d-af04-802a1712295f&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;9970018e-ba1d-4374-8be7-d20ae6b4c08f&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_19.7.44.2.1_L2_Ensure_Prevent_Codec_Download_is_set_to_Enabled&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_19.7.44.2.1_L2_Ensure_Prevent_Codec_Download_is_set_to_Enabled&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;fail&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;75f579b6-ff78-4c2d-af04-802a1712295f&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;f5618e4f-54be-4780-89c6-207a2bf2e178&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;beb2b8fb-0d30-4501-b762-ecbcf22dc0c3&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;1301229a-3957-4d56-886e-888594450bd8&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;skip&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;cfe46a99-6b1d-43cf-9996-18713eca66bf&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;c8611cbb-ada0-40ae-870a-3a08ebd53dc1&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;fail&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;cfe46a99-6b1d-43cf-9996-18713eca66bf&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;761f1d9f-a0f1-4ab1-9147-95ff4efa6373&quot;,
+          &quot;description&quot;: &quot;win_security_ps&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;win_security_ps&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;cfe46a99-6b1d-43cf-9996-18713eca66bf&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;N/A&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;23a6a47f-3f39-4707-8f36-5a8730079e60&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;aaed9c5e-8b67-478f-a2d3-bead5a747333&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;a2f3ecc7-0f9a-4f86-b2ac-1e44d49d399c&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;9593c80e-678f-4e67-9306-b84ec1c6e1a5&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;7cb083e8-a734-4387-9712-225484c88066&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;fail&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;9593c80e-678f-4e67-9306-b84ec1c6e1a5&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;5886df1f-8e9a-48d6-874c-aefa352dbf9c&quot;,
+          &quot;description&quot;: &quot;av_service&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;av_service&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;fail&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;9593c80e-678f-4e67-9306-b84ec1c6e1a5&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;N/A&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;8f755919-6188-4c59-a260-4124f756caea&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;dcfb719f-7990-4e30-99c5-c6bfc5ae431e&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;aa0a1d88-ed97-4fc0-b8c0-381628ade77e&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;eaec04d2-3283-41a7-91df-26724f360342&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;ac97b33c-e8a0-417b-b281-4c8b980ae510&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;fail&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;eaec04d2-3283-41a7-91df-26724f360342&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;e7a04b3f-3b93-459a-953b-2b1882b8cba9&quot;,
+          &quot;description&quot;: &quot;win_security_ps&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;win_security_ps&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;eaec04d2-3283-41a7-91df-26724f360342&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;N/A&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;37c94def-a074-47c4-949f-a502b948f08e&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;18162697-08ee-40b9-8cc6-ee72fb09f75b&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;7a6b1fe2-3033-46d4-9aea-64f5e69eb9af&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;f6e60268-1f07-4066-8f4e-a146492f8d0e&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;969e384a-3bc1-4f16-8348-c3648e63d697&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;fail&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;f6e60268-1f07-4066-8f4e-a146492f8d0e&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;0197b9f7-dd74-4bc1-8fa7-4d79b5f1cf70&quot;,
+          &quot;description&quot;: &quot;win_security_ps&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;win_security_ps&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;f6e60268-1f07-4066-8f4e-a146492f8d0e&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;N/A&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;92f90125-debf-4563-9002-523618255cfc&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;1c9206ba-613e-4471-b256-3e1a83b8a417&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;854633cb-e2d5-434e-905e-7fbe7291d3aa&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;70e3f8b2-150c-41f6-b0a0-c4dfe6174c03&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;697b07a2-82d4-4d0e-9f8c-bbd4a247c677&quot;,
+          &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;fail&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://xccdf&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;70e3f8b2-150c-41f6-b0a0-c4dfe6174c03&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;Windows 10&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;58c1ac67-0464-4d30-b5e3-37579c7f9330&quot;,
+          &quot;description&quot;: &quot;win_security_ps&quot;,
+          &quot;props&quot;: [
+            {
+              &quot;name&quot;: &quot;benchmark&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;source&quot;,
+              &quot;value&quot;: &quot;&quot;
+            },
+            {
+              &quot;name&quot;: &quot;rule&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;id&quot;,
+              &quot;value&quot;: &quot;win_security_ps&quot;
+            },
+            {
+              &quot;name&quot;: &quot;result&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;result&quot;,
+              &quot;value&quot;: &quot;pass&quot;
+            },
+            {
+              &quot;name&quot;: &quot;time&quot;,
+              &quot;ns&quot;: &quot;dns://tanium&quot;,
+              &quot;class&quot;: &quot;timestamp&quot;,
+              &quot;value&quot;: &quot;2021-03-13T15:15:55+00:00&quot;
+            }
+          ],
+          &quot;methods&quot;: [
+            &quot;TEST-AUTOMATED&quot;
+          ],
+          &quot;subjects&quot;: [
+            {
+              &quot;uuid-ref&quot;: &quot;f5d3493b-94e2-4d23-a8bb-f3078fe8c8dc&quot;,
+              &quot;type&quot;: &quot;component&quot;,
+              &quot;title&quot;: &quot;Windows OS&quot;
+            },
+            {
+              &quot;uuid-ref&quot;: &quot;70e3f8b2-150c-41f6-b0a0-c4dfe6174c03&quot;,
+              &quot;type&quot;: &quot;inventory-item&quot;,
+              &quot;title&quot;: &quot;N/A&quot;
+            }
+          ]
+        }
+      ],
+      &quot;findings&quot;: [
+        {
+          &quot;uuid&quot;: &quot;9afdeaf0-55b9-4f4a-a741-d7bd4b1f3562&quot;,
+          &quot;title&quot;: &quot;800-53: IA-5&quot;,
+          &quot;description&quot;: &quot;800-53: IA-5&quot;,
+          &quot;collected&quot;: &quot;2021-03-13T15:15:55.000+00:00&quot;,
+          &quot;objective-status&quot;: {
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot;source&quot;,
+                &quot;value&quot;: &quot;NIST 800-53&quot;
+              },
+              {
+                &quot;name&quot;: &quot;id-ref&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot;source&quot;,
+                &quot;value&quot;: &quot;IA-5&quot;
+              },
+              {
+                &quot;name&quot;: &quot;result&quot;,
+                &quot;ns&quot;: &quot;dns://xccdf&quot;,
+                &quot;class&quot;: &quot;STRVALUE&quot;,
+                &quot;value&quot;: &quot;FAIL&quot;
+              }
+            ],
+            &quot;status&quot;: &quot;not-satisfied&quot;
+          },
+          &quot;related-observations&quot;: [
+            {
+              &quot;observation-uuid&quot;: &quot;372d97c9-0c47-4776-890f-316856eebb2c&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;6800d9cd-7d26-4898-b7a7-56d03a528c96&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;f5618e4f-54be-4780-89c6-207a2bf2e178&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;23a6a47f-3f39-4707-8f36-5a8730079e60&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;8f755919-6188-4c59-a260-4124f756caea&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;37c94def-a074-47c4-949f-a502b948f08e&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;92f90125-debf-4563-9002-523618255cfc&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;1dbfecb0-0434-42b6-b49e-3699e3373233&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;ae23c09e-24ac-4bc9-ae9e-d0d9efe3a86f&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;1301229a-3957-4d56-886e-888594450bd8&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;a2f3ecc7-0f9a-4f86-b2ac-1e44d49d399c&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;aa0a1d88-ed97-4fc0-b8c0-381628ade77e&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;7a6b1fe2-3033-46d4-9aea-64f5e69eb9af&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;854633cb-e2d5-434e-905e-7fbe7291d3aa&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;0f7ee272-0dc5-4374-bd79-4ae101d18407&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;c8611cbb-ada0-40ae-870a-3a08ebd53dc1&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;7cb083e8-a734-4387-9712-225484c88066&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;ac97b33c-e8a0-417b-b281-4c8b980ae510&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;969e384a-3bc1-4f16-8348-c3648e63d697&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;697b07a2-82d4-4d0e-9f8c-bbd4a247c677&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;b6a75770-c64b-4d43-b658-01cf4f740458&quot;,
+          &quot;title&quot;: &quot;win_security_ps&quot;,
+          &quot;description&quot;: &quot;win_security_ps&quot;,
+          &quot;collected&quot;: &quot;2021-03-13T15:15:55.000+00:00&quot;,
+          &quot;objective-status&quot;: {
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot;source&quot;,
+                &quot;value&quot;: &quot;N/A&quot;
+              },
+              {
+                &quot;name&quot;: &quot;id-ref&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot;source&quot;,
+                &quot;value&quot;: &quot;win_security_ps&quot;
+              },
+              {
+                &quot;name&quot;: &quot;result&quot;,
+                &quot;ns&quot;: &quot;dns://xccdf&quot;,
+                &quot;class&quot;: &quot;STRVALUE&quot;,
+                &quot;value&quot;: &quot;PASS&quot;
+              }
+            ],
+            &quot;status&quot;: &quot;satisfied&quot;
+          },
+          &quot;related-observations&quot;: [
+            {
+              &quot;observation-uuid&quot;: &quot;b420c818-bb03-4570-8731-dd29cfc9a0eb&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;761f1d9f-a0f1-4ab1-9147-95ff4efa6373&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;e7a04b3f-3b93-459a-953b-2b1882b8cba9&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;0197b9f7-dd74-4bc1-8fa7-4d79b5f1cf70&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;58c1ac67-0464-4d30-b5e3-37579c7f9330&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;d0d1b223-e9c8-487b-a57b-3a3f5419d996&quot;,
+          &quot;title&quot;: &quot;av_service&quot;,
+          &quot;description&quot;: &quot;av_service&quot;,
+          &quot;collected&quot;: &quot;2021-03-13T15:15:55.000+00:00&quot;,
+          &quot;objective-status&quot;: {
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot;source&quot;,
+                &quot;value&quot;: &quot;N/A&quot;
+              },
+              {
+                &quot;name&quot;: &quot;id-ref&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot;source&quot;,
+                &quot;value&quot;: &quot;av_service&quot;
+              },
+              {
+                &quot;name&quot;: &quot;result&quot;,
+                &quot;ns&quot;: &quot;dns://xccdf&quot;,
+                &quot;class&quot;: &quot;STRVALUE&quot;,
+                &quot;value&quot;: &quot;FAIL&quot;
+              }
+            ],
+            &quot;status&quot;: &quot;not-satisfied&quot;
+          },
+          &quot;related-observations&quot;: [
+            {
+              &quot;observation-uuid&quot;: &quot;9e5a7882-7a06-495a-8135-606eaecaa631&quot;
+            },
+            {
+              &quot;observation-uuid&quot;: &quot;5886df1f-8e9a-48d6-874c-aefa352dbf9c&quot;
+            }
+          ]
+        },
+        {
+          &quot;uuid&quot;: &quot;b2e3daff-7544-429c-be9f-0cccd9f805d9&quot;,
+          &quot;title&quot;: &quot;800-53: SC-18&quot;,
+          &quot;description&quot;: &quot;800-53: SC-18&quot;,
+          &quot;collected&quot;: &quot;2021-03-13T15:15:55.000+00:00&quot;,
+          &quot;objective-status&quot;: {
+            &quot;props&quot;: [
+              {
+                &quot;name&quot;: &quot;profile&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot;source&quot;,
+                &quot;value&quot;: &quot;NIST 800-53&quot;
+              },
+              {
+                &quot;name&quot;: &quot;id-ref&quot;,
+                &quot;ns&quot;: &quot;dns://tanium&quot;,
+                &quot;class&quot;: &quot;source&quot;,
+                &quot;value&quot;: &quot;SC-18&quot;
+              },
+              {
+                &quot;name&quot;: &quot;result&quot;,
+                &quot;ns&quot;: &quot;dns://xccdf&quot;,
+                &quot;class&quot;: &quot;STRVALUE&quot;,
+                &quot;value&quot;: &quot;FAIL&quot;
+              }
+            ],
+            &quot;status&quot;: &quot;not-satisfied&quot;
+          },
+          &quot;related-observations&quot;: [
+            {
+              &quot;observation-uuid&quot;: &quot;9970018e-ba1d-4374-8be7-d20ae6b4c08f&quot;
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+</code></pre></div>
+
+</details>
+
+<p><br>
+<br></p>
+<p><span style="color:green">
+Congratulations! You have bridged Tanium data into an OSCAL Assessment Results Findings report using compliance-trestle.
+</span></p>
+<p><br>
+<br></p>
+<hr>
+
+<p><small>Newtown, Victoria</small></p>
+<p><img alt="Australia Scarsdale  Nimons Bridge" src="../800px-Australia_scarsdale_nimons_bridge.jpg" /></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../../task.transformer-construction/transformer-construction/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              transformer construction
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../../../mkdocs_code_of_conduct/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Code of Conduct
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.a1c7c35e.min.js"></script>
+      
+    
+  </body>
+</html>

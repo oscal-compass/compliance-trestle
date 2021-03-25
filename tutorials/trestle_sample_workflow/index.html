@@ -1,0 +1,2178 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for compliance-trestle package.">
+      
+      
+      
+      
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/tutorials/trestle_sample_workflow/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.6">
+    
+    
+      
+        <title>intro to trestle workflow - Compliance Trestle</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.2c0c5eaf.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.7fa14f5b.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#009485">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="purple">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tutorial-introduction-to-trestle-commands-for-manipulating-an-oscal-catalog" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Compliance Trestle" class="md-header__button md-logo" aria-label="Compliance Trestle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Compliance Trestle
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              intro to trestle workflow
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="md-header__options">
+      
+    </div>
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/IBM/compliance-trestle/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Compliance Trestle" class="md-nav__button md-logo" aria-label="Compliance Trestle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Compliance Trestle
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/IBM/compliance-trestle/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        Trestle cli
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      <label class="md-nav__link" for="__nav_3">
+        Tutorials
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python_trestle_setup/" class="md-nav__link">
+        setting up python and trestle
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          intro to trestle workflow
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        intro to trestle workflow
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objective" class="md-nav__link">
+    Objective
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-by-creating-a-trestle-workspace-if-you-dont-have-one-already" class="md-nav__link">
+    Start by creating a trestle workspace if you don't have one already
+  </a>
+  
+    <nav class="md-nav" aria-label="Start by creating a trestle workspace if you don't have one already">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-new-mycatalog-directory-in-the-catalogs-folder-of-your-trestle-workspace-and-copy-a-catalog-json-file-into-it" class="md-nav__link">
+    Create a new mycatalog directory in the catalogs folder of your trestle workspace and copy a catalog json file into it
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-split-the-file-into-smaller-parts" class="md-nav__link">
+    Step 1: Split the file into smaller parts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-split-metadata-further-using-wildcards" class="md-nav__link">
+    Step 3: Split metadata further using wildcards
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-split-groups-and-controls-with-two-wildcards" class="md-nav__link">
+    Step 4: Split groups and controls with two wildcards
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    Conclusion
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../task.transformer-construction/transformer-construction/" class="md-nav__link">
+        transformer construction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../task.tanuim-to-oscal/transformation/" class="md-nav__link">
+        task tanium-to-oscal
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mkdocs_code_of_conduct/" class="md-nav__link">
+        Code of Conduct
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Contributing
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Contributing" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Contributing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/mkdocs_contributing/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/IBM/compliance-trestle/graphs/contributors" class="md-nav__link">
+        Contributors
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/" class="md-nav__link">
+        Maintainers
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/website/" class="md-nav__link">
+        Documentation website
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/DCO/" class="md-nav__link">
+        Developer Certificate of Originality
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      <label class="md-nav__link" for="__nav_6">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" >
+      
+      <label class="md-nav__link" for="__nav_6_2">
+        trestle
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="trestle" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          trestle
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.cli/" class="md-nav__link">
+        cli
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2" type="checkbox" id="__nav_6_2_2" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2">
+        core
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="core" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.base_model/" class="md-nav__link">
+        base_model
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2_2" type="checkbox" id="__nav_6_2_2_2" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2_2">
+        commands
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="commands" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          commands
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.add/" class="md-nav__link">
+        add
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.assemble/" class="md-nav__link">
+        assemble
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.cmd_utils/" class="md-nav__link">
+        cmd_utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.command_docs/" class="md-nav__link">
+        command_docs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.create/" class="md-nav__link">
+        create
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.import_/" class="md-nav__link">
+        import_
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.init/" class="md-nav__link">
+        init
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.remove/" class="md-nav__link">
+        remove
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.replicate/" class="md-nav__link">
+        replicate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.task/" class="md-nav__link">
+        task
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.validate/" class="md-nav__link">
+        validate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.version/" class="md-nav__link">
+        version
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.const/" class="md-nav__link">
+        const
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.duplicates_validator/" class="md-nav__link">
+        duplicates_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.err/" class="md-nav__link">
+        err
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.generators/" class="md-nav__link">
+        generators
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2_7" type="checkbox" id="__nav_6_2_2_7" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2_7">
+        models
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="models" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_2_7">
+          <span class="md-nav__icon md-icon"></span>
+          models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.models.actions/" class="md-nav__link">
+        actions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.models.elements/" class="md-nav__link">
+        elements
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.models.file_content_type/" class="md-nav__link">
+        file_content_type
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.models.interfaces/" class="md-nav__link">
+        interfaces
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.models.plans/" class="md-nav__link">
+        plans
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.object_factory/" class="md-nav__link">
+        object_factory
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.parser/" class="md-nav__link">
+        parser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2_10" type="checkbox" id="__nav_6_2_2_10" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2_10">
+        remote
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="remote" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_2_10">
+          <span class="md-nav__icon md-icon"></span>
+          remote
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.remote.cache/" class="md-nav__link">
+        cache
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.validator_factory/" class="md-nav__link">
+        validator_factory
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.validator_helper/" class="md-nav__link">
+        validator_helper
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_3" type="checkbox" id="__nav_6_2_3" >
+      
+      <label class="md-nav__link" for="__nav_6_2_3">
+        oscal
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="oscal" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          oscal
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.assessment_plan/" class="md-nav__link">
+        assessment_plan
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.catalog/" class="md-nav__link">
+        catalog
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.component/" class="md-nav__link">
+        component
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.poam/" class="md-nav__link">
+        poam
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.profile/" class="md-nav__link">
+        profile
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.ssp/" class="md-nav__link">
+        ssp
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.target/" class="md-nav__link">
+        target
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_4" type="checkbox" id="__nav_6_2_4" >
+      
+      <label class="md-nav__link" for="__nav_6_2_4">
+        tasks
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          tasks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.tasks.base_task/" class="md-nav__link">
+        base_task
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.tasks.osco_to_oscal/" class="md-nav__link">
+        osco_to_oscal
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.tasks.tanium_to_oscal/" class="md-nav__link">
+        tanium_to_oscal
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.tasks.transform/" class="md-nav__link">
+        transform
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_5" type="checkbox" id="__nav_6_2_5" >
+      
+      <label class="md-nav__link" for="__nav_6_2_5">
+        third_party
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="third_party" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          third_party
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.third_party.exchange_protocol/" class="md-nav__link">
+        exchange_protocol
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_6" type="checkbox" id="__nav_6_2_6" >
+      
+      <label class="md-nav__link" for="__nav_6_2_6">
+        utils
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="utils" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_6">
+          <span class="md-nav__icon md-icon"></span>
+          utils
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.utils.fs/" class="md-nav__link">
+        fs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.utils.load_distributed/" class="md-nav__link">
+        load_distributed
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.utils.log/" class="md-nav__link">
+        log
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.utils.osco/" class="md-nav__link">
+        osco
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.utils.tanium/" class="md-nav__link">
+        tanium
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.utils.trash/" class="md-nav__link">
+        trash
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objective" class="md-nav__link">
+    Objective
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-by-creating-a-trestle-workspace-if-you-dont-have-one-already" class="md-nav__link">
+    Start by creating a trestle workspace if you don't have one already
+  </a>
+  
+    <nav class="md-nav" aria-label="Start by creating a trestle workspace if you don't have one already">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-new-mycatalog-directory-in-the-catalogs-folder-of-your-trestle-workspace-and-copy-a-catalog-json-file-into-it" class="md-nav__link">
+    Create a new mycatalog directory in the catalogs folder of your trestle workspace and copy a catalog json file into it
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-split-the-file-into-smaller-parts" class="md-nav__link">
+    Step 1: Split the file into smaller parts
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-split-metadata-further-using-wildcards" class="md-nav__link">
+    Step 3: Split metadata further using wildcards
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-split-groups-and-controls-with-two-wildcards" class="md-nav__link">
+    Step 4: Split groups and controls with two wildcards
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    Conclusion
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/IBM/compliance-trestle/edit/master/docs/tutorials/trestle_sample_workflow.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="tutorial-introduction-to-trestle-commands-for-manipulating-an-oscal-catalog">Tutorial: Introduction to trestle commands for manipulating an OSCAL catalog<a class="headerlink" href="#tutorial-introduction-to-trestle-commands-for-manipulating-an-oscal-catalog" title="Permanent link">¤</a></h1>
+<p>Here are step-by-step instructions to manipulate a <a href="https://www.nist.gov/">NIST</a> standard <a href="https://pages.nist.gov/OSCAL/">OSCAL</a> catalog using the <a href="https://ibm.github.io/compliance-trestle/">compliance-trestle</a> (<code>"trestle"</code>) tool.</p>
+<h2 id="objective"><em>Objective</em><a class="headerlink" href="#objective" title="Permanent link">¤</a></h2>
+<p>Learn how to split and merge an OSCAL catalog json file using trestle commands and its command line interface (CLI).  Trestle simplifies the manipulation and management of large OSCAL documents by allowing controlled deconstruction into smaller components, and later reconstruction after editing those components.  And all operations guarantee that the individual files conform to the corresponding OSCAL schema to maintain integrity of the document in the process.</p>
+<p>This tutorial assumes you have installed Python and installed trestle in a virtual environment per the directions found <a href="../python_trestle_setup/">here</a>.</p>
+<p>The examples shown will work for linux and mac, but Windows will require the following modifications:</p>
+<ul>
+<li>use backslashes `\` for file paths (this is optional in most cases)
+<li>use copy instead of cp (unless you have cp installed)
+<li>use md instead of mkdir (unless you have mkdir installed)
+</ul>
+
+<p>In this tutorial you will see sections that contain dropdown that is revealed when you click on them.  Below is an example ("Like this").  Be sure to click on those sections to see their contents - and then close them if you like.</p>
+<p><br></p>
+<details>
+<summary>Like this</summary>
+
+<div class="highlight"><pre><span></span><code>more
+information
+in
+here
+</code></pre></div>
+
+</details>
+<p><br></p>
+<h2 id="start-by-creating-a-trestle-workspace-if-you-dont-have-one-already">Start by creating a trestle workspace if you don't have one already<a class="headerlink" href="#start-by-creating-a-trestle-workspace-if-you-dont-have-one-already" title="Permanent link">¤</a></h2>
+<div class="highlight"><pre><span></span><code>&gt; mkdir my_workspace
+&gt; cd my_workspace
+&gt; trestle init
+Initialized trestle project successfully in [user_path]/my_workspace
+</code></pre></div>
+<h3 id="create-a-new-mycatalog-directory-in-the-catalogs-folder-of-your-trestle-workspace-and-copy-a-catalog-json-file-into-it">Create a new <code>mycatalog</code> directory in the <code>catalogs</code> folder of your trestle workspace and copy a catalog json file into it<a class="headerlink" href="#create-a-new-mycatalog-directory-in-the-catalogs-folder-of-your-trestle-workspace-and-copy-a-catalog-json-file-into-it" title="Permanent link">¤</a></h3>
+<div class="highlight"><pre><span></span><code>&gt; cd catalogs
+&gt; mkdir mycatalog
+&gt; cd mycatalog
+&gt; cp TRESTLE_ROOT/tests/data/split_merge/load_distributed/catalog.json .
+</code></pre></div>
+<p><em>Here TRESTLE_ROOT corresponds to the root of the trestle installation where you installed it!  Do not type TRESTLE_ROOT!</em></p>
+<p><br></p>
+<details>
+<summary>Your initial workspace will look like this</summary>
+
+<div class="highlight"><pre><span></span><code>my_workspace
+ ┣ .trestle
+ ┃ ┣ .keep
+ ┃ ┗ config.ini
+ ┣ assessment-plans
+ ┃ ┗ .keep
+ ┣ assessment-results
+ ┃ ┗ .keep
+ ┣ catalogs
+ ┃ ┣ mycatalog
+ ┃ ┃ ┗ catalog.json
+ ┃ ┗ .keep
+ ┣ component-definitions
+ ┃ ┗ .keep
+ ┣ dist
+ ┃ ┣ assessment-plans
+ ┃ ┃ ┗ .keep
+ ┃ ┣ assessment-results
+ ┃ ┃ ┗ .keep
+ ┃ ┣ catalogs
+ ┃ ┃ ┗ .keep
+ ┃ ┣ component-definitions
+ ┃ ┃ ┗ .keep
+ ┃ ┣ plan-of-action-and-milestones
+ ┃ ┃ ┗ .keep
+ ┃ ┣ profiles
+ ┃ ┃ ┗ .keep
+ ┃ ┣ system-security-plans
+ ┃ ┃ ┗ .keep
+ ┃ ┗ target-definitions
+ ┃ ┃ ┗ .keep
+ ┣ plan-of-action-and-milestones
+ ┃ ┗ .keep
+ ┣ profiles
+ ┃ ┗ .keep
+ ┣ system-security-plans
+ ┃ ┗ .keep
+ ┗ target-definitions
+ ┃ ┗ .keep
+</code></pre></div>
+
+</details>
+<p><br></p>
+<p>You will see that the directory now shows your catalog file in <code>my_workspace/catalogs/mycatalog</code>.  Note that the <code>.keep</code> files are simply to make sure git does not remove the directories - and can be ignored.</p>
+<p>From here on in this tutorial we will just focus on the catalogs directory since the others are not directly involved.</p>
+<p>You have now populated your trestle workspace with an OSCAL catalog that you can manipulate.  Let's start.</p>
+<h2 id="step-1-split-the-file-into-smaller-parts">Step 1: Split the file into smaller parts<a class="headerlink" href="#step-1-split-the-file-into-smaller-parts" title="Permanent link">¤</a></h2>
+<p>The OSCAL schema specifies that a catalog must contain metadata, groups, and back-matter - so this command will pull them out of the original file and place them in separate json files for additional manipulations.</p>
+<div class="highlight"><pre><span></span><code>&gt; trestle split -f ./catalog.json -e &#39;catalog.metadata,catalog.groups,catalog.back-matter&#39;
+</code></pre></div>
+<p>Here the <code>-f</code> refers to the filename of the json catalog file, and <code>-e</code> refers to the comma-separated list of <code>elements</code> you would like to split from the file.  This list does not represent the full file contents of the source <code>catalog.json</code> file, so some contents will be left behind in a much smaller <code>catalog.json</code> file after the split.  The elements that were split off will be placed in separate json files next to the new and smaller <code>catalog.json</code> file.</p>
+<p><br></p>
+<details>
+<summary>Your new catalogs directory with json files split out</summary>
+
+<div class="highlight"><pre><span></span><code>catalogs
+ ┗ mycatalog
+ ┃ ┣ catalog
+ ┃ ┃ ┣ back-matter.json
+ ┃ ┃ ┣ groups.json
+ ┃ ┃ ┗ metadata.json
+ ┃ ┗ catalog.json
+ ```
+
+&lt;/details&gt;
+&lt;br&gt;
+
+Note there still remains a catalog.json file, but it is much smaller since the bulk of its contents have been split off.
+
+Any split step can be reversed by a corresponding `merge` operation.  In this case we can go backwards with:
+</code></pre></div>
+> trestle merge -e 'catalog.metadata,catalog.groups,catalog.back-matter'
+<div class="highlight"><pre><span></span><code>or simply
+</code></pre></div>
+> trestle merge -e 'catalog.*'
+<div class="highlight"><pre><span></span><code>You can go back and forth splitting and merging, but for the next step please start with the above files split so that `metadata.json` can be further split.
+
+## Step 2: Split the metadata into constituent files 
+</code></pre></div>
+> cd catalog
+> trestle split -f ./metadata.json -e 'metadata.roles,metadata.parties,metadata.responsible-parties'
+<div class="highlight"><pre><span></span><code>&lt;br&gt;
+&lt;details&gt;
+&lt;summary&gt;The directory will now look like this, with metadata split into files&lt;/summary&gt;
+</code></pre></div>
+
+catalogs
+ ┗ mycatalog
+ ┃ ┣ catalog
+ ┃ ┃ ┣ metadata
+ ┃ ┃ ┃ ┣ parties.json
+ ┃ ┃ ┃ ┣ responsible-parties.json
+ ┃ ┃ ┃ ┗ roles.json
+ ┃ ┃ ┣ back-matter.json
+ ┃ ┃ ┣ groups.json
+ ┃ ┃ ┗ metadata.json
+ ┃ ┗ catalog.json
+
+ ```
+</details>
+<p><br></p>
+<p>Again there remains a metadata.json file but it is smaller than the original.</p>
+<p>And this step can be reversed with the following:</p>
+<p><div class="highlight"><pre><span></span><code>&gt; trestle merge -e &#39;metadata.roles,metadata.parties,metadata.responsible-parties&#39;
+</code></pre></div>
+or simply
+<div class="highlight"><pre><span></span><code>&gt; trestle merge -e &#39;metadata.*&#39;
+</code></pre></div></p>
+<h2 id="step-3-split-metadata-further-using-wildcards">Step 3: Split metadata further using wildcards<a class="headerlink" href="#step-3-split-metadata-further-using-wildcards" title="Permanent link">¤</a></h2>
+<div class="highlight"><pre><span></span><code>&gt; cd metadata
+&gt; trestle split -f ./roles.json -e &#39;roles.*&#39;
+&gt; trestle split -f ./responsible-parties.json -e &#39;responsible-parties.*&#39;
+</code></pre></div>
+<p><br></p>
+<details>
+<summary>The directory now looks like this, with new subdirectories containing multiple roles and responsible-parties</summary>
+
+<div class="highlight"><pre><span></span><code>catalogs
+ ┗ mycatalog
+ ┃ ┣ catalog
+ ┃ ┃ ┣ metadata
+ ┃ ┃ ┃ ┣ responsible-parties
+ ┃ ┃ ┃ ┃ ┣ contact__responsible-party.json
+ ┃ ┃ ┃ ┃ ┗ creator__responsible-party.json
+ ┃ ┃ ┃ ┣ roles
+ ┃ ┃ ┃ ┃ ┣ 00000__role.json
+ ┃ ┃ ┃ ┃ ┗ 00001__role.json
+ ┃ ┃ ┃ ┗ parties.json
+ ┃ ┃ ┣ back-matter.json
+ ┃ ┃ ┣ groups.json
+ ┃ ┃ ┗ metadata.json
+ ┃ ┗ catalog.json
+</code></pre></div>
+
+</details>
+<p><br></p>
+<p>Note that the presence of wildcards caused new directories to be created containing the full lists of roles and responsible parties.  You can read the wildcard as <em>split off </em><em>all</em><em> roles</em> from <code>roles.json</code>.</p>
+<p>This split can be reversed with</p>
+<div class="highlight"><pre><span></span><code>&gt; trestle merge -e &#39;roles.*,responsible-parties.*&#39;
+</code></pre></div>
+<h2 id="step-4-split-groups-and-controls-with-two-wildcards">Step 4: Split groups and controls with two wildcards<a class="headerlink" href="#step-4-split-groups-and-controls-with-two-wildcards" title="Permanent link">¤</a></h2>
+<p>This single command will split off <em>all</em> controls in <em>all</em> groups.  To do it you need to go back up into the catalog directory where the <code>groups.json</code> file is found:</p>
+<div class="highlight"><pre><span></span><code>&gt; cd ..
+&gt; trestle split -f ./groups.json -e &#39;groups.*.controls.*&#39;
+</code></pre></div>
+<p><br></p>
+<details>
+<summary>Your directory is now very large with that one command!</summary>
+
+<div class="highlight"><pre><span></span><code>catalogs
+ ┗ mycatalog
+ ┃ ┣ catalog
+ ┃ ┃ ┣ groups
+ ┃ ┃ ┃ ┣ 00000__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00009__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00010__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00011__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00012__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00013__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00014__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00015__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00016__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00017__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00018__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00019__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00020__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00021__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00022__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00023__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00024__control.json
+ ┃ ┃ ┃ ┣ 00001__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00005__control.json
+ ┃ ┃ ┃ ┣ 00002__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00009__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00010__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00011__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00012__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00013__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00014__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00015__control.json
+ ┃ ┃ ┃ ┣ 00003__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00008__control.json
+ ┃ ┃ ┃ ┣ 00004__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00009__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00010__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00011__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00012__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00013__control.json
+ ┃ ┃ ┃ ┣ 00005__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00009__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00010__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00011__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00012__control.json
+ ┃ ┃ ┃ ┣ 00006__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00009__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00010__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00011__control.json
+ ┃ ┃ ┃ ┣ 00007__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00009__control.json
+ ┃ ┃ ┃ ┣ 00008__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00006__control.json
+ ┃ ┃ ┃ ┣ 00009__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00007__control.json
+ ┃ ┃ ┃ ┣ 00010__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00009__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00010__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00011__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00012__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00013__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00014__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00015__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00016__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00017__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00018__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00019__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00020__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00021__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00022__control.json
+ ┃ ┃ ┃ ┣ 00011__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00009__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00010__control.json
+ ┃ ┃ ┃ ┣ 00012__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00009__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00010__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00011__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00012__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00013__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00014__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00015__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00016__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00017__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00018__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00019__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00020__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00021__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00022__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00023__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00024__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00025__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00026__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00027__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00028__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00029__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00030__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00031__control.json
+ ┃ ┃ ┃ ┣ 00013__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00008__control.json
+ ┃ ┃ ┃ ┣ 00014__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00007__control.json
+ ┃ ┃ ┃ ┣ 00015__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00009__control.json
+ ┃ ┃ ┃ ┣ 00016__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00009__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00010__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00011__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00012__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00013__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00014__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00015__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00016__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00017__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00018__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00019__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00020__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00021__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00022__control.json
+ ┃ ┃ ┃ ┣ 00017__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00009__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00010__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00011__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00012__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00013__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00014__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00015__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00016__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00017__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00018__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00019__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00020__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00021__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00022__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00023__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00024__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00025__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00026__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00027__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00028__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00029__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00030__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00031__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00032__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00033__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00034__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00035__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00036__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00037__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00038__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00039__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00040__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00041__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00042__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00043__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00044__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00045__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00046__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00047__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00048__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00049__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00050__control.json
+ ┃ ┃ ┃ ┣ 00018__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00009__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00010__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00011__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00012__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00013__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00014__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00015__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00016__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00017__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00018__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00019__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00020__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00021__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00022__control.json
+ ┃ ┃ ┃ ┣ 00019__group
+ ┃ ┃ ┃ ┃ ┗ controls
+ ┃ ┃ ┃ ┃ ┃ ┣ 00000__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00001__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00002__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00003__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00004__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00005__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00006__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00007__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00008__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00009__control.json
+ ┃ ┃ ┃ ┃ ┃ ┣ 00010__control.json
+ ┃ ┃ ┃ ┃ ┃ ┗ 00011__control.json
+ ┃ ┃ ┃ ┣ 00000__group.json
+ ┃ ┃ ┃ ┣ 00001__group.json
+ ┃ ┃ ┃ ┣ 00002__group.json
+ ┃ ┃ ┃ ┣ 00003__group.json
+ ┃ ┃ ┃ ┣ 00004__group.json
+ ┃ ┃ ┃ ┣ 00005__group.json
+ ┃ ┃ ┃ ┣ 00006__group.json
+ ┃ ┃ ┃ ┣ 00007__group.json
+ ┃ ┃ ┃ ┣ 00008__group.json
+ ┃ ┃ ┃ ┣ 00009__group.json
+ ┃ ┃ ┃ ┣ 00010__group.json
+ ┃ ┃ ┃ ┣ 00011__group.json
+ ┃ ┃ ┃ ┣ 00012__group.json
+ ┃ ┃ ┃ ┣ 00013__group.json
+ ┃ ┃ ┃ ┣ 00014__group.json
+ ┃ ┃ ┃ ┣ 00015__group.json
+ ┃ ┃ ┃ ┣ 00016__group.json
+ ┃ ┃ ┃ ┣ 00017__group.json
+ ┃ ┃ ┃ ┣ 00018__group.json
+ ┃ ┃ ┃ ┗ 00019__group.json
+ ┃ ┃ ┣ metadata
+ ┃ ┃ ┃ ┣ responsible-parties
+ ┃ ┃ ┃ ┃ ┣ contact__responsible-party.json
+ ┃ ┃ ┃ ┃ ┗ creator__responsible-party.json
+ ┃ ┃ ┃ ┣ roles
+ ┃ ┃ ┃ ┃ ┣ 00000__role.json
+ ┃ ┃ ┃ ┃ ┗ 00001__role.json
+ ┃ ┃ ┃ ┗ parties.json
+ ┃ ┃ ┣ back-matter.json
+ ┃ ┃ ┗ metadata.json
+ ┃ ┗ catalog.json
+
+ ```
+
+&lt;/details&gt;
+&lt;br&gt;
+
+All 20 groups of controls have been split off, and each one has a corresponding directory with its full list of controls in it.
+
+You can then reverse the split with
+</code></pre></div>
+> trestle merge -e 'groups.*'
+<div class="highlight"><pre><span></span><code>## Step 4: Collapse the entire directory structure back into a single `catalog.json` file - possibly after modifying individual files
+
+You can collapse everything back to a single `catalog.json` file after first going up one directory to the mycatalog directory 
+</code></pre></div>
+> cd ..
+> trestle merge -e 'catalog.*'
+<div class="highlight"><pre><span></span><code>&lt;br&gt;
+&lt;details&gt;
+&lt;summary&gt;After all that splitting and merging you are back to this directory structure&lt;/summary&gt;
+</code></pre></div>
+
+catalogs
+ ┗ mycatalog
+ ┃ ┗ catalog.json
+
+```
+
+</details>
+<p><br></p>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">¤</a></h2>
+<p>This completes the tutorial on using <code>trestle</code> to split and merge an OSCAL catalog file.  Not shown here are modifications of the individual files that would be done in an actual use case, but note that if any changes are made that violate the OSCAL schema, <code>trestle</code> will notice them and flag them in the merge.  This way not only does <code>trestle</code> allow user-driven decomposition and aggregation of these large, complex files; it also does constant checks on the contents against the required schema to make sure no errors are introduced in the process.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../python_trestle_setup/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              setting up python and trestle
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../task.transformer-construction/transformer-construction/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              transformer construction
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.a1c7c35e.min.js"></script>
+      
+    
+  </body>
+</html>
