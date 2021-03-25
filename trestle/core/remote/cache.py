@@ -275,9 +275,6 @@ class HTTPSFetcher(FetcherBase):
             raise TrestleError(f'Cache update failure to connect via HTTPS: {self._url} ({e})')
 
         if response.status_code == 200:
-            outfile = open('/tmp/debug_request_content.out', 'wb')
-            outfile.write(response.content)
-            outfile.close()
             try:
                 result = response.json()
             except JSONDecodeError as err:
