@@ -3,6 +3,22 @@
 
 <!--next-version-placeholder-->
 
+## v0.10.0 (2021-03-25)
+### Feature
+* Adding exchange protocol as a supported 3rd party schema and object model. ([#416](https://github.com/IBM/compliance-trestle/issues/416)) ([`05b8781`](https://github.com/IBM/compliance-trestle/commit/05b8781283a32131ee0fd4a7097edef4bfdb6cb2))
+* Added collection utilities. ([#413](https://github.com/IBM/compliance-trestle/issues/413)) ([`83c1f17`](https://github.com/IBM/compliance-trestle/commit/83c1f17e8902d969b07d9e3cf9fa1c80c22755c8))
+
+### Fix
+* Correcting more issues with load_distributed impacting trestle split and merge ([`6ccb4db`](https://github.com/IBM/compliance-trestle/commit/6ccb4db1614b521b9a132cbae17ac0922dea729b))
+* Cleanup and add unit tests to the exchange_protocol module ([#417](https://github.com/IBM/compliance-trestle/issues/417)) ([`a194580`](https://github.com/IBM/compliance-trestle/commit/a19458008c5df39dbaf7bbcbfbc4431d16db4831))
+* Merge updates - added version subcommand and modified load_distrib to load files by name ([#415](https://github.com/IBM/compliance-trestle/issues/415)) ([`0a22c83`](https://github.com/IBM/compliance-trestle/commit/0a22c833671a72f1d204eed50cb881e610ef0595))
+* Correct OSCAL output to desired design point for osco-to-oscal. ([`5530eb4`](https://github.com/IBM/compliance-trestle/commit/5530eb4d334251b336a376a6b165b0874f43f391))
+* Model behaviour correction and update to latest pydantic version. ([`fcbaa23`](https://github.com/IBM/compliance-trestle/commit/fcbaa2356dc2c7c53e3df1e5c7cd43b5c55c368b))
+
+### Documentation
+* Added more tutorials to the documentation for split and merge. ([`0bf275a`](https://github.com/IBM/compliance-trestle/commit/0bf275af173ac563147d73daaf5d500edd5c8729))
+* Instructions for gen_oscal and fix_any added to website.md ([#389](https://github.com/IBM/compliance-trestle/issues/389)) ([`5053e52`](https://github.com/IBM/compliance-trestle/commit/5053e52e02e6f3761627b358b7e5abe107f17e21))
+
 ## v0.9.0 (2021-03-02)
 ### Feature
 * Tanium export to oscal conversion task. ([`5f7bcbf`](https://github.com/IBM/compliance-trestle/commit/5f7bcbf885b5fcb77da054917b6e66fa83ce66e9))
