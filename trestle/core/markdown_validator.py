@@ -139,12 +139,13 @@ class MarkdownValidator:
         if not self.template_path.is_file():
             logger.error(f'Provided template {self.template_path.absolute()} is not a file')
             raise err.TrestleError(f'Unable to find markdown template {self.template_path.absolute()}')
-        template_header, template_parse = self._load_markdown_parsetree(self.template_path)
+        template_header, template_parse = self.load_markdown_parsetree(self.template_path)
         self._template_header = template_header
         self._template_parse = template_parse
         self._strict_heading_validate = strict_heading_validate
 
-    def _load_markdown_parsetree(self, path: pathlib.Path) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
+    @classmethod
+    def load_markdown_parsetree(cls, path: pathlib.Path) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
         """
         Load markdown file including yaml frontmatter.
 
@@ -164,7 +165,8 @@ class MarkdownValidator:
         mistune_parse = mistune_ast_parser(md_no_header)
         return header_dict, mistune_parse
 
-    def wrap_content(self, original: List[Dict[str, Any]]) -> Dict[str, Any]:
+    @classmethod
+    def wrap_content(cls, original: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
         Wrap an array of list into a pseudo-top level element to make it easier to handle.
 
@@ -188,7 +190,7 @@ class MarkdownValidator:
         Returns:
             Whether or not the validation passes.
         """
-        header_content, mistune_parse_content = self._load_markdown_parsetree(candidate)
+        header_content, mistune_parse_content = self.load_markdown_parsetree(candidate)
         if self._yaml_header_validate:
             header_status = self.compare_keys(self._template_header, header_content)
             if not header_status:
@@ -206,7 +208,8 @@ class MarkdownValidator:
                 return False
         return compare_tree(w_template_tree, w_candidate_tree)
 
-    def compare_keys(self, template: Dict[str, Any], candidate: Dict[str, Any]) -> bool:
+    @classmethod
+    def compare_keys(cls, template: Dict[str, Any], candidate: Dict[str, Any]) -> bool:
         """
         Compare a template dictionary against a candidate as to whether key structure is maintained.
 
@@ -219,7 +222,7 @@ class MarkdownValidator:
         for key in template.keys():
             if key in candidate.keys():
                 if type(template[key]) == dict:
-                    status = self.compare_keys(template[key], candidate[key])
+                    status = cls.compare_keys(template[key], candidate[key])
                     if not status:
                         return status
             else:
@@ -278,7 +281,7 @@ class MarkdownValidator:
                 line_content = ''
                 for child in item['children']:
                     if child['type'] == 'linebreak':
-                        clean_text_lines.append(line_content)
+                        clean_text_lines.extend(line_content.splitlines())
                         line_content = ''
                     elif 'html' in child['type']:
                         # ignore HTML comment presuming a commment
@@ -292,7 +295,7 @@ class MarkdownValidator:
                         logger.error(msg)
                         raise err.TrestleError(msg)
                 # handle EoParagraph condition
-                clean_text_lines.append(line_content)
+                clean_text_lines.extend(line_content.splitlines())
             else:
                 msg = f'Unexpected element type {item["type"]} when flattening a governed header.'
                 logger.error(msg)
@@ -327,7 +330,7 @@ class MarkdownValidator:
         if template_heading == {}:
             logger.error('Governed header tag provided but not found in the template - failing validation')
             return False
-        candidate_heading = self.search_for_heading(wrapped_template, title_tag)
+        candidate_heading = self.search_for_heading(wrapped_candidate, title_tag)
         if candidate_heading == {}:
             logger.error('Governed header tag provided but not found in the content - failing validation')
             return False

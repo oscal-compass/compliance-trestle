@@ -15,9 +15,11 @@
 # limitations under the License.
 """Tests for trestle markdown_validator module."""
 import pathlib
+from typing import Any, Dict
 
 import pytest
 
+import trestle.core.err as err
 import trestle.core.markdown_validator as markdown_validator
 
 
@@ -79,7 +81,7 @@ def test_partition_ast() -> None:
             pathlib.Path('tests/data/md/test_1_md_format/bad_instance_heading_wrong_type.md'),
             False,
             False
-        )
+        ),
     ]
 )
 def test_md_validator_pass(
@@ -138,3 +140,117 @@ def test_md_validator_with_md_header(
     md_validator = markdown_validator.MarkdownValidator(template_path, yaml_header_validate, 'Governed Document')
     result = md_validator.validate(instance_path)
     assert result == status
+
+
+def test_bad_file_path(tmp_path: pathlib.Path):
+    """Check errors are thrown with bad files."""
+    no_file = tmp_path / 'non_existent.md'
+    with pytest.raises(err.TrestleError):
+        _ = markdown_validator.MarkdownValidator(no_file, False)
+
+
+@pytest.mark.parametrize(
+    'template, candidate, expected_status',
+    [
+        ({
+            'hello': {
+                'world': 'stuff'
+            }
+        }, {
+            'hello': {
+                'world': 'banana'
+            }
+        }, True), ({
+            'hello': {
+                'world': 'stuff'
+            }
+        }, {
+            'hello': {
+                'banana': 'world'
+            }
+        }, False),
+        ({
+            'hello': {
+                'world': 'stuff'
+            }
+        }, {
+            'hello': {
+                'world': ['results can be arrays with no restrictions']
+            }
+        }, True), ({
+            'hello': 1,
+            'world': 2,
+        }, {
+            'hello': 1,
+            'my-world': 2,
+        }, False)
+    ]
+)
+def test_key_compare(template: Dict[str, Any], candidate: Dict[str, Any], expected_status):
+    """Test key_compare behaves as expected."""
+    status = markdown_validator.MarkdownValidator.compare_keys(template, candidate)
+    assert status == expected_status
+
+
+@pytest.mark.parametrize(
+    'template_path, instance_path, status, governed_header',
+    [
+        (
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/instance.md'),
+            True,
+            'Governed Document'
+        ),
+        (
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/instance.md'),
+            True,
+            'Governed Document      '
+        ),
+        (
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/instance.md'),
+            False,
+            'Governed Documeent'
+        ),
+        (
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/bad_heading_content_changed_header.md'),
+            False,
+            'Governed Document'
+        ),
+        (
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/bad_heading_content_extra_lines.md'),
+            False,
+            'Governed Document'
+        ),
+        (
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/md/test_2_md_with_md_header/wrong_heading_title.md'),
+            False,
+            'Governed Document'
+        )
+    ]
+)
+def test_validate_for_governed_header(
+    template_path: pathlib.Path, instance_path: pathlib.Path, status: bool, governed_header: str
+) -> None:
+    """Test scenarios for validate w.r.t the governed header."""
+    md_validator = markdown_validator.MarkdownValidator(template_path, False, governed_header)
+    result = md_validator.validate(instance_path)
+    assert result == status
+
+
+def test_compare_tree_force_failure():
+    """Test unhappy path of compare_tree by manipulating content."""
+    template_path = pathlib.Path('tests/data/md/test_1_md_format/template.md')
+    header_validate = True
+    md_validator = markdown_validator.MarkdownValidator(template_path, header_validate)
+    ast_parse = markdown_validator.partition_ast(md_validator._template_parse)
+    _ = md_validator.wrap_content(ast_parse)
+
+
+def test_search_for_headings():
+    """Test to search for headings and sub-headings."""
+    pass
