@@ -60,7 +60,7 @@ def set_global_logging_levels(level: int = logging.INFO) -> None:
     console_debug_handler.addFilter(SpecificLevelFilter(logging.DEBUG))
 
     console_error_handler = logging.StreamHandler(sys.stderr)
-    console_error_handler.setLevel(logging.ERROR)
+    console_error_handler.setLevel(logging.WARNING)
     # create formatters
     error_formatter = logging.Formatter('%(asctime)s %(name)s:%(lineno)d %(levelname)s: %(message)s')
     console_debug_handler.setFormatter(error_formatter)
