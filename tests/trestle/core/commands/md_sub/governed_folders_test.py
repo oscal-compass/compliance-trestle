@@ -122,7 +122,7 @@ def test_e2e(
         return
     # Cleanup first
     shutil.rmtree(str(template_target_loc))
-    shutil.copytree(str(testdata_dir / template_content), str(template_target_loc), dirs_exist_ok=True)
+    shutil.copytree(str(testdata_dir / template_content), str(template_target_loc))
 
     with mock.patch.object(sys, 'argv', command_string_validate_template.split()):
         with pytest.raises(SystemExit) as wrapped_error:
