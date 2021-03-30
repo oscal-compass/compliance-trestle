@@ -64,8 +64,6 @@ Note that by default this will automatically enforce the task."""
         elif args.mode == 'validate':
             # mode is validate
             status = self.validate(args.task_name, trestle_root, args.governed_heading, args.header_validate)
-        else:
-            logger.error('Unknown mode for trestle markdown functionality')
         return status
 
     def setup_template_governed_docs(self, task_name: str, trestle_root: pathlib.Path) -> int:

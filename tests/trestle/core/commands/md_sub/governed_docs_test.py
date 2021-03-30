@@ -15,8 +15,10 @@
 # limitations under the License.
 """Tests for trestle md governed-docs subcommand."""
 import pathlib
+import shutil
 import sys
 from unittest import mock
+from uuid import uuid4
 
 import pytest
 
@@ -38,3 +40,84 @@ def test_governed_docs_high(tmp_trestle_dir: pathlib.Path, command_string: str, 
             # FIXME: Needs to be changed once implemented.
             assert wrapped_error == SystemExit
             assert wrapped_error.code == return_code
+
+
+@pytest.mark.parametrize(
+    'task_name, template_content, target_content, setup_code, template_code, validate_code',
+    [
+        (
+            'test_task',
+            pathlib.Path('md/test_1_md_format/template.md'),
+            pathlib.Path('md/test_1_md_format/correct_instance_extra_features.md'),
+            0,
+            0,
+            0
+        ),
+        (
+            'catalogs',
+            pathlib.Path('md/test_1_md_format/template.md'),
+            pathlib.Path('md/test_1_md_format/correct_instance_extra_features.md'),
+            1,
+            1,
+            1,
+        ),
+        (
+            'test_task',
+            pathlib.Path('md/test_1_md_format/template.md'),
+            pathlib.Path('md/test_1_md_format/bad_instance_missing_heading.md'),
+            0,
+            0,
+            1
+        )
+    ]
+)
+def test_e2e(
+    task_name: str,
+    template_content: pathlib.Path,
+    target_content: pathlib.Path,
+    setup_code: bool,
+    template_code: bool,
+    validate_code: bool,
+    testdata_dir: pathlib.Path,
+    tmp_trestle_dir: pathlib.Path
+) -> None:
+    """Run an E2E workflow with two test criteria for success."""
+    # Note testdata_dir must be before tmp_trestle_dir in the argument order.
+    command_string_setup = f'trestle md governed-docs setup -tn {task_name}'
+    command_string_create_sample = f'trestle md governed-docs create-sample -tn {task_name}'
+    command_string_validate_template = f'trestle md governed-docs template-validate -tn {task_name}'
+    command_string_validate_content = f'trestle md governed-docs validate -tn {task_name} --header-validate'
+    template_target_loc = tmp_trestle_dir / '.trestle' / 'md' / task_name / 'template.md'
+    test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}.md'
+    # Test setup
+    with mock.patch.object(sys, 'argv', command_string_setup.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+            assert wrapped_error == SystemExit
+            assert wrapped_error.code == setup_code
+    if setup_code > 0:
+        return
+
+    # Copy in template:
+    shutil.copyfile(str(testdata_dir / template_content), str(template_target_loc))
+
+    with mock.patch.object(sys, 'argv', command_string_validate_template.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+            assert wrapped_error == SystemExit
+            assert wrapped_error.code == template_code
+    if template_code > 0:
+        return
+    # Create sample - should always work if we are here.
+    with mock.patch.object(sys, 'argv', command_string_create_sample.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+            assert wrapped_error == SystemExit
+            assert wrapped_error.code == 0
+
+    shutil.copyfile(str(testdata_dir / template_content), str(test_content_loc))
+    with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+            assert wrapped_error == SystemExit
+            assert wrapped_error.code == validate_code

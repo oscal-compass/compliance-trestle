@@ -16,7 +16,9 @@
 """Trestle md CIDD sub-command."""
 import argparse
 import logging
+import pathlib
 
+import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.commands.command_docs import CommandPlusDocs
 
@@ -46,6 +48,10 @@ class CIDD(CommandPlusDocs):
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
+        trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
+        if not trestle_root:
+            logger.error(f'Current working directory {pathlib.Path.cwd()} is not with a trestle project.')
+            return 1
         try:
             logger.info(f'Are we paving? {args.pave}')
 

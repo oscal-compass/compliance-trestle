@@ -65,3 +65,20 @@ def test_governed_projects_cli(tmp_trestle_dir: pathlib.Path) -> None:
             # FIXME: Needs to be changed once implemented.
             assert wrapped_error == SystemExit
             assert wrapped_error.code == 1
+
+
+@pytest.mark.parametrize(
+    'command_string',
+    [
+        ('trestle md governed-docs setup -tn test'), ('trestle md governed-folders setup-tn test'),
+        ('trestle md cidd setup')
+    ]
+)
+def test_failure_not_trestle(command_string, tmp_path: pathlib.Path) -> None:
+    """Test for failure based on not in trestle directory."""
+    with mock.patch.object(sys, 'argv', command_string.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+            # FIXME: Needs to be changed once implemented.
+            assert wrapped_error == SystemExit
+            assert wrapped_error.code == 1

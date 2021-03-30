@@ -63,8 +63,6 @@ that directory tree are enforced."""
         elif args.mode == 'validate':
             # mode is validate
             status = self.validate(args.task_name, trestle_root, args.governed_heading, args.header_validate)
-        else:
-            logger.error('Unknown mode for trestle markdown functionality')
         return status
 
     @classmethod
