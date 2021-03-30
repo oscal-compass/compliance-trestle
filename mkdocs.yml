@@ -16,6 +16,7 @@ nav:
 - Tutorials:
   - setting up python and trestle: tutorials/python_trestle_setup.md
   - intro to trestle workflow: tutorials/trestle_sample_workflow.md
+  - compliance posture: tutorials/continuous-compliance/continuous-compliance.md
   - transformer construction: tutorials/task.transformer-construction/transformer-construction.md
   - task tanium-to-oscal: tutorials/task.tanuim-to-oscal/transformation.md
 - Code of Conduct: mkdocs_code_of_conduct.md
