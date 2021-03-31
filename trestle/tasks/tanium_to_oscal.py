@@ -21,6 +21,7 @@ import pathlib
 from typing import Any, Dict, List, Optional
 
 from trestle.core import const
+from trestle.oscal import assessment_results
 from trestle.tasks.base_task import TaskBase
 from trestle.tasks.base_task import TaskOutcome
 from trestle.utils import tanium
@@ -69,7 +70,25 @@ class TaniumToOscal(TaskBase):
         logger.info('All the Tanium report files in the input-dir are processed. Exactly one of output-dir and output-file must be specified. When output-dir is specified, each input file produces a corresponding .json output-dir file. When output-file is specified, each input file produces results merged into the single output file.')
         logger.info('')
         logger.info('Expected Tanium report keys are: { "IP Address", "Computer Name", "Comply", "Benchmark", "Benchmark Version", "ID", "Result", "Timestamp" }')
-        
+        logger.info('')
+        logger.info('For each Tanium report file, an optional file having additional suffix ".local-definitions.json" is expected, the contents thereof specifying a single component to be included in the produced OSCAL.')
+        logger.info('Example:')
+        logger.info('Tanium.comply-nist-results.local-definitions.json')
+        logger.info('{')
+        logger.info('  "local-definitions1": {')
+        logger.info('    "components": {')
+        logger.info('      "e46a50c4-e05e-4927-bbe5-af6e0ad98780": {')
+        logger.info('        "type": "OS",')
+        logger.info('        "title": "Windows OS",')
+        logger.info('        "description": "Windows OS",')
+        logger.info('        "status": {')
+        logger.info('          "state": "operational"')
+        logger.info('        }')
+        logger.info('      }')
+        logger.info('    }')
+        logger.info('  }')
+        logger.info('}')
+
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
         self._simulate = True
@@ -123,8 +142,21 @@ class TaniumToOscal(TaskBase):
         opth.mkdir(exist_ok=True, parents=True)
         # process
         results_mgr = tanium.ResultsMgr()
-        for ifile in sorted(ipth.iterdir()):    
+        for ifile in sorted(ipth.iterdir()):
+            if ifile.name.endswith('.local-definitions.json'):
+                continue
+            dpath = ifile.with_name(ifile.name + '.local-definitions.json')
+            if dpath.exists():
+                local_definitions = assessment_results.LocalDefinitions1.oscal_read(dpath)
+                if len(local_definitions.components) > 1:
+                    logger.error(f'{dpath} components count > 1')
+                    return TaskOutcome(mode + 'failure')
+                results_mgr.add_local_definitions(local_definitions)
+            else:
+                local_definitions = None
             if self._verbose:
+                if local_definitions is not None:
+                     logger.info(f'local-definitions: {dpath}')
                 logger.info(f'input: {ifile}')
             # assemble collection from input file
             collection = self._assemble(ifile)

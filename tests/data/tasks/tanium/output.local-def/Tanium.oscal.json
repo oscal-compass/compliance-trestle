@@ -4,8 +4,18 @@
       "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
       "title": "Tanium",
       "description": "Tanium",
-      "start": "2020-02-24T19:31:13.000+00:00",
+      "start": "2021-02-24T19:31:13.000+00:00",
       "local-definitions": {
+        "components": {
+          "e46a50c4-e05e-4927-bbe5-af6e0ad98780": {
+            "type": "OS",
+            "title": "Windows OS",
+            "description": "Windows OS",
+            "status": {
+              "state": "operational"
+            }
+          }
+        },
         "inventory-items": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -377,13 +387,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -417,13 +432,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -457,13 +477,18 @@
               "name": "time",
               "ns": "dns://tanium",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -497,13 +522,18 @@
               "name": "time",
               "ns": "dns://tanium",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -537,13 +567,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -577,13 +612,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -617,13 +657,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -657,13 +702,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -697,13 +747,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -737,13 +792,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -777,13 +837,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -817,13 +882,18 @@
               "name": "time",
               "ns": "dns://tanium",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -857,13 +927,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -897,13 +972,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -937,13 +1017,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -977,13 +1062,18 @@
               "name": "time",
               "ns": "dns://tanium",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -1017,13 +1107,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -1057,13 +1152,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -1097,13 +1197,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -1137,13 +1242,18 @@
               "name": "time",
               "ns": "dns://tanium",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -1177,13 +1287,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -1217,13 +1332,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -1257,13 +1377,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -1297,13 +1422,18 @@
               "name": "time",
               "ns": "dns://tanium",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -1337,13 +1467,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -1377,13 +1512,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -1417,13 +1557,18 @@
               "name": "time",
               "ns": "dns://xccdf",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -1457,13 +1602,18 @@
               "name": "time",
               "ns": "dns://tanium",
               "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "2021-02-24T19:31:13+00:00"
             }
           ],
           "methods": [
             "TEST-AUTOMATED"
           ],
           "subjects": [
+            {
+              "uuid-ref": "e46a50c4-e05e-4927-bbe5-af6e0ad98780",
+              "type": "component-item",
+              "title": "Windows OS"
+            },
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item",
@@ -1477,7 +1627,7 @@
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
           "title": "800-53: IA-5",
           "description": "800-53: IA-5",
-          "collected": "2020-02-24T19:31:13.000+00:00",
+          "collected": "2021-02-24T19:31:13.000+00:00",
           "objective-status": {
             "props": [
               {
@@ -1568,7 +1718,7 @@
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
           "title": "win_security_ps",
           "description": "win_security_ps",
-          "collected": "2020-02-24T19:31:13.000+00:00",
+          "collected": "2021-02-24T19:31:13.000+00:00",
           "objective-status": {
             "props": [
               {
@@ -1614,7 +1764,7 @@
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
           "title": "av_service",
           "description": "av_service",
-          "collected": "2020-02-24T19:31:13.000+00:00",
+          "collected": "2021-02-24T19:31:13.000+00:00",
           "objective-status": {
             "props": [
               {
@@ -1651,7 +1801,7 @@
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
           "title": "800-53: SC-18",
           "description": "800-53: SC-18",
-          "collected": "2020-02-24T19:31:13.000+00:00",
+          "collected": "2021-02-24T19:31:13.000+00:00",
           "objective-status": {
             "props": [
               {

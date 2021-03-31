@@ -131,6 +131,38 @@ def test_execute(tmpdir):
     assert [row for row in open(f_produced)] == [row for row in open(f_expected)]
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
+def test_execute_local_def(tmpdir):
+    """Test execute call."""
+    tanium.ResultsMgr.set_timestamp('2021-02-24T19:31:13+00:00')
+    assert tanium.ResultsMgr.get_timestamp() == '2021-02-24T19:31:13+00:00'
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal-local-def.config')
+    config.read(config_path)
+    section = config['task.tanium-to-oscal']
+    section['output-dir'] = str(tmpdir)
+    tgt = tanium_to_oscal.TaniumToOscal(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    assert len(os.listdir(str(tmpdir))) == 1
+    f_expected = pathlib.Path('tests/data/tasks/tanium/output.local-def/') / 'Tanium.oscal.json'
+    f_produced = tmpdir  / 'Tanium.oscal.json'
+    assert [row for row in open(f_produced)] == [row for row in open(f_expected)]
+    
+@patch(target='uuid.uuid4', new=uuid_mock1)
+def test_execute_local_def2(tmpdir):
+    """Test execute call."""
+    tanium.ResultsMgr.set_timestamp('2021-02-24T19:31:13+00:00')
+    assert tanium.ResultsMgr.get_timestamp() == '2021-02-24T19:31:13+00:00'
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal-local-def2.config')
+    config.read(config_path)
+    section = config['task.tanium-to-oscal']
+    section['output-dir'] = str(tmpdir)
+    tgt = tanium_to_oscal.TaniumToOscal(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+    
+@patch(target='uuid.uuid4', new=uuid_mock1)
 def test_execute_file(tmpdir):
     """Test execute file call."""
     tanium.ResultsMgr.set_timestamp('2021-02-24T19:31:13+00:00')

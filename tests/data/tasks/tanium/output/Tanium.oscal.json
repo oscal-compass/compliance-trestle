@@ -386,7 +386,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -425,7 +426,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -464,7 +466,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "N/A"
             }
           ]
         },
@@ -503,7 +506,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "N/A"
             }
           ]
         },
@@ -542,7 +546,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -581,7 +586,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -620,7 +626,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -659,7 +666,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -698,7 +706,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -737,7 +746,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -776,7 +786,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -815,7 +826,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "N/A"
             }
           ]
         },
@@ -854,7 +866,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -893,7 +906,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -932,7 +946,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -971,7 +986,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "N/A"
             }
           ]
         },
@@ -1010,7 +1026,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -1049,7 +1066,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -1088,7 +1106,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -1127,7 +1146,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "N/A"
             }
           ]
         },
@@ -1166,7 +1186,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -1205,7 +1226,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -1244,7 +1266,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -1283,7 +1306,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "N/A"
             }
           ]
         },
@@ -1322,7 +1346,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -1361,7 +1386,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -1400,7 +1426,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "Windows 10"
             }
           ]
         },
@@ -1439,7 +1466,8 @@
           "subjects": [
             {
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-              "type": "inventory-item"
+              "type": "inventory-item",
+              "title": "N/A"
             }
           ]
         }

@@ -1,0 +1,14 @@
+{
+  "local-definitions1": {
+    "components": {
+      "e46a50c4-e05e-4927-bbe5-af6e0ad98780": {
+        "type": "OS",
+        "title": "Windows OS",
+        "description": "Windows OS",
+        "status": {
+          "state": "operational"
+        }
+      }
+    }
+  }
+}

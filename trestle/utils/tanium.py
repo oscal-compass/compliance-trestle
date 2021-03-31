@@ -32,10 +32,12 @@ from trestle.oscal.assessment_results import Result
 from trestle.oscal.assessment_results import ReviewedControls
 from trestle.oscal.assessment_results import Status1
 from trestle.oscal.assessment_results import Subject
+from trestle.oscal.assessment_results import SystemComponent
 
 logger = logging.getLogger(__name__)
 
 t_analysis = Dict[str, Any]
+t_component = SystemComponent
 t_control = str
 t_control_selection = ControlSelection
 t_finding = Finding
@@ -51,7 +53,9 @@ t_timestamp = str
 t_resource = Dict[str, Any]
 t_result = Result
 t_reviewed_controls = ReviewedControls
+t_uuid = str
 
+t_components = Dict[t_uuid, Any]
 t_inventory_map = Dict[t_ip, t_inventory]
 t_observation_list = List[Observation]
 t_findings_map = Dict[t_control, Any]
@@ -115,6 +119,7 @@ class ResultsMgr():
 
     def __init__(self) -> None:
         """Initialize."""
+        self.components: t_components = {}
         self.inventory_map: t_inventory_map = {}
         self.observation_list: t_observation_list = []
         self.findings_map: t_findings_map = {}
@@ -210,6 +215,8 @@ class ResultsMgr():
         """OSCAL local definitions."""
         prop = LocalDefinitions1()
         prop.inventory_items = list(self.inventory)
+        if len(self.components) > 0:
+            prop.components = self.components
         return prop
 
     @property
@@ -252,7 +259,14 @@ class ResultsMgr():
         jstring = json.dumps(jobject, indent=2)
         return jstring
 
-    def _get_inventroy_ref(self, ip: t_ip) -> t_inventory_ref:
+    def _get_component_ref(self, ip: t_ip) -> t_inventory_ref:
+        """Get component reference for specified IP."""
+        component_ref = None
+        if len(self.components) > 0:
+            component_ref = list(self.components.keys())[0]
+        return component_ref
+
+    def _get_inventory_ref(self, ip: t_ip) -> t_inventory_ref:
         """Get inventory reference for specified IP."""
         return self.inventory_map[ip].uuid
 
@@ -271,8 +285,17 @@ class ResultsMgr():
     def _observation_extract(self, rule_use: RuleUse) -> None:
         """Extract observation from Tanium row."""
         observation = Observation(uuid=str(uuid.uuid4()), description=rule_use.id, methods=['TEST-AUTOMATED'])
-        subject = Subject(uuid_ref=self._get_inventroy_ref(rule_use.ip), type='inventory-item')
-        observation.subjects = [subject]
+        osubj = []
+        comp_ref = self._get_component_ref(rule_use.ip)
+        if comp_ref is not None:
+            subject0 = Subject(uuid_ref=comp_ref, type='component-item')
+            subject0.title = self.components[comp_ref].title
+            osubj.append(subject0)
+        subject1 = Subject(uuid_ref=self._get_inventory_ref(rule_use.ip), type='inventory-item')
+        subject1.title = rule_use.profile_segment
+        osubj.append(subject1)
+        if len(osubj) > 0:
+            observation.subjects = osubj
         if rule_use.id.startswith('xccdf'):
             ns = 'dns://xccdf'
         else:
@@ -296,6 +319,11 @@ class ResultsMgr():
         if rule not in self.findings_map[control].keys():
             self.findings_map[control][rule] = []
         self.findings_map[control][rule].append(rule_use)
+
+    def add_local_definitions(self, local_definitions: t_local_definitions):
+        """Add local definitions, comprising 1 component."""
+        if len(local_definitions.components) > 0:
+            self.components = local_definitions.components
 
     def ingest(self, tanium: t_tanium_row) -> None:
         """Process one row of Tanium."""
