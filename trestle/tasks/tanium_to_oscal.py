@@ -72,22 +72,6 @@ class TaniumToOscal(TaskBase):
         logger.info('Expected Tanium report keys are: { "IP Address", "Computer Name", "Comply", "Benchmark", "Benchmark Version", "ID", "Result", "Timestamp" }')
         logger.info('')
         logger.info('For each Tanium report file, an optional file having additional suffix ".local-definitions.json" is expected, the contents thereof specifying a single component to be included in the produced OSCAL.')
-        logger.info('Example:')
-        logger.info('Tanium.comply-nist-results.local-definitions.json')
-        logger.info('{')
-        logger.info('  "local-definitions1": {')
-        logger.info('    "components": {')
-        logger.info('      "e46a50c4-e05e-4927-bbe5-af6e0ad98780": {')
-        logger.info('        "type": "OS",')
-        logger.info('        "title": "Windows OS",')
-        logger.info('        "description": "Windows OS",')
-        logger.info('        "status": {')
-        logger.info('          "state": "operational"')
-        logger.info('        }')
-        logger.info('      }')
-        logger.info('    }')
-        logger.info('  }')
-        logger.info('}')
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""

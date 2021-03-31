@@ -687,6 +687,47 @@ Example input directory contents listing:
 
 </details>
 
+**input (with component in local-definitions)**
+
+Optionally, to enhance the produced OSCAL create a file having identical stem with added suffix *.local-definitions.json*,
+the contents specifying a local-definitions with a single component.
+
+<span style="color:green">
+Example input directory contents listing:
+</span>
+
+*/home/user/git/compliance/tanium/input*
+
+```
+-rw-rw-r--. 1 degenaro degenaro 1830 Mar  7 08:23 Tanium.comply-nist-results
+-rw-rw-r--. 1 degenaro degenaro  268 Mar 30 15:59 Tanium.comply-nist-results.local-definitions.json
+
+```
+
+*Tanium.comply-nist-results.local-definitions.json*
+
+<details>
+<summary>display sample</summary>
+
+```
+{
+  "local-definitions1": {
+    "components": {
+      "e46a50c4-e05e-4927-bbe5-af6e0ad98780": {
+        "type": "OS",
+        "title": "Windows OS",
+        "description": "Windows OS",
+        "status": {
+          "state": "operational"
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+
 **output**
 
 <span style="color:green">
