@@ -127,6 +127,12 @@ def find_values_by_name(object_of_interest: Any, name_of_interest: str) -> List[
     return loe
 
 
+def has_no_duplicate_values_by_name(object_of_interest: Any, name_of_interest: str) -> bool:
+    """Determine if duplicate values of type exist in object."""
+    loe = find_values_by_name(object_of_interest, name_of_interest)
+    return len(loe) == len(set(loe))
+
+
 def find_all_attribs_by_regex(object_of_interest: Any, regex_of_interest: str) -> List[Tuple[str, Any]]:
     """Find all attributes in object matching regex expression."""
     all_attrs = []
@@ -135,9 +141,8 @@ def find_all_attribs_by_regex(object_of_interest: Any, regex_of_interest: str) -
         # fields_set has names of fields set when model was initialized
         fields = getattr(object_of_interest, '__fields_set__', None)
         for field in fields:
-            if isinstance(field, str):
-                if p.findall(field):
-                    all_attrs.append((field, object_of_interest.__dict__[field]))
+            if p.findall(field):
+                all_attrs.append((field, object_of_interest.__dict__[field]))
             new_attrs = find_all_attribs_by_regex(object_of_interest.__dict__[field], regex_of_interest)
             all_attrs.extend(new_attrs)
         return all_attrs
@@ -156,23 +161,31 @@ def find_all_attribs_by_regex(object_of_interest: Any, regex_of_interest: str) -
     return all_attrs
 
 
-def has_no_duplicate_values_by_name(object_of_interest: Any, name_of_interest: str) -> bool:
-    """Determine if duplicate values of type exist in object."""
-    loe = find_values_by_name(object_of_interest, name_of_interest)
-    return len(loe) == len(set(loe))
+def regenerate_uuids_in_place(object_of_interest: Any, uuid_lut: Dict[str, str]) -> Tuple[Any, Dict[str, str]]:
+    """Update all uuids in model that require updating.
 
+    Go through the model and replace all dicts with key == 'uuid' and replace the value with a new uuid4.
+    Build a lookup table of the updates that were made.
+    This function does not update the corresponding refs to those uuid's.  That is done by update_uuid_refs
+    Note that this function needs to be started off with uuid_lut == {}, i.e. an empty dict.
+    After that it recurses and grows the lut.
 
-def regenerate_uuids_in_place(object_of_interest: Any, uuid_lut: Any = None) -> Tuple[Any, Dict[str, str]]:
-    """Update all uuids in model that require updating."""
-    if uuid_lut is None:
-        uuid_lut = {}
+    Args:
+        object_of_interest: pydantic.BaseModel, list, dict or str will be updated
+        uuid_lut: dict of the growing lut of old:new uuid's.  First call must be made with value {}
+
+    Returns:
+        The updated object_of_interest with new uuid's (but refs to them are not updated)
+        The final lookup table of old:new uuid's
+
+    """
     uuid_str = 'uuid'
     if isinstance(object_of_interest, pydantic.BaseModel):
         # fields_set has names of fields set when model was initialized
         fields = getattr(object_of_interest, '__fields_set__', None)
         for field in fields:
             new_object = None
-            if isinstance(field, str) and field == uuid_str:
+            if field == uuid_str:
                 new_object = str(uuid.uuid4())
                 uuid_lut[object_of_interest.__dict__[field]] = new_object
             else:
@@ -199,22 +212,22 @@ def regenerate_uuids_in_place(object_of_interest: Any, uuid_lut: Any = None) -> 
     return object_of_interest, uuid_lut
 
 
-def update_new_uuid_refs(object_of_interest: Any, uuid_lut: Any, n_refs_updated: int = 0) -> Tuple[Any, int]:
+def update_new_uuid_refs(object_of_interest: Any, uuid_lut: Dict[str, str]) -> Tuple[Any, int]:
     """Update all refs to uuids that were changed."""
-    if uuid_lut is None:
-        return object_of_interest
+    n_refs_updated = 0
     if isinstance(object_of_interest, pydantic.BaseModel):
         # fields_set has names of fields set when model was initialized
         fields = getattr(object_of_interest, '__fields_set__', None)
         for field in fields:
-            new_object, n_refs_updated = update_new_uuid_refs(object_of_interest.__dict__[field],
-                                                              uuid_lut, n_refs_updated)
+            new_object, n_new_updates = update_new_uuid_refs(object_of_interest.__dict__[field], uuid_lut)
+            n_refs_updated += n_new_updates
             object_of_interest.__dict__[field] = new_object
         return object_of_interest, n_refs_updated
     elif type(object_of_interest) is list:
         new_list = []
         for item in object_of_interest:
-            new_item, n_refs_updated = update_new_uuid_refs(item, uuid_lut, n_refs_updated)
+            new_item, n_new_updates = update_new_uuid_refs(item, uuid_lut)
+            n_refs_updated += n_new_updates
             new_list.append(new_item)
         return new_list, n_refs_updated
     elif type(object_of_interest) is dict:
@@ -227,7 +240,8 @@ def update_new_uuid_refs(object_of_interest: Any, uuid_lut: Any, n_refs_updated:
                 else:
                     new_dict[key] = value
             else:
-                new_value, n_refs_updated = update_new_uuid_refs(value, uuid_lut, n_refs_updated)
+                new_value, n_new_updates = update_new_uuid_refs(value, uuid_lut)
+                n_refs_updated += n_new_updates
                 new_dict[key] = new_value
         return new_dict, n_refs_updated
     elif isinstance(object_of_interest, str):
@@ -238,7 +252,21 @@ def update_new_uuid_refs(object_of_interest: Any, uuid_lut: Any, n_refs_updated:
 
 
 def regenerate_uuids(object_of_interest: Any) -> Tuple[Any, Dict[str, str], int]:
-    """Regenerate all uuids in object and update corresponding references."""
-    new_object, uuid_lut = regenerate_uuids_in_place(object_of_interest)
+    """Regenerate all uuids in object and update corresponding references.
+
+    Find all dicts with key == 'uuid' and replace the value with a new uuid4.
+    Build a corresponding lookup table as you go, of old:new uuid values.
+    Then make a second pass through the object and replace all string values
+    present in the lookup table with the new value.
+
+    Args:
+        object_of_interest: pydantic.BaseModel, list, dict or str will be updated
+
+    Returns:
+        The updated object with new uuid's and refs
+        The final lookup table of old:new uuid's
+        A count of the number of refs that were updated
+    """
+    new_object, uuid_lut = regenerate_uuids_in_place(object_of_interest, {})
     new_object, n_refs_updated = update_new_uuid_refs(new_object, uuid_lut)
     return new_object, uuid_lut, n_refs_updated
