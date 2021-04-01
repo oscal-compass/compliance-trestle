@@ -116,3 +116,6 @@ theme:
     accent: purple
     primary: teal
     scheme: slate
+google-analytics:
+  - G-XT3KGMHSY8
+  - auto
