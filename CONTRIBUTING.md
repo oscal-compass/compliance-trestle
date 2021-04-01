@@ -140,7 +140,7 @@ Test disovery will fail or stop if any of the tests have errors in them - so be 
 
 Note that there are many panels available in Output - so be sure to check `Python Test Log` for errors and output from the tests.
 
-pytest fixtures are available to allow provision of common functionality.  See conftest.py and tmp\_dir for an example.
+pytest fixtures are available to allow provision of common functionality.  See conftest.py and tmp_dir for an example.
 
 ### Code style and formating
 

@@ -7,16 +7,16 @@ Here are step by step instructions to install trestle.
 Install trestle for manipulation of OSCAL documents.
 
 There are 3 short steps shown below before you can use trestle.
-* Make sure you have a working and recent Python environment
-* Set up a Python virtual environment
-* Download and install trestle
-* Confirm it is working properly
-* Create a trestle workspace
+
+- Make sure you have a working and recent Python environment
+- Set up a Python virtual environment
+- Download and install trestle
+- Confirm it is working properly
+- Create a trestle workspace
 
 ## *Confirm you have python installed*
 
-
-* Ensure you have a modern [Python](https://www.python.org/downloads/) (3.7, 3.8, 3.9).
+- Ensure you have a modern [Python](https://www.python.org/downloads/) (3.7, 3.8, 3.9).
 
 ```
 $ python -V</code>
@@ -32,15 +32,17 @@ $ source venv.trestle/bin/activate
 (venv.trestle)$
 
 ```
-* Ensure you have a modern [pip](https://pip.pypa.io/en/stable/installing/) (19.x or greater).
+
+- Ensure you have a modern [pip](https://pip.pypa.io/en/stable/installing/) (19.x or greater).
 
 ```
 (venv.trestle)$ pip --version
 pip 19.2.3 from /home...
 ```
+
 ## *Install trestle*
 
-* Install [compliance-trestle](https://ibm.github.io/compliance-trestle/).
+- Install [compliance-trestle](https://ibm.github.io/compliance-trestle/).
 
 ```
 (venv.trestle)$ pip install compliance-trestle
@@ -50,7 +52,7 @@ Looking in indexes: https://pypi.org/simple,...
 
 ## *Confirm trestle is installed properly*
 
-* Check trestle viability (and view help).
+- Check trestle viability (and view help).
 
 ```
 (venv.trestle)$ trestle -h
@@ -91,7 +93,7 @@ optional arguments:
 
 ## *Create a trestle workspace*
 
-* Create trestle workspace.
+- Create trestle workspace.
 
 ```
 (venv.trestle)$ mkdir trestle.workspace
@@ -101,4 +103,3 @@ Initialized trestle project successfully in /home/<user>/trestle.workspace
 ```
 
 Congratulations! You now have a working trestle workspace for safe manipulation of OSCAL documents!
-

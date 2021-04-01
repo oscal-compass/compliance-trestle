@@ -428,6 +428,7 @@ metadata:
   uid: 1da3ea81-0a25-4512-ad86-7ac360246b5d
   
 ```
+
 </details>
 <br>
 
@@ -481,6 +482,7 @@ ssg-rhel7-ds-cis-111.222.333.444-pod:
             cluster-type: openshift
             cluster-region: us-south
 ```
+
 </details>
 
 **metadata format**
@@ -533,6 +535,7 @@ Example output OSCAL Observations file contents (snippet):
 </span>
 
 *ssg-ocp4-ds-cis-111.222.333.444-pod.json*
+
 <details>
 <summary>display sample</summary>
 
@@ -627,13 +630,14 @@ Example output OSCAL Observations file contents (snippet):
     },
     ...
 ```
+
 </details>
 
 ## `trestle task tanium-to-oscal`
 
-The *trestle task tanium-to-oscal* command facilitates transformation of Tanuim reports, each 
-input file comprising individual lines consumable as *json*, into OSCAL partial results *.json* files. 
-Specify required config parameters to indicate the location of the input and the output. 
+The *trestle task tanium-to-oscal* command facilitates transformation of Tanuim reports, each
+input file comprising individual lines consumable as *json*, into OSCAL partial results *.json* files.
+Specify required config parameters to indicate the location of the input and the output.
 Specify optional config parameter *output-overwrite* to indicate whether overwriting of existing output is permitted.
 Specify optional config parameter *timestamp* as ISO 8601 formated string (e.g., 2021-02-24T19:31:13+00:00) to override the timestamp attached to each Observation.
 
@@ -642,7 +646,6 @@ Example command invocation:
 </span>
 
 > `$TRESTLE_BASEDIR$ trestle task tanium-to-oscal -c /home/user/task.config`
-
 
 <span style="color:green">
 Example config:
@@ -657,6 +660,7 @@ input-dir =  /home/user/git/compliance/tanium/input
 output-dir = /home/user/git/compliance/oscal/output
 output-overwrite = true
 ```
+
 **input**
 
 <span style="color:green">
@@ -670,12 +674,10 @@ Example input directory contents listing:
 
 ```
 
-
 *Tanium.comply-nist-results*
 
 <details>
 <summary>display sample</summary>
-
 
 ```
 {"IP Address":"fe80::3cd5:564b:940e:49ab","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords","Result":"pass","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
@@ -700,12 +702,10 @@ Example output directory contents listing:
 
 ```
 
-
 *Tanium.oscal.json*
 
 <details>
 <summary>display sample</summary>
-
 
 ```
 {

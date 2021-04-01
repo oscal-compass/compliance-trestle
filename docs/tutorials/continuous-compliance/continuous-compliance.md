@@ -23,12 +23,13 @@ Two steps are needed to ascertain your compliance posture. Step 1 is to transfor
 
 #### Step 1 – Transformation
 
-The bad news is that a transformer to [OSCAL](https://pages.nist.gov/OSCAL) is needed for each Cloud Service type. 
+The bad news is that a transformer to [OSCAL](https://pages.nist.gov/OSCAL) is needed for each Cloud Service type.
 
-However, there is plenty of good news: 
-* a transformer for your Cloud Service type may already exist: [Tanium to OSCAL](https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/tanium_to_oscal.py), [OpenShift Compliance Operator to OSCAL](https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/osco_to_oscal.py)
-* once a transformer for a Cloud Service type has been written, it can be open-sourced/re-used
-* writing a transformer is pretty easy, just a few lines of Python code using [trestle](https://ibm.github.io/compliance-trestle/) as a foundation
+However, there is plenty of good news:
+
+- a transformer for your Cloud Service type may already exist: [Tanium to OSCAL](https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/tanium_to_oscal.py), [OpenShift Compliance Operator to OSCAL](https://github.com/IBM/compliance-trestle/blob/main/trestle/tasks/osco_to_oscal.py)
+- once a transformer for a Cloud Service type has been written, it can be open-sourced/re-used
+- writing a transformer is pretty easy, just a few lines of Python code using [trestle](https://ibm.github.io/compliance-trestle/) as a foundation
 
 In the case of Tanium, the [OSCAL](https://pages.nist.gov/OSCAL) compliance data document is a *System Assessment Results* fragment with *Findings* and *Observations*, while in the case of OpenShift Compliance Operator there are *Observations* only.
 
