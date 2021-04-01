@@ -6,11 +6,17 @@
 [![code-coverage][coverage-badge]][coverage]
 [![pypi-downloads][pypi-downloads-badge]][pypi]
 
-Trestle is a tool that enables the creation and validation of documentation artifacts for compliance requirements. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
+Trestle is a ensemble of tools that enables the creation and validation of documentation artifacts for compliance requirements. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
-By design Trestle runs as a CICD pipeline running on top of compliance artifacts in `git` to provide transparency to the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the artifacts generated to tools that orchestrate the enforcement, measurement and reporting of compliance.
+By design Trestle runs as a CICD pipeline running on top of compliance artifacts in `git` to provide transparency to the state of compliance across multiple stakeholders in an environment friendly to developers.
 
-It also provides tooling to manage OSCAL in a more human-friendly manner. By expanding the large OSCAL data structures into smaller and easier to edit sub-structures, creation and maintenance of these artifacts can follow normal `git` workflows (peer review via pull request, versioning, releases/tagging).
+Trestle provides tooling to help orchestrate the compliance process across a number of dimensions:
+
+- Tooling to manage OSCAL in a more human-friendly manner. By expanding the large OSCAL data structures into smaller and easier to edit sub-structures.
+- Transformation workflows that allow existing information from tools which do not support OSCAL into OSCAL.
+- Tooling to manage markdown documents for compliance, including transformation to OSCAL.
+- Support within trestle to streamline management within a managed git environment.
+- An underlying object model which supports developers interacting with OSCAL artefacts.
 
 ## Why Trestle
 
