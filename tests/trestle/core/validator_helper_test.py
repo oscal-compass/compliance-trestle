@@ -19,11 +19,13 @@ import pathlib
 
 import trestle.core.validator_helper as validator_helper
 import trestle.oscal.catalog as catalog
+import trestle.oscal.ssp as ssp
 import trestle.oscal.target as ostarget
 
 import yaml
 
 catalog_path = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
+ssp_path = pathlib.Path('nist-content/src/examples/ssp/json/ssp-example.json')
 
 
 def test_has_no_duplicate_values_generic() -> None:
@@ -63,3 +65,26 @@ def test_has_no_duplicate_values_pydantic() -> None:
     good_target_path = yaml_path / 'good_target.yaml'
     good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
     assert not validator_helper.has_no_duplicate_values_by_type(good_target, ostarget.Property)
+
+
+def test_regenerate_uuids_ssp() -> None:
+    """Test regeneration off uuids with updated refs in ssp."""
+    orig_ssp = ssp.SystemSecurityPlan.oscal_read(ssp_path)
+    new_ssp, uuid_lut, n_refs_updated = validator_helper.regenerate_uuids(orig_ssp)
+    assert len(uuid_lut.items()) == 28
+    assert n_refs_updated == 9
+
+
+def test_regenerate_uuids_catalog() -> None:
+    """Test regeneration off uuids with updated refs in catalog."""
+    orig_cat = catalog.Catalog.oscal_read(catalog_path)
+    new_cat, uuid_lut, n_refs_updated = validator_helper.regenerate_uuids(orig_cat)
+    assert len(uuid_lut.items()) == 121
+    assert n_refs_updated == 0
+
+
+def test_find_all_attribs_by_regex() -> None:
+    """Test finding attribs by regex."""
+    cat = catalog.Catalog.oscal_read(catalog_path)
+    attrs = validator_helper.find_all_attribs_by_regex(cat, r'party.uuid')
+    assert len(attrs) == 2

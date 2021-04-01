@@ -1,7 +1,7 @@
 # Tutorial: How to build an Oscal Assessment Results "lite" with Trestle SDK from your posture result format
 
 The compliance-trestle (trestle) project provides helpful modules to assist your standardization efforts.
-Discussed below are some best practices for automated bridging to NIST OSCAL. 
+Discussed below are some best practices for automated bridging to NIST OSCAL.
 
 ## *Why NIST OSCAL?*
 
@@ -22,7 +22,7 @@ OpenShift Compliance Operator [OSCO](https://github.com/IBM/compliance-trestle/b
 
 ## *Overview*
 
-You have a source of compliance data that is in non-OSCAL format (spreadsheet, XML, JSON, database, object-store...) 
+You have a source of compliance data that is in non-OSCAL format (spreadsheet, XML, JSON, database, object-store...)
 and you would like to transform into standardized form in terms of NIST OSCAL.
 Presumed is an existing method for obtaining the compliance data from the cloud and materializing on disk as one or more files.
 
@@ -38,9 +38,9 @@ Other possible code stack configurations (not shown):
 - write your own command module (file interface), but use trestle logic module (data processing)
 - write your own command and logic modules, but rely on trestle OSCAL support and base
 
-For example, one could create an 
+For example, one could create an
 auditree-arboretum [harvest](https://github.com/ComplianceAsCode/auditree-harvest#report-development)
-report (file interface) that employs the trestle 
+report (file interface) that employs the trestle
 osco-to-oscal transformation (data processing) module.
 
 ## *Choose Mapping Strategy*
@@ -48,11 +48,11 @@ osco-to-oscal transformation (data processing) module.
 There are 3 potential levels of OSCAL Assessment Results that can be emitted by your transformer.
 From most complex to least complex they are:
 
-* a complete SAR
-* a partial SAR comprising Findings with Observations
-* a partial SAR comprising Observations only
+- a complete SAR
+- a partial SAR comprising Findings with Observations
+- a partial SAR comprising Observations only
 
-Below is a snippet from the [SAR](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/) model 
+Below is a snippet from the [SAR](https://pages.nist.gov/OSCAL/documentation/schema/assessment-results-layer/) model
 with these three levels shown.
 
 ![assessment-results](assessment-results.jpg)
@@ -85,6 +85,7 @@ data:
 metadata:
   name: ssg-ocp4-ds-cis-111.222.333.444-pod
 ```
+
 </details>
 
 <details>
@@ -162,6 +163,7 @@ metadata:
       ]
     },
 ```
+
 </details>
 
 ##### Findings with Observations
@@ -201,6 +203,7 @@ then the best mapping wound be to Findings with Observations.
 }
 
 ```
+
 </details>
 
 <details>
@@ -244,6 +247,7 @@ then the best mapping wound be to Findings with Observations.
               "observation-uuid": "95a20b8e-ed0a-4b6c-bf87-8789265c7158"
             },
 ```
+
 </details>
 
 <details>
@@ -290,6 +294,7 @@ then the best mapping wound be to Findings with Observations.
             }
           ]
 ```
+
 </details>
 
 <details>
@@ -329,6 +334,7 @@ then the best mapping wound be to Findings with Observations.
             ]
           },
 ```
+
 </details>
 
 ## *Implement Mapping Strategy*
@@ -340,9 +346,9 @@ while the bottom two layers (in green) are provided by trestle to assist you.
 Trestle is a Python based multi-faceted platform that simplifies this task by providing a set of Python
 classes which enforce adherence to the OSCAL schema, insuring that the produced OSCAL validates.
 
-* file interfacing (read/write files)
-* data processing (in-memory object structure construction)
-* use of OSCAL versioned platform objects (trestle base and oscal functionality)
+- file interfacing (read/write files)
+- data processing (in-memory object structure construction)
+- use of OSCAL versioned platform objects (trestle base and oscal functionality)
 
 ##### *File Interfacing*
 
@@ -378,7 +384,7 @@ where 14 have result=PASS and 1 has result=FAIL, then the overall status for the
 
 ## *Examples*
 
-There are 2 transformers in trestle. 
+There are 2 transformers in trestle.
 The [osco-to-oscal](https://github.com/IBM/compliance-trestle/blob/develop/trestle/tasks/osco_to_oscal.py)
 transformer emits OSCAL Observations, the simplest partial result.
 
@@ -401,7 +407,7 @@ Table of approximate lines of code.
  <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">275
  <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">350
  <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">400
- 
+
 <tr>
  <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">tanum-to-oscal
  <td style="text-align:right;border: 1px solid black;border-collapse: collapse;padding: 15px;">Findings, with Observations

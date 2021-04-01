@@ -1,11 +1,10 @@
 ---
-name: New Collaborator
 about: Request collaborator access
-title: ''
-labels: ''
 assignees: ''
+labels: ''
+name: New Collaborator
+title: ''
 ---
-
 I would like collaborator (write) access to this repository.
 
 - \[ \] I have read the [contributing guidelines][contributing]
