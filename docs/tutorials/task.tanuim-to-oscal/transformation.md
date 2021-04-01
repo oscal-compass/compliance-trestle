@@ -18,6 +18,7 @@ Linux, Mac
 <summary>Windows</summary>
 
 Make these changes:
+
 <ul>
 <li>use backslashes `\` for file paths
 <li>use `md` instead of mkdir -p
@@ -26,14 +27,14 @@ Make these changes:
 </ul>
 </details>
 
-* Insure you have a modern [Python](https://www.python.org/downloads/) (3.7, 3.8, 3.9).
+- Insure you have a modern [Python](https://www.python.org/downloads/) (3.7, 3.8, 3.9).
 
 ```
 $ python -V</code>
 Python 3.8.3</code>
 ```
 
-* Setup a virtual environment.
+- Setup a virtual environment.
 
 ```
 $ cd
@@ -42,13 +43,15 @@ $ source venv.trestle/bin/activate
 (venv.trestle)$
 
 ```
-* Insure you have a modern [pip](https://pip.pypa.io/en/stable/installing/) (19.x or greater).
+
+- Insure you have a modern [pip](https://pip.pypa.io/en/stable/installing/) (19.x or greater).
 
 ```
 (venv.trestle)$ pip --version
 pip 19.2.3 from /home...
 ```
-* Install [compliance-trestle](https://ibm.github.io/compliance-trestle/).
+
+- Install [compliance-trestle](https://ibm.github.io/compliance-trestle/).
 
 ```
 (venv.trestle)$ pip install compliance-trestle
@@ -56,14 +59,15 @@ Looking in indexes: https://pypi.org/simple,...
 
 ```
 
-* Check trestle viability (and view help).
+- Check trestle viability (and view help).
 
 ```
 (venv.trestle)$ trestle -h
 usage: trestle [-h] {init,create,split,merge,replicate,add,remove,validate,import,task,assemble} ...
 
 ```
-* Create trestle workspace.
+
+- Create trestle workspace.
 
 ```
 (venv.trestle)$ mkdir trestle.workspace
@@ -72,21 +76,20 @@ usage: trestle [-h] {init,create,split,merge,replicate,add,remove,validate,impor
 Initialized trestle project successfully in /home/<user>/trestle.workspace
 ```
 
-
 ## *Step 2: Transform sample*
 
-* Create Tanium data folders.
+- Create Tanium data folders.
 
 ```
 (venv.trestle)$ mkdir -p tanium/tests/data/tasks/tanium/input
 ```
 
-
-* Fetch sample Tanium data file. It is a "raw" Tanium report for which a transformation to OSCAL is desired.
+- Fetch sample Tanium data file. It is a "raw" Tanium report for which a transformation to OSCAL is desired.
 
 ```
 (venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/input/Tanium.comply-nist-results' > tanium/tests/data/tasks/tanium/input/Tanium.comply-nist-results
 ```
+
 <details>
 <summary>sample: Tanium.comply-nist-results</summary>
 
@@ -120,14 +123,14 @@ Initialized trestle project successfully in /home/<user>/trestle.workspace
 {"IP Address":"10.8.68.219","Computer Name":"cmp-wn-2116.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days","Result":"fail","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
 {"IP Address":"10.8.68.219","Computer Name":"cmp-wn-2116.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"","Benchmark Version":"","Profile":"","ID":"win_security_ps","Result":"pass","Custom ID":"","Version":""}],"Count":"1","Age":"600"}
 ```
+
 </details>
 
-* Fetch sample trestle tanium-to-oscal config file. It informs the trestle command where to read input and write output.
+- Fetch sample trestle tanium-to-oscal config file. It informs the trestle command where to read input and write output.
 
 ```
 (venv.trestle)$ curl 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/tasks/tanium/demo-tanium-to-oscal.config' > tanium/demo-tanium-to-oscal.config
 ```
-
 
 <details>
 <summary>sample: demo-tanium-to-oscal.config</summary>
@@ -139,9 +142,10 @@ input-dir =  tests/data/tasks/tanium/input
 output-dir = tests/data/tasks/tanium/runtime
 
 ```
+
 </details>
 
-* Perform the transform.
+- Perform the transform.
 
 ```
 (venv.trestle)$ cd tanium
@@ -155,12 +159,11 @@ Task: tanium-to-oscal executed successfully.
 
 ```
 
-* View the generated OSCAL.
+- View the generated OSCAL.
 
 ```
 (venv.trestle)$ cat tests/data/tasks/tanium/runtime/Tanium.oscal.json
 ```
-
 
 <details>
 <summary>sample:  Tanium.oscal.json</summary>
@@ -2011,4 +2014,3 @@ Congratulations! You have bridged Tanium data into an OSCAL Assessment Results F
 <small>Newtown, Victoria</small>
 
 ![Australia Scarsdale  Nimons Bridge](800px-Australia_scarsdale_nimons_bridge.jpg)
-
