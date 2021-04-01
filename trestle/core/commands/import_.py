@@ -21,6 +21,7 @@ from json.decoder import JSONDecodeError
 
 import trestle.core.commands.validate as validatecmd
 from trestle.core import parser
+from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
@@ -46,7 +47,7 @@ class ImportCmd(CommandPlusDocs):
         self.add_argument('-o', '--output', help='Name of output element.', type=str, required=True)
 
         self.add_argument(
-            '-r', '--regenerate', type=bool, default=False, help='Enable to regenerate uuids within the document'
+            '-r', '--regenerate', action='store_true', help='Enable regeneration of uuids within the document'
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -115,6 +116,7 @@ class ImportCmd(CommandPlusDocs):
             logger.debug(f'parser.root_key() failed: {err}')
             logger.error(f'Import failed, failed to parse input file for root key: {err}')
             return 1
+
         # 4.3 parse the model
         parent_model_name = parser.to_full_model_name(parent_alias)
         try:
@@ -138,7 +140,12 @@ class ImportCmd(CommandPlusDocs):
             return 1
 
         # 6. Prepare actions and plan
-        top_element = Element(parent_model.oscal_read(input_file))
+        model_read = parent_model.oscal_read(input_file)
+        if args.regenerate:
+            logger.debug(f'regenerating uuids in {input_file}')
+            model_read, lut, nchanged = validator_helper.regenerate_uuids(model_read)
+            logger.debug(f'uuid lut has {len(lut.items())} entries and {nchanged} refs were updated')
+        top_element = Element(model_read)
         create_action = CreatePathAction(desired_model_path.absolute(), True)
         write_action = WriteFileAction(desired_model_path.absolute(), top_element, content_type)
 
