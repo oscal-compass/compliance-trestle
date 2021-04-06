@@ -92,9 +92,9 @@ def classname_to_alias(classname: str, mode: str) -> str:
     suffix = classname.split('.')[-1]
 
     if mode == 'json':
-        return camel_to_dash(suffix)
+        return camel_to_dash(suffix).rstrip('1234567890')
     elif mode == 'field':
-        return camel_to_snake(suffix)
+        return camel_to_snake(suffix).rstrip('1234567890')
     else:
         raise err.TrestleError('Bad option')
 

@@ -22,8 +22,47 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Field, constr
+from pydantic import AnyUrl, EmailStr, Extra, Field, constr
 from trestle.core.base_model import OscalBaseModel
+
+
+class Add(OscalBaseModel):
+    __root__: Any
+
+
+class All(OscalBaseModel):
+    __root__: Any
+
+
+class Alter(OscalBaseModel):
+    __root__: Any
+
+
+class AsIs(OscalBaseModel):
+    __root__: Any
+
+
+class BackMatter(OscalBaseModel):
+    __root__: Any
+
+
+class Base64(OscalBaseModel):
+    filename: Optional[str] = Field(
+        None,
+        description='Name of the file before it was encoded as Base64 to be embedded in a resource. This is the name that will be assigned to the file when the file is decoded.',
+        title='File Name',
+    )
+    media_type: Optional[str] = Field(
+        None,
+        alias='media-type',
+        description='Specifies a media type as defined by the Internet Assigned Numbers Authority (IANA) Media Types Registry.',
+        title='Media Type',
+    )
+    value: str
+
+
+class Call(OscalBaseModel):
+    __root__: Any
 
 
 class WithChildControls(Enum):
@@ -36,20 +75,74 @@ class Type(Enum):
     organization = 'organization'
 
 
-class TelephoneNumber(OscalBaseModel):
-    type: Optional[str] = Field(
-        None, description='Indicates the type of phone number.', title='type flag'
-    )
-    number: str
+class SetParameter(OscalBaseModel):
+    __root__: Any
 
 
-class RoleId(OscalBaseModel):
-    __root__: str = Field(
-        ..., description='A reference to the roles served by the user.'
-    )
+class Role(OscalBaseModel):
+    __root__: Any
+
+
+class ResponsibleParty(OscalBaseModel):
+    __root__: Any
 
 
 class Remove(OscalBaseModel):
+    __root__: Any
+
+
+class Remarks(OscalBaseModel):
+    __root__: Any
+
+
+class Property(OscalBaseModel):
+    __root__: Any
+
+
+class Profile(OscalBaseModel):
+    __root__: Any
+
+
+class Position(Enum):
+    before = 'before'
+    after = 'after'
+    starting = 'starting'
+    ending = 'ending'
+
+
+class PartyUuid(OscalBaseModel):
+    __root__: Any
+
+
+class Party(OscalBaseModel):
+    __root__: Any
+
+
+class Part(OscalBaseModel):
+    __root__: Any
+
+
+class ParameterValue(OscalBaseModel):
+    __root__: Any
+
+
+class ParameterSelection(OscalBaseModel):
+    __root__: Any
+
+
+class ParameterGuideline(OscalBaseModel):
+    __root__: Any
+
+
+class ParameterConstraint(OscalBaseModel):
+    __root__: Any
+
+
+class Parameter(OscalBaseModel):
+    __root__: Any
+
+
+class OscalProfileRemove(OscalBaseModel):
     name_ref: Optional[str] = Field(
         None,
         alias='name-ref',
@@ -76,13 +169,18 @@ class Remove(OscalBaseModel):
     )
 
 
-class Remarks(OscalBaseModel):
+class OscalProfileRemarks(OscalBaseModel):
     __root__: str = Field(
         ..., description='Additional commentary on the containing object.'
     )
 
 
-class Property(OscalBaseModel):
+class OscalProfileProperty(OscalBaseModel):
+    name: str = Field(
+        ...,
+        description="A textual label that uniquely identifies a specific attribute, characteristic, or quality of the property's containing object.",
+        title='Property Name',
+    )
     uuid: Optional[
         constr(
             regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -92,15 +190,15 @@ class Property(OscalBaseModel):
         description='A unique identifier that can be used to reference this property elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.',
         title='Property Universally Unique Identifier',
     )
-    name: str = Field(
-        ...,
-        description="A textual label that uniquely identifies a specific attribute, characteristic, or quality of the property's containing object.",
-        title='Property Name',
-    )
     ns: Optional[AnyUrl] = Field(
         None,
         description="A namespace qualifying the property's name. This allows different organizations to associate distinct semantics with the same name.",
         title='Property Namespace',
+    )
+    value: str = Field(
+        ...,
+        description='Indicates the optional value of the attribute, characteristic, or quality. Typically, a value will be provided; however, the value is optional allowing cases were the name is asserting some characteristic or quality.',
+        title='Annotated Property Value',
     )
     class_: Optional[str] = Field(
         None,
@@ -108,27 +206,23 @@ class Property(OscalBaseModel):
         description="A textual label that provides a sub-type or characterization of the property's name. This can be used to further distinguish or discriminate between the semantics of multiple properties of the same object with the same name and ns.",
         title='Property Class',
     )
-    value: str
+    remarks: Optional[Remarks] = None
 
 
-class Position(Enum):
-    before = 'before'
-    after = 'after'
-    starting = 'starting'
-    ending = 'ending'
-
-
-class PartyUuid(OscalBaseModel):
+class OscalProfilePartyUuid(OscalBaseModel):
     __root__: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(..., description='References a party defined in metadata.')
 
 
-class ParameterValue(OscalBaseModel):
+class OscalProfileParameterValue(OscalBaseModel):
     __root__: str = Field(..., description='A parameter value or set of values.')
 
 
-class ParameterSelection(OscalBaseModel):
+class OscalProfileParameterSelection(OscalBaseModel):
+    class Config:
+        extra = Extra.allow
+
     how_many: Optional[str] = Field(
         None,
         alias='how-many',
@@ -138,7 +232,10 @@ class ParameterSelection(OscalBaseModel):
     choice: Optional[List[str]] = Field(None, min_items=1)
 
 
-class ParameterGuideline(OscalBaseModel):
+class OscalProfileParameterGuideline(OscalBaseModel):
+    class Config:
+        extra = Extra.allow
+
     prose: str = Field(
         ...,
         description='Prose permits multiple paragraphs, lists, tables etc.',
@@ -146,53 +243,73 @@ class ParameterGuideline(OscalBaseModel):
     )
 
 
-class Order(Enum):
-    keep = 'keep'
-    ascending = 'ascending'
-    descending = 'descending'
-
-
-class Method(Enum):
-    use_first = 'use-first'
-    merge = 'merge'
-    keep = 'keep'
-
-
-class MemberOfOrganization(OscalBaseModel):
-    __root__: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
+class OscalProfileOscalMetadataVersion(OscalBaseModel):
+    __root__: str = Field(
         ...,
-        description='Identifies that the party object is a member of the organization associated with the provided UUID.',
+        description='A string used to distinguish the current version of the document from other previous (and future) versions.',
     )
 
 
-class Match(OscalBaseModel):
-    pattern: Optional[str] = Field(
+class OscalProfileOscalMetadataTelephoneNumber(OscalBaseModel):
+    type: Optional[str] = Field(
+        None, description='Indicates the type of phone number.', title='type flag'
+    )
+    number: str
+
+
+class OscalProfileOscalMetadataPublished(OscalBaseModel):
+    __root__: datetime = Field(
+        ...,
+        description='The date and time the document was published. The date-time value must be formatted according to RFC 3339 with full time and time zone included.',
+    )
+
+
+class OscalProfileOscalMetadataOscalVersion(OscalBaseModel):
+    __root__: str = Field(
+        ..., description='The OSCAL model version the document was authored against.'
+    )
+
+
+class OscalProfileOscalMetadataLastModified(OscalBaseModel):
+    __root__: datetime = Field(
+        ...,
+        description='The date and time the document was last modified. The date-time value must be formatted according to RFC 3339 with full time and time zone included.',
+    )
+
+
+class OscalProfileOscalMetadataEmailAddress(OscalBaseModel):
+    __root__: EmailStr = Field(
+        ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
+    )
+
+
+class OscalProfileOscalMetadataDocumentId(OscalBaseModel):
+    scheme: Optional[AnyUrl] = Field(
         None,
-        description='A regular expression matching the IDs of one or more controls to be selected',
-        title='Pattern',
+        description='Qualifies the kind of document identifier using a URI. If the scheme is not provided the value of the element will be interpreted as a string of characters.',
+        title='Document Identification Scheme',
     )
-    order: Optional[Order] = Field(
-        None,
-        description='A designation of how a selection of controls in a profile is to be ordered.',
-        title='Order',
-    )
-    with_child_controls: Optional[WithChildControls] = Field(
-        None,
-        alias='with-child-controls',
-        description='When a control is included, whether its child (dependent) controls are also included.',
-        title='Include contained controls with control',
-    )
+    identifier: str
 
 
-class LocationUuid(OscalBaseModel):
+class OscalProfileOscalMetadataAddrLine(OscalBaseModel):
+    __root__: str = Field(..., description='A single line of an address.')
+
+
+class OscalProfileModify(OscalBaseModel):
+    set_parameters: Optional[Dict[str, SetParameter]] = Field(
+        None, alias='set-parameters'
+    )
+    alters: Optional[List[Alter]] = Field(None, min_items=1)
+
+
+class OscalProfileLocationUuid(OscalBaseModel):
     __root__: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(..., description='References a location defined in metadata.')
 
 
-class Link(OscalBaseModel):
+class OscalProfileLink(OscalBaseModel):
     href: str = Field(
         ...,
         description='A resolvable URL reference to a resource.',
@@ -216,46 +333,14 @@ class Link(OscalBaseModel):
     )
 
 
-class Hash(OscalBaseModel):
+class OscalProfileHash(OscalBaseModel):
     algorithm: str = Field(
         ..., description='Method by which a hash is derived', title='Hash algorithm'
     )
     value: str
 
 
-class ExternalId(OscalBaseModel):
-    scheme: AnyUrl = Field(
-        ...,
-        description='Indicates the type of external identifier.',
-        title='External Identifier Schema',
-    )
-    id: str
-
-
-class EmailAddress(OscalBaseModel):
-    __root__: EmailStr = Field(
-        ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
-    )
-
-
-class DocumentId(OscalBaseModel):
-    scheme: AnyUrl = Field(
-        ...,
-        description='Qualifies the kind of document identifier.',
-        title='Document Identification Scheme',
-    )
-    identifier: str
-
-
-class Combine(OscalBaseModel):
-    method: Optional[Method] = Field(
-        None,
-        description='How clashing controls should be handled',
-        title='Combination method',
-    )
-
-
-class Call(OscalBaseModel):
+class OscalProfileCall(OscalBaseModel):
     control_id: str = Field(
         ...,
         alias='control-id',
@@ -270,57 +355,25 @@ class Call(OscalBaseModel):
     )
 
 
-class Base64(OscalBaseModel):
-    filename: Optional[str] = Field(
-        None,
-        description='Name of the file before it was encoded as Base64 to be embedded in a resource. This is the name that will be assigned to the file when the file is decoded.',
-        title='File Name',
-    )
-    media_type: Optional[str] = Field(
-        None,
-        alias='media-type',
-        description='Specifies a media type as defined by the Internet Assigned Numbers Authority (IANA) Media Types Registry.',
-        title='Media Type',
-    )
-    value: str
-
-
-class AsIs(OscalBaseModel):
+class OscalProfileAsIs(OscalBaseModel):
     __root__: bool = Field(
         ...,
         description='An As-is element indicates that the controls should be structured in resolution as they are structured in their source catalogs. It does not contain any elements or attributes.',
     )
 
 
-class Annotation(OscalBaseModel):
-    name: str = Field(
-        ...,
-        description="A textual label that uniquely identifies a specific attribute, characteristic, or quality of the annotated property's containing object.",
-        title='Annotated Property Name',
-    )
-    uuid: Optional[
-        constr(
-            regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-        )
-    ] = Field(
+class OscalProfileAlter(OscalBaseModel):
+    control_id: Optional[str] = Field(
         None,
-        description='A unique identifier that can be used to reference this annotated property elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.',
-        title='Annotated Property Universally Unique Identifier',
+        alias='control-id',
+        description="Value of the 'id' flag on a target control",
+        title='Control ID',
     )
-    ns: Optional[AnyUrl] = Field(
-        None,
-        description="A namespace qualifying the annotated property's name. This allows different organizations to associate distinct semantics with the same name.",
-        title='Annotated Property Namespace',
-    )
-    value: str = Field(
-        ...,
-        description='Indicates the value of the attribute, characteristic, or quality.',
-        title='Annotated Property Value',
-    )
-    remarks: Optional[Remarks] = None
+    removes: Optional[List[Remove]] = Field(None, min_items=1)
+    adds: Optional[List[Add]] = Field(None, min_items=1)
 
 
-class All(OscalBaseModel):
+class OscalProfileAll(OscalBaseModel):
     with_child_controls: Optional[WithChildControls] = Field(
         None,
         alias='with-child-controls',
@@ -329,11 +382,303 @@ class All(OscalBaseModel):
     )
 
 
-class Address(OscalBaseModel):
+class OscalMetadataVersion(OscalBaseModel):
+    __root__: Any
+
+
+class OscalMetadataTelephoneNumber(OscalBaseModel):
+    __root__: Any
+
+
+class OscalMetadataRevision(OscalBaseModel):
+    __root__: Any
+
+
+class OscalMetadataPublished(OscalBaseModel):
+    __root__: Any
+
+
+class OscalMetadataOscalVersion(OscalBaseModel):
+    __root__: Any
+
+
+class OscalMetadataLastModified(OscalBaseModel):
+    __root__: Any
+
+
+class OscalMetadataEmailAddress(OscalBaseModel):
+    __root__: Any
+
+
+class OscalMetadataDocumentId(OscalBaseModel):
+    __root__: Any
+
+
+class OscalMetadataAddress(OscalBaseModel):
+    __root__: Any
+
+
+class OscalMetadataAddrLine(OscalBaseModel):
+    __root__: Any
+
+
+class Order(Enum):
+    keep = 'keep'
+    ascending = 'ascending'
+    descending = 'descending'
+
+
+class Modify(OscalBaseModel):
+    __root__: Any
+
+
+class Model(OscalBaseModel):
+    profile: Profile
+
+
+class Method(Enum):
+    use_first = 'use-first'
+    merge = 'merge'
+    keep = 'keep'
+
+
+class Metadata(OscalBaseModel):
+    __root__: Any
+
+
+class Merge(OscalBaseModel):
+    __root__: Any
+
+
+class MemberOfOrganization(OscalBaseModel):
+    __root__: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='Identifies that the party object is a member of the organization associated with the provided UUID.',
+    )
+
+
+class Match(OscalBaseModel):
+    __root__: Any
+
+
+class LocationUuid(OscalBaseModel):
+    __root__: Any
+
+
+class Location(OscalBaseModel):
+    __root__: Any
+
+
+class Link(OscalBaseModel):
+    __root__: Any
+
+
+class OscalProfileAdd(OscalBaseModel):
+    position: Optional[Position] = Field(
+        None,
+        description='Where to add the new content with respect to the targeted element (beside it or inside it)',
+        title='Position',
+    )
+    id_ref: Optional[str] = Field(
+        None,
+        alias='id-ref',
+        description='Target location of the addition.',
+        title='Reference by ID',
+    )
+    title: Optional[str] = Field(
+        None,
+        description='A name given to the control, which may be used by a tool for display and navigation.',
+        title='Title Change',
+    )
+    params: Optional[List[Parameter]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    parts: Optional[List[Part]] = Field(None, min_items=1)
+class OscalProfileCombine(OscalBaseModel):
+    method: Optional[Method] = Field(
+        None,
+        description='How clashing controls should be handled',
+        title='Combination method',
+    )
+
+
+class Include(OscalBaseModel):
+    __root__: Any
+
+
+class Import(OscalBaseModel):
+    __root__: Any
+
+
+class Hash(OscalBaseModel):
+    __root__: Any
+
+
+class Group(OscalBaseModel):
+    __root__: Any
+
+
+class OscalProfileCustom(OscalBaseModel):
+    groups: Optional[List[Group]] = Field(None, min_items=1)
+    id_selectors: Optional[List[Call]] = Field(None, alias='id-selectors', min_items=1)
+    pattern_selectors: Optional[List[Match]] = Field(
+        None, alias='pattern-selectors', min_items=1
+    )
+
+
+class OscalProfileExclude(OscalBaseModel):
+    calls: Optional[List[Call]] = Field(None, min_items=1)
+    matches: Optional[List[Match]] = Field(None, min_items=1)
+
+
+class OscalProfileGroup(OscalBaseModel):
+    id: Optional[str] = Field(
+        None,
+        description="A unique identifier for a specific group instance that can be used to reference the group within this and in other OSCAL documents. This identifier's uniqueness is document scoped and is intended to be consistent for the same group across minor revisions of the document.",
+        title='Group Identifier',
+    )
+    class_: Optional[str] = Field(
+        None,
+        alias='class',
+        description='A textual label that provides a sub-type or characterization of the group.',
+        title='Group Class',
+    )
+    title: str = Field(
+        ...,
+        description='A name given to the group, which may be used by a tool for display and navigation.',
+        title='Group Title',
+    )
+    params: Optional[List[Parameter]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    parts: Optional[List[Part]] = Field(None, min_items=1)
+    groups: Optional[List[Group]] = Field(None, min_items=1)
+    calls: Optional[List[Call]] = Field(None, min_items=1)
+    matches: Optional[List[Match]] = Field(None, min_items=1)
+
+
+class ExternalId(OscalBaseModel):
+    scheme: AnyUrl = Field(
+        ...,
+        description='Indicates the type of external identifier.',
+        title='External Identifier Schema',
+    )
+    id: str
+
+
+class Exclude(OscalBaseModel):
+    __root__: Any
+
+
+class OscalProfileImport(OscalBaseModel):
+    href: str = Field(
+        ...,
+        description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.',
+        title='Catalog or Profile Reference',
+    )
+    include: Optional[Include] = None
+    exclude: Optional[Exclude] = None
+
+
+class OscalProfileInclude(OscalBaseModel):
+    all: Optional[All] = None
+    calls: Optional[List[Call]] = Field(None, min_items=1)
+    matches: Optional[List[Match]] = Field(None, min_items=1)
+
+
+class OscalProfileLocation(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.',
+        title='Location Universally Unique Identifier',
+    )
+    title: Optional[str] = Field(
+        None,
+        description='A name given to the location, which may be used by a tool for display and navigation.',
+        title='Location Title',
+    )
+    address: OscalMetadataAddress
+    email_addresses: Optional[List[OscalMetadataEmailAddress]] = Field(
+        None, alias='email-addresses', min_items=1
+    )
+    telephone_numbers: Optional[List[OscalMetadataTelephoneNumber]] = Field(
+        None, alias='telephone-numbers', min_items=1
+    )
+    urls: Optional[List[AnyUrl]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    remarks: Optional[Remarks] = None
+
+
+class OscalProfileMatch(OscalBaseModel):
+    pattern: Optional[str] = Field(
+        None,
+        description='A regular expression matching the IDs of one or more controls to be selected',
+        title='Pattern',
+    )
+    order: Optional[Order] = Field(
+        None,
+        description='A designation of how a selection of controls in a profile is to be ordered.',
+        title='Order',
+    )
+    with_child_controls: Optional[WithChildControls] = Field(
+        None,
+        alias='with-child-controls',
+        description='When a control is included, whether its child (dependent) controls are also included.',
+        title='Include contained controls with control',
+    )
+
+
+class Custom(OscalBaseModel):
+    __root__: Any
+
+
+class Combine(OscalBaseModel):
+    __root__: Any
+
+
+class OscalProfileMerge(OscalBaseModel):
+    combine: Optional[Combine] = None
+    as_is: Optional[AsIs] = Field(None, alias='as-is')
+    custom: Optional[Custom] = None
+
+
+class OscalProfileMetadata(OscalBaseModel):
+    title: str = Field(
+        ...,
+        description='A name given to the document, which may be used by a tool for display and navigation.',
+        title='Document Title',
+    )
+    published: Optional[OscalMetadataPublished] = None
+    last_modified: OscalMetadataLastModified = Field(..., alias='last-modified')
+    version: OscalMetadataVersion
+    oscal_version: OscalMetadataOscalVersion = Field(..., alias='oscal-version')
+    revisions: Optional[List[OscalMetadataRevision]] = Field(None, min_items=1)
+    document_ids: Optional[List[OscalMetadataDocumentId]] = Field(
+        None, alias='document-ids', min_items=1
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    roles: Optional[List[Role]] = Field(None, min_items=1)
+    locations: Optional[List[Location]] = Field(None, min_items=1)
+    parties: Optional[List[Party]] = Field(None, min_items=1)
+    responsible_parties: Optional[Dict[str, ResponsibleParty]] = Field(
+        None, alias='responsible-parties'
+    )
+    remarks: Optional[Remarks] = None
+
+
+class OscalProfileOscalMetadataAddress(OscalBaseModel):
     type: Optional[str] = Field(
         None, description='Indicates the type of address.', title='Address Type'
     )
-    addr_lines: Optional[List[str]] = Field(None, alias='addr-lines', min_items=1)
+    addr_lines: Optional[List[OscalMetadataAddrLine]] = Field(
+        None, alias='addr-lines', min_items=1
+    )
     city: Optional[str] = Field(
         None,
         description='City, town or geographical region for the mailing address.',
@@ -357,25 +702,29 @@ class Address(OscalBaseModel):
     )
 
 
-class Test(OscalBaseModel):
-    expression: str = Field(
-        ...,
-        description='A formal (executable) expression of a constraint',
-        title='Constraint test',
+class OscalProfileOscalMetadataRevision(OscalBaseModel):
+    title: Optional[str] = Field(
+        None,
+        description='A name given to the document revision, which may be used by a tool for display and navigation.',
+        title='Document Title',
     )
+    published: Optional[OscalMetadataPublished] = None
+    last_modified: Optional[OscalMetadataLastModified] = Field(
+        None, alias='last-modified'
+    )
+    version: Optional[OscalMetadataVersion] = None
+    oscal_version: Optional[OscalMetadataOscalVersion] = Field(
+        None, alias='oscal-version'
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
     remarks: Optional[Remarks] = None
 
 
-class ParameterConstraint(OscalBaseModel):
-    description: Optional[str] = Field(
-        None,
-        description='A textual summary of the constraint to be applied.',
-        title='Constraint Description',
-    )
-    tests: Optional[List[Test]] = Field(None, min_items=1)
+class OscalProfileParameter(OscalBaseModel):
+    class Config:
+        extra = Extra.allow
 
-
-class Parameter(OscalBaseModel):
     id: str = Field(
         ...,
         description="A unique identifier for a specific parameter instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same parameter across minor revisions of the document.",
@@ -394,7 +743,6 @@ class Parameter(OscalBaseModel):
         title='Depends on',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
     label: Optional[str] = Field(
         None,
@@ -410,182 +758,13 @@ class Parameter(OscalBaseModel):
     guidelines: Optional[List[ParameterGuideline]] = Field(None, min_items=1)
     values: Optional[List[ParameterValue]] = Field(None, min_items=1)
     select: Optional[ParameterSelection] = None
-
-
-class SetParameter(OscalBaseModel):
-    class_: Optional[str] = Field(
-        None,
-        alias='class',
-        description='A textual label that provides a characterization of the parameter.',
-        title='Parameter Class',
-    )
-    depends_on: Optional[str] = Field(
-        None,
-        alias='depends-on',
-        description='Another parameter invoking this one',
-        title='Depends on',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    label: Optional[str] = Field(
-        None,
-        description='A short, placeholder name for the parameter, which can be used as a subsitute for a value if no value is assigned.',
-        title='Parameter Label',
-    )
-    usage: Optional[str] = Field(
-        None,
-        description='Describes the purpose and use of a parameter',
-        title='Parameter Usage Description',
-    )
-    constraints: Optional[List[ParameterConstraint]] = Field(None, min_items=1)
-    guidelines: Optional[List[ParameterGuideline]] = Field(None, min_items=1)
-    values: Optional[List[ParameterValue]] = Field(None, min_items=1)
-    select: Optional[ParameterSelection] = None
-
-
-class Role(OscalBaseModel):
-    id: str = Field(
-        ...,
-        description="A unique identifier for a specific role instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same role across minor revisions of the document.",
-        title='Role Identifier',
-    )
-    title: str = Field(
-        ...,
-        description='A name given to the role, which may be used by a tool for display and navigation.',
-        title='Role Title',
-    )
-    short_name: Optional[str] = Field(
-        None,
-        alias='short-name',
-        description='A short common name, abbreviation, or acronym for the role.',
-        title='Role Short Name',
-    )
-    description: Optional[str] = Field(
-        None,
-        description="A summary of the role's purpose and associated responsibilities.",
-        title='Role Description',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
     remarks: Optional[Remarks] = None
 
 
-class Rlink(OscalBaseModel):
-    href: str = Field(
-        ...,
-        description='A resolvable URI reference to a resource.',
-        title='Hypertext Reference',
-    )
-    media_type: Optional[str] = Field(
-        None,
-        alias='media-type',
-        description='Specifies a media type as defined by the Internet Assigned Numbers Authority (IANA) Media Types Registry.',
-        title='Media Type',
-    )
-    hashes: Optional[List[Hash]] = Field(None, min_items=1)
+class OscalProfilePart(OscalBaseModel):
+    class Config:
+        extra = Extra.allow
 
-
-class Revision(OscalBaseModel):
-    title: Optional[str] = Field(
-        None,
-        description='A name given to the document revision, which may be used by a tool for display and navigation.',
-        title='Document Title',
-    )
-    published: Optional[datetime] = Field(
-        None,
-        description='The date and time the document was published. The date-time value must be formatted according to RFC 3339 with full time and time zone included.',
-        title='Publication Timestamp',
-    )
-    last_modified: Optional[datetime] = Field(
-        None,
-        alias='last-modified',
-        description='The date and time the document was last modified. The date-time value must be formatted according to RFC 3339 with full time and time zone included.',
-        title='Last Modified Timestamp',
-    )
-    version: Optional[str] = Field(
-        None,
-        description='A string used to distinguish the current version of the document from other previous (and future) versions.',
-        title='Document Version',
-    )
-    oscal_version: Optional[constr(regex=r'1\.0\.0[ -]*rc[ -]*1')] = Field(
-        None,
-        alias='oscal-version',
-        description='The OSCAL model version the document was authored against.',
-        title='OSCAL version',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    remarks: Optional[Remarks] = None
-
-
-class ResponsibleRole(OscalBaseModel):
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    party_uuids: Optional[List[PartyUuid]] = Field(
-        None, alias='party-uuids', min_items=1
-    )
-    remarks: Optional[Remarks] = None
-
-
-class ResponsibleParty(OscalBaseModel):
-    party_uuids: List[PartyUuid] = Field(..., alias='party-uuids', min_items=1)
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    remarks: Optional[Remarks] = None
-
-
-class Party(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given party across revisions of the document.',
-        title='Party Universally Unique Identifier',
-    )
-    type: Type = Field(
-        ...,
-        description='A category describing the kind of party the object describes.',
-        title='Party Type',
-    )
-    name: Optional[str] = Field(
-        None,
-        description='The full name of the party. This is typically the legal name associated with the party.',
-        title='Party Name',
-    )
-    short_name: Optional[str] = Field(
-        None,
-        alias='short-name',
-        description='A short common name, abbreviation, or acronym for the party.',
-        title='Party Short Name',
-    )
-    external_ids: Optional[List[ExternalId]] = Field(
-        None, alias='external-ids', min_items=1
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    email_addresses: Optional[List[EmailAddress]] = Field(
-        None, alias='email-addresses', min_items=1
-    )
-    telephone_numbers: Optional[List[TelephoneNumber]] = Field(
-        None, alias='telephone-numbers', min_items=1
-    )
-    addresses: Optional[List[Address]] = Field(None, min_items=1)
-    location_uuids: Optional[List[LocationUuid]] = Field(
-        None, alias='location-uuids', min_items=1
-    )
-    member_of_organizations: Optional[List[MemberOfOrganization]] = Field(
-        None, alias='member-of-organizations', min_items=1
-    )
-    remarks: Optional[Remarks] = None
-
-
-class Part(OscalBaseModel):
     id: Optional[str] = Field(
         None,
         description="A unique identifier for a specific part instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same part across minor revisions of the document.",
@@ -613,191 +792,138 @@ class Part(OscalBaseModel):
         title='Part Title',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     prose: Optional[str] = Field(
         None,
         description='Permits multiple paragraphs, lists, tables etc.',
         title='Part Text',
     )
-    parts: Optional[List[Part]] = None
-    links: Optional[List[Link]] = Field(None, min_items=1)
-
-
-class Add(OscalBaseModel):
-    position: Optional[Position] = Field(
-        None,
-        description='Where to add the new content with respect to the targeted element (beside it or inside it)',
-        title='Position',
-    )
-    id_ref: Optional[str] = Field(
-        None,
-        alias='id-ref',
-        description='Target location of the addition.',
-        title='Reference by ID',
-    )
-    title: Optional[str] = Field(
-        None,
-        description='A name given to the control, which may be used by a tool for display and navigation.',
-        title='Title Change',
-    )
-    params: Optional[List[Parameter]] = Field(None, min_items=1)
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
     parts: Optional[List[Part]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
 
 
-class Alter(OscalBaseModel):
-    control_id: Optional[str] = Field(
-        None,
-        alias='control-id',
-        description="Value of the 'id' flag on a target control",
-        title='Control ID',
-    )
-    removes: Optional[List[Remove]] = Field(None, min_items=1)
-    adds: Optional[List[Add]] = Field(None, min_items=1)
-
-
-class Modify(OscalBaseModel):
-    set_parameters: Optional[Dict[str, SetParameter]] = Field(
-        None, alias='set-parameters'
-    )
-    alters: Optional[List[Alter]] = Field(None, min_items=1)
-
-
-class Location(OscalBaseModel):
+class OscalProfileParty(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.',
-        title='Location Universally Unique Identifier',
+        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given party across revisions of the document.',
+        title='Party Universally Unique Identifier',
     )
-    title: Optional[str] = Field(
+    type: Type = Field(
+        ...,
+        description='A category describing the kind of party the object describes.',
+        title='Party Type',
+    )
+    name: Optional[str] = Field(
         None,
-        description='A name given to the location, which may be used by a tool for display and navigation.',
-        title='Location Title',
+        description='The full name of the party. This is typically the legal name associated with the party.',
+        title='Party Name',
     )
-    address: Address = Field(
-        ..., description='A postal address for the location.', title='Address'
+    short_name: Optional[str] = Field(
+        None,
+        alias='short-name',
+        description='A short common name, abbreviation, or acronym for the party.',
+        title='Party Short Name',
     )
-    email_addresses: Optional[List[EmailAddress]] = Field(
+    external_ids: Optional[List[ExternalId]] = Field(
+        None, alias='external-ids', min_items=1
+    )
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    email_addresses: Optional[List[OscalMetadataEmailAddress]] = Field(
         None, alias='email-addresses', min_items=1
     )
-    telephone_numbers: Optional[List[TelephoneNumber]] = Field(
+    telephone_numbers: Optional[List[OscalMetadataTelephoneNumber]] = Field(
         None, alias='telephone-numbers', min_items=1
     )
-    urls: Optional[List[AnyUrl]] = Field(None, min_items=1)
+    addresses: Optional[List[OscalMetadataAddress]] = Field(None, min_items=1)
+    location_uuids: Optional[List[LocationUuid]] = Field(
+        None, alias='location-uuids', min_items=1
+    )
+    member_of_organizations: Optional[List[MemberOfOrganization]] = Field(
+        None, alias='member-of-organizations', min_items=1
+    )
+    remarks: Optional[Remarks] = None
+
+
+class OscalProfileProfile(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A globally unique identifier for this profile instance. This UUID should be changed when this document is revised.',
+        title='Catalog Universally Unique Identifier',
+    )
+    metadata: Metadata
+    imports: List[Import] = Field(..., min_items=1)
+    merge: Optional[Merge] = None
+    modify: Optional[Modify] = None
+    back_matter: Optional[BackMatter] = Field(None, alias='back-matter')
+
+
+class OscalProfileResponsibleParty(OscalBaseModel):
+    party_uuids: List[PartyUuid] = Field(..., alias='party-uuids', min_items=1)
     props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
     remarks: Optional[Remarks] = None
 
 
-class Metadata(OscalBaseModel):
+class OscalProfileRole(OscalBaseModel):
+    id: str = Field(
+        ...,
+        description="A unique identifier for a specific role instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same role across minor revisions of the document.",
+        title='Role Identifier',
+    )
     title: str = Field(
         ...,
-        description='A name given to the document, which may be used by a tool for display and navigation.',
-        title='Document Title',
+        description='A name given to the role, which may be used by a tool for display and navigation.',
+        title='Role Title',
     )
-    published: Optional[datetime] = Field(
+    short_name: Optional[str] = Field(
         None,
-        description='The date and time the document was published. The date-time value must be formatted according to RFC 3339 with full time and time zone included.',
-        title='Publication Timestamp',
+        alias='short-name',
+        description='A short common name, abbreviation, or acronym for the role.',
+        title='Role Short Name',
     )
-    last_modified: datetime = Field(
-        ...,
-        alias='last-modified',
-        description='The date and time the document was last modified. The date-time value must be formatted according to RFC 3339 with full time and time zone included.',
-        title='Last Modified Timestamp',
-    )
-    version: str = Field(
-        ...,
-        description='A string used to distinguish the current version of the document from other previous (and future) versions.',
-        title='Document Version',
-    )
-    oscal_version: constr(regex=r'1\.0\.0[ -]*rc[ -]*1') = Field(
-        ...,
-        alias='oscal-version',
-        description='The OSCAL model version the document was authored against.',
-        title='OSCAL version',
-    )
-    revisions: Optional[List[Revision]] = Field(None, min_items=1)
-    document_ids: Optional[List[DocumentId]] = Field(
-        None, alias='document-ids', min_items=1
+    description: Optional[str] = Field(
+        None,
+        description="A summary of the role's purpose and associated responsibilities.",
+        title='Role Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
-    roles: Optional[List[Role]] = Field(None, min_items=1)
-    locations: Optional[List[Location]] = Field(None, min_items=1)
-    parties: Optional[List[Party]] = Field(None, min_items=1)
-    responsible_parties: Optional[Dict[str, ResponsibleParty]] = Field(
-        None, alias='responsible-parties'
-    )
     remarks: Optional[Remarks] = None
 
 
-class Include(OscalBaseModel):
-    all: Optional[All] = None
-    calls: Optional[List[Call]] = Field(None, min_items=1)
-    matches: Optional[List[Match]] = Field(None, min_items=1)
-
-
-class Group(OscalBaseModel):
-    id: Optional[str] = Field(
-        None,
-        description="A unique identifier for a specific group instance that can be used to reference the group within this and in other OSCAL documents. This identifier's uniqueness is document scoped and is intended to be consistent for the same group across minor revisions of the document.",
-        title='Group Identifier',
-    )
+class OscalProfileSetParameter(OscalBaseModel):
     class_: Optional[str] = Field(
         None,
         alias='class',
-        description='A textual label that provides a sub-type or characterization of the group.',
-        title='Group Class',
+        description='A textual label that provides a characterization of the parameter.',
+        title='Parameter Class',
     )
-    title: str = Field(
-        ...,
-        description='A name given to the group, which may be used by a tool for display and navigation.',
-        title='Group Title',
+    depends_on: Optional[str] = Field(
+        None,
+        alias='depends-on',
+        description='Another parameter invoking this one',
+        title='Depends on',
     )
-    params: Optional[List[Parameter]] = Field(None, min_items=1)
     props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
-    parts: Optional[List[Part]] = Field(None, min_items=1)
-    groups: Optional[List[Group]] = None
-    calls: Optional[List[Call]] = Field(None, min_items=1)
-    matches: Optional[List[Match]] = Field(None, min_items=1)
-
-
-class Custom(OscalBaseModel):
-    groups: Optional[List[Group]] = Field(None, min_items=1)
-    id_selectors: Optional[List[Call]] = Field(None, alias='id-selectors', min_items=1)
-    pattern_selectors: Optional[List[Match]] = Field(
-        None, alias='pattern-selectors', min_items=1
+    label: Optional[str] = Field(
+        None,
+        description='A short, placeholder name for the parameter, which can be used as a subsitute for a value if no value is assigned.',
+        title='Parameter Label',
     )
-
-
-class Merge(OscalBaseModel):
-    combine: Optional[Combine] = None
-    as_is: Optional[AsIs] = Field(None, alias='as-is')
-    custom: Optional[Custom] = None
-
-
-class Exclude(OscalBaseModel):
-    calls: Optional[List[Call]] = Field(None, min_items=1)
-    matches: Optional[List[Match]] = Field(None, min_items=1)
-
-
-class Import(OscalBaseModel):
-    href: str = Field(
-        ...,
-        description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.',
-        title='Catalog or Profile Reference',
+    usage: Optional[str] = Field(
+        None,
+        description='Describes the purpose and use of a parameter',
+        title='Parameter Usage Description',
     )
-    include: Optional[Include] = None
-    exclude: Optional[Exclude] = None
+    constraints: Optional[List[ParameterConstraint]] = Field(None, min_items=1)
+    guidelines: Optional[List[ParameterGuideline]] = Field(None, min_items=1)
+    values: Optional[List[ParameterValue]] = Field(None, min_items=1)
+    select: Optional[ParameterSelection] = None
 
 
 class Citation(OscalBaseModel):
@@ -805,7 +931,6 @@ class Citation(OscalBaseModel):
         ..., description='A line of citation text.', title='Citation Text'
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
     biblio: Optional[Dict[str, Any]] = Field(
         None,
         description='A container for structured bibliographic information. The model of this information is undefined by OSCAL.',
@@ -813,7 +938,43 @@ class Citation(OscalBaseModel):
     )
 
 
+class Test(OscalBaseModel):
+    expression: str = Field(
+        ...,
+        description='A formal (executable) expression of a constraint',
+        title='Constraint test',
+    )
+    remarks: Optional[Remarks] = None
+
+
+class OscalProfileParameterConstraint(OscalBaseModel):
+    description: Optional[str] = Field(
+        None,
+        description='A textual summary of the constraint to be applied.',
+        title='Constraint Description',
+    )
+    tests: Optional[List[Test]] = Field(None, min_items=1)
+
+
+class Rlink(OscalBaseModel):
+    href: str = Field(
+        ...,
+        description='A resolvable URI reference to a resource.',
+        title='Hypertext Reference',
+    )
+    media_type: Optional[str] = Field(
+        None,
+        alias='media-type',
+        description='Specifies a media type as defined by the Internet Assigned Numbers Authority (IANA) Media Types Registry.',
+        title='Media Type',
+    )
+    hashes: Optional[List[Hash]] = Field(None, min_items=1)
+
+
 class Resource(OscalBaseModel):
+    class Config:
+        extra = Extra.allow
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -832,8 +993,7 @@ class Resource(OscalBaseModel):
         title='Resource Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
-    annotations: Optional[List[Annotation]] = Field(None, min_items=1)
-    document_ids: Optional[List[DocumentId]] = Field(
+    document_ids: Optional[List[OscalMetadataDocumentId]] = Field(
         None, alias='document-ids', min_items=1
     )
     citation: Optional[Citation] = Field(
@@ -850,28 +1010,8 @@ class Resource(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class BackMatter(OscalBaseModel):
+class OscalProfileBackMatter(OscalBaseModel):
     resources: Optional[List[Resource]] = Field(None, min_items=1)
 
 
-class Profile(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A globally unique identifier for this profile instance. This UUID should be changed when this document is revised.',
-        title='Catalog Universally Unique Identifier',
-    )
-    metadata: Metadata
-    imports: List[Import] = Field(..., min_items=1)
-    merge: Optional[Merge] = None
-    modify: Optional[Modify] = None
-    back_matter: Optional[BackMatter] = Field(None, alias='back-matter')
 
-
-class Model(OscalBaseModel):
-    profile: Profile
-
-
-Part.update_forward_refs()
-Group.update_forward_refs()

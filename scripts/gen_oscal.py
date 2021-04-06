@@ -40,13 +40,13 @@ def load_git():
         # silently ignore already existing module
         pass
     try:
-        # check_call('git submodule update --init'.split())
-        print('Skipping submodule init due to recent issues with nist source.')
+        check_call('git submodule update --init'.split())
+        #print('Skipping submodule init due to recent issues with nist source.')
     except CalledProcessError as error:
         print(f'Error updating the oscal git submodule {error}')
     try:
-        # check_call('git submodule update --remote --merge'.split())
-        print('Skipping submodule merge due to recent issues with nist source.')
+        check_call('git submodule update --remote --merge'.split())
+        #print('Skipping submodule merge due to recent issues with nist source.')
     except CalledProcessError as error:
         print(f'Error updating the oscal git submodule {error}')
 
