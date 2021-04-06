@@ -21,17 +21,18 @@ import uuid
 from typing import Any, Dict, List, Union, ValuesView
 
 from trestle.oscal.assessment_results import ControlSelection
-from trestle.oscal.assessment_results import Finding
-from trestle.oscal.assessment_results import InventoryItem
 from trestle.oscal.assessment_results import LocalDefinitions1
-from trestle.oscal.assessment_results import ObjectiveStatus
-from trestle.oscal.assessment_results import Observation
-from trestle.oscal.assessment_results import Property
+from trestle.oscal.assessment_results import OscalArFinding as Finding
+from trestle.oscal.assessment_results import OscalArFindingTarget as FindingTarget
+from trestle.oscal.assessment_results import OscalArInventoryItem as InventoryItem
+from trestle.oscal.assessment_results import OscalArObservation as Observation
+from trestle.oscal.assessment_results import OscalArOscalAssessmentCommonSubjectReference as Subject
+from trestle.oscal.assessment_results import OscalArProperty as Property
+from trestle.oscal.assessment_results import OscalArResult as Result
+from trestle.oscal.assessment_results import OscalArReviewedControls as ReviewedControls
 from trestle.oscal.assessment_results import RelatedObservation
-from trestle.oscal.assessment_results import Result
-from trestle.oscal.assessment_results import ReviewedControls
 from trestle.oscal.assessment_results import Status1
-from trestle.oscal.assessment_results import Subject
+from trestle.oscal.assessment_results import Type1
 
 logger = logging.getLogger(__name__)
 
@@ -174,9 +175,7 @@ class ResultsMgr():
         prop = []
         for control in self.findings_map.keys():
             related_observations = []
-            finding = Finding(
-                uuid=str(uuid.uuid4()), title=control, description=control, collected=ResultsMgr.timestamp
-            )
+            finding = Finding(uuid=str(uuid.uuid4()), title=control, description=control)
             prop.append(finding)
             aggregate = None
             for rule in self.findings_map[control].keys():
@@ -194,14 +193,17 @@ class ResultsMgr():
             else:
                 status = Status1.not_satisfied
             logger.debug(f'{control} {status} {aggregate}')
-            objective_status = ObjectiveStatus(status=status)
+
+            finding_type = Type1('objective-id')
+            id_ref = control
+            finding_target = FindingTarget(type=finding_type, id_ref=id_ref, status=status)
             props = [
                 Property(name='profile', value=profile_catalog, ns='dns://tanium', class_='source'),
                 Property(name='id-ref', value=id_ref, ns='dns://tanium', class_='source'),
                 Property(name='result', value=aggregate, ns='dns://xccdf', class_='STRVALUE')
             ]
-            objective_status.props = props
-            finding.objective_status = objective_status
+            finding_target.props = props
+            finding.target = finding_target
             finding.related_observations = related_observations
         return prop
 
@@ -270,7 +272,9 @@ class ResultsMgr():
 
     def _observation_extract(self, rule_use: RuleUse) -> None:
         """Extract observation from Tanium row."""
-        observation = Observation(uuid=str(uuid.uuid4()), description=rule_use.id, methods=['TEST-AUTOMATED'])
+        observation = Observation(
+            uuid=str(uuid.uuid4()), description=rule_use.id, methods=['TEST-AUTOMATED'], collected=rule_use.time
+        )
         subject = Subject(uuid_ref=self._get_inventroy_ref(rule_use.ip), type='inventory-item')
         observation.subjects = [subject]
         if rule_use.id.startswith('xccdf'):
@@ -281,7 +285,6 @@ class ResultsMgr():
             Property(name='benchmark', value=rule_use.benchmark, ns='dns://tanium', class_='source'),
             Property(name='rule', value=rule_use.id, ns=ns, class_='id'),
             Property(name='result', value=rule_use.result, ns=ns, class_='result'),
-            Property(name='time', value=rule_use.time, ns=ns, class_='timestamp'),
         ]
         observation.props = props
         self.observation_list.append(observation)
