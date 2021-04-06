@@ -139,7 +139,7 @@ def test_e2e(
             assert wrapped_error == SystemExit
             assert wrapped_error.code == 0
 
-    shutil.copytree(str(testdata_dir / template_content), str(test_content_loc))
+    shutil.copytree(str(testdata_dir / target_content), str(test_content_loc))
     with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()

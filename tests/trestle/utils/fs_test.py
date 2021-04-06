@@ -536,14 +536,23 @@ def test_model_or_file_to_model_name(tmp_trestle_dir) -> None:
         fs.model_or_file_to_model_name('')
 
 
-def test_is_hidden_posix():
+def test_is_hidden_posix(tmp_path) -> None:
     """Test is_hidden on posix systems."""
-    pass
     if not os.name == 'nt':
+        hidden_file = tmp_path / '.hidden.md'
+        hidden_dir = tmp_path / '.hidden/'
+        visible_path = tmp_path / 'visible.md'
+        visible_dir = tmp_path / 'visible/'
+
+        assert fs.is_hidden(hidden_file)
+        assert fs.is_hidden(hidden_dir)
+        assert not fs.is_hidden(visible_path)
+        assert not fs.is_hidden(visible_dir)
+    else:
         pass
 
 
-def test_is_hidden_windows():
+def test_is_hidden_windows(tmp_path) -> None:
     """Test is_hidden on windows systems."""
     # FIXME:
     if os.name == 'nt':
