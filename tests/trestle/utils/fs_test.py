@@ -28,6 +28,10 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog
 from trestle.utils import fs
 
+if os.name == 'nt':  # pragma: no cover
+    import win32api
+    import win32con
+
 
 def test_should_ignore() -> None:
     """Test should_ignore method."""
@@ -541,12 +545,12 @@ def test_is_hidden_posix(tmp_path) -> None:
     if not os.name == 'nt':
         hidden_file = tmp_path / '.hidden.md'
         hidden_dir = tmp_path / '.hidden/'
-        visible_path = tmp_path / 'visible.md'
+        visible_file = tmp_path / 'visible.md'
         visible_dir = tmp_path / 'visible/'
 
         assert fs.is_hidden(hidden_file)
         assert fs.is_hidden(hidden_dir)
-        assert not fs.is_hidden(visible_path)
+        assert not fs.is_hidden(visible_file)
         assert not fs.is_hidden(visible_dir)
     else:
         pass
@@ -554,10 +558,23 @@ def test_is_hidden_posix(tmp_path) -> None:
 
 def test_is_hidden_windows(tmp_path) -> None:
     """Test is_hidden on windows systems."""
-    # FIXME:
     if os.name == 'nt':
+        visible_file = tmp_path / 'visible.md'
+        visible_dir = tmp_path / 'visible/'
+        visible_file.touch()
+        visible_dir.touch()
+        assert not fs.is_hidden(visible_file)
+        assert not fs.is_hidden(visible_dir)
+
+        atts = win32api.GetFileAttributes(str(visible_file))
+        win32api.SetFileAttributes(str(visible_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+        atts = win32api.GetFileAttributes(str(visible_dir))
+        win32api.SetFileAttributes(str(visible_dir), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+
+        assert fs.is_hidden(visible_file)
+        assert fs.is_hidden(visible_dir)
+    else:
         pass
-    pass
 
 
 @pytest.mark.parametrize(
