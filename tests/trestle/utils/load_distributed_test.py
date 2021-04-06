@@ -18,8 +18,6 @@
 import shutil
 from pathlib import Path
 
-import dictdiffer
-
 from tests import test_utils
 
 from trestle.oscal.catalog import Catalog, ResponsibleParty, Role
@@ -97,7 +95,7 @@ def test_load_dict(testdata_dir, tmp_trestle_dir):
     actual_model_type, actual_model_alias, actual_model_instance = _load_dict(
         catalog_dir / 'metadata/responsible-parties')
 
-    expexted_model_instance = {
+    expected_model_instance = {
         'contact': ResponsibleParty.oscal_read(
             catalog_dir / 'metadata/responsible-parties/contact__responsible-party.json'
         ),
@@ -105,7 +103,7 @@ def test_load_dict(testdata_dir, tmp_trestle_dir):
             catalog_dir / 'metadata/responsible-parties/creator__responsible-party.json'
         )
     }
-    assert len(list(dictdiffer.diff(actual_model_instance, expexted_model_instance))) == 0
+    assert actual_model_instance == expected_model_instance
     assert actual_model_alias == 'catalog.metadata.responsible-parties'
 
     expected_model_type, _ = fs.get_contextual_model_type((catalog_dir / 'metadata/responsible-parties/').absolute())
@@ -135,4 +133,4 @@ def test_load_distributed(testdata_dir, tmp_trestle_dir):
 
     assert actual_model_type == expected_model_type
     assert actual_model_alias == 'catalog'
-    assert len(list(dictdiffer.diff(expected_model_instance, actual_model_instance))) == 0
+    assert expected_model_instance == actual_model_instance
