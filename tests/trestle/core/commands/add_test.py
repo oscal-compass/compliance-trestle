@@ -151,7 +151,7 @@ def test_run(tmp_path, sample_catalog_minimal):
     ]
 
     with patch.object(sys, 'argv', testargs):
-        Trestle().run()
+        assert Trestle().run() == 0
 
     actual_catalog = Catalog.oscal_read(catalog_def_file)
     assert expected_catalog_roles2_rp == actual_catalog
@@ -170,7 +170,7 @@ def test_striped_model(tmp_path, sample_catalog_minimal):
     os.chdir(catalog_def_dir)
     testargs = ['trestle', 'split', '-f', 'catalog.json', '-e', 'catalog.metadata']
     with patch.object(sys, 'argv', testargs):
-        Trestle().run()
+        assert Trestle().run() == 0
 
     # Now that the metadata has been split, add of catalog.metadata.roles will error,
     # but add of catalog.back-matter will pass
@@ -188,7 +188,7 @@ def test_striped_model(tmp_path, sample_catalog_minimal):
     expected_catalog = current_catalog
 
     with patch.object(sys, 'argv', testargs):
-        Trestle().run()
+        assert Trestle().run() == 0
 
     actual_model, _ = get_stripped_contextual_model()
     actual_catalog = actual_model.oscal_read(pathlib.Path('catalog.json'))

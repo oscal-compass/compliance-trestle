@@ -289,7 +289,7 @@ def test_split_run(tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDef
     )
 
     os.chdir(target_def_dir)
-    cmd._run(args)
+    assert cmd._run(args) == 0
     os.chdir(cwd)
     check_split_files()
 
@@ -302,7 +302,7 @@ def test_split_run(tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDef
         file='target-definition.yaml', element='target-definition.metadata,target-definition.targets.*', verbose=0
     )
     os.chdir(target_def_dir)
-    cmd._run(args)
+    assert cmd._run(args) == 0
     os.chdir(cwd)
     check_split_files()
 

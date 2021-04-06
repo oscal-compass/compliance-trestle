@@ -19,8 +19,6 @@ import os
 import shutil
 from pathlib import Path
 
-from dictdiffer import diff
-
 from tests import test_utils
 
 import trestle.oscal.catalog as oscatalog
@@ -313,7 +311,7 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
     generated_plan = MergeCmd.merge(ElementPath('metadata.roles'))
 
     # Assert the generated plan matches the expected plan'
-    assert len(list(diff(generated_plan, expected_plan))) == 0
+    assert generated_plan == expected_plan
 
 
 def test_split_merge(testdata_dir, tmp_trestle_dir):
