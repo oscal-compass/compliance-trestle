@@ -104,9 +104,19 @@ my_other key with strange stuff?? my value
 
 This capability, where available, is activated by `--governed-heading` or `-gh`
 
-## `trestle md` governed-docs
+## `trestle md governed-docs`
 
-TBC
+Governed docs is designed to support enforcing and generating templating markdown files within a single folder based on
+a task name.
+
+`trestle md governed-docs setup -tn my_task_name` Create the necessary directory structures for running governed docs validation.
+A template file will be created in `TRESTLE_ROOT/.trestle/md/my_task_name/template.md` and be applied to all markdown files here: `TRESTLE_ROOT/my_task_name/*.md`
+
+`trestle md governed-docs create-sample -tn my_task_name` Creates a sample file in `TRESTLE_ROOT/my_task_name/`
+
+`trestle md governed-docs template-validate -tn my_task_name` Ensures that the markdown is parseable. If `--governed-heading 'heading name'` is passed it ensures that the required heading exists.
+
+`trestle md governed-docs validate -tn my_task_name` validates the markdown, optionally with a `--governed-heading` or `-hv` yaml header based on this `TRESTLE_ROOT/.trestle/md/my_task_name/template.md` template to all markdown files here: `TRESTLE_ROOT/my_task_name/*.md`.
 
 ## `trestle md` governed-folders
 
