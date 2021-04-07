@@ -37,9 +37,11 @@ def partition_ast(content: List[Dict[str, Any]], ref_level: int = 0) -> Tuple[Li
 
 
     Args:
-        List of AST parsing elements as from mistune
+        content: List of AST parsing elements as from mistune
+        ref_level: The markdown heading level expected. Set to 0 when starting naively
     Returns:
-        List containing a tree of elements.
+        List containing a tree of elements
+        Number of elements parsed in within the sub-list
 
     """
     new_content = []
@@ -131,7 +133,7 @@ class MarkdownValidator:
 
         Args:
             template_path: path to markdown template.
-            header_validate: hether to validate a yaml header for conformance or not
+            yaml_header_validate: whether to validate a yaml header for conformance or not
             strict_heading_validate: Whether a heading, provided in the template, is to have line-by-line matching.
         """
         self._yaml_header_validate = yaml_header_validate
@@ -259,7 +261,7 @@ class MarkdownValidator:
         Returns:
             List of strings for each line of paragraph content.
         Raises:
-            TrestleError when unhandled object types are present.
+            TrestleError: when unhandled object types are present.
         Assumptions:
             - Multiple paragraphs
             - no sub-headings
