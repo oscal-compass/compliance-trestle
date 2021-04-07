@@ -19,7 +19,7 @@ import pathlib
 
 import trestle.core.validator_helper as validator_helper
 import trestle.oscal.catalog as catalog
-import trestle.oscal.ssp as ssp
+# import trestle.oscal.ssp as ssp  # noqa: E800
 import trestle.oscal.target as ostarget
 
 import yaml
@@ -70,10 +70,11 @@ def test_has_no_duplicate_values_pydantic() -> None:
 def test_regenerate_uuids_ssp() -> None:
     """Test regeneration of uuids with updated refs in ssp."""
     # FIXME nist issue: https://github.com/usnistgov/oscal-content/issues/65
-    # orig_ssp = ssp.SystemSecurityPlan.oscal_read(ssp_path)
-    # new_ssp, uuid_lut, n_refs_updated = validator_helper.regenerate_uuids(orig_ssp)
-    # assert len(uuid_lut.items()) == 28
-    # assert n_refs_updated == 9
+    # orig_ssp = ssp.SystemSecurityPlan.oscal_read(ssp_path) # noqa: E800
+    # new_ssp, uuid_lut, n_refs_updated = validator_helper.regenerate_uuids(orig_ssp) # noqa: E800
+    # assert len(uuid_lut.items()) == 28 # noqa: E800
+    # assert n_refs_updated == 9 # noqa: E800
+    pass
 
 
 def test_regenerate_uuids_catalog() -> None:
