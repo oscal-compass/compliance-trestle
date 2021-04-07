@@ -89,3 +89,7 @@ ARG_DESC_ITEM = 'Item used'
 VAL_MODE_DUPLICATES = 'duplicates'
 
 FILE_ENCODING = 'utf8'
+
+# ESCAPE CHARACTERS FOR MD heads
+HEADER_L_ESCAPE = '['
+HEADER_R_ESCAPE = ']'

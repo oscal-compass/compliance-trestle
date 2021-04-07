@@ -161,7 +161,7 @@ def generate_models():
         generate_model(fixed_name, tmp_out_full_name)
         fix_bad_oscal(tmp_out_full_name, out_full_name)
     generate_model('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', out_dir / 'target.py')
-    # Generate model for
+    # Generate model for exchange protocol.
     generate_model(
         '3rd-party-schema-documents/OSCAL-1.0.0-rc1-IBM_observations_interchange_schema.json',
         Path('trestle/third_party') / 'exchange_protocol.py'
@@ -170,7 +170,7 @@ def generate_models():
 
 def main():
     """Load git and generate models."""
-    load_git()
+    # load_git()
     generate_models()
     print('DONE')
 

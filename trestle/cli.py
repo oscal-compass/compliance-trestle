@@ -21,6 +21,7 @@ from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.create import CreateCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.commands.init import InitCmd
+from trestle.core.commands.md import MDCmd
 from trestle.core.commands.merge import MergeCmd
 from trestle.core.commands.remove import RemoveCmd
 from trestle.core.commands.replicate import ReplicateCmd
@@ -40,6 +41,7 @@ class Trestle(CommandPlusDocs):
         InitCmd,
         CreateCmd,
         SplitCmd,
+        MDCmd,
         MergeCmd,
         ReplicateCmd,
         AddCmd,
