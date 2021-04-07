@@ -278,7 +278,7 @@ def test_run(tmp_path, sample_catalog_minimal):
     testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata.responsible-parties']
 
     with patch.object(sys, 'argv', testargs):
-        Trestle().run()
+        assert Trestle().run() == 0
 
     actual_catalog = Catalog.oscal_read(catalog_def_file)
     assert expected_catalog_no_rp == actual_catalog
@@ -306,7 +306,7 @@ def test_run(tmp_path, sample_catalog_minimal):
     ]
 
     with patch.object(sys, 'argv', testargs):
-        Trestle().run()
+        assert Trestle().run() == 0
 
     actual_catalog = Catalog.oscal_read(catalog_def_file_2)
     assert expected_catalog_no_rp == actual_catalog
