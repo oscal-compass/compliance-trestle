@@ -43,3 +43,75 @@ Content for template sub heading
 ### non required sub-sub heading
 This sub-sub heading is okay
 ```
+
+However, violations such as adding or removing a heading at a level that has been templated is not acceptable e.g.:
+
+```
+# Template heading 1
+Content for heading one
+## Non-required sub header
+Content for non-required sub header
+# Template heading 2
+Content for heading two
+## Template sub heading
+Content for template sub heading
+## sub heading that violates template
+This sub heading is NOT okay
+# Top level heading that is not okay
+```
+
+For each of the headings - the text of the heading is enforced with one caveat:
+
+- If the template heading text is wrapped in square brackets `[]` then the name is not measured e.g. `# [Insert title here]`.
+
+### Strict header / heading conformance mechanisms
+
+Two mechanisms are provided to enforce metadata within markdown documents. The first is the yaml header, as used by technologies such as jekyll, the second is a markdown 'governed heading\` where templating of the content is enforced.
+Use of the yaml header is strongly encouraged as a first preference.
+
+```
+---
+yaml:
+    header:
+        - with some 
+        - structure
+    more: information
+---
+# The rest of my document
+```
+
+The yaml header is structurally enforced my measuring whether the template key structure is reflected in the measured document. It does not measure values for yaml attributes. For the above markdown document the array value for `yaml.header` could be replaced with a single value or expanded. Enforcing the yaml header is enabled by `-hv` where available.
+
+For enforcing a governed heading the structural enforcement mechanism assumes that the `key:value` structure simply takes the form that following that for each line of content under the chosen heading the template content is a subset of the measured document, in the order provided in the template. This is performed after removing formatting (such as bolding), and any HTML comments.
+
+Given:
+
+```
+# heading for strict enforcement
+my_key:
+**my_key_2:**
+my_other key with strange stuff??
+```
+
+The following heading would be acceptable.
+
+```
+# heading for strict enforcement
+my_key: my value
+my_key_2: my value
+my_other key with strange stuff?? my value
+```
+
+This capability, where available, is activated by `--governed-heading` or `-gh`
+
+## `trestle md` governed-docs
+
+TBC
+
+## `trestle md` governed-folders
+
+TBC
+
+## `trestle md` header
+
+TBC
