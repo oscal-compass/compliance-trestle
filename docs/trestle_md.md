@@ -21,3 +21,25 @@ For enforcing the heading structure the mechanism used is the following:
 Markdown headings `As an example` are considered to be nested based on the heading level (e.g. ` heading` is below ` top level heading`).
 
 For a document to contain the structural requirements it must contain all the headings provided in the template, however, can contain additional nested templates. Given this template:
+
+```
+# Template heading 1
+
+# Template heading 2
+## Template sub heading
+```
+
+The following document is acceptable:
+
+```
+# Template heading 1
+Content for heading one
+## Non-required sub header
+Content for non-required sub header
+# Template heading 2
+Content for heading two
+## Template sub heading
+Content for template sub heading
+### non required sub-sub heading
+This sub-sub heading is okay
+```
