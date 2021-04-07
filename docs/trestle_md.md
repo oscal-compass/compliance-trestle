@@ -31,7 +31,7 @@ For a document to contain the structural requirements it must contain all the he
 
 The following document is acceptable:
 
-```
+```markdown
 # Template heading 1
 Content for heading one
 ## Non-required sub header
@@ -46,7 +46,7 @@ This sub-sub heading is okay
 
 However, violations such as adding or removing a heading at a level that has been templated is not acceptable e.g.:
 
-```
+```markdown
 # Template heading 1
 Content for heading one
 ## Non-required sub header
@@ -69,7 +69,7 @@ For each of the headings - the text of the heading is enforced with one caveat:
 Two mechanisms are provided to enforce metadata within markdown documents. The first is the yaml header, as used by technologies such as jekyll, the second is a markdown 'governed heading\` where templating of the content is enforced.
 Use of the yaml header is strongly encouraged as a first preference.
 
-```
+```markdown
 ---
 yaml:
     header:
@@ -86,7 +86,7 @@ For enforcing a governed heading the structural enforcement mechanism assumes th
 
 Given:
 
-```
+```markdown
 # heading for strict enforcement
 my_key:
 **my_key_2:**
@@ -95,7 +95,7 @@ my_other key with strange stuff??
 
 The following heading would be acceptable.
 
-```
+```markdown
 # heading for strict enforcement
 my_key: my value
 my_key_2: my value
