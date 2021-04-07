@@ -52,11 +52,7 @@ class CIDD(CommandPlusDocs):
         if not trestle_root:
             logger.error(f'Current working directory {pathlib.Path.cwd()} is not with a trestle project.')
             return 1
-        try:
-            logger.info(f'Are we paving? {args.pave}')
+        logger.info(f'Are we paving? {args.pave}')
 
-            logger.debug('Done')
-            return 0
-        except Exception as e:
-            logger.error(f'Something failed in CIDD {e}')
-            return 1
+        logger.debug('Done')
+        return 0

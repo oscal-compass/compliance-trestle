@@ -121,3 +121,32 @@ def test_e2e(
             trestle.cli.run()
             assert wrapped_error == SystemExit
             assert wrapped_error.code == validate_code
+
+
+def test_failure_bad_template_dir(tmp_trestle_dir: pathlib.Path) -> None:
+    """Create and test a bad directory."""
+    setup_ = 'trestle md governed-docs setup --task-name foobaa'
+
+    bad_template_sub_directory = tmp_trestle_dir / '.trestle' / 'md' / 'foobar' / 'test'
+    bad_template_sub_directory.mkdir(parents=True, exist_ok=True)
+    with mock.patch.object(sys, 'argv', setup_.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+            assert wrapped_error == SystemExit
+            assert wrapped_error.code == 1
+
+
+def test_success_repeated_call(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test double setup."""
+    setup_ = 'trestle md governed-docs setup --task-name foobaa'
+
+    with mock.patch.object(sys, 'argv', setup_.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+            assert wrapped_error == SystemExit
+            assert wrapped_error.code == 0
+    with mock.patch.object(sys, 'argv', setup_.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+            assert wrapped_error == SystemExit
+            assert wrapped_error.code == 0
