@@ -110,7 +110,7 @@ Governed docs is designed to support enforcing and generating templating markdow
 a task name.
 
 `trestle md governed-docs setup -tn my_task_name` Create the necessary directory structures for running governed docs validation.
-A template file will be created in `TRESTLE_ROOT/.trestle/md/my_task_name/template.md` and be applied to all markdown files here: `TRESTLE_ROOT/my_task_name/*.md`
+A template file will be created in `TRESTLE_ROOT/.trestle/md/my_task_name/template.md` and be applied to all markdown files here: `TRESTLE_ROOT/my_task_name/*.md`.
 
 `trestle md governed-docs create-sample -tn my_task_name` Creates a sample file in `TRESTLE_ROOT/my_task_name/`
 
@@ -120,8 +120,41 @@ A template file will be created in `TRESTLE_ROOT/.trestle/md/my_task_name/templa
 
 ## `trestle md` governed-folders
 
-TBC
+Governed-folders is designed to allow the assembly of groups of templates where the folder assembly is the unique instance.
+
+For example given the following template setup using `trestle md governed-docs setup -tn my_task_2`
+
+```
+trestle_root
+ ┣ .trestle
+ ┃ ┣ md
+ ┃ ┃ ┗ my_task_2
+ ┃ ┃ ┃ ┣ a_template.md
+ ┃ ┃ ┃ ┗ another_template.md
+ ┃ ┗ config.ini
+```
+
+Each task folder is required to meet template requirements for both `a_template.md` and `another_template.md`.
+The names, numbers, and nesting of folders is arbitrary.
+
+Following the similar structure of `governed-docs`, measurement occurs in the `my_task_2` where this structure is enforced for every directory.
+
+```
+trestle_root
+ ┣ .trestle
+ ┣ my_task_2
+ ┃ ┣ User_chosen_name
+ ┃ ┃ ┣ a_template.md
+ ┃ ┃ ┗ another_template.md
+ ┃ ┗ Second_user_chosen_name
+ ┃ ┃ ┣ a_template.md
+ ┃ ┃ ┗ another_template.md
+```
 
 ## `trestle md` header
 
-TBC
+Future capability
+
+## `trestle md` governed-projects
+
+Future capability
