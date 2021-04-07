@@ -235,10 +235,10 @@ def test_copy_to() -> None:
 
     # Testing of root fields. This is is subject to change.
     # component.Remarks (type str)
-    # poam.ParameterValue (type str)
-    # note the testing conducntio
+    # poam.RiskStatus (type str)
+    # note the testing conduction
     remark = component.Remarks(__root__='hello')
-    _ = remark.copy_to(poam.ParameterValue)
+    _ = remark.copy_to(poam.RiskStatus)
 
 
 def test_copy_from() -> None:

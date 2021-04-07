@@ -21,17 +21,17 @@ import uuid
 from typing import Any, Dict, List, Union, ValuesView
 
 from trestle.oscal.assessment_results import ControlSelection
+from trestle.oscal.assessment_results import Finding
+from trestle.oscal.assessment_results import FindingTarget
+from trestle.oscal.assessment_results import InventoryItem
 from trestle.oscal.assessment_results import LocalDefinitions1
-from trestle.oscal.assessment_results import OscalArFinding as Finding
-from trestle.oscal.assessment_results import OscalArFindingTarget as FindingTarget
-from trestle.oscal.assessment_results import OscalArInventoryItem as InventoryItem
-from trestle.oscal.assessment_results import OscalArObservation as Observation
-from trestle.oscal.assessment_results import OscalArOscalAssessmentCommonSubjectReference as Subject
-from trestle.oscal.assessment_results import OscalArProperty as Property
-from trestle.oscal.assessment_results import OscalArResult as Result
-from trestle.oscal.assessment_results import OscalArReviewedControls as ReviewedControls
+from trestle.oscal.assessment_results import Observation
+from trestle.oscal.assessment_results import Property
 from trestle.oscal.assessment_results import RelatedObservation
+from trestle.oscal.assessment_results import Result
+from trestle.oscal.assessment_results import ReviewedControls
 from trestle.oscal.assessment_results import Status1
+from trestle.oscal.assessment_results import SubjectReference as Subject
 from trestle.oscal.assessment_results import Type1
 
 logger = logging.getLogger(__name__)

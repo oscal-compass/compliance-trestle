@@ -25,10 +25,10 @@ from xml.etree import ElementTree
 from pydantic import Field
 
 from trestle.core.base_model import OscalBaseModel
-from trestle.oscal.assessment_results import OscalArObservation as Observation
-from trestle.oscal.assessment_results import OscalArOscalAssessmentCommonSubjectReference as Subject
-from trestle.oscal.assessment_results import OscalArProperty as Property
+from trestle.oscal.assessment_results import Observation
+from trestle.oscal.assessment_results import Property
 from trestle.oscal.assessment_results import RelevantEvidence
+from trestle.oscal.assessment_results import SubjectReference as Subject
 
 logger = logging.getLogger(__name__)
 

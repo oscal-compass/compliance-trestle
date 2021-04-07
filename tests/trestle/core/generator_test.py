@@ -31,6 +31,7 @@ import trestle.core.err as err
 import trestle.core.generators as gens
 import trestle.oscal as oscal
 import trestle.oscal.assessment_plan as ap
+import trestle.oscal.assessment_results as ar
 import trestle.oscal.catalog as catalog
 import trestle.oscal.ssp as ssp
 from trestle.core.base_model import OscalBaseModel
@@ -73,7 +74,7 @@ def test_generate_sample_with_conint() -> None:
 
 def test_generate_sample_with_list_primitives() -> None:
     """A switch is required to handle cases where the inner object of a list is not a OscalBaseModel."""
-    gens.generate_sample_model(ap.Observation)
+    gens.generate_sample_model(ar.Observation)
 
 
 def test_generate_sample_model() -> None:

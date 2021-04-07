@@ -41,11 +41,6 @@ def test_create_cmd(tmp_trestle_dir: pathlib.Path) -> None:
             assert rc == 0
 
 
-def test_create_object_directly(tmp_trestle_dir: pathlib.Path) -> None:
-    """Simple test of create object only."""
-    pass
-
-
 def test_no_dir(tmp_empty_cwd: pathlib.Path) -> None:
     """Test for no trestle directory."""
     # Setup argparse

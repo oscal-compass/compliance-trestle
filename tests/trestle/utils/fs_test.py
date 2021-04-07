@@ -380,7 +380,6 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
         assert 'title' in alias_to_field_map
         assert 'params' in alias_to_field_map
         assert 'props' in alias_to_field_map
-        assert 'annotations' in alias_to_field_map
         assert 'links' in alias_to_field_map
         assert 'parts' in alias_to_field_map
         assert 'groups' in alias_to_field_map
