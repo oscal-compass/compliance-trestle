@@ -22,7 +22,7 @@ Markdown headings `As an example` are considered to be nested based on the headi
 
 For a document to contain the structural requirements it must contain all the headings provided in the template, however, can contain additional nested templates. Given this template:
 
-```
+```markdown
 # Template heading 1
 
 # Template heading 2
