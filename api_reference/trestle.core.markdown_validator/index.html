@@ -1,0 +1,2815 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for compliance-trestle package.">
+      
+      
+      
+      
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.markdown_validator/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+    
+    
+      
+        <title>markdown_validator - Compliance Trestle</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.33e2939f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#009485">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+    
+      
+        
+<script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","G-XT3KGMHSY8","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="purple">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#trestle.core.markdown_validator" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Compliance Trestle" class="md-header__button md-logo" aria-label="Compliance Trestle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Compliance Trestle
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              markdown_validator
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/IBM/compliance-trestle/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Compliance Trestle" class="md-nav__button md-logo" aria-label="Compliance Trestle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Compliance Trestle
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/IBM/compliance-trestle/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      <label class="md-nav__link" for="__nav_2">
+        Trestle cli
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Trestle cli" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Trestle cli
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trestle_md/" class="md-nav__link">
+        Markdown
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        Tutorials
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tutorials/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/python_trestle_setup/" class="md-nav__link">
+        setting up python and trestle
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/trestle_sample_workflow/" class="md-nav__link">
+        intro to trestle workflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/continuous-compliance/continuous-compliance/" class="md-nav__link">
+        compliance posture
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/task.transformer-construction/transformer-construction/" class="md-nav__link">
+        transformer construction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/task.tanuim-to-oscal/transformation/" class="md-nav__link">
+        task tanium-to-oscal
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mkdocs_code_of_conduct/" class="md-nav__link">
+        Code of Conduct
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Contributing
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Contributing" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Contributing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/mkdocs_contributing/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/IBM/compliance-trestle/graphs/contributors" class="md-nav__link">
+        Contributors
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/" class="md-nav__link">
+        Maintainers
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/website/" class="md-nav__link">
+        Documentation website
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/DCO/" class="md-nav__link">
+        Developer Certificate of Originality
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" checked>
+      
+      <label class="md-nav__link" for="__nav_6">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_overview/" class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2" type="checkbox" id="__nav_6_2" checked>
+      
+      <label class="md-nav__link" for="__nav_6_2">
+        trestle
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="trestle" data-md-level="2">
+        <label class="md-nav__title" for="__nav_6_2">
+          <span class="md-nav__icon md-icon"></span>
+          trestle
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_1" type="checkbox" id="__nav_6_2_1" >
+      
+      <label class="md-nav__link" for="__nav_6_2_1">
+        tasks
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          tasks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.base_task/" class="md-nav__link">
+        base_task
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.transform/" class="md-nav__link">
+        transform
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.osco_to_oscal/" class="md-nav__link">
+        osco_to_oscal
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.tanium_to_oscal/" class="md-nav__link">
+        tanium_to_oscal
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2" type="checkbox" id="__nav_6_2_2" checked>
+      
+      <label class="md-nav__link" for="__nav_6_2_2">
+        core
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="core" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.validator_helper/" class="md-nav__link">
+        validator_helper
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2_2" type="checkbox" id="__nav_6_2_2_2" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2_2">
+        models
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="models" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.interfaces/" class="md-nav__link">
+        interfaces
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.elements/" class="md-nav__link">
+        elements
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.actions/" class="md-nav__link">
+        actions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.plans/" class="md-nav__link">
+        plans
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.models.file_content_type/" class="md-nav__link">
+        file_content_type
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.base_model/" class="md-nav__link">
+        base_model
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.duplicates_validator/" class="md-nav__link">
+        duplicates_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.generators/" class="md-nav__link">
+        generators
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.parser/" class="md-nav__link">
+        parser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2_8" type="checkbox" id="__nav_6_2_2_8" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2_8">
+        commands
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="commands" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_2_8">
+          <span class="md-nav__icon md-icon"></span>
+          commands
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.md/" class="md-nav__link">
+        md
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.task/" class="md-nav__link">
+        task
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.cmd_utils/" class="md-nav__link">
+        cmd_utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.version/" class="md-nav__link">
+        version
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.add/" class="md-nav__link">
+        add
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.create/" class="md-nav__link">
+        create
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2_8_8" type="checkbox" id="__nav_6_2_2_8_8" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2_8_8">
+        md_subs
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="md_subs" data-md-level="5">
+        <label class="md-nav__title" for="__nav_6_2_2_8_8">
+          <span class="md-nav__icon md-icon"></span>
+          md_subs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.md_subs.cidd/" class="md-nav__link">
+        cidd
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.md_subs.governed_docs/" class="md-nav__link">
+        governed_docs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.md_subs.governed_folders/" class="md-nav__link">
+        governed_folders
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.replicate/" class="md-nav__link">
+        replicate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.remove/" class="md-nav__link">
+        remove
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.command_docs/" class="md-nav__link">
+        command_docs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.assemble/" class="md-nav__link">
+        assemble
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.validate/" class="md-nav__link">
+        validate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.import_/" class="md-nav__link">
+        import_
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.init/" class="md-nav__link">
+        init
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.object_factory/" class="md-nav__link">
+        object_factory
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.err/" class="md-nav__link">
+        err
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.const/" class="md-nav__link">
+        const
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          markdown_validator
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        markdown_validator
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator" class="md-nav__link">
+    markdown_validator
+  </a>
+  
+    <nav class="md-nav" aria-label="markdown_validator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.logger" class="md-nav__link">
+    logger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator-classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator" class="md-nav__link">
+    MarkdownValidator
+  </a>
+  
+    <nav class="md-nav" aria-label="MarkdownValidator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator-methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.clean_content" class="md-nav__link">
+    clean_content()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.compare_keys" class="md-nav__link">
+    compare_keys()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.load_markdown_parsetree" class="md-nav__link">
+    load_markdown_parsetree()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.search_for_heading" class="md-nav__link">
+    search_for_heading()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.validate" class="md-nav__link">
+    validate()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.wrap_content" class="md-nav__link">
+    wrap_content()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator-functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.compare_tree" class="md-nav__link">
+    compare_tree()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.partition_ast" class="md-nav__link">
+    partition_ast()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.validator_factory/" class="md-nav__link">
+        validator_factory
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_2_14" type="checkbox" id="__nav_6_2_2_14" >
+      
+      <label class="md-nav__link" for="__nav_6_2_2_14">
+        remote
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="remote" data-md-level="4">
+        <label class="md-nav__title" for="__nav_6_2_2_14">
+          <span class="md-nav__icon md-icon"></span>
+          remote
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.core.remote.cache/" class="md-nav__link">
+        cache
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_3" type="checkbox" id="__nav_6_2_3" >
+      
+      <label class="md-nav__link" for="__nav_6_2_3">
+        utils
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="utils" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          utils
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.utils.tanium/" class="md-nav__link">
+        tanium
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.utils.log/" class="md-nav__link">
+        log
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.utils.osco/" class="md-nav__link">
+        osco
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.utils.load_distributed/" class="md-nav__link">
+        load_distributed
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.utils.trash/" class="md-nav__link">
+        trash
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.utils.fs/" class="md-nav__link">
+        fs
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_4" type="checkbox" id="__nav_6_2_4" >
+      
+      <label class="md-nav__link" for="__nav_6_2_4">
+        oscal
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="oscal" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          oscal
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.catalog/" class="md-nav__link">
+        catalog
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.poam/" class="md-nav__link">
+        poam
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.profile/" class="md-nav__link">
+        profile
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.target/" class="md-nav__link">
+        target
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.ssp/" class="md-nav__link">
+        ssp
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.component/" class="md-nav__link">
+        component
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.oscal.assessment_plan/" class="md-nav__link">
+        assessment_plan
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6_2_5" type="checkbox" id="__nav_6_2_5" >
+      
+      <label class="md-nav__link" for="__nav_6_2_5">
+        third_party
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="third_party" data-md-level="3">
+        <label class="md-nav__title" for="__nav_6_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          third_party
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.third_party.exchange_protocol/" class="md-nav__link">
+        exchange_protocol
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.cli/" class="md-nav__link">
+        cli
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator" class="md-nav__link">
+    markdown_validator
+  </a>
+  
+    <nav class="md-nav" aria-label="markdown_validator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.logger" class="md-nav__link">
+    logger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator-classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator" class="md-nav__link">
+    MarkdownValidator
+  </a>
+  
+    <nav class="md-nav" aria-label="MarkdownValidator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator-methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.clean_content" class="md-nav__link">
+    clean_content()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.compare_keys" class="md-nav__link">
+    compare_keys()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.load_markdown_parsetree" class="md-nav__link">
+    load_markdown_parsetree()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.search_for_heading" class="md-nav__link">
+    search_for_heading()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.validate" class="md-nav__link">
+    validate()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.MarkdownValidator.wrap_content" class="md-nav__link">
+    wrap_content()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator-functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.compare_tree" class="md-nav__link">
+    compare_tree()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.markdown_validator.partition_ast" class="md-nav__link">
+    partition_ast()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/IBM/compliance-trestle/edit/master/docs/api_reference/trestle.core.markdown_validator.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  <h1>markdown_validator</h1>
+                
+                <div class="doc doc-object doc-module">
+
+
+
+<h2 class="doc doc-heading" id="trestle.core.markdown_validator">
+        <code>trestle.core.markdown_validator</code>
+
+
+
+<a class="headerlink" href="#trestle.core.markdown_validator" title="Permanent link">¤</a></h2>
+
+    <div class="doc doc-contents first">
+
+      <p>Markdown validator - provides functionality for operating on markdown files including template validation.</p>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.markdown_validator.logger">
+<code class="highlight language-python"><span class="n">logger</span></code>
+
+
+<a class="headerlink" href="#trestle.core.markdown_validator.logger" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+<h3 id="trestle.core.markdown_validator-classes">Classes<a class="headerlink" href="#trestle.core.markdown_validator-classes" title="Permanent link">¤</a></h3>
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.markdown_validator.MarkdownValidator">
+        <code>MarkdownValidator</code>
+
+
+
+<a class="headerlink" href="#trestle.core.markdown_validator.MarkdownValidator" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Markdown validator to meet conformance expectations.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<h5 id="trestle.core.markdown_validator.MarkdownValidator-methods">Methods<a class="headerlink" href="#trestle.core.markdown_validator.MarkdownValidator-methods" title="Permanent link">¤</a></h5>
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.markdown_validator.MarkdownValidator.__init__">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template_path</span><span class="p">,</span> <span class="n">yaml_header_validate</span><span class="p">,</span> <span class="n">strict_heading_validate</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.core.markdown_validator.MarkdownValidator.__init__" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Initialize markdown validator.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>template_path</code></td>
+        <td><code>Path</code></td>
+        <td><p>path to markdown template.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>yaml_header_validate</code></td>
+        <td><code>bool</code></td>
+        <td><p>whether to validate a yaml header for conformance or not</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>strict_heading_validate</code></td>
+        <td><code>Optional[str]</code></td>
+        <td><p>Whether a heading, provided in the template, is to have line-by-line matching.</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/markdown_validator.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">template_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+    <span class="n">yaml_header_validate</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">strict_heading_validate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialize markdown validator.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        template_path: path to markdown template.</span>
+<span class="sd">        yaml_header_validate: whether to validate a yaml header for conformance or not</span>
+<span class="sd">        strict_heading_validate: Whether a heading, provided in the template, is to have line-by-line matching.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_yaml_header_validate</span> <span class="o">=</span> <span class="n">yaml_header_validate</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">template_path</span> <span class="o">=</span> <span class="n">template_path</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Provided template </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s1"> is not a file&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to find markdown template </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">template_header</span><span class="p">,</span> <span class="n">template_parse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_markdown_parsetree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_template_header</span> <span class="o">=</span> <span class="n">template_header</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_template_parse</span> <span class="o">=</span> <span class="n">template_parse</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_strict_heading_validate</span> <span class="o">=</span> <span class="n">strict_heading_validate</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.markdown_validator.MarkdownValidator.clean_content">
+<code class="highlight language-python"><span class="n">clean_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parse_tree</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.core.markdown_validator.MarkdownValidator.clean_content" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Clean a set of content for measurement of header cleanliness.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>parse_tree</code></td>
+        <td><code>Dict[str, Any]</code></td>
+        <td><p>AST parse normalized into a hierarchial tree.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>List[str]</code></td>
+      <td><p>List of strings for each line of paragraph content.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p><strong>Exceptions:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>TrestleError</code></td>
+        <td><p>when unhandled object types are present.</p></td>
+      </tr>
+  </tbody>
+</table>      <div class="admonition assumptions">
+<p class="admonition-title">Assumptions</p>
+<ul>
+<li>Multiple paragraphs</li>
+<li>no sub-headings</li>
+<li>tables unhandled</li>
+</ul>
+</div>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/markdown_validator.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">clean_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parse_tree</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clean a set of content for measurement of header cleanliness.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        parse_tree: AST parse normalized into a hierarchial tree.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        List of strings for each line of paragraph content.</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        TrestleError: when unhandled object types are present.</span>
+<span class="sd">    Assumptions:</span>
+<span class="sd">        - Multiple paragraphs</span>
+<span class="sd">        - no sub-headings</span>
+<span class="sd">        - tables unhandled</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="n">parse_tree</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">]</span>
+    <span class="n">clean_text_lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)):</span>
+        <span class="c1"># first item is the header title text which we will ignore.</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;block_html&#39;</span><span class="p">:</span>
+            <span class="c1"># ignore all block HTML</span>
+            <span class="k">continue</span>
+        <span class="k">elif</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;paragraph&#39;</span><span class="p">:</span>
+            <span class="n">line_content</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">child</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;linebreak&#39;</span><span class="p">:</span>
+                    <span class="n">clean_text_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">line_content</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
+                    <span class="n">line_content</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">elif</span> <span class="s1">&#39;html&#39;</span> <span class="ow">in</span> <span class="n">child</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]:</span>
+                    <span class="c1"># ignore HTML comment presuming a commment</span>
+                    <span class="k">continue</span>
+                <span class="k">elif</span> <span class="s1">&#39;strong&#39;</span> <span class="ow">in</span> <span class="n">child</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]:</span>
+                    <span class="n">line_content</span> <span class="o">=</span> <span class="n">line_content</span> <span class="o">+</span> <span class="n">child</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="s1">&#39;text&#39;</span> <span class="ow">in</span> <span class="n">child</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]:</span>
+                    <span class="n">line_content</span> <span class="o">=</span> <span class="n">line_content</span> <span class="o">+</span> <span class="n">child</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Unexpected element type </span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> when flattening a governed header.&#39;</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="c1"># handle EoParagraph condition</span>
+            <span class="n">clean_text_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">line_content</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Unexpected element type </span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> when flattening a governed header.&#39;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">clean_text_lines</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.markdown_validator.MarkdownValidator.compare_keys">
+<code class="highlight language-python"><span class="n">compare_keys</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">candidate</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.core.markdown_validator.MarkdownValidator.compare_keys" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Compare a template dictionary against a candidate as to whether key structure is maintained.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>template</code></td>
+        <td><code>Dict[str, Any]</code></td>
+        <td><p>Template dict which is used as a model of key-value pairs</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>candidate</code></td>
+        <td><code>Dict[str, Any]</code></td>
+        <td><p>Candidate dictionary to be measured</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>bool</code></td>
+      <td><p>Whether or not the the candidate matches the template keys.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/markdown_validator.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">compare_keys</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">candidate</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare a template dictionary against a candidate as to whether key structure is maintained.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        template: Template dict which is used as a model of key-value pairs</span>
+<span class="sd">        candidate: Candidate dictionary to be measured</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Whether or not the the candidate matches the template keys.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">template</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">candidate</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">template</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">compare_keys</span><span class="p">(</span><span class="n">template</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">candidate</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">status</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.markdown_validator.MarkdownValidator.load_markdown_parsetree">
+<code class="highlight language-python"><span class="n">load_markdown_parsetree</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.core.markdown_validator.MarkdownValidator.load_markdown_parsetree" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Load markdown file including yaml frontmatter.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>path</code></td>
+        <td><code>Path</code></td>
+        <td><p>File system path of the markdown.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Tuple[Dict[str, Any], List[Dict[str, Any]]]</code></td>
+      <td><p>Yaml header which has been parsed or an empty dict.
+List of AST tokens in the flat structure provided by mistune.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/markdown_validator.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">load_markdown_parsetree</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load markdown file including yaml frontmatter.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path: File system path of the markdown.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Yaml header which has been parsed or an empty dict.</span>
+<span class="sd">        List of AST tokens in the flat structure provided by mistune.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">fm</span> <span class="o">=</span> <span class="n">frontmatter</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+    <span class="n">header_dict</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span>
+    <span class="n">md_no_header</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">content</span>
+    <span class="n">mistune_ast_parser</span> <span class="o">=</span> <span class="n">mistune</span><span class="o">.</span><span class="n">create_markdown</span><span class="p">(</span><span class="n">renderer</span><span class="o">=</span><span class="n">mistune</span><span class="o">.</span><span class="n">AstRenderer</span><span class="p">())</span>
+    <span class="n">mistune_parse</span> <span class="o">=</span> <span class="n">mistune_ast_parser</span><span class="p">(</span><span class="n">md_no_header</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">header_dict</span><span class="p">,</span> <span class="n">mistune_parse</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.markdown_validator.MarkdownValidator.search_for_heading">
+<code class="highlight language-python"><span class="n">search_for_heading</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">candidate_tree</span><span class="p">,</span> <span class="n">heading</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.core.markdown_validator.MarkdownValidator.search_for_heading" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Recursively search for a heading within a document and return the children.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>candidate_tree</code></td>
+        <td><code>Dict[str, Any]</code></td>
+        <td><p>An AST parse tree that has been normalized by partition_ast</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>heading</code></td>
+        <td><code>str</code></td>
+        <td><p>The string content for a markdown heading.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Any]</code></td>
+      <td><p>The heading AST token if it exists, or an empty ast token.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/markdown_validator.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">search_for_heading</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">candidate_tree</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">heading</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recursively search for a heading within a document and return the children.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        candidate_tree: An AST parse tree that has been normalized by partition_ast</span>
+<span class="sd">        heading: The string content for a markdown heading.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The heading AST token if it exists, or an empty ast token.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidate_tree</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">candidate</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;heading&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">candidate</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="n">heading</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="n">answer</span> <span class="o">=</span> <span class="n">candidate</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">answer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_for_heading</span><span class="p">(</span><span class="n">candidate</span><span class="p">,</span> <span class="n">heading</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">answer</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.markdown_validator.MarkdownValidator.validate">
+<code class="highlight language-python"><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">candidate</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.core.markdown_validator.MarkdownValidator.validate" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Run the validation against a candidate file.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>candidate</code></td>
+        <td><code>Path</code></td>
+        <td><p>The path to a candidate markdown file to be validated.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>bool</code></td>
+      <td><p>Whether or not the validation passes.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/markdown_validator.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">candidate</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run the validation against a candidate file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        candidate: The path to a candidate markdown file to be validated.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Whether or not the validation passes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">header_content</span><span class="p">,</span> <span class="n">mistune_parse_content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_markdown_parsetree</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_yaml_header_validate</span><span class="p">:</span>
+        <span class="n">header_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_template_header</span><span class="p">,</span> <span class="n">header_content</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">header_status</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;YAML header mismatch between template </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">template_path</span><span class="si">}</span><span class="s1"> and instance </span><span class="si">{</span><span class="n">candidate</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">template_tree</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">partition_ast</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_template_parse</span><span class="p">)</span>
+    <span class="n">w_template_tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_content</span><span class="p">(</span><span class="n">template_tree</span><span class="p">)</span>
+    <span class="n">candidate_tree</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">partition_ast</span><span class="p">(</span><span class="n">mistune_parse_content</span><span class="p">)</span>
+    <span class="n">w_candidate_tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap_content</span><span class="p">(</span><span class="n">candidate_tree</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strict_heading_validate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_template_heading_validate</span><span class="p">(</span><span class="n">w_template_tree</span><span class="p">,</span> <span class="n">w_candidate_tree</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strict_heading_validate</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Heading </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_strict_heading_validate</span><span class="si">}</span><span class="s1"> did not meet templating requirements.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">compare_tree</span><span class="p">(</span><span class="n">w_template_tree</span><span class="p">,</span> <span class="n">w_candidate_tree</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.markdown_validator.MarkdownValidator.wrap_content">
+<code class="highlight language-python"><span class="n">wrap_content</span><span class="p">(</span><span class="n">original</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.core.markdown_validator.MarkdownValidator.wrap_content" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Wrap an array of list into a pseudo-top level element to make it easier to handle.</p>
+<p>Warning: Not designed for rendering as it will produce extra text</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>original</code></td>
+        <td><code>List[Dict[str, Any]]</code></td>
+        <td><p>List of AST parse elements, likely normalized into a tree</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Dict[str, Any]</code></td>
+      <td><p>One pseudo element to make it easier to parse with a consistent name.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/markdown_validator.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">wrap_content</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">original</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrap an array of list into a pseudo-top level element to make it easier to handle.</span>
+
+<span class="sd">    Warning: Not designed for rendering as it will produce extra text</span>
+<span class="sd">    args:</span>
+<span class="sd">        original: List of AST parse elements, likely normalized into a tree</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        One pseudo element to make it easier to parse with a consistent name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">structure</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;heading&#39;</span><span class="p">,</span> <span class="s1">&#39;level&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;wrapping header&#39;</span><span class="p">}]}</span>
+    <span class="n">structure</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">original</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">structure</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+<h3 id="trestle.core.markdown_validator-functions">Functions<a class="headerlink" href="#trestle.core.markdown_validator-functions" title="Permanent link">¤</a></h3>
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.markdown_validator.compare_tree">
+<code class="highlight language-python"><span class="n">compare_tree</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.core.markdown_validator.compare_tree" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Compare whether a content parse tree is a superset of the template tree.</p>
+<p>The fundamental assumption here is anchored on the nesting of markdown headings.</p>
+<p>Assumptions:
+- Users of a template cannot create headers at the same level as a template only below that level.
+- Template levels cannot be changed.
+- Headers are the only element measured in the template.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>template</code></td>
+        <td><code>Dict[str, Any]</code></td>
+        <td><p>The dictionary containing a hierarchy where all keys are enforced.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>content</code></td>
+        <td><code>Dict[str, Any]</code></td>
+        <td><p>The dictionary to be measured:</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>bool</code></td>
+      <td><p>Whether the content conforms to the template expectations.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/markdown_validator.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">compare_tree</span><span class="p">(</span><span class="n">template</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">content</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare whether a content parse tree is a superset of the template tree.</span>
+
+<span class="sd">    The fundamental assumption here is anchored on the nesting of markdown headings.</span>
+
+<span class="sd">    Assumptions:</span>
+<span class="sd">    - Users of a template cannot create headers at the same level as a template only below that level.</span>
+<span class="sd">    - Template levels cannot be changed.</span>
+<span class="sd">    - Headers are the only element measured in the template.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        template: The dictionary containing a hierarchy where all keys are enforced.</span>
+<span class="sd">        content: The dictionary to be measured:</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Whether the content conforms to the template expectations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: Add logging statements to this context.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">template</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;heading&#39;</span><span class="p">):</span>
+        <span class="c1"># It&#39;s okay as we should not be here:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="n">template_heading_level</span> <span class="o">=</span> <span class="n">template</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span>
+    <span class="n">template_header_name</span> <span class="o">=</span> <span class="n">template</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">content_heading_level</span> <span class="o">=</span> <span class="n">content</span><span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">]</span>
+    <span class="n">content_header_name</span> <span class="o">=</span> <span class="n">content</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">template_heading_level</span> <span class="o">==</span> <span class="n">content_heading_level</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="c1"># ESCAPE title if required</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">template_header_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">HEADER_L_ESCAPE</span> <span class="ow">and</span> <span class="n">template_header_name</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">const</span><span class="o">.</span><span class="n">HEADER_R_ESCAPE</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">template_header_name</span> <span class="o">==</span> <span class="n">content_header_name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">template_sub_headers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">content_sub_headers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">template</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">])):</span>
+        <span class="k">if</span> <span class="n">template</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="n">ii</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;heading&#39;</span><span class="p">:</span>
+            <span class="n">template_sub_headers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">template</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="n">ii</span><span class="p">])</span>
+    <span class="c1"># IF there is no template headers we are good</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">template_sub_headers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">])):</span>
+        <span class="k">if</span> <span class="n">content</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="n">ii</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;heading&#39;</span><span class="p">:</span>
+            <span class="n">content_sub_headers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">][</span><span class="n">ii</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">template_sub_headers</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">content_sub_headers</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">template_sub_headers</span><span class="p">)):</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">compare_tree</span><span class="p">(</span><span class="n">template_sub_headers</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">content_sub_headers</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 class="doc doc-heading" id="trestle.core.markdown_validator.partition_ast">
+<code class="highlight language-python"><span class="n">partition_ast</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">ref_level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.core.markdown_validator.partition_ast" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Partition AST, recursive function to create a hierarchial tree out of a stream of markdown elements.</p>
+<p>Markdown elements are typically treated as a flat stream of tokens - which is sufficient for most needs.
+For this project and understanding of heading hierarchy.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>content</code></td>
+        <td><code>List[Dict[str, Any]]</code></td>
+        <td><p>List of AST parsing elements as from mistune</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>ref_level</code></td>
+        <td><code>int</code></td>
+        <td><p>The markdown heading level expected. Set to 0 when starting naively</p></td>
+        <td><code>0</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>Tuple[List[Dict[str, Any]], int]</code></td>
+      <td><p>List containing a tree of elements
+Number of elements parsed in within the sub-list</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/markdown_validator.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">partition_ast</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">ref_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Partition AST, recursive function to create a hierarchial tree out of a stream of markdown elements.</span>
+
+<span class="sd">    Markdown elements are typically treated as a flat stream of tokens - which is sufficient for most needs.</span>
+<span class="sd">    For this project and understanding of heading hierarchy.</span>
+
+
+<span class="sd">    Args:</span>
+<span class="sd">        content: List of AST parsing elements as from mistune</span>
+<span class="sd">        ref_level: The markdown heading level expected. Set to 0 when starting naively</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        List containing a tree of elements</span>
+<span class="sd">        Number of elements parsed in within the sub-list</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_content</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">ii</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">content</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;heading&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">content</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="s1">&#39;level&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ref_level</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
+                <span class="n">new_content</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sub_content</span><span class="p">,</span> <span class="n">jj</span> <span class="o">=</span> <span class="n">partition_ast</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:],</span> <span class="n">content</span><span class="p">[</span><span class="n">ii</span><span class="p">][</span><span class="s1">&#39;level&#39;</span><span class="p">])</span>
+                <span class="n">fixed_header</span> <span class="o">=</span> <span class="n">content</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+                <span class="n">fixed_header</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sub_content</span><span class="p">)</span>
+                <span class="n">new_content</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fixed_header</span><span class="p">)</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">+</span> <span class="n">jj</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_content</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="n">ii</span><span class="p">])</span>
+            <span class="n">ii</span> <span class="o">=</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">new_content</span><span class="p">,</span> <span class="n">ii</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+<p>handler: python</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../trestle.core.const/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              const
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../trestle.core.validator_factory/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              validator_factory
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d892486b.min.js"></script>
+      
+    
+  </body>
+</html>
