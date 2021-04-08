@@ -3,6 +3,16 @@
 
 <!--next-version-placeholder-->
 
+## v0.11.0 (2021-04-08)
+### Feature
+* Update NIST models to latest including refactors & UT's ([`5a7a8a3`](https://github.com/IBM/compliance-trestle/commit/5a7a8a338ad3ef427f2ae9f26e2de4ac920fa525))
+* Initial trestle markdown functionality. ([#407](https://github.com/IBM/compliance-trestle/issues/407)) ([`4d58e26`](https://github.com/IBM/compliance-trestle/commit/4d58e265392388c81549967384546ddad8f46e4e))
+* Basics of HTTPS Fetcher for remote caching ([#421](https://github.com/IBM/compliance-trestle/issues/421)) ([`cbb43ae`](https://github.com/IBM/compliance-trestle/commit/cbb43ae4876a2015b0f10292c50268160b0a6dfd))
+
+### Fix
+* Issue 344 checked rc for commands in tests and removed dependency on dictdiffer ([#440](https://github.com/IBM/compliance-trestle/issues/440)) ([`acc337b`](https://github.com/IBM/compliance-trestle/commit/acc337b368602d5191244f973029b6ab02f212b2))
+* Strangely behaving log lines ([#425](https://github.com/IBM/compliance-trestle/issues/425)) ([`2cca882`](https://github.com/IBM/compliance-trestle/commit/2cca88201e0fcd68419b72d04403a5baf1c1b33d))
+
 ## v0.10.0 (2021-03-25)
 ### Feature
 * Adding exchange protocol as a supported 3rd party schema and object model. ([#416](https://github.com/IBM/compliance-trestle/issues/416)) ([`05b8781`](https://github.com/IBM/compliance-trestle/commit/05b8781283a32131ee0fd4a7097edef4bfdb6cb2))
