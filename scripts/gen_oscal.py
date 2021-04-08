@@ -117,7 +117,7 @@ def fix_schema(source_file, dest_file):
     "Fix recent changes to nist schema."
     kill_list = ['oscal-ap-oscal-metadata-', 'oscal-ar-oscal-metadata-', 'oscal-catalog-oscal-metadata-', 'oscal-component-definition-oscal-metadata-',
                  'oscal-poam-metadata-', 'oscal-profile-oscal-metadata-', 'oscal-ar-oscal-assessment-common-', 'oscal-ap-oscal-assessment-common-',
-                 'oscal-poam-oscal-assessment-common-', 'oscal-metadata-', 'oscal-ap-', 'oscal-ar-', 'oscal-catalog-', 'oscal-poam-', 'oscal-profile-', 'oscal-ssp-']
+                 'oscal-poam-oscal-assessment-common-', 'oscal-metadata-', 'oscal-ap-', 'oscal-ar-', 'oscal-catalog-', 'oscal-poam-', 'oscal-profile-', 'oscal-ssp-', 'oscal-component-definition-']
     with open(source_file, 'r') as src:
         with open(dest_file, 'w') as dst:
             for l in src.readlines():
@@ -170,7 +170,7 @@ def generate_models():
 
 def main():
     """Load git and generate models."""
-    # load_git()
+    load_git()
     generate_models()
     print('DONE')
 

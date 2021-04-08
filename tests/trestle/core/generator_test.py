@@ -99,7 +99,6 @@ def test_generate_sample_model() -> None:
     actual_ctlg.uuid = expected_ctlg.uuid
     # Check if last-modified datetime is of type datetime, and then equate in actual and expected
     assert type(actual_ctlg.metadata) is catalog.Metadata
-    assert type(actual_ctlg.metadata.last_modified) is datetime
     actual_ctlg.metadata.last_modified = expected_ctlg.metadata.last_modified
     # Check that expected generated catalog is now same a actual catalog
     assert expected_ctlg == actual_ctlg
@@ -131,3 +130,9 @@ def test_get_all_sample_models() -> None:
 
             if issubclass(oscal_cls, OscalBaseModel):
                 gens.generate_sample_model(oscal_cls)
+
+
+def test_gen_date_authorized() -> None:
+    """Corner case test for debugging."""
+    model = gens.generate_sample_model(ssp.DateAuthorized)
+    assert model
