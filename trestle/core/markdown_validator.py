@@ -95,8 +95,12 @@ def compare_tree(template: Dict[str, Any], content: Dict[str, Any]) -> bool:
     if not template_heading_level == content_heading_level:
         return False
     # ESCAPE title if required
-    if not (template_header_name[0] == const.HEADER_L_ESCAPE and template_header_name[-1] == const.HEADER_R_ESCAPE):
+    if not (template_header_name.strip()[0] == const.HEADER_L_ESCAPE
+            and template_header_name.strip()[-1] == const.HEADER_R_ESCAPE):
         if not template_header_name == content_header_name:
+            logger.warning(
+                f'Markdown templating failed due to mismatch between expected heading {template_header_name} and current heading {content_header_name}.'  # noqa: E501
+            )
             return False
     template_sub_headers = []
     content_sub_headers = []
@@ -192,6 +196,7 @@ class MarkdownValidator:
         Returns:
             Whether or not the validation passes.
         """
+        logger.info(f'Validating {candidate} against{self.template_path}')
         header_content, mistune_parse_content = self.load_markdown_parsetree(candidate)
         if self._yaml_header_validate:
             header_status = self.compare_keys(self._template_header, header_content)
