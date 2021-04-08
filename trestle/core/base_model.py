@@ -210,6 +210,36 @@ class OscalBaseModel(BaseModel):
 
         return stripped_instance
 
+    def _oscal_wrap(self) -> 'OscalBaseModel':
+        """
+        Wrap a oscal object such that it is inside a containing object.
+
+        Returns:
+            Wrapped model as a OscalBaseModel.
+        """
+        class_name = self.__class__.__name__
+        # It would be nice to pass through the description but I can't seem to and
+        # it does not affect the output
+        dynamic_parser = {}
+        dynamic_parser[classname_to_alias(class_name, 'field')] = (
+            self.__class__,
+            Field(self, title=classname_to_alias(class_name, 'field'), alias=classname_to_alias(class_name, 'json'))
+        )
+        wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_parser)  # type: ignore
+        # Default behaviour is strange here.
+        wrapped_model = wrapper_model(**{classname_to_alias(class_name, 'json'): self})
+        return wrapped_model
+
+    def oscal_serialize_json(self) -> str:
+        """
+        Return an 'oscal wrapped' json object serialized in a compressed form.
+
+        Returns:
+            Oscal model serialized to a json object including packaging inside of a single top level key.
+        """
+        wrapped_model = self._oscal_wrap()
+        return wrapped_model.json(exclude_none=True, by_alias=True)
+
     def oscal_write(self, path: pathlib.Path) -> None:
         """
         Write out a pydantic data model in an oscal friendly way.
@@ -224,17 +254,7 @@ class OscalBaseModel(BaseModel):
         Raises:
             err.TrestleError: If a unknown file extension is provided.
         """
-        class_name = self.__class__.__name__
-        # It would be nice to pass through the description but I can't seem to and
-        # it does not affect the output
-        dynamic_parser = {}
-        dynamic_parser[classname_to_alias(class_name, 'field')] = (
-            self.__class__,
-            Field(self, title=classname_to_alias(class_name, 'field'), alias=classname_to_alias(class_name, 'json'))
-        )
-        wrapper_model = create_model(class_name, __base__=OscalBaseModel, **dynamic_parser)  # type: ignore
-        # Default behaviour is strange here.
-        wrapped_model = wrapper_model(**{classname_to_alias(class_name, 'json'): self})
+        wrapped_model = self._oscal_wrap()
         #
         content_type = FileContentType.to_content_type(path.suffix)
         write_file = pathlib.Path(path).open('w', encoding=const.FILE_ENCODING)
