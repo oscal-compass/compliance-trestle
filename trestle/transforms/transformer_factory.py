@@ -16,16 +16,18 @@
 """Define the TransformerFactory and corresponding ResultsTransformer class it creates."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Union
+from typing import Dict, Type
 
-from trestle.core.transforms.results import Results
+from trestle.core.base_model import OscalBaseModel
+from trestle.core.err import TrestleError
+from trestle.transforms.results import Results
 
 
 class TransformerBase(ABC):
     """Abstract interface for transformers."""
 
     @abstractmethod
-    def transform(self, blob: str) -> Any:
+    def transform(self, blob: str) -> OscalBaseModel:
         """Transform the object."""
 
 
@@ -42,12 +44,15 @@ class TransformerFactory:
 
     def __init__(self) -> None:
         """Initialize the transformers dictionary as empty."""
-        self._transformers: Dict[str, ResultsTransformer] = {}
+        self._transformers: Dict[str, Type[TransformerBase]] = {}
 
-    def register_transformer(self, name: str, transformer: ResultsTransformer) -> None:
+    def register_transformer(self, name: str, transformer: Type[TransformerBase]) -> None:
         """Register the transformer."""
         self._transformers[name] = transformer
 
-    def get(self, name: str) -> Union[TransformerBase, None]:
+    def get(self, name: str) -> TransformerBase:
         """Create the transformer from the name."""
-        return self._transformers.get(name)
+        t = self._transformers.get(name)
+        if t is not None:
+            return t()
+        raise TrestleError(f'Error getting non-registered transform {name}')

@@ -14,21 +14,34 @@
 # limitations under the License.
 """Define and register all transformers here."""
 
-from typing import Any
+from typing import List
 
-from trestle.core.transforms.results import Results
-from trestle.oscal.transforms.transformer_factory import ResultsTransformer, TransformerFactory
+from trestle.core.base_model import OscalBaseModel
+from trestle.oscal.assessment_results import Result, RoleId
+from trestle.transforms.transformer_factory import ResultsTransformer, TransformerBase, TransformerFactory
 
 # create the singleton transformer factory here, then register transformers below
 transformer_factory = TransformerFactory()
 
 
-class DummyTransformer(ResultsTransformer):
+# these are just examples for now to be replaced by actual transformers
+class DummyTransformer(TransformerBase):
     """Example transformer."""
 
-    def transform(self, transform_object: Any) -> Results:
-        """Transform the object."""
-        return Results()
+    def transform(self, blob: str) -> OscalBaseModel:
+        """Transform the blob."""
+        return RoleId(__root__='my_string')
 
 
-transformer_factory.register_object('dummy', DummyTransformer)
+transformer_factory.register_transformer('dummy', DummyTransformer)
+
+
+class DummyResultsTransformer(ResultsTransformer):
+    """Example results transformer."""
+
+    def transform(self, blob: str) -> List[Result]:
+        """Transform the blob."""
+        return []
+
+
+transformer_factory.register_transformer('dummy_results', DummyResultsTransformer)

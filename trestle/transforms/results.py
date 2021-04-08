@@ -18,10 +18,10 @@
 from typing import List
 
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.oscal import AssessmentResults
+from trestle.oscal.assessment_results import Result
 
 
 class Results(OscalBaseModel):
     """Transformer results as a list."""
 
-    __root__ = List[AssessmentResults.Result]
+    __root__: List[Result] = []
