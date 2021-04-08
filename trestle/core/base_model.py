@@ -238,7 +238,7 @@ class OscalBaseModel(BaseModel):
             Oscal model serialized to a json object including packaging inside of a single top level key.
         """
         wrapped_model = self._oscal_wrap()
-        return wrapped_model.json()
+        return wrapped_model.json(exclude_none=True, by_alias=True)
 
     def oscal_write(self, path: pathlib.Path) -> None:
         """
