@@ -49,6 +49,8 @@ def generate_sample_value_by_type(
     elif type_ is int:
         return 0
     elif type_ is str:
+        if field_name == 'oscal_version':
+            return OSCAL_VERSION
         return 'REPLACE_ME'
     elif type_ is float:
         return 0.00
@@ -58,7 +60,7 @@ def generate_sample_value_by_type(
         if 'uuid' == field_name:
             return str(uuid.uuid4())
         elif field_name == 'date_authorized':
-            return date.today().isoformat()
+            return str(date.today().isoformat())
         elif field_name == 'oscal_version':
             return OSCAL_VERSION
         return '00000000-0000-4000-8000-000000000000'
@@ -109,7 +111,16 @@ def generate_sample_model(model: Union[Type[TG], List[TG], Dict[str, TG]]) -> TG
                 if utils.is_collection_field_type(outer_type) or issubclass(outer_type, OscalBaseModel):
                     model_dict[field] = generate_sample_model(outer_type)
                 else:
-                    model_dict[field] = generate_sample_value_by_type(outer_type, field)
+                    # Hacking here:
+                    # Root models should ideally not exist, however, sometimes we are stuck with them.
+                    # If that is the case we need sufficient information on the type in order to generate a model.
+                    # E.g. we need the type of the container.
+                    if field == '__root__':
+                        model_dict[field] = generate_sample_value_by_type(
+                            outer_type, utils.classname_to_alias(model.__name__, 'field')
+                        )
+                    else:
+                        model_dict[field] = generate_sample_value_by_type(outer_type, field)
         # Note: this assumes list constrains in oscal are always 1 as a minimum size. if two this may still fail.
     else:
         # There is set of circumstances where a m
