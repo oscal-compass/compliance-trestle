@@ -16,16 +16,24 @@
 """Define the TransformerFactory and corresponding ResultsTransformer class it creates."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 from trestle.core.transforms.results import Results
 
 
-class ResultsTransformer(ABC):
+class TransformerBase(ABC):
     """Abstract interface for transformers."""
 
     @abstractmethod
-    def transform(self, transform_object: Any) -> Results:
+    def transform(self, blob: str) -> Any:
+        """Transform the object."""
+
+
+class ResultsTransformer(TransformerBase):
+    """Abstract interface for transformers that return Results."""
+
+    @abstractmethod
+    def transform(self, blob: str) -> Results:
         """Transform the object."""
 
 
@@ -40,6 +48,6 @@ class TransformerFactory:
         """Register the transformer."""
         self._transformers[name] = transformer
 
-    def get(self, name: str) -> ResultsTransformer:
+    def get(self, name: str) -> Union[TransformerBase, None]:
         """Create the transformer from the name."""
         return self._transformers.get(name)
