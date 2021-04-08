@@ -24,19 +24,19 @@ from trestle.transforms.results import Results
 
 
 class TransformerBase(ABC):
-    """Abstract interface for transformers."""
+    """Abstract base interface for all transformers."""
 
     @abstractmethod
     def transform(self, blob: str) -> OscalBaseModel:
-        """Transform the object."""
+        """Transform the blob into a general OscalBaseModel."""
 
 
 class ResultsTransformer(TransformerBase):
-    """Abstract interface for transformers that return Results."""
+    """Abstract interface for transformers that specifically return Results."""
 
     @abstractmethod
     def transform(self, blob: str) -> Results:
-        """Transform the object."""
+        """Transform the blob into Results."""
 
 
 class TransformerFactory:
@@ -47,11 +47,33 @@ class TransformerFactory:
         self._transformers: Dict[str, Type[TransformerBase]] = {}
 
     def register_transformer(self, name: str, transformer: Type[TransformerBase]) -> None:
-        """Register the transformer."""
+        """
+        Register the transformer.
+
+        This registers transformers in the factory so they may be created by name.
+
+        Args:
+            name (str): The name of the transformer.
+            transformer (TransformerBase): The transformer class to be registered.
+
+        Returns:
+            None
+        """
         self._transformers[name] = transformer
 
     def get(self, name: str) -> TransformerBase:
-        """Create the transformer from the name."""
+        """
+        Create an instance of the desired transformer based its name.
+
+        Args:
+            name (str): The name of the transformer.
+
+        Returns:
+            An instance of the desired transformer.
+
+        Raises:
+            err.TrestleError if the name does not exist in the registry.
+        """
         t = self._transformers.get(name)
         if t is not None:
             return t()
