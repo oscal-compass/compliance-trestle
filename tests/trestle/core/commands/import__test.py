@@ -23,6 +23,8 @@ import tempfile
 from json.decoder import JSONDecodeError
 from unittest.mock import patch
 
+import pytest
+
 from tests import test_utils
 
 import trestle.core.commands.import_ as importcmd
@@ -58,14 +60,15 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
         assert rc == 0
 
 
-def test_import_run(tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('regen', [False, True])
+def test_import_run(tmp_trestle_dir: pathlib.Path, regen: bool) -> None:
     """Test successful _run() on valid input."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     catalog_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     i = importcmd.ImportCmd()
-    args = argparse.Namespace(file=catalog_file, output='imported', verbose=True)
+    args = argparse.Namespace(file=catalog_file, output='imported', verbose=True, regenerate=regen)
     rc = i._run(args)
     assert rc == 0
 
@@ -98,14 +101,14 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path) -> None:
     dup_file.write(json.dumps(dup_cat))
     dup_file.close()
     j = importcmd.ImportCmd()
-    args = argparse.Namespace(file=dup_file_name, output=f'dup-{rand_str}', verbose=True)
+    args = argparse.Namespace(file=dup_file_name, output=f'dup-{rand_str}', verbose=True, regenerate=False)
     # 1. Validation rejects above import, which results in non-zero exit code for import.
     rc = j._run(args)
     assert rc > 0
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     # 2. ValidateCmd raises run (mocked), so import returns non-zero exit code.
     j = importcmd.ImportCmd()
-    args = argparse.Namespace(file=dup_file_name, output=f'dup-{rand_str}', verbose=True)
+    args = argparse.Namespace(file=dup_file_name, output=f'dup-{rand_str}', verbose=True, regenerate=False)
     with patch('trestle.core.commands.validate.ValidateCmd._run') as validate_import_mock:
         validate_import_mock.side_effect = err.TrestleError('validate run error')
         rc = j._run(args)
@@ -113,7 +116,7 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path) -> None:
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     # 3. Rollback raises exception, so import returns non-zero exit code:
     j = importcmd.ImportCmd()
-    args = argparse.Namespace(file=dup_file_name, output=f'dup-{rand_str}', verbose=True)
+    args = argparse.Namespace(file=dup_file_name, output=f'dup-{rand_str}', verbose=True, regenerate=False)
     with patch('trestle.core.models.plans.Plan.rollback') as rollback_mock:
         rollback_mock.side_effect = [None, err.TrestleError('rollback error')]
         rc = j._run(args)
@@ -246,7 +249,9 @@ def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path) -> None:
     sample_file.close()
     with patch('trestle.core.parser.parse_file') as parse_file_mock:
         parse_file_mock.side_effect = err.TrestleError('stuff')
-        args = argparse.Namespace(file=f'{tmp_trestle_dir.parent}/{rand_str}.json', output='catalog', verbose=True)
+        args = argparse.Namespace(
+            file=f'{tmp_trestle_dir.parent}/{rand_str}.json', output='catalog', verbose=True, regenerate=False
+        )
         i = importcmd.ImportCmd()
         rc = i._run(args)
         assert rc == 1
@@ -258,7 +263,7 @@ def test_import_root_key_found(tmp_trestle_dir: pathlib.Path) -> None:
     catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
     catalog_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
-    args = argparse.Namespace(file=catalog_file, output='catalog', verbose=True)
+    args = argparse.Namespace(file=catalog_file, output='catalog', verbose=True, regenerate=False)
     i = importcmd.ImportCmd()
     rc = i._run(args)
     assert rc == 0
@@ -272,7 +277,7 @@ def test_import_failure_simulate_plan(tmp_trestle_dir: pathlib.Path) -> None:
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     with patch('trestle.core.models.plans.Plan.simulate') as simulate_plan_mock:
         simulate_plan_mock.side_effect = err.TrestleError('stuff')
-        args = argparse.Namespace(file=catalog_file, output='imported', verbose=True)
+        args = argparse.Namespace(file=catalog_file, output='imported', verbose=True, regenerate=False)
         i = importcmd.ImportCmd()
         rc = i._run(args)
         assert rc == 1
@@ -287,7 +292,7 @@ def test_import_failure_execute_plan(tmp_trestle_dir: pathlib.Path) -> None:
     with patch('trestle.core.models.plans.Plan.simulate'):
         with patch('trestle.core.models.plans.Plan.execute') as execute_plan_mock:
             execute_plan_mock.side_effect = err.TrestleError('stuff')
-            args = argparse.Namespace(file=catalog_file, output='imported', verbose=True)
+            args = argparse.Namespace(file=catalog_file, output='imported', verbose=True, regenerate=False)
             i = importcmd.ImportCmd()
             rc = i._run(args)
             assert rc == 1

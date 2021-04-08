@@ -18,6 +18,7 @@
 import pathlib
 import random
 import string
+from json.decoder import JSONDecodeError
 from unittest.mock import patch
 
 import pytest
@@ -133,6 +134,51 @@ def test_local_fetcher_absolute(tmp_trestle_dir):
     fetcher._cache_only = False
     fetcher._update_cache()
     assert fetcher._inst_cache_path.exists()
+
+
+def test_https_fetcher_fails(tmp_trestle_dir, monkeypatch):
+    """Test the HTTPS fetcher failing."""
+    monkeypatch.setenv('myusername', 'user123')
+    monkeypatch.setenv('mypassword', 'somep4ss')
+    # This syntactically valid uri points to nothing and should ConnectTimeout.
+    uri = 'https://{{myusername}}:{{mypassword}}@127.0.0.1/path/to/file.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with pytest.raises(TrestleError):
+        fetcher._update_cache()
+
+
+def test_https_fetcher(tmp_trestle_dir, monkeypatch):
+    """Test the HTTPS fetcher update, including failures."""
+    # This valid uri should work:
+    uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/minimal_catalog.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    fetcher._update_cache()
+    assert len(open(fetcher._inst_cache_path).read()) > 0
+    dummy_existing_file = fetcher._inst_cache_path.__str__()
+    # Now we'll patch _update_cache() to fail with JSONDecodeError:
+    with patch('requests.Response.json') as json_mock:
+        json_mock.side_effect = JSONDecodeError(msg='Extra data:', doc=fetcher._uri, pos=0)
+        with pytest.raises(TrestleError):
+            fetcher._update_cache()
+    # Now we'll get a file that does not exist:
+    uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/not_here.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
+    fetcher._refresh = True
+    fetcher._cache_only = False
+    with pytest.raises(TrestleError):
+        fetcher._update_cache()
+    # Supply CA bundle env var value pointing to no existing file:
+    monkeypatch.setenv('REQUESTS_CA_BUNDLE', './no_such_bundle.crt')
+    with pytest.raises(TrestleError):
+        fetcher._update_cache()
+    # Supply bad CA bundle env var value pointing to a bad bundle file:
+    monkeypatch.setenv('REQUESTS_CA_BUNDLE', dummy_existing_file)
+    with pytest.raises(TrestleError):
+        fetcher._update_cache()
 
 
 def test_sftp_fetcher(tmp_trestle_dir):
@@ -268,14 +314,33 @@ def test_sftp_fetcher_bad_uri(tmp_trestle_dir):
             cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
 
 
-def test_fetcher_bad_uri(tmp_trestle_dir):
+def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, monkeypatch):
     """Test fetcher factory with bad URI."""
-    for uri in ['', 'sftp://', '..', 'ftp://some.host/this.file', 'https://github.com/IBM/test/file']:
+    monkeypatch.setenv('myusername', 'user123')
+    monkeypatch.setenv('mypassword', 'somep4ss')
+    for uri in ['',
+                'sftp://',
+                '..',
+                'ftp://some.host/this.file',
+                'https://{{9invalid}}:@github.com/IBM/test/file',
+                'https://{{invalid var}}:@github.com/IBM/test/file',
+                'https://{{invalid-var}}:@github.com/IBM/test/file',
+                'https://{{_}}:@github.com/IBM/test/file',
+                'https://{{myusername}}:@github.com/IBM/test/file',
+                'https://{{myusername}}:passwordstring@github.com/IBM/test/file',
+                'https://{{myusername_not_defined}}:passwordstring@github.com/IBM/test/file',
+                'https://{{myusername}}:{{password_var_not_defined}}@github.com/IBM/test/file',
+                'https://{{myusername}}:{{0invalid}}@github.com/IBM/test/file',
+                'https://{{myusername}}:{{invalid var}}@github.com/IBM/test/file',
+                'https://{{myusername}}:{{invalid-var}}@github.com/IBM/test/file',
+                'https://{{myusername}}:{{_}}@github.com/IBM/test/file',
+                'https://usernamestring:{{mypassword}}@github.com/IBM/test/file',
+                'https://:{{mypassword}}@github.com/IBM/test/file']:
         with pytest.raises(TrestleError):
             cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri, False, False)
 
 
-def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
+def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch) -> None:
     """Test that the fetcher factory correctly resolves functionality."""
     local_uri_1 = 'file:///home/user/oscal_file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_1, False, False)
@@ -290,6 +355,12 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path) -> None:
     local_uri_4 = 'C:\\Users\\user\\this.file'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_4, False, False)
     assert type(fetcher) == cache.LocalFetcher
+
+    https_uri = 'https://{{myusername}}:{{mypassword}}@this.com/this.file'
+    monkeypatch.setenv('myusername', 'user123')
+    monkeypatch.setenv('mypassword', 'somep4ss')
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), https_uri, False, False)
+    assert type(fetcher) == cache.HTTPSFetcher
 
     sftp_uri = 'sftp://user@hostname:/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), sftp_uri, False, False)

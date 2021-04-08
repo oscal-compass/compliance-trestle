@@ -20,6 +20,7 @@ import pathlib
 from json.decoder import JSONDecodeError
 from typing import Type, TypeVar
 
+from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
@@ -152,7 +153,7 @@ class ReplicateCmd(CommandPlusDocs):
         self.add_argument('-o', '--output', help='Name of replicated model.', type=str, required=True)
 
         self.add_argument(
-            '-r', '--regenerate', type=bool, default=False, help='Enable to regenerate uuids within the document'
+            '-r', '--regenerate', action='store_true', help='Enable regeneration of uuids within the document'
         )
 
     @classmethod
@@ -218,6 +219,11 @@ class ReplicateCmd(CommandPlusDocs):
             logger.error(f'OSCAL file to be replicated here: {rep_model_path} exists.')
             logger.error('Aborting trestle replicate.')
             return 1
+
+        if args.regenerate:
+            logger.debug(f'regenerating uuids for model {input_file}')
+            model_instance, uuid_lut, n_refs_updated = validator_helper.regenerate_uuids(model_instance)
+            logger.debug(f'{len(uuid_lut)} uuids generated and {n_refs_updated} references updated')
 
         # 6. Prepare actions and plan
         top_element = Element(model_instance)

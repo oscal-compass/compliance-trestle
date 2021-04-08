@@ -41,11 +41,6 @@ def test_create_cmd(tmp_trestle_dir: pathlib.Path) -> None:
             assert rc == 0
 
 
-def test_create_object_directly(tmp_trestle_dir: pathlib.Path) -> None:
-    """Simple test of create object only."""
-    pass
-
-
 def test_no_dir(tmp_empty_cwd: pathlib.Path) -> None:
     """Test for no trestle directory."""
     # Setup argparse
@@ -91,7 +86,7 @@ def test_broken_args(tmp_trestle_dir: pathlib.Path) -> None:
     # correct behavior
     with mock.patch.object(sys, 'argv', testargs):
         rc = Trestle().run()
-    assert rc == 0
+        assert rc == 0
     # correct behavior
     testargs[2] = 'bad_name'
     with mock.patch.object(sys, 'argv', testargs):

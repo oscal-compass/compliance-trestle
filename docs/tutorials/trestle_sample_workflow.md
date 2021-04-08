@@ -9,6 +9,7 @@ Learn how to split and merge an OSCAL catalog json file using trestle commands a
 This tutorial assumes you have installed Python and installed trestle in a virtual environment per the directions found [here](./python_trestle_setup.md).
 
 The examples shown will work for linux and mac, but Windows will require the following modifications:
+
 <ul>
 <li>use backslashes `\` for file paths (this is optional in most cases)
 <li>use copy instead of cp (unless you have cp installed)
@@ -33,7 +34,6 @@ here
 </details>
 <br>
 
-
 ## Start by creating a trestle workspace if you don't have one already
 
 ```
@@ -43,7 +43,7 @@ here
 Initialized trestle project successfully in [user_path]/my_workspace
 ```
 
-### Create a new ```mycatalog``` directory in the ```catalogs``` folder of your trestle workspace and copy a catalog json file into it
+### Create a new `mycatalog` directory in the `catalogs` folder of your trestle workspace and copy a catalog json file into it
 
 ```
 > cd catalogs
@@ -107,15 +107,11 @@ You will see that the directory now shows your catalog file in `my_workspace/cat
 
 From here on in this tutorial we will just focus on the catalogs directory since the others are not directly involved.
 
-
-
 You have now populated your trestle workspace with an OSCAL catalog that you can manipulate.  Let's start.
 
 ## Step 1: Split the file into smaller parts
 
-
 The OSCAL schema specifies that a catalog must contain metadata, groups, and back-matter - so this command will pull them out of the original file and place them in separate json files for additional manipulations.
-
 
 ```
 > trestle split -f ./catalog.json -e 'catalog.metadata,catalog.groups,catalog.back-matter'
@@ -135,7 +131,7 @@ catalogs
  ┃ ┃ ┣ groups.json
  ┃ ┃ ┗ metadata.json
  ┃ ┗ catalog.json
- ```
+```
 
 </details>
 <br>
@@ -147,14 +143,16 @@ Any split step can be reversed by a corresponding `merge` operation.  In this ca
 ```
 > trestle merge -e 'catalog.metadata,catalog.groups,catalog.back-matter'
 ```
+
 or simply
+
 ```
 > trestle merge -e 'catalog.*'
 ```
 
 You can go back and forth splitting and merging, but for the next step please start with the above files split so that `metadata.json` can be further split.
 
-## Step 2: Split the metadata into constituent files 
+## Step 2: Split the metadata into constituent files
 
 ```
 > cd catalog
@@ -179,7 +177,8 @@ catalogs
  ┃ ┃ ┗ metadata.json
  ┃ ┗ catalog.json
 
- ```
+```
+
 </details>
 <br>
 
@@ -190,7 +189,9 @@ And this step can be reversed with the following:
 ```
 > trestle merge -e 'metadata.roles,metadata.parties,metadata.responsible-parties'
 ```
+
 or simply
+
 ```
 > trestle merge -e 'metadata.*'
 ```
@@ -651,7 +652,7 @@ catalogs
  ┃ ┃ ┗ metadata.json
  ┃ ┗ catalog.json
 
- ```
+```
 
 </details>
 <br>
@@ -666,7 +667,7 @@ You can then reverse the split with
 
 ## Step 4: Collapse the entire directory structure back into a single `catalog.json` file - possibly after modifying individual files
 
-You can collapse everything back to a single `catalog.json` file after first going up one directory to the mycatalog directory 
+You can collapse everything back to a single `catalog.json` file after first going up one directory to the mycatalog directory
 
 ```
 > cd ..

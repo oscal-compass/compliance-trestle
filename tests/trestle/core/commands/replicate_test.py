@@ -18,6 +18,8 @@ import sys
 from pathlib import Path
 from unittest import mock
 
+import pytest
+
 from tests import test_utils
 
 import trestle.core.err as err
@@ -48,7 +50,8 @@ def test_replicate_cmd_no_file(tmp_trestle_dir: Path) -> None:
             assert rc != 0
 
 
-def test_replicate_cmd(testdata_dir, tmp_trestle_dir) -> None:
+@pytest.mark.parametrize('regen', ['', '-r'])
+def test_replicate_cmd(testdata_dir, tmp_trestle_dir, regen) -> None:
     """Test replicate command."""
     # prepare trestle project dir with the file
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
@@ -63,7 +66,7 @@ def test_replicate_cmd(testdata_dir, tmp_trestle_dir) -> None:
     rep_file = catalogs_dir / rep_name / 'catalog.json'
 
     # execute the command to replicate the model into replicated
-    test_args = f'trestle replicate catalog -n {source_name} -o {rep_name}'.split()
+    test_args = f'trestle replicate catalog -n {source_name} -o {rep_name} {regen}'.split()
     with mock.patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
@@ -78,7 +81,7 @@ def test_replicate_cmd(testdata_dir, tmp_trestle_dir) -> None:
 
     assert rep_model_type == expected_model_type
     assert rep_model_alias == 'catalog'
-    assert expected_model_instance == rep_model_instance
+    assert (expected_model_instance == rep_model_instance) == (regen == '')
 
 
 def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir) -> None:
@@ -106,7 +109,7 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir) -> None:
 
     shutil.rmtree(catalogs_dir / rep_name, ignore_errors=True)
 
-    args = argparse.Namespace(name=source_name, output=rep_name, verbose=False)
+    args = argparse.Namespace(name=source_name, output=rep_name, verbose=False, regenerate=False)
 
     # Force PermissionError:
     with mock.patch('trestle.core.commands.replicate.load_distributed') as load_distributed_mock:

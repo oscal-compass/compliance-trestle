@@ -28,6 +28,10 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog
 from trestle.utils import fs
 
+if os.name == 'nt':  # pragma: no cover
+    import win32api
+    import win32con
+
 
 def test_should_ignore() -> None:
     """Test should_ignore method."""
@@ -380,7 +384,6 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
         assert 'title' in alias_to_field_map
         assert 'params' in alias_to_field_map
         assert 'props' in alias_to_field_map
-        assert 'annotations' in alias_to_field_map
         assert 'links' in alias_to_field_map
         assert 'parts' in alias_to_field_map
         assert 'groups' in alias_to_field_map
@@ -534,3 +537,52 @@ def test_model_or_file_to_model_name(tmp_trestle_dir) -> None:
     assert fs.model_or_file_to_model_name('mycatalog/catalog.json') == 'mycatalog'
     with pytest.raises(TrestleError):
         fs.model_or_file_to_model_name('')
+
+
+def test_is_hidden_posix(tmp_path) -> None:
+    """Test is_hidden on posix systems."""
+    if not os.name == 'nt':
+        hidden_file = tmp_path / '.hidden.md'
+        hidden_dir = tmp_path / '.hidden/'
+        visible_file = tmp_path / 'visible.md'
+        visible_dir = tmp_path / 'visible/'
+
+        assert fs.is_hidden(hidden_file)
+        assert fs.is_hidden(hidden_dir)
+        assert not fs.is_hidden(visible_file)
+        assert not fs.is_hidden(visible_dir)
+    else:
+        pass
+
+
+def test_is_hidden_windows(tmp_path) -> None:
+    """Test is_hidden on windows systems."""
+    if os.name == 'nt':
+        visible_file = tmp_path / 'visible.md'
+        visible_dir = tmp_path / 'visible/'
+        visible_file.touch()
+        visible_dir.touch()
+        assert not fs.is_hidden(visible_file)
+        assert not fs.is_hidden(visible_dir)
+
+        atts = win32api.GetFileAttributes(str(visible_file))
+        win32api.SetFileAttributes(str(visible_file), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+        atts = win32api.GetFileAttributes(str(visible_dir))
+        win32api.SetFileAttributes(str(visible_dir), win32con.FILE_ATTRIBUTE_HIDDEN | atts)
+
+        assert fs.is_hidden(visible_file)
+        assert fs.is_hidden(visible_dir)
+    else:
+        pass
+
+
+@pytest.mark.parametrize(
+    'task_name, outcome',
+    [
+        ('hello', True), ('.trestle', False), ('task/name', True), ('.bad,', False), ('catalogs', False),
+        ('catalog', True), ('target-definitions', False), ('hello.world', False)
+    ]
+)
+def test_allowed_task_name(task_name: str, outcome: bool) -> None:
+    """Test whether task names are allowed."""
+    assert fs.allowed_task_name(task_name) == outcome

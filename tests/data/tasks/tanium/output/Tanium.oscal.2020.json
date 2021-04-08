@@ -14,20 +14,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "cmp-wn-2106.demo.tanium.local"
+                "value": "cmp-wn-2106.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "fe80::3cd5:564b:940e:49ab"
+                "value": "fe80::3cd5:564b:940e:49ab",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
@@ -38,20 +38,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": ""
+                "value": "",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "10.8.69.11"
+                "value": "10.8.69.11",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
@@ -62,20 +62,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "cmp-wn-2115.demo.tanium.local"
+                "value": "cmp-wn-2115.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "fe80::21f6:c36a:3f45:ac95"
+                "value": "fe80::21f6:c36a:3f45:ac95",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
@@ -86,20 +86,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "cmp-wn-2115.demo.tanium.local"
+                "value": "cmp-wn-2115.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "10.8.68.218"
+                "value": "10.8.68.218",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
@@ -110,20 +110,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "cmp-wn-2105.demo.tanium.local"
+                "value": "cmp-wn-2105.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "fe80::186d:aba0:846b:f858"
+                "value": "fe80::186d:aba0:846b:f858",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
@@ -134,20 +134,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "cmp-wn-2105.demo.tanium.local"
+                "value": "cmp-wn-2105.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "10.8.69.7"
+                "value": "10.8.69.7",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
@@ -158,20 +158,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "cmp-wn-2108.demo.tanium.local"
+                "value": "cmp-wn-2108.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "fe80::fcb4:14fa:b62d:ad"
+                "value": "fe80::fcb4:14fa:b62d:ad",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
@@ -182,20 +182,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "cmp-wn-2108.demo.tanium.local"
+                "value": "cmp-wn-2108.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "10.8.68.160"
+                "value": "10.8.68.160",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
@@ -206,20 +206,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "cmp-wn-2109.demo.tanium.local"
+                "value": "cmp-wn-2109.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "fe80::20cf:636b:5fe7:b0ff"
+                "value": "fe80::20cf:636b:5fe7:b0ff",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
@@ -230,20 +230,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "cmp-wn-2109.demo.tanium.local"
+                "value": "cmp-wn-2109.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "10.8.77.220"
+                "value": "10.8.77.220",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
@@ -254,20 +254,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "cmp-wn-2107.demo.tanium.local"
+                "value": "cmp-wn-2107.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "fe80::2585:c75f:8e0:666c"
+                "value": "fe80::2585:c75f:8e0:666c",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
@@ -278,20 +278,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "cmp-wn-2107.demo.tanium.local"
+                "value": "cmp-wn-2107.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "10.8.68.184"
+                "value": "10.8.68.184",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
@@ -302,20 +302,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "cmp-wn-2116.demo.tanium.local"
+                "value": "cmp-wn-2116.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "fe80::ed25:77c3:b611:eedc"
+                "value": "fe80::ed25:77c3:b611:eedc",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
@@ -326,20 +326,20 @@
               {
                 "name": "computer-name",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "cmp-wn-2116.demo.tanium.local"
+                "value": "cmp-wn-2116.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
                 "name": "computer-ip",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "10.8.68.219"
+                "value": "10.8.68.219",
+                "class": " inventory-item"
               },
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": " inventory-item",
-                "value": "Windows 10"
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           }
@@ -358,26 +358,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -388,7 +382,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -397,26 +392,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -427,7 +416,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -436,26 +426,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": ""
+              "value": "",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://tanium",
-              "class": "id",
-              "value": "win_security_ps"
+              "value": "win_security_ps",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://tanium",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://tanium",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -466,7 +450,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -475,26 +460,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": ""
+              "value": "",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://tanium",
-              "class": "id",
-              "value": "av_service"
+              "value": "av_service",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://tanium",
-              "class": "result",
-              "value": "fail"
-            },
-            {
-              "name": "time",
-              "ns": "dns://tanium",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "fail",
+              "class": "result"
             }
           ],
           "methods": [
@@ -505,7 +484,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -514,26 +494,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -544,7 +518,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -553,26 +528,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -583,7 +552,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -592,26 +562,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "fail"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "fail",
+              "class": "result"
             }
           ],
           "methods": [
@@ -622,7 +586,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -631,26 +596,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_19.7.44.2.1_L2_Ensure_Prevent_Codec_Download_is_set_to_Enabled"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_19.7.44.2.1_L2_Ensure_Prevent_Codec_Download_is_set_to_Enabled",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "fail"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "fail",
+              "class": "result"
             }
           ],
           "methods": [
@@ -661,7 +620,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -670,26 +630,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -700,7 +654,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -709,26 +664,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "skip"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "skip",
+              "class": "result"
             }
           ],
           "methods": [
@@ -739,7 +688,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -748,26 +698,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "fail"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "fail",
+              "class": "result"
             }
           ],
           "methods": [
@@ -778,7 +722,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -787,26 +732,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": ""
+              "value": "",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://tanium",
-              "class": "id",
-              "value": "win_security_ps"
+              "value": "win_security_ps",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://tanium",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://tanium",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -817,7 +756,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -826,26 +766,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -856,7 +790,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -865,26 +800,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -895,7 +824,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -904,26 +834,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "fail"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "fail",
+              "class": "result"
             }
           ],
           "methods": [
@@ -934,7 +858,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -943,26 +868,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": ""
+              "value": "",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://tanium",
-              "class": "id",
-              "value": "av_service"
+              "value": "av_service",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://tanium",
-              "class": "result",
-              "value": "fail"
-            },
-            {
-              "name": "time",
-              "ns": "dns://tanium",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "fail",
+              "class": "result"
             }
           ],
           "methods": [
@@ -973,7 +892,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -982,26 +902,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -1012,7 +926,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1021,26 +936,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -1051,7 +960,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1060,26 +970,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "fail"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "fail",
+              "class": "result"
             }
           ],
           "methods": [
@@ -1090,7 +994,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1099,26 +1004,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": ""
+              "value": "",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://tanium",
-              "class": "id",
-              "value": "win_security_ps"
+              "value": "win_security_ps",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://tanium",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://tanium",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -1129,7 +1028,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1138,26 +1038,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -1168,7 +1062,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1177,26 +1072,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -1207,7 +1096,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1216,26 +1106,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "fail"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "fail",
+              "class": "result"
             }
           ],
           "methods": [
@@ -1246,7 +1130,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1255,26 +1140,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": ""
+              "value": "",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://tanium",
-              "class": "id",
-              "value": "win_security_ps"
+              "value": "win_security_ps",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://tanium",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://tanium",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -1285,7 +1164,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1294,26 +1174,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -1324,7 +1198,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1333,26 +1208,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -1363,7 +1232,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1372,26 +1242,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark"
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "fail"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "fail",
+              "class": "result"
             }
           ],
           "methods": [
@@ -1402,7 +1266,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         },
         {
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1411,26 +1276,20 @@
             {
               "name": "benchmark",
               "ns": "dns://tanium",
-              "class": "source",
-              "value": ""
+              "value": "",
+              "class": "source"
             },
             {
               "name": "rule",
               "ns": "dns://tanium",
-              "class": "id",
-              "value": "win_security_ps"
+              "value": "win_security_ps",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://tanium",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://tanium",
-              "class": "timestamp",
-              "value": "2020-02-24T19:31:13+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -1441,7 +1300,8 @@
               "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2020-02-24T19:31:13.000+00:00"
         }
       ],
       "findings": [
@@ -1449,26 +1309,27 @@
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
           "title": "800-53: IA-5",
           "description": "800-53: IA-5",
-          "collected": "2020-02-24T19:31:13.000+00:00",
-          "objective-status": {
+          "target": {
+            "type": "objective-id",
+            "id-ref": "800-53: IA-5",
             "props": [
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": "source",
-                "value": "NIST 800-53"
+                "value": "NIST 800-53",
+                "class": "source"
               },
               {
                 "name": "id-ref",
                 "ns": "dns://tanium",
-                "class": "source",
-                "value": "IA-5"
+                "value": "800-53: IA-5",
+                "class": "source"
               },
               {
                 "name": "result",
                 "ns": "dns://xccdf",
-                "class": "STRVALUE",
-                "value": "FAIL"
+                "value": "FAIL",
+                "class": "STRVALUE"
               }
             ],
             "status": "not-satisfied"
@@ -1540,26 +1401,27 @@
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
           "title": "win_security_ps",
           "description": "win_security_ps",
-          "collected": "2020-02-24T19:31:13.000+00:00",
-          "objective-status": {
+          "target": {
+            "type": "objective-id",
+            "id-ref": "win_security_ps",
             "props": [
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": "source",
-                "value": "N/A"
+                "value": "N/A",
+                "class": "source"
               },
               {
                 "name": "id-ref",
                 "ns": "dns://tanium",
-                "class": "source",
-                "value": "win_security_ps"
+                "value": "win_security_ps",
+                "class": "source"
               },
               {
                 "name": "result",
                 "ns": "dns://xccdf",
-                "class": "STRVALUE",
-                "value": "PASS"
+                "value": "PASS",
+                "class": "STRVALUE"
               }
             ],
             "status": "satisfied"
@@ -1586,26 +1448,27 @@
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
           "title": "av_service",
           "description": "av_service",
-          "collected": "2020-02-24T19:31:13.000+00:00",
-          "objective-status": {
+          "target": {
+            "type": "objective-id",
+            "id-ref": "av_service",
             "props": [
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": "source",
-                "value": "N/A"
+                "value": "N/A",
+                "class": "source"
               },
               {
                 "name": "id-ref",
                 "ns": "dns://tanium",
-                "class": "source",
-                "value": "av_service"
+                "value": "av_service",
+                "class": "source"
               },
               {
                 "name": "result",
                 "ns": "dns://xccdf",
-                "class": "STRVALUE",
-                "value": "FAIL"
+                "value": "FAIL",
+                "class": "STRVALUE"
               }
             ],
             "status": "not-satisfied"
@@ -1623,26 +1486,27 @@
           "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
           "title": "800-53: SC-18",
           "description": "800-53: SC-18",
-          "collected": "2020-02-24T19:31:13.000+00:00",
-          "objective-status": {
+          "target": {
+            "type": "objective-id",
+            "id-ref": "800-53: SC-18",
             "props": [
               {
                 "name": "profile",
                 "ns": "dns://tanium",
-                "class": "source",
-                "value": "NIST 800-53"
+                "value": "NIST 800-53",
+                "class": "source"
               },
               {
                 "name": "id-ref",
                 "ns": "dns://tanium",
-                "class": "source",
-                "value": "SC-18"
+                "value": "800-53: SC-18",
+                "class": "source"
               },
               {
                 "name": "result",
                 "ns": "dns://xccdf",
-                "class": "STRVALUE",
-                "value": "FAIL"
+                "value": "FAIL",
+                "class": "STRVALUE"
               }
             ],
             "status": "not-satisfied"

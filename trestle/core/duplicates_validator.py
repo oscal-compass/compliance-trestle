@@ -70,4 +70,4 @@ class DuplicatesValidator(Validator):
             _, _, model = load_distributed(file_path)
             if not has_no_duplicate_values_by_name(model, args.item):
                 return 1
-            return 0
+        return 0
