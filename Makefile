@@ -37,7 +37,7 @@ test::
 	python -m pytest --cov trestle tests --cov-report=xml --exitfirst --random-order
 
 test-verbose:
-	python -m pytest --cov trestle tests -v --cov-report=term-missing --cov-report=html:cov_html --exitfirst
+	python -m pytest --cov trestle tests -v --cov-report=term-missing --cov-report=html:cov_html
 
 release::
 	git config --global user.name "semantic-release (via Github actions)"

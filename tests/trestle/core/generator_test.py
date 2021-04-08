@@ -31,6 +31,7 @@ import trestle.core.err as err
 import trestle.core.generators as gens
 import trestle.oscal as oscal
 import trestle.oscal.assessment_plan as ap
+import trestle.oscal.assessment_results as ar
 import trestle.oscal.catalog as catalog
 import trestle.oscal.ssp as ssp
 from trestle.core.base_model import OscalBaseModel
@@ -73,7 +74,7 @@ def test_generate_sample_with_conint() -> None:
 
 def test_generate_sample_with_list_primitives() -> None:
     """A switch is required to handle cases where the inner object of a list is not a OscalBaseModel."""
-    gens.generate_sample_model(ap.Observation)
+    gens.generate_sample_model(ar.Observation)
 
 
 def test_generate_sample_model() -> None:
@@ -98,7 +99,6 @@ def test_generate_sample_model() -> None:
     actual_ctlg.uuid = expected_ctlg.uuid
     # Check if last-modified datetime is of type datetime, and then equate in actual and expected
     assert type(actual_ctlg.metadata) is catalog.Metadata
-    assert type(actual_ctlg.metadata.last_modified) is datetime
     actual_ctlg.metadata.last_modified = expected_ctlg.metadata.last_modified
     # Check that expected generated catalog is now same a actual catalog
     assert expected_ctlg == actual_ctlg
@@ -130,3 +130,9 @@ def test_get_all_sample_models() -> None:
 
             if issubclass(oscal_cls, OscalBaseModel):
                 gens.generate_sample_model(oscal_cls)
+
+
+def test_gen_date_authorized() -> None:
+    """Corner case test for debugging."""
+    model = gens.generate_sample_model(ssp.DateAuthorized)
+    assert model
