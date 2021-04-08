@@ -14,15 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Script to generate python models from oscal using datamodel-code-generator."""
-import shutil
 import re
 import sys
 from pathlib import Path
 from subprocess import CalledProcessError, check_call
-
-from fix_any import fix_file
-
-from flatten_schema import FlattenSchema
 
 
 def load_git():
@@ -41,25 +36,12 @@ def load_git():
         pass
     try:
         check_call('git submodule update --init'.split())
-        #print('Skipping submodule init due to recent issues with nist source.')
     except CalledProcessError as error:
         print(f'Error updating the oscal git submodule {error}')
     try:
         check_call('git submodule update --remote --merge'.split())
-        #print('Skipping submodule merge due to recent issues with nist source.')
     except CalledProcessError as error:
         print(f'Error updating the oscal git submodule {error}')
-
-def fix_bad_oscal(source_file, dest_file):
-    "Fix recent changes to nist schema."
-    #kill_list = ['OscalMetadata', 'OscalAssessment']
-    kill_list = []
-    with open(source_file, 'r') as src:
-        with open(dest_file, 'w') as dst:
-            for l in src.readlines():
-                for k in kill_list:
-                    l = l.replace(k, '')
-                dst.write(l)
 
 
 def generate_model(full_name, out_full_name):
@@ -82,35 +64,6 @@ def generate_model(full_name, out_full_name):
         check_call(args)
     except CalledProcessError as error:
         print(f'Error calling datamodel-codegen for file {full_name} error {error}')
-
-
-def generate_model_flat(full_name, out_full_name):
-    """Generate a single model with datamodel-codegen after first flattening the file."""
-    print(f'generate flattened and fixed model: {full_name} -> {out_full_name}')
-    print('flatten schema')
-    new_py = out_full_name
-    print('convert to python')
-    args = [
-        'datamodel-codegen',
-        '--input-file-type',
-        'jsonschema',
-        '--input',
-        full_name,
-        '--base-class',
-        'trestle.core.base_model.OscalBaseModel',
-        '--output',
-        new_py
-    ]
-    try:
-        check_call(args)
-    except CalledProcessError as error:
-        print(f'Error calling datamodel-codegen for file {full_name} error {error}')
-
-
-def generate_multi_models(full_name, out_full_name):
-    """Generate multiple output models for debugging."""
-    generate_model(str(full_name), str(out_full_name))
-    generate_model_flat(str(full_name), str(out_full_name))
 
 
 def fix_schema(source_file, dest_file):
@@ -136,16 +89,15 @@ def generate_models():
     out_init = out_dir / '__init__.py'
     out_init.touch(exist_ok=True)
 
-    #ver_file = out_dir / 'b4_fix' / 'datamodel-codegen-version.txt'
+    # ver_file = out_dir / 'b4_fix' / 'datamodel-codegen-version.txt'
 
-    #try:
+    # try:
     #    check_call(f'datamodel-codegen --version >> {ver_file}'.split(), shell=True)
-    #except CalledProcessError as error:
+    # except CalledProcessError as error:
     #    print(f'Error calling datamodel-codegen for version: error {error}')
 
     in_dir = Path('nist-source/json/schema')
     for full_name in in_dir.glob('oscal_*_schema.json'):
-        #file_name = str(full_name.name)
         fixed_name = tmp_dir / full_name.name
         fix_schema(full_name, fixed_name)
         try:
@@ -156,10 +108,8 @@ def generate_models():
             continue
         oscal_name = obj.replace('-', '_')
         out_fname = oscal_name + '.py'
-        tmp_out_full_name = tmp_dir / out_fname
         out_full_name = out_dir / out_fname
-        generate_model(fixed_name, tmp_out_full_name)
-        fix_bad_oscal(tmp_out_full_name, out_full_name)
+        generate_model(fixed_name, out_full_name)
     generate_model('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', out_dir / 'target.py')
     # Generate model for exchange protocol.
     generate_model(
