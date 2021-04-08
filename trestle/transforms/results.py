@@ -23,4 +23,5 @@ from trestle.core.oscal import AssessmentResults
 
 class Results(OscalBaseModel):
     """Transformer results as a list."""
+
     __root__ = List[AssessmentResults.Result]

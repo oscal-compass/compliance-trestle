@@ -17,11 +17,15 @@
 from typing import Any
 
 from trestle.core.transforms.results import Results
-from trestle.oscal.transforms.transformer_factory import ResultsTransformer, transformer_factory
+from trestle.oscal.transforms.transformer_factory import ResultsTransformer, TransformerFactory
+
+# create the singleton transformer factory here, then register transformers below
+transformer_factory = TransformerFactory()
 
 
 class DummyTransformer(ResultsTransformer):
     """Example transformer."""
+
     def transform(self, transform_object: Any) -> Results:
         """Transform the object."""
         return Results()
