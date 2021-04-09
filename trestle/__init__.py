@@ -23,4 +23,4 @@ format for interchange between tools & people and provides an
 opinionated approach to OSCAL adoption.
 """
 
-__version__ = '0.11.0'
+__version__ = '0.12.0'
