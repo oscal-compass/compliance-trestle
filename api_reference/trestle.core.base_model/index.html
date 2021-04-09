@@ -898,6 +898,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.oscal_serialize_json" class="md-nav__link">
+    oscal_serialize_json()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.core.base_model.OscalBaseModel.oscal_write" class="md-nav__link">
     oscal_write()
   </a>
@@ -1814,6 +1821,13 @@
           <li class="md-nav__item">
   <a href="#trestle.core.base_model.OscalBaseModel.oscal_read" class="md-nav__link">
     oscal_read()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.base_model.OscalBaseModel.oscal_serialize_json" class="md-nav__link">
+    oscal_serialize_json()
   </a>
   
 </li>
@@ -2781,6 +2795,54 @@ which looks like</p>
 
 
 
+<h6 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel.oscal_serialize_json">
+<code class="highlight language-python"><span class="n">oscal_serialize_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.core.base_model.OscalBaseModel.oscal_serialize_json" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Return an 'oscal wrapped' json object serialized in a compressed form.</p>
+
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>str</code></td>
+      <td><p>Oscal model serialized to a json object including packaging inside of a single top level key.</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/base_model.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">oscal_serialize_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return an &#39;oscal wrapped&#39; json object serialized in a compressed form.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Oscal model serialized to a json object including packaging inside of a single top level key.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">wrapped_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_oscal_wrap</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">wrapped_model</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
 <h6 class="doc doc-heading" id="trestle.core.base_model.OscalBaseModel.oscal_write">
 <code class="highlight language-python"><span class="n">oscal_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></code>
 
@@ -2844,17 +2906,7 @@ as formatting of the json.</p>
 <span class="sd">    Raises:</span>
 <span class="sd">        err.TrestleError: If a unknown file extension is provided.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-    <span class="c1"># It would be nice to pass through the description but I can&#39;t seem to and</span>
-    <span class="c1"># it does not affect the output</span>
-    <span class="n">dynamic_parser</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">dynamic_parser</span><span class="p">[</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
-        <span class="n">Field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">),</span> <span class="n">alias</span><span class="o">=</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">))</span>
-    <span class="p">)</span>
-    <span class="n">wrapper_model</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">__base__</span><span class="o">=</span><span class="n">OscalBaseModel</span><span class="p">,</span> <span class="o">**</span><span class="n">dynamic_parser</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
-    <span class="c1"># Default behaviour is strange here.</span>
-    <span class="n">wrapped_model</span> <span class="o">=</span> <span class="n">wrapper_model</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">):</span> <span class="bp">self</span><span class="p">})</span>
+    <span class="n">wrapped_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_oscal_wrap</span><span class="p">()</span>
     <span class="c1">#</span>
     <span class="n">content_type</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_content_type</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span>
     <span class="n">write_file</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_ENCODING</span><span class="p">)</span>
