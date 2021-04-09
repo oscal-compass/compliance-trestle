@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.12.0 (2021-04-09)
+### Feature
+* Release of transformation factory interface for beta testing. ([`a036522`](https://github.com/IBM/compliance-trestle/commit/a0365226175adfd38c5e37d863c4c50038a1658c))
+
 ## v0.11.0 (2021-04-08)
 ### Feature
 * Update NIST models to latest including refactors & UT's ([`5a7a8a3`](https://github.com/IBM/compliance-trestle/commit/5a7a8a338ad3ef427f2ae9f26e2de4ac920fa525))
