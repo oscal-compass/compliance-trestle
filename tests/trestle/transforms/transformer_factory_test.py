@@ -54,9 +54,10 @@ def test_results_transformer() -> None:
     tf.register_transformer('dummy', DummyResultsTransformer)
     transformer: ResultsTransformer = tf.get('dummy')
     assert transformer.transform('foo') == Results(__root__=[])
-    
+
 
 def test_transformer_not_registered() -> None:
     """Test basic transformer operations."""
     with pytest.raises(err.TrestleError):
         transformer: TransformerBase = tf.get('foo')
+        assert transformer is not None

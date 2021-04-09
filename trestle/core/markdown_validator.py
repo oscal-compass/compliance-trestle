@@ -93,12 +93,13 @@ def compare_tree(template: Dict[str, Any], content: Dict[str, Any]) -> bool:
     content_heading_level = content['level']
     content_header_name = content['children'][0]['text'].strip()
     if not template_heading_level == content_heading_level:
+        logger.error('Unexpected trestle error in parsing markdown.')
         return False
     # ESCAPE title if required
     if not (template_header_name.strip()[0] == const.HEADER_L_ESCAPE
             and template_header_name.strip()[-1] == const.HEADER_R_ESCAPE):
         if not template_header_name == content_header_name:
-            logger.warning(
+            logger.info(
                 f'Markdown templating failed due to mismatch between expected heading {template_header_name} and current heading {content_header_name}.'  # noqa: E501
             )
             return False
@@ -115,6 +116,14 @@ def compare_tree(template: Dict[str, Any], content: Dict[str, Any]) -> bool:
         if content['children'][ii]['type'] == 'heading':
             content_sub_headers.append(content['children'][ii])
     if not len(template_sub_headers) == len(content_sub_headers):
+        logger.info(f'Number of expected sub-headings is wrong for heading {template_header_name}')
+        logger.info(f'Expected {len(template_sub_headers)}, got {len(content_sub_headers)}')
+        logger.info('Expected headings:')
+        for template_header in template_sub_headers:
+            logger.info(template_header['children'][0]['text'].strip())
+        logger.info('Actual headings:')
+        for content_heading in content_sub_headers:
+            logger.info(content_heading['children'][0]['text'].strip())
         return False
     for ii in range(len(template_sub_headers)):
         status = compare_tree(template_sub_headers[ii], content_sub_headers[ii])
@@ -149,6 +158,8 @@ class MarkdownValidator:
         self._template_header = template_header
         self._template_parse = template_parse
         self._strict_heading_validate = strict_heading_validate
+        self.template_tree, _ = partition_ast(self._template_parse)
+        self.w_template_tree = self.wrap_content(self.template_tree)
 
     @classmethod
     def load_markdown_parsetree(cls, path: pathlib.Path) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
@@ -203,17 +214,17 @@ class MarkdownValidator:
             if not header_status:
                 logger.warning(f'YAML header mismatch between template {self.template_path} and instance {candidate}')
                 return False
-        template_tree, _ = partition_ast(self._template_parse)
-        w_template_tree = self.wrap_content(template_tree)
         candidate_tree, _ = partition_ast(mistune_parse_content)
         w_candidate_tree = self.wrap_content(candidate_tree)
 
         if self._strict_heading_validate is not None:
-            status = self._template_heading_validate(w_template_tree, w_candidate_tree, self._strict_heading_validate)
+            status = self._template_heading_validate(
+                self.w_template_tree, w_candidate_tree, self._strict_heading_validate
+            )
             if not status:
                 logger.error(f'Heading {self._strict_heading_validate} did not meet templating requirements.')
                 return False
-        return compare_tree(w_template_tree, w_candidate_tree)
+        return compare_tree(self.w_template_tree, w_candidate_tree)
 
     @classmethod
     def compare_keys(cls, template: Dict[str, Any], candidate: Dict[str, Any]) -> bool:
