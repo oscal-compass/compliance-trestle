@@ -13,14 +13,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-trestle - A python library and command line utility for compliance.
+"""Define Results class returned by transformers."""
 
-Trestle is a tool to which enables the creation and validation of
-documentation artifacts for compliance requirements. It leverages NIST's
-OSCAL (https://pages.nist.gov/OSCAL/documentation/) as a standard data
-format for interchange between tools & people and provides an
-opinionated approach to OSCAL adoption.
-"""
+from typing import List
 
-__version__ = '0.12.0'
+from trestle.core.base_model import OscalBaseModel
+from trestle.oscal.assessment_results import Result
+
+
+class Results(OscalBaseModel):
+    """Transformer results as a list."""
+
+    __root__: List[Result] = []

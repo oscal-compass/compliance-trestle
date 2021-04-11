@@ -15,7 +15,7 @@
 """Testing of customization of pydantic base model."""
 import json
 import pathlib
-from datetime import datetime, tzinfo
+from datetime import datetime, timezone, tzinfo
 from uuid import uuid4
 
 import pytest
@@ -42,6 +42,20 @@ def simple_catalog() -> oscatalog.Catalog:
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now(),
+            'version': '0.0.0',
+            'oscal-version': trestle.oscal.OSCAL_VERSION
+        }
+    )
+    catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
+    return catalog
+
+
+def simple_catalog_utc() -> oscatalog.Catalog:
+    """Return a skeleton catalog with datetime.now()."""
+    m = oscatalog.Metadata(
+        **{
+            'title': 'My simple catalog',
+            'last-modified': datetime.now().astimezone(timezone.utc),
             'version': '0.0.0',
             'oscal-version': trestle.oscal.OSCAL_VERSION
         }
@@ -235,10 +249,10 @@ def test_copy_to() -> None:
 
     # Testing of root fields. This is is subject to change.
     # component.Remarks (type str)
-    # poam.ParameterValue (type str)
-    # note the testing conducntio
+    # poam.RiskStatus (type str)
+    # note the testing conduction
     remark = component.Remarks(__root__='hello')
-    _ = remark.copy_to(poam.ParameterValue)
+    _ = remark.copy_to(poam.RiskStatus)
 
 
 def test_copy_from() -> None:
@@ -314,3 +328,13 @@ def test_get_field_by_alias(sample_target_def: ostarget.TargetDefinition) -> Non
     """Test get field for field alias."""
     assert sample_target_def.metadata.get_field_by_alias('last-modified').name == 'last_modified'
     assert sample_target_def.metadata.get_field_by_alias('last_modified') is None
+
+
+def test_oscal_serialize_json() -> None:
+    """Test Oscal serialize json by a circular parse."""
+    simple_catalog_obj = simple_catalog_utc()
+    serialized = simple_catalog_obj.oscal_serialize_json()
+    jsoned = json.loads(serialized)
+    new_catalog = oscatalog.Catalog.parse_obj(jsoned['catalog'])
+
+    assert simple_catalog_obj.metadata.title == new_catalog.metadata.title

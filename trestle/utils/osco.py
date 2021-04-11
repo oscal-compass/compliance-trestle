@@ -28,7 +28,7 @@ from trestle.core.base_model import OscalBaseModel
 from trestle.oscal.assessment_results import Observation
 from trestle.oscal.assessment_results import Property
 from trestle.oscal.assessment_results import RelevantEvidence
-from trestle.oscal.assessment_results import Subject
+from trestle.oscal.assessment_results import SubjectReference as Subject
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +100,9 @@ def get_observations_json(osco: t_osco, oscal_metadata: Optional[t_metadata] = N
 
 def _get_observation(rule: t_rule, oscal_metadata: Optional[t_metadata] = None) -> Observation:
     """Produce one Observation."""
-    value = Observation(uuid=str(uuid.uuid4()), description=rule['idref'], methods=['TEST-AUTOMATED'])
+    value = Observation(
+        uuid=str(uuid.uuid4()), description=rule['idref'], methods=['TEST-AUTOMATED'], collected=rule['time']
+    )
     value.title = rule['idref']
     value.relevant_evidence = _get_relevant_evidence(rule, oscal_metadata)
     subjects = _get_subjects(rule, oscal_metadata)
@@ -126,9 +128,8 @@ def _get_relevant_evidence(rule: t_rule, oscal_metadata: Optional[t_metadata] = 
         if 'namespace' in entry:
             ns = entry['namespace']
     p1 = _get_property(ns, 'id', 'rule', rule['idref'])
-    p2 = _get_property(ns, 'timestamp', 'time', rule['time'])
-    p3 = _get_property(ns, 'result', 'result', rule['result_type'])
-    props = [p1, p2, p3]
+    p2 = _get_property(ns, 'result', 'result', rule['result_type'])
+    props = [p1, p2]
     relevant_evidence = RelevantEvidence(description=description, props=props)
     if href is not None:
         relevant_evidence.href = href

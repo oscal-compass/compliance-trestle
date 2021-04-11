@@ -20,7 +20,7 @@ from typing import Any, Dict
 
 
 class ObjectFactory:
-    """Allow registration and creation of validators."""
+    """Allow registration and creation of factory objects."""
 
     def __init__(self) -> None:
         """Initialize the objects dictionary as empty."""
