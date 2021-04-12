@@ -88,7 +88,7 @@ class MergeCmd(CommandPlusDocs):
         file_ext = FileContentType.to_file_extension(file_type)
         # Destination model filename
         destination_model_filename = Path(f'{utils.classname_to_alias(destination_model_alias, "json")}{file_ext}')
-        destination_model_type, _ = fs.get_stripped_contextual_model(destination_model_filename.absolute())
+        destination_model_type, _ = fs.get_stripped_contextual_model(destination_model_filename.resolve())
 
         # if there is no .json file then there is no destination model object at this point, so create empty one
         destination_model_object: OscalBaseModel = None
@@ -104,12 +104,12 @@ class MergeCmd(CommandPlusDocs):
             merged_model_type, merged_model_alias, merged_model_instance = load_distributed.load_distributed(
                 destination_model_filename, collection_type)
             plan = Plan()
-            reset_destination_action = CreatePathAction(destination_model_filename.absolute(), clear_content=True)
+            reset_destination_action = CreatePathAction(destination_model_filename.resolve(), clear_content=True)
             wrapper_alias = destination_model_alias
             write_destination_action = WriteFileAction(
                 destination_model_filename, Element(merged_model_instance, wrapper_alias), content_type=file_type
             )
-            delete_target_action = RemovePathAction(Path(destination_model_alias).absolute())
+            delete_target_action = RemovePathAction(Path(destination_model_alias).resolve())
             plan: Plan = Plan()
             plan.add_action(reset_destination_action)
             plan.add_action(write_destination_action)
@@ -118,7 +118,7 @@ class MergeCmd(CommandPlusDocs):
 
         # Get destination model without the target field stripped
         merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(
-            destination_model_filename.absolute(),
+            destination_model_filename.resolve(),
             aliases_not_to_be_stripped=[target_model_alias])
         """2. Load Target model. Target model could be stripped"""
         try:
@@ -153,7 +153,7 @@ class MergeCmd(CommandPlusDocs):
         merged_model_object = merged_model_type(**merged_dict)  # type: ignore
         merged_destination_element = Element(merged_model_object)
         """4. Create action  plan"""
-        reset_destination_action = CreatePathAction(destination_model_filename.absolute(), clear_content=True)
+        reset_destination_action = CreatePathAction(destination_model_filename.resolve(), clear_content=True)
         write_destination_action = WriteFileAction(
             destination_model_filename, merged_destination_element, content_type=file_type
         )

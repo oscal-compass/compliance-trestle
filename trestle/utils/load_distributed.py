@@ -28,7 +28,7 @@ def _load_list(filepath: Path) -> Tuple[Type[OscalBaseModel], str, List[OscalBas
     aliases_not_to_be_stripped = []
     instances_to_be_merged: List[OscalBaseModel] = []
     # TODO: FIXME: fs.get_stripped_contextual_model fails without absolute file path!!! FIX IT!!
-    collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(filepath.absolute())
+    collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(filepath.resolve())
 
     for path in sorted(Path.iterdir(filepath)):
 
@@ -46,7 +46,7 @@ def _load_list(filepath: Path) -> Tuple[Type[OscalBaseModel], str, List[OscalBas
 def _load_dict(filepath: Path) -> Tuple[Type[OscalBaseModel], str, Dict[str, OscalBaseModel]]:
     """Given path to a directory of additionalProperty(dict) models, load the distributed models."""
     model_dict: Dict[str, OscalBaseModel] = {}
-    collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(filepath.absolute())
+    collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(filepath.resolve())
     for path in sorted(Path.iterdir(filepath)):
         model_type, model_alias, model_instance = load_distributed(path)
         field_name = path.parts[-1].split('__')[0]
@@ -89,7 +89,7 @@ def load_distributed(
         return _load_dict(file_path)
 
     # Get current model
-    primary_model_type, primary_model_alias = fs.get_stripped_contextual_model(file_path.absolute())
+    primary_model_type, primary_model_alias = fs.get_stripped_contextual_model(file_path.resolve())
     primary_model_instance: Type[OscalBaseModel] = None
 
     # is this an attempt to load an actual json or yaml file?
@@ -112,7 +112,7 @@ def load_distributed(
                 instances_to_be_merged.append(model_instance)
 
             elif path.is_dir():
-                model_type, model_alias = fs.get_stripped_contextual_model(path.absolute())
+                model_type, model_alias = fs.get_stripped_contextual_model(path.resolve())
                 # Only load the directory if it is a collection model. Otherwise do nothing - it gets loaded when
                 # iterating over the model file
 
@@ -134,7 +134,7 @@ def load_distributed(
             primary_model_dict = primary_model_instance.__dict__
 
         merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(
-            file_path.absolute(), aliases_not_to_be_stripped)
+            file_path.resolve(), aliases_not_to_be_stripped)
 
         # The following use of top_level is to allow loading of a top level model by name only, e.g. MyCatalog
         # There may be a better overall way to approach this.

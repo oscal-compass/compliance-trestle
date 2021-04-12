@@ -197,7 +197,7 @@ class ReplicateCmd(CommandPlusDocs):
         # 4. Distributed load from file
 
         try:
-            model_type, model_alias, model_instance = load_distributed(input_file.absolute())
+            model_type, model_alias, model_instance = load_distributed(input_file.resolve())
         except JSONDecodeError as err:
             logger.debug(f'load_distributed() failed: {err}')
             logger.error(f'Replicate failed, JSON error loading file: {err}')
@@ -227,8 +227,8 @@ class ReplicateCmd(CommandPlusDocs):
 
         # 6. Prepare actions and plan
         top_element = Element(model_instance)
-        create_action = CreatePathAction(rep_model_path.absolute(), True)
-        write_action = WriteFileAction(rep_model_path.absolute(), top_element, content_type)
+        create_action = CreatePathAction(rep_model_path.resolve(), True)
+        write_action = WriteFileAction(rep_model_path.resolve(), top_element, content_type)
 
         # create a plan to create the directory and imported file.
         replicate_plan = Plan()

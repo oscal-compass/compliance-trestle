@@ -67,8 +67,8 @@ class AddCmd(CommandPlusDocs):
             file_path = pathlib.Path(args_dict[const.ARG_FILE])
 
             # Get parent model and then load json into parent model
-            parent_model, parent_alias = fs.get_stripped_contextual_model(file_path.absolute())
-            parent_object = parent_model.oscal_read(file_path.absolute())
+            parent_model, parent_alias = fs.get_stripped_contextual_model(file_path.resolve())
+            parent_object = parent_model.oscal_read(file_path.resolve())
             # FIXME : handle YAML files after detecting file type
             parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
 
@@ -81,9 +81,9 @@ class AddCmd(CommandPlusDocs):
                 update_action, parent_element = self.add(element_path, parent_model, parent_element)
                 add_plan.add_action(update_action)
 
-            create_action = CreatePathAction(file_path.absolute(), True)
+            create_action = CreatePathAction(file_path.resolve(), True)
             write_action = WriteFileAction(
-                file_path.absolute(), parent_element, FileContentType.to_content_type(file_path.suffix)
+                file_path.resolve(), parent_element, FileContentType.to_content_type(file_path.suffix)
             )
 
             add_plan.add_action(create_action)
