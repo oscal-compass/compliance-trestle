@@ -7,7 +7,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, constr
+from pydantic import AnyUrl, EmailStr, Field, constr
 from trestle.core.base_model import OscalBaseModel
 
 
@@ -170,9 +170,6 @@ class ParameterConstraint(OscalBaseModel):
 
 
 class ParameterGuideline(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     prose: str = Field(
         ...,
         description='Prose permits multiple paragraphs, lists, tables etc.',
@@ -185,9 +182,6 @@ class ParameterValue(OscalBaseModel):
 
 
 class ParameterSelection(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     how_many: Optional[str] = Field(
         None,
         alias='how-many',
@@ -218,99 +212,70 @@ class AsIs(OscalBaseModel):
     )
 
 
-class WithChildControls(Enum):
-    yes = 'yes'
-    no = 'no'
-
-
-class All(OscalBaseModel):
-    with_child_controls: Optional[WithChildControls] = Field(
-        None,
-        alias='with-child-controls',
-        description='When a control is included, whether its child (dependent) controls are also included.',
-        title='Include contained controls with control',
-    )
-
-
-class WithChildControls1(Enum):
-    yes = 'yes'
-    no = 'no'
-
-
-class Call(OscalBaseModel):
-    control_id: str = Field(
-        ...,
-        alias='control-id',
-        description="Value of the 'id' flag on a target control",
-        title='Control ID',
-    )
-    with_child_controls: Optional[WithChildControls1] = Field(
-        None,
-        alias='with-child-controls',
-        description='When a control is included, whether its child (dependent) controls are also included.',
-        title='Include contained controls with control',
-    )
-
-
 class Order(Enum):
     keep = 'keep'
     ascending = 'ascending'
     descending = 'descending'
 
 
-class WithChildControls2(Enum):
+class IncludeAll(OscalBaseModel):
+    pass
+
+
+class WithChildControls(Enum):
     yes = 'yes'
     no = 'no'
 
 
-class Match(OscalBaseModel):
+class Matching(OscalBaseModel):
     pattern: Optional[str] = Field(
         None,
-        description='A regular expression matching the IDs of one or more controls to be selected',
+        description='A glob expression matching the IDs of one or more controls to be selected.',
         title='Pattern',
     )
-    order: Optional[Order] = Field(
-        None,
-        description='A designation of how a selection of controls in a profile is to be ordered.',
-        title='Order',
-    )
-    with_child_controls: Optional[WithChildControls2] = Field(
+
+
+class SelectControlById(OscalBaseModel):
+    with_child_controls: Optional[WithChildControls] = Field(
         None,
         alias='with-child-controls',
         description='When a control is included, whether its child (dependent) controls are also included.',
         title='Include contained controls with control',
     )
-
-
-class Exclude(OscalBaseModel):
-    calls: Optional[List[Call]] = Field(None, min_items=1)
-    matches: Optional[List[Match]] = Field(None, min_items=1)
+    with_ids: Optional[List[str]] = Field(None, alias='with-ids', min_items=1)
+    matching: Optional[List[Matching]] = Field(None, min_items=1)
 
 
 class Remove(OscalBaseModel):
     name_ref: Optional[str] = Field(
         None,
         alias='name-ref',
-        description='Items to remove, by assigned name',
+        description='Identify items to remove by matching their assigned name',
         title='Reference by (assigned) name',
     )
     class_ref: Optional[str] = Field(
         None,
         alias='class-ref',
-        description='Items to remove, by class. A token match.',
+        description='Identify items to remove by matching their class.',
         title='Reference by class',
     )
     id_ref: Optional[str] = Field(
         None,
         alias='id-ref',
-        description='Items to remove, indicated by their IDs',
+        description='Identify items to remove indicated by their id.',
         title='Reference by ID',
     )
     item_name: Optional[str] = Field(
         None,
         alias='item-name',
-        description="Items to remove, by the name of the item's type, or generic identifier, e.g. title or prop",
-        title='References by item name or generic identifier',
+        description="Identify items to remove by the name of the item's information element name, e.g. title or prop",
+        title='Item Name Reference',
+    )
+    ns_ref: Optional[str] = Field(
+        None,
+        alias='ns-ref',
+        description="Identify items to remove by the item's ns, which is the namespace associated with a part, or prop.",
+        title='Item Namespace Reference',
     )
 
 
@@ -358,8 +323,8 @@ class Property(OscalBaseModel):
     )
     value: str = Field(
         ...,
-        description='Indicates the optional value of the attribute, characteristic, or quality. Typically, a value will be provided; however, the value is optional allowing cases were the name is asserting some characteristic or quality.',
-        title='Annotated Property Value',
+        description='Indicates the value of the attribute, characteristic, or quality.',
+        title='Property Value',
     )
     class_: Optional[str] = Field(
         None,
@@ -406,9 +371,6 @@ class Address(OscalBaseModel):
 
 
 class Part(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     id: Optional[str] = Field(
         None,
         description="A unique identifier for a specific part instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same part across minor revisions of the document.",
@@ -446,9 +408,6 @@ class Part(OscalBaseModel):
 
 
 class Parameter(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     id: str = Field(
         ...,
         description="A unique identifier for a specific parameter instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same parameter across minor revisions of the document.",
@@ -470,7 +429,7 @@ class Parameter(OscalBaseModel):
     links: Optional[List[Link]] = Field(None, min_items=1)
     label: Optional[str] = Field(
         None,
-        description='A short, placeholder name for the parameter, which can be used as a subsitute for a value if no value is assigned.',
+        description='A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.',
         title='Parameter Label',
     )
     usage: Optional[str] = Field(
@@ -485,36 +444,34 @@ class Parameter(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class Group(OscalBaseModel):
-    id: Optional[str] = Field(
-        None,
-        description="A unique identifier for a specific group instance that can be used to reference the group within this and in other OSCAL documents. This identifier's uniqueness is document scoped and is intended to be consistent for the same group across minor revisions of the document.",
-        title='Group Identifier',
-    )
-    class_: Optional[str] = Field(
-        None,
-        alias='class',
-        description='A textual label that provides a sub-type or characterization of the group.',
-        title='Group Class',
-    )
-    title: str = Field(
+class Import(OscalBaseModel):
+    href: str = Field(
         ...,
-        description='A name given to the group, which may be used by a tool for display and navigation.',
-        title='Group Title',
+        description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.',
+        title='Catalog or Profile Reference',
     )
-    params: Optional[List[Parameter]] = Field(None, min_items=1)
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    parts: Optional[List[Part]] = Field(None, min_items=1)
-    groups: Optional[List[Group]] = None
-    calls: Optional[List[Call]] = Field(None, min_items=1)
-    matches: Optional[List[Match]] = Field(None, min_items=1)
+    include_all: Optional[IncludeAll] = Field(None, alias='include-all')
+    include_controls: Optional[List[SelectControlById]] = Field(
+        None, alias='include-controls', min_items=1
+    )
+    exclude_controls: Optional[List[SelectControlById]] = Field(
+        None, alias='exclude-controls', min_items=1
+    )
 
 
-class Include(OscalBaseModel):
-    all: Optional[All] = None
-    calls: Optional[List[Call]] = Field(None, min_items=1)
-    matches: Optional[List[Match]] = Field(None, min_items=1)
+class InsertControls(OscalBaseModel):
+    order: Optional[Order] = Field(
+        None,
+        description='A designation of how a selection of controls in a profile is to be ordered.',
+        title='Order',
+    )
+    include_all: Optional[IncludeAll] = Field(None, alias='include-all')
+    include_controls: Optional[List[SelectControlById]] = Field(
+        None, alias='include-controls', min_items=1
+    )
+    exclude_controls: Optional[List[SelectControlById]] = Field(
+        None, alias='exclude-controls', min_items=1
+    )
 
 
 class SetParameter(OscalBaseModel):
@@ -534,7 +491,7 @@ class SetParameter(OscalBaseModel):
     links: Optional[List[Link]] = Field(None, min_items=1)
     label: Optional[str] = Field(
         None,
-        description='A short, placeholder name for the parameter, which can be used as a subsitute for a value if no value is assigned.',
+        description='A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.',
         title='Parameter Label',
     )
     usage: Optional[str] = Field(
@@ -591,7 +548,7 @@ class Location(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.',
+        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document.',
         title='Location Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -697,14 +654,11 @@ class Citation(OscalBaseModel):
 
 
 class Resource(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Resource Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -739,21 +693,30 @@ class BackMatter(OscalBaseModel):
     resources: Optional[List[Resource]] = Field(None, min_items=1)
 
 
-class Import(OscalBaseModel):
-    href: str = Field(
-        ...,
-        description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.',
-        title='Catalog or Profile Reference',
+class Group(OscalBaseModel):
+    id: Optional[str] = Field(
+        None,
+        description="A unique identifier for a specific group instance that can be used to reference the group within this and in other OSCAL documents. This identifier's uniqueness is document scoped and is intended to be consistent for the same group across minor revisions of the document.",
+        title='Group Identifier',
     )
-    include: Optional[Include] = None
-    exclude: Optional[Exclude] = None
-
-
-class Custom(OscalBaseModel):
-    groups: Optional[List[Group]] = Field(None, min_items=1)
-    id_selectors: Optional[List[Call]] = Field(None, alias='id-selectors', min_items=1)
-    pattern_selectors: Optional[List[Match]] = Field(
-        None, alias='pattern-selectors', min_items=1
+    class_: Optional[str] = Field(
+        None,
+        alias='class',
+        description='A textual label that provides a sub-type or characterization of the group.',
+        title='Group Class',
+    )
+    title: str = Field(
+        ...,
+        description='A name given to the group, which may be used by a tool for display and navigation.',
+        title='Group Title',
+    )
+    params: Optional[List[Parameter]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None, min_items=1)
+    parts: Optional[List[Part]] = Field(None, min_items=1)
+    groups: Optional[List[Group]] = None
+    insert_controls: Optional[List[InsertControls]] = Field(
+        None, alias='insert-controls', min_items=1
     )
 
 
@@ -793,10 +756,11 @@ class Metadata(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class Merge(OscalBaseModel):
-    combine: Optional[Combine] = None
-    as_is: Optional[AsIs] = Field(None, alias='as-is')
-    custom: Optional[Custom] = None
+class Custom(OscalBaseModel):
+    groups: Optional[List[Group]] = Field(None, min_items=1)
+    insert_controls: Optional[List[InsertControls]] = Field(
+        None, alias='insert-controls', min_items=1
+    )
 
 
 class Modify(OscalBaseModel):
@@ -804,6 +768,12 @@ class Modify(OscalBaseModel):
         None, alias='set-parameters'
     )
     alters: Optional[List[Alter]] = Field(None, min_items=1)
+
+
+class Merge(OscalBaseModel):
+    combine: Optional[Combine] = None
+    as_is: Optional[AsIs] = Field(None, alias='as-is')
+    custom: Optional[Custom] = None
 
 
 class Profile(OscalBaseModel):

@@ -1,7 +1,7 @@
 target-definition:
   metadata:
     last-modified: '2020-08-13T17:24:24.389+02:00'
-    oscal-version: 1.0.0-rc1
+    oscal-version: 1.0.0-rc2
     parties:
     - name: International Business Machines
       type: organization
