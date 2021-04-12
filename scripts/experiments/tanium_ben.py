@@ -28,6 +28,7 @@ from trestle.utils import tanium
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
+with_json_ser = True
 
 
 def tanium_wrapper(data: str) -> str:
@@ -88,12 +89,20 @@ def main(in_file: str, out_file: str):
 
     for n in range(num_exp):
         logger.info('*****Experiment: ' + str(n + 1) + ', Num input records: ' + str(records * (n + 1)))
-        data = json_data * (n + 1)
+        if with_json_ser:
+            data = orig_data * (n + 1)  # with json ser and deser
+        else:
+            data = json_data * (n + 1)  # without json ser and deser
+
         total_time = 0
         for _i in range(repeat):
             start = timeit.default_timer()
             for _j in range(num_iter):
-                tanium_wrapper_oscal(data)
+                if with_json_ser:
+                    tanium_wrapper(data)  # with json ser and deser
+                else:
+                    tanium_wrapper_oscal(data)  # without json ser and deser
+
             end = timeit.default_timer()
             delta = end - start
             time_per_iter = delta / num_iter
