@@ -7,14 +7,11 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, constr
+from pydantic import AnyUrl, EmailStr, Field, constr
 from trestle.core.base_model import OscalBaseModel
 
 
 class ParameterGuideline(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     prose: str = Field(
         ...,
         description='Prose permits multiple paragraphs, lists, tables etc.',
@@ -27,9 +24,6 @@ class ParameterValue(OscalBaseModel):
 
 
 class ParameterSelection(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     how_many: Optional[str] = Field(
         None,
         alias='how-many',
@@ -234,8 +228,8 @@ class Property(OscalBaseModel):
     )
     value: str = Field(
         ...,
-        description='Indicates the optional value of the attribute, characteristic, or quality. Typically, a value will be provided; however, the value is optional allowing cases were the name is asserting some characteristic or quality.',
-        title='Annotated Property Value',
+        description='Indicates the value of the attribute, characteristic, or quality.',
+        title='Property Value',
     )
     class_: Optional[str] = Field(
         None,
@@ -282,9 +276,6 @@ class Address(OscalBaseModel):
 
 
 class Part(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     id: Optional[str] = Field(
         None,
         description="A unique identifier for a specific part instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same part across minor revisions of the document.",
@@ -322,9 +313,6 @@ class Part(OscalBaseModel):
 
 
 class Parameter(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     id: str = Field(
         ...,
         description="A unique identifier for a specific parameter instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same parameter across minor revisions of the document.",
@@ -346,7 +334,7 @@ class Parameter(OscalBaseModel):
     links: Optional[List[Link]] = Field(None, min_items=1)
     label: Optional[str] = Field(
         None,
-        description='A short, placeholder name for the parameter, which can be used as a subsitute for a value if no value is assigned.',
+        description='A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.',
         title='Parameter Label',
     )
     usage: Optional[str] = Field(
@@ -381,7 +369,7 @@ class Location(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.',
+        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document.',
         title='Location Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -487,14 +475,11 @@ class Citation(OscalBaseModel):
 
 
 class Resource(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Resource Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -530,9 +515,6 @@ class BackMatter(OscalBaseModel):
 
 
 class Control(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     id: str = Field(
         ...,
         description="A unique identifier for a specific control instance that can be used to reference the control in other OSCAL documents. This identifier's uniqueness is document scoped and is intended to be consistent for the same control across minor revisions of the document.",
