@@ -60,7 +60,7 @@ class ImportCmd(CommandPlusDocs):
         # This code block may never be reached as the argument is declared to be required.
 
         # 1.1 Check that input file given exists.
-        input_file = pathlib.Path(args.file)
+        input_file = pathlib.Path(args.file).resolve()
         if not input_file.exists():
             logger.error(f'Input file {args.file} does not exist.')
             return 1
@@ -73,9 +73,8 @@ class ImportCmd(CommandPlusDocs):
             return 1
 
         # 2. Importing a file that is already inside a trestle-initialized dir is bad
-        trestle_root = trestle_root.resolve()
         try:
-            input_file.absolute().relative_to(trestle_root)
+            input_file.relative_to(trestle_root)
         except ValueError:
             # An exception here is good: it means that the input file is not inside a trestle dir.
             pass
@@ -95,7 +94,7 @@ class ImportCmd(CommandPlusDocs):
 
         # 4.1 Load from file
         try:
-            data = fs.load_file(input_file.absolute())
+            data = fs.load_file(input_file.resolve())
         except JSONDecodeError as err:
             logger.debug(f'fs.load_file() failed: {err}')
             logger.error(f'Import failed, JSON error loading file: {err}')
@@ -146,8 +145,8 @@ class ImportCmd(CommandPlusDocs):
             model_read, lut, nchanged = validator_helper.regenerate_uuids(model_read)
             logger.debug(f'uuid lut has {len(lut.items())} entries and {nchanged} refs were updated')
         top_element = Element(model_read)
-        create_action = CreatePathAction(desired_model_path.absolute(), True)
-        write_action = WriteFileAction(desired_model_path.absolute(), top_element, content_type)
+        create_action = CreatePathAction(desired_model_path.resolve(), True)
+        write_action = WriteFileAction(desired_model_path.resolve(), top_element, content_type)
 
         # create a plan to create the directory and imported file.
         import_plan = Plan()
@@ -170,31 +169,31 @@ class ImportCmd(CommandPlusDocs):
 
         # 7. Validate the imported file, rollback if unsuccessful:
         args = argparse.Namespace(
-            file=desired_model_path.absolute(), mode='duplicates', item='uuid', verbose=args.verbose
+            file=desired_model_path.resolve(), mode='duplicates', item='uuid', verbose=args.verbose
         )
         rollback = False
         try:
             rc = validatecmd.ValidateCmd()._run(args)
         except TrestleError as err:
             logger.debug(f'validator.validate() raised exception: {err}')
-            logger.error(f'Import of {str(input_file.absolute())} failed, validation failed with error: {err}')
+            logger.error(f'Import of {str(input_file.resolve())} failed, validation failed with error: {err}')
             rollback = True
         else:
             if rc > 0:
-                logger.debug(f'validator.validate() found duplicates in {desired_model_path.absolute()}')
-                logger.error(f'Validation of imported file {desired_model_path.absolute()} failed')
+                logger.debug(f'validator.validate() found duplicates in {desired_model_path.resolve()}')
+                logger.error(f'Validation of imported file {desired_model_path.resolve()} failed')
                 rollback = True
 
         if rollback:
-            logger.debug(f'Rolling back import of {str(input_file.absolute())} to {desired_model_path.absolute()}')
+            logger.debug(f'Rolling back import of {str(input_file.resolve())} to {desired_model_path.resolve()}')
             try:
                 import_plan.rollback()
             except TrestleError as err:
                 logger.debug(f'Failed rollback attempt with error: {err}')
-                logger.error(f'Failed to rollback: {err}. Remove {desired_model_path.absolute()} to resolve state.')
+                logger.error(f'Failed to rollback: {err}. Remove {desired_model_path.resolve()} to resolve state.')
             return 1
         else:
-            logger.debug(f'Successful rollback of import to {desired_model_path.absolute()}')
+            logger.debug(f'Successful rollback of import to {desired_model_path.resolve()}')
         # 8. Leave the rest to trestle split
 
         return 0

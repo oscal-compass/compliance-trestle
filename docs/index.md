@@ -74,7 +74,7 @@ trestle -h
 
 `trestle` implicitly supports all OSCAL schemas for use within the object model. The development roadmap for `trestle` includes adding workflow around specific elements / objects that is opinionated.
 
-`trestle` supports OSCAL version `1.0.0rc1` only at this stage. NIST, in pre-1.0.0 [continuously updating
+`trestle` supports OSCAL version `1.0.0-rc2` only at this stage. NIST, in pre-1.0.0 [continuously updating
 ](https://github.com/usnistgov/OSCAL/issues/846) their current posture. Trestle will be periodically updating to meet NIST's baseline. On the formal release of OSCAL `1.0.0` the strategy for trestle will be revaluated.
 
 In addition to the core OSCAL objects, trestle supports the definition of a `target`. The `target` (and its container

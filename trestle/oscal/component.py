@@ -7,7 +7,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Field, conint, constr
 from trestle.core.base_model import OscalBaseModel
 
 
@@ -230,8 +230,8 @@ class Property(OscalBaseModel):
     )
     value: str = Field(
         ...,
-        description='Indicates the optional value of the attribute, characteristic, or quality. Typically, a value will be provided; however, the value is optional allowing cases were the name is asserting some characteristic or quality.',
-        title='Annotated Property Value',
+        description='Indicates the value of the attribute, characteristic, or quality.',
+        title='Property Value',
     )
     class_: Optional[str] = Field(
         None,
@@ -352,7 +352,7 @@ class Location(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.',
+        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document.',
         title='Location Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -458,14 +458,11 @@ class Citation(OscalBaseModel):
 
 
 class Resource(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Resource Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -516,7 +513,7 @@ class ImplementedRequirement(OscalBaseModel):
     )
     description: str = Field(
         ...,
-        description='A description of how the spefied control is implemented for the containing component or capability.',
+        description='A description of how the specified control is implemented for the containing component or capability.',
         title='Control Implementation Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
@@ -571,11 +568,14 @@ class ControlImplementation(OscalBaseModel):
     )
     description: str = Field(
         ...,
-        description='A description of how the spefied set of controls are implemented for the containing component or capability.',
+        description='A description of how the specified set of controls are implemented for the containing component or capability.',
         title='Control Implementation Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
+    set_parameters: Optional[Dict[str, SetParameter]] = Field(
+        None, alias='set-parameters'
+    )
     implemented_requirements: List[ImplementedRequirement] = Field(
         ..., alias='implemented-requirements', min_items=1
     )
