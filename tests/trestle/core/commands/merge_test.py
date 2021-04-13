@@ -83,7 +83,7 @@ def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
     # Read files
 
     # The destination file/model needs to be loaded in a stripped model
-    stripped_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.absolute())
+    stripped_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.resolve())
     stripped_catalog = stripped_catalog_type.oscal_read(catalog_file)
 
     # Back-matter model needs to be complete and if it is decomposed, needs to be merged recursively first
@@ -92,7 +92,7 @@ def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
     # Back-matter needs to be inserted in a stripped Catalog that does NOT exclude the back-matter fields
 
     merged_catalog_type, merged_catalog_alias = fs.get_stripped_contextual_model(
-        catalog_file.absolute(), aliases_not_to_be_stripped=['back-matter'])
+        catalog_file.resolve(), aliases_not_to_be_stripped=['back-matter'])
     merged_dict = stripped_catalog.__dict__
     merged_dict['back-matter'] = back_matter
     merged_catalog = merged_catalog_type(**merged_dict)
@@ -100,9 +100,9 @@ def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
     element = Element(merged_catalog, merged_catalog_alias)
 
     # Create hand-crafter merge plan
-    reset_destination_action = CreatePathAction(catalog_file.absolute(), clear_content=True)
+    reset_destination_action = CreatePathAction(catalog_file.resolve(), clear_content=True)
     write_destination_action = WriteFileAction(catalog_file, element, content_type=content_type)
-    delete_element_action = RemovePathAction(back_matter_file.absolute())
+    delete_element_action = RemovePathAction(back_matter_file.resolve())
 
     expected_plan: Plan = Plan()
     expected_plan.add_action(reset_destination_action)
@@ -152,13 +152,13 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir):
     # Create hand-crafter merge plan
     expected_plan: Plan = Plan()
 
-    reset_destination_action = CreatePathAction(catalog_file.absolute(), clear_content=True)
+    reset_destination_action = CreatePathAction(catalog_file.resolve(), clear_content=True)
     expected_plan.add_action(reset_destination_action)
 
     _, _, merged_metadata_instance = load_distributed(metadata_file)
     merged_catalog_type, merged_catalog_alias = fs.get_stripped_contextual_model(
-        catalog_file.absolute(), aliases_not_to_be_stripped=['metadata'])
-    stripped_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.absolute())
+        catalog_file.resolve(), aliases_not_to_be_stripped=['metadata'])
+    stripped_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.resolve())
     stripped_catalog = stripped_catalog_type.oscal_read(catalog_file)
     merged_catalog_dict = stripped_catalog.__dict__
     merged_catalog_dict['metadata'] = merged_metadata_instance
@@ -166,7 +166,7 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir):
     element = Element(merged_catalog)
     write_destination_action = WriteFileAction(catalog_file, element, content_type=content_type)
     expected_plan.add_action(write_destination_action)
-    delete_element_action = RemovePathAction(metadata_file.absolute())
+    delete_element_action = RemovePathAction(metadata_file.resolve())
     expected_plan.add_action(delete_element_action)
 
     # Call merge()
@@ -205,7 +205,7 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     # Create hand-crafter merge plan
     expected_plan: Plan = Plan()
 
-    reset_destination_action = CreatePathAction(catalog_file.absolute(), clear_content=True)
+    reset_destination_action = CreatePathAction(catalog_file.resolve(), clear_content=True)
     expected_plan.add_action(reset_destination_action)
 
     _, _, merged_catalog_instance = load_distributed(catalog_file)
@@ -213,7 +213,7 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     element = Element(merged_catalog_instance)
     write_destination_action = WriteFileAction(catalog_file, element, content_type=content_type)
     expected_plan.add_action(write_destination_action)
-    delete_element_action = RemovePathAction(Path('catalog').absolute())
+    delete_element_action = RemovePathAction(Path('catalog').resolve())
     expected_plan.add_action(delete_element_action)
 
     # Call merge()
@@ -277,7 +277,7 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
     # Read files
 
     # The destination file/model needs to be loaded in a stripped model
-    stripped_metadata_type, _ = fs.get_stripped_contextual_model(metadata_file.absolute())
+    stripped_metadata_type, _ = fs.get_stripped_contextual_model(metadata_file.resolve())
     stripped_metadata = stripped_metadata_type.oscal_read(metadata_file)
 
     # Back-matter model needs to be complete and if it is decomposed, needs to be merged recursively first
@@ -289,7 +289,7 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
     # Back-matter needs to be inserted in a stripped Catalog that does NOT exclude the back-matter fields
 
     merged_metadata_type, merged_metadata_alias = fs.get_stripped_contextual_model(
-        metadata_file.absolute(), aliases_not_to_be_stripped=['roles'])
+        metadata_file.resolve(), aliases_not_to_be_stripped=['roles'])
     merged_dict = stripped_metadata.__dict__
     merged_dict['roles'] = roles
     merged_metadata = merged_metadata_type(**merged_dict)
@@ -297,9 +297,9 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
     element = Element(merged_metadata, merged_metadata_alias)
 
     # Create hand-crafter merge plan
-    reset_destination_action = CreatePathAction(metadata_file.absolute(), clear_content=True)
+    reset_destination_action = CreatePathAction(metadata_file.resolve(), clear_content=True)
     write_destination_action = WriteFileAction(metadata_file, element, content_type=content_type)
-    delete_element_action = RemovePathAction(roles_dir.absolute())
+    delete_element_action = RemovePathAction(roles_dir.resolve())
 
     expected_plan: Plan = Plan()
     expected_plan.add_action(reset_destination_action)
@@ -334,7 +334,7 @@ def test_split_merge(testdata_dir, tmp_trestle_dir):
     catalog_file = Path('catalog.json')
 
     # Read and store the catalog before split
-    stripped_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.absolute())
+    stripped_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.resolve())
     pre_split_catalog = stripped_catalog_type.oscal_read(catalog_file)
     assert 'groups' in pre_split_catalog.__fields__.keys()
 
@@ -344,8 +344,8 @@ def test_split_merge(testdata_dir, tmp_trestle_dir):
 
     assert split == 0
 
-    interim_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.absolute())
-    interim_catalog = interim_catalog_type.oscal_read(catalog_file.absolute())
+    interim_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.resolve())
+    interim_catalog = interim_catalog_type.oscal_read(catalog_file.resolve())
     assert 'groups' not in interim_catalog.__fields__.keys()
 
     # Merge everything back into the catalog
@@ -355,6 +355,6 @@ def test_split_merge(testdata_dir, tmp_trestle_dir):
     assert rc == 1  # FIXME issue #412  this should return 0 but has been passing because it wasn't checked
 
     # Check both the catalogs are the same.
-    post_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.absolute())
+    post_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.resolve())
     post_merge_catalog = post_catalog_type.oscal_read(catalog_file)
     assert post_merge_catalog == pre_split_catalog

@@ -28,7 +28,7 @@ TRESTLE_TRASH_DIR_EXT = '__bk'
 
 def to_trash_dir_path(dir_path: pathlib.Path) -> pathlib.Path:
     """Construct the path to the trashed file."""
-    absolute_path = dir_path.absolute()
+    absolute_path = dir_path.resolve()
     root_path = fs.get_trestle_project_root(absolute_path)
     if root_path is None:
         raise AssertionError(f'Directory path "{absolute_path}" is not in a valid trestle project')

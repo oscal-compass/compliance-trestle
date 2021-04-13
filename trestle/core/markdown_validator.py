@@ -152,8 +152,8 @@ class MarkdownValidator:
         self._yaml_header_validate = yaml_header_validate
         self.template_path = template_path
         if not self.template_path.is_file():
-            logger.error(f'Provided template {self.template_path.absolute()} is not a file')
-            raise err.TrestleError(f'Unable to find markdown template {self.template_path.absolute()}')
+            logger.error(f'Provided template {self.template_path.resolve()} is not a file')
+            raise err.TrestleError(f'Unable to find markdown template {self.template_path.resolve()}')
         template_header, template_parse = self.load_markdown_parsetree(self.template_path)
         self._template_header = template_header
         self._template_parse = template_parse

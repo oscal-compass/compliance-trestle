@@ -75,7 +75,7 @@ def test_replicate_cmd(testdata_dir, tmp_trestle_dir, regen) -> None:
 
     rep_model_type, rep_model_alias, rep_model_instance = load_distributed(rep_file)
 
-    expected_model_type, _ = fs.get_contextual_model_type(rep_file.absolute())
+    expected_model_type, _ = fs.get_contextual_model_type(rep_file.resolve())
 
     expected_model_instance = Catalog.oscal_read(testdata_dir / 'split_merge/load_distributed/catalog.json')
 
