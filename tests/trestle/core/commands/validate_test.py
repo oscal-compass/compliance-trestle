@@ -28,7 +28,7 @@ from trestle.core import utils
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import target as ostarget
 
-test_data_dir = pathlib.Path('tests/data').absolute()
+test_data_dir = pathlib.Path('tests/data').resolve()
 
 
 def test_target_dups(tmp_trestle_dir: pathlib.Path) -> None:

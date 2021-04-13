@@ -150,7 +150,7 @@ class LocalFetcher(FetcherBase):
             uri = uri[7:]
 
         # TODO (#365): Update this to allow for relative paths. Maybe.
-        path = pathlib.Path(uri).absolute()
+        path = pathlib.Path(uri).resolve()
         self._abs_path = path
         localhost_cached_dir = self._trestle_cache_path / 'localhost'
         localhost_cached_dir = localhost_cached_dir / '__abs__' / '__root__'

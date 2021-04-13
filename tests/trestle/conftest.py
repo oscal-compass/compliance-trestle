@@ -142,4 +142,4 @@ def tmp_empty_cwd(tmp_path: pathlib.Path) -> pathlib.Path:
 def testdata_dir() -> pathlib.Path:
     """Return absolute path to test data directory."""
     test_data_source = pathlib.Path('tests/data')
-    return test_data_source.absolute()
+    return test_data_source.resolve()

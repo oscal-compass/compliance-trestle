@@ -69,7 +69,7 @@ class SplitCmd(CommandPlusDocs):
         content_type = FileContentType.to_content_type(file_path.suffix)
 
         # find the base directory of the file
-        file_absolute_path = pathlib.Path(file_path.absolute())
+        file_absolute_path = pathlib.Path(file_path.resolve())
         base_dir = file_absolute_path.parent
 
         model_type, _ = fs.get_stripped_contextual_model(file_absolute_path)

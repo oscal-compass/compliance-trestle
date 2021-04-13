@@ -180,9 +180,9 @@ class CreateCmd(CommandPlusDocs):
 
         top_element = Element(sample_model, model_alias)
 
-        create_action = CreatePathAction(desired_model_path.absolute(), True)
+        create_action = CreatePathAction(desired_model_path.resolve(), True)
         write_action = WriteFileAction(
-            desired_model_path.absolute(), top_element, FileContentType.to_content_type(desired_model_path.suffix)
+            desired_model_path.resolve(), top_element, FileContentType.to_content_type(desired_model_path.suffix)
         )
 
         # create a plan to write the directory and file.
