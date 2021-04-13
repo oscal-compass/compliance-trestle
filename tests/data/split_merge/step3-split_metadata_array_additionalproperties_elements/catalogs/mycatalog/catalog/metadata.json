@@ -3,7 +3,7 @@
         "title": "NIST Special Publication 800-53 Revision 5: Security and Privacy Controls for Federal Information Systems and Organizations",
         "last-modified": "2020-12-20T19:47:48.623+00:00",
         "version": "Revision 5",
-        "oscal-version": "1.0.0-rc1",
+        "oscal-version": "1.0.0-rc2",
         "props": [
             {
                 "name": "keywords",
