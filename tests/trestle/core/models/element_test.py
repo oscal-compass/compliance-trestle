@@ -90,7 +90,7 @@ def test_element_set_at(sample_target_def: target.TargetDefinition):
             'title': 'My simple catalog',
             'last-modified': datetime.now(),
             'version': '0.0.0',
-            'oscal-version': '1.0.0-rc1'
+            'oscal-version': '1.0.0-rc2'
         }
     )
 
