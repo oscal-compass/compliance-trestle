@@ -81,7 +81,6 @@ nav:
       - remote:
         - cache: api_reference/trestle.core.remote.cache.md
     - utils:
-      - tanium: api_reference/trestle.utils.tanium.md
       - log: api_reference/trestle.utils.log.md
       - osco: api_reference/trestle.utils.osco.md
       - load_distributed: api_reference/trestle.utils.load_distributed.md
