@@ -12,11 +12,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Create the singleton transformer factory here."""
+"""Basic script to show the use of the transformer factory."""
 
-from trestle.transforms.implementations.tanium import TaniumTransformer
-from trestle.transforms.transformer_factory import TransformerFactory
+import logging
+import pathlib
 
-transformer_factory = TransformerFactory()
+from trestle.transforms.transformer_singleton import transformer_factory
 
-transformer_factory.register_transformer('tanium', TaniumTransformer)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.addHandler(logging.StreamHandler())
+
+sample_data_f = pathlib.Path('tests/data/tasks/tanium/input/Tanium.comply-nist-results')
+
+if __name__ == '__main__':
+    stringed = sample_data_f.open('r').read()
+    tanium_tf = transformer_factory.get('tanium')
+    output_oscal = tanium_tf.transform(stringed)
+    json_str = output_oscal.oscal_serialize_json()
+    logging.info(json_str)

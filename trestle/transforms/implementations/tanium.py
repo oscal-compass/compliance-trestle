@@ -21,7 +21,6 @@ from typing import List
 
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
-from trestle.transforms.transformer_singleton import transformer_factory
 from trestle.transforms.utils.tanium_helper import ResultsMgr
 
 logger = logging.getLogger(__name__)
@@ -70,6 +69,3 @@ class TaniumTransformer(ResultsTransformer):
                 self._results_mgr.ingest(jdata)
         results.__root__.append(self._results_mgr.result)
         return results
-
-
-transformer_factory.register_transformer('tanium', TaniumTransformer)
