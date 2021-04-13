@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.13.1 (2021-04-13)
+### Fix
+* Force release. ([`0e90265`](https://github.com/IBM/compliance-trestle/commit/0e90265c7192979a613c30abd3561a68b612d8ac))
+
 ## v0.13.0 (2021-04-13)
 ### Feature
 * Tanium to oscal tranform refactored to exploit the ResultsTransformer interface ([#466](https://github.com/IBM/compliance-trestle/issues/466)) ([`6fced57`](https://github.com/IBM/compliance-trestle/commit/6fced57a5c011aafb26220e94b038ebae884b20d))
