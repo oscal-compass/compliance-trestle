@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.replicate/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.1">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.33e2939f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.9299cb39.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
@@ -1474,18 +1474,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.utils.tanium/" class="md-nav__link">
-        tanium
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../trestle.utils.log/" class="md-nav__link">
         log
       </a>
@@ -2582,7 +2570,7 @@
     <span class="c1"># 4. Distributed load from file</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">model_type</span><span class="p">,</span> <span class="n">model_alias</span><span class="p">,</span> <span class="n">model_instance</span> <span class="o">=</span> <span class="n">load_distributed</span><span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span>
+        <span class="n">model_type</span><span class="p">,</span> <span class="n">model_alias</span><span class="p">,</span> <span class="n">model_instance</span> <span class="o">=</span> <span class="n">load_distributed</span><span class="p">(</span><span class="n">input_file</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
     <span class="k">except</span> <span class="n">JSONDecodeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;load_distributed() failed: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Replicate failed, JSON error loading file: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -2612,8 +2600,8 @@
 
     <span class="c1"># 6. Prepare actions and plan</span>
     <span class="n">top_element</span> <span class="o">=</span> <span class="n">Element</span><span class="p">(</span><span class="n">model_instance</span><span class="p">)</span>
-    <span class="n">create_action</span> <span class="o">=</span> <span class="n">CreatePathAction</span><span class="p">(</span><span class="n">rep_model_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span> <span class="kc">True</span><span class="p">)</span>
-    <span class="n">write_action</span> <span class="o">=</span> <span class="n">WriteFileAction</span><span class="p">(</span><span class="n">rep_model_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span> <span class="n">top_element</span><span class="p">,</span> <span class="n">content_type</span><span class="p">)</span>
+    <span class="n">create_action</span> <span class="o">=</span> <span class="n">CreatePathAction</span><span class="p">(</span><span class="n">rep_model_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">write_action</span> <span class="o">=</span> <span class="n">WriteFileAction</span><span class="p">(</span><span class="n">rep_model_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span> <span class="n">top_element</span><span class="p">,</span> <span class="n">content_type</span><span class="p">)</span>
 
     <span class="c1"># create a plan to create the directory and imported file.</span>
     <span class="n">replicate_plan</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">()</span>
@@ -2847,7 +2835,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d892486b.min.js"></script>
+      <script src="../../assets/javascripts/bundle.7353b375.min.js"></script>
       
     
   </body>

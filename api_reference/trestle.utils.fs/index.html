@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.utils.fs/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.1">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.33e2939f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.9299cb39.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
@@ -1198,18 +1198,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.utils.tanium/" class="md-nav__link">
-        tanium
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../trestle.utils.log/" class="md-nav__link">
         log
       </a>
@@ -2010,17 +1998,18 @@
 
     <div class="doc doc-contents ">
 
-      <p>Clean all directories and files in the project sub sub.</p>
+      <p>Clean all directories and files in a project top level subdir.</p>
 <p>It ensures the sub_path is a child path in the project root.</p>
 
         <details class="quote">
           <summary>Source code in <code>trestle/utils/fs.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">clean_project_sub_path</span><span class="p">(</span><span class="n">sub_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Clean all directories and files in the project sub sub.</span>
+    <span class="sd">&quot;&quot;&quot;Clean all directories and files in a project top level subdir.</span>
 
 <span class="sd">    It ensures the sub_path is a child path in the project root.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">sub_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">sub_path</span> <span class="o">=</span> <span class="n">sub_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
         <span class="n">project_root</span> <span class="o">=</span> <span class="n">sub_path</span><span class="o">.</span><span class="n">parent</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">has_trestle_project_in_path</span><span class="p">(</span><span class="n">project_root</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Path to be cleaned is not a under valid Trestle project root&#39;</span><span class="p">)</span>
@@ -2123,6 +2112,7 @@
           <summary>Source code in <code>trestle/utils/fs.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_contextual_file_type</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileContentType</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Return the file content type for files in the given directory, if it&#39;s a trestle project.&quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid_project_model_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Trestle project not found.&#39;</span><span class="p">)</span>
 
@@ -2163,6 +2153,8 @@
     <span class="sd">&quot;&quot;&quot;Get the full contextual model class and full jsonpath for the alias based on the contextual path.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid_project_model_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Trestle project model not found at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -2262,9 +2254,10 @@
           <summary>Source code in <code>trestle/utils/fs.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_project_model_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Get the base path of the trestle model project.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
 
+    <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">parts</span><span class="p">)):</span>
         <span class="n">current</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="o">*</span><span class="n">path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">is_valid_project_model_path</span><span class="p">(</span><span class="n">current</span><span class="p">):</span>
@@ -2399,6 +2392,7 @@ a parameter.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">aliases_not_to_be_stripped</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">aliases_not_to_be_stripped</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -2461,10 +2455,10 @@ a parameter.</p>
           <summary>Source code in <code>trestle/utils/fs.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_trestle_project_root</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Get the trestle project root folder in the path.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="n">current</span> <span class="o">=</span> <span class="n">path</span>
+    <span class="n">current</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># it must not be the system root directory</span>
         <span class="k">if</span> <span class="n">is_valid_project_root</span><span class="p">(</span><span class="n">current</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">current</span>
@@ -2500,13 +2494,16 @@ a parameter.</p>
     <span class="k">if</span> <span class="n">parent_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent_path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
 
+    <span class="n">sub_path</span> <span class="o">=</span> <span class="n">sub_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="n">parent_path</span> <span class="o">=</span> <span class="n">parent_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
     <span class="c1"># sub_path should be longer than parent path</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub_path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">parent_path</span><span class="o">.</span><span class="n">parts</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="n">matched</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">part</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">parent_path</span><span class="o">.</span><span class="n">parts</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">part</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">sub_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">part</span> <span class="o">!=</span> <span class="n">sub_path</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
             <span class="n">matched</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">break</span>
 
@@ -2643,9 +2640,10 @@ a parameter.</p>
           <summary>Source code in <code>trestle/utils/fs.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">is_valid_project_model_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Check if the file/directory path is a valid trestle model project.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">path</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
 
+    <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="n">root_path</span> <span class="o">=</span> <span class="n">get_trestle_project_root</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">root_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -2673,23 +2671,23 @@ a parameter.</p>
 
 
 <h4 class="doc doc-heading" id="trestle.utils.fs.is_valid_project_root">
-<code class="highlight language-python"><span class="n">is_valid_project_root</span><span class="p">(</span><span class="n">project_root</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">is_valid_project_root</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></code>
 
 
 <a class="headerlink" href="#trestle.utils.fs.is_valid_project_root" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
-      <p>Check if the project root is a valid trestle project root.</p>
+      <p>Check if the path is a valid trestle project root.</p>
 
         <details class="quote">
           <summary>Source code in <code>trestle/utils/fs.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">is_valid_project_root</span><span class="p">(</span><span class="n">project_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if the project root is a valid trestle project root.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">project_root</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">project_root</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">project_root</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">is_valid_project_root</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Check if the path is a valid trestle project root.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="n">trestle_dir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">project_root</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_CONFIG_DIR</span><span class="p">)</span>
+    <span class="n">trestle_dir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_CONFIG_DIR</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">trestle_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">trestle_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
         <span class="k">return</span> <span class="kc">True</span>
 
@@ -2912,7 +2910,7 @@ if a OSCAL object type is unknown but the context a user is in.</p>
     <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d892486b.min.js"></script>
+      <script src="../../assets/javascripts/bundle.7353b375.min.js"></script>
       
     
   </body>

@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.merge/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.1">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.33e2939f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.9299cb39.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
@@ -1300,18 +1300,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.utils.tanium/" class="md-nav__link">
-        tanium
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../trestle.utils.log/" class="md-nav__link">
         log
       </a>
@@ -1804,7 +1792,7 @@
     <span class="n">file_ext</span> <span class="o">=</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">to_file_extension</span><span class="p">(</span><span class="n">file_type</span><span class="p">)</span>
     <span class="c1"># Destination model filename</span>
     <span class="n">destination_model_filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">destination_model_alias</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">)</span><span class="si">}{</span><span class="n">file_ext</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">destination_model_type</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_stripped_contextual_model</span><span class="p">(</span><span class="n">destination_model_filename</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span>
+    <span class="n">destination_model_type</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_stripped_contextual_model</span><span class="p">(</span><span class="n">destination_model_filename</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
 
     <span class="c1"># if there is no .json file then there is no destination model object at this point, so create empty one</span>
     <span class="n">destination_model_object</span><span class="p">:</span> <span class="n">OscalBaseModel</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1820,12 +1808,12 @@
         <span class="n">merged_model_type</span><span class="p">,</span> <span class="n">merged_model_alias</span><span class="p">,</span> <span class="n">merged_model_instance</span> <span class="o">=</span> <span class="n">load_distributed</span><span class="o">.</span><span class="n">load_distributed</span><span class="p">(</span>
             <span class="n">destination_model_filename</span><span class="p">,</span> <span class="n">collection_type</span><span class="p">)</span>
         <span class="n">plan</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">()</span>
-        <span class="n">reset_destination_action</span> <span class="o">=</span> <span class="n">CreatePathAction</span><span class="p">(</span><span class="n">destination_model_filename</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span> <span class="n">clear_content</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">reset_destination_action</span> <span class="o">=</span> <span class="n">CreatePathAction</span><span class="p">(</span><span class="n">destination_model_filename</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span> <span class="n">clear_content</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">wrapper_alias</span> <span class="o">=</span> <span class="n">destination_model_alias</span>
         <span class="n">write_destination_action</span> <span class="o">=</span> <span class="n">WriteFileAction</span><span class="p">(</span>
             <span class="n">destination_model_filename</span><span class="p">,</span> <span class="n">Element</span><span class="p">(</span><span class="n">merged_model_instance</span><span class="p">,</span> <span class="n">wrapper_alias</span><span class="p">),</span> <span class="n">content_type</span><span class="o">=</span><span class="n">file_type</span>
         <span class="p">)</span>
-        <span class="n">delete_target_action</span> <span class="o">=</span> <span class="n">RemovePathAction</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">destination_model_alias</span><span class="p">)</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span>
+        <span class="n">delete_target_action</span> <span class="o">=</span> <span class="n">RemovePathAction</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">destination_model_alias</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
         <span class="n">plan</span><span class="p">:</span> <span class="n">Plan</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">()</span>
         <span class="n">plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">reset_destination_action</span><span class="p">)</span>
         <span class="n">plan</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">write_destination_action</span><span class="p">)</span>
@@ -1834,7 +1822,7 @@
 
     <span class="c1"># Get destination model without the target field stripped</span>
     <span class="n">merged_model_type</span><span class="p">,</span> <span class="n">merged_model_alias</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_stripped_contextual_model</span><span class="p">(</span>
-        <span class="n">destination_model_filename</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span>
+        <span class="n">destination_model_filename</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span>
         <span class="n">aliases_not_to_be_stripped</span><span class="o">=</span><span class="p">[</span><span class="n">target_model_alias</span><span class="p">])</span>
     <span class="sd">&quot;&quot;&quot;2. Load Target model. Target model could be stripped&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
@@ -1869,7 +1857,7 @@
     <span class="n">merged_model_object</span> <span class="o">=</span> <span class="n">merged_model_type</span><span class="p">(</span><span class="o">**</span><span class="n">merged_dict</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
     <span class="n">merged_destination_element</span> <span class="o">=</span> <span class="n">Element</span><span class="p">(</span><span class="n">merged_model_object</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;4. Create action  plan&quot;&quot;&quot;</span>
-    <span class="n">reset_destination_action</span> <span class="o">=</span> <span class="n">CreatePathAction</span><span class="p">(</span><span class="n">destination_model_filename</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span> <span class="n">clear_content</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">reset_destination_action</span> <span class="o">=</span> <span class="n">CreatePathAction</span><span class="p">(</span><span class="n">destination_model_filename</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span> <span class="n">clear_content</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">write_destination_action</span> <span class="o">=</span> <span class="n">WriteFileAction</span><span class="p">(</span>
         <span class="n">destination_model_filename</span><span class="p">,</span> <span class="n">merged_destination_element</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="n">file_type</span>
     <span class="p">)</span>
@@ -1983,7 +1971,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d892486b.min.js"></script>
+      <script src="../../assets/javascripts/bundle.7353b375.min.js"></script>
       
     
   </body>

@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.utils.load_distributed/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.1">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.33e2939f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.9299cb39.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
@@ -1198,18 +1198,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.utils.tanium/" class="md-nav__link">
-        tanium
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../trestle.utils.log/" class="md-nav__link">
         log
       </a>
@@ -1713,7 +1701,7 @@ Defaults to None.</p></td>
         <span class="k">return</span> <span class="n">_load_dict</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
 
     <span class="c1"># Get current model</span>
-    <span class="n">primary_model_type</span><span class="p">,</span> <span class="n">primary_model_alias</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_stripped_contextual_model</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span>
+    <span class="n">primary_model_type</span><span class="p">,</span> <span class="n">primary_model_alias</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_stripped_contextual_model</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
     <span class="n">primary_model_instance</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># is this an attempt to load an actual json or yaml file?</span>
@@ -1736,7 +1724,7 @@ Defaults to None.</p></td>
                 <span class="n">instances_to_be_merged</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_instance</span><span class="p">)</span>
 
             <span class="k">elif</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-                <span class="n">model_type</span><span class="p">,</span> <span class="n">model_alias</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_stripped_contextual_model</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span>
+                <span class="n">model_type</span><span class="p">,</span> <span class="n">model_alias</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_stripped_contextual_model</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
                 <span class="c1"># Only load the directory if it is a collection model. Otherwise do nothing - it gets loaded when</span>
                 <span class="c1"># iterating over the model file</span>
 
@@ -1758,7 +1746,7 @@ Defaults to None.</p></td>
             <span class="n">primary_model_dict</span> <span class="o">=</span> <span class="n">primary_model_instance</span><span class="o">.</span><span class="vm">__dict__</span>
 
         <span class="n">merged_model_type</span><span class="p">,</span> <span class="n">merged_model_alias</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_stripped_contextual_model</span><span class="p">(</span>
-            <span class="n">file_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span> <span class="n">aliases_not_to_be_stripped</span><span class="p">)</span>
+            <span class="n">file_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span> <span class="n">aliases_not_to_be_stripped</span><span class="p">)</span>
 
         <span class="c1"># The following use of top_level is to allow loading of a top level model by name only, e.g. MyCatalog</span>
         <span class="c1"># There may be a better overall way to approach this.</span>
@@ -1869,7 +1857,7 @@ Defaults to None.</p></td>
     <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d892486b.min.js"></script>
+      <script src="../../assets/javascripts/bundle.7353b375.min.js"></script>
       
     
   </body>

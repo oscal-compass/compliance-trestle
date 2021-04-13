@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.tanium_to_oscal/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.0">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.1">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.33e2939f.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.9299cb39.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
@@ -646,13 +646,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.t_collection" class="md-nav__link">
-    t_collection
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#trestle.tasks.tanium_to_oscal.t_filename" class="md-nav__link">
     t_filename
   </a>
@@ -660,8 +653,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.t_results_mgr" class="md-nav__link">
-    t_results_mgr
+  <a href="#trestle.tasks.tanium_to_oscal.t_results" class="md-nav__link">
+    t_results
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.tanium_to_oscal.t_tanium_transformer" class="md-nav__link">
+    t_tanium_transformer
   </a>
   
 </li>
@@ -1340,18 +1340,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.utils.tanium/" class="md-nav__link">
-        tanium
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../trestle.utils.log/" class="md-nav__link">
         log
       </a>
@@ -1637,13 +1625,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.t_collection" class="md-nav__link">
-    t_collection
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#trestle.tasks.tanium_to_oscal.t_filename" class="md-nav__link">
     t_filename
   </a>
@@ -1651,8 +1632,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.tasks.tanium_to_oscal.t_results_mgr" class="md-nav__link">
-    t_results_mgr
+  <a href="#trestle.tasks.tanium_to_oscal.t_results" class="md-nav__link">
+    t_results
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.tanium_to_oscal.t_tanium_transformer" class="md-nav__link">
+    t_tanium_transformer
   </a>
   
 </li>
@@ -1801,24 +1789,6 @@
 
 
 
-<h4 class="doc doc-heading" id="trestle.tasks.tanium_to_oscal.t_collection">
-<code class="highlight language-python"><span class="n">t_collection</span></code>
-
-
-<a class="headerlink" href="#trestle.tasks.tanium_to_oscal.t_collection" title="Permanent link">¤</a></h4>
-
-    <div class="doc doc-contents ">
-
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-attribute">
-
-
-
 <h4 class="doc doc-heading" id="trestle.tasks.tanium_to_oscal.t_filename">
 <code class="highlight language-python"><span class="n">t_filename</span></code>
 
@@ -1837,11 +1807,29 @@
 
 
 
-<h4 class="doc doc-heading" id="trestle.tasks.tanium_to_oscal.t_results_mgr">
-<code class="highlight language-python"><span class="n">t_results_mgr</span></code>
+<h4 class="doc doc-heading" id="trestle.tasks.tanium_to_oscal.t_results">
+<code class="highlight language-python"><span class="n">t_results</span></code>
 
 
-<a class="headerlink" href="#trestle.tasks.tanium_to_oscal.t_results_mgr" title="Permanent link">¤</a></h4>
+<a class="headerlink" href="#trestle.tasks.tanium_to_oscal.t_results" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.tasks.tanium_to_oscal.t_tanium_transformer">
+<code class="highlight language-python"><span class="n">t_tanium_transformer</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.tanium_to_oscal.t_tanium_transformer" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
@@ -2021,15 +2009,14 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configuration flags sit under [task.tanium-to-oscal]:&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  input-dir = (required) the path of the input directory comprising Tanium reports.&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  output-dir = (required, unless output-file is specified) the path of the output directory comprising synthesized OSCAL .json files.&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  output-file = (required, unless output-dir is specified) the path of the output file comprising synthesized OSCAL .json file.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  output-overwrite = (optional) true [default] or false; replace existing output when true.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  quiet = (optional) true or false [default]; display file creations and rules analysis when false.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as 2021-01-04T00:05:23+04:00 for example; if not specified then value for &quot;Timestamp&quot; key in the Tanium report is used if present, otherwise current time is used.&#39;</span><span class="p">)</span>                                                       
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Operation: A transformation is performed on one or more Tanium input files to produce output in OSCAL partial results format. Input files are Tanium reports comprising individual lines consumable as json.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;All the Tanium report files in the input-dir are processed. Exactly one of output-dir and output-file must be specified. When output-dir is specified, each input file produces a corresponding .json output-dir file. When output-file is specified, each input file produces results merged into the single output file.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;All the Tanium report files in the input-dir are processed. Each input file produces a corresponding .json output-dir file.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Expected Tanium report keys are: { &quot;IP Address&quot;, &quot;Computer Name&quot;, &quot;Comply&quot;, &quot;Benchmark&quot;, &quot;Benchmark Version&quot;, &quot;ID&quot;, &quot;Result&quot;, &quot;Timestamp&quot; }&#39;</span><span class="p">)</span>
 </code></pre></div>
@@ -2160,7 +2147,7 @@
     <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d892486b.min.js"></script>
+      <script src="../../assets/javascripts/bundle.7353b375.min.js"></script>
       
     
   </body>
