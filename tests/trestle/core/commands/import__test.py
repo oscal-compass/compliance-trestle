@@ -164,7 +164,7 @@ def test_import_missing_input_file(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_bad_working_directory(tmp_path: pathlib.Path) -> None:
     """Test for working directory that is not a trestle initialized directory."""
     # Input file, catalog:
-    catalog_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.absolute(), 'minimal_catalog.json')
+    catalog_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH.resolve(), 'minimal_catalog.json')
     args = argparse.Namespace(file=str(catalog_file_path), output='catalog', verbose=True)
     i = importcmd.ImportCmd()
     with patch('trestle.utils.fs.get_trestle_project_root') as get_trestle_project_root_mock:

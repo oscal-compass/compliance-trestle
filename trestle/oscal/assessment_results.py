@@ -7,7 +7,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Field, conint, constr
 from trestle.core.base_model import OscalBaseModel
 
 
@@ -190,6 +190,15 @@ class PortRange(OscalBaseModel):
     )
 
 
+class ImplementationStatus(OscalBaseModel):
+    state: str = Field(
+        ...,
+        description='Identifies the implementation status of the control or control objective.',
+        title='Implementation State',
+    )
+    remarks: Optional[Remarks] = None
+
+
 class FunctionPerformed(OscalBaseModel):
     __root__: str = Field(
         ...,
@@ -296,7 +305,7 @@ class Source(OscalBaseModel):
     ) = Field(
         ...,
         alias='task-uuid',
-        description='Uniquely identifies an assessment activity to be performed as part of the event. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. A UUID should be consistantly used for this schedule across revisions of the document.',
+        description='Uniquely identifies an assessment activity to be performed as part of the event. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for this schedule across revisions of the document.',
         title='Task Universally Unique Identifier',
     )
 
@@ -445,8 +454,8 @@ class Property(OscalBaseModel):
     )
     value: str = Field(
         ...,
-        description='Indicates the optional value of the attribute, characteristic, or quality. Typically, a value will be provided; however, the value is optional allowing cases were the name is asserting some characteristic or quality.',
-        title='Annotated Property Value',
+        description='Indicates the value of the attribute, characteristic, or quality.',
+        title='Property Value',
     )
     class_: Optional[str] = Field(
         None,
@@ -579,30 +588,6 @@ class InventoryItem(OscalBaseModel):
     )
     implemented_components: Optional[List[ImplementedComponent]] = Field(
         None, alias='implemented-components', min_items=1
-    )
-    remarks: Optional[Remarks] = None
-
-
-class Action1(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='Uniquely identifies an assessment event. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. A UUID should be consistantly used for this schedule across revisions of the document.',
-        title='Event Universally Unique Identifier',
-    )
-    title: Optional[str] = Field(
-        None, description='The title for this event.', title='Event Title'
-    )
-    description: str = Field(
-        ...,
-        description='A human-readable description of this event.',
-        title='Event Description',
-    )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
     )
     remarks: Optional[Remarks] = None
 
@@ -792,7 +777,10 @@ class FindingTarget(OscalBaseModel):
     status: Status1 = Field(
         ...,
         description='A brief indication as to whether the objective is satisfied or not within a given system.',
-        title='Implementation Status',
+        title='Objective Status',
+    )
+    implementation_status: Optional[ImplementationStatus] = Field(
+        None, alias='implementation-status'
     )
     remarks: Optional[Remarks] = None
 
@@ -887,7 +875,7 @@ class RequiredAsset(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this required asset. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. Once assigned, a UUID should be consistantly used for a given required asset across revisions.',
+        description='Uniquely identifies this required asset. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given required asset across revisions.',
         title='Required Universally Unique Identifier',
     )
     subjects: Optional[List[OscalAssessmentCommonSubjectReference]] = Field(
@@ -909,9 +897,6 @@ class RequiredAsset(OscalBaseModel):
 
 
 class AssessmentPart(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     uuid: Optional[
         constr(
             regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -960,9 +945,6 @@ class Attestation(OscalBaseModel):
 
 
 class Part(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     id: Optional[str] = Field(
         None,
         description="A unique identifier for a specific part instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same part across minor revisions of the document.",
@@ -1019,7 +1001,7 @@ class Location(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.',
+        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document.',
         title='Location Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -1125,14 +1107,11 @@ class Citation(OscalBaseModel):
 
 
 class Resource(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Resource Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -1246,21 +1225,21 @@ class LocalObjective(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class Action(OscalBaseModel):
+class Step(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this defined action. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. A UUID should be consistantly used for a given test step across revisions of the document.',
-        title='Action Universally Unique Identifier',
+        description='Uniquely identifies a step. This UUID may be referenced elsewhere in an OSCAL document when referring to this step. A UUID should be consistently used for a given test step across revisions of the document.',
+        title='Step Universally Unique Identifier',
     )
     title: Optional[str] = Field(
-        None, description='The title for this action.', title='Action Title'
+        None, description='The title for this step.', title='Step Title'
     )
     description: str = Field(
         ...,
-        description='A human-readable description of this action.',
-        title='Action Description',
+        description='A human-readable description of this step.',
+        title='Step Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
@@ -1278,7 +1257,7 @@ class Activity(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this assessment activity. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. A UUID should be consistantly used for a given included activity across revisions of the document.',
+        description='Uniquely identifies this assessment activity. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for a given included activity across revisions of the document.',
         title='Assessment Activity Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -1293,7 +1272,7 @@ class Activity(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
-    actions: Optional[List[Action]] = Field(None, min_items=1)
+    steps: Optional[List[Step]] = Field(None, min_items=1)
     related_controls: Optional[ReviewedControls] = Field(None, alias='related-controls')
     responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
         None, alias='responsible-roles'
@@ -1394,7 +1373,7 @@ class Entry(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies an assessment event. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. A UUID should be consistantly used for this schedule across revisions of the document.',
+        description='Uniquely identifies an assessment event. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for this schedule across revisions of the document.',
         title='Risk Log Entry Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -1437,26 +1416,12 @@ class LocalDefinitions(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class LocalDefinitions1(OscalBaseModel):
-    components: Optional[Dict[str, SystemComponent]] = None
-    inventory_items: Optional[List[InventoryItem]] = Field(
-        None, alias='inventory-items', min_items=1
-    )
-    users: Optional[Dict[str, SystemUser]] = None
-    assessment_assets: Optional[AssessmentAssets] = Field(
-        None, alias='assessment-assets'
-    )
-    assessment_actions: Optional[List[Action1]] = Field(
-        None, alias='assessment-actions', min_items=1
-    )
-
-
 class Entry1(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies an assessment event. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. A UUID should be consistantly used for this schedule across revisions of the document.',
+        description='Uniquely identifies an assessment event. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for this schedule across revisions of the document.',
         title='Assessment Log Entry Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -1589,7 +1554,7 @@ class Response(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this remediation. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. Once assigned, a UUID should be consistantly used for a given remediation across revisions.',
+        description='Uniquely identifies this remediation. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given remediation across revisions.',
         title='Remediation Universally Unique Identifier',
     )
     lifecycle: str = Field(
@@ -1615,12 +1580,24 @@ class Response(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
+class LocalDefinitions1(OscalBaseModel):
+    components: Optional[Dict[str, SystemComponent]] = None
+    inventory_items: Optional[List[InventoryItem]] = Field(
+        None, alias='inventory-items', min_items=1
+    )
+    users: Optional[Dict[str, SystemUser]] = None
+    assessment_assets: Optional[AssessmentAssets] = Field(
+        None, alias='assessment-assets'
+    )
+    tasks: Optional[List[Task]] = Field(None, min_items=1)
+
+
 class Finding(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this finding. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. Once assigned, a UUID should be consistantly used for a given finding across revisions.',
+        description='Uniquely identifies this finding. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given finding across revisions.',
         title='Finding Universally Unique Identifier',
     )
     title: str = Field(
@@ -1659,7 +1636,7 @@ class Observation(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this observation. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. Once assigned, a UUID should be consistantly used for a given observation across revisions.',
+        description='Uniquely identifies this observation. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given observation across revisions.',
         title='Observation Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -1668,7 +1645,7 @@ class Observation(OscalBaseModel):
     description: str = Field(
         ...,
         description='A human-readable description of this assessment observation.',
-        title='Observaton Description',
+        title='Observation Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
@@ -1735,7 +1712,7 @@ class Risk(OscalBaseModel):
     risk_log: Optional[RiskLog] = Field(
         None,
         alias='risk-log',
-        description='A log of all risk-related actions taken.',
+        description='A log of all risk-related tasks taken.',
         title='Risk Log',
     )
     related_observations: Optional[List[RelatedObservation]] = Field(
@@ -1748,7 +1725,7 @@ class Result(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this set of results. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. Once assigned, a UUID should be consistantly used for a given set of results across revisions.',
+        description='Uniquely identifies this set of results. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given set of results across revisions.',
         title='Results Universally Unique Identifier',
     )
     title: str = Field(

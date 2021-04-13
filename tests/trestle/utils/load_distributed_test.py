@@ -47,7 +47,7 @@ def test_load_list(testdata_dir, tmp_trestle_dir):
         Role.oscal_read(catalog_dir / 'metadata/roles/00001__role.json')
     ]
 
-    expected_model_type, _ = fs.get_stripped_contextual_model((catalog_dir / 'metadata/roles').absolute())
+    expected_model_type, _ = fs.get_stripped_contextual_model((catalog_dir / 'metadata/roles').resolve())
 
     assert actual_model_type.__signature__ == expected_model_type.__signature__
     assert actual_model_alias == 'catalog.metadata.roles'
@@ -106,7 +106,7 @@ def test_load_dict(testdata_dir, tmp_trestle_dir):
     assert actual_model_instance == expected_model_instance
     assert actual_model_alias == 'catalog.metadata.responsible-parties'
 
-    expected_model_type, _ = fs.get_contextual_model_type((catalog_dir / 'metadata/responsible-parties/').absolute())
+    expected_model_type, _ = fs.get_contextual_model_type((catalog_dir / 'metadata/responsible-parties/').resolve())
     assert actual_model_type.__fields__['__root__'].outer_type_ == expected_model_type
 
 
@@ -127,7 +127,7 @@ def test_load_distributed(testdata_dir, tmp_trestle_dir):
 
     actual_model_type, actual_model_alias, actual_model_instance = load_distributed(catalog_file)
 
-    expected_model_type, _ = fs.get_contextual_model_type(catalog_file.absolute())
+    expected_model_type, _ = fs.get_contextual_model_type(catalog_file.resolve())
 
     expected_model_instance = Catalog.oscal_read(testdata_dir / 'split_merge/load_distributed/catalog.json')
 
