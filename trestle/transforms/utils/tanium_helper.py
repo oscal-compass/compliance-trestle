@@ -15,7 +15,6 @@
 """Facilitate Tanium report to NIST OSCAL json transformation."""
 
 import datetime
-import json
 import logging
 import uuid
 from typing import Any, Dict, List, Union, ValuesView
@@ -244,15 +243,6 @@ class ResultsMgr():
         analysis.append(f'findings: {len(self.findings_map)}')
         analysis.append(f'results: {self.results_map}')
         return analysis
-
-    @property
-    def json(self) -> t_json:
-        """OSCAL results as json."""
-        jstring = self.result.json(exclude_none=True, by_alias=True, indent=2)
-        jobject = json.loads(jstring)
-        jobject = {'results': [jobject]}
-        jstring = json.dumps(jobject, indent=2)
-        return jstring
 
     def _get_inventroy_ref(self, ip: t_ip) -> t_inventory_ref:
         """Get inventory reference for specified IP."""
