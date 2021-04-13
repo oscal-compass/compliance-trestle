@@ -72,4 +72,4 @@ class TaniumTransformer(ResultsTransformer):
         return results
 
 
-transformer_factory.register_transformer(TaniumTransformer)
+transformer_factory.register_transformer('tanium', TaniumTransformer)
