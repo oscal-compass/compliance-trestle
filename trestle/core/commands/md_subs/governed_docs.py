@@ -155,7 +155,8 @@ Note that by default this will automatically enforce the task."""
             return 1
         for potential_md_file in task_path.iterdir():
             if not potential_md_file.suffix == '.md':
-                logger.warning(f'Unexpected file {potential_md_file} in task {task_name}, exiting.')
+                logger.warning(f'Unexpected file {potential_md_file} in task {task_name}, skipping.')
+                continue
             status = md_validator.validate(potential_md_file)
             if not status:
                 logger.info(f'Markdown file {potential_md_file} fails to meet template for task {task_name}.')
