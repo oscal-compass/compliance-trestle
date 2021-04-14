@@ -440,7 +440,7 @@ def test_contextual_get_singular_alias(tmp_path: pathlib.Path) -> None:
     """Test get_singular_alias in contextual mode."""
     # Contextual model tests
     create_sample_catalog_project(tmp_path)
-    catalogs_dir = tmp_path.absolute() / 'catalogs'
+    catalogs_dir = tmp_path.resolve() / 'catalogs'
     mycatalog_dir = catalogs_dir / 'mycatalog'
     catalog_dir = mycatalog_dir / 'catalog'
     metadata_dir = catalog_dir / 'metadata'
@@ -506,8 +506,8 @@ def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
 def test_get_models_of_type(tmp_trestle_dir) -> None:
     """Test fs.get_models_of_type()."""
     create_sample_catalog_project(tmp_trestle_dir)
-    catalogs_dir = tmp_trestle_dir.absolute() / 'catalogs'
-    targets_dir = tmp_trestle_dir.absolute() / 'target-definitions'
+    catalogs_dir = tmp_trestle_dir.resolve() / 'catalogs'
+    targets_dir = tmp_trestle_dir.resolve() / 'target-definitions'
     # mycatalog is already there
     (catalogs_dir / 'mycatalog2').mkdir()
     (catalogs_dir / '.myfile').touch()

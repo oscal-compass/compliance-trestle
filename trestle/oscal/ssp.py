@@ -7,7 +7,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Field, conint, constr
 from trestle.core.base_model import OscalBaseModel
 
 
@@ -190,6 +190,15 @@ class PortRange(OscalBaseModel):
     )
 
 
+class ImplementationStatus(OscalBaseModel):
+    state: str = Field(
+        ...,
+        description='Identifies the implementation status of the control or control objective.',
+        title='Implementation State',
+    )
+    remarks: Optional[Remarks] = None
+
+
 class FunctionPerformed(OscalBaseModel):
     __root__: str = Field(
         ...,
@@ -282,6 +291,13 @@ class State1(Enum):
     other = 'other'
 
 
+class StatusModel(OscalBaseModel):
+    state: State1 = Field(
+        ..., description='The current operating status.', title='State'
+    )
+    remarks: Optional[Remarks] = None
+
+
 class DateAuthorized(OscalBaseModel):
     __root__: constr(
         regex=r'^((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30))(Z|[+-][0-9]{2}:[0-9]{2})?$'
@@ -325,8 +341,8 @@ class Property(OscalBaseModel):
     )
     value: str = Field(
         ...,
-        description='Indicates the optional value of the attribute, characteristic, or quality. Typically, a value will be provided; however, the value is optional allowing cases were the name is asserting some characteristic or quality.',
-        title='Annotated Property Value',
+        description='Indicates the value of the attribute, characteristic, or quality.',
+        title='Property Value',
     )
     class_: Optional[str] = Field(
         None,
@@ -500,7 +516,7 @@ class InformationType(OscalBaseModel):
         )
     ] = Field(
         None,
-        description='A globally unique identifier that can be used to reference this information type entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this information type entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Information Type Universally Unique Identifier',
     )
     title: str = Field(
@@ -589,7 +605,7 @@ class LeveragedAuthorization(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this leveraged authorization entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this leveraged authorization entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Leveraged Authorization Universally Unique Identifier',
     )
     title: str = Field(
@@ -616,7 +632,7 @@ class Provided(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this provided entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this provided entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Provided Universally Unique Identifier',
     )
     description: str = Field(
@@ -637,7 +653,7 @@ class Responsibility(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this responsibility entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this responsibility entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Responsibility Universally Unique Identifier',
     )
     provided_uuid: Optional[
@@ -681,7 +697,7 @@ class Inherited(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this inherited entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this inherited entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Inherited Universally Unique Identifier',
     )
     provided_uuid: Optional[
@@ -711,7 +727,7 @@ class Satisfied(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this satisfied entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this satisfied entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Satisfied Universally Unique Identifier',
     )
     responsibility_uuid: Optional[
@@ -742,7 +758,7 @@ class ByComponent(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this by-component entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this by-component entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='By-Component Universally Unique Identifier',
     )
     description: str = Field(
@@ -754,6 +770,9 @@ class ByComponent(OscalBaseModel):
     links: Optional[List[Link]] = Field(None, min_items=1)
     parameter_settings: Optional[Dict[str, SetParameter]] = Field(
         None, alias='parameter-settings'
+    )
+    implementation_status: Optional[ImplementationStatus] = Field(
+        None, alias='implementation-status'
     )
     export: Optional[Export] = Field(
         None,
@@ -788,7 +807,7 @@ class Location(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.',
+        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document.',
         title='Location Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -894,14 +913,11 @@ class Citation(OscalBaseModel):
 
 
 class Resource(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Resource Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -1032,7 +1048,7 @@ class Statement(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this control statement entry elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this control statement entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Control Statement Reference Universally Unique Identifier',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
@@ -1096,7 +1112,7 @@ class SystemCharacteristics(OscalBaseModel):
     security_impact_level: SecurityImpactLevel = Field(
         ..., alias='security-impact-level'
     )
-    status: Status
+    status: StatusModel
     authorization_boundary: AuthorizationBoundary = Field(
         ..., alias='authorization-boundary'
     )
@@ -1142,6 +1158,9 @@ class ControlImplementation(OscalBaseModel):
         ...,
         description='A statement describing important things to know about how this set of control satisfaction documentation is approached.',
         title='Control Implementation Description',
+    )
+    set_parameters: Optional[Dict[str, SetParameter]] = Field(
+        None, alias='set-parameters'
     )
     implemented_requirements: List[ImplementedRequirement] = Field(
         ..., alias='implemented-requirements', min_items=1

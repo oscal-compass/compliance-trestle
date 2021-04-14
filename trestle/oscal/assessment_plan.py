@@ -7,7 +7,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Field, conint, constr
 from trestle.core.base_model import OscalBaseModel
 
 
@@ -305,7 +305,7 @@ class Source(OscalBaseModel):
     ) = Field(
         ...,
         alias='task-uuid',
-        description='Uniquely identifies an assessment activity to be performed as part of the event. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. A UUID should be consistantly used for this schedule across revisions of the document.',
+        description='Uniquely identifies an assessment activity to be performed as part of the event. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for this schedule across revisions of the document.',
         title='Task Universally Unique Identifier',
     )
 
@@ -351,8 +351,8 @@ class Property(OscalBaseModel):
     )
     value: str = Field(
         ...,
-        description='Indicates the optional value of the attribute, characteristic, or quality. Typically, a value will be provided; however, the value is optional allowing cases were the name is asserting some characteristic or quality.',
-        title='Annotated Property Value',
+        description='Indicates the value of the attribute, characteristic, or quality.',
+        title='Property Value',
     )
     class_: Optional[str] = Field(
         None,
@@ -624,9 +624,6 @@ class AssessmentPlatform(OscalBaseModel):
 
 
 class AssessmentPart(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     uuid: Optional[
         constr(
             regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
@@ -672,9 +669,6 @@ class TermsAndConditions(OscalBaseModel):
 
 
 class Part(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     id: Optional[str] = Field(
         None,
         description="A unique identifier for a specific part instance. This identifier's uniqueness is document scoped and is intended to be consistent for the same part across minor revisions of the document.",
@@ -731,7 +725,7 @@ class Location(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.',
+        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document.',
         title='Location Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -837,14 +831,11 @@ class Citation(OscalBaseModel):
 
 
 class Resource(OscalBaseModel):
-    class Config:
-        extra = Extra.allow
-
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistantly used for a given resource across revisions of the document.',
+        description='A globally unique identifier that can be used to reference this defined resource elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Resource Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -958,21 +949,21 @@ class LocalObjective(OscalBaseModel):
     remarks: Optional[Remarks] = None
 
 
-class Action(OscalBaseModel):
+class Step(OscalBaseModel):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this defined action. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. A UUID should be consistantly used for a given test step across revisions of the document.',
-        title='Action Universally Unique Identifier',
+        description='Uniquely identifies a step. This UUID may be referenced elsewhere in an OSCAL document when referring to this step. A UUID should be consistently used for a given test step across revisions of the document.',
+        title='Step Universally Unique Identifier',
     )
     title: Optional[str] = Field(
-        None, description='The title for this action.', title='Action Title'
+        None, description='The title for this step.', title='Step Title'
     )
     description: str = Field(
         ...,
-        description='A human-readable description of this action.',
-        title='Action Description',
+        description='A human-readable description of this step.',
+        title='Step Description',
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
@@ -990,7 +981,7 @@ class Activity(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this assessment activity. This UUID may be referenced elsewhere in an OSCAL document when refering to this information. A UUID should be consistantly used for a given included activity across revisions of the document.',
+        description='Uniquely identifies this assessment activity. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for a given included activity across revisions of the document.',
         title='Assessment Activity Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -1005,7 +996,7 @@ class Activity(OscalBaseModel):
     )
     props: Optional[List[Property]] = Field(None, min_items=1)
     links: Optional[List[Link]] = Field(None, min_items=1)
-    actions: Optional[List[Action]] = Field(None, min_items=1)
+    steps: Optional[List[Step]] = Field(None, min_items=1)
     related_controls: Optional[ReviewedControls] = Field(None, alias='related-controls')
     responsible_roles: Optional[Dict[str, ResponsibleRole]] = Field(
         None, alias='responsible-roles'

@@ -93,7 +93,7 @@ def test_get_trash_root(tmp_path: pathlib.Path) -> None:
 
     trash_file_path = trash.to_trash_file_path(readme_file)
     found_root = trash.get_trash_root(trash_file_path)
-    assert trash_root.absolute() == found_root.absolute()
+    assert trash_root.resolve() == found_root.resolve()
 
 
 def test_to_origin_dir_path(tmp_path: pathlib.Path) -> None:
@@ -111,12 +111,12 @@ def test_to_origin_dir_path(tmp_path: pathlib.Path) -> None:
 
     (tmp_path / trash.TRESTLE_TRASH_DIR).mkdir(exist_ok=True, parents=True)
     origin_dir = trash.to_origin_dir_path(trash_dir_path)
-    assert tmp_path.absolute() == origin_dir.absolute()
+    assert tmp_path.resolve() == origin_dir.resolve()
 
     data_dir = tmp_path / 'data'
     trash_dir_path = trash.to_trash_dir_path(data_dir)
     origin_dir = trash.to_origin_dir_path(trash_dir_path)
-    assert data_dir.absolute() == origin_dir.absolute()
+    assert data_dir.resolve() == origin_dir.resolve()
 
     # invalid trash path should error
     with pytest.raises(AssertionError):
@@ -137,7 +137,7 @@ def test_to_origin_file_path(tmp_path: pathlib.Path) -> None:
     tmp_file = tmp_path / 'temp_file.md'
     trash_file_path = trash.to_trash_file_path(tmp_file)
     origin_file_path = trash.to_origin_file_path(trash_file_path)
-    assert tmp_file.absolute() == origin_file_path.absolute()
+    assert tmp_file.resolve() == origin_file_path.resolve()
 
     with pytest.raises(AssertionError):
         trash.to_origin_file_path(tmp_file)
@@ -151,12 +151,12 @@ def test_to_origin_path(tmp_path: pathlib.Path) -> None:
     tmp_file = tmp_path / 'temp_file.md'
     trash_file_path = trash.to_trash_file_path(tmp_file)
     origin_file_path = trash.to_origin_path(trash_file_path)
-    assert tmp_file.absolute() == origin_file_path.absolute()
+    assert tmp_file.resolve() == origin_file_path.resolve()
 
     data_dir = tmp_path / 'data'
     trash_dir_path = trash.to_trash_dir_path(data_dir)
     origin_dir = trash.to_origin_path(trash_dir_path)
-    assert data_dir.absolute() == origin_dir.absolute()
+    assert data_dir.resolve() == origin_dir.resolve()
 
 
 def test_trash_store_file(tmp_path: pathlib.Path) -> None:

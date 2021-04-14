@@ -685,6 +685,7 @@ Example input directory contents listing:
 {"IP Address":"10.8.69.11","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days","Result":"fail","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
 {"IP Address":"10.8.69.11","Computer Name":"cmp-wn-2106.demo.tanium.local","Comply - JovalCM Results[c2dc8749]":[{"Benchmark":"CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark","Benchmark Version":"1.5.0.1","Profile":"Windows 10 - NIST 800-53","ID":"xccdf_org.cisecurity.benchmarks_rule_1.1.4_L1_Ensure_Minimum_password_length_is_set_to_14_or_more_characters","Result":"pass","Custom ID":"800-53: IA-5","Version":"version: 1"}],"Count":"1","Age":"600"}
 
+
 ```
 
 </details>
@@ -711,41 +712,57 @@ Example output directory contents listing:
 {
   "results": [
     {
-      "uuid": "1785818a-7f80-4261-98de-db782492fa11",
+      "uuid": "0ed0791e-5454-4d07-919f-15a0d806a5a8",
       "title": "Tanium",
       "description": "Tanium",
-      "start": "2021-03-07T13:25:24.000+00:00",
+      "start": "2021-04-13T00:16:20.000+00:00",
       "local-definitions": {
         "inventory-items": [
           {
-            "uuid": "bc2375a3-3754-489b-b1a7-ae0af3e9a404",
+            "uuid": "da8b87f6-2068-415f-94bb-e14e31b4f5c2",
             "description": "inventory",
             "props": [
               {
-                "name": "target",
-                "class": "computer-name",
-                "value": "cmp-wn-2106.demo.tanium.local"
+                "name": "computer-name",
+                "ns": "dns://tanium",
+                "value": "cmp-wn-2106.demo.tanium.local",
+                "class": " inventory-item"
               },
               {
-                "name": "target",
-                "class": "computer-ip",
-                "value": "fe80::3cd5:564b:940e:49ab"
+                "name": "computer-ip",
+                "ns": "dns://tanium",
+                "value": "fe80::3cd5:564b:940e:49ab",
+                "class": " inventory-item"
+              },
+              {
+                "name": "profile",
+                "ns": "dns://tanium",
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           },
           {
-            "uuid": "13bb801f-7b8d-4c9e-9dee-c081db619241",
+            "uuid": "f3ab87b2-70c1-4332-991e-c003d4314c0b",
             "description": "inventory",
             "props": [
               {
-                "name": "target",
-                "class": "computer-name",
-                "value": ""
+                "name": "computer-name",
+                "ns": "dns://tanium",
+                "value": "",
+                "class": " inventory-item"
               },
               {
-                "name": "target",
-                "class": "computer-ip",
-                "value": "10.8.69.11"
+                "name": "computer-ip",
+                "ns": "dns://tanium",
+                "value": "10.8.69.11",
+                "class": " inventory-item"
+              },
+              {
+                "name": "profile",
+                "ns": "dns://tanium",
+                "value": "Windows 10",
+                "class": " inventory-item"
               }
             ]
           }
@@ -758,26 +775,26 @@ Example output directory contents listing:
       },
       "observations": [
         {
-          "uuid": "7ee59eff-acea-4e04-bdd0-0d09bdde8aa3",
+          "uuid": "b3250b66-fe6f-4ac0-be99-cb4ff093dc31",
           "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
           "props": [
             {
+              "name": "benchmark",
+              "ns": "dns://tanium",
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
+            },
+            {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2021-03-07T13:25:24+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -785,32 +802,33 @@ Example output directory contents listing:
           ],
           "subjects": [
             {
-              "uuid-ref": "bc2375a3-3754-489b-b1a7-ae0af3e9a404",
+              "uuid-ref": "da8b87f6-2068-415f-94bb-e14e31b4f5c2",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2021-04-13T00:16:20.000+00:00"
         },
         {
-          "uuid": "01713f30-c82e-41b5-a9d0-cb9376badb0f",
+          "uuid": "5ae9c133-c32d-44c5-b52e-5af4513cb94a",
           "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
           "props": [
             {
+              "name": "benchmark",
+              "ns": "dns://tanium",
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
+            },
+            {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.2_L1_Ensure_Maximum_password_age_is_set_to_60_or_fewer_days_but_not_0",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2021-03-07T13:25:24+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -818,32 +836,33 @@ Example output directory contents listing:
           ],
           "subjects": [
             {
-              "uuid-ref": "13bb801f-7b8d-4c9e-9dee-c081db619241",
+              "uuid-ref": "f3ab87b2-70c1-4332-991e-c003d4314c0b",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2021-04-13T00:16:20.000+00:00"
         },
         {
-          "uuid": "7f60c6bb-82f3-4b01-90ad-c268012f6602",
+          "uuid": "8d021edc-176e-4373-a3c4-a19e954c1e4d",
           "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
           "props": [
             {
+              "name": "benchmark",
+              "ns": "dns://tanium",
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
+            },
+            {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.3_L1_Ensure_Minimum_password_age_is_set_to_1_or_more_days",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "fail"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2021-03-07T13:25:24+00:00"
+              "value": "fail",
+              "class": "result"
             }
           ],
           "methods": [
@@ -851,32 +870,33 @@ Example output directory contents listing:
           ],
           "subjects": [
             {
-              "uuid-ref": "13bb801f-7b8d-4c9e-9dee-c081db619241",
+              "uuid-ref": "f3ab87b2-70c1-4332-991e-c003d4314c0b",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2021-04-13T00:16:20.000+00:00"
         },
         {
-          "uuid": "698e882f-6e79-470a-819f-dbf5b03af33d",
+          "uuid": "36aa7551-d047-4f4a-9853-6ac63cfc9e48",
           "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.4_L1_Ensure_Minimum_password_length_is_set_to_14_or_more_characters",
           "props": [
             {
+              "name": "benchmark",
+              "ns": "dns://tanium",
+              "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
+              "class": "source"
+            },
+            {
               "name": "rule",
               "ns": "dns://xccdf",
-              "class": "id",
-              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.4_L1_Ensure_Minimum_password_length_is_set_to_14_or_more_characters"
+              "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.4_L1_Ensure_Minimum_password_length_is_set_to_14_or_more_characters",
+              "class": "id"
             },
             {
               "name": "result",
               "ns": "dns://xccdf",
-              "class": "result",
-              "value": "pass"
-            },
-            {
-              "name": "time",
-              "ns": "dns://xccdf",
-              "class": "timestamp",
-              "value": "2021-03-07T13:25:24+00:00"
+              "value": "pass",
+              "class": "result"
             }
           ],
           "methods": [
@@ -884,37 +904,55 @@ Example output directory contents listing:
           ],
           "subjects": [
             {
-              "uuid-ref": "13bb801f-7b8d-4c9e-9dee-c081db619241",
+              "uuid-ref": "f3ab87b2-70c1-4332-991e-c003d4314c0b",
               "type": "inventory-item"
             }
-          ]
+          ],
+          "collected": "2021-04-13T00:16:20.000+00:00"
         }
       ],
       "findings": [
         {
-          "uuid": "a929c025-5985-4515-913e-f29c0e8ac80f",
+          "uuid": "ba4e264f-0aee-4ead-9ee3-6161c5cc4ecb",
           "title": "800-53: IA-5",
           "description": "800-53: IA-5",
-          "props": [
-            {
-              "name": "result",
-              "class": "STRVALUE",
-              "value": "FAIL"
-            }
-          ],
-          "collected": "2021-03-07T13:25:24.000+00:00",
+          "target": {
+            "type": "objective-id",
+            "id-ref": "800-53: IA-5",
+            "props": [
+              {
+                "name": "profile",
+                "ns": "dns://tanium",
+                "value": "NIST 800-53",
+                "class": "source"
+              },
+              {
+                "name": "id-ref",
+                "ns": "dns://tanium",
+                "value": "800-53: IA-5",
+                "class": "source"
+              },
+              {
+                "name": "result",
+                "ns": "dns://xccdf",
+                "value": "FAIL",
+                "class": "STRVALUE"
+              }
+            ],
+            "status": "not-satisfied"
+          },
           "related-observations": [
             {
-              "observation-uuid": "7ee59eff-acea-4e04-bdd0-0d09bdde8aa3"
+              "observation-uuid": "b3250b66-fe6f-4ac0-be99-cb4ff093dc31"
             },
             {
-              "observation-uuid": "01713f30-c82e-41b5-a9d0-cb9376badb0f"
+              "observation-uuid": "5ae9c133-c32d-44c5-b52e-5af4513cb94a"
             },
             {
-              "observation-uuid": "7f60c6bb-82f3-4b01-90ad-c268012f6602"
+              "observation-uuid": "8d021edc-176e-4373-a3c4-a19e954c1e4d"
             },
             {
-              "observation-uuid": "698e882f-6e79-470a-819f-dbf5b03af33d"
+              "observation-uuid": "36aa7551-d047-4f4a-9853-6ac63cfc9e48"
             }
           ]
         }
@@ -922,6 +960,7 @@ Example output directory contents listing:
     }
   ]
 }
+
 ```
 
 </details>

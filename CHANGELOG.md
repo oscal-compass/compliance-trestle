@@ -3,6 +3,18 @@
 
 <!--next-version-placeholder-->
 
+## v0.13.1 (2021-04-13)
+### Fix
+* Force release. ([`0e90265`](https://github.com/IBM/compliance-trestle/commit/0e90265c7192979a613c30abd3561a68b612d8ac))
+
+## v0.13.0 (2021-04-13)
+### Feature
+* Tanium to oscal tranform refactored to exploit the ResultsTransformer interface ([#466](https://github.com/IBM/compliance-trestle/issues/466)) ([`6fced57`](https://github.com/IBM/compliance-trestle/commit/6fced57a5c011aafb26220e94b038ebae884b20d))
+* Update of OSCAL schema to 1.0.0-rc2 ([#465](https://github.com/IBM/compliance-trestle/issues/465)) ([`4e2f64d`](https://github.com/IBM/compliance-trestle/commit/4e2f64dd5a4f80f4081c0168b0e669b97dab79c8))
+
+### Fix
+* Cleanup of fs.py to allow relative and absolute paths ([#464](https://github.com/IBM/compliance-trestle/issues/464)) ([`1407911`](https://github.com/IBM/compliance-trestle/commit/140791190569e5673a216fe8dfdffc35d6c2424e))
+
 ## v0.12.0 (2021-04-09)
 ### Feature
 * Release of transformation factory interface for beta testing. ([`a036522`](https://github.com/IBM/compliance-trestle/commit/a0365226175adfd38c5e37d863c4c50038a1658c))

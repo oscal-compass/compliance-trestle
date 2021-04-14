@@ -14,6 +14,9 @@
 # limitations under the License.
 """Create the singleton transformer factory here."""
 
+from trestle.transforms.implementations.tanium import TaniumTransformer
 from trestle.transforms.transformer_factory import TransformerFactory
 
 transformer_factory = TransformerFactory()
+
+transformer_factory.register_transformer('tanium', TaniumTransformer)

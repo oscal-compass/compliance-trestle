@@ -44,12 +44,12 @@ def should_ignore(name: str) -> bool:
     return name[0] == '.' or name[0] == '_'
 
 
-def is_valid_project_root(project_root: pathlib.Path) -> bool:
-    """Check if the project root is a valid trestle project root."""
-    if project_root is None or project_root == '' or len(project_root.parts) <= 0:
+def is_valid_project_root(path: pathlib.Path) -> bool:
+    """Check if the path is a valid trestle project root."""
+    if not path or len(path.parts) <= 0:
         return False
 
-    trestle_dir = pathlib.Path.joinpath(project_root, const.TRESTLE_CONFIG_DIR)
+    trestle_dir = pathlib.Path.joinpath(path, const.TRESTLE_CONFIG_DIR)
     if trestle_dir.exists() and trestle_dir.is_dir():
         return True
 
@@ -58,10 +58,10 @@ def is_valid_project_root(project_root: pathlib.Path) -> bool:
 
 def get_trestle_project_root(path: pathlib.Path) -> Optional[pathlib.Path]:
     """Get the trestle project root folder in the path."""
-    if path is None or path == '' or len(path.parts) <= 0:
+    if not path or len(path.parts) <= 0:
         return None
 
-    current = path
+    current = path.resolve(False)
     while len(current.parts) > 1:  # it must not be the system root directory
         if is_valid_project_root(current):
             return current
@@ -72,9 +72,10 @@ def get_trestle_project_root(path: pathlib.Path) -> Optional[pathlib.Path]:
 
 def is_valid_project_model_path(path: pathlib.Path) -> bool:
     """Check if the file/directory path is a valid trestle model project."""
-    if path is None or path == '' or len(path.parts) <= 0:
+    if not path or len(path.parts) <= 0:
         return False
 
+    path = path.resolve()
     root_path = get_trestle_project_root(path)
     if root_path is None:
         return False
@@ -93,9 +94,10 @@ def is_valid_project_model_path(path: pathlib.Path) -> bool:
 
 def get_project_model_path(path: pathlib.Path) -> Optional[pathlib.Path]:
     """Get the base path of the trestle model project."""
-    if path is None or path == '' or len(path.parts) <= 2:
+    if not path or len(path.parts) <= 2:
         return None
 
+    path = path.resolve()
     for i in range(2, len(path.parts)):
         current = pathlib.Path(path.parts[0]).joinpath(*path.parts[1:i + 1])
         if is_valid_project_model_path(current):
@@ -109,13 +111,16 @@ def has_parent_path(sub_path: pathlib.Path, parent_path: pathlib.Path) -> bool:
     if parent_path is None or len(parent_path.parts) <= 0:
         return False
 
+    sub_path = sub_path.resolve()
+    parent_path = parent_path.resolve()
+
     # sub_path should be longer than parent path
     if len(sub_path.parts) < len(parent_path.parts):
         return False
 
     matched = True
     for i, part in enumerate(parent_path.parts):
-        if part is not sub_path.parts[i]:
+        if part != sub_path.parts[i]:
             matched = False
             break
 
@@ -132,6 +137,8 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBase
     """Get the full contextual model class and full jsonpath for the alias based on the contextual path."""
     if path is None:
         path = pathlib.Path.cwd()
+
+    path = path.resolve()
 
     if not is_valid_project_model_path(path):
         raise err.TrestleError(f'Trestle project model not found at {path}')
@@ -177,6 +184,7 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
     """
     if path is None:
         path = pathlib.Path.cwd()
+    path = path.resolve()
     if aliases_not_to_be_stripped is None:
         aliases_not_to_be_stripped = []
 
@@ -223,11 +231,12 @@ def extract_alias(path: pathlib.Path) -> str:
 
 
 def clean_project_sub_path(sub_path: pathlib.Path) -> None:
-    """Clean all directories and files in the project sub sub.
+    """Clean all directories and files in a project top level subdir.
 
     It ensures the sub_path is a child path in the project root.
     """
     if sub_path.exists():
+        sub_path = sub_path.resolve()
         project_root = sub_path.parent
         if not has_trestle_project_in_path(project_root):
             raise TrestleError('Path to be cleaned is not a under valid Trestle project root')
@@ -335,6 +344,7 @@ def model_type_to_model_dir(model_type: str) -> str:
 
 def get_contextual_file_type(path: pathlib.Path) -> FileContentType:
     """Return the file content type for files in the given directory, if it's a trestle project."""
+    path = path.resolve()
     if not is_valid_project_model_path(path):
         raise err.TrestleError('Trestle project not found.')
 
