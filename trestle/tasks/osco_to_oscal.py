@@ -141,10 +141,10 @@ class OscoToOscal(TaskBase):
                     self._write_content(ofile, observations, True)
                     # display analysis
                     if not quiet:
-                        logger.debug(f'[simluate] Rules Analysis:')
-                        logger.debug(f'[simluate] config_maps: {analysis["config_maps"]}')
-                        logger.debug(f'[simluate] dispatched rules: {analysis["dispatched_rules"]}')
-                        logger.debug(f'[simluate] result types: {analysis["result_types"]}')
+                        logger.debug(f'[simulate] Rules Analysis:')
+                        logger.debug(f'[simulate] config_maps: {analysis["config_maps"]}')
+                        logger.debug(f'[simulate] dispatched rules: {analysis["dispatched_rules"]}')
+                        logger.debug(f'[simulate] result types: {analysis["result_types"]}')
             return TaskOutcome('simulated-success')
         logger.error(f'config missing')
         return TaskOutcome('simulated-failure')

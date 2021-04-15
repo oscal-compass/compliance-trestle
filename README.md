@@ -30,7 +30,7 @@ Trestle implicitly provides a core opinionated workflow driven by its pipeline s
 
 ## Development status
 
-Compliance trestle is currently alpha. The expectation is that throughout the remainder of 2020 there may be unnannounced changes that are breaking within the trestle codebase. If you are using trestle please contact us so we are aware your usecase.
+Compliance trestle is currently alpha. The expectation is that throughout the remainder of 2020 there may be unannounced changes that are breaking within the trestle codebase. If you are using trestle please contact us so we are aware your usecase.
 
 The underlying OSCAL schema is also currently changing. The current approach until the formal release of OSCAL 1.0.0 is for compliance trestle to regularly update our models to reflect NIST's changes.
 

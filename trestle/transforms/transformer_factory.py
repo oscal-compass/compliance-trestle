@@ -72,7 +72,7 @@ class TransformerFactory:
             An instance of the desired transformer.
 
         Raises:
-            err.TrestleError if the name does not exist in the registry.
+            TrestleError: if the name does not exist in the registry.
         """
         t = self._transformers.get(name)
         if t is not None:
