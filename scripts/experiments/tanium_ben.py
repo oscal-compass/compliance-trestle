@@ -115,6 +115,6 @@ def main(in_file: str, out_file: str):
 
 
 if __name__ == '__main__':
-    input_file = 'tests/data/tasks/tanium/input/Tanium.comply-nist-results'
+    input_file = 'tests/data/tasks/tanium/benchmark/Tanium-comply-nist-results.txt'
     outout_file = ''
     sys.exit(main(input_file, outout_file))
