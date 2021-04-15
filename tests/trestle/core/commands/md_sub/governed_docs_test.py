@@ -68,6 +68,20 @@ def test_governed_docs_high(tmp_trestle_dir: pathlib.Path, command_string: str, 
             0,
             0,
             1
+        ), (
+            'test_task',
+            pathlib.Path('md/utf16test/sample_okay.md'),
+            pathlib.Path('md/utf16test/sample_utf16.md'),
+            0,
+            0,
+            1
+        ), (
+            'test_task',
+            pathlib.Path('md/utf16test/sample_utf16.md'),
+            pathlib.Path('md/utf16test/sample_okay.md'),
+            0,
+            1,
+            1
         )
     ]
 )
