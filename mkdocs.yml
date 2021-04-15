@@ -32,7 +32,7 @@ nav:
   - Maintainers: maintainers.md
   - Documentation website: contributing/website.md
   - Developer Certificate of Originality: contributing/DCO.md
-- Known limitations: known-errors-limitations.md
+- Known limitations: errors.md
 - Reference:
   - Overview: api_overview.md
   - trestle:
