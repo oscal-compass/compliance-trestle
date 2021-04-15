@@ -96,8 +96,14 @@ nav:
       - ssp: api_reference/trestle.oscal.ssp.md
       - component: api_reference/trestle.oscal.component.md
       - assessment_plan: api_reference/trestle.oscal.assessment_plan.md
-    - third_party:
-      - exchange_protocol: api_reference/trestle.third_party.exchange_protocol.md
+    - transforms:
+      - transformer_factory: api_reference/trestle.transforms.transformer_factory.md
+      - results: api_reference/trestle.transforms.results.md
+      - transformer_singleton: api_reference/trestle.transforms.transformer_singleton.md
+      - utils:
+        - tanium_helper: api_reference/trestle.transforms.utils.tanium_helper.md
+      - implementations:
+        - tanium: api_reference/trestle.transforms.implementations.tanium.md
     - cli: api_reference/trestle.cli.md
 plugins:
 - search
