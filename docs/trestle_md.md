@@ -62,7 +62,7 @@ This sub heading is NOT okay
 
 For each of the headings - the text of the heading is enforced with one caveat:
 
-- If the template heading text is wrapped in square brackets `[]` then the name is not measured e.g. `# [Insert title here]`.
+- If the template heading text is wrapped in curly brackets `{}` then the name is not measured e.g. `# {Insert title here}`.
 
 ### Strict header / heading conformance mechanisms
 

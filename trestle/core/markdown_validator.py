@@ -180,7 +180,7 @@ class MarkdownValidator:
             content = path.open('r').read()
         except UnicodeDecodeError as e:
             logger.error('utf-8 decoding failed.')
-            logger.error('See ')
+            logger.error(f'See: {const.WEBSITE_ROOT}/errors/#utf-8-encoding-only')
             logger.debug(f'Underlying exception {e}')
             raise err.TrestleError('Unable to load file due to utf-8 encoding issues.')
         fm = frontmatter.loads(content)
