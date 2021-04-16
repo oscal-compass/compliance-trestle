@@ -282,18 +282,25 @@ class OscalBaseModel(BaseModel):
         logger.debug(f'oscal_read content type {content_type} and alias {alias} from {path}')
 
         if not path.exists():
-            logger.debug(f'path does not exist in oscal_read: {path}')
+            logger.error(f'path does not exist in oscal_read: {path}')
             return None
 
         obj: Dict[str, Any] = {}
-        if content_type == FileContentType.YAML:
-            obj = yaml.safe_load(path.open())
-        elif content_type == FileContentType.JSON:
-            obj = load_file(
-                path,
-                json_loads=cls.__config__.json_loads,
-            )
-        return cls.parse_obj(obj[alias])
+        try:
+            if content_type == FileContentType.YAML:
+                obj = yaml.safe_load(path.open())
+            elif content_type == FileContentType.JSON:
+                obj = load_file(
+                    path,
+                    json_loads=cls.__config__.json_loads,
+                )
+        except Exception as e:
+            raise err.TrestleError(f'Error loading file {path} {e}')
+        try:
+            parsed = cls.parse_obj(obj[alias])
+        except Exception as e:
+            raise err.TrestleError(f'Error parsing file {path} {e}')
+        return parsed
 
     def copy_to(self, new_oscal_type: Type['OscalBaseModel']) -> 'OscalBaseModel':
         """
