@@ -34,7 +34,7 @@ here
 </details>
 <br>
 
-## Start by creating a trestle workspace if you don't have one already
+## Step 1: Create a trestle workspace if you don't have one already
 
 ```
 > mkdir my_workspace
@@ -43,13 +43,17 @@ here
 Initialized trestle project successfully in [user_path]/my_workspace
 ```
 
-### Create a new `mycatalog` directory in the `catalogs` folder of your trestle workspace and copy a catalog json file into it
+## Step 2: Import a catalog from the trestle sample data directory into your trestle workspace
+
+Files should be placed in your trestle workspace using the command `import`, which will check the
+validity of the file including the presence of any duplicate uuid's.  If the file is manually created
+please be sure it conforms with the current OSCAL schema and has no defined uuid's that are duplicates.
+If there are any errors the Import will fail and the file must be corrected.
+
+Import the file from the trestle root directory with
 
 ```
-> cd catalogs
-> mkdir mycatalog
-> cd mycatalog
-> cp TRESTLE_ROOT/tests/data/split_merge/load_distributed/catalog.json .
+> trestle import -f TRESTLE_ROOT/tests/data/split_merge/load_distributed/catalog.json -o mycatalog
 ```
 
 *Here TRESTLE_ROOT corresponds to the root of the trestle installation where you installed it!  Do not type TRESTLE_ROOT!*
@@ -103,17 +107,20 @@ my_workspace
 </details>
 <br>
 
-You will see that the directory now shows your catalog file in `my_workspace/catalogs/mycatalog`.  Note that the `.keep` files are simply to make sure git does not remove the directories - and can be ignored.
+You will see that the directory now shows your catalog file in `my_workspace/catalogs/mycatalog/catalog.json`.  Note that the `.keep` files are simply to make sure git does not remove the directories - and can be ignored.  Also note that the json file itself is *singular* (catalog) while the directory above is plural (catalogs).  This convention is used throughout trestle because a given model directory like catalogs may contain several indivisual models - each of which is singular.
 
 From here on in this tutorial we will just focus on the catalogs directory since the others are not directly involved.
 
 You have now populated your trestle workspace with an OSCAL catalog that you can manipulate.  Let's start.
 
-## Step 1: Split the file into smaller parts
+## Step 3: Split the file into smaller parts
 
 The OSCAL schema specifies that a catalog must contain metadata, groups, and back-matter - so this command will pull them out of the original file and place them in separate json files for additional manipulations.
 
+To begin splitting the file first cd to the directory where `catalog.json` has been placed.
+
 ```
+> cd catalogs/mycatalog
 > trestle split -f ./catalog.json -e 'catalog.metadata,catalog.groups,catalog.back-matter'
 ```
 
@@ -152,7 +159,7 @@ or simply
 
 You can go back and forth splitting and merging, but for the next step please start with the above files split so that `metadata.json` can be further split.
 
-## Step 2: Split the metadata into constituent files
+## Step 4: Split the metadata into constituent files
 
 ```
 > cd catalog
@@ -196,7 +203,7 @@ or simply
 > trestle merge -e 'metadata.*'
 ```
 
-## Step 3: Split metadata further using wildcards
+## Step 5: Split metadata further using wildcards
 
 ```
 > cd metadata
@@ -239,7 +246,7 @@ This split can be reversed with
 > trestle merge -e 'roles.*,responsible-parties.*'
 ```
 
-## Step 4: Split groups and controls with two wildcards
+## Step 6: Split groups and controls with two wildcards
 
 This single command will split off *all* controls in *all* groups.  To do it you need to go back up into the catalog directory where the `groups.json` file is found:
 
@@ -665,7 +672,7 @@ You can then reverse the split with
 > trestle merge -e 'groups.*'
 ```
 
-## Step 4: Collapse the entire directory structure back into a single `catalog.json` file - possibly after modifying individual files
+## Step 7: Collapse the entire directory structure back into a single `catalog.json` file - possibly after modifying individual files
 
 You can collapse everything back to a single `catalog.json` file after first going up one directory to the mycatalog directory
 
