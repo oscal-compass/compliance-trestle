@@ -107,7 +107,7 @@ my_workspace
 </details>
 <br>
 
-You will see that the directory now shows your catalog file in `my_workspace/catalogs/mycatalog/catalog.json`.  Note that the `.keep` files are simply to make sure git does not remove the directories - and can be ignored.  Also note that the json file itself is *singular* (catalog) while the directory above is plural (catalogs).  This convention is used throughout trestle because a given model directory like catalogs may contain several indivisual models - each of which is singular.
+You will see that the directory now shows your catalog file in `my_workspace/catalogs/mycatalog/catalog.json`.  Note that the `.keep` files are simply to make sure git does not remove the directories - and can be ignored.  Also note that the json file itself is *singular* (catalog) while the directory above is plural (catalogs).  This convention is used throughout trestle because a given model directory like catalogs may contain several individual models - each of which is singular.
 
 From here on in this tutorial we will just focus on the catalogs directory since the others are not directly involved.
 
@@ -117,7 +117,7 @@ You have now populated your trestle workspace with an OSCAL catalog that you can
 
 The OSCAL schema specifies that a catalog must contain metadata, groups, and back-matter - so this command will pull them out of the original file and place them in separate json files for additional manipulations.
 
-To begin splitting the file first cd to the directory where `catalog.json` has been placed.
+To begin splitting the file, first cd to the directory where `catalog.json` has been placed.
 
 ```
 > cd catalogs/mycatalog
