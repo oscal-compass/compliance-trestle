@@ -54,16 +54,22 @@ Note that by default this will automatically enforce the task."""
             )
             return 1
         status = 1
-        if args.mode == 'create-sample':
-            status = self.create_sample(args.task_name, trestle_root)
+        try:
+            if args.mode == 'create-sample':
+                status = self.create_sample(args.task_name, trestle_root)
 
-        elif args.mode == 'template-validate':
-            status = self.template_validate(args.task_name, trestle_root, args.governed_heading, args.header_validate)
-        elif args.mode == 'setup':
-            status = self.setup_template_governed_docs(args.task_name, trestle_root)
-        elif args.mode == 'validate':
-            # mode is validate
-            status = self.validate(args.task_name, trestle_root, args.governed_heading, args.header_validate)
+            elif args.mode == 'template-validate':
+                status = self.template_validate(
+                    args.task_name, trestle_root, args.governed_heading, args.header_validate
+                )
+            elif args.mode == 'setup':
+                status = self.setup_template_governed_docs(args.task_name, trestle_root)
+            elif args.mode == 'validate':
+                # mode is validate
+                status = self.validate(args.task_name, trestle_root, args.governed_heading, args.header_validate)
+        except Exception as e:
+            logger.error(f'Error "{e}"" occurred when running trestle md governed docs.')
+            logger.error('Exiting')
         return status
 
     def setup_template_governed_docs(self, task_name: str, trestle_root: pathlib.Path) -> int:
@@ -155,7 +161,8 @@ Note that by default this will automatically enforce the task."""
             return 1
         for potential_md_file in task_path.iterdir():
             if not potential_md_file.suffix == '.md':
-                logger.warning(f'Unexpected file {potential_md_file} in task {task_name}, exiting.')
+                logger.warning(f'Unexpected file {potential_md_file} in task {task_name}, skipping.')
+                continue
             status = md_validator.validate(potential_md_file)
             if not status:
                 logger.info(f'Markdown file {potential_md_file} fails to meet template for task {task_name}.')
