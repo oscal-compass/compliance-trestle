@@ -3138,6 +3138,8 @@ If it is a file, then it also creates an empty file with the name provided</p>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub_path</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Sub path must be of type pathlib.Path&#39;</span><span class="p">)</span>
 
+    <span class="n">sub_path</span> <span class="o">=</span> <span class="n">sub_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
     <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_project_root</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_trestle_project_root</span><span class="p">(</span><span class="n">sub_path</span><span class="p">)</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_project_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sub path &quot;</span><span class="si">{</span><span class="n">sub_path</span><span class="si">}</span><span class="s1">&quot; should be child of a valid trestle project&#39;</span><span class="p">)</span>

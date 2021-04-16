@@ -2268,16 +2268,21 @@
           <summary>Source code in <code>trestle/utils/fs.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_contextual_model_type</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Get the full contextual model class and full jsonpath for the alias based on the contextual path.&quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get contextual model type for input path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
 
     <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get contextual model type final path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid_project_model_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Trestle project model not found at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="n">root_path</span> <span class="o">=</span> <span class="n">get_trestle_project_root</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">project_model_path</span> <span class="o">=</span> <span class="n">get_project_model_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;root_path </span><span class="si">{</span><span class="n">root_path</span><span class="si">}</span><span class="s1"> project_model_path </span><span class="si">{</span><span class="n">project_model_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">root_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">project_model_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Trestle project model not found&#39;</span><span class="p">)</span>
@@ -2456,19 +2461,25 @@ is running trestle from.</p>
             <span class="n">model_type</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_inner_type</span><span class="p">(</span><span class="n">model_type</span><span class="p">)</span>
             <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">model_type</span> <span class="o">=</span> <span class="n">model_type</span><span class="o">.</span><span class="n">alias_to_field_map</span><span class="p">()[</span><span class="n">path_parts</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">outer_type_</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">model_type</span> <span class="o">=</span> <span class="n">model_type</span><span class="o">.</span><span class="n">alias_to_field_map</span><span class="p">()[</span><span class="n">path_parts</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">outer_type_</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error in json path </span><span class="si">{</span><span class="n">alias_path</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">model_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_type</span><span class="p">)</span>
 
     <span class="n">last_alias</span> <span class="o">=</span> <span class="n">path_parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">last_alias</span> <span class="o">==</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
         <span class="n">last_alias</span> <span class="o">=</span> <span class="n">path_parts</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_collection_field_type</span><span class="p">(</span><span class="n">model_type</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Not a valid generic collection model.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Not a valid generic collection model: </span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="n">parent_model_type</span> <span class="o">=</span> <span class="n">model_types</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">singular_alias</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">classname_to_alias</span><span class="p">(</span>
-        <span class="n">utils</span><span class="o">.</span><span class="n">get_inner_type</span><span class="p">(</span><span class="n">parent_model_type</span><span class="o">.</span><span class="n">alias_to_field_map</span><span class="p">()[</span><span class="n">last_alias</span><span class="p">]</span><span class="o">.</span><span class="n">outer_type_</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span>
-    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">singular_alias</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">classname_to_alias</span><span class="p">(</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">get_inner_type</span><span class="p">(</span><span class="n">parent_model_type</span><span class="o">.</span><span class="n">alias_to_field_map</span><span class="p">()[</span><span class="n">last_alias</span><span class="p">]</span><span class="o">.</span><span class="n">outer_type_</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error in json path </span><span class="si">{</span><span class="n">alias_path</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">singular_alias</span>
 </code></pre></div>
@@ -2508,23 +2519,29 @@ a parameter.</p>
 <span class="sd">    a parameter.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;get_stripped_contextual_model based on cwd&#39;</span><span class="p">)</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get_stripped_contextual_model path is </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> not stripped: </span><span class="si">{</span><span class="n">aliases_not_to_be_stripped</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">aliases_not_to_be_stripped</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">aliases_not_to_be_stripped</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="n">singular_model_type</span><span class="p">,</span> <span class="n">model_alias</span> <span class="o">=</span> <span class="n">get_contextual_model_type</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;singular model type </span><span class="si">{</span><span class="n">singular_model_type</span><span class="si">}</span><span class="s1"> model alias </span><span class="si">{</span><span class="n">model_alias</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="c1"># Stripped models do not apply to collection types such as List[] and Dict{}</span>
     <span class="c1"># if model type is a list or dict, generate a new wrapping model for it</span>
     <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_collection_field_type</span><span class="p">(</span><span class="n">singular_model_type</span><span class="p">):</span>
         <span class="n">malias</span> <span class="o">=</span> <span class="n">model_alias</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">class_name</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">alias_to_classname</span><span class="p">(</span><span class="n">malias</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;collection field type class name </span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s1"> and alias </span><span class="si">{</span><span class="n">malias</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">model_type</span> <span class="o">=</span> <span class="n">create_model</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="n">__base__</span><span class="o">=</span><span class="n">OscalBaseModel</span><span class="p">,</span> <span class="n">__root__</span><span class="o">=</span><span class="p">(</span><span class="n">singular_model_type</span><span class="p">,</span> <span class="o">...</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;model_type created: </span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">model_type</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">],</span> <span class="n">model_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">model_alias</span>
 
     <span class="n">malias</span> <span class="o">=</span> <span class="n">model_alias</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;not collection field type, malias: </span><span class="si">{</span><span class="n">malias</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="n">malias</span> <span class="o">!=</span> <span class="n">extract_alias</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="n">split_subdir</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="n">malias</span>
@@ -2539,10 +2556,12 @@ a parameter.</p>
             <span class="k">if</span> <span class="n">alias</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">aliases_not_to_be_stripped</span><span class="p">:</span>
                 <span class="n">aliases_to_be_stripped</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">alias</span><span class="p">)</span>
 
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;aliases to be stripped: </span><span class="si">{</span><span class="n">aliases_to_be_stripped</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">aliases_to_be_stripped</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">model_type</span> <span class="o">=</span> <span class="n">singular_model_type</span><span class="o">.</span><span class="n">create_stripped_model_type</span><span class="p">(</span>
             <span class="n">stripped_fields_aliases</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">aliases_to_be_stripped</span><span class="p">)</span>
         <span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;model_type: </span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">model_alias</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">singular_model_type</span><span class="p">,</span> <span class="n">model_alias</span>

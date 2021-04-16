@@ -1734,6 +1734,8 @@
 Python 3.8.3&lt;/code&gt;
 </code></pre></div>
 <h2 id="setup-a-virtual-environment"><em>Setup a virtual environment</em><a class="headerlink" href="#setup-a-virtual-environment" title="Permanent link">¤</a></h2>
+<p>There are many ways to do this on Windows, Mac and Linux and with different Python installations, so please consult
+the documentation associated with your platform.  Below is how it works on a typical Linux platform.</p>
 <div class="highlight"><pre><span></span><code>$ cd
 $ python -m venv venv.trestle
 $ source venv.trestle/bin/activate
@@ -1742,9 +1744,13 @@ $ source venv.trestle/bin/activate
 <ul>
 <li>Ensure you have a modern <a href="https://pip.pypa.io/en/stable/installing/">pip</a> (19.x or greater).</li>
 </ul>
-<div class="highlight"><pre><span></span><code>(venv.trestle)$ pip --version
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ python -m pip --version
 pip 19.2.3 from /home...
 </code></pre></div>
+<p>You should probably upgrade your pip to the latest version with:</p>
+<div class="highlight"><pre><span></span><code>(venv.trestle)$ python -m pip install --upgrade pip
+</code></pre></div>
+<p>Details can be found at <a href="https://pip.pypa.io/en/stable/installing/#upgrading-pip">Installation - pip documentation</a></p>
 <h2 id="install-trestle"><em>Install trestle</em><a class="headerlink" href="#install-trestle" title="Permanent link">¤</a></h2>
 <ul>
 <li>Install <a href="https://ibm.github.io/compliance-trestle/">compliance-trestle</a>.</li>

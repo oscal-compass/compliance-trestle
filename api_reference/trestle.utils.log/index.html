@@ -1309,6 +1309,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#trestle.utils.log.exception_handler" class="md-nav__link">
+    exception_handler()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.utils.log.set_global_logging_levels" class="md-nav__link">
     set_global_logging_levels()
   </a>
@@ -1774,6 +1781,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#trestle.utils.log.exception_handler" class="md-nav__link">
+    exception_handler()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.utils.log.set_global_logging_levels" class="md-nav__link">
     set_global_logging_levels()
   </a>
@@ -1943,6 +1957,33 @@ log all levels to file and only errors to std.err, however, does not allow loggi
 
 
 
+<h4 class="doc doc-heading" id="trestle.utils.log.exception_handler">
+<code class="highlight language-python"><span class="n">exception_handler</span><span class="p">(</span><span class="n">exception_type</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">traceback</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.utils.log.exception_handler" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Empty exception handler to prevent stack traceback in quiet mode.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/utils/log.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">exception_handler</span><span class="p">(</span><span class="n">exception_type</span><span class="p">,</span> <span class="n">exception</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Empty exception handler to prevent stack traceback in quiet mode.&quot;&quot;&quot;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
 <h4 class="doc doc-heading" id="trestle.utils.log.set_global_logging_levels">
 <code class="highlight language-python"><span class="n">set_global_logging_levels</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span></code>
 
@@ -2014,6 +2055,7 @@ log all levels to file and only errors to std.err, however, does not allow loggi
         <span class="n">set_global_logging_levels</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">set_global_logging_levels</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">excepthook</span> <span class="o">=</span> <span class="n">exception_handler</span>
 </code></pre></div>
         </details>
     </div>

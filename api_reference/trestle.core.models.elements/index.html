@@ -2673,8 +2673,8 @@ It returns the element itself so that chaining operation can be done such as
     <span class="n">sub_element_name</span> <span class="o">=</span> <span class="n">element_path</span><span class="o">.</span><span class="n">get_element_name</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">preceding_elm</span><span class="p">,</span> <span class="n">sub_element_name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;Element &quot;</span><span class="si">{</span><span class="n">preceding_elm</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1">&quot; does not have the attribute &quot;</span><span class="si">{</span><span class="n">sub_element_name</span><span class="si">}</span><span class="s1">&quot; </span><span class="se">\</span>
-<span class="s1">                of type &quot;</span><span class="si">{</span><span class="n">model_obj</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Element &quot;</span><span class="si">{</span><span class="n">preceding_elm</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1">&quot; does not have the attribute &quot;</span><span class="si">{</span><span class="n">sub_element_name</span><span class="si">}</span><span class="s1">&quot; &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;of type &quot;</span><span class="si">{</span><span class="n">model_obj</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
         <span class="p">)</span>
 
     <span class="c1"># set the sub-element</span>
@@ -2683,8 +2683,8 @@ It returns the element itself so that chaining operation can be done such as
     <span class="k">except</span> <span class="n">ValidationError</span><span class="p">:</span>
         <span class="n">sub_element_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sub_element_class</span><span class="p">(</span><span class="n">preceding_elm</span><span class="p">,</span> <span class="n">sub_element_name</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;Validation error: </span><span class="si">{</span><span class="n">sub_element_name</span><span class="si">}</span><span class="s1"> is expected to be &quot;</span><span class="si">{</span><span class="n">sub_element_class</span><span class="si">}</span><span class="s1">&quot;, </span><span class="se">\</span>
-<span class="s1">                but found &quot;</span><span class="si">{</span><span class="n">model_obj</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;Validation error: </span><span class="si">{</span><span class="n">sub_element_name</span><span class="si">}</span><span class="s1"> is expected to be &quot;</span><span class="si">{</span><span class="n">sub_element_class</span><span class="si">}</span><span class="s1">&quot;, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;but found &quot;</span><span class="si">{</span><span class="n">model_obj</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
         <span class="p">)</span>
 
     <span class="c1"># returning self will allow to do &#39;chaining&#39; of commands after set</span>
