@@ -132,6 +132,7 @@ class ImportCmd(CommandPlusDocs):
         # args.output is presumed to be assured as it is declared to be required
         if args.output:
             desired_model_path = desired_model_dir / args.output / (parent_alias + input_file.suffix)
+            desired_model_path = desired_model_path.resolve()
 
         if desired_model_path.exists():
             logger.error(f'OSCAL file to be created here: {desired_model_path} exists.')
@@ -145,8 +146,8 @@ class ImportCmd(CommandPlusDocs):
             model_read, lut, nchanged = validator_helper.regenerate_uuids(model_read)
             logger.debug(f'uuid lut has {len(lut.items())} entries and {nchanged} refs were updated')
         top_element = Element(model_read)
-        create_action = CreatePathAction(desired_model_path.resolve(), True)
-        write_action = WriteFileAction(desired_model_path.resolve(), top_element, content_type)
+        create_action = CreatePathAction(desired_model_path, True)
+        write_action = WriteFileAction(desired_model_path, top_element, content_type)
 
         # create a plan to create the directory and imported file.
         import_plan = Plan()
@@ -168,9 +169,7 @@ class ImportCmd(CommandPlusDocs):
             return 1
 
         # 7. Validate the imported file, rollback if unsuccessful:
-        args = argparse.Namespace(
-            file=desired_model_path.resolve(), mode='duplicates', item='uuid', verbose=args.verbose
-        )
+        args = argparse.Namespace(file=desired_model_path, mode='duplicates', item='uuid', verbose=args.verbose)
         rollback = False
         try:
             rc = validatecmd.ValidateCmd()._run(args)
@@ -180,20 +179,21 @@ class ImportCmd(CommandPlusDocs):
             rollback = True
         else:
             if rc > 0:
-                logger.debug(f'validator.validate() found duplicates in {desired_model_path.resolve()}')
-                logger.error(f'Validation of imported file {desired_model_path.resolve()} failed')
+                logger.debug(f'validator.validate() found duplicates in {desired_model_path}')
+                msg = f'Validation of imported file {desired_model_path} failed due to the presence of duplicate uuids'
+                logger.error(msg)
                 rollback = True
 
         if rollback:
-            logger.debug(f'Rolling back import of {str(input_file.resolve())} to {desired_model_path.resolve()}')
+            logger.debug(f'Rolling back import of {str(input_file.resolve())} to {desired_model_path}')
             try:
                 import_plan.rollback()
             except TrestleError as err:
                 logger.debug(f'Failed rollback attempt with error: {err}')
-                logger.error(f'Failed to rollback: {err}. Remove {desired_model_path.resolve()} to resolve state.')
+                logger.error(f'Failed to rollback: {err}. Remove {desired_model_path} to resolve state.')
             return 1
         else:
-            logger.debug(f'Successful rollback of import to {desired_model_path.resolve()}')
+            logger.debug(f'Successful rollback of import to {desired_model_path}')
         # 8. Leave the rest to trestle split
 
         return 0

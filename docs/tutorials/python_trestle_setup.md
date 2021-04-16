@@ -25,6 +25,9 @@ Python 3.8.3</code>
 
 ## *Setup a virtual environment*
 
+There are many ways to do this on Windows, Mac and Linux and with different Python installations, so please consult
+the documentation associated with your platform.  Below is how it works on a typical Linux platform.
+
 ```
 $ cd
 $ python -m venv venv.trestle
@@ -36,9 +39,17 @@ $ source venv.trestle/bin/activate
 - Ensure you have a modern [pip](https://pip.pypa.io/en/stable/installing/) (19.x or greater).
 
 ```
-(venv.trestle)$ pip --version
+(venv.trestle)$ python -m pip --version
 pip 19.2.3 from /home...
 ```
+
+You should probably upgrade your pip to the latest version with:
+
+```
+(venv.trestle)$ python -m pip install --upgrade pip
+```
+
+Details can be found at [Installation - pip documentation](https://pip.pypa.io/en/stable/installing/#upgrading-pip)
 
 ## *Install trestle*
 

@@ -229,6 +229,8 @@ class CreatePathAction(Action):
         if not isinstance(sub_path, pathlib.Path):
             raise TrestleError('Sub path must be of type pathlib.Path')
 
+        sub_path = sub_path.resolve()
+
         self._trestle_project_root = fs.get_trestle_project_root(sub_path)
         if self._trestle_project_root is None:
             raise TrestleError(f'Sub path "{sub_path}" should be child of a valid trestle project')
