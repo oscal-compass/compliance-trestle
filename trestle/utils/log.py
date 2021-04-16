@@ -71,9 +71,15 @@ def set_global_logging_levels(level: int = logging.INFO) -> None:
     _logger.addHandler(console_debug_handler)
 
 
+def exception_handler(exception_type, exception, traceback):
+    """Empty exception handler to prevent stack traceback in quiet mode."""
+    logging.warning(exception)
+
+
 def set_log_level_from_args(args: argparse.Namespace) -> None:
     """Vanity function to automatically set log levels based on verbosity flags."""
     if args.verbose > 0:
         set_global_logging_levels(logging.DEBUG)
     else:
         set_global_logging_levels(logging.INFO)
+        sys.excepthook = exception_handler

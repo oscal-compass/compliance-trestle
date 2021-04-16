@@ -34,6 +34,7 @@ from trestle.cli import Trestle
 from trestle.core import generators
 from trestle.core.commands import create
 from trestle.oscal.catalog import Catalog
+from trestle.oscal.profile import Modify, Profile, SetParameter
 
 
 def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
@@ -58,6 +59,24 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
     with patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
+
+
+def test_import_profile_with_optional_added(tmp_trestle_dir: pathlib.Path) -> None:
+    """Create profile, add modify to it, and import."""
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    profile_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
+    profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
+    set_parameter = SetParameter(depends_on='my_depends')
+    modify = Modify(set_parameters={'my_param': set_parameter})
+    profile_data.modify = modify
+    profile_data.oscal_write(pathlib.Path(profile_file))
+    test_args = f'trestle import -f {profile_file} -o imported'.split()
+    with patch.object(sys, 'argv', test_args):
+        rc = Trestle().run()
+        assert rc == 0
+    profile_path = tmp_trestle_dir / 'profiles/imported/profile.json'
+    profile: Profile = Profile.oscal_read(profile_path)
+    assert (profile.modify.set_parameters['my_param'].depends_on == 'my_depends')
 
 
 @pytest.mark.parametrize('regen', [False, True])

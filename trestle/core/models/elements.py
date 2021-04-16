@@ -61,8 +61,8 @@ class ElementPath:
         for i, part in enumerate(parts):
             if part == '':
                 raise TrestleError(
-                    f'Invalid path "{element_path}" because having empty path parts between "{self.PATH_SEPARATOR}" \
-                        or in the beginning'
+                    f'Invalid path "{element_path}" because having empty path parts between "{self.PATH_SEPARATOR}" '
+                    'or in the beginning'
                 )
             elif part == self.WILDCARD and i != len(parts) - 1:
                 raise TrestleError(f'Invalid path. Wildcard "{self.WILDCARD}" can only be at the end')
@@ -73,8 +73,8 @@ class ElementPath:
 
         if len(parts) <= 1:
             raise TrestleError(
-                'Element path must have at least two parts with the first part being the model root name \
-                    like "target-definition.metadata"'
+                'Element path must have at least two parts with the first part being the model root name, '
+                'like "target-definition.metadata"'
             )
 
         return parts
@@ -350,8 +350,8 @@ class Element:
         sub_element_name = element_path.get_element_name().replace('-', '_')
         if hasattr(preceding_elm, sub_element_name) is False:
             raise TrestleError(
-                f'Element "{preceding_elm.__class__}" does not have the attribute "{sub_element_name}" \
-                    of type "{model_obj.__class__}"'
+                f'Element "{preceding_elm.__class__}" does not have the attribute "{sub_element_name}" '
+                f'of type "{model_obj.__class__}"'
             )
 
         # set the sub-element
@@ -360,8 +360,8 @@ class Element:
         except ValidationError:
             sub_element_class = self.get_sub_element_class(preceding_elm, sub_element_name)
             raise TrestleError(
-                f'Validation error: {sub_element_name} is expected to be "{sub_element_class}", \
-                    but found "{model_obj.__class__}"'
+                f'Validation error: {sub_element_name} is expected to be "{sub_element_class}", '
+                f'but found "{model_obj.__class__}"'
             )
 
         # returning self will allow to do 'chaining' of commands after set

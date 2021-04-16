@@ -226,7 +226,7 @@ def test_get_contextual_model_type(tmp_path: pathlib.Path) -> None:
     roles_dir = metadata_dir / 'roles'
     rps_dir = metadata_dir / 'responsible-parties'
     props_dir = metadata_dir / 'props'
-    groups_dir = mycatalog_dir / 'groups'
+    groups_dir = catalog_dir / 'groups'
     group_dir = groups_dir / f'00000{IDX_SEP}group'
     controls_dir = group_dir / 'controls'
 

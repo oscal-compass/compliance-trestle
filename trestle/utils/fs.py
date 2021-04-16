@@ -135,16 +135,21 @@ def has_trestle_project_in_path(path: pathlib.Path) -> bool:
 
 def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBaseModel], str]:
     """Get the full contextual model class and full jsonpath for the alias based on the contextual path."""
+    logger.debug(f'get contextual model type for input path {path}')
     if path is None:
         path = pathlib.Path.cwd()
 
     path = path.resolve()
+
+    logger.debug(f'get contextual model type final path {path}')
 
     if not is_valid_project_model_path(path):
         raise err.TrestleError(f'Trestle project model not found at {path}')
 
     root_path = get_trestle_project_root(path)
     project_model_path = get_project_model_path(path)
+
+    logger.debug(f'root_path {root_path} project_model_path {project_model_path}')
 
     if root_path is None or project_model_path is None:
         raise err.TrestleError('Trestle project model not found')
@@ -183,23 +188,29 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
     a parameter.
     """
     if path is None:
+        logger.debug('get_stripped_contextual_model based on cwd')
         path = pathlib.Path.cwd()
     path = path.resolve()
+    logger.debug(f'get_stripped_contextual_model path is {path} not stripped: {aliases_not_to_be_stripped}')
     if aliases_not_to_be_stripped is None:
         aliases_not_to_be_stripped = []
 
     singular_model_type, model_alias = get_contextual_model_type(path)
+    logger.debug(f'singular model type {singular_model_type} model alias {model_alias}')
 
     # Stripped models do not apply to collection types such as List[] and Dict{}
     # if model type is a list or dict, generate a new wrapping model for it
     if utils.is_collection_field_type(singular_model_type):
         malias = model_alias.split('.')[-1]
         class_name = utils.alias_to_classname(malias, 'json')
+        logger.debug(f'collection field type class name {class_name} and alias {malias}')
         model_type = create_model(class_name, __base__=OscalBaseModel, __root__=(singular_model_type, ...))
+        logger.debug(f'model_type created: {model_type}')
         model_type = cast(Type[OscalBaseModel], model_type)
         return model_type, model_alias
 
     malias = model_alias.split('.')[-1]
+    logger.debug(f'not collection field type, malias: {malias}')
 
     if path.is_dir() and malias != extract_alias(path):
         split_subdir = path / malias
@@ -214,10 +225,12 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
             if alias not in aliases_not_to_be_stripped:
                 aliases_to_be_stripped.add(alias)
 
+    logger.debug(f'aliases to be stripped: {aliases_to_be_stripped}')
     if len(aliases_to_be_stripped) > 0:
         model_type = singular_model_type.create_stripped_model_type(
             stripped_fields_aliases=list(aliases_to_be_stripped)
         )
+        logger.debug(f'model_type: {model_type}')
         return model_type, model_alias
     else:
         return singular_model_type, model_alias
@@ -318,19 +331,25 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
             model_type = utils.get_inner_type(model_type)
             i = i + 1
         else:
-            model_type = model_type.alias_to_field_map()[path_parts[i]].outer_type_
+            try:
+                model_type = model_type.alias_to_field_map()[path_parts[i]].outer_type_
+            except Exception as e:
+                raise err.TrestleError(f'Error in json path {alias_path}: {e}')
         model_types.append(model_type)
 
     last_alias = path_parts[-1]
     if last_alias == '*':
         last_alias = path_parts[-2]
     if not utils.is_collection_field_type(model_type):
-        raise err.TrestleError('Not a valid generic collection model.')
+        raise err.TrestleError(f'Not a valid generic collection model: {model_type}')
 
     parent_model_type = model_types[-2]
-    singular_alias = utils.classname_to_alias(
-        utils.get_inner_type(parent_model_type.alias_to_field_map()[last_alias].outer_type_).__name__, 'json'
-    )
+    try:
+        singular_alias = utils.classname_to_alias(
+            utils.get_inner_type(parent_model_type.alias_to_field_map()[last_alias].outer_type_).__name__, 'json'
+        )
+    except Exception as e:
+        raise err.TrestleError(f'Error in json path {alias_path}: {e}')
 
     return singular_alias
 
