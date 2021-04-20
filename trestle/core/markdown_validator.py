@@ -115,7 +115,9 @@ def compare_tree(template: Dict[str, Any], content: Dict[str, Any]) -> bool:
     for ii in range(len(content['children'])):
         if content['children'][ii]['type'] == 'heading':
             content_sub_headers.append(content['children'][ii])
+
     if not len(template_sub_headers) == len(content_sub_headers):
+        # Deal with condition where extra headings are at a lower level than the first heading.
         logger.info(f'Number of expected sub-headings is wrong for heading {template_header_name}')
         logger.info(f'Expected {len(template_sub_headers)}, got {len(content_sub_headers)}')
         logger.info('Expected headings:')
@@ -174,7 +176,13 @@ class MarkdownValidator:
             List of AST tokens in the flat structure provided by mistune.
 
         """
-        content = path.open('r').read()
+        try:
+            content = path.open('r').read()
+        except UnicodeDecodeError as e:
+            logger.error('utf-8 decoding failed.')
+            logger.error(f'See: {const.WEBSITE_ROOT}/errors/#utf-8-encoding-only')
+            logger.debug(f'Underlying exception {e}')
+            raise err.TrestleError('Unable to load file due to utf-8 encoding issues.')
         fm = frontmatter.loads(content)
         header_dict = fm.metadata
         md_no_header = fm.content
@@ -216,7 +224,6 @@ class MarkdownValidator:
                 return False
         candidate_tree, _ = partition_ast(mistune_parse_content)
         w_candidate_tree = self.wrap_content(candidate_tree)
-
         if self._strict_heading_validate is not None:
             status = self._template_heading_validate(
                 self.w_template_tree, w_candidate_tree, self._strict_heading_validate

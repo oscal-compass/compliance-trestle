@@ -53,16 +53,21 @@ that directory tree are enforced."""
             )
             return 1
         status = 1
-        if args.mode == 'create-sample':
-            status = self.create_sample(args.task_name, trestle_root)
+        try:
+            if args.mode == 'create-sample':
+                status = self.create_sample(args.task_name, trestle_root)
 
-        elif args.mode == 'template-validate':
-            status = self.template_validate(args.task_name, trestle_root, args.governed_heading, args.header_validate)
-        elif args.mode == 'setup':
-            status = self.setup_template(args.task_name, trestle_root)
-        elif args.mode == 'validate':
-            # mode is validate
-            status = self.validate(args.task_name, trestle_root, args.governed_heading, args.header_validate)
+            elif args.mode == 'template-validate':
+                status = self.template_validate(
+                    args.task_name, trestle_root, args.governed_heading, args.header_validate
+                )
+            elif args.mode == 'setup':
+                status = self.setup_template(args.task_name, trestle_root)
+            elif args.mode == 'validate':
+                # mode is validate
+                status = self.validate(args.task_name, trestle_root, args.governed_heading, args.header_validate)
+        except Exception as e:
+            logger.error(f'Exception "{e}" running trestle md governed folders.')
         return status
 
     @classmethod

@@ -237,8 +237,11 @@ class OscalBaseModel(BaseModel):
         Returns:
             Oscal model serialized to a json object including packaging inside of a single top level key.
         """
-        wrapped_model = self._oscal_wrap()
-        return wrapped_model.json(exclude_none=True, by_alias=True)
+        class_name = self.__class__.__name__
+        tl_alias = classname_to_alias(class_name, 'json')
+        raw_model = self.json(exclude_none=True, by_alias=True)
+        wrapped_str = f'{{"{tl_alias}": {raw_model}}}'
+        return wrapped_str
 
     def oscal_write(self, path: pathlib.Path) -> None:
         """
@@ -282,18 +285,25 @@ class OscalBaseModel(BaseModel):
         logger.debug(f'oscal_read content type {content_type} and alias {alias} from {path}')
 
         if not path.exists():
-            logger.debug(f'path does not exist in oscal_read: {path}')
+            logger.error(f'path does not exist in oscal_read: {path}')
             return None
 
         obj: Dict[str, Any] = {}
-        if content_type == FileContentType.YAML:
-            obj = yaml.safe_load(path.open())
-        elif content_type == FileContentType.JSON:
-            obj = load_file(
-                path,
-                json_loads=cls.__config__.json_loads,
-            )
-        return cls.parse_obj(obj[alias])
+        try:
+            if content_type == FileContentType.YAML:
+                obj = yaml.safe_load(path.open())
+            elif content_type == FileContentType.JSON:
+                obj = load_file(
+                    path,
+                    json_loads=cls.__config__.json_loads,
+                )
+        except Exception as e:
+            raise err.TrestleError(f'Error loading file {path} {e}')
+        try:
+            parsed = cls.parse_obj(obj[alias])
+        except Exception as e:
+            raise err.TrestleError(f'Error parsing file {path} {e}')
+        return parsed
 
     def copy_to(self, new_oscal_type: Type['OscalBaseModel']) -> 'OscalBaseModel':
         """

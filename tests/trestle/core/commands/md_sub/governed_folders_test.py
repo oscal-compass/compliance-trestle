@@ -92,6 +92,22 @@ def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: st
             0,
             0,
             1
+        ),
+        (
+            'another_test_task',
+            pathlib.Path('md/governed_folders/utf16test_good'),
+            pathlib.Path('md/governed_folders/utf16test_bad'),
+            0,
+            0,
+            1
+        ),
+        (
+            'another_test_task',
+            pathlib.Path('md/governed_folders/utf16test_bad'),
+            pathlib.Path('md/governed_folders/utf16test_good'),
+            0,
+            1,
+            1
         )
     ]
 )

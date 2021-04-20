@@ -34,19 +34,12 @@ repos:
         files: "^(trestle|tests|scripts)"
         exclude: "(oscal|third_party)"
         stages: [commit]
-  - repo: https://github.com/hukkinj1/mdformat
-    rev: 0.5.7 # Do not change version. 0.6.0 introduces breaking changes.
+  - repo: https://github.com/executablebooks/mdformat
+    rev: 0.7.1 # Do not change version. 0.6.0 introduces breaking changes.
     hooks:
     - id: mdformat
-      exclude: "CHANGELOG.md|docs/mkdocs_code_of_conduct.md|docs/api_reference"
+      exclude: "CHANGELOG.md|docs/mkdocs_code_of_conduct.md|docs/api_reference|tests/data/md"
       additional_dependencies:
       - mdformat-tables
       - mdformat-config
       - mdformat-frontmatter
-
-      
-  # - repo: https://github.com/pre-commit/mirrors-mypy
-  #   rev: ''
-  #   hooks:
-  #   - id: mypy
-

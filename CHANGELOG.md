@@ -3,6 +3,14 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.1 (2021-04-16)
+### Fix
+* Chore/fs cleanup ([#489](https://github.com/IBM/compliance-trestle/issues/489)) ([`bf8be03`](https://github.com/IBM/compliance-trestle/commit/bf8be03fc62e56928e8f92cfe746b004e0c54b71))
+
+## v0.14.0 (2021-04-15)
+### Feature
+* Release of enhanced markdown functionality ([`f327fd6`](https://github.com/IBM/compliance-trestle/commit/f327fd67131c90afbe6c3644ab41b0dc56412b78))
+
 ## v0.13.1 (2021-04-13)
 ### Fix
 * Force release. ([`0e90265`](https://github.com/IBM/compliance-trestle/commit/0e90265c7192979a613c30abd3561a68b612d8ac))
