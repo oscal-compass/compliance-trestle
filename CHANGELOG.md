@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.2 (2021-04-20)
+### Fix
+* Tanium enhancements for scc ([`8bae421`](https://github.com/IBM/compliance-trestle/commit/8bae421df04a7683bccc52ea40420bb85d4bcebe))
+
 ## v0.14.1 (2021-04-16)
 ### Fix
 * Chore/fs cleanup ([#489](https://github.com/IBM/compliance-trestle/issues/489)) ([`bf8be03`](https://github.com/IBM/compliance-trestle/commit/bf8be03fc62e56928e8f92cfe746b004e0c54b71))
