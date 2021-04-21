@@ -16,6 +16,7 @@
 """Tests for models util module."""
 
 import pathlib
+from uuid import uuid4
 
 import trestle.core.validator_helper as validator_helper
 import trestle.oscal.catalog as catalog
@@ -90,3 +91,20 @@ def test_find_all_attribs_by_regex() -> None:
     cat = catalog.Catalog.oscal_read(catalog_path)
     attrs = validator_helper.find_all_attribs_by_regex(cat, r'party.uuid')
     assert len(attrs) == 2
+
+
+def test_validations_on_dict() -> None:
+    """Test regen of uuid in dict."""
+    my_uuid = str(uuid4())
+    my_dict = {'uuid': my_uuid, 'ref': my_uuid}
+    new_dict, lut = validator_helper.regenerate_uuids_in_place(my_dict, {})
+    assert my_dict['uuid'] != new_dict['uuid']
+    assert len(lut) == 1
+
+    fixed_dict, count = validator_helper.update_new_uuid_refs(new_dict, lut)
+    assert fixed_dict['uuid'] == fixed_dict['ref']
+    assert count == 1
+
+    attrs = validator_helper.find_all_attribs_by_regex(fixed_dict, 'uuid')
+    assert len(attrs) == 1
+    assert attrs[0] == ('uuid', fixed_dict['uuid'])

@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.err import TrestleNotFoundError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
 
@@ -79,6 +80,9 @@ def load_distributed(
     # if trying to load file that does not exist, load path instead
     if not file_path.exists():
         file_path = file_path.with_name(file_path.stem)
+
+    if not file_path.exists():
+        raise TrestleNotFoundError(f'File {file_path} not found for load.')
 
     # If the path contains a list type model
     if collection_type is list:
