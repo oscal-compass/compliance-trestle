@@ -448,6 +448,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -488,6 +494,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -528,6 +540,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -568,6 +586,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "fail",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -608,6 +632,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -648,6 +678,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -688,6 +724,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "fail",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -728,6 +770,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "fail",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -768,6 +816,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -808,6 +862,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "skip",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -848,6 +908,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "fail",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -888,6 +954,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -928,6 +1000,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -968,6 +1046,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1008,6 +1092,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "fail",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1048,6 +1138,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "fail",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1088,6 +1184,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1128,6 +1230,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1168,6 +1276,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "fail",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1208,6 +1322,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1248,6 +1368,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1288,6 +1414,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1328,6 +1460,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "fail",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1368,6 +1506,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1408,6 +1552,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1448,6 +1598,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1488,6 +1644,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "fail",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
@@ -1528,6 +1690,12 @@ Task: tanium-to-oscal executed successfully.
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
               "value": "pass",
               "class": "scc_result"
+            },
+            {
+              "name": "Timestamp",
+              "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+              "value": "2021-02-24T19:31:13+00:00",
+              "class": "scc_timestamp"
             }
           ],
           "methods": [
