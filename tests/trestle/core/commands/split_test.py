@@ -29,6 +29,7 @@ from trestle.cli import Trestle
 from trestle.core import const
 from trestle.core import utils
 from trestle.core.commands import cmd_utils
+from trestle.core.commands.merge import MergeCmd
 from trestle.core.commands.split import SplitCmd
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
@@ -36,6 +37,7 @@ from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.oscal import catalog as oscatalog
+from trestle.oscal import component as ocomponent
 from trestle.oscal import target as ostarget
 from trestle.utils import trash
 
@@ -411,3 +413,28 @@ def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.
         SplitCmd.split_model_at_path_chain(
             sample_catalog, element_paths, catalog_dir, content_type, 0, split_plan, False
         )
+
+
+@pytest.mark.parametrize('direct', [True, False])
+def test_split_comp_def(direct, tmp_trestle_dir, sample_component_definition: ocomponent.ComponentDefinition) -> None:
+    """Test splitting of component definition and its dictionary."""
+    my_comp_dir = tmp_trestle_dir / 'component-definitions/my_comp'
+    my_comp_dir.mkdir()
+    my_comp_path = my_comp_dir / 'component-definition.json'
+    sample_component_definition.oscal_write(my_comp_path)
+    os.chdir(my_comp_dir)
+    if direct:
+        args = argparse.Namespace(file='component-definition.json', element='component.components.*', verbose=1)
+        assert SplitCmd()._run(args) == 0
+        rc = 1
+    else:
+        args = argparse.Namespace(file='component-definition.json', element='component.components', verbose=1)
+        assert SplitCmd()._run(args) == 0
+        os.chdir('component-definition')
+        args = argparse.Namespace(file='components.json', element='components.*', verbose=1)
+        assert SplitCmd()._run(args) == 0
+        rc = 0
+    os.chdir(my_comp_dir)
+    args = argparse.Namespace(element='component-definition.*', verbose=1)
+    # FIXME rc should always be 0 but issue #412 causes an error in removeaction plan when subdir not exist
+    assert MergeCmd()._run(args) == rc

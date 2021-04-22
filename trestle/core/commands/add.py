@@ -92,8 +92,8 @@ class AddCmd(CommandPlusDocs):
             add_plan.simulate()
             add_plan.execute()
 
-        except BaseException as err:
-            logger.error(f'Add failed: {err}')
+        except err.TrestleError as e:
+            logger.error(f'Add failed: {e}')
             return 1
         return 0
 

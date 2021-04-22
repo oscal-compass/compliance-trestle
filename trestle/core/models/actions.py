@@ -352,7 +352,7 @@ class RemovePathAction(Action):
     def execute(self) -> None:
         """Execute the action."""
         if not self._sub_path.exists():
-            raise FileNotFoundError(f'Path "{self._sub_path}" does not exist')
+            raise TrestleError(f'Path "{self._sub_path}" does not exist in remove path action')
 
         trash.store(self._sub_path, True)
         self._mark_executed()

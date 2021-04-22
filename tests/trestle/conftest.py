@@ -25,8 +25,10 @@ import pytest
 
 from tests import test_utils
 
+import trestle.core.generators as gens
 from trestle.cli import Trestle
 from trestle.oscal.catalog import Catalog
+from trestle.oscal.component import ComponentDefinition, DefinedComponent
 from trestle.oscal.target import TargetDefinition
 
 TEST_CONFIG: dict = {}
@@ -103,6 +105,16 @@ def sample_catalog_minimal():
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog.json')
     catalog_obj = Catalog.oscal_read(file_path)
     return catalog_obj
+
+
+@pytest.fixture(scope='function')
+def sample_component_definition():
+    """Return a valid ComponentDefinition object with minimum fields necessary."""
+    def_comp1: DefinedComponent = gens.generate_sample_model(DefinedComponent)
+    def_comp2: DefinedComponent = gens.generate_sample_model(DefinedComponent)
+    comp_def: ComponentDefinition = gens.generate_sample_model(ComponentDefinition)
+    comp_def.components = {'comp1': def_comp1, 'comp2': def_comp2}
+    return comp_def
 
 
 @pytest.fixture(scope='function')

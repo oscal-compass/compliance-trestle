@@ -138,6 +138,9 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBase
     logger.debug(f'get contextual model type for input path {path}')
     if path is None:
         path = pathlib.Path.cwd()
+    else:
+        if not path.exists():
+            path = pathlib.Path.cwd() / path
 
     path = path.resolve()
 
@@ -149,7 +152,7 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBase
     root_path = get_trestle_project_root(path)
     project_model_path = get_project_model_path(path)
 
-    logger.debug(f'root_path {root_path} project_model_path {project_model_path}')
+    logger.debug(f'root_path is {root_path} and project_model_path is {project_model_path}')
 
     if root_path is None or project_model_path is None:
         raise err.TrestleError('Trestle project model not found')
@@ -324,17 +327,23 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
         raise err.TrestleError(f'{root_model_alias} is an invalid root model alias.')
 
     model_type = model_types[0]
+    # go through path parts skipping first one
     for i in range(1, len(path_parts)):
         if utils.is_collection_field_type(model_type):
+            # if it is a collection type and last part is * then break
             if i == len(path_parts) - 1 and path_parts[i] == '*':
                 break
+            # otherwise get the inner type of items in the collection
             model_type = utils.get_inner_type(model_type)
+            # and bump i
             i = i + 1
         else:
-            try:
-                model_type = model_type.alias_to_field_map()[path_parts[i]].outer_type_
-            except Exception as e:
-                raise err.TrestleError(f'Error in json path {alias_path}: {e}')
+            path_part = path_parts[i]
+            field_map = model_type.alias_to_field_map()
+            if path_part not in field_map:
+                continue
+            field = field_map[path_part]
+            model_type = field.outer_type_
         model_types.append(model_type)
 
     last_alias = path_parts[-1]

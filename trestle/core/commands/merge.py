@@ -61,8 +61,8 @@ class MergeCmd(CommandPlusDocs):
                 plan = self.merge(ElementPath(element_path))
                 plan.simulate()
                 plan.execute()
-        except BaseException as err:
-            logger.error(f'Merge failed: {err}')
+        except TrestleError as err:
+            logger.warning(f'Merge failed: {err}')
             return 1
         return 0
 
@@ -93,14 +93,11 @@ class MergeCmd(CommandPlusDocs):
         logger.debug(f'destination model filename is {destination_model_filename}')
         destination_model_type, _ = fs.get_stripped_contextual_model(destination_model_filename)
 
-        # if there is no .json file then there is no destination model object at this point, so create empty one
         destination_model_object: OscalBaseModel = None
         if destination_model_filename.exists():
             logger.debug('dest filename exists so read it')
             destination_model_object = destination_model_type.oscal_read(destination_model_filename)
-        else:
-            logger.debug('dest filename does not exist')
-        """1.5. If target is wildcard, load distributed destrination model and replace destination model."""
+        """1. If target is wildcard, load distributed destrination model and replace destination model."""
         # Handle WILDCARD '*' match. Return plan to load the destination model, with it's distributed attributes
         if target_model_alias == '*':
             logger.debug('handle target model alias wildcard')
@@ -168,8 +165,6 @@ class MergeCmd(CommandPlusDocs):
         if hasattr(target_model_object, '__dict__') and '__root__' in target_model_object.__dict__:
             logger.debug('loaded object has dict and root so set target model object to root contents')
             target_model_object = target_model_object.__dict__['__root__']
-        else:
-            logger.debug('loaded object has no dict and root so use it as-is')
         """3. Insert target model into destination model."""
         merged_dict = {}
         if destination_model_object is not None:

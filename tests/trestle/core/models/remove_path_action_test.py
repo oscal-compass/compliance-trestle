@@ -41,7 +41,7 @@ def test_remove_path_file(tmp_path: pathlib.Path) -> None:
     rpa = RemovePathAction(tmp_data_file)
 
     # missing file should error
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(TrestleError):
         rpa.execute()
 
     # write some content in the file
