@@ -86,7 +86,8 @@ class RuleUse():
         self.result = tanium_row[key_comply][0]['Result']
         self.custom_id = tanium_row[key_comply][0]['Custom ID']
         self.version = tanium_row[key_comply][0]['Version']
-        self.time = tanium_row[key_comply][0].get('Timestamp', default_timestamp)
+        self.timestamp = tanium_row[key_comply][0].get('Timestamp', default_timestamp)
+        self.collected = tanium_row[key_comply][0].get('Collected', default_timestamp)
         # if no control, then control is rule
         if len(self.custom_id) == 0:
             self.custom_id = self.id
@@ -327,7 +328,7 @@ class ResultsMgr():
     def _observation_extract(self, rule_use: RuleUse) -> None:
         """Extract observation from Tanium row."""
         observation = Observation(
-            uuid=str(uuid.uuid4()), description=rule_use.id, methods=['TEST-AUTOMATED'], collected=rule_use.time
+            uuid=str(uuid.uuid4()), description=rule_use.id, methods=['TEST-AUTOMATED'], collected=rule_use.collected
         )
         subject_reference = SubjectReference(
             uuid_ref=self._get_inventory_ref(rule_use.computer_name), type='inventory-item'
@@ -338,6 +339,7 @@ class ResultsMgr():
             Property(name='Benchmark Version', value=rule_use.benchmark_version, ns=self.ns, class_='scc_goal_version'),
             Property(name='ID', value=rule_use.id, ns=self.ns, class_='scc_goal_name_id'),
             Property(name='Result', value=rule_use.result, ns=self.ns, class_='scc_result'),
+            Property(name='Timestamp', value=rule_use.timestamp, ns=self.ns, class_='scc_timestamp'),
         ]
         observation.props = props
         self.observation_list.append(observation)
