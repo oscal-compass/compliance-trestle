@@ -49,6 +49,7 @@ def test_directory_creation_error(tmp_path, keep_cwd):
     # Windows read-only on dir does not prevent file creation in dir
     if platform.system() == 'Windows':
         return
+    owd = os.getcwd()
     os.chdir(tmp_path)
     os.mkdir(const.TRESTLE_CONFIG_DIR)
     os.chmod(const.TRESTLE_CONFIG_DIR, stat.S_IREAD)
@@ -63,6 +64,7 @@ def test_directory_creation_error(tmp_path, keep_cwd):
             assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
         assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
         assert not os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
+    os.chdir(owd)
 
 
 def test_config_copy_error(tmp_path, keep_cwd):
