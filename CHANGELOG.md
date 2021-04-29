@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.4 (2021-04-22)
+### Fix
+* Add timestamp to tanium-to-oscal transformer ([#503](https://github.com/IBM/compliance-trestle/issues/503)) ([`e8dc204`](https://github.com/IBM/compliance-trestle/commit/e8dc204935b5d1f4584bcaaef77bba2c41d80a9f))
+
 ## v0.14.3 (2021-04-20)
 ### Fix
 * Tanium updates for scc, 2 ([#498](https://github.com/IBM/compliance-trestle/issues/498)) ([`9b9b61e`](https://github.com/IBM/compliance-trestle/commit/9b9b61e6236da2f15cd6fc125925c6e4e708465f))
