@@ -44,7 +44,7 @@ def test_init(tmp_path, keep_cwd):
         assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
 
 
-def test_directory_creation_error(tmp_path, keep_cwd):
+def test_directory_creation_error(tmp_path):
     """Test error during init when a directory cannot be created."""
     # Windows read-only on dir does not prevent file creation in dir
     if platform.system() == 'Windows':
