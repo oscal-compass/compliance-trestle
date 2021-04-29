@@ -159,6 +159,7 @@ def test_run(tmp_path, sample_catalog_minimal):
 
 def test_striped_model(tmp_path, keep_cwd, sample_catalog_minimal):
     """Test _run for AddCmd for stripped model."""
+    keep_cwd
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
         tmp_path,

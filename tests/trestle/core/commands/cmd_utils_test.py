@@ -37,6 +37,7 @@ def prepare_expected_element_paths(element_args: List[str]) -> List[ElementPath]
 
 def test_parse_element_arg(tmp_path, keep_cwd):
     """Unit test parse a single element arg."""
+    owd = keep_cwd
     with pytest.raises(TrestleError):
         cmd_utils.parse_element_arg('target-definition', False)
 
@@ -66,7 +67,7 @@ def test_parse_element_arg(tmp_path, keep_cwd):
     expected_paths = prepare_expected_element_paths(['groups.*'])
     element_paths = cmd_utils.parse_element_arg(element_arg, True)
     assert expected_paths == element_paths
-    os.chdir(keep_cwd)
+    os.chdir(owd)
 
     element_arg = 'catalog.metadata.parties.*'
     expected_paths = prepare_expected_element_paths(['catalog.metadata', 'metadata.parties.*'])

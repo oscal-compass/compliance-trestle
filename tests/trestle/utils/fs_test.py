@@ -443,6 +443,7 @@ def test_get_singular_alias() -> None:
 def test_contextual_get_singular_alias(tmp_path: pathlib.Path, keep_cwd: pathlib.Path) -> None:
     """Test get_singular_alias in contextual mode."""
     # Contextual model tests
+    keep_cwd
     create_sample_catalog_project(tmp_path)
     catalogs_dir = tmp_path.resolve() / 'catalogs'
     mycatalog_dir = catalogs_dir / 'mycatalog'
