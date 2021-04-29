@@ -140,7 +140,8 @@ def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
     from various python versions.
     """
     # This executes a fallback that allows a list to be generated from a constrained list.
-    return typing_extensions.get_origin(field_type) or getattr(field_type, '__origin__', None)
+    return typing_extensions.get_origin(field_type) or getattr(field_type, '__origin__',
+                                                               None) or type(getattr(field_type, '__root__', None))
 
 
 # FIXME: Typing issues here
@@ -178,6 +179,9 @@ def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, T
         # Pydantic special cases ust be dealt with here:
         if getattr(collection_field_type, '__name__', None) == 'ConstrainedListValue':
             return collection_field_type.item_type  # type: ignore
+        root_obj = getattr(collection_field_type, '__root__', None)
+        if type(root_obj) in [dict, list]:
+            return root_obj
         return typing_extensions.get_args(collection_field_type)[-1]
     except Exception as e:
         logger.debug(e)

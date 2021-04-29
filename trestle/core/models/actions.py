@@ -14,6 +14,7 @@
 """Action wrapper of a command."""
 
 import io
+import logging
 import pathlib
 from abc import ABC, abstractmethod
 from enum import Enum
@@ -24,6 +25,8 @@ from trestle.utils import fs, trash
 
 from .elements import Element, ElementPath
 from .file_content_type import FileContentType
+
+logger = logging.getLogger(__name__)
 
 
 class ActionType(Enum):
@@ -339,7 +342,7 @@ class RemovePathAction(Action):
 
         self._trestle_project_root = fs.get_trestle_project_root(sub_path)
         if self._trestle_project_root is None:
-            raise TrestleError(f'Sub path "{sub_path}" should be child of a valid trestle project')
+            raise TrestleError(f'Sub path "{sub_path}" should be child of a valid trestle project.')
 
         self._sub_path = sub_path
 
@@ -352,7 +355,9 @@ class RemovePathAction(Action):
     def execute(self) -> None:
         """Execute the action."""
         if not self._sub_path.exists():
-            raise TrestleError(f'Path "{self._sub_path}" does not exist in remove path action')
+            logger.debug(f'path {self._sub_path} does not exist in remove path action - ignoring.')
+            # silently ignore until plan/execute made robust
+            # raise TrestleError(f'Path "{self._sub_path}" does not exist in remove path action') # noqa: E800
 
         trash.store(self._sub_path, True)
         self._mark_executed()

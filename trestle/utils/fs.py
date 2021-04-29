@@ -46,83 +46,74 @@ def should_ignore(name: str) -> bool:
 
 def is_valid_project_root(path: pathlib.Path) -> bool:
     """Check if the path is a valid trestle project root."""
-    if not path or len(path.parts) <= 0:
-        return False
-
-    trestle_dir = pathlib.Path.joinpath(path, const.TRESTLE_CONFIG_DIR)
-    if trestle_dir.exists() and trestle_dir.is_dir():
-        return True
+    if path is not None:
+        path = path.resolve()
+        trestle_dir = pathlib.Path.joinpath(path, const.TRESTLE_CONFIG_DIR)
+        if trestle_dir.exists() and trestle_dir.is_dir():
+            return True
 
     return False
 
 
 def get_trestle_project_root(path: pathlib.Path) -> Optional[pathlib.Path]:
     """Get the trestle project root folder in the path."""
-    if not path or len(path.parts) <= 0:
-        return None
-
-    current = path.resolve(False)
-    while len(current.parts) > 1:  # it must not be the system root directory
-        if is_valid_project_root(current):
-            return current
-        current = current.parent
+    if path is not None:
+        path = path.resolve()
+        if len(path.parts) > 0:
+            current = path.resolve(False)
+            while len(current.parts) > 1:  # it must not be the system root directory
+                if is_valid_project_root(current):
+                    return current
+                current = current.parent
 
     return None
 
 
 def is_valid_project_model_path(path: pathlib.Path) -> bool:
     """Check if the file/directory path is a valid trestle model project."""
-    if not path or len(path.parts) <= 0:
-        return False
+    if path is not None:
+        path = path.resolve()
+        root_path = get_trestle_project_root(path)
+        if root_path is None:
+            return False
 
-    path = path.resolve()
-    root_path = get_trestle_project_root(path)
-    if root_path is None:
-        return False
+        relative_path = path.relative_to(str(root_path))
+        if len(relative_path.parts) < 2 or relative_path.parts[0] not in const.MODEL_TYPE_TO_MODEL_MODULE:
+            return False
+        return True
 
-    relative_path = path.relative_to(str(root_path))
-    if len(relative_path.parts) < 2 or relative_path.parts[0] not in const.MODEL_TYPE_TO_MODEL_MODULE:
-        return False
-
-    project_type = relative_path.parts[0]  # catalogs, profiles, etc
-
-    if project_type not in const.MODEL_TYPE_TO_MODEL_MODULE.keys():
-        return False
-
-    return True
+    return False
 
 
 def get_project_model_path(path: pathlib.Path) -> Optional[pathlib.Path]:
     """Get the base path of the trestle model project."""
-    if not path or len(path.parts) <= 2:
-        return None
-
-    path = path.resolve()
-    for i in range(2, len(path.parts)):
-        current = pathlib.Path(path.parts[0]).joinpath(*path.parts[1:i + 1])
-        if is_valid_project_model_path(current):
-            return current
+    if path is not None:
+        path = path.resolve()
+        if len(path.parts) > 2:
+            for i in range(2, len(path.parts)):
+                current = pathlib.Path(path.parts[0]).joinpath(*path.parts[1:i + 1])
+                if is_valid_project_model_path(current):
+                    return current
 
     return None
 
 
 def has_parent_path(sub_path: pathlib.Path, parent_path: pathlib.Path) -> bool:
     """Check if sub_path has the specified parent_dir path."""
-    if parent_path is None or len(parent_path.parts) <= 0:
-        return False
+    matched = False
+    if parent_path is not None and sub_path is not None:
+        if len(parent_path.parts) > 0:
+            sub_path = sub_path.resolve()
+            parent_path = parent_path.resolve()
 
-    sub_path = sub_path.resolve()
-    parent_path = parent_path.resolve()
+            # sub_path should be longer than parent path
+            if len(sub_path.parts) < len(parent_path.parts):
+                return False
 
-    # sub_path should be longer than parent path
-    if len(sub_path.parts) < len(parent_path.parts):
-        return False
-
-    matched = True
-    for i, part in enumerate(parent_path.parts):
-        if part != sub_path.parts[i]:
-            matched = False
-            break
+            matched = True
+            for i, part in enumerate(parent_path.parts):
+                if part != sub_path.parts[i]:
+                    return False
 
     return matched
 
@@ -251,7 +242,7 @@ def clean_project_sub_path(sub_path: pathlib.Path) -> None:
 
     It ensures the sub_path is a child path in the project root.
     """
-    if sub_path.exists():
+    if sub_path is not None and sub_path.exists():
         sub_path = sub_path.resolve()
         project_root = sub_path.parent
         if not has_trestle_project_in_path(project_root):
@@ -293,7 +284,7 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
     is running trestle from.
     """
     if len(alias_path.strip()) == 0:
-        raise err.TrestleError('Invalid jsonpath.')
+        raise err.TrestleError(f'Invalid jsonpath {alias_path}')
 
     singular_alias: str = ''
 
@@ -354,9 +345,12 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
 
     parent_model_type = model_types[-2]
     try:
-        singular_alias = utils.classname_to_alias(
-            utils.get_inner_type(parent_model_type.alias_to_field_map()[last_alias].outer_type_).__name__, 'json'
-        )
+        field_map = parent_model_type.alias_to_field_map()
+        field = field_map[last_alias]
+        outer_type = field.outer_type_
+        inner_type = utils.get_inner_type(outer_type)
+        inner_type_name = inner_type.__name__
+        singular_alias = utils.classname_to_alias(inner_type_name, 'json')
     except Exception as e:
         raise err.TrestleError(f'Error in json path {alias_path}: {e}')
 
@@ -374,7 +368,7 @@ def get_contextual_file_type(path: pathlib.Path) -> FileContentType:
     """Return the file content type for files in the given directory, if it's a trestle project."""
     path = path.resolve()
     if not is_valid_project_model_path(path):
-        raise err.TrestleError('Trestle project not found.')
+        raise err.TrestleError(f'Trestle project not found at path {path}')
 
     for file_or_directory in path.iterdir():
         if file_or_directory.is_file():

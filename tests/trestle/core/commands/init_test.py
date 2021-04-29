@@ -27,9 +27,8 @@ import trestle.core.const as const
 from trestle import cli
 
 
-def test_init(tmp_path):
+def test_init(tmp_path, keep_cwd):
     """Test init happy path."""
-    owd = os.getcwd()
     os.chdir(tmp_path)
     testargs = ['trestle', 'init']
     with patch.object(sys, 'argv', testargs):
@@ -43,15 +42,13 @@ def test_init(tmp_path):
             assert os.path.isfile(os.path.join(directory, const.TRESTLE_KEEP_FILE))
         assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
         assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
-    os.chdir(owd)
 
 
-def test_directory_creation_error(tmp_path):
+def test_directory_creation_error(tmp_path, keep_cwd):
     """Test error during init when a directory cannot be created."""
     # Windows read-only on dir does not prevent file creation in dir
     if platform.system() == 'Windows':
         return
-    owd = os.getcwd()
     os.chdir(tmp_path)
     os.mkdir(const.TRESTLE_CONFIG_DIR)
     os.chmod(const.TRESTLE_CONFIG_DIR, stat.S_IREAD)
@@ -66,12 +63,10 @@ def test_directory_creation_error(tmp_path):
             assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
         assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
         assert not os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
-    os.chdir(owd)
 
 
-def test_config_copy_error(tmp_path):
+def test_config_copy_error(tmp_path, keep_cwd):
     """Test error during init when a contents of .trestle cannot be created."""
-    owd = os.getcwd()
     os.chdir(tmp_path)
     os.mkdir(const.TRESTLE_CONFIG_DIR)
     open(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE), 'a').close()
@@ -88,4 +83,3 @@ def test_config_copy_error(tmp_path):
         assert os.path.isdir(const.TRESTLE_CONFIG_DIR)
         assert os.path.isfile(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE))
         assert os.stat(os.path.join(const.TRESTLE_CONFIG_DIR, const.TRESTLE_CONFIG_FILE)).st_size == 0
-    os.chdir(owd)

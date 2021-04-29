@@ -38,8 +38,8 @@ MODEL_TYPE_TO_MODEL_DIR = {
     'target-definition': 'target-definitions',
     'component-definition': 'component-definitions',
     'system-security-plan': 'system-security-plans',
-    'assessment-plan': 'assessment_plans',
-    'assessment-results': 'assessment_results',
+    'assessment-plan': 'assessment-plans',
+    'assessment-results': 'assessment-results',
     'plan-of-action-and-milestones': 'plan-of-action-and-milestones'
 }
 """Element path separator"""

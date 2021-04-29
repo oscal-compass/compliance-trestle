@@ -44,7 +44,7 @@ def test_should_ignore() -> None:
 def test_is_valid_project_root(tmp_path: pathlib.Path) -> None:
     """Test is_valid_project_root method."""
     assert fs.is_valid_project_root(None) is False
-    assert fs.is_valid_project_root('') is False
+    assert fs.is_valid_project_root(pathlib.Path('')) is False
     assert fs.is_valid_project_root(tmp_path) is False
 
     test_utils.ensure_trestle_config_dir(tmp_path)
@@ -87,7 +87,7 @@ def test_get_trestle_project_root(tmp_path: pathlib.Path, rand_str: str) -> None
 def test_is_valid_project_model_path(tmp_path: pathlib.Path) -> None:
     """Test is_valid_project_model method."""
     assert fs.is_valid_project_model_path(None) is False
-    assert fs.is_valid_project_model_path('') is False
+    assert fs.is_valid_project_model_path(pathlib.Path('')) is False
     assert fs.is_valid_project_model_path(tmp_path) is False
 
     test_utils.ensure_trestle_config_dir(tmp_path)
@@ -104,11 +104,15 @@ def test_is_valid_project_model_path(tmp_path: pathlib.Path) -> None:
     metadata_dir = mycatalog_dir / 'metadata'
     assert fs.is_valid_project_model_path(metadata_dir) is True
 
+    foo_dir = tmp_path / 'foo/bar'
+    foo_dir.mkdir(parents=True)
+    assert fs.is_valid_project_model_path(foo_dir) is False
+
 
 def test_get_project_model_path(tmp_path: pathlib.Path) -> None:
     """Test get_project_model_path  method."""
     assert fs.get_project_model_path(None) is None
-    assert fs.get_project_model_path('') is None
+    assert fs.get_project_model_path(pathlib.Path('')) is None
     assert fs.get_project_model_path(tmp_path) is None
 
     test_utils.ensure_trestle_config_dir(tmp_path)
@@ -436,7 +440,7 @@ def test_get_singular_alias() -> None:
     assert 'control' == fs.get_singular_alias(alias_path='catalog.groups.*.controls.*.controls')
 
 
-def test_contextual_get_singular_alias(tmp_path: pathlib.Path) -> None:
+def test_contextual_get_singular_alias(tmp_path: pathlib.Path, keep_cwd: pathlib.Path) -> None:
     """Test get_singular_alias in contextual mode."""
     # Contextual model tests
     create_sample_catalog_project(tmp_path)
@@ -446,8 +450,6 @@ def test_contextual_get_singular_alias(tmp_path: pathlib.Path) -> None:
     metadata_dir = catalog_dir / 'metadata'
     groups_dir = catalog_dir / 'groups'
     group_dir = groups_dir / f'00000{IDX_SEP}group'
-
-    cwd = os.getcwd()
 
     os.chdir(mycatalog_dir)
     assert 'responsible-party' == fs.get_singular_alias(
@@ -472,8 +474,6 @@ def test_contextual_get_singular_alias(tmp_path: pathlib.Path) -> None:
 
     os.chdir(group_dir)
     assert 'control' == fs.get_singular_alias(alias_path='group.controls.*.controls', contextual_mode=True)
-
-    os.chdir(cwd)
 
 
 def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:
@@ -586,3 +586,14 @@ def test_is_hidden_windows(tmp_path) -> None:
 def test_allowed_task_name(task_name: str, outcome: bool) -> None:
     """Test whether task names are allowed."""
     assert fs.allowed_task_name(task_name) == outcome
+
+
+def test_model_type_to_model_dir() -> None:
+    """Test model type to model dir."""
+    assert fs.model_type_to_model_dir('catalog') == 'catalogs'
+    try:
+        fs.model_type_to_model_dir('foo')
+    except Exception:
+        pass
+    else:
+        assert 'test failed'

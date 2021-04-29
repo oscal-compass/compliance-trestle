@@ -285,7 +285,7 @@ class OscalBaseModel(BaseModel):
         logger.debug(f'oscal_read content type {content_type} and alias {alias} from {path}')
 
         if not path.exists():
-            logger.error(f'path does not exist in oscal_read: {path}')
+            logger.warning(f'path does not exist in oscal_read: {path}')
             return None
 
         obj: Dict[str, Any] = {}

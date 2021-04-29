@@ -50,7 +50,7 @@ class InitCmd(CommandPlusDocs):
             logger.info(f'Initialized trestle project successfully in {dir_path}')
 
         except BaseException as err:
-            logger.error(f'Initialization failed: {err}')
+            logger.warning(f'Initialization failed: {err}')
             return 1
         return 0
 
@@ -67,10 +67,10 @@ class InitCmd(CommandPlusDocs):
             directory.mkdir(parents=True, exist_ok=True)
             file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE
             try:
-                open(file_path, 'w+')
-            except TrestleError as err:
-                logger.error(f'Initialization failed: {err}')
-                pass
+                file_path.touch()
+            except BaseException as err:
+                logger.warning(f'Initialization failed: {err}')
+                raise TrestleError(f'Error creating directories for initialization {err}')
 
     def _copy_config_file(self) -> None:
         """Copy the initial config.ini file to .trestle directory."""

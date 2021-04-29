@@ -15,7 +15,6 @@
 # limitations under the License.
 """Tests for trestle cmd utils module."""
 import os
-import pathlib
 from typing import List
 
 import pytest
@@ -36,7 +35,7 @@ def prepare_expected_element_paths(element_args: List[str]) -> List[ElementPath]
     return element_paths
 
 
-def test_parse_element_arg(tmp_path):
+def test_parse_element_arg(tmp_path, keep_cwd):
     """Unit test parse a single element arg."""
     with pytest.raises(TrestleError):
         cmd_utils.parse_element_arg('target-definition', False)
@@ -62,13 +61,12 @@ def test_parse_element_arg(tmp_path):
     test_utils.ensure_trestle_config_dir(tmp_path)
     catalog_split_dir = tmp_path / 'catalogs/nist800-53/catalog'
     catalog_split_dir.mkdir(exist_ok=True, parents=True)
-    cur_dir = pathlib.Path.cwd()
     os.chdir(catalog_split_dir)
     element_arg = 'groups.*'
     expected_paths = prepare_expected_element_paths(['groups.*'])
     element_paths = cmd_utils.parse_element_arg(element_arg, True)
     assert expected_paths == element_paths
-    os.chdir(cur_dir)
+    os.chdir(keep_cwd)
 
     element_arg = 'catalog.metadata.parties.*'
     expected_paths = prepare_expected_element_paths(['catalog.metadata', 'metadata.parties.*'])
@@ -118,13 +116,11 @@ def test_parse_element_arg(tmp_path):
     test_utils.ensure_trestle_config_dir(tmp_path)
     target_def_dir = tmp_path / 'target-definitions/mytarget/'
     target_def_dir.mkdir(exist_ok=True, parents=True)
-    cur_dir = pathlib.Path.cwd()
     os.chdir(target_def_dir)
     element_arg = 'metadata.parties.*'
     expected_paths: List[ElementPath] = prepare_expected_element_paths(['metadata.parties.*'])
     element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, True)
     assert expected_paths == element_paths
-    os.chdir(cur_dir)
 
 
 def test_parse_element_args():
