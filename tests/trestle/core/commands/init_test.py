@@ -68,7 +68,7 @@ def test_directory_creation_error(tmp_path, keep_cwd):
             assert not dist_dir_path.exists()
         assert config_dir.exists()
         assert config_dir.is_dir()
-        assert not config_file.exists()
+        assert not config_file.is_file()
 
 
 def test_config_copy_error(tmp_path, keep_cwd):
