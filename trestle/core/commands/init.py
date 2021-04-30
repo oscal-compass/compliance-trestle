@@ -25,6 +25,7 @@ from pkg_resources import resource_filename
 import trestle.core.const as const
 import trestle.utils.log as log
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.err import TrestleError
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,7 @@ class InitCmd(CommandPlusDocs):
 
             logger.info(f'Initialized trestle project successfully in {dir_path}')
 
-        except BaseException as err:
+        except TrestleError as err:
             logger.warning(f'Initialization failed: {err}')
             return 1
         return 0
@@ -66,13 +67,15 @@ class InitCmd(CommandPlusDocs):
             directory.mkdir(parents=True, exist_ok=True)
             file_path = pathlib.Path(directory) / const.TRESTLE_KEEP_FILE
             try:
-                open(file_path, 'w+')
+                file_path.touch()
             except BaseException as err:
-                logger.warning(f'Initialization failed: {err}')
-                pass
+                raise TrestleError(f'Error creating directories: {err}')
 
     def _copy_config_file(self) -> None:
         """Copy the initial config.ini file to .trestle directory."""
         source_path = pathlib.Path(resource_filename('trestle.resources', const.TRESTLE_CONFIG_FILE)).resolve()
         destination_path = (pathlib.Path(const.TRESTLE_CONFIG_DIR) / const.TRESTLE_CONFIG_FILE).resolve()
-        copyfile(source_path, destination_path)
+        try:
+            copyfile(source_path, destination_path)
+        except BaseException as err:
+            raise TrestleError(f'Error copying config file {err}')

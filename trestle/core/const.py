@@ -28,8 +28,8 @@ MODEL_TYPE_TO_MODEL_MODULE = {
     'target-definitions': f'{PACKAGE_OSCAL}.target',
     'component-definitions': f'{PACKAGE_OSCAL}.component',
     'system-security-plans': f'{PACKAGE_OSCAL}.ssp',
-    'assessment-plans': f'{PACKAGE_OSCAL}.assessment-plan',
-    'assessment-results': f'{PACKAGE_OSCAL}.assessment-results',
+    'assessment-plans': f'{PACKAGE_OSCAL}.assessment_plan',
+    'assessment-results': f'{PACKAGE_OSCAL}.assessment_results',
     'plan-of-action-and-milestones': f'{PACKAGE_OSCAL}.poam'
 }
 MODEL_TYPE_TO_MODEL_DIR = {

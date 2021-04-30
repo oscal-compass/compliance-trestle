@@ -315,7 +315,6 @@ def test_split_run_failure(
     keep_cwd: pathlib.Path, tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDefinition
 ) -> None:
     """Test split run failure."""
-    keep_cwd
     # prepare trestle project dir with the file
     target_def_dir: pathlib.Path = tmp_path / 'target-definitions' / 'mytarget'
     target_def_file: pathlib.Path = target_def_dir / 'target-definition.yaml'
@@ -423,7 +422,6 @@ def test_split_comp_def(
     direct, tmp_trestle_dir, keep_cwd: pathlib.Path, sample_component_definition: ocomponent.ComponentDefinition
 ) -> None:
     """Test splitting of component definition and its dictionary."""
-    keep_cwd
     my_comp_dir = tmp_trestle_dir / 'component-definitions/my_comp'
     my_comp_dir.mkdir()
     my_comp_path = my_comp_dir / 'component-definition.json'
@@ -446,7 +444,6 @@ def test_split_comp_def(
 
 def test_split_stop_at_string(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog):
     """Test prevention of split at string level."""
-    keep_cwd
     # prepare trestle project dir with the file
     catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
         tmp_path,
