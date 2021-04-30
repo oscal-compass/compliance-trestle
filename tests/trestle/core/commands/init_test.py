@@ -62,8 +62,11 @@ def test_directory_creation_error(tmp_path, keep_cwd):
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 1
         for directory in const.MODEL_TYPE_TO_MODEL_MODULE.keys():
-            assert os.path.isdir(directory)
-            assert os.path.isdir(os.path.join(const.TRESTLE_DIST_DIR, directory))
+            dir_path = pathlib.Path(directory)
+            assert not dir_path.exists()
+            dist_dir_path = pathlib.Path(const.TRESTLE_DIST_DIR) / directory
+            assert not dist_dir_path.exists()
+        assert config_dir.exists()
         assert config_dir.is_dir()
         assert not config_file.exists()
 
