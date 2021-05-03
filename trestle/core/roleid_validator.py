@@ -18,16 +18,32 @@
 import argparse
 import logging
 import pathlib
+import re
 
-from trestle.core.validator_helper import Validator, has_no_duplicate_values_by_name
+from trestle.core.base_model import OscalBaseModel
+from trestle.core.const import NCNAME_REGEX
+from trestle.core.err import TrestleError
+from trestle.core.validator_helper import Validator, find_values_by_name
 from trestle.utils import fs
 from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
 
 
-class DuplicatesValidator(Validator):
-    """Find duplicate items in oscal object."""
+def _roleids_are_valid(model: OscalBaseModel) -> bool:
+    role_ids_list = find_values_by_name(model, 'role_ids')
+    p = re.compile(NCNAME_REGEX)
+    for role_id_list in role_ids_list:
+        for role_id in role_id_list:
+            s = str(role_id.__root__)
+            matched = p.match(s)
+            if matched is None:
+                return False
+    return True
+
+
+class RoleIdValidator(Validator):
+    """Check that all RoleId values conform to NCName regex."""
 
     def validate(self, args: argparse.Namespace) -> int:
         """Perform the validation."""
@@ -43,11 +59,12 @@ class DuplicatesValidator(Validator):
             models_path = trestle_root / fs.model_type_to_model_dir(args.type)
             for m in models:
                 model_path = models_path / m
-                if not model_path.exists():
-                    logger.warning(f'No model found to validate at {model_path}')
+                try:
+                    _, _, model = load_distributed(model_path)
+                except TrestleError as e:
+                    logger.warning(f'File load error {e}')
                     return 1
-                _, _, model = load_distributed(model_path)
-                if not has_no_duplicate_values_by_name(model, args.item):
+                if not _roleids_are_valid(model):
                     return 1
             return 0
 
@@ -57,7 +74,7 @@ class DuplicatesValidator(Validator):
             for mt in model_tups:
                 model_path = trestle_root / fs.model_type_to_model_dir(mt[0]) / mt[1]
                 _, _, model = load_distributed(model_path)
-                if not has_no_duplicate_values_by_name(model, args.item):
+                if not _roleids_are_valid(model):
                     return 1
             return 0
 
@@ -65,6 +82,6 @@ class DuplicatesValidator(Validator):
         if 'file' in args and args.file:
             file_path = trestle_root / args.file
             _, _, model = load_distributed(file_path)
-            if not has_no_duplicate_values_by_name(model, args.item):
+            if not _roleids_are_valid(model):
                 return 1
         return 0

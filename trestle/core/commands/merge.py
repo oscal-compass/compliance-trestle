@@ -98,7 +98,7 @@ class MergeCmd(CommandPlusDocs):
             logger.debug('dest filename exists so read it')
             destination_model_object = destination_model_type.oscal_read(destination_model_filename)
         """2. If target is wildcard, load distributed destination model and replace destination model."""
-        # Handle WILDCARD '*' match. Return plan to load the destination model, with it's distributed attributes
+        # Handle WILDCARD '*' match. Return plan to load the destination model, with its distributed attributes
         if target_model_alias == '*':
             logger.debug('handle target model alias wildcard')
             collection_type = None

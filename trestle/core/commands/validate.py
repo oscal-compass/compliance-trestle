@@ -42,5 +42,5 @@ class ValidateCmd(CommandPlusDocs):
         try:
             return validator.validate(self, args)
         except Exception as e:
-            logger.error(f'Error in trestle validate: {e}')
+            logger.warning(f'Error in trestle validate: {e}')
         return 1

@@ -23,108 +23,125 @@ import pytest
 
 from tests import test_utils
 
+import trestle.oscal.assessment_plan as ap
 from trestle import cli
-from trestle.core import utils
-from trestle.core.models.file_content_type import FileContentType
-from trestle.oscal import target as ostarget
+from trestle.core.generators import generate_sample_model
 
 test_data_dir = pathlib.Path('tests/data').resolve()
 
 
-def test_target_dups(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test model validation."""
-    content_type = FileContentType.YAML
-    models_dir_name = test_utils.TARGET_DEFS_DIR
-    model_ref = ostarget.TargetDefinition
+@pytest.mark.parametrize(
+    'name, mode, parent',
+    [
+        ('my_test_model', '-f', False), ('my_test_model', '-n', False), ('my_test_model', '-f', True),
+        ('my_test_model', '-t', False), ('my_test_model', '-a', False)
+    ]
+)
+def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test successful validation runs."""
+    (tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
+    (tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
+    shutil.copyfile(
+        test_data_dir / 'yaml/good_target.yaml',
+        tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model/target-definition.yaml'
+    )
+    shutil.copyfile(
+        test_data_dir / 'yaml/good_target.yaml',
+        tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model2/target-definition.yaml'
+    )
 
-    test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
+    model_def_file = tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / name / ('target-definition.yaml')
 
-    file_ext = FileContentType.to_file_extension(content_type)
-    models_full_path = tmp_trestle_dir / models_dir_name / 'my_test_model'
-    models_full_path2 = tmp_trestle_dir / models_dir_name / 'my_test_model2'
-    models_full_path.mkdir(exist_ok=True, parents=True)
-    models_full_path2.mkdir(exist_ok=True, parents=True)
+    if mode == '-f':
+        if not parent:
+            testcmd = f'trestle validate {mode} {model_def_file} -m duplicates -i uuid'
+        else:
+            testcmd = f'trestle validate {mode} {model_def_file.parent} -m duplicates -i uuid'
+    elif mode == '-n':
+        testcmd = f'trestle validate -t target-definition -n {name} -m duplicates -i uuid'
+    else:
+        testcmd = 'trestle validate -a -m duplicates -i uuid'
 
-    model_alias = utils.classname_to_alias(model_ref.__name__, 'json')
-
-    model_def_file = models_full_path / f'{model_alias}{file_ext}'
-    model_def_file2 = models_full_path2 / f'{model_alias}{file_ext}'
-
-    shutil.copyfile(test_data_dir / 'yaml/good_target.yaml', model_def_file)
-    shutil.copyfile(test_data_dir / 'yaml/good_target.yaml', model_def_file2)
-
-    # first validate the single file
-    testcmd = f'trestle validate -f {model_def_file} -m duplicates -i uuid'
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 0
 
-    # validate the single file by type and name
-    testcmd = f'trestle validate -t {model_alias} -n my_test_model -m duplicates -i uuid'
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 0
 
-    testcmd = f'trestle validate -f {model_def_file.parent} -m duplicates -i uuid'
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 0
+@pytest.mark.parametrize(
+    'name, mode, parent',
+    [
+        ('my_test_model', '-f', False), ('my_test_model', '-n', False), ('my_test_model', '-f', True),
+        ('my_test_model', '-t', False), ('my_test_model', '-a', False), ('foo', '-n', False)
+    ]
+)
+def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test failure modes of validation."""
+    (tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
+    (tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
+    shutil.copyfile(
+        test_data_dir / 'yaml/bad_target_dup_uuid.yaml',
+        tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model/target-definition.yaml'
+    )
+    shutil.copyfile(
+        test_data_dir / 'yaml/good_target.yaml',
+        tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model2/target-definition.yaml'
+    )
 
-    # now validate both models by type
-    testcmd = 'trestle validate -t target-definition -m duplicates -i uuid'
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 0
+    model_def_file = tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / ('my_test_model/target-definition.yaml')
 
-    # now validate all models
-    testcmd = 'trestle validate -a -m duplicates -i uuid'
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 0
+    if mode == '-f':
+        if not parent:
+            testcmd = f'trestle validate {mode} {model_def_file} -m duplicates -i uuid'
+        else:
+            testcmd = f'trestle validate {mode} {model_def_file.parent} -m duplicates -i uuid'
+    elif mode == '-n':
+        testcmd = f'trestle validate -t target-definition -n {name} -m duplicates -i uuid'
+    else:
+        testcmd = 'trestle validate -a -m duplicates -i uuid'
 
-    shutil.copyfile(test_data_dir / 'yaml/bad_target_dup_uuid.yaml', model_def_file)
-
-    testcmd = f'trestle validate -f {model_def_file} -m duplicates -i uuid'
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 1
-
-    testcmd = f'trestle validate -t {model_alias} -n my_test_model -m duplicates -i uuid'
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 1
 
-    testcmd = f'trestle validate -t {model_alias} -m duplicates -i uuid'
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 1
 
-    testcmd = 'trestle validate -a -m duplicates -i uuid'
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 1
+@pytest.mark.parametrize(
+    'name, mode, parent, new_role, code',
+    [
+        ('my_ap', '-f', False, 'role', 0), ('my_ap', '-n', False, 'role', 0), ('my_ap', '-f', True, 'role', 0),
+        ('my_ap', '-t', False, 'role', 0), ('my_ap', '-a', False, 'role', 0), ('my_ap', '-f', False, 'r:ole', 1),
+        ('my_ap', '-n', False, 'r:ole', 1), ('my_ap', '-f', True, 'r:ole', 1), ('my_ap', '-t', False, 'r:ole', 1),
+        ('my_ap', '-a', False, 'r:ole', 1), ('foo', '-n', False, 'role', 1)
+    ]
+)
+def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test good and bad roleid cases."""
+    (tmp_trestle_dir / 'assessment-plans/my_ap').mkdir(exist_ok=True, parents=True)
+    role_ids = [ap.RoleId(__root__='role1'), ap.RoleId(__root__=new_role), ap.RoleId(__root__='REPLACE_ME')]
+    system_user = ap.SystemUser(role_ids=role_ids)
+    local_definitions = ap.LocalDefinitions(users={'my_users': system_user})
+    ap_obj = generate_sample_model(ap.AssessmentPlan)
+    ap_obj.local_definitions = local_definitions
+    ap_path = tmp_trestle_dir / 'assessment-plans/my_ap/assessment-plan.json'
+    ap_obj.oscal_write(ap_path)
 
-    testcmd = 'trestle validate -f foo -m duplicates -i uuid'
+    if mode == '-f':
+        if not parent:
+            testcmd = f'trestle validate {mode} {ap_path} -m ncname -i roleid'
+        else:
+            testcmd = f'trestle validate {mode} {ap_path.parent} -m ncname -i roleid'
+    elif mode == '-n':
+        testcmd = f'trestle validate -t assessment-plan -n {name} -m ncname -i roleid'
+    elif mode == '-t':
+        testcmd = 'trestle validate -t assessment-plan -m ncname -i roleid'
+    else:
+        testcmd = 'trestle validate -a -m ncname -i roleid'
+
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()
         assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == 1
+        assert pytest_wrapped_e.value.code == code

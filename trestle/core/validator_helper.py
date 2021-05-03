@@ -14,14 +14,24 @@
 # limitations under the License.
 """Utilities for dealing with models."""
 
+import argparse
 import re
 import uuid
+from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Tuple, Type, TypeVar
 
 import pydantic
 
 # Generic type var
 TG = TypeVar('TG')
+
+
+class Validator(ABC):
+    """Abstract Validator interface."""
+
+    @abstractmethod
+    def validate(self, args: argparse.Namespace) -> int:
+        """Validate the model."""
 
 
 # TODO: Improve typing - this could potentially be done through type vars

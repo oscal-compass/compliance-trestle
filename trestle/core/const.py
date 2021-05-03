@@ -87,6 +87,7 @@ ARG_ITEM_SHORT = 'i'
 ARG_DESC_ITEM = 'Item used'
 
 VAL_MODE_DUPLICATES = 'duplicates'
+VAL_MODE_NCNAME = 'ncname'
 
 FILE_ENCODING = 'utf8'
 
@@ -99,3 +100,5 @@ HEADER_R_ESCAPE = '}'
 WEBSITE_ROOT = 'https://ibm.github.io/compliance-trestle'
 
 BUG_REPORT = 'https://github.com/IBM/compliance-trestle/issues/new/choose'
+
+NCNAME_REGEX = r'^[a-zA-Z_][\w.-]*$'
