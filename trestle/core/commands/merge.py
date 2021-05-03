@@ -108,7 +108,7 @@ class MergeCmd(CommandPlusDocs):
             merged_model_type, merged_model_alias, merged_model_instance = load_distributed.load_distributed(
                 destination_model_filename, collection_type)
             plan = Plan()
-            reset_destination_action = CreatePathAction(destination_model_filename.resolve(), clear_content=True)
+            reset_destination_action = CreatePathAction(destination_model_filename, clear_content=True)
             wrapper_alias = destination_model_alias
             write_destination_action = WriteFileAction(
                 destination_model_filename, Element(merged_model_instance, wrapper_alias), content_type=file_type

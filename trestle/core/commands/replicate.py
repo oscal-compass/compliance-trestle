@@ -173,13 +173,11 @@ class ReplicateCmd(CommandPlusDocs):
         logger.debug('Entering replicate_object.')
 
         # 1 Bad working directory if not running from current working directory
-        cwd = pathlib.Path.cwd().resolve()
+        cwd = pathlib.Path.cwd()
         trestle_root = fs.get_trestle_project_root(cwd)
         if trestle_root is None:
             logger.error(f'Current working directory: {cwd} is not within a trestle project.')
             return 1
-
-        trestle_root = trestle_root.resolve()
 
         plural_path = fs.model_type_to_model_dir(model_alias)
 
@@ -196,7 +194,7 @@ class ReplicateCmd(CommandPlusDocs):
         # 3 Distributed load from file
 
         try:
-            model_type, model_alias, model_instance = load_distributed(input_file.resolve())
+            model_type, model_alias, model_instance = load_distributed(input_file)
         except TrestleError as err:
             logger.debug(f'load_distributed() failed: {err}')
             logger.warning(f'Replicate failed, error loading file: {err}')
@@ -222,8 +220,8 @@ class ReplicateCmd(CommandPlusDocs):
 
         # 4 Prepare actions and plan
         top_element = Element(model_instance)
-        create_action = CreatePathAction(rep_model_path.resolve(), True)
-        write_action = WriteFileAction(rep_model_path.resolve(), top_element, content_type)
+        create_action = CreatePathAction(rep_model_path, True)
+        write_action = WriteFileAction(rep_model_path, top_element, content_type)
 
         # create a plan to create the directory and imported file.
         replicate_plan = Plan()

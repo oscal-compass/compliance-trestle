@@ -75,14 +75,14 @@ class SplitCmd(CommandPlusDocs):
             logger.error(f'Argument "-{const.ARG_FILE_SHORT}" is required')
             return 1
 
-        file_path = pathlib.Path(args_raw[const.ARG_FILE])
+        file_path = pathlib.Path(args_raw[const.ARG_FILE]).resolve()
         if not file_path.exists():
             logger.error(f'File {file_path} does not exist.')
             return 1
         content_type = FileContentType.to_content_type(file_path.suffix)
 
         # find the base directory of the file
-        file_absolute_path = pathlib.Path(file_path.resolve())
+        file_absolute_path = pathlib.Path(file_path)
         base_dir = file_absolute_path.parent
 
         model_type, _ = fs.get_stripped_contextual_model(file_absolute_path)

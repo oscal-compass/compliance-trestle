@@ -43,8 +43,6 @@ def test_should_ignore() -> None:
 
 def test_is_valid_project_root(tmp_path: pathlib.Path) -> None:
     """Test is_valid_project_root method."""
-    assert fs.is_valid_project_root(None) is False
-    assert fs.is_valid_project_root(pathlib.Path('')) is False
     assert fs.is_valid_project_root(tmp_path) is False
 
     test_utils.ensure_trestle_config_dir(tmp_path)
@@ -53,8 +51,6 @@ def test_is_valid_project_root(tmp_path: pathlib.Path) -> None:
 
 def test_has_parent_path(tmp_path: pathlib.Path) -> None:
     """Test has_parent_path method."""
-    assert fs.has_parent_path(tmp_path, pathlib.Path('')) is False
-    assert fs.has_parent_path(tmp_path, None) is False
     assert fs.has_parent_path(pathlib.Path('tests'), test_utils.BASE_TMP_DIR) is False
     assert fs.has_parent_path(pathlib.Path('/invalid/path'), test_utils.BASE_TMP_DIR) is False
 
@@ -86,8 +82,6 @@ def test_get_trestle_project_root(tmp_path: pathlib.Path, rand_str: str) -> None
 
 def test_is_valid_project_model_path(tmp_path: pathlib.Path) -> None:
     """Test is_valid_project_model method."""
-    assert fs.is_valid_project_model_path(None) is False
-    assert fs.is_valid_project_model_path(pathlib.Path('')) is False
     assert fs.is_valid_project_model_path(tmp_path) is False
 
     test_utils.ensure_trestle_config_dir(tmp_path)
@@ -111,8 +105,6 @@ def test_is_valid_project_model_path(tmp_path: pathlib.Path) -> None:
 
 def test_get_project_model_path(tmp_path: pathlib.Path) -> None:
     """Test get_project_model_path  method."""
-    assert fs.get_project_model_path(None) is None
-    assert fs.get_project_model_path(pathlib.Path('')) is None
     assert fs.get_project_model_path(tmp_path) is None
 
     test_utils.ensure_trestle_config_dir(tmp_path)
@@ -529,14 +521,6 @@ def test_get_models_of_type_bad_cwd(tmp_path) -> None:
     """Test fs.get_models_of_type() from outside trestle dir."""
     with pytest.raises(TrestleError):
         fs.get_models_of_type('catalog')
-
-
-def test_model_or_file_to_model_name(tmp_trestle_dir) -> None:
-    """Test fs.model_or_file_to_model_name()."""
-    assert fs.model_or_file_to_model_name('mycatalog') == 'mycatalog'
-    assert fs.model_or_file_to_model_name('mycatalog/catalog.json') == 'mycatalog'
-    with pytest.raises(TrestleError):
-        fs.model_or_file_to_model_name('')
 
 
 def test_is_hidden_posix(tmp_path) -> None:
