@@ -35,7 +35,7 @@ test_data_dir = pathlib.Path('tests/data').resolve()
     'name, mode, parent',
     [
         ('my_test_model', '-f', False), ('my_test_model', '-n', False), ('my_test_model', '-f', True),
-        ('my_test_model', '-t', False), ('my_test_model', '-a', False)
+        ('my_test_model', '-t', False), ('my_test_model', '-a', False), ('my_test_model', '-x', False)
     ]
 )
 def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> None:
@@ -55,13 +55,15 @@ def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> 
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {model_def_file} -m duplicates -i uuid'
+            testcmd = f'trestle validate {mode} {model_def_file} -m duplicates'
         else:
-            testcmd = f'trestle validate {mode} {model_def_file.parent} -m duplicates -i uuid'
+            testcmd = f'trestle validate {mode} {model_def_file.parent} -m duplicates'
     elif mode == '-n':
-        testcmd = f'trestle validate -t target-definition -n {name} -m duplicates -i uuid'
+        testcmd = f'trestle validate -t target-definition -n {name} -m duplicates'
+    elif mode == '-x':
+        testcmd = f'trestle validate -t target-definition -n {name}'
     else:
-        testcmd = 'trestle validate -a -m duplicates -i uuid'
+        testcmd = 'trestle validate -a -m duplicates'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -74,7 +76,8 @@ def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> 
     'name, mode, parent',
     [
         ('my_test_model', '-f', False), ('my_test_model', '-n', False), ('my_test_model', '-f', True),
-        ('my_test_model', '-t', False), ('my_test_model', '-a', False), ('foo', '-n', False)
+        ('my_test_model', '-t', False), ('my_test_model', '-a', False), ('foo', '-n', False),
+        ('my_test_model', '-x', False)
     ]
 )
 def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> None:
@@ -94,13 +97,15 @@ def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {model_def_file} -m duplicates -i uuid'
+            testcmd = f'trestle validate {mode} {model_def_file} -m duplicates'
         else:
-            testcmd = f'trestle validate {mode} {model_def_file.parent} -m duplicates -i uuid'
+            testcmd = f'trestle validate {mode} {model_def_file.parent} -m duplicates'
     elif mode == '-n':
-        testcmd = f'trestle validate -t target-definition -n {name} -m duplicates -i uuid'
+        testcmd = f'trestle validate -t target-definition -n {name} -m duplicates'
+    elif mode == '-x':
+        testcmd = f'trestle validate -t target-definition -n {name}'
     else:
-        testcmd = 'trestle validate -a -m duplicates -i uuid'
+        testcmd = 'trestle validate -a -m duplicates'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -115,7 +120,7 @@ def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -
         ('my_ap', '-f', False, 'role', 0), ('my_ap', '-n', False, 'role', 0), ('my_ap', '-f', True, 'role', 0),
         ('my_ap', '-t', False, 'role', 0), ('my_ap', '-a', False, 'role', 0), ('my_ap', '-f', False, 'r:ole', 1),
         ('my_ap', '-n', False, 'r:ole', 1), ('my_ap', '-f', True, 'r:ole', 1), ('my_ap', '-t', False, 'r:ole', 1),
-        ('my_ap', '-a', False, 'r:ole', 1), ('foo', '-n', False, 'role', 1), ('my_ap', '-x', False, 'role', 1)
+        ('my_ap', '-a', False, 'r:ole', 1), ('foo', '-n', False, 'role', 1)
     ]
 )
 def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathlib.Path) -> None:
@@ -131,17 +136,15 @@ def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathl
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {ap_path} -m ncname -i roleid'
+            testcmd = f'trestle validate {mode} {ap_path} -m ncname'
         else:
-            testcmd = f'trestle validate {mode} {ap_path.parent} -m ncname -i roleid'
+            testcmd = f'trestle validate {mode} {ap_path.parent} -m ncname'
     elif mode == '-n':
-        testcmd = f'trestle validate -t assessment-plan -n {name} -m ncname -i roleid'
+        testcmd = f'trestle validate -t assessment-plan -n {name} -m ncname'
     elif mode == '-t':
-        testcmd = 'trestle validate -t assessment-plan -m ncname -i roleid'
-    elif mode == '-x':
-        testcmd = 'trestle validate -t assessment-plan -m ncname -i foo'
+        testcmd = 'trestle validate -t assessment-plan -m ncname'
     else:
-        testcmd = 'trestle validate -a -m ncname -i roleid'
+        testcmd = 'trestle validate -a -m ncname'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -156,7 +159,7 @@ def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathl
         ('my_ap', '-f', False, 'id1', 0), ('my_ap', '-n', False, 'id1', 0), ('my_ap', '-f', True, 'id1', 0),
         ('my_ap', '-t', False, 'id1', 0), ('my_ap', '-a', False, 'id1', 0), ('my_ap', '-f', False, 'foo', 1),
         ('my_ap', '-n', False, 'foo', 1), ('my_ap', '-f', True, 'foo', 1), ('my_ap', '-t', False, 'foo', 1),
-        ('my_ap', '-a', False, 'foo', 1), ('foo', '-n', False, 'id1', 1), ('my_ap', '-x', False, 'id1', 1)
+        ('my_ap', '-a', False, 'foo', 1), ('foo', '-n', False, 'id1', 1)
     ]
 )
 def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir: pathlib.Path) -> None:
@@ -174,17 +177,15 @@ def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir:
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {ap_path} -m refs -i roleid'
+            testcmd = f'trestle validate {mode} {ap_path} -m refs'
         else:
-            testcmd = f'trestle validate {mode} {ap_path.parent} -m refs -i roleid'
+            testcmd = f'trestle validate {mode} {ap_path.parent} -m refs'
     elif mode == '-n':
-        testcmd = f'trestle validate -t assessment-plan -n {name} -m refs -i roleid'
+        testcmd = f'trestle validate -t assessment-plan -n {name} -m refs'
     elif mode == '-t':
-        testcmd = 'trestle validate -t assessment-plan -m refs -i roleid'
-    elif mode == '-x':
-        testcmd = 'trestle validate -t assessment-plan -m refs -i foo'
+        testcmd = 'trestle validate -t assessment-plan -m refs'
     else:
-        testcmd = 'trestle validate -a -m refs -i roleid'
+        testcmd = 'trestle validate -a -m refs'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:

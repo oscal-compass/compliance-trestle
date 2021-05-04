@@ -15,8 +15,6 @@
 # limitations under the License.
 """Validate by confirming no duplicate items."""
 
-import argparse
-
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.validator import Validator
 from trestle.core.validator_helper import has_no_duplicate_values_by_name
@@ -25,6 +23,6 @@ from trestle.core.validator_helper import has_no_duplicate_values_by_name
 class DuplicatesValidator(Validator):
     """Check for duplicate items in oscal object."""
 
-    def model_is_valid(self, model: OscalBaseModel, args: argparse.Namespace) -> bool:
+    def model_is_valid(self, model: OscalBaseModel) -> bool:
         """Test if the model is valid."""
-        return has_no_duplicate_values_by_name(model, args.item)
+        return has_no_duplicate_values_by_name(model, 'uuid')

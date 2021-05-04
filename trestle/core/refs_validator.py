@@ -14,10 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Validate by confirming all refs have corresponding id."""
-import argparse
-
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.err import TrestleError
 from trestle.core.validator import Validator
 from trestle.core.validator_helper import find_values_by_name
 
@@ -25,10 +22,8 @@ from trestle.core.validator_helper import find_values_by_name
 class RefsValidator(Validator):
     """Validator to confirm all references in responsible parties are found in roles."""
 
-    def model_is_valid(self, model: OscalBaseModel, args: argparse.Namespace) -> bool:
+    def model_is_valid(self, model: OscalBaseModel) -> bool:
         """Test if the model is valid."""
-        if args.item != 'roleid':
-            raise TrestleError(f'{args.item} is not a valid item for validation based on refs.')
         metadata = model.metadata
         roles_list_of_lists = find_values_by_name(metadata, 'roles')
         roles_list = [item.id for sublist in roles_list_of_lists for item in sublist]

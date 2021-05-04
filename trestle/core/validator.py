@@ -35,7 +35,7 @@ class Validator(ABC):
     """Validator base class."""
 
     @abstractmethod
-    def model_is_valid(self, model: OscalBaseModel, args: argparse.Namespace) -> bool:
+    def model_is_valid(self, model: OscalBaseModel) -> bool:
         """Validate the model."""
 
     def validate(self, args: argparse.Namespace) -> int:
@@ -57,7 +57,7 @@ class Validator(ABC):
                 except TrestleError as e:
                     logger.warning(f'File load error {e}')
                     return 1
-                if not self.model_is_valid(model, args):
+                if not self.model_is_valid(model):
                     return 1
             return 0
 
@@ -67,7 +67,7 @@ class Validator(ABC):
             for mt in model_tups:
                 model_path = trestle_root / fs.model_type_to_model_dir(mt[0]) / mt[1]
                 _, _, model = load_distributed(model_path)
-                if not self.model_is_valid(model, args):
+                if not self.model_is_valid(model):
                     return 1
             return 0
 
@@ -75,6 +75,6 @@ class Validator(ABC):
         if 'file' in args and args.file:
             file_path = trestle_root / args.file
             _, _, model = load_distributed(file_path)
-            if not self.model_is_valid(model, args):
+            if not self.model_is_valid(model):
                 return 1
         return 0
