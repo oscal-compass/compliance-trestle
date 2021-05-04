@@ -156,7 +156,7 @@ def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathl
         ('my_ap', '-f', False, 'id1', 0), ('my_ap', '-n', False, 'id1', 0), ('my_ap', '-f', True, 'id1', 0),
         ('my_ap', '-t', False, 'id1', 0), ('my_ap', '-a', False, 'id1', 0), ('my_ap', '-f', False, 'foo', 1),
         ('my_ap', '-n', False, 'foo', 1), ('my_ap', '-f', True, 'foo', 1), ('my_ap', '-t', False, 'foo', 1),
-        ('my_ap', '-a', False, 'foo', 1), ('foo', '-n', False, 'id1', 1)
+        ('my_ap', '-a', False, 'foo', 1), ('foo', '-n', False, 'id1', 1), ('my_ap', '-x', False, 'id1', 1)
     ]
 )
 def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir: pathlib.Path) -> None:
@@ -174,15 +174,17 @@ def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir:
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {ap_path} -m refs -i role'
+            testcmd = f'trestle validate {mode} {ap_path} -m refs -i roleid'
         else:
-            testcmd = f'trestle validate {mode} {ap_path.parent} -m refs -i role'
+            testcmd = f'trestle validate {mode} {ap_path.parent} -m refs -i roleid'
     elif mode == '-n':
-        testcmd = f'trestle validate -t assessment-plan -n {name} -m refs -i role'
+        testcmd = f'trestle validate -t assessment-plan -n {name} -m refs -i roleid'
     elif mode == '-t':
-        testcmd = 'trestle validate -t assessment-plan -m refs -i role'
+        testcmd = 'trestle validate -t assessment-plan -m refs -i roleid'
+    elif mode == '-x':
+        testcmd = 'trestle validate -t assessment-plan -m refs -i foo'
     else:
-        testcmd = 'trestle validate -a -m refs -i role'
+        testcmd = 'trestle validate -a -m refs -i roleid'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
