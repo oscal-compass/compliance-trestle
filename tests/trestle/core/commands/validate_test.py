@@ -18,6 +18,7 @@ import pathlib
 import shutil
 import sys
 from unittest.mock import patch
+from uuid import uuid4
 
 import pytest
 
@@ -114,7 +115,7 @@ def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -
         ('my_ap', '-f', False, 'role', 0), ('my_ap', '-n', False, 'role', 0), ('my_ap', '-f', True, 'role', 0),
         ('my_ap', '-t', False, 'role', 0), ('my_ap', '-a', False, 'role', 0), ('my_ap', '-f', False, 'r:ole', 1),
         ('my_ap', '-n', False, 'r:ole', 1), ('my_ap', '-f', True, 'r:ole', 1), ('my_ap', '-t', False, 'r:ole', 1),
-        ('my_ap', '-a', False, 'r:ole', 1), ('foo', '-n', False, 'role', 1)
+        ('my_ap', '-a', False, 'r:ole', 1), ('foo', '-n', False, 'role', 1), ('my_ap', '-x', False, 'role', 1)
     ]
 )
 def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathlib.Path) -> None:
@@ -137,8 +138,51 @@ def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathl
         testcmd = f'trestle validate -t assessment-plan -n {name} -m ncname -i roleid'
     elif mode == '-t':
         testcmd = 'trestle validate -t assessment-plan -m ncname -i roleid'
+    elif mode == '-x':
+        testcmd = 'trestle validate -t assessment-plan -m ncname -i foo'
     else:
         testcmd = 'trestle validate -a -m ncname -i roleid'
+
+    with patch.object(sys, 'argv', testcmd.split()):
+        with pytest.raises(SystemExit) as pytest_wrapped_e:
+            cli.run()
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code == code
+
+
+@pytest.mark.parametrize(
+    'name, mode, parent, test_id, code',
+    [
+        ('my_ap', '-f', False, 'id1', 0), ('my_ap', '-n', False, 'id1', 0), ('my_ap', '-f', True, 'id1', 0),
+        ('my_ap', '-t', False, 'id1', 0), ('my_ap', '-a', False, 'id1', 0), ('my_ap', '-f', False, 'foo', 1),
+        ('my_ap', '-n', False, 'foo', 1), ('my_ap', '-f', True, 'foo', 1), ('my_ap', '-t', False, 'foo', 1),
+        ('my_ap', '-a', False, 'foo', 1), ('foo', '-n', False, 'id1', 1)
+    ]
+)
+def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test validation of roles and references to them in responsible-parties."""
+    (tmp_trestle_dir / 'assessment-plans/my_ap').mkdir(exist_ok=True, parents=True)
+    roles = [ap.Role(id='id1', title='title1'), ap.Role(id='id2', title='title2'), ap.Role(id='id3', title='title3')]
+    party1 = ap.ResponsibleParty(party_uuids=[ap.PartyUuid(__root__=str(uuid4()))])
+    party2 = ap.ResponsibleParty(party_uuids=[ap.PartyUuid(__root__=str(uuid4()))])
+    responsible_parties = {test_id: party1, 'id2': party2}
+    ap_obj = generate_sample_model(ap.AssessmentPlan)
+    ap_obj.metadata.roles = roles
+    ap_obj.metadata.responsible_parties = responsible_parties
+    ap_path = tmp_trestle_dir / 'assessment-plans/my_ap/assessment-plan.json'
+    ap_obj.oscal_write(ap_path)
+
+    if mode == '-f':
+        if not parent:
+            testcmd = f'trestle validate {mode} {ap_path} -m refs -i role'
+        else:
+            testcmd = f'trestle validate {mode} {ap_path.parent} -m refs -i role'
+    elif mode == '-n':
+        testcmd = f'trestle validate -t assessment-plan -n {name} -m refs -i role'
+    elif mode == '-t':
+        testcmd = 'trestle validate -t assessment-plan -m refs -i role'
+    else:
+        testcmd = 'trestle validate -a -m refs -i role'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:

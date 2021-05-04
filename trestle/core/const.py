@@ -88,6 +88,7 @@ ARG_DESC_ITEM = 'Item used'
 
 VAL_MODE_DUPLICATES = 'duplicates'
 VAL_MODE_NCNAME = 'ncname'
+VAL_MODE_REFS = 'refs'
 
 FILE_ENCODING = 'utf8'
 

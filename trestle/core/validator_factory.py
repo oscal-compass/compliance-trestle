@@ -18,15 +18,16 @@
 from ilcli import Command
 
 from trestle.core import const
-from trestle.core import duplicates_validator, roleid_validator
+from trestle.core import duplicates_validator, ncname_validator, refs_validator
 from trestle.core.object_factory import ObjectFactory
 
 # Create the singleton validator factory
 validator_factory: ObjectFactory = ObjectFactory()
 
 # Register all validators here
-validator_factory.register_object(const.VAL_MODE_DUPLICATES + '_uuid', duplicates_validator.DuplicatesValidator)
-validator_factory.register_object(const.VAL_MODE_NCNAME + '_roleid', roleid_validator.RoleIdValidator)
+validator_factory.register_object(const.VAL_MODE_DUPLICATES, duplicates_validator.DuplicatesValidator())
+validator_factory.register_object(const.VAL_MODE_NCNAME, ncname_validator.NcNameValidator())
+validator_factory.register_object(const.VAL_MODE_REFS, refs_validator.RefsValidator())
 
 
 def init_arguments(cmd: Command) -> None:
@@ -36,13 +37,11 @@ def init_arguments(cmd: Command) -> None:
     group.add_argument('-t', '--type', choices=const.MODEL_TYPE_LIST, help='Validate one or all models of this type.')
     group.add_argument('-a', '--all', action='store_true', help='Validate all models in trestle directory.')
     cmd.add_argument('-n', '--name', help='Name of single model to validate (with --type specified).', required=False)
-    cmd.add_argument(
-        '-i', '--item', choices=['uuid', 'roleid'], help='Name of item in model to validate.', required=True
-    )
+    cmd.add_argument('-i', '--item', help='Name of item in model used for validation.', required=True)
     cmd.add_argument(
         '-m',
         '--mode',
-        choices=[const.VAL_MODE_DUPLICATES, const.VAL_MODE_NCNAME],
+        choices=[const.VAL_MODE_DUPLICATES, const.VAL_MODE_NCNAME, const.VAL_MODE_REFS],
         help='Mode of validation to use.',
         required=True
     )

@@ -32,4 +32,4 @@ class ObjectFactory:
 
     def get(self, args: argparse.Namespace) -> Any:
         """Create the object from the args."""
-        return self._objects.get(args.mode + '_' + args.item)
+        return self._objects.get(args.mode)
