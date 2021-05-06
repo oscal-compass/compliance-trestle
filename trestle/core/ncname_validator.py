@@ -15,14 +15,29 @@
 # limitations under the License.
 """Validate by confirming no duplicate items."""
 
+import re
+
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.const import NCNAME_REGEX
 from trestle.core.validator import Validator
-from trestle.core.validator_helper import has_no_duplicate_values_by_name
+from trestle.core.validator_helper import find_values_by_name
 
 
-class DuplicatesValidator(Validator):
-    """Check for duplicate items in oscal object."""
+class NcNameValidator(Validator):
+    """Check that all item values conform to NCName regex."""
+
+    def _model_is_valid_role_id(self, model: OscalBaseModel) -> bool:
+        """Handle specific case for role_id."""
+        role_ids_list = find_values_by_name(model, 'role_ids')
+        p = re.compile(NCNAME_REGEX)
+        for role_id_list in role_ids_list:
+            for role_id in role_id_list:
+                s = str(role_id.__root__)
+                matched = p.match(s)
+                if matched is None:
+                    return False
+        return True
 
     def model_is_valid(self, model: OscalBaseModel) -> bool:
         """Test if the model is valid."""
-        return has_no_duplicate_values_by_name(model, 'uuid')
+        return self._model_is_valid_role_id(model)
