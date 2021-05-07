@@ -137,6 +137,7 @@ Note that by default this will automatically enforce the task."""
         except Exception as ex:
             logger.error(f'Template for task {task_name} failed to validate due to {ex}')
             return 1
+        logger.info(f'TEMPLATES VALID: {task_name}')
         return 0
 
     def _validate_template_dir(self, template_dir: pathlib.Path) -> bool:
@@ -165,8 +166,8 @@ Note that by default this will automatically enforce the task."""
                 continue
             status = md_validator.validate(potential_md_file)
             if not status:
-                logger.info(f'Markdown file {potential_md_file} fails to meet template for task {task_name}.')
+                logger.info(f'INVALID: {potential_md_file}')
                 return 1
             else:
-                logger.info(f'Markdown file {potential_md_file} is valid for task {task_name}.')
+                logger.info(f'VALID: {potential_md_file}')
         return 0

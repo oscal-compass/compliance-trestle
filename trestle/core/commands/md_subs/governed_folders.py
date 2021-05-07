@@ -104,9 +104,7 @@ that directory tree are enforced."""
         template_files = template_dir.rglob('*')
 
         for template_file in template_files:
-            if template_file.stem[0] == '.':
-                # TODO: windows equivalent
-                # Ignore '.' files
+            if fs.is_hidden(template_file):
                 continue
             elif template_file.is_dir():
                 continue
@@ -118,6 +116,7 @@ that directory tree are enforced."""
                     return 1
             else:
                 logger.info(f'File: {template_file} within the template directory was ignored as it is not markdown.')
+        logger.info(f'TEMPLATES VALID: {task_name}.')
         return 0
 
     @classmethod

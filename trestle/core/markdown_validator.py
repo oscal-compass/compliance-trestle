@@ -28,6 +28,15 @@ from trestle.core import err
 logger = logging.getLogger(__name__)
 
 
+def has_required(*argv):
+    """For list of object/attrib pairs confirm that the objects have the attrib."""
+    npairs = len(argv) // 2
+    for i in range(npairs):
+        if not argv[2 * i + 1] in argv[2 * i]:
+            return False
+    return True
+
+
 def partition_ast(content: List[Dict[str, Any]], ref_level: int = 0) -> Tuple[List[Dict[str, Any]], int]:
     """
     Partition AST, recursive function to create a hierarchial tree out of a stream of markdown elements.
@@ -88,6 +97,13 @@ def compare_tree(template: Dict[str, Any], content: Dict[str, Any]) -> bool:
     if not (template['type'] == 'heading'):
         # It's okay as we should not be here:
         return True
+    logger.debug('In compare tree')
+    if not has_required(template, 'level', template['children'][0], 'text'):
+        logger.error('In compare tree template does not have expected structure')
+        return False
+    if not has_required(content, 'level', content['children'][0], 'text'):
+        logger.error('In compare tree content does not have expected structure')
+        return False
     template_heading_level = template['level']
     template_header_name = template['children'][0]['text'].strip()
     content_heading_level = content['level']
@@ -106,14 +122,14 @@ def compare_tree(template: Dict[str, Any], content: Dict[str, Any]) -> bool:
     template_sub_headers = []
     content_sub_headers = []
     for ii in range(len(template['children'])):
-        if template['children'][ii]['type'] == 'heading':
+        if template['children'][ii].get('type') == 'heading':
             template_sub_headers.append(template['children'][ii])
     # IF there is no template headers we are good
     if len(template_sub_headers) == 0:
         return True
 
     for ii in range(len(content['children'])):
-        if content['children'][ii]['type'] == 'heading':
+        if content['children'][ii].get('type') == 'heading':
             content_sub_headers.append(content['children'][ii])
 
     if not len(template_sub_headers) == len(content_sub_headers):
@@ -244,9 +260,11 @@ class MarkdownValidator:
         Returns:
             Whether or not the the candidate matches the template keys.
         """
+        if len(template.keys()) != len(candidate.keys()):
+            return False
         for key in template.keys():
             if key in candidate.keys():
-                if type(template[key]) == dict:
+                if type(template[key]) == dict and type(candidate[key]) == dict:
                     status = cls.compare_keys(template[key], candidate[key])
                     if not status:
                         return status
