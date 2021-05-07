@@ -195,6 +195,13 @@ def test_bad_file_path(tmp_path: pathlib.Path):
         }, {
             'hello': 1,
             'my-world': 2,
+        }, False), ({
+            'hello': 1,
+            'world': 2,
+        }, {
+            'hello': 1,
+            'world': 2,
+            'banana': 3,
         }, False)
     ]
 )
