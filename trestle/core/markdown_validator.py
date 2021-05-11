@@ -157,6 +157,7 @@ class MarkdownValidator:
         self,
         template_path: pathlib.Path,
         yaml_header_validate: bool,
+        yaml_only_validate: bool,
         strict_heading_validate: Optional[str] = None
     ) -> None:
         """
@@ -165,9 +166,11 @@ class MarkdownValidator:
         Args:
             template_path: path to markdown template.
             yaml_header_validate: whether to validate a yaml header for conformance or not
+            yaml_only_validate: whether to validate only the yaml header
             strict_heading_validate: Whether a heading, provided in the template, is to have line-by-line matching.
         """
         self._yaml_header_validate = yaml_header_validate
+        self._yaml_only_validate = yaml_only_validate
         self.template_path = template_path
         if not self.template_path.is_file():
             logger.error(f'Provided template {self.template_path.resolve()} is not a file')
@@ -233,11 +236,13 @@ class MarkdownValidator:
         """
         logger.info(f'Validating {candidate} against{self.template_path}')
         header_content, mistune_parse_content = self.load_markdown_parsetree(candidate)
-        if self._yaml_header_validate:
+        if self._yaml_header_validate or self._yaml_only_validate:
             header_status = self.compare_keys(self._template_header, header_content)
             if not header_status:
                 logger.warning(f'YAML header mismatch between template {self.template_path} and instance {candidate}')
                 return False
+        if self._yaml_only_validate:
+            return True
         candidate_tree, _ = partition_ast(mistune_parse_content)
         w_candidate_tree = self.wrap_content(candidate_tree)
         if self._strict_heading_validate is not None:

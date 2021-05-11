@@ -59,13 +59,23 @@ that directory tree are enforced."""
 
             elif args.mode == 'template-validate':
                 status = self.template_validate(
-                    args.task_name, trestle_root, args.governed_heading, args.header_validate
+                    args.task_name,
+                    trestle_root,
+                    args.governed_heading,
+                    args.header_validate,
+                    args.header_only_validate
                 )
             elif args.mode == 'setup':
                 status = self.setup_template(args.task_name, trestle_root)
             elif args.mode == 'validate':
                 # mode is validate
-                status = self.validate(args.task_name, trestle_root, args.governed_heading, args.header_validate)
+                status = self.validate(
+                    args.task_name,
+                    trestle_root,
+                    args.governed_heading,
+                    args.header_validate,
+                    args.header_only_validate
+                )
         except Exception as e:
             logger.error(f'Exception "{e}" running trestle md governed folders.')
         return status
@@ -94,7 +104,14 @@ that directory tree are enforced."""
         return 0
 
     @classmethod
-    def template_validate(cls, task_name: str, trestle_root: pathlib.Path, heading: str, validate_header: bool) -> int:
+    def template_validate(
+        cls,
+        task_name: str,
+        trestle_root: pathlib.Path,
+        heading: str,
+        validate_header: bool,
+        validate_only_header: bool
+    ) -> int:
         """Validate that the template is acceptable markdown."""
         template_dir = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name
         if not template_dir.is_dir():
@@ -110,7 +127,9 @@ that directory tree are enforced."""
                 continue
             elif template_file.suffix.lower() == '.md':
                 try:
-                    _ = markdown_validator.MarkdownValidator(template_file, validate_header, heading)
+                    _ = markdown_validator.MarkdownValidator(
+                        template_file, validate_header, validate_only_header, heading
+                    )
                 except Exception as ex:
                     logger.error(f'Template file {template_file} for task {task_name} failed to validate due to {ex}')
                     return 1
@@ -121,7 +140,12 @@ that directory tree are enforced."""
 
     @classmethod
     def _measure_template_folder(
-        cls, template_dir: pathlib.Path, instance_dir: pathlib.Path, governed_heading: str, validate_header: bool
+        cls,
+        template_dir: pathlib.Path,
+        instance_dir: pathlib.Path,
+        governed_heading: str,
+        validate_header: bool,
+        validate_only_header: bool
     ) -> bool:
 
         r_instance_files: List[pathlib.Path] = []
@@ -148,7 +172,7 @@ that directory tree are enforced."""
                 else:
                     # Measure
                     md_validator = markdown_validator.MarkdownValidator(
-                        template_file, validate_header, governed_heading
+                        template_file, validate_header, validate_only_header, governed_heading
                     )
                     full_path = instance_dir / r_template_path
                     status = md_validator.validate(full_path)

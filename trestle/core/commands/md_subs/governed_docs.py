@@ -60,13 +60,23 @@ Note that by default this will automatically enforce the task."""
 
             elif args.mode == 'template-validate':
                 status = self.template_validate(
-                    args.task_name, trestle_root, args.governed_heading, args.header_validate
+                    args.task_name,
+                    trestle_root,
+                    args.governed_heading,
+                    args.header_validate,
+                    args.header_only_validate
                 )
             elif args.mode == 'setup':
                 status = self.setup_template_governed_docs(args.task_name, trestle_root)
             elif args.mode == 'validate':
                 # mode is validate
-                status = self.validate(args.task_name, trestle_root, args.governed_heading, args.header_validate)
+                status = self.validate(
+                    args.task_name,
+                    trestle_root,
+                    args.governed_heading,
+                    args.header_validate,
+                    args.header_only_validate
+                )
         except Exception as e:
             logger.error(f'Error "{e}"" occurred when running trestle md governed docs.')
             logger.error('Exiting')
@@ -122,7 +132,14 @@ Note that by default this will automatically enforce the task."""
                 break
         return 0
 
-    def template_validate(self, task_name: str, trestle_root: pathlib.Path, heading: str, validate_header: bool) -> int:
+    def template_validate(
+        self,
+        task_name: str,
+        trestle_root: pathlib.Path,
+        heading: str,
+        validate_header: bool,
+        validate_only_header: bool
+    ) -> int:
         """Validate that the template is acceptable markdown."""
         template_dir = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name
         template_file = template_dir / self.template_name
@@ -133,7 +150,7 @@ Note that by default this will automatically enforce the task."""
             logger.error(f'Required template file: {template_file} does not exist. Exiting.')
             return 1
         try:
-            _ = markdown_validator.MarkdownValidator(template_file, validate_header, heading)
+            _ = markdown_validator.MarkdownValidator(template_file, validate_header, validate_only_header, heading)
         except Exception as ex:
             logger.error(f'Template for task {task_name} failed to validate due to {ex}')
             return 1
@@ -149,14 +166,23 @@ Note that by default this will automatically enforce the task."""
                 return False
         return True
 
-    def validate(self, task_name: str, trestle_root: pathlib.Path, governed_heading: str, validate_header: bool) -> int:
+    def validate(
+        self,
+        task_name: str,
+        trestle_root: pathlib.Path,
+        governed_heading: str,
+        validate_header: bool,
+        validate_only_header: bool
+    ) -> int:
         """Validate task."""
         task_path = trestle_root / task_name
         if not task_path.is_dir():
             logger.error(f'Task directory {task_path} does not exist. Exiting validate.')
         template_dir = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name
         template_file = template_dir / self.template_name
-        md_validator = markdown_validator.MarkdownValidator(template_file, validate_header, governed_heading)
+        md_validator = markdown_validator.MarkdownValidator(
+            template_file, validate_header, validate_only_header, governed_heading
+        )
         if not template_file.is_file():
             logger.error(f'Required template file: {template_file} does not exist. Exiting.')
             return 1
