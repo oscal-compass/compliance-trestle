@@ -65,11 +65,7 @@ class TaniumToOscal(TaskBase):
         logger.info('  quiet = (optional) true or false [default]; display file creations and rules analysis when false.')
         logger.info('  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Tanium report is used if present, otherwise current time is used.')                                                       
         logger.info('')
-        logger.info('Operation: A transformation is performed on one or more Tanium input files to produce output in OSCAL partial results format. Input files are Tanium reports comprising individual lines consumable as json.')
-        logger.info('')
-        logger.info('All the Tanium report files in the input-dir are processed. Each input file produces a corresponding .json output-dir file.')
-        logger.info('')
-        logger.info('Expected Tanium report keys are: { "IP Address", "Computer Name", "Comply", "Benchmark", "Benchmark Version", "ID", "Result", "Timestamp" }')
+        logger.info('Operation: A transformation is performed on one or more Tanium input files to produce output in OSCAL partial results format.')
         
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
@@ -82,6 +78,7 @@ class TaniumToOscal(TaskBase):
         return self._transform()
     
     def _transform(self) -> TaskOutcome:
+        """Perform transformation."""
         try:
             return self._transform_work()
         except Exception:
@@ -92,6 +89,7 @@ class TaniumToOscal(TaskBase):
             return TaskOutcome(mode + 'failure')
             
     def _transform_work(self) -> TaskOutcome:
+        """Transformation work steps: read input, process, write output, display analysis."""
         mode = ''
         if self._simulate:
             mode = 'simulated-'
@@ -134,10 +132,11 @@ class TaniumToOscal(TaskBase):
         return TaskOutcome(mode + 'success')
 
     def _read_file(self, ifile: t_filename):
+        """Read raw input file."""
         if not self._simulate:
             if self._verbose:
                 logger.info(f'input: {ifile}') 
-        with open(ifile) as fp:
+        with open(ifile, 'r') as fp:
             blob = fp.read()
         return blob
         
