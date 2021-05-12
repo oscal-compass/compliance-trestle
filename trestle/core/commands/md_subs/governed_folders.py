@@ -121,7 +121,7 @@ that directory tree are enforced."""
         template_files = template_dir.rglob('*')
 
         for template_file in template_files:
-            if fs.is_hidden(template_file):
+            if not fs.local_and_visible(template_file):
                 continue
             elif template_file.is_dir():
                 continue
@@ -150,13 +150,13 @@ that directory tree are enforced."""
 
         r_instance_files: List[pathlib.Path] = []
         for instance_file in instance_dir.rglob('*'):
-            if not fs.is_hidden(instance_file):
+            if fs.local_and_visible(instance_file):
                 r_instance_files.append(instance_file.relative_to(instance_dir))
 
         for template_file in template_dir.rglob('*'):
             r_template_path = template_file.relative_to(template_dir)
             # find example directories
-            if fs.is_hidden(template_file):
+            if not fs.local_and_visible(template_file):
                 continue
             elif template_file.is_dir():
                 # assert template directories exist
@@ -207,6 +207,7 @@ that directory tree are enforced."""
         trestle_root: pathlib.Path,
         governed_heading: str,
         validate_header: bool,
+        validate_only_header: bool,
         project_override: bool = False
     ) -> int:
         """Validate task."""
@@ -221,7 +222,11 @@ that directory tree are enforced."""
 
         for task_instance in task_path.iterdir():
             if task_instance.is_dir():
-                result = self._measure_template_folder(template_dir, task_instance, governed_heading, validate_header)
+                if fs.is_symlink(task_instance):
+                    continue
+                result = self._measure_template_folder(
+                    template_dir, task_instance, governed_heading, validate_header, validate_only_header
+                )
                 if not result:
                     logger.error(f'Governed-folder validation failed for task {task_name} on directory {task_instance}')
                     return 1
