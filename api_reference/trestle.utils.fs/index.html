@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.utils.fs/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.2">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.4">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.6f955dcd.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bde7dde4.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
@@ -1411,6 +1411,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.utils.fs.is_symlink" class="md-nav__link">
+    is_symlink()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.utils.fs.is_valid_project_model_path" class="md-nav__link">
     is_valid_project_model_path()
   </a>
@@ -1427,6 +1434,13 @@
           <li class="md-nav__item">
   <a href="#trestle.utils.fs.load_file" class="md-nav__link">
     load_file()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.utils.fs.local_and_visible" class="md-nav__link">
+    local_and_visible()
   </a>
   
 </li>
@@ -1909,6 +1923,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.utils.fs.is_symlink" class="md-nav__link">
+    is_symlink()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.utils.fs.is_valid_project_model_path" class="md-nav__link">
     is_valid_project_model_path()
   </a>
@@ -1925,6 +1946,13 @@
           <li class="md-nav__item">
   <a href="#trestle.utils.fs.load_file" class="md-nav__link">
     load_file()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.utils.fs.local_and_visible" class="md-nav__link">
+    local_and_visible()
   </a>
   
 </li>
@@ -2750,9 +2778,37 @@ a parameter.</p>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;nt&#39;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">win32api</span><span class="o">.</span><span class="n">GetFileAttributes</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">attribute</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">win32con</span><span class="o">.</span><span class="n">FILE_ATTRIBUTE_HIDDEN</span> <span class="o">|</span> <span class="n">win32con</span><span class="o">.</span><span class="n">FILE_ATTRIBUTE_SYSTEM</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># Handle unix</span>
-        <span class="k">return</span> <span class="n">file_path</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="c1"># Handle unix</span>
+    <span class="k">return</span> <span class="n">file_path</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 class="doc doc-heading" id="trestle.utils.fs.is_symlink">
+<code class="highlight language-python"><span class="n">is_symlink</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.utils.fs.is_symlink" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Is the file path a symlink.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/utils/fs.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">is_symlink</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Is the file path a symlink.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;nt&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;.lnk&#39;</span>
+    <span class="k">return</span> <span class="n">file_path</span><span class="o">.</span><span class="n">is_symlink</span><span class="p">()</span>
 </code></pre></div>
         </details>
     </div>
@@ -2870,6 +2926,33 @@ if a OSCAL object type is unknown but the context a user is in.</p>
             <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">content_type</span> <span class="o">==</span> <span class="n">FileContentType</span><span class="o">.</span><span class="n">JSON</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h4 class="doc doc-heading" id="trestle.utils.fs.local_and_visible">
+<code class="highlight language-python"><span class="n">local_and_visible</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.utils.fs.local_and_visible" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Is the file or dir local (not a symlink) and not hidden.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/utils/fs.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">local_and_visible</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Is the file or dir local (not a symlink) and not hidden.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="n">is_hidden</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="ow">or</span> <span class="n">is_symlink</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
 </code></pre></div>
         </details>
     </div>
@@ -3046,10 +3129,10 @@ if a OSCAL object type is unknown but the context a user is in.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.4fa0e4ee.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.4ea5477f.min.js"></script>
+      <script src="../../assets/javascripts/bundle.1d3bfcf1.min.js"></script>
       
     
   </body>

@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.duplicates_validator/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.2">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.4">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.6f955dcd.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bde7dde4.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
@@ -830,41 +830,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.duplicates_validator.DuplicatesValidator.validate" class="md-nav__link">
-    validate()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.duplicates_validator.Validator" class="md-nav__link">
-    Validator
-  </a>
-  
-    <nav class="md-nav" aria-label="Validator">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.duplicates_validator.Validator-methods" class="md-nav__link">
-    Methods
-  </a>
-  
-    <nav class="md-nav" aria-label="Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.duplicates_validator.Validator.validate" class="md-nav__link">
-    validate()
+  <a href="#trestle.core.duplicates_validator.DuplicatesValidator.model_is_valid" class="md-nav__link">
+    model_is_valid()
   </a>
   
 </li>
@@ -1739,41 +1706,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.duplicates_validator.DuplicatesValidator.validate" class="md-nav__link">
-    validate()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.duplicates_validator.Validator" class="md-nav__link">
-    Validator
-  </a>
-  
-    <nav class="md-nav" aria-label="Validator">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.duplicates_validator.Validator-methods" class="md-nav__link">
-    Methods
-  </a>
-  
-    <nav class="md-nav" aria-label="Methods">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.duplicates_validator.Validator.validate" class="md-nav__link">
-    validate()
+  <a href="#trestle.core.duplicates_validator.DuplicatesValidator.model_is_valid" class="md-nav__link">
+    model_is_valid()
   </a>
   
 </li>
@@ -1855,7 +1789,7 @@
 
     <div class="doc doc-contents ">
 
-      <p>Find duplicate items in oscal object.</p>
+      <p>Check for duplicate items in oscal object.</p>
 
 
 
@@ -1874,119 +1808,21 @@
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.duplicates_validator.DuplicatesValidator.validate">
-<code class="highlight language-python"><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span></code>
+<h6 class="doc doc-heading" id="trestle.core.duplicates_validator.DuplicatesValidator.model_is_valid">
+<code class="highlight language-python"><span class="n">model_is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span></code>
 
 
-<a class="headerlink" href="#trestle.core.duplicates_validator.DuplicatesValidator.validate" title="Permanent link">¤</a></h6>
+<a class="headerlink" href="#trestle.core.duplicates_validator.DuplicatesValidator.model_is_valid" title="Permanent link">¤</a></h6>
 
     <div class="doc doc-contents ">
 
-      <p>Perform the validation.</p>
+      <p>Test if the model is valid.</p>
 
         <details class="quote">
           <summary>Source code in <code>trestle/core/duplicates_validator.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Perform the validation.&quot;&quot;&quot;</span>
-    <span class="n">trestle_root</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_trestle_project_root</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">())</span>
-
-    <span class="c1"># validate by type - all of type or just specified by name</span>
-    <span class="k">if</span> <span class="s1">&#39;type&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">models</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">models</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_models_of_type</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
-        <span class="n">models_path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">fs</span><span class="o">.</span><span class="n">model_type_to_model_dir</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
-            <span class="n">model_path</span> <span class="o">=</span> <span class="n">models_path</span> <span class="o">/</span> <span class="n">m</span>
-            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">model</span> <span class="o">=</span> <span class="n">load_distributed</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">has_no_duplicate_values_by_name</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">item</span><span class="p">):</span>
-                <span class="k">return</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="mi">0</span>
-
-    <span class="c1"># validate all</span>
-    <span class="k">if</span> <span class="s1">&#39;all&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">all</span><span class="p">:</span>
-        <span class="n">model_tups</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_all_models</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">mt</span> <span class="ow">in</span> <span class="n">model_tups</span><span class="p">:</span>
-            <span class="n">model_path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">fs</span><span class="o">.</span><span class="n">model_type_to_model_dir</span><span class="p">(</span><span class="n">mt</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">mt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">model</span> <span class="o">=</span> <span class="n">load_distributed</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">has_no_duplicate_values_by_name</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">item</span><span class="p">):</span>
-                <span class="k">return</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="mi">0</span>
-
-    <span class="c1"># validate file</span>
-    <span class="k">if</span> <span class="s1">&#39;file&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">:</span>
-        <span class="n">file_path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">args</span><span class="o">.</span><span class="n">file</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">model</span> <span class="o">=</span> <span class="n">load_distributed</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_no_duplicate_values_by_name</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">item</span><span class="p">):</span>
-            <span class="k">return</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="mi">0</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-class">
-
-
-
-<h4 class="doc doc-heading" id="trestle.core.duplicates_validator.Validator">
-        <code>Validator</code>
-
-
-
-<a class="headerlink" href="#trestle.core.duplicates_validator.Validator" title="Permanent link">¤</a></h4>
-
-    <div class="doc doc-contents ">
-
-      <p>Abstract Validator interface.</p>
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-<h5 id="trestle.core.duplicates_validator.Validator-methods">Methods<a class="headerlink" href="#trestle.core.duplicates_validator.Validator-methods" title="Permanent link">¤</a></h5>
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h6 class="doc doc-heading" id="trestle.core.duplicates_validator.Validator.validate">
-<code class="highlight language-python"><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span></code>
-
-
-<a class="headerlink" href="#trestle.core.duplicates_validator.Validator.validate" title="Permanent link">¤</a></h6>
-
-    <div class="doc doc-contents ">
-
-      <p>Validate the model.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>trestle/core/duplicates_validator.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="nd">@abstractmethod</span>
-<span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Validate the model.&quot;&quot;&quot;</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">model_is_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">OscalBaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Test if the model is valid.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">has_no_duplicate_values_by_name</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;uuid&#39;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2084,10 +1920,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.4fa0e4ee.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.4ea5477f.min.js"></script>
+      <script src="../../assets/javascripts/bundle.1d3bfcf1.min.js"></script>
       
     
   </body>

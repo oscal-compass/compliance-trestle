@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.md_subs.governed_folders/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.2">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.4">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.6f955dcd.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bde7dde4.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
@@ -2051,7 +2051,7 @@
 
 
 <h6 class="doc doc-heading" id="trestle.core.commands.md_subs.governed_folders.GovernedFolders.template_validate">
-<code class="highlight language-python"><span class="n">template_validate</span><span class="p">(</span><span class="n">task_name</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">heading</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">template_validate</span><span class="p">(</span><span class="n">task_name</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">heading</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">,</span> <span class="n">validate_only_header</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
@@ -2066,7 +2066,14 @@
         <details class="quote">
           <summary>Source code in <code>trestle/core/commands/md_subs/governed_folders.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">template_validate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">task_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">heading</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">template_validate</span><span class="p">(</span>
+    <span class="bp">cls</span><span class="p">,</span>
+    <span class="n">task_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
+    <span class="n">heading</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">validate_header</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">validate_only_header</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Validate that the template is acceptable markdown.&quot;&quot;&quot;</span>
     <span class="n">template_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_CONFIG_DIR</span> <span class="o">/</span> <span class="s1">&#39;md&#39;</span> <span class="o">/</span> <span class="n">task_name</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">template_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
@@ -2076,20 +2083,21 @@
     <span class="n">template_files</span> <span class="o">=</span> <span class="n">template_dir</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">template_file</span> <span class="ow">in</span> <span class="n">template_files</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">template_file</span><span class="o">.</span><span class="n">stem</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
-            <span class="c1"># TODO: windows equivalent</span>
-            <span class="c1"># Ignore &#39;.&#39; files</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fs</span><span class="o">.</span><span class="n">local_and_visible</span><span class="p">(</span><span class="n">template_file</span><span class="p">):</span>
             <span class="k">continue</span>
         <span class="k">elif</span> <span class="n">template_file</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
             <span class="k">continue</span>
         <span class="k">elif</span> <span class="n">template_file</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;.md&#39;</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">_</span> <span class="o">=</span> <span class="n">markdown_validator</span><span class="o">.</span><span class="n">MarkdownValidator</span><span class="p">(</span><span class="n">template_file</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">,</span> <span class="n">heading</span><span class="p">)</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="n">markdown_validator</span><span class="o">.</span><span class="n">MarkdownValidator</span><span class="p">(</span>
+                    <span class="n">template_file</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">,</span> <span class="n">validate_only_header</span><span class="p">,</span> <span class="n">heading</span>
+                <span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Template file </span><span class="si">{</span><span class="n">template_file</span><span class="si">}</span><span class="s1"> for task </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s1"> failed to validate due to </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File: </span><span class="si">{</span><span class="n">template_file</span><span class="si">}</span><span class="s1"> within the template directory was ignored as it is not markdown.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;TEMPLATES VALID: </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="mi">0</span>
 </code></pre></div>
         </details>
@@ -2104,7 +2112,7 @@
 
 
 <h6 class="doc doc-heading" id="trestle.core.commands.md_subs.governed_folders.GovernedFolders.validate">
-<code class="highlight language-python"><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">governed_heading</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">,</span> <span class="n">project_override</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">governed_heading</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">,</span> <span class="n">validate_only_header</span><span class="p">,</span> <span class="n">project_override</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 <a class="headerlink" href="#trestle.core.commands.md_subs.governed_folders.GovernedFolders.validate" title="Permanent link">¤</a></h6>
@@ -2121,6 +2129,7 @@
     <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span>
     <span class="n">governed_heading</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">validate_header</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="n">validate_only_header</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">project_override</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Validate task.&quot;&quot;&quot;</span>
@@ -2135,7 +2144,11 @@
 
     <span class="k">for</span> <span class="n">task_instance</span> <span class="ow">in</span> <span class="n">task_path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">task_instance</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_measure_template_folder</span><span class="p">(</span><span class="n">template_dir</span><span class="p">,</span> <span class="n">task_instance</span><span class="p">,</span> <span class="n">governed_heading</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fs</span><span class="o">.</span><span class="n">is_symlink</span><span class="p">(</span><span class="n">task_instance</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_measure_template_folder</span><span class="p">(</span>
+                <span class="n">template_dir</span><span class="p">,</span> <span class="n">task_instance</span><span class="p">,</span> <span class="n">governed_heading</span><span class="p">,</span> <span class="n">validate_header</span><span class="p">,</span> <span class="n">validate_only_header</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Governed-folder validation failed for task </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s1"> on directory </span><span class="si">{</span><span class="n">task_instance</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="mi">1</span>
@@ -2239,10 +2252,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.fe42c31b.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.4fa0e4ee.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.4ea5477f.min.js"></script>
+      <script src="../../assets/javascripts/bundle.1d3bfcf1.min.js"></script>
       
     
   </body>
