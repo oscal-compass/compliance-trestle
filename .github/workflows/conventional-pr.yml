@@ -1,4 +1,4 @@
-name: Trestle Deploy
+name: Conventional PR for develop
 on:
   pull_request:
     types: [opened, reopened, ready_for_review] # Currently, this action only support these events
@@ -15,4 +15,3 @@ jobs:
           access_token: ${{ secrets.ADMIN_PAT }}
           check_draft: true
           link_issue: false
-          
