@@ -42,4 +42,6 @@ class MDCmd(CommandPlusDocs):
         self.add_argument('-hv', '--header-validate', help=header_help, action='store_true')
         header_only_help = """Validate only the yaml header."""
         self.add_argument('-hov', '--header-only-validate', help=header_only_help, action='store_true')
+        recurse_help = """Recurse and validate any subdirectories."""
+        self.add_argument('-r', '--recurse', help=recurse_help, action='store_true')
         self.add_argument('mode', choices=['validate', 'template-validate', 'setup', 'create-sample'])
