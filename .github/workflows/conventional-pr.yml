@@ -1,0 +1,18 @@
+name: Trestle Deploy
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review] # Currently, this action only support these events
+    branches:
+      - develop
+
+jobs:
+  hqprs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: conventional-pr
+        uses: Namchee/conventional-pr@latest
+        with:
+          access_token: ${{ secrets.ADMIN_PAT }}
+          check_draft: true
+          link_issue: false
+          
