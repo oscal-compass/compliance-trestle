@@ -53,7 +53,7 @@ The inventory should be included in *local-definitions* if observations are bein
    "local-definitions": {
        "components": {
            "b3e243a1-4660-4f5a-aa85-159b4b2d69ce": {
-               "type": "Windows 10",
+               "type": "Operating System",
                "title": "Windows 10",
                "description": "Windows 10",
                "status": {
@@ -69,23 +69,23 @@ The inventory should be included in *local-definitions* if observations are bein
                    {
                        "name": "Computer Name",
                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-                       "value": "cmp-wn-2106.demo.tanium.local",
+                       "value": "cmp-wn-2106.demo.tanium.local"
+                   },
+                   {
+                       "name": "Tanium Client IP Address",
+                       "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+                       "value": "192.168.0.120",
                        "class": "scc_inventory_item_id"
                    },
                    {
                        "name": "IP Address",
                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-                       "value": "fe80::3cd5:564b:940e:49ab, 10.8.69.11"
+                       "value": "['fe80::cd44:4154:61e8:53ae', '192.168.0.120']"
                    },
                    {
                        "name": "Count",
                        "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                        "value": "1"
-                   },
-                   {
-                       "name": "Age",
-                       "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-                       "value": "600"
                    }
                ],
                "implemented-components": [
@@ -119,32 +119,60 @@ The inventory should be included in *local-definitions* if observations are bein
 
    ```
    {
-       "uuid": "d8bd1785-b95f-45c9-9fa8-32a362845102",
-       "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
+       "uuid": "74b605f8-7e8c-41b3-9514-2412692fbe01",
+       "description": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
        "props": [
            {
-               "name": "Benchmark",
+               "name": "Check ID",
                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-               "value": "CIS Microsoft Windows 10 Enterprise Release 1803 Benchmark",
-               "class": "scc_goal_type"
+               "value": "CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled"
            },
            {
-               "name": "Benchmark Version",
+               "name": "Check ID Benchmark",
                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-               "value": "1.5.0.1",
-               "class": "scc_goal_version"
+               "value": "CIS Red Hat Enterprise Linux 8 Benchmark",
+               "class": "scc_predefined_profile"
            },
            {
-               "name": "ID",
+               "name": "Check ID Version",
                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords",
-               "class": "scc_goal_name_id"
+               "value": "1.0.0-1",
+               "class": "scc_check_version"
            },
            {
-               "name": "Result",
+               "name": "Check ID Version",
                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
-               "value": "pass",
+               "value": "1.0.0-1",
+               "class": "scc_predefined_profile_version"
+           },
+           {
+               "name": "Check ID Level",
+               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "value": "Level 1 - Server"
+           },
+           {
+               "name": "Rule ID",
+               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
+               "class": "scc_goal_description"
+           },
+           {
+               "name": "Rule ID",
+               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "value": "xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled",
+               "class": "scc_check_name_id"
+           },
+           {
+               "name": "State",
+               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "value": "fail",
                "class": "scc_result"
+           },
+           {
+               "name": "Timestamp",
+               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
+               "value": "2021-05-11T22:34:03+00:00",
+               "class": "scc_timestamp"
            }
        ],
        "methods": [
@@ -152,26 +180,27 @@ The inventory should be included in *local-definitions* if observations are bein
        ],
        "subjects": [
            {
-               "uuid-ref": "c9fb63cf-d21e-4584-88f8-44d67ea33ba0",
+               "uuid-ref": "c8919d2b-3300-4f3f-98f6-15a7104c2e04",
                "type": "inventory-item"
            }
        ],
-       "collected": "2021-04-12T13:26:21.000+00:00"
+       "collected": "2021-05-11T22:34:03.000+00:00"
    }
    ```
 
-1. An obsevration has four required properties -
+1. An obsevration has five required properties -
 
-   - *scc_goal_type* - specifies the document for check such as CIS benchmarks or NIST STIGs.
-   - *scc_goal_version* - gives the version of the goal i.e., CIS benchmark version used for check.
-   - *scc_goal_name_id* - gives the speciifc goal check (rule) that was assessed from the scc_goal_type.
-   - *scc_result* - gives the outcome of performing the check. Possible values are - "pass", "fail", "skip", "error".
+   - *scc_predefined_profile* - identifies both Goal based Profiles (eg CIS-benchmarks, IBM BP etc) and Control/Regulation based Profiles (eg. NIST, FS Cloud etc). The way the integrators or customers will differentiate between the two types of profiles is by the OSCAL element used i.e., Goal based Profiles are defined in the *observation* element which carries the goal id (check id) and posture. Control/Regulation based Profiles  are defined in the *finding* element which carries the control posture, the custom profile name, and the mapping of the goal results to NIST controls
+   - *scc_check_version, scc_predefined_profile_version* - gives the version of the goal/profile i.e., CIS benchmark version used for check.
+   - *scc_goal_description, scc_check_name_id* - gives the speciifc goal check (rule) that was assessed from the scc_predefined_profile.
+   - *scc_result* - gives the outcome of performing the check. Possible values are - "pass", "fail", "error" , "unknown", "notchecked", "notapplicable".
+   - *scc_timestamp* - datetime for this observation. This can be date and time when this observation was performed or reported.
 
 1. Targets such as systems or services MUST be a *subject* in the observation, which MUST be identified by a *uuid-ref* value pointing to the subject in local-definitions.
 
 ## Finding
 
-1. A *finding* represents the assessemnt of a profile control such as NIST 800-53: AC-1 and the related observations. A sample finding object generated from tanium result looks like -
+1. A *finding* represents the assessemnt of a profile control such as NIST 800-53: AC-1 and the related observations. A sample finding object looks like -
 
    ```
    {
@@ -186,13 +215,13 @@ The inventory should be included in *local-definitions* if observations are bein
                    "name": "Profile",
                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                    "value": "Windows 10 - NIST 800-53",
-                   "class": "scc_profile"
+                   "class": "scc_predefined_profile"
                },
                {
                    "name": "Version",
                    "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium",
                    "value": "version: 1",
-                   "class": "scc_profile_version"
+                   "class": "scc_predefined_profile_version"
                },
                {
                    "name": "Custom ID",
@@ -213,4 +242,14 @@ The inventory should be included in *local-definitions* if observations are bein
    }
    ```
 
-1. A finding has two required property *scc_profile* that gives the name of the profile whose control is specified in "id-ref", and *scc_profile_version*.
+1. A finding has two required property *scc_predefined_profile* that gives the name of the profile whose control is specified in "id-ref", and *scc_predefined_profile_version*.
+
+1. If there is no finding associated with a PVP, a single finding will be created (to preserve valid OSCAL) where the UUID maps to a 'all zeros' UUID e.g.:
+
+   ```
+   {
+       "uuid": "00000000-0000-4000-8000-000000000000",
+       "title": "No finding",
+       "description": "No finding."
+   }
+   ```
