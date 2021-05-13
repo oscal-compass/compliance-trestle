@@ -56,16 +56,16 @@ class TaniumTransformer(ResultsTransformer):
 
     def transform(self, blob: str) -> Results:
         """Transform the blob into a Results."""
-        """
-        The expected Tanuim blob is a string that contains embedded lines, each ending with line-end.
-        Each embedded line is a json string.
-        """
         results = Results()
         lines = blob.splitlines()
         for line in lines:
             line = line.strip()
             if len(line) > 0:
                 jdata = json.loads(line)
-                self._results_mgr.ingest(jdata)
+                if type(jdata) is list:
+                    for item in jdata:
+                        self._results_mgr.ingest(item)
+                else:
+                    self._results_mgr.ingest(jdata)
         results.__root__.append(self._results_mgr.result)
         return results

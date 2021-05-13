@@ -16,25 +16,22 @@
 
 import datetime
 import logging
+import traceback
 import uuid
 from typing import Any, Dict, List, Union, ValuesView
 
 from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import Finding
-from trestle.oscal.assessment_results import FindingTarget
 from trestle.oscal.assessment_results import ImplementedComponent
 from trestle.oscal.assessment_results import InventoryItem
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
 from trestle.oscal.assessment_results import Property
-from trestle.oscal.assessment_results import RelatedObservation
 from trestle.oscal.assessment_results import Result
 from trestle.oscal.assessment_results import ReviewedControls
 from trestle.oscal.assessment_results import Status
-from trestle.oscal.assessment_results import Status1
 from trestle.oscal.assessment_results import SubjectReference
 from trestle.oscal.assessment_results import SystemComponent
-from trestle.oscal.assessment_results import Type1
 
 logger = logging.getLogger(__name__)
 
@@ -60,37 +57,55 @@ t_reviewed_controls = ReviewedControls
 t_component_map = Dict[t_component_ref, t_component]
 t_inventory_map = Dict[t_computer_name, t_inventory]
 t_observation_list = List[Observation]
-t_findings_map = Dict[t_control, Any]
-t_results_map = Dict[str, Any]
 
 
 class RuleUse():
     """Represents one row of Tanium data."""
 
-    def __init__(self, tanium_row: t_tanium_row, default_timestamp: t_timestamp) -> None:
+    def __init__(self, tanium_row: t_tanium_row, comply, default_timestamp: t_timestamp) -> None:
         """Initialize given specified args."""
         logger.debug(f'tanium-row: {tanium_row}')
-        keys = tanium_row.keys()
-        for key in keys:
-            if key.startswith('Comply'):
-                key_comply = key
-                break
-        self.ip_address = tanium_row['IP Address']
-        self.computer_name = tanium_row['Computer Name']
-        self.count = tanium_row['Count']
-        self.age = tanium_row['Age']
-        self.benchmark = tanium_row[key_comply][0]['Benchmark']
-        self.benchmark_version = tanium_row[key_comply][0]['Benchmark Version']
-        self.profile = tanium_row[key_comply][0]['Profile']
-        self.id = tanium_row[key_comply][0]['ID']
-        self.result = tanium_row[key_comply][0]['Result']
-        self.custom_id = tanium_row[key_comply][0]['Custom ID']
-        self.version = tanium_row[key_comply][0]['Version']
-        self.timestamp = tanium_row[key_comply][0].get('Timestamp', default_timestamp)
-        self.collected = tanium_row[key_comply][0].get('Collected', default_timestamp)
-        # if no control, then control is rule
-        if len(self.custom_id) == 0:
-            self.custom_id = self.id
+        try:
+            # level 1 keys
+            self.computer_name = tanium_row['Computer Name']
+            self.tanium_client_ip_address = tanium_row['Tanium Client IP Address']
+            self.ip_address = str(tanium_row['IP Address'])
+            self.count = str(tanium_row['Count'])
+            # comply keys
+            self.check_id = comply['Check ID']
+            self.rule_id = comply['Rule ID']
+            self.state = comply['State']
+            #
+            self.check_id_level = '[no results]'
+            self.check_id_version = '[no results]'
+            self.check_id_benchmark = '[no results]'
+            self.component = '[no results]'
+            self.component_type = '[no results]'
+            #
+            if ';' in self.check_id:
+                items = self.check_id.split(';')
+                if len(items) > 2:
+                    self.check_id_level = items[2]
+                if len(items) > 1:
+                    self.check_id_version = items[1]
+                if len(items) > 0:
+                    self.check_id_benchmark = items[0]
+                    self.component = items[0]
+                    if self.component.startswith('CIS '):
+                        self.component = self.component[len('CIS '):]
+                    if self.component.endswith(' Benchmark'):
+                        self.component = self.component[:-len(' Benchmark')]
+                    self.component_type = 'Operating System'
+            #
+            self.timestamp = comply.get('Timestamp', default_timestamp)
+            #
+            self.collected = default_timestamp
+        except Exception as e:
+            logger.debug(f'tanium-row: {tanium_row}')
+            logger.debug(e)
+            logger.debug(traceback.format_exc())
+            raise e
+        return
 
 
 class ResultsMgr():
@@ -114,12 +129,8 @@ class ResultsMgr():
         """Initialize."""
         self.observation_list: t_observation_list = []
         self.component_map: t_component_map = {}
-        self.findings_map: t_findings_map = {}
         self.inventory_map: t_inventory_map = {}
-        self.results_map: t_results_map = {}
         self.ns = 'http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium'
-        # pocket used to set aside "dirty" entries (missing computer-name) for later patching-up
-        self.pocket = []
         # track ip-address to computer-name
         self.map_ip_address_to_computer_name = {}
         # list of controls
@@ -152,73 +163,14 @@ class ResultsMgr():
         prop.append(ControlSelection())
         return prop
 
-    def _normalize(self, value: str) -> str:
-        """Normalize result value."""
-        result = None
-        if value is not None:
-            result = value.upper()
-            if result not in ['PASS', 'FAIL']:
-                result = 'ERROR'
-        return result
-
-    def _aggregator(self, control, prev: str, curr: str) -> str:
-        """Aggregate an overall result.
-
-        If any FAIL then FAIL
-        else if any ERROR then ERROR
-        else any not PASS then ERROR
-        else PASS
-        """
-        result = 'ERROR'
-        nprev = self._normalize(prev)
-        ncurr = self._normalize(curr)
-        if nprev is None:
-            result = ncurr
-        elif 'FAIL' in [nprev, ncurr]:
-            result = 'FAIL'
-        elif 'ERROR' in [nprev, ncurr]:
-            result = 'ERROR'
-        elif nprev == 'PASS' and ncurr == 'PASS':
-            result = 'PASS'
-        logger.debug(f'{control} {result} {prev} {curr}')
-        return result
-
     @property
     def findings(self) -> List[t_finding]:
         """OSCAL findings."""
         prop = []
-        for control in self.findings_map.keys():
-            related_observations = []
-            finding = Finding(uuid=str(uuid.uuid4()), title=control, description=control)
-            prop.append(finding)
-            aggregate = None
-            version = None
-            for rule in self.findings_map[control].keys():
-                for rule_use in self.findings_map[control][rule]:
-                    version = rule_use.version
-                    if rule_use.result not in self.results_map.keys():
-                        self.results_map[rule_use.result] = 0
-                    self.results_map[rule_use.result] += 1
-                    profile = rule_use.profile
-                    related_observations.append(RelatedObservation(observation_uuid=rule_use.observation.uuid))
-                    aggregate = self._aggregator(control, aggregate, rule_use.result)
-                    logger.debug(f'{control} {rule} {rule_use.result} {aggregate}')
-            if aggregate == 'PASS':
-                status = Status1.satisfied
-            else:
-                status = Status1.not_satisfied
-            logger.debug(f'{control} {status} {aggregate}')
-
-            finding_type = Type1('statement-id')
-            finding_target = FindingTarget(type=finding_type, id_ref=control, status=status)
-            props = [
-                Property(name='Profile', value=profile, ns=self.ns, class_='scc_predefined_profile'),
-                Property(name='Custom ID', value=control, ns=self.ns),
-                Property(name='Version', value=version, ns=self.ns, class_='scc_mapping_version'),
-            ]
-            finding_target.props = props
-            finding.target = finding_target
-            finding.related_observations = related_observations
+        uuid0 = '00000000-0000-4000-8000-000000000000'
+        control = 'No Finding.'
+        finding = Finding(uuid=uuid0, title=control, description=control)
+        prop.append(finding)
         return prop
 
     @property
@@ -258,22 +210,17 @@ class ResultsMgr():
         analysis = []
         analysis.append(f'inventory: {len(self.inventory)}')
         analysis.append(f'observations: {len(self.observations)}')
-        analysis.append(f'findings: {len(self.findings_map)}')
-        analysis.append(f'results: {self.results_map}')
         return analysis
 
-    def _get_inventory_ref(self, computer_name: t_computer_name) -> t_inventory_ref:
-        """Get inventory reference for specified computer name."""
-        return self.inventory_map[computer_name].uuid
+    def _get_inventory_ref(self, rule_use: RuleUse) -> t_inventory_ref:
+        """Get inventory reference for specified rule use."""
+        return self.inventory_map[rule_use.tanium_client_ip_address].uuid
 
     def _component_extract(self, rule_use: RuleUse) -> None:
         """Extract component from Tanium row."""
-        component_type = rule_use.profile.split('-')[0].strip()
-        component_title = component_type
-        component_description = component_type
-        if len(component_type) == 0:
-            logger.debug(f'component extract: skip profile: {rule_use.profile}')
-            return
+        component_type = rule_use.component_type
+        component_title = rule_use.component
+        component_description = rule_use.component
         for component_ref in self.component_map.keys():
             component = self.component_map[component_ref]
             if component.type == component_type:
@@ -288,10 +235,11 @@ class ResultsMgr():
         self.component_map[component_ref] = component
 
     def _get_component_ref(self, rule_use: RuleUse) -> t_component_ref:
+        """Get component reference for specified rule use."""
         uuid = None
-        component_type = rule_use.profile.split('-')[0].strip()
-        component_title = component_type
-        component_description = component_type
+        component_type = rule_use.component_type
+        component_title = rule_use.component
+        component_description = rule_use.component
         for component_ref in self.component_map.keys():
             component = self.component_map[component_ref]
             if component.type == component_type:
@@ -303,42 +251,55 @@ class ResultsMgr():
 
     def _inventory_extract(self, rule_use: RuleUse) -> None:
         """Extract inventory from Tanium row."""
-        if rule_use.computer_name in self.inventory_map.keys():
-            inventory = self.inventory_map[rule_use.computer_name]
-            for prop in inventory.props:
-                if prop.name == 'IP Address':
-                    if rule_use.ip_address not in prop.value:
-                        prop.value += ', ' + rule_use.ip_address
-                    break
+        if rule_use.tanium_client_ip_address in self.inventory_map.keys():
+            pass
         else:
             inventory = InventoryItem(uuid=str(uuid.uuid4()), description='inventory')
             props = []
+            props.append(Property(name='Computer Name', value=rule_use.computer_name, ns=self.ns))
             props.append(
                 Property(
-                    name='Computer Name', value=rule_use.computer_name, ns=self.ns, class_='scc_inventory_item_id'
+                    name='Tanium Client IP Address',
+                    value=rule_use.tanium_client_ip_address,
+                    ns=self.ns,
+                    class_='scc_inventory_item_id'
                 )
             )
             props.append(Property(name='IP Address', value=rule_use.ip_address, ns=self.ns))
             props.append(Property(name='Count', value=rule_use.count, ns=self.ns))
-            props.append(Property(name='Age', value=rule_use.age, ns=self.ns))
             inventory.props = props
             inventory.implemented_components = [ImplementedComponent(component_uuid=self._get_component_ref(rule_use))]
-            self.inventory_map[rule_use.computer_name] = inventory
+            self.inventory_map[rule_use.tanium_client_ip_address] = inventory
 
     def _observation_extract(self, rule_use: RuleUse) -> None:
         """Extract observation from Tanium row."""
         observation = Observation(
-            uuid=str(uuid.uuid4()), description=rule_use.id, methods=['TEST-AUTOMATED'], collected=rule_use.collected
+            uuid=str(uuid.uuid4()),
+            description=rule_use.rule_id,
+            methods=['TEST-AUTOMATED'],
+            collected=rule_use.collected
         )
-        subject_reference = SubjectReference(
-            uuid_ref=self._get_inventory_ref(rule_use.computer_name), type='inventory-item'
-        )
+        subject_reference = SubjectReference(uuid_ref=self._get_inventory_ref(rule_use), type='inventory-item')
         observation.subjects = [subject_reference]
         props = [
-            Property(name='Benchmark', value=rule_use.benchmark, ns=self.ns, class_='scc_predefined_profile'),
-            Property(name='Benchmark Version', value=rule_use.benchmark_version, ns=self.ns, class_='scc_goal_version'),
-            Property(name='ID', value=rule_use.id, ns=self.ns, class_='scc_goal_name_id'),
-            Property(name='Result', value=rule_use.result, ns=self.ns, class_='scc_result'),
+            Property(name='Check ID', value=rule_use.check_id, ns=self.ns),
+            Property(
+                name='Check ID Benchmark',
+                value=rule_use.check_id_benchmark,
+                ns=self.ns,
+                class_='scc_predefined_profile'
+            ),
+            Property(name='Check ID Version', value=rule_use.check_id_version, ns=self.ns, class_='scc_check_version'),
+            Property(
+                name='Check ID Version',
+                value=rule_use.check_id_version,
+                ns=self.ns,
+                class_='scc_predefined_profile_version'
+            ),
+            Property(name='Check ID Level', value=rule_use.check_id_level, ns=self.ns),
+            Property(name='Rule ID', value=rule_use.rule_id, ns=self.ns, class_='scc_goal_description'),
+            Property(name='Rule ID', value=rule_use.rule_id, ns=self.ns, class_='scc_check_name_id'),
+            Property(name='State', value=rule_use.state, ns=self.ns, class_='scc_result'),
             Property(name='Timestamp', value=rule_use.timestamp, ns=self.ns, class_='scc_timestamp'),
         ]
         observation.props = props
@@ -347,13 +308,7 @@ class ResultsMgr():
 
     def _finding_extract(self, rule_use: RuleUse) -> None:
         """Extract finding from Tanium row."""
-        control = rule_use.custom_id
-        if control not in self.findings_map.keys():
-            self.findings_map[control] = {}
-        rule = rule_use.id
-        if rule not in self.findings_map[control].keys():
-            self.findings_map[control][rule] = []
-        self.findings_map[control][rule].append(rule_use)
+        pass
 
     def _process(self, rule_use: RuleUse) -> None:
         self._component_extract(rule_use)
@@ -363,28 +318,11 @@ class ResultsMgr():
 
     def ingest(self, tanium_row: t_tanium_row) -> None:
         """Process one row of Tanium."""
-        rule_use = RuleUse(tanium_row, ResultsMgr.timestamp)
-        if ' ' in rule_use.custom_id:
-            control = rule_use.custom_id.split(' ')[1]
-        else:
-            control = rule_use.custom_id
-        if control not in self.control_list:
-            self.control_list.append(control)
-        if len(rule_use.computer_name.strip()) == 0:
-            # set aside rule_use with missing computer-name
-            self.pocket.append(rule_use)
-        else:
-            # process current rule_use
+        keys = tanium_row.keys()
+        for key in keys:
+            if key.startswith('Comply'):
+                break
+        comply_list = tanium_row[key]
+        for comply in comply_list:
+            rule_use = RuleUse(tanium_row, comply, ResultsMgr.timestamp)
             self._process(rule_use)
-            self.map_ip_address_to_computer_name[rule_use.ip_address] = rule_use.computer_name
-            # fix up the set aside rule_uses by adding computer-name, then process
-            removals = []
-            for pocket_rule_use in self.pocket:
-                if pocket_rule_use.ip_address in self.map_ip_address_to_computer_name:
-                    # ip-address now has computer-name, so process
-                    pocket_rule_use.computer_name = self.map_ip_address_to_computer_name[pocket_rule_use.ip_address]
-                    logger.debug(f'fix: {rule_use.ip_address} -> {rule_use.computer_name}')
-                    self._process(pocket_rule_use)
-                    removals.append(pocket_rule_use)
-            for pocket_rule_use in removals:
-                self.pocket.remove(pocket_rule_use)
