@@ -586,3 +586,17 @@ def test_is_hidden_windows(tmp_path) -> None:
 def test_allowed_task_name(task_name: str, outcome: bool) -> None:
     """Test whether task names are allowed."""
     assert fs.allowed_task_name(task_name) == outcome
+
+
+def test_local_and_visible(tmp_path) -> None:
+    """Test if file is local (not symlink) and visible (not hidden)."""
+    local_file = tmp_path / 'local.md'
+    local_file.touch()
+    if os.name == 'nt':
+        link_file = tmp_path / 'not_local.lnk'
+        link_file.touch()
+    else:
+        link_file = tmp_path / 'linked.md'
+        link_file.symlink_to(local_file)
+    assert fs.local_and_visible(local_file)
+    assert not fs.local_and_visible(link_file)

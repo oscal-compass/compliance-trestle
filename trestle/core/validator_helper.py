@@ -14,11 +14,14 @@
 # limitations under the License.
 """Utilities for dealing with models."""
 
+import logging
 import re
 import uuid
 from typing import Any, Dict, List, Tuple, Type, TypeVar
 
 import pydantic
+
+logger = logging.getLogger(__name__)
 
 # Generic type var
 TG = TypeVar('TG')
