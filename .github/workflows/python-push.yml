@@ -27,6 +27,31 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
+    - uses: actions/cache@v2
+      if: startsWith(runner.os, 'Linux')
+      with:
+        path: ~/.cache/pip
+        key: ${{ matrix.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('setup.cfg') }}
+        restore-keys: |
+          ${{ matrix.os }}-python-${{ matrix.python-version }}-pip-
+
+    - uses: actions/cache@v2
+      if: startsWith(runner.os, 'macOS')
+      with:
+        path: ~/Library/Caches/pip
+        key: ${{ matrix.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('setup.cfg') }}
+        restore-keys: |
+          ${{ matrix.os }}-python-${{ matrix.python-version }}-pip-
+
+    - uses: actions/cache@v2
+      if: startsWith(runner.os, 'Windows')
+      with:
+        path: ~\AppData\Local\pip\Cache
+        key: ${{ matrix.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('setup.cfg') }}
+        restore-keys: |
+          ${{ matrix.os }}-python-${{ matrix.python-version }}-pip-
+
     - name: Install build tools
       run: |
         make develop
