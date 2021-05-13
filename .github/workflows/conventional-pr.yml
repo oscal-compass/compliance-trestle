@@ -1,7 +1,7 @@
 name: Conventional PR for develop
 on:
   pull_request:
-    types: [opened, reopened, ready_for_review] # Currently, this action only support these events
+    types: [opened, reopened, ready_for_review, edited]
     branches:
       - develop
 
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: conventional-pr
-        uses: Namchee/conventional-pr@latest
+        uses: Namchee/conventional-pr@v0.4
         with:
           access_token: ${{ secrets.ADMIN_PAT }}
           check_draft: true
