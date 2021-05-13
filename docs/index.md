@@ -128,4 +128,4 @@ Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contribu
 [pypi]: https://pypi.org/project/compliance-trestle/
 [pypi-downloads-badge]: https://img.shields.io/pypi/dm/compliance-trestle
 [python]: https://www.python.org/downloads/
-[python-badge]: https://img.shields.io/badge/python-v3.6+-blue.svg
+[python-badge]: https://img.shields.io/badge/python-v3.7+-blue.svg
