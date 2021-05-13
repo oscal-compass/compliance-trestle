@@ -38,35 +38,40 @@ def test_partition_ast() -> None:
 
 
 @pytest.mark.parametrize(
-    'template_path, instance_path, status, header_validate',
+    'template_path, instance_path, status, header_validate, header_only_validate',
     [
         (
             pathlib.Path('tests/data/md/test_1_md_format/template.md'),
             pathlib.Path('tests/data/md/test_1_md_format/correct_instance.md'),
             True,
-            True
-        ),
-        (
-            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/md/test_1_md_format/correct_instance_extra_features.md'),
-            True,
-            True
-        ),
-        (
-            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_yaml_header_change.md'),
-            False,
-            True
-        ),
-        (
-            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_yaml_header_change.md'),
             True,
             False
         ),
         (
             pathlib.Path('tests/data/md/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/md/test_1_md_format/correct_instance_extra_features.md'),
+            True,
+            True,
+            False
+        ),
+        (
+            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_yaml_header_change.md'),
+            False,
+            True,
+            False
+        ),
+        (
+            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_yaml_header_change.md'),
+            True,
+            False,
+            False
+        ),
+        (
+            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
             pathlib.Path('tests/data/md/test_1_md_format/bad_instance_reordered.md'),
+            False,
             False,
             False
         ),
@@ -74,21 +79,48 @@ def test_partition_ast() -> None:
             pathlib.Path('tests/data/md/test_1_md_format/template.md'),
             pathlib.Path('tests/data/md/test_1_md_format/bad_instance_missing_heading.md'),
             False,
+            False,
             False
+        ),
+        (
+            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_missing_heading.md'),
+            True,
+            True,
+            True
         ),
         (
             pathlib.Path('tests/data/md/test_1_md_format/template.md'),
             pathlib.Path('tests/data/md/test_1_md_format/bad_instance_heading_wrong_type.md'),
             False,
+            False,
             False
         ),
+        (
+            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_bold_heading.md'),
+            False,
+            False,
+            False
+        ),
+        (
+            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_bold_heading.md'),
+            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
+            False,
+            False,
+            False
+        )
     ]
 )
 def test_md_validator_pass(
-    template_path: pathlib.Path, instance_path: pathlib.Path, status: bool, header_validate: bool
+    template_path: pathlib.Path,
+    instance_path: pathlib.Path,
+    status: bool,
+    header_validate: bool,
+    header_only_validate: bool
 ) -> None:
     """Run markdown validator to expected outcome."""
-    md_validator = markdown_validator.MarkdownValidator(template_path, header_validate)
+    md_validator = markdown_validator.MarkdownValidator(template_path, header_validate, header_only_validate)
     result = md_validator.validate(instance_path)
     assert result == status
 
@@ -99,7 +131,7 @@ def test_md_by_hand() -> None:
     instance_path = pathlib.Path('tests/data/md/test_3_md_hand_edited/decisions_000.md')
     header_validate = False
     status = True
-    md_validator = markdown_validator.MarkdownValidator(template_path, header_validate, 'Governed Document')
+    md_validator = markdown_validator.MarkdownValidator(template_path, header_validate, False, 'Governed Document')
     result = md_validator.validate(instance_path)
     assert result == status
 
@@ -137,7 +169,7 @@ def test_md_validator_with_md_header(
     template_path: pathlib.Path, instance_path: pathlib.Path, status: bool, yaml_header_validate: bool
 ) -> None:
     """Test with validation of heading."""
-    md_validator = markdown_validator.MarkdownValidator(template_path, yaml_header_validate, 'Governed Document')
+    md_validator = markdown_validator.MarkdownValidator(template_path, yaml_header_validate, False, 'Governed Document')
     result = md_validator.validate(instance_path)
     assert result == status
 
@@ -146,7 +178,7 @@ def test_bad_file_path(tmp_path: pathlib.Path):
     """Check errors are thrown with bad files."""
     no_file = tmp_path / 'non_existent.md'
     with pytest.raises(err.TrestleError):
-        _ = markdown_validator.MarkdownValidator(no_file, False)
+        _ = markdown_validator.MarkdownValidator(no_file, False, False)
 
 
 @pytest.mark.parametrize(
@@ -183,6 +215,13 @@ def test_bad_file_path(tmp_path: pathlib.Path):
         }, {
             'hello': 1,
             'my-world': 2,
+        }, False), ({
+            'hello': 1,
+            'world': 2,
+        }, {
+            'hello': 1,
+            'world': 2,
+            'banana': 3,
         }, False)
     ]
 )
@@ -237,7 +276,7 @@ def test_validate_for_governed_header(
     template_path: pathlib.Path, instance_path: pathlib.Path, status: bool, governed_header: str
 ) -> None:
     """Test scenarios for validate w.r.t the governed header."""
-    md_validator = markdown_validator.MarkdownValidator(template_path, False, governed_header)
+    md_validator = markdown_validator.MarkdownValidator(template_path, False, False, governed_header)
     result = md_validator.validate(instance_path)
     assert result == status
 
@@ -246,7 +285,7 @@ def test_compare_tree_force_failure():
     """Test unhappy path of compare_tree by manipulating content."""
     template_path = pathlib.Path('tests/data/md/test_1_md_format/template.md')
     header_validate = True
-    md_validator = markdown_validator.MarkdownValidator(template_path, header_validate)
+    md_validator = markdown_validator.MarkdownValidator(template_path, header_validate, False)
     ast_parse = markdown_validator.partition_ast(md_validator._template_parse)
     _ = md_validator.wrap_content(ast_parse)
 
@@ -254,3 +293,12 @@ def test_compare_tree_force_failure():
 def test_search_for_headings():
     """Test to search for headings and sub-headings."""
     pass
+
+
+def test_bad_unicode_in_parsetree(tmp_path: pathlib.Path):
+    """Test error on read of bad unicode in parsetree."""
+    bad_file = tmp_path / 'bad_unicode.md'
+    with open(bad_file, 'wb') as f:
+        f.write(b'\x81')
+    with pytest.raises(err.TrestleError):
+        _ = markdown_validator.MarkdownValidator.load_markdown_parsetree(bad_file)
