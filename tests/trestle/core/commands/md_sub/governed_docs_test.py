@@ -43,12 +43,13 @@ def test_governed_docs_high(tmp_trestle_dir: pathlib.Path, command_string: str, 
 
 
 @pytest.mark.parametrize(
-    'task_name, template_content, target_content, setup_code, template_code, validate_code',
+    'task_name, template_content, target_content, recurse, setup_code, template_code, validate_code',
     [
         (
             'test_task',
             pathlib.Path('md/test_1_md_format/template.md'),
             pathlib.Path('md/test_1_md_format/correct_instance_extra_features.md'),
+            False,
             0,
             0,
             0
@@ -57,6 +58,7 @@ def test_governed_docs_high(tmp_trestle_dir: pathlib.Path, command_string: str, 
             'catalogs',
             pathlib.Path('md/test_1_md_format/template.md'),
             pathlib.Path('md/test_1_md_format/correct_instance_extra_features.md'),
+            False,
             1,
             1,
             1,
@@ -65,22 +67,45 @@ def test_governed_docs_high(tmp_trestle_dir: pathlib.Path, command_string: str, 
             'test_task',
             pathlib.Path('md/test_1_md_format/template.md'),
             pathlib.Path('md/test_1_md_format/bad_instance_missing_heading.md'),
+            False,
             0,
             0,
             1
-        ), (
+        ),
+        (
             'test_task',
             pathlib.Path('md/utf16test/sample_okay.md'),
             pathlib.Path('md/utf16test/sample_utf16.md'),
+            False,
             0,
             0,
             1
-        ), (
+        ),
+        (
             'test_task',
             pathlib.Path('md/utf16test/sample_utf16.md'),
             pathlib.Path('md/utf16test/sample_okay.md'),
+            False,
             0,
             1,
+            1
+        ),
+        (
+            'test_task',
+            pathlib.Path('md/test_1_md_format/template.md'),
+            pathlib.Path('md/test_1_md_format/correct_instance_extra_features.md'),
+            True,
+            0,
+            0,
+            0
+        ),
+        (
+            'test_task',
+            pathlib.Path('md/test_1_md_format/template.md'),
+            pathlib.Path('md/test_1_md_format/correct_instance_extra_features.md'),
+            True,
+            0,
+            0,
             1
         )
     ]
@@ -89,6 +114,7 @@ def test_e2e(
     task_name: str,
     template_content: pathlib.Path,
     target_content: pathlib.Path,
+    recurse: bool,
     setup_code: bool,
     template_code: bool,
     validate_code: bool,
@@ -97,10 +123,13 @@ def test_e2e(
 ) -> None:
     """Run an E2E workflow with two test criteria for success."""
     # Note testdata_dir must be before tmp_trestle_dir in the argument order.
+    recurse_flag = '-r' if recurse else ''
     command_string_setup = f'trestle md governed-docs setup -tn {task_name}'
     command_string_create_sample = f'trestle md governed-docs create-sample -tn {task_name}'
     command_string_validate_template = f'trestle md governed-docs template-validate -tn {task_name}'
-    command_string_validate_content = f'trestle md governed-docs validate -tn {task_name} --header-validate'
+    command_string_validate_content = (
+        f'trestle md governed-docs validate -tn {task_name} --header-validate {recurse_flag}'
+    )
     template_target_loc = tmp_trestle_dir / '.trestle' / 'md' / task_name / 'template.md'
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}.md'
     # Test setup
@@ -130,6 +159,14 @@ def test_e2e(
             assert wrapped_error.code == 0
 
     shutil.copyfile(str(testdata_dir / target_content), str(test_content_loc))
+    if recurse:
+        # choose source file based on expected result
+        sub_file_name = 'correct_instance_extra_features.md' if validate_code else 'bad_instance_missing_heading.md'
+        sub_file_path = testdata_dir / 'md/test_1_md_format' / sub_file_name
+        subdir = tmp_trestle_dir / task_name / 'subdir'
+        subdir.mkdir()
+        sub_content = subdir / f'{uuid4()}.md'
+        shutil.copyfile(str(sub_file_path), str(sub_content))
     with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
