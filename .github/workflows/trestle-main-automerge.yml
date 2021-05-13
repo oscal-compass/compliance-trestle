@@ -33,7 +33,7 @@ jobs:
   automerge:
     runs-on: ubuntu-latest
     steps:
-      - uses: reitermarkus/automerge@latest
+      - uses: reitermarkus/automerge@v1
         with:
           token: ${{ secrets.ADMIN_PAT }}
           merge-method: merge
