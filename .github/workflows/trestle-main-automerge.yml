@@ -1,42 +1,38 @@
-name: Automatically merge merge to develop
+name: PR Helper - main
 
 on:
-  # Try enabling auto-merge for all open pull requests. (Only recommended for testing.)
   pull_request:
     branches:
       - main
-  # Try enabling auto-merge for all open pull requests.
-  schedule:
-    - cron: 0 * * * *
-
-  # Try enabling auto-merge for a pull request when a draft is marked as “ready for review”, when
-  # a required label is applied or when a “do not merge” label is removed, or when a pull request
-  # is updated in any way (opened, synchronized, reopened, edited).
-  pull_request_target:
-    types:
-      - opened
-      - synchronized
-      - reopened
-      - edited
-      - labeled
-      - unlabeled
-      - ready_for_review
-
-  # Try enabling auto-merge for the specified pull request or all open pull requests if none is specified.
-  # workflow_dispatch:
-  #   inputs:
-  #     pull-request:
-  #       description: Pull Request Number
-  #       required: false
+  pull_request_review:
+    branches:
+      - main
+  issue_comment:
+    branches:
+      - main
 
 jobs:
-  automerge:
+  prhelper_job:
     runs-on: ubuntu-latest
     steps:
-      - uses: reitermarkus/automerge@v1
-        with:
-          token: ${{ secrets.ADMIN_PAT }}
-          merge-method: merge
-          do-not-merge-labels: never-merge
-          pull-request: ${{ github.event.inputs.pull-request }}
-          dry-run: true
+    - name: Run PR Helper on Schedule
+      id: runprhelper
+      uses: Matticusau/pr-helper@v1.2.4
+      with:
+        repo-token: ${{ secrets.ADMIN_PAT }}
+        enable-prmerge-automation: true
+        enable-prcomment-automation: false
+        enable-prlabel-automation: true
+        enable-prreviewer-frontmatter: true
+        enable-welcomemessage: true
+        welcome-message: "Thanks for opening an issue! Make sure you've followed CONTRIBUTING.md."
+        prmerge-requireallchecks: true
+        prmerge-requirereviewcount: 1
+        prmerge-method: 'merge'
+        prmerge-deletebranch: 'true'
+        prmerge-deletebranch-config: '{"deny":["develop", "main", "gh-pages"]}'
+        prlabel-default: 'pr-onhold'
+        prlabel-ready: 'pr-ready'
+        prlabel-onhold: 'pr-onhold'
+        prlabel-reviewrequired: 'review-required'
+        prlabel-automerge: 'auto-merge'
