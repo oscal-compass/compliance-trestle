@@ -12,11 +12,11 @@ on:
       - main
 
 jobs:
-  prhelper_job:
+  prhelper_job_main:
     runs-on: ubuntu-latest
     steps:
     - name: Run PR Helper on Schedule
-      id: runprhelper
+      id: runprhelper_main
       uses: Matticusau/pr-helper@v1.2.4
       with:
         repo-token: ${{ secrets.ADMIN_PAT }}
