@@ -26,7 +26,7 @@ jobs:
         enable-prlabel-automation: true
         enable-prreviewer-frontmatter: false
         enable-welcomemessage: true
-        welcome-message: "Thanks for opening an issue! Make sure you've followed CONTRIBUTING.md."
+        welcome-message: "Thanks for opening an issue! When you are ready for the pr to be reviewed / merged add the pr-ready label."
         prmerge-requireallchecks: true
         prmerge-requirereviewcount: 1
         prmerge-method: 'squash'
