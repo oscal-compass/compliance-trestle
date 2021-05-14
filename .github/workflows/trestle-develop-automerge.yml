@@ -21,7 +21,7 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         enable-prmerge-automation: true
-        enable-prcomment-automation: false
+        enable-prcomment-automation: true
         enable-prlabel-automation: true
         enable-prreviewer-frontmatter: false
         enable-welcomemessage: true
