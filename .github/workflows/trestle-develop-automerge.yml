@@ -17,13 +17,13 @@ jobs:
     steps:
     - name: Run PR Helper on Schedule
       id: runprhelper
-      uses: Matticusau/pr-helper@v1.2.4
+      uses: Matticusau/pr-helper@v1.2.6
       with:
-        repo-token: ${{ secrets.ADMIN_PAT }}
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
         enable-prmerge-automation: true
         enable-prcomment-automation: false
         enable-prlabel-automation: true
-        enable-prreviewer-frontmatter: true
+        enable-prreviewer-frontmatter: false
         enable-welcomemessage: true
         welcome-message: "Thanks for opening an issue! Make sure you've followed CONTRIBUTING.md."
         prmerge-requireallchecks: true
