@@ -22,7 +22,7 @@ jobs:
       with:
         repo-token: ${{ secrets.ADMIN_PAT }}
         enable-prmerge-automation: true
-        enable-prcomment-automation: t
+        enable-prcomment-automation: true
         enable-prlabel-automation: true
         enable-prreviewer-frontmatter: false
         enable-welcomemessage: true
