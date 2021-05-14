@@ -3,8 +3,13 @@
 name: Trestle PR Pipeline
 
 
-on: [pull_request]
-
+on:
+  pull_request:
+  pull_request_review:
+  issue_comment:
+    branches:
+      - develop
+      - main
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -64,3 +69,29 @@ jobs:
       with: 
         token: ${{ secrets.CODECOV_TOKEN }}
         file: ./coverage.xml
+  prhelper_job:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - name: Run PR Helper on Schedule
+      id: runprhelper
+      uses: Matticusau/pr-helper@v1.2.6
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        enable-prmerge-automation: true
+        enable-prcomment-automation: true
+        enable-prlabel-automation: true
+        enable-prreviewer-frontmatter: false
+        enable-welcomemessage: true
+        welcome-message: "Thanks for opening an issue! Make sure you've followed CONTRIBUTING.md."
+        prmerge-requireallchecks: true
+        prmerge-requirereviewcount: 1
+        prmerge-method: 'squash'
+        prmerge-deletebranch: 'true'
+        prmerge-deletebranch-config: '{"deny":["develop", "main", "gh-pages"]}'
+        prlabel-default: 'pr-onhold'
+        prlabel-ready: 'pr-ready'
+        prlabel-onhold: 'pr-onhold'
+        prlabel-reviewrequired: 'review-required'
+        prlabel-automerge: 'auto-merge'

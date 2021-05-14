@@ -2,6 +2,7 @@ name: PR Helper - develop
 
 on:
   pull_request:
+    types: [assigned, opened, synchronize, reopened, edited, assigned,unassigned,labeled,unlabeled, ready_for_review, review_requested, locked, unlocked]
     branches:
       - develop
   pull_request_review:
@@ -21,7 +22,7 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         enable-prmerge-automation: true
-        enable-prcomment-automation: true
+        enable-prcomment-automation: t
         enable-prlabel-automation: true
         enable-prreviewer-frontmatter: false
         enable-welcomemessage: true
