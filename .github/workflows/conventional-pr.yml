@@ -1,0 +1,16 @@
+name: Conventional PR for develop
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  hqprs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: conventional-pr
+        uses: Namchee/conventional-pr@v0.4.1
+        with:
+          access_token: ${{ secrets.ADMIN_PAT }}
+          check_draft: true
+          link_issue: false
