@@ -1,7 +1,7 @@
 name: PR Helper - main
 
 concurrency: 
-    group: ${{ github.head_ref }}
+    group: ${{ github.head_ref }}-${{ github.workflow }}
     cancel-in-progress: true
 
 on:
