@@ -1,5 +1,9 @@
 name: PR Helper - develop
 
+concurrency: 
+    group: ${{ github.head_ref }}
+    cancel-in-progress: true
+
 on:
   pull_request:
     types: [assigned, opened, synchronize, reopened, edited, assigned,unassigned,labeled,unlabeled, ready_for_review, review_requested, locked, unlocked]
