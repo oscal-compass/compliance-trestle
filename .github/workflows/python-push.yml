@@ -13,6 +13,9 @@ on:
 
 jobs:
   build:
+    concurrency: 
+      group: ${{ github.ref }}-${{ github.workflow }}-${{ github.job }}
+      cancel-in-progress: true
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -99,6 +102,9 @@ jobs:
   deploy-docs:
     runs-on: ubuntu-latest
     needs: deploy
+    concurrency: 
+      group: ${{ github.ref }}-${{ github.workflow }}-${{ github.job }}
+      cancel-in-progress: true
     # Temporary hack: allow develop as well as master to deploy docs.
     if: github.ref == 'refs/heads/main'
     steps:
@@ -124,6 +130,9 @@ jobs:
     name: Merge main -> develop
     runs-on: ubuntu-latest
     needs: deploy
+    concurrency: 
+      group: ${{ github.ref }}-${{ github.workflow }}-${{ github.job }}
+      cancel-in-progress: true
     if: github.ref == 'refs/heads/main'
     steps:
     - uses: tukasz/direct-merge-action@master

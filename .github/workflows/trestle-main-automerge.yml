@@ -1,5 +1,7 @@
 name: PR Helper - main
 
+
+
 on:
   pull_request:
     branches:
@@ -14,6 +16,9 @@ on:
 jobs:
   prhelper_job_main:
     runs-on: ubuntu-latest
+    concurrency: 
+      group: ${{ github.head_ref }}-${{ github.workflow }}
+      cancel-in-progress: true
     steps:
     - name: Run PR Helper on Schedule
       id: runprhelper_main
