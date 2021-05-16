@@ -1,9 +1,5 @@
 name: PR Helper - develop
 
-concurrency: 
-    group: ${{ github.head_ref }}-${{ github.workflow }}
-    cancel-in-progress: true
-
 on:
   pull_request:
     types: [assigned, opened, synchronize, reopened, edited, assigned,unassigned,labeled,unlabeled, ready_for_review, review_requested, locked, unlocked]
@@ -18,6 +14,9 @@ on:
 
 jobs:
   prhelper_job:
+    concurrency: 
+      group: ${{ github.head_ref }}-${{ github.workflow }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
     - name: Run PR Helper on Schedule

@@ -1,10 +1,5 @@
 name: "Lint PR"
 
-concurrency: 
-    group: ${{ github.head_ref }}-${{ github.workflow }}
-    cancel-in-progress: true
-
-
 on:
   pull_request:
     types:
@@ -16,6 +11,9 @@ on:
 
 jobs:
   lint:
+    concurrency: 
+      group: ${{ github.head_ref }}-${{ github.workflow }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       # Please look up the latest version from
