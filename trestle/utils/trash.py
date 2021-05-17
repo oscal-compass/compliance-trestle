@@ -67,7 +67,7 @@ def get_trash_root(path: pathlib.Path) -> Optional[pathlib.Path]:
 
     current = path
     while len(current.parts) > 1:  # it must not be the system root directory
-        trash_dir = pathlib.Path.joinpath(current, TRESTLE_TRASH_DIR)
+        trash_dir = current / TRESTLE_TRASH_DIR
         if trash_dir.exists() and trash_dir.is_dir():
             return trash_dir
         current = current.parent

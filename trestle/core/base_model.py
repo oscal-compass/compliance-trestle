@@ -155,14 +155,6 @@ class OscalBaseModel(BaseModel):
 
         return new_model
 
-    def get_field_value(self, field_name_or_alias: str) -> Any:
-        """Get attribute value by field alias or field name."""
-        # FIXME: This is not called and should be removed. There is no point and it esacpes typing.
-        if hasattr(self, field_name_or_alias):
-            return getattr(self, field_name_or_alias, None)
-
-        return self.get_field_value_by_alias(field_name_or_alias)
-
     def get_field_by_alias(self, field_alias: str) -> Any:
         """Convert field alias to a field."""
         attr_field = self.alias_to_field_map().get(field_alias, None)
@@ -285,7 +277,7 @@ class OscalBaseModel(BaseModel):
         logger.debug(f'oscal_read content type {content_type} and alias {alias} from {path}')
 
         if not path.exists():
-            logger.error(f'path does not exist in oscal_read: {path}')
+            logger.warning(f'path does not exist in oscal_read: {path}')
             return None
 
         obj: Dict[str, Any] = {}

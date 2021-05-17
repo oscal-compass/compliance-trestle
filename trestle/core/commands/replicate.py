@@ -17,7 +17,6 @@
 import argparse
 import logging
 import pathlib
-from json.decoder import JSONDecodeError
 from typing import Type, TypeVar
 
 from trestle.core import validator_helper
@@ -173,18 +172,16 @@ class ReplicateCmd(CommandPlusDocs):
 
         logger.debug('Entering replicate_object.')
 
-        # 1.2 Bad working directory if not running from current working directory
-        cwd = pathlib.Path.cwd().resolve()
+        # 1 Bad working directory if not running from current working directory
+        cwd = pathlib.Path.cwd()
         trestle_root = fs.get_trestle_project_root(cwd)
         if trestle_root is None:
             logger.error(f'Current working directory: {cwd} is not within a trestle project.')
             return 1
 
-        trestle_root = trestle_root.resolve()
-
         plural_path = fs.model_type_to_model_dir(model_alias)
 
-        # 1.1 Check that input file given exists.
+        # 2 Check that input file given exists.
 
         input_file_stem = trestle_root / plural_path / args.name / model_alias
         content_type = FileContentType.path_to_content_type(input_file_stem)
@@ -194,21 +191,17 @@ class ReplicateCmd(CommandPlusDocs):
 
         input_file = input_file_stem.with_suffix(FileContentType.to_file_extension(content_type))
 
-        # 4. Distributed load from file
+        # 3 Distributed load from file
 
         try:
-            model_type, model_alias, model_instance = load_distributed(input_file.resolve())
-        except JSONDecodeError as err:
-            logger.debug(f'load_distributed() failed: {err}')
-            logger.error(f'Replicate failed, JSON error loading file: {err}')
-            return 1
+            model_type, model_alias, model_instance = load_distributed(input_file)
         except TrestleError as err:
             logger.debug(f'load_distributed() failed: {err}')
-            logger.error(f'Replicate failed, error loading file: {err}')
+            logger.warning(f'Replicate failed, error loading file: {err}')
             return 1
         except PermissionError as err:
             logger.debug(f'load_distributed() failed: {err}')
-            logger.error(f'Replicate failed, access permission error loading file: {err}')
+            logger.warning(f'Replicate failed, access permission error loading file: {err}')
             return 1
 
         rep_model_path = trestle_root / plural_path / args.output / (
@@ -225,10 +218,10 @@ class ReplicateCmd(CommandPlusDocs):
             model_instance, uuid_lut, n_refs_updated = validator_helper.regenerate_uuids(model_instance)
             logger.debug(f'{len(uuid_lut)} uuids generated and {n_refs_updated} references updated')
 
-        # 6. Prepare actions and plan
+        # 4 Prepare actions and plan
         top_element = Element(model_instance)
-        create_action = CreatePathAction(rep_model_path.resolve(), True)
-        write_action = WriteFileAction(rep_model_path.resolve(), top_element, content_type)
+        create_action = CreatePathAction(rep_model_path, True)
+        write_action = WriteFileAction(rep_model_path, top_element, content_type)
 
         # create a plan to create the directory and imported file.
         replicate_plan = Plan()

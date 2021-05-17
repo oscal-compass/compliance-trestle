@@ -64,18 +64,18 @@ class RemoveCmd(CommandPlusDocs):
         log.set_log_level_from_args(args)
         args_dict = args.__dict__
 
-        file_path = pathlib.Path(args_dict[const.ARG_FILE])
+        file_path = pathlib.Path(args_dict[const.ARG_FILE]).resolve()
 
         # Get parent model and then load json into parent model
         try:
-            parent_model, parent_alias = fs.get_contextual_model_type(file_path.resolve())
+            parent_model, parent_alias = fs.get_contextual_model_type(file_path)
         except Exception as err:
             logger.debug(f'fs.get_contextual_model_type() failed: {err}')
             logger.error(f'Remove failed (fs.get_contextual_model_type()): {err}')
             return 1
 
         try:
-            parent_object = parent_model.oscal_read(file_path.resolve())
+            parent_object = parent_model.oscal_read(file_path)
         except Exception as err:
             logger.debug(f'parent_model.oscal_read() failed: {err}')
             logger.error(f'Remove failed (parent_model.oscal_read()): {err}')
@@ -97,10 +97,8 @@ class RemoveCmd(CommandPlusDocs):
                 return 1
             add_plan.add_action(remove_action)
 
-        create_action = CreatePathAction(file_path.resolve(), True)
-        write_action = WriteFileAction(
-            file_path.resolve(), parent_element, FileContentType.to_content_type(file_path.suffix)
-        )
+        create_action = CreatePathAction(file_path, True)
+        write_action = WriteFileAction(file_path, parent_element, FileContentType.to_content_type(file_path.suffix))
         add_plan.add_action(remove_action)
         add_plan.add_action(create_action)
         add_plan.add_action(write_action)

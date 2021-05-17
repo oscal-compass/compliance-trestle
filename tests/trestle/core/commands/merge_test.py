@@ -352,7 +352,7 @@ def test_split_merge(testdata_dir, tmp_trestle_dir):
     # Equivalent to trestle merge -e catalog.*
     args = argparse.Namespace(name='merge', element='catalog.*', verbose=1)
     rc = MergeCmd()._run(args)
-    assert rc == 1  # FIXME issue #412  this should return 0 but has been passing because it wasn't checked
+    assert rc == 0
 
     # Check both the catalogs are the same.
     post_catalog_type, _ = fs.get_stripped_contextual_model(catalog_file.resolve())

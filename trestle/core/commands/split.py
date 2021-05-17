@@ -27,12 +27,25 @@ from trestle.core.commands import cmd_utils
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import Action, CreatePathAction, WriteFileAction
-from trestle.core.models.elements import Element, ElementPath
+from trestle.core.models.elements import Element, ElementPath, get_singular_model_from_json
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs, trash
 
 logger = logging.getLogger(__name__)
+
+
+def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
+    """Determine if the element path list goes too fine, e.g. individual strings."""
+    for split_path in split_paths.split(','):
+        model = get_singular_model_from_json(split_path, model_obj)
+        if type(model) in [dict, list]:
+            return False
+        if utils.is_collection_field_type(model):
+            return False
+        if model.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float']:
+            return True
+    return False
 
 
 class SplitCmd(CommandPlusDocs):
@@ -62,14 +75,14 @@ class SplitCmd(CommandPlusDocs):
             logger.error(f'Argument "-{const.ARG_FILE_SHORT}" is required')
             return 1
 
-        file_path = pathlib.Path(args_raw[const.ARG_FILE])
+        file_path = pathlib.Path(args_raw[const.ARG_FILE]).resolve()
         if not file_path.exists():
             logger.error(f'File {file_path} does not exist.')
             return 1
         content_type = FileContentType.to_content_type(file_path.suffix)
 
         # find the base directory of the file
-        file_absolute_path = pathlib.Path(file_path.resolve())
+        file_absolute_path = pathlib.Path(file_path)
         base_dir = file_absolute_path.parent
 
         model_type, _ = fs.get_stripped_contextual_model(file_absolute_path)
@@ -80,12 +93,19 @@ class SplitCmd(CommandPlusDocs):
         # remove any quotes passed in as on windows platforms
         elements_clean = args_raw[const.ARG_ELEMENT].strip("'")
 
+        if split_is_too_fine(elements_clean, model):
+            logger.warn('Cannot split the model to the level of uuids, strings, etc.')
+            return 1
+
         logger.debug(f'split calling parse_element_args on {elements_clean}')
         element_paths: List[ElementPath] = cmd_utils.parse_element_args(elements_clean.split(','))
 
         split_plan = self.split_model(
             model, element_paths, base_dir, content_type, root_file_name=args_raw[const.ARG_FILE]
         )
+
+        if split_plan is None:
+            return 1
 
         # Simulate the plan
         # if it fails, it would throw errors and get out of this command
