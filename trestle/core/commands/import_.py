@@ -66,7 +66,7 @@ class ImportCmd(CommandPlusDocs):
             return 1
 
         # 1.2 Bad working directory if not running from current working directory
-        cwd = pathlib.Path.cwd().resolve()
+        cwd = pathlib.Path.cwd()
         trestle_root = fs.get_trestle_project_root(cwd)
         if trestle_root is None:
             logger.error(f'Current working directory: {cwd} is not within a trestle project.')
@@ -94,7 +94,7 @@ class ImportCmd(CommandPlusDocs):
 
         # 4.1 Load from file
         try:
-            data = fs.load_file(input_file.resolve())
+            data = fs.load_file(input_file)
         except JSONDecodeError as err:
             logger.debug(f'fs.load_file() failed: {err}')
             logger.error(f'Import failed, JSON error loading file: {err}')
@@ -175,7 +175,7 @@ class ImportCmd(CommandPlusDocs):
             rc = validatecmd.ValidateCmd()._run(args)
         except TrestleError as err:
             logger.debug(f'validator.validate() raised exception: {err}')
-            logger.error(f'Import of {str(input_file.resolve())} failed, validation failed with error: {err}')
+            logger.error(f'Import of {str(input_file)} failed, validation failed with error: {err}')
             rollback = True
         else:
             if rc > 0:
@@ -185,7 +185,7 @@ class ImportCmd(CommandPlusDocs):
                 rollback = True
 
         if rollback:
-            logger.debug(f'Rolling back import of {str(input_file.resolve())} to {desired_model_path}')
+            logger.debug(f'Rolling back import of {str(input_file)} to {desired_model_path}')
             try:
                 import_plan.rollback()
             except TrestleError as err:

@@ -60,7 +60,7 @@ def verify_file_content(file_path: pathlib.Path, model: OscalBaseModel):
 
 def ensure_trestle_config_dir(sub_dir: pathlib.Path):
     """Ensure that the sub_dir has trestle config dir."""
-    trestle_dir = pathlib.Path.joinpath(sub_dir, const.TRESTLE_CONFIG_DIR)
+    trestle_dir = sub_dir / const.TRESTLE_CONFIG_DIR
     trestle_dir.mkdir(exist_ok=True, parents=True)
 
 

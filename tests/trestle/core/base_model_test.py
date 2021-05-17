@@ -310,12 +310,6 @@ def test_oscal_write(tmp_path: pathlib.Path) -> None:
         target2.oscal_write(tmp_path / 'target.borked')
 
 
-def test_get_field_value(sample_target_def: ostarget.TargetDefinition) -> None:
-    """Test get field value method."""
-    assert sample_target_def.metadata.get_field_value('last-modified') == sample_target_def.metadata.last_modified
-    assert sample_target_def.metadata.get_field_value('last_modified') == sample_target_def.metadata.last_modified
-
-
 def test_get_field_value_by_alias(sample_target_def: ostarget.TargetDefinition) -> None:
     """Test get attribute by alias method."""
     assert sample_target_def.metadata.get_field_value_by_alias(

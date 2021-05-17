@@ -39,5 +39,12 @@ class NcNameValidator(Validator):
         return True
 
     def model_is_valid(self, model: OscalBaseModel) -> bool:
-        """Test if the model is valid."""
+        """
+        Test if an OSCAL is valid.
+
+        Args:
+            model: An OSCAL model to be validated.
+        Returns:
+            The binary status of the validation (True is valid).
+        """
         return self._model_is_valid_role_id(model)
