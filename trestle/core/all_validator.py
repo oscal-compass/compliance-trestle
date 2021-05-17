@@ -21,7 +21,7 @@ from trestle.core.validator import Validator
 
 
 class AllValidator(Validator):
-    """Check if the model passes all registered validation tests."""
+    """Validator to confirm the model passes all registered validation tests."""
 
     def model_is_valid(self, model: OscalBaseModel) -> bool:
         """
