@@ -1,42 +1,52 @@
 name: PR Helper - develop
 
+name: automerge
 on:
   pull_request:
-    types: [assigned, opened, synchronize, reopened, edited, assigned,unassigned,labeled,unlabeled, ready_for_review, review_requested, locked, unlocked]
-    branches:
-      - develop
+    types:
+      - labeled
+      - unlabeled
+      - synchronize
+      - opened
+      - edited
+      - ready_for_review
+      - reopened
+      - unlocked
   pull_request_review:
-    branches:
-      - develop
-  issue_comment:
-    branches:
-      - develop
-
+    types:
+      - submitted
+  check_suite:
+    types:
+      - completed
+  status: {}
 jobs:
-  prhelper_job:
+  automerge:
+    if: github.base_ref != 'refs/heads/main'
     concurrency: 
       group: ${{ github.head_ref }}-${{ github.workflow }}
       cancel-in-progress: true
+
     runs-on: ubuntu-latest
     steps:
-    - name: Run PR Helper on Schedule
-      id: runprhelper
-      uses: Matticusau/pr-helper@v1.2.6
-      with:
-        repo-token: ${{ secrets.ADMIN_PAT }}
-        enable-prmerge-automation: true
-        enable-prcomment-automation: true
-        enable-prlabel-automation: true
-        enable-prreviewer-frontmatter: false
-        enable-welcomemessage: true
-        welcome-message: "Thanks for opening an issue! When you are ready for the pr to be reviewed / merged add the pr-ready label."
-        prmerge-requireallchecks: true
-        prmerge-requirereviewcount: 1
-        prmerge-method: 'squash'
-        prmerge-deletebranch: 'true'
-        prmerge-deletebranch-config: '{"deny":["develop", "main", "gh-pages"]}'
-        prlabel-default: 'pr-onhold'
-        prlabel-ready: 'pr-ready'
-        prlabel-onhold: 'pr-onhold'
-        prlabel-reviewrequired: 'review-required'
-        prlabel-automerge: 'auto-merge'
+      - name: automerge
+        uses: "pascalgn/automerge-action@v0.14.1"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_METHOD: squash
+          MERGE_FORKS: false
+          UPDATE_METHOD: merge
+  automerge_main:
+    if: github.base_ref == 'refs/heads/main'
+    concurrency: 
+      group: ${{ github.head_ref }}-${{ github.workflow }}
+      cancel-in-progress: true
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: automerge
+        uses: "pascalgn/automerge-action@v0.14.1"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_METHOD: merge
+          MERGE_FORKS: false
+          UPDATE_METHOD: merge
