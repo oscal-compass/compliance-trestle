@@ -10,9 +10,9 @@ on:
       - main
 jobs:
   build:
-    concurrency: 
-      group: ${{ github.head_ref }}-${{ github.workflow }}
-      cancel-in-progress: true
+    # concurrency: 
+    #   group: ${{ github.head_ref }}-${{ github.workflow }}
+    #   cancel-in-progress: true
 
     runs-on: ${{ matrix.os }}
     strategy:
