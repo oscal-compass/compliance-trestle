@@ -15,6 +15,7 @@
 # limitations under the License.
 """Tests for trestle create command."""
 import argparse
+import json
 import pathlib
 import sys
 from unittest import mock
@@ -35,10 +36,15 @@ def test_create_cmd(tmp_trestle_dir: pathlib.Path) -> None:
     # Test
     testargs_root = ['trestle', 'create']
     for subcommand in subcommand_list:
-        test_args = testargs_root + [subcommand] + ['-o', f'random_named_{subcommand}']
+        name_stem = f'random_named_{subcommand}'
+        test_args = testargs_root + [subcommand] + ['-o', name_stem]
         with mock.patch.object(sys, 'argv', test_args):
             rc = Trestle().run()
             assert rc == 0
+        model_file = tmp_trestle_dir / const.MODEL_TYPE_TO_MODEL_DIR[subcommand] / name_stem / f'{subcommand}.json'
+        with open(model_file, 'r') as fp:
+            model = json.load(fp)
+        assert name_stem in model[subcommand]['metadata']['title']
 
 
 def test_no_dir(tmp_empty_cwd: pathlib.Path) -> None:

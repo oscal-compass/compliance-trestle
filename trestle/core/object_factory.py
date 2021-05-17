@@ -27,7 +27,12 @@ class ObjectFactory:
         self._objects: Dict[str, Any] = {}
 
     def register_object(self, mode: str, obj: Any) -> None:
-        """Register the object."""
+        """Register an object to the object factory.
+
+        Args:
+            mode: Descriptive key for the mode / type of object to be retrieved.
+            obj: The object type to be registered.
+        """
         self._objects[mode] = obj
 
     def get(self, args: argparse.Namespace) -> Any:
