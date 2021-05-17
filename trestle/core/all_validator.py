@@ -24,7 +24,15 @@ class AllValidator(Validator):
     """Check if the model passes all registered validation tests."""
 
     def model_is_valid(self, model: OscalBaseModel) -> bool:
-        """Test if the model is valid."""
+        """
+        Validate an oscal model against all available validators in the trestle library.
+
+        args:
+            model: An Oscal model which can be passed to the validator. 
+        
+        returns:
+            Whether or not the model passed all the validators
+        """
         for val in vfact.validator_factory.get_all():
             if val != self:
                 if not val.model_is_valid(model):
