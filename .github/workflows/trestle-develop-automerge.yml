@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: automerge
         uses: "pascalgn/automerge-action@v0.14.1"
+        with:
+          args: "--trace"
         env:
           GITHUB_TOKEN: "${{ secrets.ADMIN_PAT }}"
           MERGE_METHOD: squash
@@ -35,6 +37,8 @@ jobs:
     steps:
       - name: automerge
         uses: "pascalgn/automerge-action@v0.14.1"
+        with:
+          args: "--trace"
         env:
           GITHUB_TOKEN: "${{ secrets.ADMIN_PAT }}"
           MERGE_METHOD: merge
