@@ -14,6 +14,9 @@ on:
 
 jobs:
   prhelper_job:
+    concurrency: 
+      group: ${{ github.head_ref }}-${{ github.workflow }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
     - name: Run PR Helper on Schedule
@@ -25,8 +28,8 @@ jobs:
         enable-prcomment-automation: true
         enable-prlabel-automation: true
         enable-prreviewer-frontmatter: false
-        enable-welcomemessage: true
-        welcome-message: "Thanks for opening an issue! When you are ready for the pr to be reviewed / merged add the pr-ready label.
+        enable-welcomemessage: false
+        welcome-message: "Thanks for opening an issue! When you are ready for the pr to be reviewed / merged add the pr-ready label."
         prmerge-requireallchecks: true
         prmerge-requirereviewcount: 1
         prmerge-method: 'squash'
