@@ -191,9 +191,11 @@ def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, T
 def get_target_model(element_path_parts: List[str], current_model: Type[BaseModel]) -> Type[BaseModel]:
     """Get the target model from the parts of a Element Path.
 
-    Takes as input a list, containing parts of an ElementPath as str and expressed in aliases,
-    and the parent model to follow the ElementPath in.
-    Returns the type of the model at the specified ElementPath of the input model.
+    Args:
+        element_path_parts: Parts of an ElementPath as str and expressed in aliases
+        current_model: Parent model of the current element path
+    Returns:
+        The type of the model at the specified ElementPath of the input model.
     """
     # FIXME: Could be in oscal base model
     try:
