@@ -90,6 +90,7 @@ VAL_MODE_DUPLICATES = 'duplicates'
 VAL_MODE_NCNAME = 'ncname'
 VAL_MODE_REFS = 'refs'
 VAL_MODE_ALL = 'all'
+VAL_MODE_OSCAL_VERSION = 'oscal_version'
 
 FILE_ENCODING = 'utf8'
 

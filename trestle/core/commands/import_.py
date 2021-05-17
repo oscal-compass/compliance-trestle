@@ -179,8 +179,8 @@ class ImportCmd(CommandPlusDocs):
             rollback = True
         else:
             if rc > 0:
-                logger.debug(f'validator.validate() found duplicates in {desired_model_path}')
-                msg = f'Validation of imported file {desired_model_path} failed due to the presence of duplicate uuids'
+                logger.debug(f'validator.validate() did not pass for {desired_model_path}')
+                msg = f'Validation of imported file {desired_model_path} did not pass'
                 logger.error(msg)
                 rollback = True
 

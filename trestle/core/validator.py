@@ -58,7 +58,9 @@ class Validator(ABC):
                     logger.warning(f'File load error {e}')
                     return 1
                 if not self.model_is_valid(model):
+                    logger.info(f'INVALID: Model {model_path} did not pass the {self.__doc__}')
                     return 1
+                logger.info(f'VALID: Model {model_path} passed the {self.__doc__}')
             return 0
 
         # validate all
@@ -68,7 +70,9 @@ class Validator(ABC):
                 model_path = trestle_root / fs.model_type_to_model_dir(mt[0]) / mt[1]
                 _, _, model = load_distributed(model_path)
                 if not self.model_is_valid(model):
+                    logger.info(f'INVALID: Model {model_path} did not pass the {self.__doc__}')
                     return 1
+                logger.info(f'VALID: Model {model_path} passed the {self.__doc__}')
             return 0
 
         # validate file
@@ -76,5 +80,7 @@ class Validator(ABC):
             file_path = trestle_root / args.file
             _, _, model = load_distributed(file_path)
             if not self.model_is_valid(model):
+                logger.info(f'INVALID: Model {file_path} did not pass the {self.__doc__}')
                 return 1
+            logger.info(f'VALID: Model {file_path} passed the {self.__doc__}')
         return 0

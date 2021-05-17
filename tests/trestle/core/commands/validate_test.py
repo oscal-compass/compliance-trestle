@@ -27,6 +27,7 @@ from tests import test_utils
 import trestle.oscal.assessment_plan as ap
 from trestle import cli
 from trestle.core.generators import generate_sample_model
+from trestle.oscal.catalog import Catalog
 
 test_data_dir = pathlib.Path('tests/data').resolve()
 
@@ -187,6 +188,22 @@ def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir:
     else:
         testcmd = 'trestle validate -a -m refs'
 
+    with patch.object(sys, 'argv', testcmd.split()):
+        with pytest.raises(SystemExit) as pytest_wrapped_e:
+            cli.run()
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code == code
+
+
+@pytest.mark.parametrize('code', [0, 1])
+def test_oscal_version_validator(tmp_trestle_dir: pathlib.Path, sample_catalog_minimal: Catalog, code: int) -> None:
+    """Test oscal version validator."""
+    if code:
+        sample_catalog_minimal.metadata.oscal_version.__root__ = '1.0.0-rc1'
+    mycat_dir = tmp_trestle_dir / 'catalogs/mycat'
+    mycat_dir.mkdir()
+    sample_catalog_minimal.oscal_write(mycat_dir / 'catalog.json')
+    testcmd = 'trestle validate -t catalog -m oscal_version'
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()
