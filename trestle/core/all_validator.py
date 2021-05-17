@@ -28,8 +28,8 @@ class AllValidator(Validator):
         Validate an oscal model against all available validators in the trestle library.
 
         args:
-            model: An Oscal model which can be passed to the validator. 
-        
+            model: An Oscal model which can be passed to the validator.
+
         returns:
             Whether or not the model passed all the validators
         """
