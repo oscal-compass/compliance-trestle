@@ -20,7 +20,6 @@ on:
       - completed
   status: {}
 jobs:
-<<<<<<< HEAD
   automerge:
     if: github.base_ref != 'refs/heads/main'
     concurrency: 
@@ -51,32 +50,3 @@ jobs:
           MERGE_METHOD: merge
           MERGE_FORKS: false
           UPDATE_METHOD: merge
-=======
-  prhelper_job:
-    concurrency: 
-      group: ${{ github.head_ref }}-${{ github.workflow }}
-      cancel-in-progress: true
-    runs-on: ubuntu-latest
-    steps:
-    - name: Run PR Helper on Schedule
-      id: runprhelper
-      uses: Matticusau/pr-helper@v1.2.6
-      with:
-        repo-token: ${{ secrets.ADMIN_PAT }}
-        enable-prmerge-automation: true
-        enable-prcomment-automation: true
-        enable-prlabel-automation: true
-        enable-prreviewer-frontmatter: false
-        enable-welcomemessage: false
-        welcome-message: "Thanks for opening an issue! When you are ready for the pr to be reviewed / merged add the pr-ready label."
-        prmerge-requireallchecks: true
-        prmerge-requirereviewcount: 1
-        prmerge-method: 'squash'
-        prmerge-deletebranch: 'true'
-        prmerge-deletebranch-config: '{"deny":["develop", "main", "gh-pages"]}'
-        prlabel-default: 'pr-onhold'
-        prlabel-ready: 'pr-ready'
-        prlabel-onhold: 'pr-onhold'
-        prlabel-reviewrequired: 'review-required'
-        prlabel-automerge: 'auto-merge'
->>>>>>> develop
