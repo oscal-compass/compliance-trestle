@@ -21,9 +21,11 @@ on:
   status: {}
 jobs:
   automerge:
+    if: github.base_ref != 'refs/heads/main'
     concurrency: 
       group: ${{ github.head_ref }}-${{ github.workflow }}
       cancel-in-progress: true
+
     runs-on: ubuntu-latest
     steps:
       - name: automerge
@@ -31,5 +33,20 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           MERGE_METHOD: squash
+          MERGE_FORKS: false
+          UPDATE_METHOD: merge
+  automerge_main:
+    if: github.base_ref == 'refs/heads/main'
+    concurrency: 
+      group: ${{ github.head_ref }}-${{ github.workflow }}
+      cancel-in-progress: true
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: automerge
+        uses: "pascalgn/automerge-action@v0.14.1"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_METHOD: merge
           MERGE_FORKS: false
           UPDATE_METHOD: merge
