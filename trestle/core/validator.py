@@ -1,11 +1,10 @@
 # -*- mode:python; coding:utf-8 -*-
-
 # Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-#
+
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
@@ -13,40 +12,34 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Validate by confirming no duplicate items."""
+"""Base class for all validators."""
 
 import argparse
 import logging
 import pathlib
-import re
+from abc import ABC, abstractmethod
+from typing import TypeVar
 
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.const import NCNAME_REGEX
 from trestle.core.err import TrestleError
-from trestle.core.validator_helper import Validator, find_values_by_name
 from trestle.utils import fs
 from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
 
-
-def _roleids_are_valid(model: OscalBaseModel) -> bool:
-    role_ids_list = find_values_by_name(model, 'role_ids')
-    p = re.compile(NCNAME_REGEX)
-    for role_id_list in role_ids_list:
-        for role_id in role_id_list:
-            s = str(role_id.__root__)
-            matched = p.match(s)
-            if matched is None:
-                return False
-    return True
+# Generic type var
+TG = TypeVar('TG')
 
 
-class RoleIdValidator(Validator):
-    """Check that all RoleId values conform to NCName regex."""
+class Validator(ABC):
+    """Validator base class."""
+
+    @abstractmethod
+    def model_is_valid(self, model: OscalBaseModel) -> bool:
+        """Validate the model."""
 
     def validate(self, args: argparse.Namespace) -> int:
-        """Perform the validation."""
+        """Perform the validation according to user options."""
         trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
 
         # validate by type - all of type or just specified by name
@@ -64,7 +57,7 @@ class RoleIdValidator(Validator):
                 except TrestleError as e:
                     logger.warning(f'File load error {e}')
                     return 1
-                if not _roleids_are_valid(model):
+                if not self.model_is_valid(model):
                     return 1
             return 0
 
@@ -74,7 +67,7 @@ class RoleIdValidator(Validator):
             for mt in model_tups:
                 model_path = trestle_root / fs.model_type_to_model_dir(mt[0]) / mt[1]
                 _, _, model = load_distributed(model_path)
-                if not _roleids_are_valid(model):
+                if not self.model_is_valid(model):
                     return 1
             return 0
 
@@ -82,6 +75,6 @@ class RoleIdValidator(Validator):
         if 'file' in args and args.file:
             file_path = trestle_root / args.file
             _, _, model = load_distributed(file_path)
-            if not _roleids_are_valid(model):
+            if not self.model_is_valid(model):
                 return 1
         return 0

@@ -398,9 +398,20 @@ def is_hidden(file_path: pathlib.Path) -> bool:
     if os.name == 'nt':  # pragma: no cover
         attribute = win32api.GetFileAttributes(str(file_path))
         return attribute & (win32con.FILE_ATTRIBUTE_HIDDEN | win32con.FILE_ATTRIBUTE_SYSTEM)
-    else:
-        # Handle unix
-        return file_path.stem.startswith('.')
+    # Handle unix
+    return file_path.stem.startswith('.')
+
+
+def is_symlink(file_path: pathlib.Path) -> bool:
+    """Is the file path a symlink."""
+    if os.name == 'nt':
+        return file_path.suffix == '.lnk'
+    return file_path.is_symlink()
+
+
+def local_and_visible(file_path: pathlib.Path) -> bool:
+    """Is the file or dir local (not a symlink) and not hidden."""
+    return not (is_hidden(file_path) or is_symlink(file_path))
 
 
 def allowed_task_name(name: str) -> bool:

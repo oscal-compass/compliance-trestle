@@ -581,3 +581,17 @@ def test_model_type_to_model_dir() -> None:
         pass
     else:
         assert 'test failed'
+
+
+def test_local_and_visible(tmp_path) -> None:
+    """Test if file is local (not symlink) and visible (not hidden)."""
+    local_file = tmp_path / 'local.md'
+    local_file.touch()
+    if os.name == 'nt':
+        link_file = tmp_path / 'not_local.lnk'
+        link_file.touch()
+    else:
+        link_file = tmp_path / 'linked.md'
+        link_file.symlink_to(local_file)
+    assert fs.local_and_visible(local_file)
+    assert not fs.local_and_visible(link_file)
