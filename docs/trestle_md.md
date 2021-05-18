@@ -1,4 +1,4 @@
-# trestle md markdown related operations.
+# trestle CLI for governance of markdown documents
 
 ## Overview
 
