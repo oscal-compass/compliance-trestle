@@ -89,6 +89,6 @@ def test_parse_file() -> None:
     ]
 
     for test in tests:
-        target = parser.parse_file(pathlib.Path.joinpath(yaml_path, file_name), model_name=test['model_name'])
+        target = parser.parse_file(yaml_path / file_name, model_name=test['model_name'])
 
         assert type(target).__name__ == test['expected']

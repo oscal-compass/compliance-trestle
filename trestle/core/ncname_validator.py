@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Validate by confirming no duplicate items."""
+"""Validate confirming strings conform to NCName regex."""
 
 import re
 
@@ -24,7 +24,7 @@ from trestle.core.validator_helper import find_values_by_name
 
 
 class NcNameValidator(Validator):
-    """Check that all item values conform to NCName regex."""
+    """Validator to confirm role_id strings conform to NCName regex."""
 
     def _model_is_valid_role_id(self, model: OscalBaseModel) -> bool:
         """Handle specific case for role_id."""
@@ -39,5 +39,12 @@ class NcNameValidator(Validator):
         return True
 
     def model_is_valid(self, model: OscalBaseModel) -> bool:
-        """Test if the model is valid."""
+        """
+        Test if an OSCAL is valid.
+
+        Args:
+            model: An OSCAL model to be validated.
+        Returns:
+            The binary status of the validation (True is valid).
+        """
         return self._model_is_valid_role_id(model)

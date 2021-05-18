@@ -16,5 +16,5 @@
 
 #TODO: Ensure this is automatically updated successfully.
 OSCAL_VERSION = '1.0.0-rc2'
-OSCAL_VERSION_REGEX =  'r\'1\.0\.0[ -]*rc[ -]*2\''
+OSCAL_VERSION_REGEX =  r'1\.0\.0[ -]*rc[ -]*2'
 
