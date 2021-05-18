@@ -15,6 +15,7 @@
 # limitations under the License.
 """Define the TransformerFactory and corresponding ResultsTransformer class it creates."""
 
+import datetime
 from abc import ABC, abstractmethod
 from typing import Dict, Type
 
@@ -25,6 +26,20 @@ from trestle.transforms.results import Results
 
 class TransformerBase(ABC):
     """Abstract base interface for all transformers."""
+
+    # the current time for consistent timestamping
+    _timestamp = datetime.datetime.utcnow().replace(microsecond=0).replace(tzinfo=datetime.timezone.utc).isoformat()
+
+    @staticmethod
+    def set_timestamp(value: str) -> None:
+        """Set the default timestamp value."""
+        datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S%z')
+        TransformerBase._timestamp = value
+
+    @staticmethod
+    def get_timestamp() -> str:
+        """Get the default timestamp value."""
+        return TransformerBase._timestamp
 
     @abstractmethod
     def transform(self, blob: str) -> OscalBaseModel:
