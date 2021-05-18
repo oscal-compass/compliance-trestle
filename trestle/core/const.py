@@ -38,8 +38,8 @@ MODEL_TYPE_TO_MODEL_DIR = {
     'target-definition': 'target-definitions',
     'component-definition': 'component-definitions',
     'system-security-plan': 'system-security-plans',
-    'assessment-plan': 'assessment_plans',
-    'assessment-results': 'assessment_results',
+    'assessment-plan': 'assessment-plans',
+    'assessment-results': 'assessment-results',
     'plan-of-action-and-milestones': 'plan-of-action-and-milestones'
 }
 """Element path separator"""
@@ -87,6 +87,10 @@ ARG_ITEM_SHORT = 'i'
 ARG_DESC_ITEM = 'Item used'
 
 VAL_MODE_DUPLICATES = 'duplicates'
+VAL_MODE_NCNAME = 'ncname'
+VAL_MODE_REFS = 'refs'
+VAL_MODE_ALL = 'all'
+VAL_MODE_OSCAL_VERSION = 'oscal_version'
 
 FILE_ENCODING = 'utf8'
 
@@ -99,3 +103,5 @@ HEADER_R_ESCAPE = '}'
 WEBSITE_ROOT = 'https://ibm.github.io/compliance-trestle'
 
 BUG_REPORT = 'https://github.com/IBM/compliance-trestle/issues/new/choose'
+
+NCNAME_REGEX = r'^[a-zA-Z_][\w.-]*$'

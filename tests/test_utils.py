@@ -25,11 +25,11 @@ from trestle.core.commands import cmd_utils
 from trestle.core.models.elements import ElementPath
 from trestle.core.models.file_content_type import FileContentType
 
-BASE_TMP_DIR = pathlib.Path('tests/__tmp_path')
-YAML_TEST_DATA_PATH = pathlib.Path('tests/data/yaml/')
-JSON_TEST_DATA_PATH = pathlib.Path('tests/data/json/')
-ENV_TEST_DATA_PATH = pathlib.Path('tests/data/env/')
-JSON_NIST_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/')
+BASE_TMP_DIR = pathlib.Path('tests/__tmp_path').resolve()
+YAML_TEST_DATA_PATH = pathlib.Path('tests/data/yaml/').resolve()
+JSON_TEST_DATA_PATH = pathlib.Path('tests/data/json/').resolve()
+ENV_TEST_DATA_PATH = pathlib.Path('tests/data/env/').resolve()
+JSON_NIST_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/').resolve()
 JSON_NIST_CATALOG_NAME = 'NIST_SP-800-53_rev4_catalog.json'
 
 TARGET_DEFS_DIR = 'target-definitions'
@@ -60,7 +60,7 @@ def verify_file_content(file_path: pathlib.Path, model: OscalBaseModel):
 
 def ensure_trestle_config_dir(sub_dir: pathlib.Path):
     """Ensure that the sub_dir has trestle config dir."""
-    trestle_dir = pathlib.Path.joinpath(sub_dir, const.TRESTLE_CONFIG_DIR)
+    trestle_dir = sub_dir / const.TRESTLE_CONFIG_DIR
     trestle_dir.mkdir(exist_ok=True, parents=True)
 
 

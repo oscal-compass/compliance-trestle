@@ -173,7 +173,7 @@ class CreateCmd(CommandPlusDocs):
         # Create sample model.
         sample_model = generators.generate_sample_model(object_type)
         # Presuming top level level model not sure how to do the typing for this.
-        sample_model.metadata.title = f'Generic {model_alias} created by trestle.'  # type: ignore
+        sample_model.metadata.title = f'Generic {model_alias} created by trestle named {args.output}.'  # type: ignore
         sample_model.metadata.last_modified = datetime.now().astimezone()
         sample_model.metadata.oscal_version = trestle.oscal.OSCAL_VERSION
         sample_model.metadata.version = '0.0.0'

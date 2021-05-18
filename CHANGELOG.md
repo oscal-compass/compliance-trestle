@@ -3,6 +3,16 @@
 
 <!--next-version-placeholder-->
 
+## v0.15.0 (2021-05-13)
+### Feature
+* Added error checking and enforce 1 to 1 keys in header validation ([#512](https://github.com/IBM/compliance-trestle/issues/512)) ([`da95862`](https://github.com/IBM/compliance-trestle/commit/da958620ffca76cbfae1762159a7ca51007c8b88))
+* Role ID cross reference validator and refactors to validators to allow all ([`c894704`](https://github.com/IBM/compliance-trestle/commit/c894704875ae54e8376fb50d62cd064f1d293b66))
+* Roleid validation via ncname and parametrized tests ([#499](https://github.com/IBM/compliance-trestle/issues/499)) ([`84dc9a2`](https://github.com/IBM/compliance-trestle/commit/84dc9a293e35f1c4010a38c7ecc8f99e5fa7dfb2))
+
+### Fix
+* Upgrade pydantic to 1.8.2 for security issue ([#513](https://github.com/IBM/compliance-trestle/issues/513)) ([`6e01f36`](https://github.com/IBM/compliance-trestle/commit/6e01f36cc6fdfd8b14d453f470968ad7ea4164fa))
+* Remove problematic code-QL plugin which is causing problems. ([#507](https://github.com/IBM/compliance-trestle/issues/507)) ([`47529a7`](https://github.com/IBM/compliance-trestle/commit/47529a7714f0c99bb711033ca1863651de99dbf5))
+
 ## v0.14.4 (2021-04-22)
 ### Fix
 * Add timestamp to tanium-to-oscal transformer ([#503](https://github.com/IBM/compliance-trestle/issues/503)) ([`e8dc204`](https://github.com/IBM/compliance-trestle/commit/e8dc204935b5d1f4584bcaaef77bba2c41d80a9f))
