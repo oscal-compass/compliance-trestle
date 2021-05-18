@@ -83,7 +83,6 @@ nav:
         - cache: api_reference/trestle.core.remote.cache.md
     - utils:
       - log: api_reference/trestle.utils.log.md
-      - osco: api_reference/trestle.utils.osco.md
       - load_distributed: api_reference/trestle.utils.load_distributed.md
       - trash: api_reference/trestle.utils.trash.md
       - fs: api_reference/trestle.utils.fs.md
