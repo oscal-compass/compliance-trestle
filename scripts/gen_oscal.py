@@ -113,7 +113,7 @@ def generate_models():
     generate_model('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', out_dir / 'target.py')
     # Generate model for exchange protocol.
     generate_model(
-        '3rd-party-schema-documents/OSCAL-1.0.0-rc1-IBM_observations_interchange_schema.json',
+        '3rd-party-schema-documents/IBM_target_schema_v1.0.0.json',
         Path('trestle/third_party') / 'exchange_protocol.py'
     )
 
