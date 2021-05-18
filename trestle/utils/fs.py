@@ -46,36 +46,21 @@ def should_ignore(name: str) -> bool:
 
 def is_valid_project_root(path: pathlib.Path) -> bool:
     """Check if the path is a valid trestle project root."""
-    if not path or len(path.parts) <= 0:
-        return False
-
-    trestle_dir = pathlib.Path.joinpath(path, const.TRESTLE_CONFIG_DIR)
-    if trestle_dir.exists() and trestle_dir.is_dir():
-        return True
-
-    return False
+    trestle_dir = path / const.TRESTLE_CONFIG_DIR
+    return trestle_dir.exists() and trestle_dir.is_dir()
 
 
 def get_trestle_project_root(path: pathlib.Path) -> Optional[pathlib.Path]:
     """Get the trestle project root folder in the path."""
-    if not path or len(path.parts) <= 0:
-        return None
-
-    current = path.resolve(False)
-    while len(current.parts) > 1:  # it must not be the system root directory
-        if is_valid_project_root(current):
-            return current
-        current = current.parent
-
+    while len(path.parts) > 1:  # it must not be the system root directory
+        if is_valid_project_root(path):
+            return path
+        path = path.parent
     return None
 
 
 def is_valid_project_model_path(path: pathlib.Path) -> bool:
     """Check if the file/directory path is a valid trestle model project."""
-    if not path or len(path.parts) <= 0:
-        return False
-
-    path = path.resolve()
     root_path = get_trestle_project_root(path)
     if root_path is None:
         return False
@@ -83,48 +68,29 @@ def is_valid_project_model_path(path: pathlib.Path) -> bool:
     relative_path = path.relative_to(str(root_path))
     if len(relative_path.parts) < 2 or relative_path.parts[0] not in const.MODEL_TYPE_TO_MODEL_MODULE:
         return False
-
-    project_type = relative_path.parts[0]  # catalogs, profiles, etc
-
-    if project_type not in const.MODEL_TYPE_TO_MODEL_MODULE.keys():
-        return False
-
     return True
 
 
 def get_project_model_path(path: pathlib.Path) -> Optional[pathlib.Path]:
     """Get the base path of the trestle model project."""
-    if not path or len(path.parts) <= 2:
-        return None
-
-    path = path.resolve()
-    for i in range(2, len(path.parts)):
-        current = pathlib.Path(path.parts[0]).joinpath(*path.parts[1:i + 1])
-        if is_valid_project_model_path(current):
-            return current
-
+    if len(path.parts) > 2:
+        for i in range(2, len(path.parts)):
+            current = pathlib.Path(path.parts[0]).joinpath(*path.parts[1:i + 1])
+            if is_valid_project_model_path(current):
+                return current
     return None
 
 
 def has_parent_path(sub_path: pathlib.Path, parent_path: pathlib.Path) -> bool:
     """Check if sub_path has the specified parent_dir path."""
-    if parent_path is None or len(parent_path.parts) <= 0:
-        return False
-
-    sub_path = sub_path.resolve()
-    parent_path = parent_path.resolve()
-
     # sub_path should be longer than parent path
     if len(sub_path.parts) < len(parent_path.parts):
         return False
 
-    matched = True
     for i, part in enumerate(parent_path.parts):
         if part != sub_path.parts[i]:
-            matched = False
-            break
-
-    return matched
+            return False
+    return True
 
 
 def has_trestle_project_in_path(path: pathlib.Path) -> bool:
@@ -138,8 +104,9 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBase
     logger.debug(f'get contextual model type for input path {path}')
     if path is None:
         path = pathlib.Path.cwd()
-
-    path = path.resolve()
+    else:
+        if not path.exists():
+            path = pathlib.Path.cwd() / path
 
     logger.debug(f'get contextual model type final path {path}')
 
@@ -149,7 +116,7 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBase
     root_path = get_trestle_project_root(path)
     project_model_path = get_project_model_path(path)
 
-    logger.debug(f'root_path {root_path} project_model_path {project_model_path}')
+    logger.debug(f'root_path is {root_path} and project_model_path is {project_model_path}')
 
     if root_path is None or project_model_path is None:
         raise err.TrestleError('Trestle project model not found')
@@ -191,7 +158,7 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
         logger.debug('get_stripped_contextual_model based on cwd')
         path = pathlib.Path.cwd()
     path = path.resolve()
-    logger.debug(f'get_stripped_contextual_model path is {path} not stripped: {aliases_not_to_be_stripped}')
+    logger.debug(f'get_stripped_contextual_model path is {path} and not stripped is {aliases_not_to_be_stripped}')
     if aliases_not_to_be_stripped is None:
         aliases_not_to_be_stripped = []
 
@@ -290,7 +257,7 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
     is running trestle from.
     """
     if len(alias_path.strip()) == 0:
-        raise err.TrestleError('Invalid jsonpath.')
+        raise err.TrestleError(f'Invalid jsonpath {alias_path}')
 
     singular_alias: str = ''
 
@@ -324,17 +291,23 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
         raise err.TrestleError(f'{root_model_alias} is an invalid root model alias.')
 
     model_type = model_types[0]
+    # go through path parts skipping first one
     for i in range(1, len(path_parts)):
         if utils.is_collection_field_type(model_type):
+            # if it is a collection type and last part is * then break
             if i == len(path_parts) - 1 and path_parts[i] == '*':
                 break
+            # otherwise get the inner type of items in the collection
             model_type = utils.get_inner_type(model_type)
+            # and bump i
             i = i + 1
         else:
-            try:
-                model_type = model_type.alias_to_field_map()[path_parts[i]].outer_type_
-            except Exception as e:
-                raise err.TrestleError(f'Error in json path {alias_path}: {e}')
+            path_part = path_parts[i]
+            field_map = model_type.alias_to_field_map()
+            if path_part not in field_map:
+                continue
+            field = field_map[path_part]
+            model_type = field.outer_type_
         model_types.append(model_type)
 
     last_alias = path_parts[-1]
@@ -345,9 +318,12 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
 
     parent_model_type = model_types[-2]
     try:
-        singular_alias = utils.classname_to_alias(
-            utils.get_inner_type(parent_model_type.alias_to_field_map()[last_alias].outer_type_).__name__, 'json'
-        )
+        field_map = parent_model_type.alias_to_field_map()
+        field = field_map[last_alias]
+        outer_type = field.outer_type_
+        inner_type = utils.get_inner_type(outer_type)
+        inner_type_name = inner_type.__name__
+        singular_alias = utils.classname_to_alias(inner_type_name, 'json')
     except Exception as e:
         raise err.TrestleError(f'Error in json path {alias_path}: {e}')
 
@@ -363,9 +339,8 @@ def model_type_to_model_dir(model_type: str) -> str:
 
 def get_contextual_file_type(path: pathlib.Path) -> FileContentType:
     """Return the file content type for files in the given directory, if it's a trestle project."""
-    path = path.resolve()
     if not is_valid_project_model_path(path):
-        raise err.TrestleError('Trestle project not found.')
+        raise err.TrestleError(f'Trestle project not found at path {path}')
 
     for file_or_directory in path.iterdir():
         if file_or_directory.is_file():
@@ -376,18 +351,6 @@ def get_contextual_file_type(path: pathlib.Path) -> FileContentType:
             return get_contextual_file_type(file_or_directory)
 
     raise err.TrestleError('No files found in the project.')
-
-
-def model_or_file_to_model_name(model_rep: str) -> str:
-    """Convert either model path or json/yaml file name to model path."""
-    if not model_rep:
-        raise err.TrestleError('Cannot convert empty model name to path.')
-    path = pathlib.Path(model_rep)
-    # if no suffix assume it is a model name
-    if not path.suffix:
-        return str(path)
-    # otherwise return parent as model name
-    return str(path.parent)
 
 
 def get_models_of_type(model_type: str) -> List[str]:
@@ -435,9 +398,20 @@ def is_hidden(file_path: pathlib.Path) -> bool:
     if os.name == 'nt':  # pragma: no cover
         attribute = win32api.GetFileAttributes(str(file_path))
         return attribute & (win32con.FILE_ATTRIBUTE_HIDDEN | win32con.FILE_ATTRIBUTE_SYSTEM)
-    else:
-        # Handle unix
-        return file_path.stem.startswith('.')
+    # Handle unix
+    return file_path.stem.startswith('.')
+
+
+def is_symlink(file_path: pathlib.Path) -> bool:
+    """Is the file path a symlink."""
+    if os.name == 'nt':
+        return file_path.suffix == '.lnk'
+    return file_path.is_symlink()
+
+
+def local_and_visible(file_path: pathlib.Path) -> bool:
+    """Is the file or dir local (not a symlink) and not hidden."""
+    return not (is_hidden(file_path) or is_symlink(file_path))
 
 
 def allowed_task_name(name: str) -> bool:

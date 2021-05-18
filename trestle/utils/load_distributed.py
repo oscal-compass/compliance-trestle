@@ -19,18 +19,19 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 from trestle.core.base_model import OscalBaseModel
+from trestle.core.err import TrestleNotFoundError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
 
 
-def _load_list(filepath: Path) -> Tuple[Type[OscalBaseModel], str, List[OscalBaseModel]]:
+def _load_list(file_path: Path) -> Tuple[Type[OscalBaseModel], str, List[OscalBaseModel]]:
     """Given path to a directory of list(array) models, load the distributed models."""
     aliases_not_to_be_stripped = []
     instances_to_be_merged: List[OscalBaseModel] = []
-    # TODO: FIXME: fs.get_stripped_contextual_model fails without absolute file path!!! FIX IT!!
-    collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(filepath.resolve())
+    file_path = file_path.resolve()
+    collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(file_path)
 
-    for path in sorted(Path.iterdir(filepath)):
+    for path in sorted(Path.iterdir(file_path)):
 
         # ASSUMPTION HERE: if it is a directory, there's a file that can not be decomposed further.
         if path.is_dir():
@@ -46,7 +47,7 @@ def _load_list(filepath: Path) -> Tuple[Type[OscalBaseModel], str, List[OscalBas
 def _load_dict(filepath: Path) -> Tuple[Type[OscalBaseModel], str, Dict[str, OscalBaseModel]]:
     """Given path to a directory of additionalProperty(dict) models, load the distributed models."""
     model_dict: Dict[str, OscalBaseModel] = {}
-    collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(filepath.resolve())
+    collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(filepath)
     for path in sorted(Path.iterdir(filepath)):
         model_type, model_alias, model_instance = load_distributed(path)
         field_name = path.parts[-1].split('__')[0]
@@ -80,6 +81,10 @@ def load_distributed(
     if not file_path.exists():
         file_path = file_path.with_name(file_path.stem)
 
+    file_path = file_path.resolve()
+    if not file_path.exists():
+        raise TrestleNotFoundError(f'File {file_path} not found for load.')
+
     # If the path contains a list type model
     if collection_type is list:
         return _load_list(file_path)
@@ -89,7 +94,7 @@ def load_distributed(
         return _load_dict(file_path)
 
     # Get current model
-    primary_model_type, primary_model_alias = fs.get_stripped_contextual_model(file_path.resolve())
+    primary_model_type, primary_model_alias = fs.get_stripped_contextual_model(file_path)
     primary_model_instance: Type[OscalBaseModel] = None
 
     # is this an attempt to load an actual json or yaml file?
@@ -112,7 +117,7 @@ def load_distributed(
                 instances_to_be_merged.append(model_instance)
 
             elif path.is_dir():
-                model_type, model_alias = fs.get_stripped_contextual_model(path.resolve())
+                model_type, model_alias = fs.get_stripped_contextual_model(path)
                 # Only load the directory if it is a collection model. Otherwise do nothing - it gets loaded when
                 # iterating over the model file
 
@@ -133,8 +138,7 @@ def load_distributed(
         if primary_model_instance is not None:
             primary_model_dict = primary_model_instance.__dict__
 
-        merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(
-            file_path.resolve(), aliases_not_to_be_stripped)
+        merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(file_path, aliases_not_to_be_stripped)
 
         # The following use of top_level is to allow loading of a top level model by name only, e.g. MyCatalog
         # There may be a better overall way to approach this.

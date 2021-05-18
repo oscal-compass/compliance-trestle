@@ -25,8 +25,10 @@ import pytest
 
 from tests import test_utils
 
+import trestle.core.generators as gens
 from trestle.cli import Trestle
 from trestle.oscal.catalog import Catalog
+from trestle.oscal.component import ComponentDefinition, DefinedComponent
 from trestle.oscal.target import TargetDefinition
 
 TEST_CONFIG: dict = {}
@@ -42,49 +44,49 @@ def rand_str():
 @pytest.fixture(scope='function')
 def tmp_file(tmp_path):
     """Return a path for a tmp yaml file."""
-    return pathlib.Path.joinpath(tmp_path, f'{uuid4()}')
+    return pathlib.Path(tmp_path) / f'{uuid4()}'
 
 
 @pytest.fixture(scope='session')
 def tmp_fixed_file(tmp_path):
     """Return a path for a tmp yaml file."""
-    return pathlib.Path.joinpath(tmp_path, 'fixed_file')
+    return pathlib.Path(tmp_path) / 'fixed_file'
 
 
 @pytest.fixture(scope='function')
 def tmp_yaml_file(tmp_path):
     """Return a path for a tmp yaml file."""
-    return pathlib.Path.joinpath(tmp_path, f'{uuid4()}.yaml')
+    return pathlib.Path(tmp_path) / f'{uuid4()}.yaml'
 
 
 @pytest.fixture(scope='function')
 def tmp_json_file(tmp_path):
     """Return a path for a tmp yaml file."""
-    return pathlib.Path.joinpath(tmp_path, f'{uuid4()}.json')
+    return pathlib.Path(tmp_path) / f'{uuid4()}.json'
 
 
 @pytest.fixture(scope='function')
 def tmp_xml_file(tmp_path):
     """Return a path for a tmp yaml file."""
-    return pathlib.Path.joinpath(tmp_path, f'{uuid4()}.xml')
+    return pathlib.Path(tmp_path) / f'{uuid4()}.xml'
 
 
 @pytest.fixture(scope='module')
 def yaml_testdata_path() -> pathlib.Path:
     """Return a path for a tmp directory."""
-    return test_utils.YAML_TEST_DATA_PATH
+    return pathlib.Path(test_utils.YAML_TEST_DATA_PATH)
 
 
 @pytest.fixture(scope='module')
 def json_testdata_path() -> pathlib.Path:
     """Return a path for a tmp directory."""
-    return test_utils.JSON_TEST_DATA_PATH
+    return pathlib.Path(test_utils.JSON_TEST_DATA_PATH)
 
 
 @pytest.fixture(scope='function')
 def sample_target_def():
     """Return a valid target definition object."""
-    file_path = pathlib.Path.joinpath(test_utils.YAML_TEST_DATA_PATH, 'good_target.yaml')
+    file_path = pathlib.Path(test_utils.YAML_TEST_DATA_PATH) / 'good_target.yaml'
     target_obj = TargetDefinition.oscal_read(file_path)
     return target_obj
 
@@ -92,7 +94,7 @@ def sample_target_def():
 @pytest.fixture(scope='function')
 def sample_catalog():
     """Return a valid catalog object."""
-    file_path = pathlib.Path.joinpath(test_utils.JSON_NIST_DATA_PATH, test_utils.JSON_NIST_CATALOG_NAME)
+    file_path = pathlib.Path(test_utils.JSON_NIST_DATA_PATH) / test_utils.JSON_NIST_CATALOG_NAME
     catalog_obj = Catalog.oscal_read(file_path)
     return catalog_obj
 
@@ -100,9 +102,19 @@ def sample_catalog():
 @pytest.fixture(scope='function')
 def sample_catalog_minimal():
     """Return a valid catalog object with minimum fields necessary."""
-    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog.json')
+    file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / 'minimal_catalog.json'
     catalog_obj = Catalog.oscal_read(file_path)
     return catalog_obj
+
+
+@pytest.fixture(scope='function')
+def sample_component_definition():
+    """Return a valid ComponentDefinition object with minimum fields necessary."""
+    def_comp1: DefinedComponent = gens.generate_sample_model(DefinedComponent)
+    def_comp2: DefinedComponent = gens.generate_sample_model(DefinedComponent)
+    comp_def: ComponentDefinition = gens.generate_sample_model(ComponentDefinition)
+    comp_def.components = {'comp1': def_comp1, 'comp2': def_comp2}
+    return comp_def
 
 
 @pytest.fixture(scope='function')
@@ -143,3 +155,11 @@ def testdata_dir() -> pathlib.Path:
     """Return absolute path to test data directory."""
     test_data_source = pathlib.Path('tests/data')
     return test_data_source.resolve()
+
+
+@pytest.fixture(scope='function')
+def keep_cwd() -> pathlib.Path:
+    """Force test to return to orig directory if chdir's happen in test."""
+    old_cwd = os.getcwd()
+    yield old_cwd
+    os.chdir(old_cwd)

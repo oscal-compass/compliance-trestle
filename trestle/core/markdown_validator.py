@@ -28,6 +28,15 @@ from trestle.core import err
 logger = logging.getLogger(__name__)
 
 
+def has_required(*argv):
+    """For list of object/attrib pairs confirm that the objects have the attrib."""
+    npairs = len(argv) // 2
+    for i in range(npairs):
+        if not argv[2 * i + 1] in argv[2 * i]:
+            return False
+    return True
+
+
 def partition_ast(content: List[Dict[str, Any]], ref_level: int = 0) -> Tuple[List[Dict[str, Any]], int]:
     """
     Partition AST, recursive function to create a hierarchial tree out of a stream of markdown elements.
@@ -88,6 +97,13 @@ def compare_tree(template: Dict[str, Any], content: Dict[str, Any]) -> bool:
     if not (template['type'] == 'heading'):
         # It's okay as we should not be here:
         return True
+    logger.debug('In compare tree')
+    if not has_required(template, 'level', template['children'][0], 'text'):
+        logger.error('In compare tree template does not have expected structure')
+        return False
+    if not has_required(content, 'level', content['children'][0], 'text'):
+        logger.error('In compare tree content does not have expected structure')
+        return False
     template_heading_level = template['level']
     template_header_name = template['children'][0]['text'].strip()
     content_heading_level = content['level']
@@ -106,14 +122,14 @@ def compare_tree(template: Dict[str, Any], content: Dict[str, Any]) -> bool:
     template_sub_headers = []
     content_sub_headers = []
     for ii in range(len(template['children'])):
-        if template['children'][ii]['type'] == 'heading':
+        if template['children'][ii].get('type') == 'heading':
             template_sub_headers.append(template['children'][ii])
     # IF there is no template headers we are good
     if len(template_sub_headers) == 0:
         return True
 
     for ii in range(len(content['children'])):
-        if content['children'][ii]['type'] == 'heading':
+        if content['children'][ii].get('type') == 'heading':
             content_sub_headers.append(content['children'][ii])
 
     if not len(template_sub_headers) == len(content_sub_headers):
@@ -141,6 +157,7 @@ class MarkdownValidator:
         self,
         template_path: pathlib.Path,
         yaml_header_validate: bool,
+        yaml_only_validate: bool,
         strict_heading_validate: Optional[str] = None
     ) -> None:
         """
@@ -149,9 +166,11 @@ class MarkdownValidator:
         Args:
             template_path: path to markdown template.
             yaml_header_validate: whether to validate a yaml header for conformance or not
+            yaml_only_validate: whether to validate only the yaml header
             strict_heading_validate: Whether a heading, provided in the template, is to have line-by-line matching.
         """
         self._yaml_header_validate = yaml_header_validate
+        self._yaml_only_validate = yaml_only_validate
         self.template_path = template_path
         if not self.template_path.is_file():
             logger.error(f'Provided template {self.template_path.resolve()} is not a file')
@@ -217,11 +236,13 @@ class MarkdownValidator:
         """
         logger.info(f'Validating {candidate} against{self.template_path}')
         header_content, mistune_parse_content = self.load_markdown_parsetree(candidate)
-        if self._yaml_header_validate:
+        if self._yaml_header_validate or self._yaml_only_validate:
             header_status = self.compare_keys(self._template_header, header_content)
             if not header_status:
                 logger.warning(f'YAML header mismatch between template {self.template_path} and instance {candidate}')
                 return False
+        if self._yaml_only_validate:
+            return True
         candidate_tree, _ = partition_ast(mistune_parse_content)
         w_candidate_tree = self.wrap_content(candidate_tree)
         if self._strict_heading_validate is not None:
@@ -244,9 +265,11 @@ class MarkdownValidator:
         Returns:
             Whether or not the the candidate matches the template keys.
         """
+        if len(template.keys()) != len(candidate.keys()):
+            return False
         for key in template.keys():
             if key in candidate.keys():
-                if type(template[key]) == dict:
+                if type(template[key]) == dict and type(candidate[key]) == dict:
                     status = cls.compare_keys(template[key], candidate[key])
                     if not status:
                         return status

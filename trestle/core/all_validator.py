@@ -13,16 +13,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Validate by confirming no duplicate uuids."""
+"""Validate based on all registered validators."""
 
+import trestle.core.validator_factory as vfact
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.validator import Validator
-from trestle.core.validator_helper import has_no_duplicate_values_by_name
 
 
-class DuplicatesValidator(Validator):
-    """Validator to check for duplicate uuids in the model."""
+class AllValidator(Validator):
+    """Validator to confirm the model passes all registered validation tests."""
 
     def model_is_valid(self, model: OscalBaseModel) -> bool:
-        """Test if the model is valid."""
-        return has_no_duplicate_values_by_name(model, 'uuid')
+        """
+        Validate an oscal model against all available validators in the trestle library.
+
+        args:
+            model: An Oscal model which can be passed to the validator.
+
+        returns:
+            Whether or not the model passed all the validators
+        """
+        for val in vfact.validator_factory.get_all():
+            if val != self:
+                if not val.model_is_valid(model):
+                    return False
+        return True

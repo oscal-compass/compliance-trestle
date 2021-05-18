@@ -16,7 +16,7 @@
 """Generic object factory."""
 
 import argparse
-from typing import Any, Dict
+from typing import Any, Dict, ValuesView
 
 
 class ObjectFactory:
@@ -27,9 +27,18 @@ class ObjectFactory:
         self._objects: Dict[str, Any] = {}
 
     def register_object(self, mode: str, obj: Any) -> None:
-        """Register the object."""
+        """Register an object to the object factory.
+
+        Args:
+            mode: Descriptive key for the mode / type of object to be retrieved.
+            obj: The object type to be registered.
+        """
         self._objects[mode] = obj
 
     def get(self, args: argparse.Namespace) -> Any:
         """Create the object from the args."""
         return self._objects.get(args.mode)
+
+    def get_all(self) -> ValuesView[Any]:
+        """Get all registered objects."""
+        return self._objects.values()

@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - main
-      - develop
   schedule:
     # Run once per day to ensure we have no build failures due to dependency updates.
     # * is a special character in YAML so you have to quote this string
@@ -14,10 +13,20 @@ on:
 
 jobs:
   build:
+    concurrency: 
+      group: ${{ github.ref }}-${{ github.workflow }}-${{ github.job }}
+      cancel-in-progress: true
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+        - os: ubuntu-latest
+          path: ~/.cache/pip
+        - os: macos-latest
+          path: ~/Library/Caches/pip
+        - os: windows-latest
+          path: ~\AppData\Local\pip\Cache
         python-version: [3.7, 3.8, 3.9]
 
     steps:
@@ -28,6 +37,13 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+    - uses: actions/cache@v2
+      with:
+        path: ${{ matrix.path }}
+        key: ${{ matrix.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('setup.cfg') }}
+        restore-keys: |
+         ${{ matrix.os }}-${{ matrix.python-version }}-pip-
+
     - name: Install build tools
       run: |
         make develop
@@ -86,6 +102,9 @@ jobs:
   deploy-docs:
     runs-on: ubuntu-latest
     needs: deploy
+    concurrency: 
+      group: ${{ github.ref }}-${{ github.workflow }}-${{ github.job }}
+      cancel-in-progress: true
     # Temporary hack: allow develop as well as master to deploy docs.
     if: github.ref == 'refs/heads/main'
     steps:
@@ -111,6 +130,9 @@ jobs:
     name: Merge main -> develop
     runs-on: ubuntu-latest
     needs: deploy
+    concurrency: 
+      group: ${{ github.ref }}-${{ github.workflow }}-${{ github.job }}
+      cancel-in-progress: true
     if: github.ref == 'refs/heads/main'
     steps:
     - uses: tukasz/direct-merge-action@master
