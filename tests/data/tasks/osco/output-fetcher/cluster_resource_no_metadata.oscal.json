@@ -1,0 +1,23 @@
+{
+  "results": [
+    {
+      "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+      "title": "OpenShift",
+      "description": "Openshift",
+      "start": "2021-02-24T19:31:13.000+00:00",
+      "end": "2021-02-24T19:31:13.000+00:00",
+      "reviewed-controls": {
+        "control-selections": [
+          {}
+        ]
+      },
+      "findings": [
+        {
+          "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+          "title": "",
+          "description": ""
+        }
+      ]
+    }
+  ]
+}
