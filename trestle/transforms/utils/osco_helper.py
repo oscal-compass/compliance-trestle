@@ -303,8 +303,8 @@ class ResultsMgr():
         """OSCAL result."""
         prop = Result(
             uuid=str(uuid.uuid4()),
-            title='OpenShift',
-            description='Openshift',
+            title='OpenShift Compliance Operator',
+            description='OpenShift Compliance Operator Scan Results',
             start=self.timestamp,
             end=self.timestamp,
             reviewed_controls=self.reviewed_controls,

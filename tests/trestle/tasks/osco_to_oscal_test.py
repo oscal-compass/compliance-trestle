@@ -27,7 +27,7 @@ from trestle.tasks.base_task import TaskOutcome
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
 uuid_mock2 = Mock(return_value=uuid.UUID('46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e'))
 
-def test_print_info(tmpdir):
+def test_osco_print_info(tmpdir):
     """Test print_info call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
@@ -38,7 +38,7 @@ def test_print_info(tmpdir):
     retval = tgt.print_info()
     assert retval is None
 
-def test_simulate(tmpdir):
+def test_osco_simulate(tmpdir):
     """Test simulate call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
@@ -50,7 +50,7 @@ def test_simulate(tmpdir):
     assert retval == TaskOutcome.SIM_SUCCESS
     assert len(os.listdir(str(tmpdir))) == 0
     
-def test_simulate_compressed(tmpdir):
+def test_osco_simulate_compressed(tmpdir):
     """Test simulate call with compressed OSCO xml data."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal-compressed.config')
@@ -62,14 +62,14 @@ def test_simulate_compressed(tmpdir):
     assert retval == TaskOutcome.SIM_SUCCESS
     assert len(os.listdir(str(tmpdir))) == 0
     
-def test_simulate_no_config(tmpdir):
+def test_osco_simulate_no_config(tmpdir):
     """Test simulate no config call."""
     tgt = osco_to_oscal.OscoToOscal(None)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_FAILURE
     assert len(os.listdir(str(tmpdir))) == 0
 
-def test_simulate_no_overwrite(tmpdir):
+def test_osco_simulate_no_overwrite(tmpdir):
     """Test simulate no overwrite call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
@@ -87,7 +87,7 @@ def test_simulate_no_overwrite(tmpdir):
     assert retval == TaskOutcome.SIM_FAILURE
     assert len(os.listdir(str(tmpdir))) == 1
 
-def test_simulate_no_input_dir(tmpdir):
+def test_osco_simulate_no_input_dir(tmpdir):
     """Test simulate with no input dir call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
@@ -100,7 +100,7 @@ def test_simulate_no_input_dir(tmpdir):
     assert retval == TaskOutcome.SIM_FAILURE
     assert len(os.listdir(str(tmpdir))) == 0
 
-def test_simulate_no_ouput_dir(tmpdir):
+def test_osco_simulate_no_ouput_dir(tmpdir):
     """Test simulate with no output dir call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
@@ -112,7 +112,7 @@ def test_simulate_no_ouput_dir(tmpdir):
     assert retval == TaskOutcome.SIM_FAILURE
     assert len(os.listdir(str(tmpdir))) == 0
     
-def test_simulate_input_fetcher(tmpdir):
+def test_osco_simulate_input_fetcher(tmpdir):
     """Test simulate call OSCO fetcher json data."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal-fetcher.config')
@@ -125,7 +125,7 @@ def test_simulate_input_fetcher(tmpdir):
     assert len(os.listdir(str(tmpdir))) == 0
     
 @patch(target='uuid.uuid4', new=uuid_mock1)
-def test_execute(tmpdir):
+def test_osco_execute(tmpdir):
     """Test execute call."""
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     config = configparser.ConfigParser()
@@ -142,7 +142,7 @@ def test_execute(tmpdir):
     assert [row for row in open(f_produced)] == [row for row in open(f_expected)]
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
-def test_execute_compressed(tmpdir):
+def test_osco_execute_compressed(tmpdir):
     """Test execute call with compressed OSCO xml data."""
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     config = configparser.ConfigParser()
@@ -158,14 +158,14 @@ def test_execute_compressed(tmpdir):
     f_produced = tmpdir  / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
     assert [row for row in open(f_produced)] == [row for row in open(f_expected)]
     
-def test_execute_no_config(tmpdir):
+def test_osco_execute_no_config(tmpdir):
     """Test execute no config call."""
     tgt = osco_to_oscal.OscoToOscal(None)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
     assert len(os.listdir(str(tmpdir))) == 0
 
-def xtest_execute_no_overwrite(tmpdir):
+def xtest_osco_execute_no_overwrite(tmpdir):
     """Test execute no overwrite call."""
     execute_no_overwrite_part1(tmpdir)
     execute_no_overwrite_part2(tmpdir)
@@ -199,7 +199,7 @@ def execute_no_overwrite_part2(tmpdir):
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
-def test_execute_no_input_dir(tmpdir):
+def test_osco_execute_no_input_dir(tmpdir):
     """Test execute with no input dir call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
@@ -212,7 +212,7 @@ def test_execute_no_input_dir(tmpdir):
     assert retval == TaskOutcome.FAILURE
     assert len(os.listdir(str(tmpdir))) == 0
 
-def test_execute_no_ouput_dir(tmpdir):
+def test_osco_execute_no_ouput_dir(tmpdir):
     """Test execute with no output dir call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
@@ -224,7 +224,7 @@ def test_execute_no_ouput_dir(tmpdir):
     assert retval == TaskOutcome.FAILURE
     assert len(os.listdir(str(tmpdir))) == 0
     
-def test_execute_bad_timestamp(tmpdir):
+def test_osco_execute_bad_timestamp(tmpdir):
     """Test execute with bad timestamp."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
@@ -237,7 +237,7 @@ def test_execute_bad_timestamp(tmpdir):
     assert len(os.listdir(str(tmpdir))) == 0
     
 @patch(target='uuid.uuid4', new=uuid_mock1)
-def test_execute_input_fetcher(tmpdir):
+def test_osco_execute_input_fetcher(tmpdir):
     """Test execute call OSCO fetcher json data."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal-fetcher.config')

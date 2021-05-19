@@ -2,8 +2,8 @@
   "results": [
     {
       "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-      "title": "OpenShift",
-      "description": "Openshift",
+      "title": "OpenShift Compliance Operator",
+      "description": "OpenShift Compliance Operator Scan Results",
       "start": "2021-02-24T19:31:13.000+00:00",
       "end": "2021-02-24T19:31:13.000+00:00",
       "local-definitions": {
