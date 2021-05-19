@@ -34,10 +34,10 @@ class AllValidator(Validator):
         Validate an oscal model against all available validators in the trestle library.
 
         args:
-            model: An Oscal model which can be passed to the validator.
+            model: An Oscal model that can be passed to the validator.
 
         returns:
-            Whether or not the model passed all the validators
+            True (valid) if the model passed all registered validators.
         """
         self.last_failure_msg = self.__doc__
         for val in vfact.validator_factory.get_all():

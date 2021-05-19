@@ -41,8 +41,15 @@ class Validator(ABC):
 
     @abstractmethod
     def model_is_valid(self, model: OscalBaseModel) -> bool:
-        """Validate the model."""
+        """
+        Validate the model.
 
+        args:
+            model: An Oscal model that can be passed to the validator.
+
+        returns:
+            Whether or not the model passed this validation test.
+        """
     def validate(self, args: argparse.Namespace) -> int:
         """Perform the validation according to user options."""
         trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
