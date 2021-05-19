@@ -35,11 +35,11 @@ from trestle.core.models.plans import Plan
 from trestle.oscal.catalog import Catalog
 
 
-def test_remove(tmp_path, sample_catalog_minimal):
+def test_remove(tmp_path):
     """Test RemoveCmd.remove() method for trestle remove: removing Roles and Responsible-Parties."""
     # 1. Remove responsible-parties
     # Note: minimal catalog does have responsible-parties but doesn't have Roles.
-    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog.json')
+    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_missing_roles.json')
     catalog_with_responsible_parties = Element(Catalog.oscal_read(file_path))
 
     # minimal catalog with responsible-parties (dict) removed
@@ -68,7 +68,7 @@ def test_remove(tmp_path, sample_catalog_minimal):
 
     # 2. Remove roles
     # Note: minimal catalog does have responsible-parties but doesn't have Roles.
-    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog.json')
+    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_missing_roles.json')
     catalog_without_roles = Element(Catalog.oscal_read(file_path))
 
     # minimal catalog with Roles
@@ -94,10 +94,10 @@ def test_remove(tmp_path, sample_catalog_minimal):
     assert catalog_without_roles == actual_catalog_removed_roles
 
 
-def test_remove_failure(tmp_path, sample_catalog_minimal):
+def test_remove_failure(tmp_path):
     """Test failure of RemoveCmd.remove() method for trestle remove."""
     # Note: minimal catalog does have responsible-parties but doesn't have Roles.
-    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog.json')
+    file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_missing_roles.json')
     catalog_with_responsible_parties = Element(Catalog.oscal_read(file_path))
 
     # Supply nonexistent element Roles for removal:
@@ -123,7 +123,7 @@ def test_remove_failure(tmp_path, sample_catalog_minimal):
         AssertionError()
 
 
-def test_run_failure_switches(tmp_path, sample_catalog_minimal):
+def test_run_failure_switches(tmp_path):
     """Test failure of _run on bad switches for RemoveCmd."""
     # 1. Missing --file argument.
     testargs = ['trestle', 'remove', '-e', 'catalog.metadata.roles']
@@ -258,7 +258,7 @@ def test_run_failure_plan_execute(tmp_path, sample_catalog_minimal):
                 assert exitcode == 1
 
 
-def test_run(tmp_path, sample_catalog_minimal):
+def test_run(tmp_path, sample_catalog_missing_roles):
     """Test _run for RemoveCmd."""
     # 1. Test trestle remove for one element.
     # expected catalog after remove of Responsible-Party
@@ -271,7 +271,7 @@ def test_run(tmp_path, sample_catalog_minimal):
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
         tmp_path,
         content_type,
-        sample_catalog_minimal,
+        sample_catalog_missing_roles,
         test_utils.CATALOGS_DIR
     )
 

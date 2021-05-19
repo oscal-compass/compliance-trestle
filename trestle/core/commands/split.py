@@ -94,7 +94,7 @@ class SplitCmd(CommandPlusDocs):
         elements_clean = args_raw[const.ARG_ELEMENT].strip("'")
 
         if split_is_too_fine(elements_clean, model):
-            logger.warn('Cannot split the model to the level of uuids, strings, etc.')
+            logger.warning('Cannot split the model to the level of uuids, strings, etc.')
             return 1
 
         logger.debug(f'split calling parse_element_args on {elements_clean}')
