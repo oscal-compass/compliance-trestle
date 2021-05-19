@@ -50,6 +50,7 @@ class Validator(ABC):
         returns:
             Whether or not the model passed this validation test.
         """
+
     def validate(self, args: argparse.Namespace) -> int:
         """Perform the validation according to user options."""
         trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
