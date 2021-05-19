@@ -203,9 +203,6 @@ class ComplianceOperatorReport():
         node = self._get_node()
         results = self.osco_json['data']['results']
         root = ElementTree.fromstring(results)
-
-        logger.info(f'{type(root)}')
-
         version = self._get_version(root)
         target = self._get_target(root)
         benchmark_href = self._get_benchmark_href(root)
