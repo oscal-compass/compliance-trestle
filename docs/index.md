@@ -1,4 +1,4 @@
-# Compliance-trestle (also known as  `trestle`)
+# Compliance-trestle (also known as `trestle`)
 
 [![OS Compatibility][platform-badge]](#prerequisites)
 [![Python Compatibility][python-badge]][python]
@@ -6,7 +6,7 @@
 [![code-coverage][coverage-badge]][coverage]
 [![pypi-downloads][pypi-downloads-badge]][pypi]
 
-Trestle is a tool that enables the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
+Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
 Trestle is designed to operate as a CICD pipeline running on top of compliance artifacts in `git`, to provide transparency for the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the generated artifacts on to tools that orchestrate the enforcement, measurement, and reporting of compliance.
 
@@ -17,6 +17,15 @@ Trestle provides three separate but related functions in the compliance space:
 - Manage OSCAL documents to allow editing and manipulation while making sure the schemas are enforced
 - Transform documents from other formats to OSCAL
 - Provide governance for markdown documents and enforce consistency of format and content based on specified templates
+
+Trestle provides tooling to help orchestrate the compliance process across a number of dimensions:
+
+- Help manage OSCAL documents in a more human-friendly manner by expanding the large OSCAL data structures into smaller and easier to edit sub-structures while making sure the schemas are enforced.
+- Transform documents from other formats to OSCAL
+- Provide governance for markdown documents and enforce consistency of format and content based on specified templates
+- Tooling to manage markdown documents for compliance, including transformation to OSCAL.
+- Support within trestle to streamline management within a managed git environment.
+- An underlying object model that supports developers interacting with OSCAL artefacts.
 
 ## Why Trestle
 
@@ -75,7 +84,7 @@ Our project welcomes external contributions. Please consult [contributing](contr
 ## License & Authors
 
 If you would like to see the detailed LICENSE click [here](LICENSE).
-Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](maintainers) for the core team.
+Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contributors) for a list of authors and [maintainers](maintainers.md) for the core team.
 
 ```text
 # Copyright (c) 2020 IBM Corp. All rights reserved.
