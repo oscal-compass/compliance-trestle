@@ -6,12 +6,6 @@
       "last-modified": "2020-10-22T09:46:21.745+00:00",
       "version": "2.0",
       "oscal-version": "1.0.0-rc2",
-      "roles": [
-        {
-          "id": "organisation",
-           "title": "a_role"
-         }
-      ],
       "responsible-parties": {
         "organisation": {
           "party-uuids": [
