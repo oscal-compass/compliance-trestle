@@ -412,15 +412,11 @@ class ResultsMgr():
     def _process(self, co_report: ComplianceOperatorReport) -> None:
         """Process ingested data."""
         rule_use_generator = co_report.rule_use_generator()
-        try:
-            while True:
-                rule_use = next(rule_use_generator)
-                self._component_extract(rule_use)
-                self._inventory_extract(rule_use)
-                self._observation_extract(rule_use)
-                self._finding_extract(rule_use)
-        except StopIteration:
-            pass
+        for rule_use in rule_use_generator:
+            self._component_extract(rule_use)
+            self._inventory_extract(rule_use)
+            self._observation_extract(rule_use)
+            self._finding_extract(rule_use)
 
     def ingest(self, osco_json: t_osco_json) -> None:
         """Process OSCO json."""
