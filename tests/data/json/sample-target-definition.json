@@ -246,7 +246,7 @@
         "description": "RedHat Enterprise Linux 7.8",
         "target-control-implementations": [
           {
-            "uuid": "daca7f77-a2eb-433c-aec2-999c185671dd",
+            "uuid": "daca7f77-a2eb-433c-aec2-999c185671de",
             "source": "https://github.com/usnistgov/OSCAL/blob/v1.0.0-milestone3/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
             "description": "Compliance Operator SCAP guide for RedHat OpenShift Kubernetes Service for NIST 800-53. It includes optional configuration to use with an instance of auditree.",
             "props": [
