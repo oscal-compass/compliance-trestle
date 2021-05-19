@@ -14,7 +14,11 @@ from trestle.core.base_model import OscalBaseModel
 class LocationUuid(OscalBaseModel):
     __root__: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(..., description='References a location defined in metadata.')
+    ) = Field(
+        ...,
+        description='References a location defined in metadata.',
+        title='Location Reference',
+    )
 
 
 class Type(Enum):
@@ -37,18 +41,25 @@ class MemberOfOrganization(OscalBaseModel):
     ) = Field(
         ...,
         description='Identifies that the party object is a member of the organization associated with the provided UUID.',
+        title='Organizational Affiliation',
     )
 
 
 class PartyUuid(OscalBaseModel):
     __root__: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(..., description='References a party defined in metadata.')
+    ) = Field(
+        ...,
+        description='References a party defined in metadata.',
+        title='Party Reference',
+    )
 
 
 class RoleId(OscalBaseModel):
     __root__: str = Field(
-        ..., description='A reference to the roles served by the user.'
+        ...,
+        description='A reference to the roles served by the user.',
+        title='Role Identifier Reference',
     )
 
 
@@ -100,7 +111,9 @@ class Hash(OscalBaseModel):
 
 class Remarks(OscalBaseModel):
     __root__: str = Field(
-        ..., description='Additional commentary on the containing object.'
+        ...,
+        description='Additional commentary on the containing object.',
+        title='Remarks',
     )
 
 
@@ -108,6 +121,7 @@ class Published(OscalBaseModel):
     __root__: datetime = Field(
         ...,
         description='The date and time the document was published. The date-time value must be formatted according to RFC 3339 with full time and time zone included.',
+        title='Publication Timestamp',
     )
 
 
@@ -115,6 +129,7 @@ class LastModified(OscalBaseModel):
     __root__: datetime = Field(
         ...,
         description='The date and time the document was last modified. The date-time value must be formatted according to RFC 3339 with full time and time zone included.',
+        title='Last Modified Timestamp',
     )
 
 
@@ -122,18 +137,23 @@ class Version(OscalBaseModel):
     __root__: str = Field(
         ...,
         description='A string used to distinguish the current version of the document from other previous (and future) versions.',
+        title='Document Version',
     )
 
 
 class OscalVersion(OscalBaseModel):
     __root__: str = Field(
-        ..., description='The OSCAL model version the document was authored against.'
+        ...,
+        description='The OSCAL model version the document was authored against.',
+        title='OSCAL version',
     )
 
 
 class EmailAddress(OscalBaseModel):
     __root__: EmailStr = Field(
-        ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
+        ...,
+        description='An email address as defined by RFC 5322 Section 3.4.1.',
+        title='Email Address',
     )
 
 
@@ -145,7 +165,9 @@ class TelephoneNumber(OscalBaseModel):
 
 
 class AddrLine(OscalBaseModel):
-    __root__: str = Field(..., description='A single line of an address.')
+    __root__: str = Field(
+        ..., description='A single line of an address.', title='Address line'
+    )
 
 
 class DocumentId(OscalBaseModel):
@@ -194,6 +216,7 @@ class FunctionPerformed(OscalBaseModel):
     __root__: str = Field(
         ...,
         description='Describes a function performed for a given authorized privilege by this user class.',
+        title='Functions Performed',
     )
 
 
@@ -341,7 +364,7 @@ class Property(OscalBaseModel):
         )
     ] = Field(
         None,
-        description='A unique identifier that can be used to reference this property elsewhere in an OSCAL document. A UUID should be consistantly used for a given location across revisions of the document.',
+        description='A unique identifier that can be used to reference this property elsewhere in an OSCAL document. A UUID should be consistently used for a given location across revisions of the document.',
         title='Property Universally Unique Identifier',
     )
     ns: Optional[AnyUrl] = Field(
@@ -751,7 +774,7 @@ class Party(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistantly used for a given party across revisions of the document.',
+        description='A unique identifier that can be used to reference this defined location elsewhere in an OSCAL document. A UUID should be consistently used for a given party across revisions of the document.',
         title='Party Universally Unique Identifier',
     )
     type: Type = Field(

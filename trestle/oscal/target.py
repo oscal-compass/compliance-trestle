@@ -20,7 +20,9 @@ class ParameterGuideline(OscalBaseModel):
 
 
 class ParameterValue(OscalBaseModel):
-    __root__: str = Field(..., description='A parameter value or set of values.')
+    __root__: str = Field(
+        ..., description='A parameter value or set of values.', title='Parameter Value'
+    )
 
 
 class ParameterSelection(OscalBaseModel):
@@ -72,7 +74,9 @@ class Address(OscalBaseModel):
 
 class EmailAddress(OscalBaseModel):
     __root__: EmailStr = Field(
-        ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
+        ...,
+        description='An email address as defined by RFC 5322 Section 3.4.1.',
+        title='Email Address',
     )
 
 
@@ -86,7 +90,11 @@ class TelephoneNumber(OscalBaseModel):
 class LocationUuid(OscalBaseModel):
     __root__: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(..., description='References a location defined in metadata.')
+    ) = Field(
+        ...,
+        description='References a location defined in metadata.',
+        title='Location Reference',
+    )
 
 
 class Type(Enum):
@@ -105,7 +113,9 @@ class ExternalId(OscalBaseModel):
 
 class EmailAddress1(OscalBaseModel):
     __root__: EmailStr = Field(
-        ..., description='An email address as defined by RFC 5322 Section 3.4.1.'
+        ...,
+        description='An email address as defined by RFC 5322 Section 3.4.1.',
+        title='Email Address',
     )
 
 
@@ -150,18 +160,25 @@ class MemberOfOrganization(OscalBaseModel):
     ) = Field(
         ...,
         description='Identifies that the party object is a member of the organization associated with the provided UUID.',
+        title='Organizational Affiliation',
     )
 
 
 class PartyUuid(OscalBaseModel):
     __root__: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(..., description='References a party defined in metadata.')
+    ) = Field(
+        ...,
+        description='References a party defined in metadata.',
+        title='Party Reference',
+    )
 
 
 class RoleId(OscalBaseModel):
     __root__: str = Field(
-        ..., description='A reference to the roles served by the user.'
+        ...,
+        description='A reference to the roles served by the user.',
+        title='Role Identifier Reference',
     )
 
 
@@ -251,7 +268,9 @@ class Hash(OscalBaseModel):
 
 class Remarks(OscalBaseModel):
     __root__: str = Field(
-        ..., description='Additional commentary on the containing object.'
+        ...,
+        description='Additional commentary on the containing object.',
+        title='Remarks',
     )
 
 
@@ -292,6 +311,7 @@ class FunctionPerformed(OscalBaseModel):
     __root__: str = Field(
         ...,
         description='Describes a function performed for a given authorized privilege by this user class.',
+        title='Functions Performed',
     )
 
 
