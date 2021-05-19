@@ -111,11 +111,6 @@ def generate_models():
         out_full_name = out_dir / out_fname
         generate_model(fixed_name, out_full_name)
     generate_model('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', out_dir / 'target.py')
-    # Generate model for exchange protocol.
-    generate_model(
-        '3rd-party-schema-documents/IBM_target_schema_v1.0.0.json',
-        Path('trestle/third_party') / 'exchange_protocol.py'
-    )
 
 
 def main():
