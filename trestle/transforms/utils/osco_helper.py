@@ -19,7 +19,9 @@ import bz2
 import logging
 import uuid
 from typing import Any, Dict, List, ValuesView
-from xml.etree import ElementTree
+from xml.etree.ElementTree import Element
+
+from defusedxml import ElementTree
 
 from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import Finding
@@ -42,6 +44,7 @@ t_component = SystemComponent
 t_component_ref = str
 t_control = str
 t_control_selection = ControlSelection
+t_element = Element
 t_finding = Finding
 t_inventory = InventoryItem
 t_inventory_ref = str
@@ -115,7 +118,7 @@ class ComplianceOperatorReport():
         """Extract 'node' from the JSON."""
         return self.osco_json['metadata']['annotations']['openscap-scan-result/node']
 
-    def _get_version(self, root: ElementTree.Element) -> str:
+    def _get_version(self, root: t_element) -> str:
         """Extract 'version' from the XML."""
         value = None
         for key, val in root.attrib.items():
@@ -124,7 +127,7 @@ class ComplianceOperatorReport():
                 break
         return value
 
-    def _get_target(self, root: ElementTree.Element) -> str:
+    def _get_target(self, root: t_element) -> str:
         """Extract 'target' from the XML."""
         value = None
         for lev1 in root:
@@ -134,7 +137,7 @@ class ComplianceOperatorReport():
                 break
         return value
 
-    def _get_benchmark(self, root: ElementTree.Element, kw) -> str:
+    def _get_benchmark(self, root: t_element, kw) -> str:
         """Extract benchmark kw value from the XML."""
         value = None
         for lev1 in root:
@@ -144,15 +147,15 @@ class ComplianceOperatorReport():
                 break
         return value
 
-    def _get_benchmark_href(self, root: ElementTree.Element) -> str:
+    def _get_benchmark_href(self, root: t_element) -> str:
         """Extract 'benchmark.href' from the XML."""
         return self._get_benchmark(root, 'href')
 
-    def _get_benchmark_id(self, root: ElementTree.Element) -> str:
+    def _get_benchmark_id(self, root: t_element) -> str:
         """Extract 'benchmark.id' from the XML."""
         return self._get_benchmark(root, 'id')
 
-    def _get_fact(self, lev1: ElementTree.Element, kw: str) -> str:
+    def _get_fact(self, lev1: t_element, kw: str) -> str:
         """Extract 'fact' from the XML."""
         value = None
         for lev2 in lev1:
@@ -164,7 +167,7 @@ class ComplianceOperatorReport():
                     break
         return value
 
-    def _get_scanner_name(self, root: ElementTree.Element) -> str:
+    def _get_scanner_name(self, root: t_element) -> str:
         """Extract 'scanner:name' from the XML."""
         value = None
         for lev1 in root:
@@ -174,7 +177,7 @@ class ComplianceOperatorReport():
                 break
         return value
 
-    def _get_scanner_version(self, root: ElementTree.Element) -> str:
+    def _get_scanner_version(self, root: t_element) -> str:
         """Extract 'scanner:version' from the XML."""
         value = None
         for lev1 in root:
@@ -184,7 +187,7 @@ class ComplianceOperatorReport():
                 break
         return value
 
-    def _get_result(self, lev1: ElementTree.Element) -> str:
+    def _get_result(self, lev1: t_element) -> str:
         """Extract 'result' from the XML."""
         value = None
         for lev2 in lev1:
@@ -200,6 +203,9 @@ class ComplianceOperatorReport():
         node = self._get_node()
         results = self.osco_json['data']['results']
         root = ElementTree.fromstring(results)
+
+        logger.info(f'{type(root)}')
+
         version = self._get_version(root)
         target = self._get_target(root)
         benchmark_href = self._get_benchmark_href(root)
