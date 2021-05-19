@@ -14,6 +14,7 @@
 """Action wrapper of a command."""
 
 import io
+import logging
 import pathlib
 from abc import ABC, abstractmethod
 from enum import Enum
@@ -24,6 +25,8 @@ from trestle.utils import fs, trash
 
 from .elements import Element, ElementPath
 from .file_content_type import FileContentType
+
+logger = logging.getLogger(__name__)
 
 
 class ActionType(Enum):
@@ -226,9 +229,6 @@ class CreatePathAction(Action):
         Arguments:
             sub_path: this is the desired file or directory path that needs to be created under the project root
         """
-        if not isinstance(sub_path, pathlib.Path):
-            raise TrestleError('Sub path must be of type pathlib.Path')
-
         sub_path = sub_path.resolve()
 
         self._trestle_project_root = fs.get_trestle_project_root(sub_path)
@@ -265,7 +265,7 @@ class CreatePathAction(Action):
             # create a path relative to the current
             # it starts with the project root, so we shall always create
             # sub directories or files relative to the project root
-            cur_path = cur_path.joinpath(part)
+            cur_path = cur_path / part
 
             # create the sub_path file or directory if it does not exists already
             if cur_path.suffix != '':  # suffix will denote a file
@@ -339,7 +339,7 @@ class RemovePathAction(Action):
 
         self._trestle_project_root = fs.get_trestle_project_root(sub_path)
         if self._trestle_project_root is None:
-            raise TrestleError(f'Sub path "{sub_path}" should be child of a valid trestle project')
+            raise TrestleError(f'Sub path "{sub_path}" should be child of a valid trestle project.')
 
         self._sub_path = sub_path
 
@@ -352,7 +352,9 @@ class RemovePathAction(Action):
     def execute(self) -> None:
         """Execute the action."""
         if not self._sub_path.exists():
-            raise FileNotFoundError(f'Path "{self._sub_path}" does not exist')
+            logger.debug(f'path {self._sub_path} does not exist in remove path action - ignoring.')
+            # silently ignore until plan/execute made robust
+            # raise TrestleError(f'Path "{self._sub_path}" does not exist in remove path action') # noqa: E800
 
         trash.store(self._sub_path, True)
         self._mark_executed()

@@ -1,12 +1,6 @@
-# Tutorial: Install trestle in a python virtual environment
+# Install trestle in a python virtual environment
 
-Here are step by step instructions to install trestle.
-
-## *Objective*
-
-Install trestle for manipulation of OSCAL documents.
-
-There are 3 short steps shown below before you can use trestle.
+There are a few things you need to to start using trestle:
 
 - Make sure you have a working and recent Python environment
 - Set up a Python virtual environment

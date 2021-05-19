@@ -17,7 +17,7 @@
 
 from ilcli import Command
 
-from trestle.core import all_validator, duplicates_validator, ncname_validator, refs_validator
+from trestle.core import all_validator, duplicates_validator, ncname_validator, oscal_version_validator, refs_validator
 from trestle.core import const
 from trestle.core.object_factory import ObjectFactory
 
@@ -29,6 +29,7 @@ validator_factory.register_object(const.VAL_MODE_DUPLICATES, duplicates_validato
 validator_factory.register_object(const.VAL_MODE_NCNAME, ncname_validator.NcNameValidator())
 validator_factory.register_object(const.VAL_MODE_REFS, refs_validator.RefsValidator())
 validator_factory.register_object(const.VAL_MODE_ALL, all_validator.AllValidator())
+validator_factory.register_object(const.VAL_MODE_OSCAL_VERSION, oscal_version_validator.OSCALVersionValidator())
 
 
 def init_arguments(cmd: Command) -> None:
@@ -41,7 +42,13 @@ def init_arguments(cmd: Command) -> None:
     cmd.add_argument(
         '-m',
         '--mode',
-        choices=[const.VAL_MODE_DUPLICATES, const.VAL_MODE_NCNAME, const.VAL_MODE_REFS, const.VAL_MODE_ALL],
+        choices=[
+            const.VAL_MODE_DUPLICATES,
+            const.VAL_MODE_NCNAME,
+            const.VAL_MODE_REFS,
+            const.VAL_MODE_ALL,
+            const.VAL_MODE_OSCAL_VERSION
+        ],
         help='Mode of validation to use.',
         required=False,
         default='all'

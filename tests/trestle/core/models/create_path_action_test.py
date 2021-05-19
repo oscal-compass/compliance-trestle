@@ -35,10 +35,6 @@ def test_create_path_execute(tmp_path: pathlib.Path):
 
     test_utils.ensure_trestle_config_dir(tmp_path)
 
-    with pytest.raises(TrestleError):
-        # invalid sub_path type should error
-        cpa = CreatePathAction(('tests/invalid/sub_path'))
-
     # create directories
     cpa = CreatePathAction(tmp_data_dir)
 

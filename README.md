@@ -1,4 +1,4 @@
-# Compliance-trestle a.k.a. `trestle`
+# Compliance-trestle (also known as `trestle`)
 
 [![OS Compatibility][platform-badge]](#prerequisites)
 [![Python Compatibility][python-badge]][python]
@@ -6,21 +6,30 @@
 [![code-coverage][coverage-badge]][coverage]
 [![pypi-downloads][pypi-downloads-badge]][pypi]
 
-Trestle is a ensemble of tools that enables the creation and validation of documentation artifacts for compliance requirements. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
+Trestle is an ensemble of tools that enable the creation, validation, and governance of documentation artifacts for compliance needs. It leverages NIST's [OSCAL](https://pages.nist.gov/OSCAL/documentation/) as a standard data format for interchange between tools and people, and provides an opinionated approach to OSCAL adoption.
 
-By design Trestle runs as a CICD pipeline running on top of compliance artifacts in `git` to provide transparency to the state of compliance across multiple stakeholders in an environment friendly to developers.
+Trestle is designed to operate as a CICD pipeline running on top of compliance artifacts in `git`, to provide transparency for the state of compliance across multiple stakeholders in an environment friendly to developers. Trestle passes the generated artifacts on to tools that orchestrate the enforcement, measurement, and reporting of compliance.
+
+It also provides tooling to manage OSCAL documents in a more human-friendly manner. By splitting large OSCAL data structures into smaller and easier to edit sub-structures, creation and maintenance of these artifacts can follow normal `git` workflows including peer review via pull request, versioning, releases/tagging.
+
+Trestle provides three separate but related functions in the compliance space:
+
+- Manage OSCAL documents to allow editing and manipulation while making sure the schemas are enforced
+- Transform documents from other formats to OSCAL
+- Provide governance for markdown documents and enforce consistency of format and content based on specified templates
 
 Trestle provides tooling to help orchestrate the compliance process across a number of dimensions:
 
-- Tooling to manage OSCAL in a more human-friendly manner. By expanding the large OSCAL data structures into smaller and easier to edit sub-structures.
-- Transformation workflows that allow existing information from tools which do not support OSCAL into OSCAL.
+- Help manage OSCAL documents in a more human-friendly manner by expanding the large OSCAL data structures into smaller and easier to edit sub-structures while making sure the schemas are enforced.
+- Transform documents from other formats to OSCAL
+- Provide governance for markdown documents and enforce consistency of format and content based on specified templates
 - Tooling to manage markdown documents for compliance, including transformation to OSCAL.
 - Support within trestle to streamline management within a managed git environment.
-- An underlying object model which supports developers interacting with OSCAL artefacts.
+- An underlying object model that supports developers interacting with OSCAL artefacts.
 
 ## Why Trestle
 
-Compliance suffers from being a complex problem that is hard to articulate simply. It requires complete and accurate execution of multiple procedures across many disciplines (e.g. IT, HR, management) with periodic verification and audit of those procedures against controls.
+Compliance suffers from being a complex topic that is hard to articulate simply. It involves complete and accurate execution of multiple procedures across many disciplines (e.g. IT, HR, management) with periodic verification and audit of those procedures against controls.
 
 While it is possible to manage the description of controls and how an organisation implements them in ad hoc ways with general tools (spreadsheets, documents), this is hard to maintain for multiple accreditations and, in the IT domain at least, creates a barrier between the compliance efforts and the people doing daily work (DevOps staff).
 
@@ -28,53 +37,11 @@ Trestle aims to reduce or remove this barrier by bringing the maintenance of con
 
 Trestle implicitly provides a core opinionated workflow driven by its pipeline steps to allow standardized interlocks with other compliance tooling platforms.
 
-## Development status
-
-Compliance trestle is currently alpha. The expectation is that throughout the remainder of 2020 there may be unannounced changes that are breaking within the trestle codebase. If you are using trestle please contact us so we are aware your usecase.
-
-The underlying OSCAL schema is also currently changing. The current approach until the formal release of OSCAL 1.0.0 is for compliance trestle to regularly update our models to reflect NIST's changes.
-
-### Machine readable compliance format
+## Machine readable compliance format
 
 Compliance activities at scale, whether size of estate or number of accreditations, require automation to be successful and repeatable. OSCAL as a standard allows teams to bridge between the "Governance" layer and operational tools.
 
 By building human managed artifacts into OSCAL, Trestle is not only able to validate the integrity of the artifacts that people generate - it also enables reuse and sharing of artifacts, and furthermore can provide suitable input into tools that automate operational compliance.
-
-## Using Trestle
-
-Trestle converts complex schema/data structures into simple files in a directory structure. The aim of this is to make it easier to manage for humans: Individual objects can be versioned & reviewed, then 'compiled' into the larger structure of a Catalog, SSP or Assessment Plan.
-
-### Install and Run
-
-Install from PYPI and run:
-
-```shell
-# Setup virtual environement
-python3 -m venv venv
-. ./venv/bin/activate
-
-# Install trestle from PYPI
-pip install compliance-trestle
-
-# Run Trestle CLI
-trestle -h # For command line help
-```
-
-In order to install Trestle from source, run the following command:
-
-```shell
-# Clone
-git clone https://github.com/IBM/compliance-trestle.git
-cd compliance-trestle
-
-# Setup
-python3 -m venv venv
-. ./venv/bin/activate
-pip install -q -e ".[dev]" --upgrade --upgrade-strategy eager
-
-# Run Trestle CLI
-trestle -h
-```
 
 ## Supported OSCAL elements and extensions
 
@@ -90,10 +57,6 @@ In addition to the core OSCAL objects, trestle supports the definition of a `tar
 regulatory level. The `trestle` team has seen a need for an object that can define parameters at the `control-implemenation`
 level, e.g. `component` is an implementation and `target` is the definition of capabilities of the component.
 
-### 3rd party supported elements.
-
-In addition to the core OSCAL models and the `target-definition` trestle provides support for 3rd party schemas for `tasks` and for use as an object model layer. By design these will not be supported by core trestle editing commands (e.g. split / merge).
-
 ## Supported file formats for OSCAL objects.
 
 OSCAL supports `xml`, `json` and `yaml` with their [metaschema](https://github.com/usnistgov/metaschema) tooling. Trestle
@@ -104,13 +67,23 @@ that full support will remain only for `json` and  `yaml`.
 
 Users needing to import XML OSCAL artifacts are recommended to look at NIST's XML to json conversion page [here](https://github.com/usnistgov/OSCAL/tree/master/json#oscal-xml-to-json-converters).
 
-## Tutorials
+## Python codebase, easy installation via pip
 
-List of tutorials [here](https://ibm.github.io/compliance-trestle/tutorials/tutorials/).
+Trestle runs on most all python platforms (e.g. Linux, Mac, Windows) and is available on PyPi so it is easily installed via pip.  It is under active development and new releases are made available regularly.
+
+## Complete documentation and tutorials
+
+Complete documentation, tutorials, and background on compliance can be found [here](https://ibm.github.io/compliance-trestle).
+
+## Development status
+
+Compliance trestle is currently alpha. The expectation is that in ongoing work there may be unnannounced changes that are breaking within the trestle codebase. If you are using trestle please contact us so we are aware your usecase.
+
+The underlying OSCAL schema is also currently changing. Until the formal release of OSCAL 1.0.0, the models in trestle will regularly update to track NIST's changes.
 
 ## Contributing to Trestle
 
-Our project welcomes external contributions. Please consult [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
+Our project welcomes external contributions. Please consult [contributing](contributing/overview) to get started.
 
 ## License & Authors
 
@@ -142,4 +115,4 @@ Consult [contributors](https://github.com/IBM/compliance-trestle/graphs/contribu
 [pypi]: https://pypi.org/project/compliance-trestle/
 [pypi-downloads-badge]: https://img.shields.io/pypi/dm/compliance-trestle
 [python]: https://www.python.org/downloads/
-[python-badge]: https://img.shields.io/badge/python-v3.6+-blue.svg
+[python-badge]: https://img.shields.io/badge/python-v3.7+-blue.svg

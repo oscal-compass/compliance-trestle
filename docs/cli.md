@@ -1,17 +1,16 @@
-# Trestle CLI
+# trestle CLI Overview and OSCAL Usecases
 
-## Overview & Usecases
-
-The trestle CLI has two primary use cases by design:
+The trestle CLI has three primary use cases:
 
 - Serve as tooling to generate and manipulate OSCAL files directly by an end user. The objective is to reduce the complexity of creating and editing workflows. Example commands are: `trestle import`, `trestle create`, `trestle add`, `trestle split`, `trestle merge`.
 - Act as an automation tool that, by design, can be an integral part of a CI/CD pipeline e.g. `trestle validate`, `trestle tasks`.
+- Allow governance of markdown documents so they conform to specific style or structure requirements.
 
-To support each of these use cases trestle creates an opinionated directory structure to manage OSCAL documents.
+To support each of these use cases trestle creates an opinionated directory structure to manage governed documents.
 
 ## Opinionated directory structure
 
-Trestle relies on an opinionated directory structure, similar to `git`, `go`, or `auditree`, to manage the workflow. Unlike git commands, trestle commands are not restricted to working within an initialized directory tree - but that is the most likely use case.
+Trestle relies on an opinionated directory structure, similar to `git`, `go`, or `auditree`, to manage the workflow. Most trestle commands are restricted to working within an initialized directory tree.
 
 The directory structure setup by trestle has three major elements:
 
@@ -237,6 +236,8 @@ The import subcommand can determine the type of the model that is to be imported
 
 Note that the import command will decompose the file according to the default decomposing rules already mentioned in the `trestle create` section. Similarly to `trestle create`, the user can increase the level of decomposition by using `trestle split` command.
 
+Finally, during the import process the file must pass the `validate --all` test described below for the command, `validate`.  If the file does not pass validation a warning will be given and the import will fail.
+
 ## `trestle replicate`
 
 This command allows users to replicate a certain OSCAL model (file and directory structure). For example `trestle replicate catalog -i cat1 -o cat11` will replicate the Catalog cat1 into `cat11` directory. It can also regenerate all the UUIDs as required.
@@ -310,11 +311,31 @@ remote system state.
 
 Trestle validate the form \`trestle validate -f FILE -i SPECIFIC_ITEM_OR_VALUE, --mode {duplicate or similar}
 
+Trestle can validate in different modes, and it can operate on one or more files specified in different ways.
+
 and returns a non-zero return code on a validation failure. Mode is a list of validation modes that will be implemented as shown in the table below.
 
-| Mode       | Purpose                                                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| duplicates | Identify if duplicate values exist for a given json key for example `trestle validate -f catalog.json -i uuid --mode duplicate` |
+| Mode          | Purpose                                                                                                              |
+| ------------- | -------------------------------------------------------------------------------------------------------------------- |
+| duplicates    | Identify if duplicate uuid's are present: `trestle validate -f catalog.json --mode duplicates`                       |
+| oscal_version | Confirm that the oscal version of the file is supported: `trestle validate -f catalog.json --mode oscal_version`     |
+| refs          | Confirm that all references in responsible parties are found in rols: `trestle validate -f catalog.json --mode refs` |
+| ncname        | Confirm that all roleid's conform to the NCName format: `trestle validate -f catalog.json --mode ncname`             |
+| all           | Confirm that the file is valid with regard to all the above modes: `trestle validate -f catalog.json --mode all`     |
+
+In addition to validating a single file you can validate all files of a given type with the `-t` option:
+
+`trestle validate -t catalog --mode duplicates`
+
+And you can validate all models with the `-a` option:
+
+`trestle validate -a --mode duplicates`
+
+Finally, you can validate a model based on its name using the `-n` option, along with the type of the model:
+
+`trestle validata -t catalog -n my_catalog --mode refs`
+
+Note that when you `Import` a file it will perform a full validation on it first, and if it does not pass validation the file cannot be imported.
 
 ## `trestle tasks`
 
