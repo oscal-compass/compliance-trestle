@@ -13,9 +13,6 @@ on:
 
 jobs:
   build:
-    concurrency: 
-      group: ${{ github.ref }}-${{ github.workflow }}-${{ github.job }}
-      cancel-in-progress: true
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -103,7 +100,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy
     concurrency: 
-      group: ${{ github.ref }}-${{ github.workflow }}-${{ github.job }}
+      group: ${{ github.ref }}-${{ github.workflow }}-${{ github.job }}-docs
       cancel-in-progress: true
     # Temporary hack: allow develop as well as master to deploy docs.
     if: github.ref == 'refs/heads/main'
@@ -131,7 +128,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: deploy
     concurrency: 
-      group: ${{ github.ref }}-${{ github.workflow }}-${{ github.job }}
+      group: ${{ github.ref }}-${{ github.workflow }}-${{ github.job }}-main
       cancel-in-progress: true
     if: github.ref == 'refs/heads/main'
     steps:
