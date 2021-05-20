@@ -1,0 +1,2073 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for compliance-trestle package.">
+      
+      
+      
+      
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/reference/third-party-result-schema-SCC/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.5">
+    
+    
+      
+        <title>Integrating with IBM SCC - Compliance Trestle</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bde7dde4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ef6f36e2.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#009485">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+    
+      
+        
+<script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","G-XT3KGMHSY8","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="purple">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#schema-of-assessment-results-for-interchange-with-ibm-cloud-security-and-compliance-center-scc" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Compliance Trestle" class="md-header__button md-logo" aria-label="Compliance Trestle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Compliance Trestle
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Integrating with IBM SCC
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/IBM/compliance-trestle/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Compliance Trestle" class="md-nav__button md-logo" aria-label="Compliance Trestle" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Compliance Trestle
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/IBM/compliance-trestle/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    IBM/compliance-trestle
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Trestle overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python_trestle_setup/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      <label class="md-nav__link" for="__nav_3">
+        Tutorials
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Tutorials
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/trestle_sample_workflow/" class="md-nav__link">
+        Intro to trestle workflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/continuous-compliance/continuous-compliance/" class="md-nav__link">
+        Compliance posture
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/task.transformer-construction/transformer-construction/" class="md-nav__link">
+        Transformer construction
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/task.tanuim-to-oscal/transformation/" class="md-nav__link">
+        Task - tanium-to-oscal
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      <label class="md-nav__link" for="__nav_4">
+        Trestle command-line interface (CLI)
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Trestle command-line interface (CLI)" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Trestle command-line interface (CLI)
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/" class="md-nav__link">
+        CLI for OSCAL documents
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../trestle_md/" class="md-nav__link">
+        CLI for markdown governance
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      <label class="md-nav__link" for="__nav_5">
+        Contributing
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Contributing" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Contributing
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mkdocs_code_of_conduct/" class="md-nav__link">
+        Code of Conduct
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/mkdocs_contributing/" class="md-nav__link">
+        Contributing overview
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/IBM/compliance-trestle/graphs/contributors" class="md-nav__link">
+        Contributors
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../maintainers/" class="md-nav__link">
+        Maintainers
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/website/" class="md-nav__link">
+        Documentation website
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/DCO/" class="md-nav__link">
+        Developer Certificate of Originality
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../errors/" class="md-nav__link">
+        Known limitations
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" checked>
+      
+      <label class="md-nav__link" for="__nav_7">
+        Reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Integrating with IBM SCC
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Integrating with IBM SCC
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#general-guidance" class="md-nav__link">
+    General Guidance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inventory" class="md-nav__link">
+    Inventory
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observation" class="md-nav__link">
+    Observation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding" class="md-nav__link">
+    Finding
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2" type="checkbox" id="__nav_7_2" >
+      
+      <label class="md-nav__link" for="__nav_7_2">
+        trestle API reference
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="trestle API reference" data-md-level="2">
+        <label class="md-nav__title" for="__nav_7_2">
+          <span class="md-nav__icon md-icon"></span>
+          trestle API reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.cli/" class="md-nav__link">
+        cli
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2" type="checkbox" id="__nav_7_2_2" >
+      
+      <label class="md-nav__link" for="__nav_7_2_2">
+        core
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="core" data-md-level="3">
+        <label class="md-nav__title" for="__nav_7_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          core
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.all_validator/" class="md-nav__link">
+        all_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.base_model/" class="md-nav__link">
+        base_model
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_3" type="checkbox" id="__nav_7_2_2_3" >
+      
+      <label class="md-nav__link" for="__nav_7_2_2_3">
+        commands
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="commands" data-md-level="4">
+        <label class="md-nav__title" for="__nav_7_2_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          commands
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.add/" class="md-nav__link">
+        add
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.assemble/" class="md-nav__link">
+        assemble
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.cmd_utils/" class="md-nav__link">
+        cmd_utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.command_docs/" class="md-nav__link">
+        command_docs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.create/" class="md-nav__link">
+        create
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.import_/" class="md-nav__link">
+        import_
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.init/" class="md-nav__link">
+        init
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.md/" class="md-nav__link">
+        md
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_3_9" type="checkbox" id="__nav_7_2_2_3_9" >
+      
+      <label class="md-nav__link" for="__nav_7_2_2_3_9">
+        md_subs
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="md_subs" data-md-level="5">
+        <label class="md-nav__title" for="__nav_7_2_2_3_9">
+          <span class="md-nav__icon md-icon"></span>
+          md_subs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.md_subs.cidd/" class="md-nav__link">
+        cidd
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.md_subs.governed_docs/" class="md-nav__link">
+        governed_docs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.md_subs.governed_folders/" class="md-nav__link">
+        governed_folders
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.merge/" class="md-nav__link">
+        merge
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.remove/" class="md-nav__link">
+        remove
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.replicate/" class="md-nav__link">
+        replicate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.split/" class="md-nav__link">
+        split
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.task/" class="md-nav__link">
+        task
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.validate/" class="md-nav__link">
+        validate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.commands.version/" class="md-nav__link">
+        version
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.const/" class="md-nav__link">
+        const
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.duplicates_validator/" class="md-nav__link">
+        duplicates_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.err/" class="md-nav__link">
+        err
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.generators/" class="md-nav__link">
+        generators
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.markdown_validator/" class="md-nav__link">
+        markdown_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_9" type="checkbox" id="__nav_7_2_2_9" >
+      
+      <label class="md-nav__link" for="__nav_7_2_2_9">
+        models
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="models" data-md-level="4">
+        <label class="md-nav__title" for="__nav_7_2_2_9">
+          <span class="md-nav__icon md-icon"></span>
+          models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.models.actions/" class="md-nav__link">
+        actions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.models.elements/" class="md-nav__link">
+        elements
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.models.file_content_type/" class="md-nav__link">
+        file_content_type
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.models.interfaces/" class="md-nav__link">
+        interfaces
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.models.plans/" class="md-nav__link">
+        plans
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.ncname_validator/" class="md-nav__link">
+        ncname_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.object_factory/" class="md-nav__link">
+        object_factory
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.oscal_version_validator/" class="md-nav__link">
+        oscal_version_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.parser/" class="md-nav__link">
+        parser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.refs_validator/" class="md-nav__link">
+        refs_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_15" type="checkbox" id="__nav_7_2_2_15" >
+      
+      <label class="md-nav__link" for="__nav_7_2_2_15">
+        remote
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="remote" data-md-level="4">
+        <label class="md-nav__title" for="__nav_7_2_2_15">
+          <span class="md-nav__icon md-icon"></span>
+          remote
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.remote.cache/" class="md-nav__link">
+        cache
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.validator/" class="md-nav__link">
+        validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.validator_factory/" class="md-nav__link">
+        validator_factory
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.core.validator_helper/" class="md-nav__link">
+        validator_helper
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_3" type="checkbox" id="__nav_7_2_3" >
+      
+      <label class="md-nav__link" for="__nav_7_2_3">
+        oscal
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="oscal" data-md-level="3">
+        <label class="md-nav__title" for="__nav_7_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          oscal
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.assessment_plan/" class="md-nav__link">
+        assessment_plan
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.catalog/" class="md-nav__link">
+        catalog
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.component/" class="md-nav__link">
+        component
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.poam/" class="md-nav__link">
+        poam
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.profile/" class="md-nav__link">
+        profile
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.ssp/" class="md-nav__link">
+        ssp
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.oscal.target/" class="md-nav__link">
+        target
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_4" type="checkbox" id="__nav_7_2_4" >
+      
+      <label class="md-nav__link" for="__nav_7_2_4">
+        tasks
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+        <label class="md-nav__title" for="__nav_7_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          tasks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.tasks.base_task/" class="md-nav__link">
+        base_task
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.tasks.osco_to_oscal/" class="md-nav__link">
+        osco_to_oscal
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.tasks.tanium_to_oscal/" class="md-nav__link">
+        tanium_to_oscal
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.tasks.transform/" class="md-nav__link">
+        transform
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_5" type="checkbox" id="__nav_7_2_5" >
+      
+      <label class="md-nav__link" for="__nav_7_2_5">
+        transforms
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="transforms" data-md-level="3">
+        <label class="md-nav__title" for="__nav_7_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          transforms
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_5_1" type="checkbox" id="__nav_7_2_5_1" >
+      
+      <label class="md-nav__link" for="__nav_7_2_5_1">
+        implementations
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="implementations" data-md-level="4">
+        <label class="md-nav__title" for="__nav_7_2_5_1">
+          <span class="md-nav__icon md-icon"></span>
+          implementations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.transforms.implementations.tanium/" class="md-nav__link">
+        tanium
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.transforms.results/" class="md-nav__link">
+        results
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.transforms.transformer_factory/" class="md-nav__link">
+        transformer_factory
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.transforms.transformer_singleton/" class="md-nav__link">
+        transformer_singleton
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_5_5" type="checkbox" id="__nav_7_2_5_5" >
+      
+      <label class="md-nav__link" for="__nav_7_2_5_5">
+        utils
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="utils" data-md-level="4">
+        <label class="md-nav__title" for="__nav_7_2_5_5">
+          <span class="md-nav__icon md-icon"></span>
+          utils
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.transforms.utils.tanium_helper/" class="md-nav__link">
+        tanium_helper
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_6" type="checkbox" id="__nav_7_2_6" >
+      
+      <label class="md-nav__link" for="__nav_7_2_6">
+        utils
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="utils" data-md-level="3">
+        <label class="md-nav__title" for="__nav_7_2_6">
+          <span class="md-nav__icon md-icon"></span>
+          utils
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.utils.fs/" class="md-nav__link">
+        fs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.utils.load_distributed/" class="md-nav__link">
+        load_distributed
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.utils.log/" class="md-nav__link">
+        log
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.utils.osco/" class="md-nav__link">
+        osco
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/trestle.utils.trash/" class="md-nav__link">
+        trash
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#general-guidance" class="md-nav__link">
+    General Guidance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inventory" class="md-nav__link">
+    Inventory
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observation" class="md-nav__link">
+    Observation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding" class="md-nav__link">
+    Finding
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/IBM/compliance-trestle/edit/master/docs/reference/third-party-result-schema-SCC.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                <h1 id="schema-of-assessment-results-for-interchange-with-ibm-cloud-security-and-compliance-center-scc">Schema of Assessment Results for Interchange with IBM Cloud Security and Compliance Center, SCC<a class="headerlink" href="#schema-of-assessment-results-for-interchange-with-ibm-cloud-security-and-compliance-center-scc" title="Permanent link">¤</a></h1>
+<p>This document depicts the structure and guidelines for creating an OSCAL result object which would be generated by various transformers for different tools such as tanium to OSCAL and OSCO to OSCAL. Process Verified Programs (PVPs) such as toolchain that directly generate OSCAL results for sending to SCC Exchange API should follow the structure and guidelines described below.</p>
+<p>The overall object will be a <em>results</em> element of OSCAL Assessment Result schema warpped in an outer json object as shown below.</p>
+<div class="highlight"><pre><span></span><code>{
+    results: [
+        {
+            result object ...
+        },
+        {
+            result object ...
+        }
+    ]
+}
+</code></pre></div>
+<p>Each result object represents one assessment scan and should have the required properties as per OSCAL schema. The <em>start</em> and <em>end</em> represents the start and end datetime of evidence collection activity. The <em>end</em> is optional. In addition to these, the result object may contain details about inventory, list of observations (checks) for each inventory, and findings for profile level controls (such as NIST).</p>
+<div class="highlight"><pre><span></span><code>{
+    &quot;uuid&quot;: &quot;cd54e9bf-f4d3-45d6-ae3b-6e8255847dc2&quot;,
+    &quot;title&quot;: &quot;Tanium&quot;,
+    &quot;description&quot;: &quot;Tanium&quot;,
+    &quot;start&quot;: &quot;2021-04-05T20:19:11.000+00:00&quot;, 
+    &quot;end&quot;: &quot;2021-04-05T20:19:11.000+00:00&quot;, 
+    &quot;local-definitions&quot;: { },
+    &quot;reviewed-controls&quot;: { },
+    &quot;observations&quot;: { },
+    &quot;findings&quot;: { }
+}
+</code></pre></div>
+<p>The inventory should be included in <em>local-definitions</em> if observations are being reported, but can be omitted if only <em>findings</em> are being reported. As <em>reviewwed-controls</em> is required as per OSCAL schema, an empty object should be included if only observations are being reported. Optionally, the controls for which the status is being reported in <em>findings</em> can be captured here. The actual assessment checks being performed on different inventory items should be captured under <em>observations</em>. This can be omitted if only <em>findings</em> are being reported. As <em>findings</em> is required as per OSCAL schema, an empty object can be included if only observations are being reported and no profile controls are being assessed. Otherwise, findings should include the status of profile controls.</p>
+<h2 id="general-guidance">General Guidance<a class="headerlink" href="#general-guidance" title="Permanent link">¤</a></h2>
+<ol>
+<li>
+<p>All the properties in the source result (tool specific format) should be represented as properties of the right objects in OSCAL such as inventory-items, observations, etc. The properties should have a tool specific namespace to convey that the property names are exactly same as what is coming from specific tools.</p>
+</li>
+<li>
+<p>Not everything from the non-OSCAL results are relevant (required) by SCC. The relevant properties MUST have SCC specific <em>class</em> such as scc_inventory_item_id, scc_result, etc. This will help SCC identify corresponding information from different tools and handle them appropriately. SCC MUST store the original prperty names so that when these are retrived by tools later, they can get back the same name-value pairs as was there in the input data.</p>
+</li>
+<li>
+<p>There must be a pre-defined set of properties (class values) from SCC for each result object compoennt such as <em>inventory-items</em>, <em>components</em>, <em>observations</em>, etc.</p>
+</li>
+<li>
+<p>A property value MUST be a string of appropriate format.</p>
+</li>
+</ol>
+<h2 id="inventory">Inventory<a class="headerlink" href="#inventory" title="Permanent link">¤</a></h2>
+<ol>
+<li>Inventory is captured under <em>local-definitions</em> in result object. local-definitions can be used to represent inventory items, components, users, etc. For our purposes only components and inventory-items will be used. Components should be used to represent software, services, etc. whereas inverntory-items represent specific machines, VMs, network devices, etc. The inventory items should be associated to a component through <em>implemented-components</em> as shown below.</li>
+</ol>
+<div class="highlight"><pre><span></span><code>&quot;local-definitions&quot;: {
+    &quot;components&quot;: {
+        &quot;b3e243a1-4660-4f5a-aa85-159b4b2d69ce&quot;: {
+            &quot;type&quot;: &quot;Operating System&quot;,
+            &quot;title&quot;: &quot;Windows 10&quot;,
+            &quot;description&quot;: &quot;Windows 10&quot;,
+            &quot;status&quot;: {
+                &quot;state&quot;: &quot;operational&quot;
+            }
+        }
+    },
+    &quot;inventory-items&quot;: [
+        {
+            &quot;uuid&quot;: &quot;c9fb63cf-d21e-4584-88f8-44d67ea33ba0&quot;,
+            &quot;description&quot;: &quot;inventory&quot;,
+            &quot;props&quot;: [
+                {
+                    &quot;name&quot;: &quot;Computer Name&quot;,
+                    &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+                    &quot;value&quot;: &quot;cmp-wn-2106.demo.tanium.local&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;Tanium Client IP Address&quot;,
+                    &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+                    &quot;value&quot;: &quot;192.168.0.120&quot;,
+                    &quot;class&quot;: &quot;scc_inventory_item_id&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;IP Address&quot;,
+                    &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+                    &quot;value&quot;: &quot;[&#39;fe80::cd44:4154:61e8:53ae&#39;, &#39;192.168.0.120&#39;]&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;Count&quot;,
+                    &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+                    &quot;value&quot;: &quot;1&quot;
+                }
+            ],
+            &quot;implemented-components&quot;: [
+                {
+                    &quot;component-uuid&quot;: &quot;b3e243a1-4660-4f5a-aa85-159b4b2d69ce&quot;
+                }
+            ]
+        },
+        ...
+    ]
+}
+</code></pre></div>
+<ol>
+<li>
+<p>Inventory items have one required property with class <em>scc_inventory_item_id</em> as shown above. Similalry in some other tool's result the scc_inventory_item_id may be specified through some other property. It is the job of the transformation code to appropriately specify class values for required properties. As shown above, non-mandatory property such as <em>count</em> from native result does not have any class specified.</p>
+</li>
+<li>
+<p>The <em>type</em> of the inventory item is specified by linking it to <em>component</em> via <em>implemented-components</em>.</p>
+</li>
+</ol>
+<h2 id="observation">Observation<a class="headerlink" href="#observation" title="Permanent link">¤</a></h2>
+<ol>
+<li>Loosely speaking, an <em>observation</em> object equates with results from a goal check, and the observation is uniquely identified by a uuid, e.g.,</li>
+</ol>
+<div class="highlight"><pre><span></span><code>{
+    &quot;uuid&quot; : &quot;00000000-0000-4000-9999-000000000016&quot;,
+    &quot;description&quot; : &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1_L1_Ensure_Enforce_password_history_is_set_to_24_or_more_passwords&quot;,
+    ...
+}
+</code></pre></div>
+<ol>
+<li>A sample observation object generated from tanium result looks like -</li>
+</ol>
+<div class="highlight"><pre><span></span><code>{
+    &quot;uuid&quot;: &quot;74b605f8-7e8c-41b3-9514-2412692fbe01&quot;,
+    &quot;description&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;,
+    &quot;props&quot;: [
+        {
+            &quot;name&quot;: &quot;Check ID&quot;,
+            &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+            &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark;1.0.0-1;Level 1 - Server;1;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;
+        },
+        {
+            &quot;name&quot;: &quot;Check ID Benchmark&quot;,
+            &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+            &quot;value&quot;: &quot;CIS Red Hat Enterprise Linux 8 Benchmark&quot;,
+            &quot;class&quot;: &quot;scc_predefined_profile&quot;
+        },
+        {
+            &quot;name&quot;: &quot;Check ID Version&quot;,
+            &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+            &quot;value&quot;: &quot;1.0.0-1&quot;,
+            &quot;class&quot;: &quot;scc_check_version&quot;
+        },
+        {
+            &quot;name&quot;: &quot;Check ID Version&quot;,
+            &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+            &quot;value&quot;: &quot;1.0.0-1&quot;,
+            &quot;class&quot;: &quot;scc_predefined_profile_version&quot;
+        },
+        {
+            &quot;name&quot;: &quot;Check ID Level&quot;,
+            &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+            &quot;value&quot;: &quot;Level 1 - Server&quot;
+        },
+        {
+            &quot;name&quot;: &quot;Rule ID&quot;,
+            &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+            &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;,
+            &quot;class&quot;: &quot;scc_goal_description&quot;
+        },
+        {
+            &quot;name&quot;: &quot;Rule ID&quot;,
+            &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+            &quot;value&quot;: &quot;xccdf_org.cisecurity.benchmarks_rule_1.1.1.1_Ensure_mounting_of_cramfs_filesystems_is_disabled&quot;,
+            &quot;class&quot;: &quot;scc_check_name_id&quot;
+        },
+        {
+            &quot;name&quot;: &quot;State&quot;,
+            &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+            &quot;value&quot;: &quot;fail&quot;,
+            &quot;class&quot;: &quot;scc_result&quot;
+        },
+        {
+            &quot;name&quot;: &quot;Timestamp&quot;,
+            &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+            &quot;value&quot;: &quot;2021-05-11T22:34:03+00:00&quot;,
+            &quot;class&quot;: &quot;scc_timestamp&quot;
+        }
+    ],
+    &quot;methods&quot;: [
+        &quot;TEST-AUTOMATED&quot;
+    ],
+    &quot;subjects&quot;: [
+        {
+            &quot;uuid-ref&quot;: &quot;c8919d2b-3300-4f3f-98f6-15a7104c2e04&quot;,
+            &quot;type&quot;: &quot;inventory-item&quot;
+        }
+    ],
+    &quot;collected&quot;: &quot;2021-05-11T22:34:03.000+00:00&quot;
+}
+</code></pre></div>
+<ol>
+<li>
+<p>An obsevration has five required properties -</p>
+</li>
+<li>
+<p><em>scc_predefined_profile</em> - identifies both Goal based Profiles (eg CIS-benchmarks) and Control/Regulation based Profiles (eg. NIST, FS Cloud). The way the integrators or customers will differentiate between the two types of profiles is by the OSCAL element used i.e., Goal based Profiles are defined in the <em>observation</em> element which carries the goal id (check id) and posture. Control/Regulation based Profiles  are defined in the <em>finding</em> element which carries the control posture, the custom profile name, and the mapping of the goal results to NIST controls</p>
+</li>
+<li><em>scc_check_version, scc_predefined_profile_version</em> - gives the version of the goal/profile i.e., CIS benchmark version used for check.</li>
+<li><em>scc_goal_description, scc_check_name_id</em> - gives the speciifc goal check (rule) that was assessed from the scc_predefined_profile.</li>
+<li><em>scc_result</em> - gives the outcome of performing the check. Possible values are - "pass", "fail", "error" , "unknown", "notchecked", "notapplicable".</li>
+<li>
+<p><em>scc_timestamp</em> - datetime for this observation. This can be date and time when this observation was performed or reported.</p>
+</li>
+<li>
+<p>Targets such as systems or services MUST be a <em>subject</em> in the observation, which MUST be identified by a <em>uuid-ref</em> value pointing to the subject in local-definitions.</p>
+</li>
+</ol>
+<h2 id="finding">Finding<a class="headerlink" href="#finding" title="Permanent link">¤</a></h2>
+<ol>
+<li>A <em>finding</em> represents the assessemnt of a profile control such as NIST 800-53: AC-1 and the related observations. A sample finding object looks like -</li>
+</ol>
+<div class="highlight"><pre><span></span><code>{
+    &quot;uuid&quot;: &quot;cde35fad-3922-4046-8ef8-830e77ffd75a&quot;,
+    &quot;title&quot;: &quot;800-53: IA-5&quot;,
+    &quot;description&quot;: &quot;800-53: IA-5&quot;,
+    &quot;target&quot;: {
+        &quot;type&quot;: &quot;statement-id&quot;,
+        &quot;id-ref&quot;: &quot;800-53: IA-5&quot;,
+        &quot;props&quot;: [
+            {
+                &quot;name&quot;: &quot;Profile&quot;,
+                &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+                &quot;value&quot;: &quot;Windows 10 - NIST 800-53&quot;,
+                &quot;class&quot;: &quot;scc_predefined_profile&quot;
+            },
+            {
+                &quot;name&quot;: &quot;Version&quot;,
+                &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+                &quot;value&quot;: &quot;version: 1&quot;,
+                &quot;class&quot;: &quot;scc_predefined_profile_version&quot;
+            },
+            {
+                &quot;name&quot;: &quot;Custom ID&quot;,
+                &quot;ns&quot;: &quot;http://ibm.github.io/compliance-trestle/schemas/oscal/ar/tanium&quot;,
+                &quot;value&quot;: &quot;800-53: IA-5&quot;,
+            }
+        ],
+        &quot;status&quot;: &quot;not-satisfied&quot;
+    },
+    &quot;related-observations&quot;: [
+        {
+            &quot;observation-uuid&quot;: &quot;d8bd1785-b95f-45c9-9fa8-32a362845102&quot;
+        },
+        {
+            &quot;observation-uuid&quot;: &quot;d06c6f13-5006-4e2d-b3f3-5cdb577473b1&quot;
+        }
+    ]
+}
+</code></pre></div>
+<ol>
+<li>
+<p>A finding has two required property <em>scc_predefined_profile</em> that gives the name of the profile whose control is specified in "id-ref", and <em>scc_predefined_profile_version</em>.</p>
+</li>
+<li>
+<p>If there is no finding associated with a PVP, a single finding will be created (to preserve valid OSCAL) where the UUID maps to a 'all zeros' UUID e.g.:</p>
+</li>
+</ol>
+<div class="highlight"><pre><span></span><code>{
+    &quot;uuid&quot;: &quot;00000000-0000-4000-8000-000000000000&quot;,
+    &quot;title&quot;: &quot;No finding&quot;,
+    &quot;description&quot;: &quot;No finding.&quot;
+}
+</code></pre></div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        <a href="../../errors/" class="md-footer__link md-footer__link--prev" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Known limitations
+            </div>
+          </div>
+        </a>
+      
+      
+        <a href="../../api_reference/trestle.cli/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              cli
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../assets/javascripts/workers/search.d351de03.min.js", "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.a1609d9a.min.js"></script>
+      
+    
+  </body>
+</html>
