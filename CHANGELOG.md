@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.15.1 (2021-05-20)
+### Fix
+* Trigger release ([#540](https://github.com/IBM/compliance-trestle/issues/540)) ([`aeffa5b`](https://github.com/IBM/compliance-trestle/commit/aeffa5b5aa1609b23fdbfed7d167068e366f72e9))
+
 ## v0.15.0 (2021-05-13)
 ### Feature
 * Added error checking and enforce 1 to 1 keys in header validation ([#512](https://github.com/IBM/compliance-trestle/issues/512)) ([`da95862`](https://github.com/IBM/compliance-trestle/commit/da958620ffca76cbfae1762159a7ca51007c8b88))
