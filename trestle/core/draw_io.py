@@ -22,7 +22,7 @@ from typing import Dict, List
 from urllib.parse import unquote
 from xml.etree.ElementTree import Element
 
-import defusedxml
+import defusedxml.ElementTree
 
 import trestle.core.err as err
 
