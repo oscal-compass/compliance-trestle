@@ -60,13 +60,12 @@ class DrawIO(object):
         for diagram in list(mx_file):
             # Determine if compressed or not
             # Assumption 1 mxGraphModel
-            mx_graph_model: Element
-            n_children = len(diagram.getchildren())
+            n_children = len(list(diagram))
             if n_children == 0:
                 # Compressed object
                 self.diagrams.append(self._uncompress(diagram.text))
             elif n_children == 1:
-                self.diagrams.append(diagram.getchildren()[0])
+                self.diagrams.append(list(diagram)[0])
             else:
                 err.TrestleError('Unhandled behaviour in drawio read.')
 
@@ -86,7 +85,7 @@ class DrawIO(object):
         element = defusedxml.ElementTree.fromstring(clean_text)
         if not element.tag == 'mxGraphModel':
             raise err.TrestleError('Unknown data structure within a compressed drawio file.')
-        return Element
+        return element
 
     def get_metadata(self) -> List[Dict[str, str]]:
         """Get metadata from each tab if it exists or provide an empty dict."""
@@ -102,6 +101,9 @@ class DrawIO(object):
             root_obj = children[0]
             md_objects = root_obj.findall('object')
             # Should always be true - to test presumptions.
+            if len(md_objects) == 0:
+                md_list.append(md_dict)
+                continue
             assert len(md_objects) == 1
             items = md_objects[0].items()
             for item in items:
