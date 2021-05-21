@@ -108,6 +108,14 @@ def sample_catalog_minimal():
 
 
 @pytest.fixture(scope='function')
+def sample_catalog_missing_roles():
+    """Return a catalog object missing roles."""
+    file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / 'minimal_catalog_missing_roles.json'
+    catalog_obj = Catalog.oscal_read(file_path)
+    return catalog_obj
+
+
+@pytest.fixture(scope='function')
 def sample_component_definition():
     """Return a valid ComponentDefinition object with minimum fields necessary."""
     def_comp1: DefinedComponent = gens.generate_sample_model(DefinedComponent)

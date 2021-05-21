@@ -23,7 +23,14 @@ class RefsValidator(Validator):
     """Validator to confirm all references in responsible parties are found in roles."""
 
     def model_is_valid(self, model: OscalBaseModel) -> bool:
-        """Test if the model is valid."""
+        """
+        Test if the model is valid.
+
+        args:
+            model: An Oscal model that can be passed to the validator.
+        returns:
+            True (valid) if the model's responsible parties match those found in roles.
+        """
         metadata = model.metadata
         roles_list_of_lists = find_values_by_name(metadata, 'roles')
         roles_list = [item.id for sublist in roles_list_of_lists for item in sublist]

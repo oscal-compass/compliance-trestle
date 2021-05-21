@@ -29,7 +29,15 @@ class OSCALVersionValidator(Validator):
     """Validator to confirm the OSCAL version is the one supported."""
 
     def model_is_valid(self, model: OscalBaseModel) -> bool:
-        """Test if the model is valid."""
+        """
+        Test if the model is valid based on OSCAL version.
+
+        args:
+            model: An Oscal model that can be passed to the validator.
+
+        returns:
+            True (valid) if the OSCAL version in the model is supported.
+        """
         try:
             oscal_version = model.metadata.oscal_version
             if type(oscal_version) is not str:

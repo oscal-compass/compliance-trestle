@@ -23,18 +23,26 @@ from trestle.core.validator import Validator
 class AllValidator(Validator):
     """Validator to confirm the model passes all registered validation tests."""
 
+    last_failure_msg: str
+
+    def error_msg(self) -> str:
+        """Return information on which validation failed."""
+        return self.last_failure_msg
+
     def model_is_valid(self, model: OscalBaseModel) -> bool:
         """
         Validate an oscal model against all available validators in the trestle library.
 
         args:
-            model: An Oscal model which can be passed to the validator.
+            model: An Oscal model that can be passed to the validator.
 
         returns:
-            Whether or not the model passed all the validators
+            True (valid) if the model passed all registered validators.
         """
+        self.last_failure_msg = self.__doc__
         for val in vfact.validator_factory.get_all():
             if val != self:
                 if not val.model_is_valid(model):
+                    self.last_failure_msg = val.error_msg()
                     return False
         return True
