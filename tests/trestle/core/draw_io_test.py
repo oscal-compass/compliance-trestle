@@ -16,21 +16,26 @@
 """Tests for the drawio model."""
 
 import pathlib
+from uuid import uuid4
 
 import pytest
 
 from trestle.core.draw_io import DrawIO
+from trestle.core.err import TrestleError
 from trestle.core.markdown_validator import MarkdownValidator
 
 
-def test_directory_instead_file() -> None:
+def test_directory_instead_file(tmp_path) -> None:
     """Test that exceptions are raised on a bad file."""
-    pass
+    with pytest.raises(TrestleError):
+        _ = DrawIO(tmp_path)
 
 
-def test_missing_file() -> None:
+def test_missing_file(tmp_path) -> None:
     """Test that exceptions are raised on a missing file."""
-    pass
+    non_file = tmp_path / (str(uuid4()) + '.drawio')
+    with pytest.raises(TrestleError):
+        _ = DrawIO(non_file)
 
 
 @pytest.mark.parametrize(
@@ -62,7 +67,14 @@ def test_valid_drawio(file_path: pathlib.Path, metadata_exists: bool, metadata_v
     assert val_status == metadata_valid
 
 
-@pytest.mark.parametrize('bad_file_name', [pathlib.Path('')])
+@pytest.mark.parametrize(
+    'bad_file_name',
+    [
+        (pathlib.Path('tests/data/drawio/single_tab_no_metadata_uncompressed_mangled.drawio')),
+        (pathlib.Path('tests/data/drawio/not_mxfile.drawio'))
+    ]
+)
 def test_bad_drawio_files(bad_file_name: pathlib.Path) -> None:
     """This tests that exceptions are properly thrown on bad drawio files."""
-    pass
+    with pytest.raises(TrestleError):
+        _ = DrawIO(bad_file_name)

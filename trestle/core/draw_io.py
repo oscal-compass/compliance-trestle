@@ -50,12 +50,12 @@ class DrawIO(object):
         try:
             raw_xml = defusedxml.ElementTree.parse(self.file_path)
         except Exception as e:
-            logger.error('Exception loading Element tree from file')
-            raise e
+            logger.error(f'Exception loading Element tree from file: {e}')
+            raise err.TrestleError(f'Exception loading Element tree from file: {e}')
         mx_file = raw_xml.getroot()
         if not mx_file.tag == 'mxfile':
-            logger.error('DrawIO xml type is incorrect.')
-            return False
+            logger.error('DrawIO file is not a draw io file (mxfile)')
+            raise err.TrestleError('DrawIO file is not a draw io file (mxfile)')
         self.diagrams = []
         for diagram in list(mx_file):
             # Determine if compressed or not
