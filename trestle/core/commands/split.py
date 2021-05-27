@@ -67,8 +67,8 @@ class SplitCmd(CommandPlusDocs):
 
     def _run(self, args: argparse.Namespace) -> int:
         """Split an OSCAL file into elements."""
-        logger.debug('Entering trestle split.')
         log.set_log_level_from_args(args)
+        logger.debug('Entering trestle split.')
         # get the Model
         args_raw = args.__dict__
         if args_raw[const.ARG_FILE] is None:
