@@ -41,3 +41,4 @@ coverage.xml
 cov_html
 
 site
+/.pytest_cache/
