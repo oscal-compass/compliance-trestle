@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for cli module command validate."""
+import argparse
 import pathlib
 import shutil
 import sys
@@ -24,9 +25,11 @@ import pytest
 
 from tests import test_utils
 
+import trestle.core.const as const
 import trestle.oscal.assessment_plan as ap
 from trestle import cli
 from trestle.core.generators import generate_sample_model
+from trestle.core.validator_factory import validator_factory
 from trestle.oscal.catalog import Catalog
 
 test_data_dir = pathlib.Path('tests/data').resolve()
@@ -209,3 +212,10 @@ def test_oscal_version_validator(tmp_trestle_dir: pathlib.Path, sample_catalog_m
             cli.run()
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == code
+
+
+def test_validate_direct(sample_catalog_minimal: Catalog) -> None:
+    """Test a validator by invoking it directly without CLI."""
+    args = argparse.Namespace(mode=const.VAL_MODE_ALL)
+    validator = validator_factory.get(args)
+    assert validator.model_is_valid(sample_catalog_minimal)
