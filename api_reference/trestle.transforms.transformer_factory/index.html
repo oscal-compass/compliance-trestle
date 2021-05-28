@@ -1541,6 +1541,20 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#trestle.transforms.transformer_factory.TransformerBase.get_timestamp" class="md-nav__link">
+    get_timestamp()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.transforms.transformer_factory.TransformerBase.set_timestamp" class="md-nav__link">
+    set_timestamp()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.transforms.transformer_factory.TransformerBase.transform" class="md-nav__link">
     transform()
   </a>
@@ -1741,18 +1755,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.utils.osco/" class="md-nav__link">
-        osco
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../trestle.utils.trash/" class="md-nav__link">
         trash
       </a>
@@ -1865,6 +1867,20 @@
   
     <nav class="md-nav" aria-label="Methods">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.transforms.transformer_factory.TransformerBase.get_timestamp" class="md-nav__link">
+    get_timestamp()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.transforms.transformer_factory.TransformerBase.set_timestamp" class="md-nav__link">
+    set_timestamp()
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#trestle.transforms.transformer_factory.TransformerBase.transform" class="md-nav__link">
@@ -2076,6 +2092,69 @@
 
 
 <h5 id="trestle.transforms.transformer_factory.TransformerBase-methods">Methods<a class="headerlink" href="#trestle.transforms.transformer_factory.TransformerBase-methods" title="Permanent link">¤</a></h5>
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.transforms.transformer_factory.TransformerBase.get_timestamp">
+<code class="highlight language-python"><span class="n">get_timestamp</span><span class="p">()</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.transforms.transformer_factory.TransformerBase.get_timestamp" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Get the default timestamp value.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">get_timestamp</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get the default timestamp value.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">TransformerBase</span><span class="o">.</span><span class="n">_timestamp</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.transforms.transformer_factory.TransformerBase.set_timestamp">
+<code class="highlight language-python"><span class="n">set_timestamp</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.transforms.transformer_factory.TransformerBase.set_timestamp" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Set the default timestamp value.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/transforms/transformer_factory.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">set_timestamp</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Set the default timestamp value.&quot;&quot;&quot;</span>
+    <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S%z&#39;</span><span class="p">)</span>
+    <span class="n">TransformerBase</span><span class="o">.</span><span class="n">_timestamp</span> <span class="o">=</span> <span class="n">value</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
 
   <div class="doc doc-object doc-method">
 

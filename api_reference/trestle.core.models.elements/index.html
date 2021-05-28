@@ -1905,18 +1905,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.utils.osco/" class="md-nav__link">
-        osco
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../trestle.utils.trash/" class="md-nav__link">
         trash
       </a>
@@ -2409,7 +2397,7 @@
 <p>For example,
  - List[Catalog.Group] element should have wrapper alias 'groups'
  - Catalog element should have wrapper alias 'catalog'</p>
-<p>wrapper_alias is mandatory for collection type object</p>
+<p>wrapper_alias is deduced for collection type object</p>
 <p>if wrapper_alias = IGNORE_WRAPPER_ALIAS, then it is ignored and assumed to be json-serializable during to_json()</p>
 
         <details class="quote">
@@ -2423,17 +2411,21 @@
 <span class="sd">     - List[Catalog.Group] element should have wrapper alias &#39;groups&#39;</span>
 <span class="sd">     - Catalog element should have wrapper alias &#39;catalog&#39;</span>
 
-<span class="sd">    wrapper_alias is mandatory for collection type object</span>
+<span class="sd">    wrapper_alias is deduced for collection type object</span>
 
 <span class="sd">    if wrapper_alias = IGNORE_WRAPPER_ALIAS, then it is ignored and assumed to be json-serializable during to_json()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_elem</span><span class="p">:</span> <span class="n">OscalBaseModel</span> <span class="o">=</span> <span class="n">elem</span>
 
     <span class="k">if</span> <span class="n">wrapper_alias</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">wrapper_alias</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">IGNORE_WRAPPER_ALIAS</span><span class="p">:</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_collection_field_type</span><span class="p">(</span><span class="n">elem</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;wrapper_alias is required for a collection type object&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">wrapper_alias</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
+            <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_singular_classname</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">class_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;wrapper_alias not found for a collection type object: </span><span class="si">{</span><span class="n">elem</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="p">)</span>
+        <span class="n">wrapper_alias</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">classname_to_alias</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">_wrapper_alias</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">wrapper_alias</span>
 </code></pre></div>

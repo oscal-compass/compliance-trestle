@@ -1377,6 +1377,27 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#trestle.tasks.osco_to_oscal.t_filename" class="md-nav__link">
+    t_filename
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.osco_to_oscal.t_osco_transformer" class="md-nav__link">
+    t_osco_transformer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.osco_to_oscal.t_results" class="md-nav__link">
+    t_results
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trestle.tasks.osco_to_oscal-classes" class="md-nav__link">
     Classes
   </a>
@@ -1696,18 +1717,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.utils.osco/" class="md-nav__link">
-        osco
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../trestle.utils.trash/" class="md-nav__link">
         trash
       </a>
@@ -1767,6 +1776,27 @@
           <li class="md-nav__item">
   <a href="#trestle.tasks.osco_to_oscal.logger" class="md-nav__link">
     logger
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.osco_to_oscal.t_filename" class="md-nav__link">
+    t_filename
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.osco_to_oscal.t_osco_transformer" class="md-nav__link">
+    t_osco_transformer
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.tasks.osco_to_oscal.t_results" class="md-nav__link">
+    t_results
   </a>
   
 </li>
@@ -1910,6 +1940,60 @@
   </div>
 
 
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.tasks.osco_to_oscal.t_filename">
+<code class="highlight language-python"><span class="n">t_filename</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.osco_to_oscal.t_filename" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.tasks.osco_to_oscal.t_osco_transformer">
+<code class="highlight language-python"><span class="n">t_osco_transformer</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.osco_to_oscal.t_osco_transformer" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-attribute">
+
+
+
+<h4 class="doc doc-heading" id="trestle.tasks.osco_to_oscal.t_results">
+<code class="highlight language-python"><span class="n">t_results</span></code>
+
+
+<a class="headerlink" href="#trestle.tasks.osco_to_oscal.t_results" title="Permanent link">¤</a></h4>
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+  </div>
+
+
 <h3 id="trestle.tasks.osco_to_oscal-classes">Classes<a class="headerlink" href="#trestle.tasks.osco_to_oscal-classes" title="Permanent link">¤</a></h3>
 
   <div class="doc doc-object doc-class">
@@ -1925,7 +2009,7 @@
 
     <div class="doc doc-contents ">
 
-      <p>Task to convert OSCO yaml to OSCAL json.</p>
+      <p>Task to convert Osco report to OSCAL json.</p>
 
 <p><strong>Attributes:</strong></p>
 <table>
@@ -2047,62 +2131,8 @@
           <summary>Source code in <code>trestle/tasks/osco_to_oscal.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Provide an actual outcome.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">:</span>
-        <span class="c1"># initialize</span>
-        <span class="n">default_metadata</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1"># process config</span>
-        <span class="n">idir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;input-dir&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">idir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;config missing &quot;input-dir&quot;&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
-        <span class="n">ipth</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">idir</span><span class="p">)</span>
-        <span class="n">odir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;output-dir&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">odir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;config missing &quot;output-dir&quot;&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
-        <span class="n">imeta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;input-metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;oscal-metadata.yaml&#39;</span><span class="p">)</span>
-        <span class="n">opth</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">odir</span><span class="p">)</span>
-        <span class="n">overwrite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;output-overwrite&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="n">quiet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;quiet&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="c1"># insure output folder exists</span>
-        <span class="n">opth</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="c1"># fetch enhancing oscal metadata</span>
-        <span class="n">mfile</span> <span class="o">=</span> <span class="n">ipth</span> <span class="o">/</span> <span class="n">imeta</span>
-        <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_metadata</span><span class="p">(</span><span class="n">mfile</span><span class="p">,</span> <span class="n">default_metadata</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;no metadata: </span><span class="si">{</span><span class="n">imeta</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-        <span class="c1"># examine each file in the input folder</span>
-        <span class="k">for</span> <span class="n">ifile</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ipth</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()):</span>
-            <span class="c1"># skip enhancing oscal metadata</span>
-            <span class="k">if</span> <span class="n">ifile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">imeta</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="c1"># assemble collection comprising output file name to unprocessed content</span>
-            <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assemble</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
-            <span class="c1"># formulate each output OSCAL partial results file</span>
-            <span class="k">for</span> <span class="n">oname</span> <span class="ow">in</span> <span class="n">collection</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">ofile</span> <span class="o">=</span> <span class="n">opth</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">oname</span><span class="p">)</span>
-                <span class="c1"># only allow writing output file if either:</span>
-                <span class="c1"># a) it does not already exist, or</span>
-                <span class="c1"># b) output-overwrite flag is True</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">ofile</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;file exists: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                        <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;create: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="c1"># create the OSCAL .json file from the OSCO and the optional osco-metadata files</span>
-                <span class="n">observations</span><span class="p">,</span> <span class="n">analysis</span> <span class="o">=</span> <span class="n">osco</span><span class="o">.</span><span class="n">get_observations</span><span class="p">(</span><span class="n">collection</span><span class="p">[</span><span class="n">oname</span><span class="p">],</span> <span class="n">metadata</span><span class="p">)</span>
-                <span class="c1"># write the OSCAL to the output file</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_write_content</span><span class="p">(</span><span class="n">ofile</span><span class="p">,</span> <span class="n">observations</span><span class="p">)</span>
-                <span class="c1"># display analysis</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Rules Analysis:&#39;</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;config_maps: </span><span class="si">{</span><span class="n">analysis</span><span class="p">[</span><span class="s2">&quot;config_maps&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;dispatched rules: </span><span class="si">{</span><span class="n">analysis</span><span class="p">[</span><span class="s2">&quot;dispatched_rules&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;result types: </span><span class="si">{</span><span class="n">analysis</span><span class="p">[</span><span class="s2">&quot;result_types&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;success&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;config missing&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;failure&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">()</span>
 </code></pre></div>
         </details>
     </div>
@@ -2131,40 +2161,16 @@
     <span class="sd">&quot;&quot;&quot;Print the help string.&quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Help information for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> task.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Purpose: Transform OpenShift Compliance Operator (OSCO) files into Open Security Controls Assessment Language (OSCAL) partial results files.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Purpose: Transform Osco files into Open Security Controls Assessment Language (OSCAL) partial results files.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configuration flags sit under [task.osco-to-oscal]:&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  input-dir = (required) the path of the input directory comprising OSCO .yaml and/or .json files.&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  input-metadata = (optional) the name of the input directory metadata .yaml file, default = oscal-metadata.yaml.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  input-dir = (required) the path of the input directory comprising Osco reports.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  output-overwrite = (optional) true [default] or false; replace existing output when true.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  quiet = (optional) true or false [default]; display file creations and rules analysis when false.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as 2021-01-04T00:05:23+04:00 for example; if not specified then value for &quot;Timestamp&quot; key in the Osco report is used if present, otherwise current time is used.&#39;</span><span class="p">)</span>                                                       
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Operation: A transformation is performed on one or more OSCO input files to produce corresponding output files in OSCAL partial results format. Input files are typically OSCO .yaml files or Arboretum .json files, the latter constructed by a fetcher/check (see https://github.com/ComplianceAsCode/auditree-arboretum).&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;All the .yaml files in the input-dir are processed, each producing a corresponding .json output-dir file. The exception is the input-metadata .yaml file which, if present, is used to augment all produced .json output directory files. Similarly, all the .json files in the input-dir are processed, each producing one or more corresponding .json output-dir files.&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;The format of the input-metadata .yaml file comprises one or more entries as follows:&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&lt;name&gt;:&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  locker: &lt;locker&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  namespace: &lt;namespace&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  benchmark: &lt;benchmark&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  subject-references:&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    component:&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;      uuid-ref: &lt;uuid-ref&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;      type: &lt;type&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;      title: &lt;title&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;    inventory-item:&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;      uuid-ref: &lt;uuid-ref&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;      type: &lt;type&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;      title: &lt;title&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;      properties: &#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;        target: &lt;target&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;        cluster-name: &lt;cluster-name&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;        cluster-type: &lt;cluster-type&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;        cluster-region: &lt;cluster-region&gt;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Augmentation occurs when the name specified in the metadata entry of the osco .yaml file matches an entry &lt;name&gt; specified in the input-metadata .yaml file, if any. All entries in the input-metadata .yaml are optional. For example, locker and its value can be omitted. Likewise, any or all of cluster-name, -type, and -region may be omitted if not applicable.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Operation: A transformation is performed on one or more Osco input files to produce output in OSCAL partial results format.&#39;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2191,62 +2197,8 @@
           <summary>Source code in <code>trestle/tasks/osco_to_oscal.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskOutcome</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Provide a simulated outcome.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">:</span>
-        <span class="c1"># initialize</span>
-        <span class="n">default_metadata</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1"># process config</span>
-        <span class="n">idir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;input-dir&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">idir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[simluate] config missing &quot;input-dir&quot;&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;simulated-failure&#39;</span><span class="p">)</span>
-        <span class="n">ipth</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">idir</span><span class="p">)</span>
-        <span class="n">odir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;output-dir&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">odir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[simluate] config missing &quot;output-dir&quot;&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;simulated-failure&#39;</span><span class="p">)</span>
-        <span class="n">imeta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;input-metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;oscal-metadata.yaml&#39;</span><span class="p">)</span>
-        <span class="n">opth</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">odir</span><span class="p">)</span>
-        <span class="n">overwrite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;output-overwrite&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="n">quiet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s1">&#39;quiet&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="c1"># insure output folder exists</span>
-        <span class="n">opth</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="c1"># fetch enhancing oscal metadata</span>
-        <span class="n">mfile</span> <span class="o">=</span> <span class="n">ipth</span> <span class="o">/</span> <span class="n">imeta</span>
-        <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_metadata</span><span class="p">(</span><span class="n">mfile</span><span class="p">,</span> <span class="n">default_metadata</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;no metadata: </span><span class="si">{</span><span class="n">imeta</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
-        <span class="c1"># examine each file in the input folder</span>
-        <span class="k">for</span> <span class="n">ifile</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ipth</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()):</span>
-            <span class="c1"># skip enhancing oscal metadata</span>
-            <span class="k">if</span> <span class="n">ifile</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">imeta</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="c1"># assemble collection comprising output file name to unprocessed content</span>
-            <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assemble</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
-            <span class="c1"># formulate each output OSCAL partial results file</span>
-            <span class="k">for</span> <span class="n">oname</span> <span class="ow">in</span> <span class="n">collection</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">ofile</span> <span class="o">=</span> <span class="n">opth</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">oname</span><span class="p">)</span>
-                <span class="c1"># only allow writing output file if either:</span>
-                <span class="c1"># a) it does not already exist, or</span>
-                <span class="c1"># b) output-overwrite flag is True</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">ofile</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;file exists: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                        <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;simulated-failure&#39;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;create: </span><span class="si">{</span><span class="n">ofile</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="c1"># create the OSCAL .json file from the OSCO and the optional osco-metadata files</span>
-                <span class="n">observations</span><span class="p">,</span> <span class="n">analysis</span> <span class="o">=</span> <span class="n">osco</span><span class="o">.</span><span class="n">get_observations</span><span class="p">(</span><span class="n">collection</span><span class="p">[</span><span class="n">oname</span><span class="p">],</span> <span class="n">metadata</span><span class="p">)</span>
-                <span class="c1"># write the OSCAL to the output file</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_write_content</span><span class="p">(</span><span class="n">ofile</span><span class="p">,</span> <span class="n">observations</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-                <span class="c1"># display analysis</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[simulate] Rules Analysis:&#39;</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[simulate] config_maps: </span><span class="si">{</span><span class="n">analysis</span><span class="p">[</span><span class="s2">&quot;config_maps&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[simulate] dispatched rules: </span><span class="si">{</span><span class="n">analysis</span><span class="p">[</span><span class="s2">&quot;dispatched_rules&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[simulate] result types: </span><span class="si">{</span><span class="n">analysis</span><span class="p">[</span><span class="s2">&quot;result_types&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;simulated-success&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;config missing&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">TaskOutcome</span><span class="p">(</span><span class="s1">&#39;simulated-failure&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_simulate</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">()</span>
 </code></pre></div>
         </details>
     </div>
