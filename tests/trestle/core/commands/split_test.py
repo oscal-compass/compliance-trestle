@@ -417,7 +417,7 @@ def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.
 
 
 # FIXME this currently fails for the False case
-@pytest.mark.parametrize('direct', [True])
+@pytest.mark.parametrize('direct', [True, False])
 def test_split_comp_def(
     direct, tmp_trestle_dir, keep_cwd: pathlib.Path, sample_component_definition: ocomponent.ComponentDefinition
 ) -> None:
@@ -456,3 +456,32 @@ def test_split_stop_at_string(tmp_path, keep_cwd: pathlib.Path, sample_catalog: 
     assert SplitCmd()._run(args) == 1
     args = argparse.Namespace(file='catalog.json', element='catalog.groups.*.controls.*.controls.*', verbose=1)
     assert SplitCmd()._run(args) == 0
+
+
+def test_split_workflow(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog):
+    """Test split operations and final re-merge in workflow tutorial."""
+    # prepare trestle project dir with the file
+    catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
+        tmp_path,
+        FileContentType.JSON,
+        sample_catalog,
+        test_utils.CATALOGS_DIR)
+
+    os.chdir(catalog_dir)
+    args = argparse.Namespace(
+        file='catalog.json', element='catalog.metadata,catalog.groups,catalog.back-matter', verbose=1
+    )
+    assert SplitCmd()._run(args) == 0
+    os.chdir('catalog')
+    args = argparse.Namespace(
+        file='metadata.json', element='metadata.roles,metadata.parties,metadata.responsible-parties', verbose=1
+    )
+    assert SplitCmd()._run(args) == 0
+    os.chdir('metadata')
+    args = argparse.Namespace(file='roles.json', element='roles.*', verbose=1)
+    assert SplitCmd()._run(args) == 0
+    args = argparse.Namespace(file='responsible-parties.json', element='responsible-parties.*', verbose=1)
+    assert SplitCmd()._run(args) == 0
+    os.chdir(catalog_dir)
+    args = argparse.Namespace(element='catalog.*', verbose=1)
+    assert MergeCmd()._run(args) == 0

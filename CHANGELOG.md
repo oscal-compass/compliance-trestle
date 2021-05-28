@@ -3,6 +3,34 @@
 
 <!--next-version-placeholder-->
 
+## v0.16.0 (2021-05-28)
+### Feature
+* OSCO transformer conform to Results interface class. ([#532](https://github.com/IBM/compliance-trestle/issues/532)) ([`fc251b9`](https://github.com/IBM/compliance-trestle/commit/fc251b9e9c231de67fd214b16bdd7c2a6cb4d3c1))
+* Functionaly complete ([`b7c903b`](https://github.com/IBM/compliance-trestle/commit/b7c903b703c78026ac14e31177cd4e3a7541d469))
+* Oscal version validator ([#528](https://github.com/IBM/compliance-trestle/issues/528)) ([`2b132d5`](https://github.com/IBM/compliance-trestle/commit/2b132d5f09832452def258284bb40090d32bab01))
+* Create title  - place names in title of created objects - issue #473 ([#519](https://github.com/IBM/compliance-trestle/issues/519)) ([`b676ed3`](https://github.com/IBM/compliance-trestle/commit/b676ed379b4328f3b69fe1806a7dad46ccc5319a))
+
+### Fix
+* Move unreachable debug statement ([`f5b9c1a`](https://github.com/IBM/compliance-trestle/commit/f5b9c1a029e6257c789ebc573105b582dca23e1b))
+* Move unreachable debug statement ([`0ce9c24`](https://github.com/IBM/compliance-trestle/commit/0ce9c24a8fcc5e464f4194970e82740e6c0cd4f1))
+* Complete coverage of drawio class ([`225403c`](https://github.com/IBM/compliance-trestle/commit/225403c4f85ca77cb322bb9620992ab0c6673e9b))
+* Adding basic UT suite for drawio. ([`44cc8c3`](https://github.com/IBM/compliance-trestle/commit/44cc8c3fcb57bb23743fbe12d5bc180bf13edab5))
+* Corrected errors ([`8187d6d`](https://github.com/IBM/compliance-trestle/commit/8187d6d5932669dddd676e68c24fe0d058703d52))
+* Correcting errors ([`5bfedac`](https://github.com/IBM/compliance-trestle/commit/5bfedac6575d3e57ea530b0e69e55ebbcbb26c37))
+* Improve devops to stop squash merging to main ([#542](https://github.com/IBM/compliance-trestle/issues/542)) ([`a8313fb`](https://github.com/IBM/compliance-trestle/commit/a8313fbf75b8c8eb5d2791b2dadafc1be03cc492))
+* Remove problematic concurrency restrictions in devops pipeline ([#538](https://github.com/IBM/compliance-trestle/issues/538)) ([`5181c70`](https://github.com/IBM/compliance-trestle/commit/5181c70b44e283a21b4fedb05ecc36590d04c319))
+* Stop split at strings, better handling of component-def splits ([#506](https://github.com/IBM/compliance-trestle/issues/506)) ([`43c9edd`](https://github.com/IBM/compliance-trestle/commit/43c9edd790579a7000a444a703b2d30a485480d1))
+* Correct bad syntax in devops tooling. ([`dcec2ea`](https://github.com/IBM/compliance-trestle/commit/dcec2eaeacff7e7ad981e801255c844a37446390))
+* Ensure PR automation system cannot override checks. ([#522](https://github.com/IBM/compliance-trestle/issues/522)) ([`5817316`](https://github.com/IBM/compliance-trestle/commit/5817316ff06cecba6b3662b96cb77655aa70277b))
+* Correct semantic / conventional commit behaviour ([#520](https://github.com/IBM/compliance-trestle/issues/520)) ([`a6f7d01`](https://github.com/IBM/compliance-trestle/commit/a6f7d013998e0a198347d987558f7974e372b5ea))
+
+### Documentation
+* Reorg and cleanup content ([#531](https://github.com/IBM/compliance-trestle/issues/531)) ([`380e924`](https://github.com/IBM/compliance-trestle/commit/380e92476ff63126df470f31a4e8e0190e608fad))
+* Updated third party schema as per latest tanium to oscal conversion and added it to documentation ([#527](https://github.com/IBM/compliance-trestle/issues/527)) ([`9feb690`](https://github.com/IBM/compliance-trestle/commit/9feb6908c80c3873cf310079144fbbbe20002c54))
+* More google style doc strings ([#526](https://github.com/IBM/compliance-trestle/issues/526)) ([`28914f0`](https://github.com/IBM/compliance-trestle/commit/28914f088a78b57fdfb090eda662ea5c8b362884))
+* Addtional documentation. ([#525](https://github.com/IBM/compliance-trestle/issues/525)) ([`516f01e`](https://github.com/IBM/compliance-trestle/commit/516f01eb0eff580bcfc95ea7b0909cd0ebdb8221))
+* Small set of document updates ([#524](https://github.com/IBM/compliance-trestle/issues/524)) ([`7b339d7`](https://github.com/IBM/compliance-trestle/commit/7b339d7e81d0a2e626bc29c7718d0e1081996fbb))
+
 ## v0.15.1 (2021-05-20)
 ### Fix
 * Trigger release ([#540](https://github.com/IBM/compliance-trestle/issues/540)) ([`aeffa5b`](https://github.com/IBM/compliance-trestle/commit/aeffa5b5aa1609b23fdbfed7d167068e366f72e9))
