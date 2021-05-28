@@ -50,7 +50,7 @@ gen-oscal::
 docs-automation::
 	python ./scripts/website_automation.py
 
-docs-validate::
+docs-validate:: docs-automation
 	mkdocs build -c -s
 	rm -rf site
 
