@@ -24,7 +24,7 @@ jobs:
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT""
+        run: echo "$GITHUB_CONTEXT"
   automerge:
     # If it's not coming from develop - squash-merge.
     if: github.ref == 'refs/heads/develop'
