@@ -214,7 +214,7 @@ class Element:
          - List[Catalog.Group] element should have wrapper alias 'groups'
          - Catalog element should have wrapper alias 'catalog'
 
-        wrapper_alias is mandatory for collection type object
+        wrapper_alias is deduced for collection type object
 
         if wrapper_alias = IGNORE_WRAPPER_ALIAS, then it is ignored and assumed to be json-serializable during to_json()
         """
