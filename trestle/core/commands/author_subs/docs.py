@@ -28,10 +28,10 @@ from trestle.core.commands.command_docs import CommandPlusDocs
 logger = logging.getLogger(__name__)
 
 
-class GovernedDocs(CommandPlusDocs):
+class Docs(CommandPlusDocs):
     """Markdown governed documents - enforcing consistent markdown across a set of files."""
 
-    name = 'governed-docs'
+    name = 'docs'
 
     template_name = 'template.md'
 

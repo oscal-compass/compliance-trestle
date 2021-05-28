@@ -16,14 +16,14 @@ Trestle provides three separate but related functions in the compliance space:
 
 - Manage OSCAL documents to allow editing and manipulation while making sure the schemas are enforced
 - Transform documents from other formats to OSCAL
-- Provide governance for markdown documents and enforce consistency of format and content based on specified templates
+- Provide support and governance to author compliance content as markdown and drawio.
 
 Trestle provides tooling to help orchestrate the compliance process across a number of dimensions:
 
 - Help manage OSCAL documents in a more human-friendly manner by expanding the large OSCAL data structures into smaller and easier to edit sub-structures while making sure the schemas are enforced.
 - Transform documents from other formats to OSCAL
 - Provide governance for markdown documents and enforce consistency of format and content based on specified templates
-- Tooling to manage markdown documents for compliance, including transformation to OSCAL.
+- Tooling manage authoring and governance of markdown and drawio files withn a repository.
 - Support within trestle to streamline management within a managed git environment.
 - An underlying object model that supports developers interacting with OSCAL artefacts.
 
@@ -73,7 +73,7 @@ Trestle runs on most all python platforms (e.g. Linux, Mac, Windows) and is avai
 
 ## Development status
 
-Compliance trestle is currently alpha. The expectation is that in ongoing work there may be unnannounced changes that are breaking within the trestle codebase. If you are using trestle please contact us so we are aware your usecase.
+Compliance trestle is currently beta. The expectation is that in ongoing work there may be unannounced changes that are breaking within the trestle codebase. If you are using trestle please contact us so we are aware your use-case.
 
 The underlying OSCAL schema is also currently changing. Until the formal release of OSCAL 1.0.0, the models in trestle will regularly update to track NIST's changes.
 

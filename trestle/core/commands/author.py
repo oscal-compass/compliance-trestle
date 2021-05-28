@@ -20,20 +20,21 @@ Umbrella command for all markdown related transformations
 """
 import logging
 
+from trestle.core.commands.author_subs.cidd import CIDD
+from trestle.core.commands.author_subs.docs import Docs
+from trestle.core.commands.author_subs.folders import Folders
+from trestle.core.commands.author_subs.headers import Headers
 from trestle.core.commands.command_docs import CommandPlusDocs
-from trestle.core.commands.md_subs.cidd import CIDD
-from trestle.core.commands.md_subs.governed_docs import GovernedDocs
-from trestle.core.commands.md_subs.governed_folders import GovernedFolders
 
 logger = logging.getLogger(__name__)
 
 
-class MDCmd(CommandPlusDocs):
-    """trestle md, a collection of commands for managing markdown objects related to compliance."""
+class AuthorCmd(CommandPlusDocs):
+    """trestle author, a collection of commands for authoring compliance content outside of OSCAL."""
 
-    name = 'md'
+    name = 'author'
 
-    subcommands = [CIDD, GovernedDocs, GovernedFolders]
+    subcommands = [CIDD, Docs, Folders, Headers]
 
     def _init_arguments(self) -> None:
         heading_help = """Governed heading: Heading where for each line is a superset of the template's content."""

@@ -29,10 +29,10 @@ from trestle.core.commands.command_docs import CommandPlusDocs
 logger = logging.getLogger(__name__)
 
 
-class GovernedFolders(CommandPlusDocs):
+class Folders(CommandPlusDocs):
     """Markdown governed folders - enforcing consistent files and templates across directories."""
 
-    name = 'governed-folders'
+    name = 'folders'
 
     def _init_arguments(self) -> None:
         help_str = """The name of the the task to be governed.

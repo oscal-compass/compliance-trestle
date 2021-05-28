@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for trestle md command module."""
+"""Tests for trestle author command module."""
 import pathlib
 import sys
 from unittest import mock
@@ -25,7 +25,7 @@ import trestle.cli
 
 def test_cidd_success_cli(tmp_trestle_dir: pathlib.Path) -> None:
     """Test happy path of md cidd subcommand from the cli."""
-    command = 'trestle md cidd'
+    command = 'trestle author cidd'
     with mock.patch.object(sys, 'argv', command.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
@@ -36,7 +36,7 @@ def test_cidd_success_cli(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_governed_docs_cli(tmp_trestle_dir: pathlib.Path) -> None:
     """Test happy path of md governed-docs subcommand."""
-    command = 'trestle md governed-docs'
+    command = 'trestle author docs'
     with mock.patch.object(sys, 'argv', command.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
@@ -47,7 +47,7 @@ def test_governed_docs_cli(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_governed_folders_cli(tmp_trestle_dir: pathlib.Path) -> None:
     """Test happy path of md governed-folders subcommand."""
-    command = 'trestle md governed-folders'
+    command = 'trestle author folders'
     with mock.patch.object(sys, 'argv', command.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
@@ -58,7 +58,7 @@ def test_governed_folders_cli(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_governed_projects_cli(tmp_trestle_dir: pathlib.Path) -> None:
     """Test happy path of md governed-projects subcommand."""
-    command = 'trestle md governed-projects'
+    command = 'trestle author projects'
     with mock.patch.object(sys, 'argv', command.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
@@ -69,10 +69,7 @@ def test_governed_projects_cli(tmp_trestle_dir: pathlib.Path) -> None:
 
 @pytest.mark.parametrize(
     'command_string',
-    [
-        ('trestle md governed-docs setup -tn test'), ('trestle md governed-folders setup-tn test'),
-        ('trestle md cidd setup')
-    ]
+    [('trestle author docs setup -tn test'), ('trestle author folders setup-tn test'), ('trestle author cidd setup')]
 )
 def test_failure_not_trestle(command_string, tmp_path: pathlib.Path) -> None:
     """Test for failure based on not in trestle directory."""

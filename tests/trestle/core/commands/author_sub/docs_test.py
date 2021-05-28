@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for trestle md governed-docs subcommand."""
+"""Tests for trestle author docs subcommand."""
 import pathlib
 import shutil
 import sys
@@ -28,12 +28,12 @@ import trestle.cli
 @pytest.mark.parametrize(
     'command_string, return_code',
     [
-        ('trestle md governed-docs setup', 1), ('trestle md governed-docs setup --task-name foobaa', 0),
-        ('trestle md governed-docs setup --task-name catalogs', 1)
+        ('trestle author docs setup', 1), ('trestle author docs setup --task-name foobaa', 0),
+        ('trestle author docs setup --task-name catalogs', 1)
     ]
 )
 def test_governed_docs_high(tmp_trestle_dir: pathlib.Path, command_string: str, return_code: int) -> None:
-    """Simple execution tests of trestle md governed-docs."""
+    """Simple execution tests of trestle author docs."""
     with mock.patch.object(sys, 'argv', command_string.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
@@ -124,12 +124,10 @@ def test_e2e(
     """Run an E2E workflow with two test criteria for success."""
     # Note testdata_dir must be before tmp_trestle_dir in the argument order.
     recurse_flag = '-r' if recurse else ''
-    command_string_setup = f'trestle md governed-docs setup -tn {task_name}'
-    command_string_create_sample = f'trestle md governed-docs create-sample -tn {task_name}'
-    command_string_validate_template = f'trestle md governed-docs template-validate -tn {task_name}'
-    command_string_validate_content = (
-        f'trestle md governed-docs validate -tn {task_name} --header-validate {recurse_flag}'
-    )
+    command_string_setup = f'trestle author docs setup -tn {task_name}'
+    command_string_create_sample = f'trestle author docs create-sample -tn {task_name}'
+    command_string_validate_template = f'trestle author docs template-validate -tn {task_name}'
+    command_string_validate_content = (f'trestle author docs validate -tn {task_name} --header-validate {recurse_flag}')
     template_target_loc = tmp_trestle_dir / '.trestle' / 'md' / task_name / 'template.md'
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}.md'
     # Test setup
@@ -176,7 +174,7 @@ def test_e2e(
 
 def test_failure_bad_template_dir(tmp_trestle_dir: pathlib.Path) -> None:
     """Create and test a bad directory."""
-    setup_ = 'trestle md governed-docs setup --task-name foobaa'
+    setup_ = 'trestle author docs setup --task-name foobaa'
 
     bad_template_sub_directory = tmp_trestle_dir / '.trestle' / 'md' / 'foobar' / 'test'
     bad_template_sub_directory.mkdir(parents=True, exist_ok=True)
@@ -189,7 +187,7 @@ def test_failure_bad_template_dir(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_success_repeated_call(tmp_trestle_dir: pathlib.Path) -> None:
     """Test double setup."""
-    setup_ = 'trestle md governed-docs setup --task-name foobaa'
+    setup_ = 'trestle author docs setup --task-name foobaa'
 
     with mock.patch.object(sys, 'argv', setup_.split()):
         with pytest.raises(SystemExit) as wrapped_error:
