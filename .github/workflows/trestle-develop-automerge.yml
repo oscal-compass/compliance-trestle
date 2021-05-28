@@ -20,44 +20,6 @@ on:
 jobs:
   automerge:
     # If it's not coming from develop - squash-merge.
-    if: github.ref != 'refs/heads/develop'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump job context
-        env:
-          JOB_CONTEXT: ${{ toJSON(job) }}
-        run: echo "$JOB_CONTEXT"
-      - name: Dump steps context
-        env:
-          STEPS_CONTEXT: ${{ toJSON(steps) }}
-        run: echo "$STEPS_CONTEXT"
-      - name: Dump runner context
-        env:
-          RUNNER_CONTEXT: ${{ toJSON(runner) }}
-        run: echo "$RUNNER_CONTEXT"
-      - name: Dump strategy context
-        env:
-          STRATEGY_CONTEXT: ${{ toJSON(strategy) }}
-        run: echo "$STRATEGY_CONTEXT"
-      - name: Dump matrix context
-        env:
-          MATRIX_CONTEXT: ${{ toJSON(matrix) }}
-        run: echo "$MATRIX_CONTEXT"
-      - name: automerge
-        uses: "pascalgn/automerge-action@v0.14.1"
-        with:
-          args: "--trace"
-        env:
-          GITHUB_TOKEN: "${{ secrets.ADMIN_PAT }}"
-          MERGE_METHOD: squash
-          MERGE_FORKS: false
-          UPDATE_METHOD: merge
-  automerge_main:
-    # if it is coming from develop to a merge commit.
     if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
@@ -86,11 +48,47 @@ jobs:
           MATRIX_CONTEXT: ${{ toJSON(matrix) }}
         run: echo "$MATRIX_CONTEXT"
       - name: automerge
-        uses: "pascalgn/automerge-action@v0.14.1"
-        with:
-          args: "--trace"
+        uses: "pascalgn/automerge-action@v0.14.2"
         env:
-          GITHUB_TOKEN: "${{ secrets.ADMIN_PAT }}"
+          LOG: "TRACE"
+          GITHUB_TOKEN: "${{ secrets.WRITE_PAT }}"
+          MERGE_METHOD: squash
+          MERGE_FORKS: false
+          UPDATE_METHOD: merge
+  automerge_main:
+    # if it is coming from develop to a merge commit.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJSON(job) }}
+        run: echo "$JOB_CONTEXT"
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJSON(steps) }}
+        run: echo "$STEPS_CONTEXT"
+      - name: Dump runner context
+        env:
+          RUNNER_CONTEXT: ${{ toJSON(runner) }}
+        run: echo "$RUNNER_CONTEXT"
+      - name: Dump strategy context
+        env:
+          STRATEGY_CONTEXT: ${{ toJSON(strategy) }}
+        run: echo "$STRATEGY_CONTEXT"
+      - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJSON(matrix) }}
+        run: echo "$MATRIX_CONTEXT"
+      - name: automerge
+        uses: "pascalgn/automerge-action@v0.14.2"
+        env:
+          LOG: "TRACE"
+          GITHUB_TOKEN: "${{ secrets.WRITE_PAT }}"
           MERGE_METHOD: merge
           MERGE_FORKS: false
           UPDATE_METHOD: merge
