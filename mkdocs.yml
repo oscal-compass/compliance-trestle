@@ -107,7 +107,6 @@ nav:
       - fs: api_reference/trestle.utils.fs.md
       - load_distributed: api_reference/trestle.utils.load_distributed.md
       - log: api_reference/trestle.utils.log.md
-      - osco: api_reference/trestle.utils.osco.md
       - trash: api_reference/trestle.utils.trash.md
 plugins:
 - search

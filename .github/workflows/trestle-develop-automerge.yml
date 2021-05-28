@@ -19,7 +19,8 @@ on:
   status: {}
 jobs:
   automerge:
-    if: github.base_ref != 'refs/heads/main'
+    # If it's not coming from develop - squash-merge.
+    if: github.ref != 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - name: automerge
@@ -32,7 +33,8 @@ jobs:
           MERGE_FORKS: false
           UPDATE_METHOD: merge
   automerge_main:
-    if: github.base_ref == 'refs/heads/main'
+    # if it is coming from develop to a merge commit.
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - name: automerge

@@ -20,19 +20,19 @@ from typing import List
 
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
-from trestle.transforms.utils.tanium_helper import ResultsMgr
+from trestle.transforms.utils.osco_helper import ResultsMgr
+
+import yaml
 
 logger = logging.getLogger(__name__)
 
 
-class TaniumTransformer(ResultsTransformer):
-    """Interface for Tanium transformer."""
+class OscoTransformer(ResultsTransformer):
+    """Interface for Osco transformer."""
 
     def __init__(self):
         """Initialize."""
-        self._results_mgr = ResultsMgr()
-        self._results_mgr.set_timestamp(self.get_timestamp())
-        self._results_mgr.get_timestamp()
+        self._results_mgr = ResultsMgr(self.get_timestamp())
 
     @property
     def analysis(self) -> List[str]:
@@ -40,17 +40,24 @@ class TaniumTransformer(ResultsTransformer):
         return self._results_mgr.analysis
 
     def transform(self, blob: str) -> Results:
-        """Transform the blob into a Results."""
+        """Transform the blob into a Results.
+
+        The expected Osco blob is a string that is either json (from auditree)
+        or yaml (from OpenSHift Compliance Operator).
+        """
         results = Results()
-        lines = blob.splitlines()
-        for line in lines:
-            line = line.strip()
-            if len(line) > 0:
-                jdata = json.loads(line)
-                if type(jdata) is list:
-                    for item in jdata:
-                        self._results_mgr.ingest(item)
-                else:
-                    self._results_mgr.ingest(jdata)
+        try:
+            # auditree data
+            jdata = json.loads(blob)
+            for key in jdata.keys():
+                for group in jdata[key]:
+                    for cluster in jdata[key][group]:
+                        if 'resources' in cluster:
+                            for resource in cluster['resources']:
+                                self._results_mgr.ingest(resource)
+        except json.decoder.JSONDecodeError:
+            # osco data
+            resource = yaml.load(blob, Loader=yaml.Loader)
+            self._results_mgr.ingest(resource)
         results.__root__.append(self._results_mgr.result)
         return results

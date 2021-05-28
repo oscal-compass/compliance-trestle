@@ -214,19 +214,36 @@ class Element:
          - List[Catalog.Group] element should have wrapper alias 'groups'
          - Catalog element should have wrapper alias 'catalog'
 
-        wrapper_alias is mandatory for collection type object
+        wrapper_alias is deduced for collection type object
 
         if wrapper_alias = IGNORE_WRAPPER_ALIAS, then it is ignored and assumed to be json-serializable during to_json()
         """
         self._elem: OscalBaseModel = elem
 
         if wrapper_alias == '' and wrapper_alias != self.IGNORE_WRAPPER_ALIAS:
+            class_name = elem.__class__.__name__
             if utils.is_collection_field_type(elem):
-                raise TrestleError('wrapper_alias is required for a collection type object')
-            else:
-                wrapper_alias = utils.classname_to_alias(elem.__class__.__name__, 'json')
+                class_name = self._get_singular_classname()
+                if class_name is None:
+                    raise TrestleError(
+                        f'wrapper_alias not found for a collection type object: {elem.__class__.__name__}'
+                    )
+            wrapper_alias = utils.classname_to_alias(class_name, 'json')
 
         self._wrapper_alias: str = wrapper_alias
+
+    def _get_singular_classname(self) -> str:
+        """Get the inner class name for list or dict objects."""
+        # this assumes all items in list and all values in dict are same type
+        class_name = None
+        root = getattr(self._elem, '__root__', None)
+        if root is not None:
+            type_str = root.__class__.__name__
+            if type_str == 'list':
+                class_name = self._elem.__root__[0].__class__.__name__
+            elif type_str == 'dict':
+                class_name = list(self._elem.__root__.values())[0].__class__.__name__
+        return class_name
 
     def get(self) -> OscalBaseModel:
         """Return the model object."""
