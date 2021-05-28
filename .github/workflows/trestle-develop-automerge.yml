@@ -24,11 +24,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: automerge
-        uses: "pascalgn/automerge-action@v0.14.1"
-        with:
-          args: "--trace"
+        uses: "pascalgn/automerge-action@v0.14.2"
         env:
-          GITHUB_TOKEN: "${{ secrets.ADMIN_PAT }}"
+          LOG: TRACE
+          GITHUB_TOKEN: "${{ secrets.WRITE_PAT }}"
           MERGE_METHOD: squash
           MERGE_FORKS: false
           UPDATE_METHOD: merge
@@ -38,11 +37,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: automerge
-        uses: "pascalgn/automerge-action@v0.14.1"
-        with:
-          args: "--trace"
+        uses: "pascalgn/automerge-action@v0.14.2"
         env:
-          GITHUB_TOKEN: "${{ secrets.ADMIN_PAT }}"
+          LOG: TRACE
+          GITHUB_TOKEN: "${{ secrets.WRITE_PAT }}"
           MERGE_METHOD: merge
           MERGE_FORKS: false
           UPDATE_METHOD: merge
