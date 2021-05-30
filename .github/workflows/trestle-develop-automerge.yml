@@ -27,7 +27,8 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
   automerge:
     # If it's not coming from develop - squash-merge.
-    if: github.ref == 'refs/heads/develop'
+    if: github.base_ref == 'refs/heads/develop' || github.event.pull_request.base == 'develop'
+    #if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - name: automerge
@@ -39,7 +40,8 @@ jobs:
           UPDATE_METHOD: merge
   automerge_main:
     # if it is coming from develop to a merge commit.
-    if: github.ref == 'refs/heads/main'
+    if: github.base_ref == 'refs/heads/main' || github.event.pull_request.base == 'main'
+    #if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: automerge
