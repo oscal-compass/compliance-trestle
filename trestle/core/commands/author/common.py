@@ -13,25 +13,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""AuthorCommonCommands - reusable utilities to increase code base abstraction for author command.
-"""
+"""AuthorCommonCommands - reusable utilities to increase code base abstraction for author command."""
 import argparse
 import logging
 import pathlib
 
-from trestle.core.commands.command_docs import CommandPlusDocs
 import trestle.core.const as const
-import trestle.core.err as err
 import trestle.utils.fs as fs
 import trestle.utils.log as log
+from trestle.core.commands.command_docs import CommandPlusDocs
 
 logger = logging.getLogger(__name__)
 
+
 class AuthorCommonCommand(CommandPlusDocs):
-    """Extension for the subset of commands that operate using the common mode structure.""" 
+    """Extension for the subset of commands that operate using the common mode structure."""
 
     trestle_root: pathlib.Path
-    
+
     task_name: str
 
     def _initialize(self, args: argparse.Namespace) -> int:
@@ -50,5 +49,3 @@ class AuthorCommonCommand(CommandPlusDocs):
         self.task_path = self.trestle_root / self.task_name
         self.template_dir = self.trestle_root / const.TRESTLE_CONFIG_DIR / 'author' / self.task_name
         return 0
-
-    

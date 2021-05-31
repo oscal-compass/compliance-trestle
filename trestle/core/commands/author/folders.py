@@ -22,7 +22,6 @@ from typing import List
 
 import trestle.core.commands.author.consts as author_const
 import trestle.utils.fs as fs
-from trestle.core import const
 from trestle.core import markdown_validator
 from trestle.core.commands.author.common import AuthorCommonCommand
 
@@ -35,7 +34,9 @@ class Folders(AuthorCommonCommand):
     name = 'folders'
 
     def _init_arguments(self) -> None:
-        self.add_argument(author_const.gh_short, author_const.gh_long, help=author_const.gh_help, default=None, type=str)
+        self.add_argument(
+            author_const.gh_short, author_const.gh_long, help=author_const.gh_help, default=None, type=str
+        )
         self.add_argument(
             author_const.short_header_validate,
             author_const.long_header_validate,
@@ -49,14 +50,19 @@ class Folders(AuthorCommonCommand):
             author_const.recurse_short, author_const.recurse_long, help=author_const.recurse_help, action='store_true'
         )
         self.add_argument(author_const.mode_arg_name, choices=author_const.mode_choices)
-        tn_help_str = 'The name of the the task to be governed.'\
-                      ''\
-                      'The template files are at .trestle/author/[task-name], where the directory tree established and the markdown files within that directory tree are enforced.'
+        tn_help_str = '\n'.join(
+            [
+                'The name of the the task to be governed.',
+                '',
+                'The template files are at .trestle/author/[task-name],',
+                'where the directory tree established and the markdown files within that directory'
+                + 'tree are enforced.'
+            ]
+        )
 
         self.add_argument(
             author_const.task_name_short, author_const.task_name_long, help=tn_help_str, required=True, type=str
         )
-
 
     def _run(self, args: argparse.Namespace) -> int:
         if self._initialize(args):
@@ -67,20 +73,12 @@ class Folders(AuthorCommonCommand):
                 status = self.create_sample()
 
             elif args.mode == 'template-validate':
-                status = self.template_validate(
-                    args.governed_heading,
-                    args.header_validate,
-                    args.header_only_validate
-                )
+                status = self.template_validate(args.governed_heading, args.header_validate, args.header_only_validate)
             elif args.mode == 'setup':
                 status = self.setup_template()
             elif args.mode == 'validate':
                 # mode is validate
-                status = self.validate(
-                    args.governed_heading,
-                    args.header_validate,
-                    args.header_only_validate
-                )
+                status = self.validate(args.governed_heading, args.header_validate, args.header_only_validate)
         except Exception as e:
             logger.error(f'Exception "{e}" running trestle md governed folders.')
         return status
@@ -103,12 +101,7 @@ class Folders(AuthorCommonCommand):
         logger.info(f'Task directory is {self.task_path} ')
         return 0
 
-    def template_validate(
-        self,
-        heading: str,
-        validate_header: bool,
-        validate_only_header: bool
-    ) -> int:
+    def template_validate(self, heading: str, validate_header: bool, validate_only_header: bool) -> int:
         """Validate that the template is acceptable markdown."""
         if not self.template_dir.is_dir():
             logger.error(f'Template directory {self.template_dir} for task {self.task_name} does not exist.')
@@ -127,7 +120,9 @@ class Folders(AuthorCommonCommand):
                         template_file, validate_header, validate_only_header, heading
                     )
                 except Exception as ex:
-                    logger.error(f'Template file {template_file} for task {self.task_name} failed to validate due to {ex}')
+                    logger.error(
+                        f'Template file {template_file} for task {self.task_name} failed to validate due to {ex}'
+                    )
                     return 1
             else:
                 logger.info(f'File: {template_file} within the template directory was ignored as it is not markdown.')
@@ -213,8 +208,10 @@ class Folders(AuthorCommonCommand):
                     self.template_dir, task_instance, governed_heading, validate_header, validate_only_header
                 )
                 if not result:
-                    logger.error(f'Governed-folder validation failed for task {task_name} on directory {task_instance}')
+                    logger.error(
+                        'Governed-folder validation failed for task' + f'{self.task_name} on directory {task_instance}'
+                    )
                     return 1
             else:
-                logger.info(f'Unexpected file {task_path} identified in {task_name} directory, ignoring.')
+                logger.info(f'Unexpected file {self.task_path} identified in {self.task_name} directory, ignoring.')
         return 0

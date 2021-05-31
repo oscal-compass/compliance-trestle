@@ -20,7 +20,6 @@ import pathlib
 import shutil
 
 import trestle.core.commands.author.consts as author_const
-import trestle.core.const as const
 import trestle.core.markdown_validator as markdown_validator
 import trestle.utils.fs as fs
 from trestle.core.commands.author.common import AuthorCommonCommand
@@ -36,7 +35,9 @@ class Docs(AuthorCommonCommand):
     template_name = 'template.md'
 
     def _init_arguments(self) -> None:
-        self.add_argument(author_const.gh_short, author_const.gh_long, help=author_const.gh_help, default=None, type=str)
+        self.add_argument(
+            author_const.gh_short, author_const.gh_long, help=author_const.gh_help, default=None, type=str
+        )
         self.add_argument(
             author_const.short_header_validate,
             author_const.long_header_validate,
@@ -50,10 +51,14 @@ class Docs(AuthorCommonCommand):
             author_const.recurse_short, author_const.recurse_long, help=author_const.recurse_help, action='store_true'
         )
         self.add_argument(author_const.mode_arg_name, choices=author_const.mode_choices)
-        tn_help_str = 'The name of the the task to be governed.'\
-            ''\
-            'The template file is at .trestle/author/[task-name]/template.md'\
-            'Note that by default this will automatically enforce the task.'
+        tn_help_str = '\n'.join(
+            [
+                'The name of the the task to be governed.',
+                ''
+                'The template file is at .trestle/author/[task-name]/template.md',
+                'Note that by default this will automatically enforce the task.'
+            ]
+        )
 
         self.add_argument(
             author_const.task_name_short, author_const.task_name_long, help=tn_help_str, required=True, type=str
@@ -78,10 +83,7 @@ class Docs(AuthorCommonCommand):
             elif args.mode == 'validate':
                 # mode is validate
                 status = self.validate(
-                    args.governed_heading,
-                    args.header_validate,
-                    args.header_only_validate,
-                    args.recurse
+                    args.governed_heading, args.header_validate, args.header_only_validate, args.recurse
                 )
         except Exception as e:
             logger.error(f'Error "{e}"" occurred when running trestle md governed docs.')
@@ -100,7 +102,7 @@ class Docs(AuthorCommonCommand):
         if not self._validate_template_dir(self.template_dir):
             logger.error('Aborting setup')
             return 1
-        template_file = self.template_dir /  self.template_name
+        template_file = self.template_dir / self.template_name
         if template_file.is_file():
             return 0
         fh = template_file.open('w')
@@ -188,13 +190,7 @@ class Docs(AuthorCommonCommand):
                         status = 1
         return status
 
-    def validate(
-        self,
-        governed_heading: str,
-        validate_header: bool,
-        validate_only_header: bool,
-        recurse: bool
-    ) -> int:
+    def validate(self, governed_heading: str, validate_header: bool, validate_only_header: bool, recurse: bool) -> int:
         """Validate task."""
         if not self.task_path.is_dir():
             logger.error(f'Task directory {self.task_path} does not exist. Exiting validate.')

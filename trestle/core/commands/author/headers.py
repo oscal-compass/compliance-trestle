@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle md governed-docs sub-command."""
+import argparse
 import logging
 
 import trestle.core.commands.author_subs.consts as author_const
@@ -32,14 +33,18 @@ class Headers(CommandPlusDocs):
             author_const.recurse_short, author_const.recurse_long, help=author_const.recurse_help, action='store_true'
         )
         self.add_argument(author_const.mode_arg_name, choices=author_const.mode_choices)
-        tn_help_str = 'The name of the the task to be governed.'\
-            ''\
-            'The template file is at .trestle/author/[task-name]/template.md'\
-            'Note that by default this will automatically enforce the task.'
+        tn_help_str = '\n'.join(
+            [
+                'The name of the the task to be governed.',
+                '',
+                'The template file is at .trestle/author/[task-name]/template.md',
+                'Note that by default this will automatically enforce the task.'
+            ]
+        )
 
         self.add_argument(
             author_const.task_name_short, author_const.task_name_long, help=tn_help_str, required=True, type=str
-        )        
+        )
         pass
 
     def _run(self, args: argparse.Namespace) -> int:

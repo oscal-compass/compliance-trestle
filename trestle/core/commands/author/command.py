@@ -26,7 +26,6 @@ from trestle.core.commands.author.folders import Folders
 from trestle.core.commands.author.headers import Headers
 from trestle.core.commands.command_docs import CommandPlusDocs
 
-
 logger = logging.getLogger(__name__)
 
 
