@@ -35,11 +35,9 @@ class Folders(CommandPlusDocs):
     name = 'folders'
 
     def _init_arguments(self) -> None:
-        help_str = """The name of the the task to be governed.
-
-The template files are at .trestle/md/[task-name], where the directory tree established and the markdown files within
-that directory tree are enforced."""
-        self.add_argument('-tn', '--task-name', help=help_str, required=True, type=str)
+        tn_help_str = 'The name of the the task to be governed.'\
+                      ''\
+                      'The template files are at .trestle/md/[task-name], where the directory tree established and the markdown files within that directory tree are enforced.'
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)

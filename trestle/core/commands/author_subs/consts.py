@@ -16,9 +16,12 @@
 """Constants associated with trestle author commands to decrease duplication."""
 
 short_header_validate = '-hv'
-long_header_validate = '-header-validate'
-header_validate_help = ''
+long_header_validate = '--header-validate'
+header_validate_help = 'Validate the structure of a markdown yaml header and/or drawio metadata on the first tab.'
 
+hov_short = '-hov'
+hov_long = '--header-only-validate'
+hov_help = 'Only validate the header / metadata for files. Includes project structure where appropriate.'
 recurse_short = '-r'
 recurse_long = '--recurse'
 recurse_help = """Recurse and validate any subdirectories."""

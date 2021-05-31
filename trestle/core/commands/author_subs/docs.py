@@ -19,6 +19,7 @@ import logging
 import pathlib
 import shutil
 
+import trestle.core.commands.author_subs.consts as author_const
 import trestle.core.const as const
 import trestle.core.markdown_validator as markdown_validator
 import trestle.utils.fs as fs
@@ -36,11 +37,29 @@ class Docs(CommandPlusDocs):
     template_name = 'template.md'
 
     def _init_arguments(self) -> None:
-        help_str = """The name of the the task to be governed.
+        heading_help = """Governed heading: Heading where for each line is a superset of the template's content."""
+        self.add_argument('-gh', '--governed-heading', help=heading_help, default=None, type=str)
+        self.add_argument(
+            author_const.short_header_validate,
+            author_const.long_header_validate,
+            help=author_const.header_validate_help,
+            action='store_true'
+        )
+        self.add_argument(
+            author_const.hov_short, author_const.hov_long, help=author_const.hov_help, action='store_true'
+        )
+        self.add_argument(
+            author_const.recurse_short, author_const.recurse_long, help=author_const.recurse_help, action='store_true'
+        )
+        self.add_argument(author_const.mode_arg_name, choices=author_const.mode_choices)
+        tn_help_str = 'The name of the the task to be governed.'\
+            ''\
+            'The template file is at .trestle/md/[task-name]/template.md'\
+            'Note that by default this will automatically enforce the task.'
 
-The template file is at .trestle/md/[task-name]/template.md
-Note that by default this will automatically enforce the task."""
-        self.add_argument('-tn', '--task-name', help=help_str, required=True, type=str)
+        self.add_argument(
+            author_const.task_name_short, author_const.task_name_long, help=tn_help_str, required=True, type=str
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
