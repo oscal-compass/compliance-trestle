@@ -18,14 +18,13 @@ on:
       - completed
   status: {}
 jobs:
-  # Testing code which is considered higher risk
-  # automerge-info:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Dump GitHub context
-  #       env:
-  #         GITHUB_CONTEXT: ${{ toJSON(github) }}
-  #       run: echo "$GITHUB_CONTEXT"
+  automerge-info:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
   automerge:
     # If it's not coming from develop - squash-merge.
     if: github.base_ref == 'refs/heads/develop' || github.event.pull_request.base.ref == 'develop' || contains(github.event.pull_requests.*.base.ref, 'develop')
