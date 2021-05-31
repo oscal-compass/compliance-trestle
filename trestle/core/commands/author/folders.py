@@ -20,56 +20,63 @@ import pathlib
 import shutil
 from typing import List
 
+import trestle.core.commands.author.consts as author_const
 import trestle.utils.fs as fs
-import trestle.utils.log as log
 from trestle.core import const
 from trestle.core import markdown_validator
-from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.author.common import AuthorCommonCommand
 
 logger = logging.getLogger(__name__)
 
 
-class Folders(CommandPlusDocs):
+class Folders(AuthorCommonCommand):
     """Markdown governed folders - enforcing consistent files and templates across directories."""
 
     name = 'folders'
 
     def _init_arguments(self) -> None:
+        self.add_argument(author_const.gh_short, author_const.gh_long, help=author_const.gh_help, default=None, type=str)
+        self.add_argument(
+            author_const.short_header_validate,
+            author_const.long_header_validate,
+            help=author_const.header_validate_help,
+            action='store_true'
+        )
+        self.add_argument(
+            author_const.hov_short, author_const.hov_long, help=author_const.hov_help, action='store_true'
+        )
+        self.add_argument(
+            author_const.recurse_short, author_const.recurse_long, help=author_const.recurse_help, action='store_true'
+        )
+        self.add_argument(author_const.mode_arg_name, choices=author_const.mode_choices)
         tn_help_str = 'The name of the the task to be governed.'\
                       ''\
-                      'The template files are at .trestle/md/[task-name], where the directory tree established and the markdown files within that directory tree are enforced.'
+                      'The template files are at .trestle/author/[task-name], where the directory tree established and the markdown files within that directory tree are enforced.'
+
+        self.add_argument(
+            author_const.task_name_short, author_const.task_name_long, help=tn_help_str, required=True, type=str
+        )
+
 
     def _run(self, args: argparse.Namespace) -> int:
-        log.set_log_level_from_args(args)
-        trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
-        if not trestle_root:
-            logger.error(f'Current working directory {pathlib.Path.cwd()} is not with a trestle project.')
-            return 1
-        if not fs.allowed_task_name(args.task_name):
-            logger.error(
-                f'Task name {args.task_name} is invalid as it interferes with OSCAL and trestle reserved names.'
-            )
+        if self._initialize(args):
             return 1
         status = 1
         try:
             if args.mode == 'create-sample':
-                status = self.create_sample(args.task_name, trestle_root)
+                status = self.create_sample()
 
             elif args.mode == 'template-validate':
                 status = self.template_validate(
-                    args.task_name,
-                    trestle_root,
                     args.governed_heading,
                     args.header_validate,
                     args.header_only_validate
                 )
             elif args.mode == 'setup':
-                status = self.setup_template(args.task_name, trestle_root)
+                status = self.setup_template()
             elif args.mode == 'validate':
                 # mode is validate
                 status = self.validate(
-                    args.task_name,
-                    trestle_root,
                     args.governed_heading,
                     args.header_validate,
                     args.header_only_validate
@@ -78,17 +85,12 @@ class Folders(CommandPlusDocs):
             logger.error(f'Exception "{e}" running trestle md governed folders.')
         return status
 
-    @classmethod
-    def setup_template(cls, task_name: str, trestle_root: pathlib.Path, project_override: bool = False) -> int:
+    def setup_template(self) -> int:
         """Create structure to allow markdown template enforcement."""
-        if project_override:
-            assert task_name == '.trestle'
-        task_path = trestle_root / task_name
-        task_path.mkdir(exist_ok=True, parents=True)
-        template_dir = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name
-        template_dir.mkdir(exist_ok=True, parents=True)
-        template_file_a = template_dir / 'a_template.md'
-        template_file_b = template_dir / 'another_template.md'
+        self.task_path.mkdir(exist_ok=True, parents=True)
+        self.template_dir.mkdir(exist_ok=True, parents=True)
+        template_file_a = self.template_dir / 'a_template.md'
+        template_file_b = self.template_dir / 'another_template.md'
         template_content = """---\nyaml:header\n---\n# Template header\nThis file is a pro-forma template.\n"""
         if not template_file_a.is_file():
             fh = template_file_a.open('w')
@@ -97,26 +99,22 @@ class Folders(CommandPlusDocs):
             fh = template_file_b.open('w')
             fh.write(template_content)
 
-        logger.info(f'Template file setup for task {task_name} at {template_file_a} and {template_file_b}')
-        logger.info(f'Task directory is {task_path} ')
+        logger.info(f'Template file setup for task {self.task_name} at {template_file_a} and {template_file_b}')
+        logger.info(f'Task directory is {self.task_path} ')
         return 0
 
-    @classmethod
     def template_validate(
-        cls,
-        task_name: str,
-        trestle_root: pathlib.Path,
+        self,
         heading: str,
         validate_header: bool,
         validate_only_header: bool
     ) -> int:
         """Validate that the template is acceptable markdown."""
-        template_dir = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name
-        if not template_dir.is_dir():
-            logger.error(f'Template directory {template_dir} for task {task_name} does not exist.')
+        if not self.template_dir.is_dir():
+            logger.error(f'Template directory {self.template_dir} for task {self.task_name} does not exist.')
             return 1
         # get list of files:
-        template_files = template_dir.rglob('*')
+        template_files = self.template_dir.rglob('*')
 
         for template_file in template_files:
             if not fs.local_and_visible(template_file):
@@ -129,16 +127,15 @@ class Folders(CommandPlusDocs):
                         template_file, validate_header, validate_only_header, heading
                     )
                 except Exception as ex:
-                    logger.error(f'Template file {template_file} for task {task_name} failed to validate due to {ex}')
+                    logger.error(f'Template file {template_file} for task {self.task_name} failed to validate due to {ex}')
                     return 1
             else:
                 logger.info(f'File: {template_file} within the template directory was ignored as it is not markdown.')
-        logger.info(f'TEMPLATES VALID: {task_name}.')
+        logger.info(f'TEMPLATES VALID: {self.task_name}.')
         return 0
 
-    @classmethod
     def _measure_template_folder(
-        cls,
+        self,
         template_dir: pathlib.Path,
         instance_dir: pathlib.Path,
         governed_heading: str,
@@ -179,7 +176,7 @@ class Folders(CommandPlusDocs):
                         return False
         return True
 
-    def create_sample(self, task_name: str, trestle_root: pathlib.Path) -> int:
+    def create_sample(self) -> int:
         """Create a sample folder within the task and populate with template content.
 
         Args:
@@ -188,42 +185,32 @@ class Folders(CommandPlusDocs):
         Returns:
             Unix return code for running sample as a command.
         """
-        template_dir = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name
-        task_path = trestle_root / task_name
         ii = 0
         while True:
-            sample_path = task_path / f'sample_folder_{ii}'
+            sample_path = self.task_path / f'sample_folder_{ii}'
             if sample_path.exists():
                 ii = ii + 1
                 continue
-            shutil.copytree(str(template_dir), str(sample_path))
+            shutil.copytree(str(self.template_dir), str(sample_path))
             return 0
 
     def validate(
         self,
-        task_name: str,
-        trestle_root: pathlib.Path,
         governed_heading: str,
         validate_header: bool,
         validate_only_header: bool,
-        project_override: bool = False
     ) -> int:
         """Validate task."""
-        template_dir = trestle_root / const.TRESTLE_CONFIG_DIR / 'md' / task_name
-        if project_override:
-            task_path = trestle_root
-        else:
-            task_path = trestle_root / task_name
-        if not task_path.is_dir():
-            logger.error(f'Task directory {task_path} does not exist. Exiting validate.')
+        if not self.task_path.is_dir():
+            logger.error(f'Task directory {self.task_path} does not exist. Exiting validate.')
             return 1
 
-        for task_instance in task_path.iterdir():
+        for task_instance in self.task_path.iterdir():
             if task_instance.is_dir():
                 if fs.is_symlink(task_instance):
                     continue
                 result = self._measure_template_folder(
-                    template_dir, task_instance, governed_heading, validate_header, validate_only_header
+                    self.template_dir, task_instance, governed_heading, validate_header, validate_only_header
                 )
                 if not result:
                     logger.error(f'Governed-folder validation failed for task {task_name} on directory {task_instance}')

@@ -30,3 +30,8 @@ mode_choices = ['validate', 'template-validate', 'setup', 'create-sample']
 
 task_name_short = '-tn'
 task_name_long = '--task-name'
+
+# Governed header - capability
+gh_short = '-gh'
+gh_long = '--governed-header'
+gh_help = """Governed heading: Heading where for each line is a superset of the template's content"""
