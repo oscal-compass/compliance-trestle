@@ -128,7 +128,7 @@ def test_e2e(
     command_string_create_sample = f'trestle author docs create-sample -tn {task_name}'
     command_string_validate_template = f'trestle author docs template-validate -tn {task_name}'
     command_string_validate_content = (f'trestle author docs validate -tn {task_name} --header-validate {recurse_flag}')
-    template_target_loc = tmp_trestle_dir / '.trestle' / 'md' / task_name / 'template.md'
+    template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name / 'template.md'
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}.md'
     # Test setup
     with mock.patch.object(sys, 'argv', command_string_setup.split()):
@@ -138,7 +138,7 @@ def test_e2e(
             assert wrapped_error.code == setup_code
     if setup_code > 0:
         return
-
+    a = 3
     # Copy in template:
     shutil.copyfile(str(testdata_dir / template_content), str(template_target_loc))
 
@@ -160,7 +160,7 @@ def test_e2e(
     if recurse:
         # choose source file based on expected result
         sub_file_name = 'correct_instance_extra_features.md' if validate_code else 'bad_instance_missing_heading.md'
-        sub_file_path = testdata_dir / 'md/test_1_md_format' / sub_file_name
+        sub_file_path = testdata_dir / 'author/test_1_md_format' / sub_file_name
         subdir = tmp_trestle_dir / task_name / 'subdir'
         subdir.mkdir()
         sub_content = subdir / f'{uuid4()}.md'
@@ -176,7 +176,7 @@ def test_failure_bad_template_dir(tmp_trestle_dir: pathlib.Path) -> None:
     """Create and test a bad directory."""
     setup_ = 'trestle author docs setup --task-name foobaa'
 
-    bad_template_sub_directory = tmp_trestle_dir / '.trestle' / 'md' / 'foobar' / 'test'
+    bad_template_sub_directory = tmp_trestle_dir / '.trestle' / 'author' / 'foobar' / 'test'
     bad_template_sub_directory.mkdir(parents=True, exist_ok=True)
     with mock.patch.object(sys, 'argv', setup_.split()):
         with pytest.raises(SystemExit) as wrapped_error:

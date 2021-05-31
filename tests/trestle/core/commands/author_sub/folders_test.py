@@ -127,7 +127,7 @@ def test_e2e(
     command_string_create_sample = f'trestle author folders create-sample -tn {task_name}'
     command_string_validate_template = f'trestle author folders template-validate -tn {task_name}'
     command_string_validate_content = f'trestle author folders validate -tn {task_name} --header-validate'
-    template_target_loc = tmp_trestle_dir / '.trestle' / 'md' / task_name
+    template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}'
     with mock.patch.object(sys, 'argv', command_string_setup.split()):
         with pytest.raises(SystemExit) as wrapped_error:
@@ -136,7 +136,7 @@ def test_e2e(
             assert wrapped_error.code == setup_code
     if setup_code > 0:
         return
-    # Cleanup first
+    a = 'hello'
     shutil.rmtree(str(template_target_loc))
     shutil.copytree(str(testdata_dir / template_content), str(template_target_loc))
 

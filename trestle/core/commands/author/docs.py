@@ -65,7 +65,7 @@ class Docs(AuthorCommonCommand):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        if self._initialize():
+        if self._initialize(args):
             return 1
         status = 1
         try:

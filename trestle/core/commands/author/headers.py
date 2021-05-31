@@ -17,7 +17,7 @@
 import argparse
 import logging
 
-import trestle.core.commands.author_subs.consts as author_const
+import trestle.core.commands.author.consts as author_const
 from trestle.core.commands.command_docs import CommandPlusDocs
 
 logger = logging.getLogger(__name__)

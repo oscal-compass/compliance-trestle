@@ -17,7 +17,7 @@ import logging
 
 from trestle.core.commands.add import AddCmd
 from trestle.core.commands.assemble import AssembleCmd
-from trestle.core.commands.author import AuthorCmd
+from trestle.core.commands.author.command import AuthorCmd
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.commands.create import CreateCmd
 from trestle.core.commands.import_ import ImportCmd
