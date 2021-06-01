@@ -16,12 +16,16 @@
 import pathlib
 
 from trestle.core.commands.md_subs.ssp_generator import SSPGenerator
+from trestle.oscal.catalog import Catalog
+from trestle.oscal.profile import Profile
 
 
 def test_ssp_generator(tmp_trestle_dir, sample_catalog, sample_profile):
     """Test the ssp generator."""
+    v_cat = Catalog.oscal_read(pathlib.Path('/tmp/cat/catalogs/v_cat/catalog.json'))
+    v_prof = Profile.oscal_read(pathlib.Path('/tmp/cat/profiles/v_prof/profile.json'))
     dest_path = pathlib.Path('/tmp/cat/my_ssp')
     dest_path.mkdir(exist_ok=True)
     ssp_gen = SSPGenerator()
-    rc = ssp_gen.generate_ssp(sample_catalog, sample_profile, dest_path)
+    rc = ssp_gen.generate_ssp(v_cat, v_prof, dest_path, ['ImplGuidance', 'ExpectedEvidence'])
     assert rc == 0

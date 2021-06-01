@@ -14,12 +14,11 @@
 """Create ssp from catalog and profile."""
 
 import pathlib
-from typing import Dict, List, Set
-
-from mdutils.mdutils import MdUtils
+from typing import Dict, List, Set, Union
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
+from trestle.utils.md_writer import MDWriter
 
 
 class ControlHandle():
@@ -39,52 +38,64 @@ class SSPGenerator():
         """Initialize the class."""
         pass
 
-    def _replace_params(self, text: str, control: cat.Control) -> str:
+    def _replace_params(self, text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
         # replace params with assignments
         if control.params is not None:
             for param in control.params:
-                if param.select is not None:
-                    if param.select.how_many is not None:
-                        selection = f'*[Selection ({param.select.how_many}): '
-                    else:
-                        selection = '*[Selection: '
-                    text = text.replace(param.id, selection + ', '.join(param.select.choice) + ']*')
-                else:
-                    text = text.replace(param.id, '*[Assignment: ' + param.label + ']*')
+                set_param = param_dict.get(param.id, None)
+                if set_param is not None:
+                    text = text.replace(param.id, str(set_param.values[0].__root__))
 
         # strip {{ }}
-        text = text.replace(' {{', '').replace(' }}', '').replace('insert: param, ', '')
+        text = text.replace(' {{', '').replace(' }}', '').replace('insert: param, ', '').strip()
 
         return text
 
-    def _get_part(self, md_file: MdUtils, control: cat.Control, part: cat.Part):
+    def _get_label(self, part: cat.Part) -> str:
+        if part.props is not None:
+            for prop in part.props:
+                if prop.name == 'label':
+                    return prop.value.strip()
+        return ''
+
+    def _get_part(
+        self, md_file: MDWriter, control: cat.Control, part: cat.Part, param_dict: Dict[str, prof.SetParameter]
+    ):
         items = []
         if part.prose is not None:
-            fixed_prose = self._replace_params(part.prose, control)
-            prefix = ''
-            if part.props is not None:
-                for prop in part.props:
-                    if prop.name == 'label':
-                        prefix = (prop.value + ' ')
-            items.append(f'{prefix}{fixed_prose}')
+            fixed_prose = self._replace_params(part.prose, control, param_dict)
+            label = self._get_label(part)
+            pad = '' if label == '' else ' '
+            items.append(f'{label}{pad}{fixed_prose}')
         if part.parts is not None:
             sub_list = []
             for prt in part.parts:
-                sub_list.append(self._get_part(md_file, control, prt))
+                sub_list.append(self._get_part(md_file, control, prt, param_dict))
             items.append(sub_list)
         return items
 
-    def _dump_parts(self, md_file: MdUtils, control: cat.Control):
+    def _dump_parts(self, md_file: MDWriter, control: cat.Control, param_dict: Dict[str, prof.SetParameter]):
         items = []
         for part in control.parts:
-            if part.name != 'guidance':
-                items.append(self._get_part(md_file, control, part))
-        md_file.new_list(items, marked_with='')
+            if part.name == 'statement':
+                items.append(self._get_part(md_file, control, part, param_dict))
+        md_file.new_list(items)
 
-    def _get_guidance(self, control: cat.Control):
-        for part in control.parts:
-            if part.name == 'guidance':
-                return part.prose
+    def _get_named_prose_from_part(self, part: cat.Part, name: str) -> str:
+        if part.name == name:
+            return part.prose
+        if part.parts is not None:
+            for prt in part.parts:
+                prose = self._get_named_prose_from_part(prt, name)
+                if prose is not None:
+                    return prose.strip()
+        return None
+
+    def _get_named_prose(self, parts: List[cat.Part], name: str) -> str:
+        for part in parts:
+            prose = self._get_named_prose_from_part(part, name)
+            if prose is not None:
+                return prose.strip()
 
     def _add_controls(self, control_handle: ControlHandle,
                       control_dict: Dict[str, ControlHandle]) -> Dict[str, ControlHandle]:
@@ -97,23 +108,89 @@ class SSPGenerator():
                 control_dict = self._add_controls(control_handle, control_dict)
         return control_dict
 
-    def _dump_control(self, dest_path: pathlib.Path, control: cat.Control, group_title: str) -> None:
-        control_file = (dest_path / control.id).with_suffix('.md')
-        md_file = MdUtils(file_name=str(control_file))
+    def _dump_yaml_header(self, md_file: MDWriter) -> None:
+        md_file.new_paragraph()
+        md_file.new_line('header: yaml header')
+        md_file.new_line('    item1: value1')
+        md_file.new_line('    item2: value2')
+        md_file.new_paragraph()
 
-        md_file.write('<!-- yaml \n' + 'REPLACE_ME' + '\nyaml -->\n')
+    def _dump_control_description(
+        self, md_file: MDWriter, control: cat.Control, group_title: str, param_dict: Dict[str, prof.SetParameter]
+    ) -> None:
+        md_file.new_paragraph()
         md_file.new_header(level=1, title=f'{control.id} - {group_title} {control.title}')
         md_file.new_header(level=2, title='Control Description')
+        md_file.set_indent_level(-3)
+        self._dump_parts(md_file, control, param_dict)
+        md_file.set_indent_level(0)
 
-        self._dump_parts(md_file, control)
-        guidance = self._get_guidance(control)
-        if guidance is not None:
-            md_file.new_header(level=3, title='Prime Guidance')
-            md_file.new_paragraph(guidance)
+    def _get_control_section(self, control: cat.Control, section: str, alters: List[prof.Alter]) -> None:
+        for alter in alters:
+            if alter.control_id == control.id:
+                if alter.adds is not None:
+                    for add in alter.adds:
+                        if add.parts is not None:
+                            for part in add.parts:
+                                if part.name == section:
+                                    return part.prose
+        return None
 
-        md_file.create_md_file()
+    def _dump_control_section(
+        self, md_file: MDWriter, control: cat.Control, section: str, alters: List[prof.Alter]
+    ) -> None:
+        prose = self._get_control_section(control, section, alters)
+        if prose is not None:
+            md_file.new_paragraph()
+            md_file.new_header(level=2, title=f'{control.id} Section {section}')
+            md_file.new_paragraph()
+            md_file.new_line(prose)
+            md_file.new_paragraph()
 
-    def generate_ssp(self, catalog: cat.Catalog, profile: prof.Profile, md_path: pathlib.Path) -> int:
+    def _dump_response(self, md_file: MDWriter, control: cat.Control) -> None:
+        md_file.new_paragraph()
+        md_file.new_header(level=2, title=f'{control.id} What is the solution and how is it implemented?')
+
+        for part in control.parts:
+            if part.parts is not None:
+                if part.name == 'statement':
+                    for prt in part.parts:
+                        md_file.new_paragraph()
+                        md_file.new_hr()
+                        md_file.new_header(level=3, title=f'Part {self._get_label(prt)}')
+                        md_file.new_paragraph()
+                        md_file.new_line('Add control implementation description here.')
+                        md_file.new_paragraph()
+        md_file.new_hr()
+        md_file.new_paragraph()
+
+    def _dump_control(
+        self,
+        dest_path: pathlib.Path,
+        control: cat.Control,
+        group_title: str,
+        param_dict: Dict[str, prof.SetParameter],
+        sections: Union[List[str], None],
+        alters: List[prof.Alter]
+    ) -> None:
+        control_file = dest_path / (control.id + '.md')
+        md_file = MDWriter(control_file)
+
+        self._dump_yaml_header(md_file)
+
+        self._dump_control_description(md_file, control, group_title, param_dict)
+
+        self._dump_response(md_file, control)
+
+        if sections is not None:
+            for section in sections:
+                self._dump_control_section(md_file, control, section, alters)
+
+        md_file.write_out()
+
+    def generate_ssp(
+        self, catalog: cat.Catalog, profile: prof.Profile, md_path: pathlib.Path, sections: Union[List[str], None]
+    ) -> int:
         """Generate ssp from catalog and profile."""
         control_dict: Dict[str, ControlHandle] = {}
         for group in catalog.groups:
@@ -121,6 +198,7 @@ class SSPGenerator():
                 control_handle = ControlHandle(group.id, group.title, control)
                 control_dict = self._add_controls(control_handle, control_dict)
 
+        # get list of control_ids needed by profile
         control_ids: List[str] = []
         for _import in profile.imports:
             for include_control in _import.include_controls:
@@ -137,8 +215,14 @@ class SSPGenerator():
         for group_id in needed_group_ids:
             (md_path / group_id).mkdir(exist_ok=True)
 
+        # now get list of param substitution values
+        param_dict = profile.modify.set_parameters
+
         for control_handle in needed_controls:
             out_path = md_path / control_handle.group_id
-            self._dump_control(out_path, control_handle.control, control_handle.group_title)
+            alters = profile.modify.alters
+            self._dump_control(
+                out_path, control_handle.control, control_handle.group_title, param_dict, sections, alters
+            )
 
         return 0
