@@ -28,7 +28,7 @@ import trestle.cli
 @pytest.mark.parametrize(
     'command_string, return_code',
     [
-        ('trestle author folders setup', 1), ('trestle author folders setup --task-name foobaa', 0),
+        ('trestle author folders setup', 2), ('trestle author folders setup --task-name foobaa', 0),
         ('trestle author folders setup --task-name catalogs', 1)
     ]
 )
@@ -38,8 +38,8 @@ def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: st
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
             # FIXME: Needs to be changed once implemented.
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == return_code
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == return_code
 
 
 @pytest.mark.parametrize(
@@ -73,6 +73,14 @@ def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: st
             'another_test_task/with_a_sub_dir',
             pathlib.Path('md/governed_folders/template_folder'),
             pathlib.Path('md/governed_folders/bad_instance_renamed'),
+            0,
+            0,
+            1
+        ),
+        (
+            'another_test_task/with_a_sub_dir',
+            pathlib.Path('md/governed_folders/template_folder'),
+            pathlib.Path('md/governed_folders/bad_instance_mixed_name'),
             0,
             0,
             1
@@ -132,19 +140,18 @@ def test_e2e(
     with mock.patch.object(sys, 'argv', command_string_setup.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == setup_code
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == setup_code
     if setup_code > 0:
         return
-    a = 'hello'
     shutil.rmtree(str(template_target_loc))
     shutil.copytree(str(testdata_dir / template_content), str(template_target_loc))
 
     with mock.patch.object(sys, 'argv', command_string_validate_template.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == template_code
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == template_code
     if template_code > 0:
         return
 
@@ -152,12 +159,12 @@ def test_e2e(
     with mock.patch.object(sys, 'argv', command_string_create_sample.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == 0
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == 0
 
     shutil.copytree(str(testdata_dir / target_content), str(test_content_loc))
     with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == validate_code
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == validate_code

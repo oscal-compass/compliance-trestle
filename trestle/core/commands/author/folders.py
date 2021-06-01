@@ -46,9 +46,6 @@ class Folders(AuthorCommonCommand):
         self.add_argument(
             author_const.hov_short, author_const.hov_long, help=author_const.hov_help, action='store_true'
         )
-        self.add_argument(
-            author_const.recurse_short, author_const.recurse_long, help=author_const.recurse_help, action='store_true'
-        )
         self.add_argument(author_const.mode_arg_name, choices=author_const.mode_choices)
         tn_help_str = '\n'.join(
             [
@@ -85,8 +82,16 @@ class Folders(AuthorCommonCommand):
 
     def setup_template(self) -> int:
         """Create structure to allow markdown template enforcement."""
-        self.task_path.mkdir(exist_ok=True, parents=True)
-        self.template_dir.mkdir(exist_ok=True, parents=True)
+        if not self.task_path.exists():
+            self.task_path.mkdir(exist_ok=True, parents=True)
+        elif self.task_path.is_file():
+            logger.error(f'Task path: {self.task_path} is a file not a directory.')
+            return 1
+        if not self.template_dir.exists():
+            self.template_dir.mkdir(exist_ok=True, parents=True)
+        elif self.template_dir.is_file():
+            logger.error(f'Template path: {self.template_dir} is a file not a directory.')
+            return 1
         template_file_a = self.template_dir / 'a_template.md'
         template_file_b = self.template_dir / 'another_template.md'
         template_content = """---\nyaml:header\n---\n# Template header\nThis file is a pro-forma template.\n"""

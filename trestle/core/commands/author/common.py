@@ -37,7 +37,7 @@ class AuthorCommonCommand(CommandPlusDocs):
         log.set_log_level_from_args(args)
         # Externalize
         self.trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
-        if self.trestle_root:
+        if not self.trestle_root:
             logger.error(f'Current working directory {pathlib.Path.cwd()} is not within a trestle project.')
             return 1
         if not fs.allowed_task_name(args.task_name):

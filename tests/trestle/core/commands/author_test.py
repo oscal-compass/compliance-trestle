@@ -30,8 +30,8 @@ def test_cidd_success_cli(tmp_trestle_dir: pathlib.Path) -> None:
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
             # FIXME: Needs to be changed once implemented.
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == 1
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == 0
 
 
 def test_governed_docs_cli(tmp_trestle_dir: pathlib.Path) -> None:
@@ -41,24 +41,24 @@ def test_governed_docs_cli(tmp_trestle_dir: pathlib.Path) -> None:
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
             # FIXME: Needs to be changed once implemented.
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == 1
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == 2
 
 
 def test_governed_folders_cli(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test happy path of md governed-folders subcommand."""
+    """Test happy path of author governed-folders subcommand."""
     command = 'trestle author folders'
     with mock.patch.object(sys, 'argv', command.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
             # FIXME: Needs to be changed once implemented.
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == 1
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == 2
 
 
 @pytest.mark.parametrize(
     'command_string',
-    [('trestle author docs setup -tn test'), ('trestle author folders setup-tn test'), ('trestle author cidd setup')]
+    [('trestle author docs setup -tn test'), ('trestle author folders setup -tn test'), ('trestle author cidd')]
 )
 def test_failure_not_trestle(command_string, tmp_path: pathlib.Path) -> None:
     """Test for failure based on not in trestle directory."""
@@ -66,5 +66,5 @@ def test_failure_not_trestle(command_string, tmp_path: pathlib.Path) -> None:
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
             # FIXME: Needs to be changed once implemented.
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == 1
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == 1

@@ -72,22 +72,22 @@ def test_broken_args(tmp_trestle_dir: pathlib.Path) -> None:
     with mock.patch.object(sys, 'argv', testargs_root):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             Trestle().run()
-            assert pytest_wrapped_e.type == SystemExit
-            assert pytest_wrapped_e.value.code > 0
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code > 0
     testargs = testargs_root + ['catalog']
     # missing command
     with mock.patch.object(sys, 'argv', testargs):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             Trestle().run()
-            assert pytest_wrapped_e.type == SystemExit
-            assert pytest_wrapped_e.value.code > 0
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code > 0
     # missing mandatory args
     testargs = testargs + ['-x', 'json']
     with mock.patch.object(sys, 'argv', testargs):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             Trestle().run()
-            assert pytest_wrapped_e.type == SystemExit
-            assert pytest_wrapped_e.value.code > 0
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code > 0
     testargs = testargs + ['-o', 'output']
     # correct behavior
     with mock.patch.object(sys, 'argv', testargs):
@@ -98,8 +98,8 @@ def test_broken_args(tmp_trestle_dir: pathlib.Path) -> None:
     with mock.patch.object(sys, 'argv', testargs):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             Trestle().run()
-    assert pytest_wrapped_e.type == SystemExit
-    assert pytest_wrapped_e.value.code > 0
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code > 0
 
 
 def test_execute_failure(tmp_trestle_dir: pathlib.Path) -> None:

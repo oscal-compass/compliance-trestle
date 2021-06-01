@@ -23,12 +23,12 @@ import pytest
 import trestle.cli
 
 
-@pytest.mark.parametrize('command_string, return_code', [('trestle md cidd setup --pave', 0)])
+@pytest.mark.parametrize('command_string, return_code', [('trestle author cidd --pave', 0)])
 def test_cidd_placeholder(tmp_trestle_dir: pathlib.Path, command_string: str, return_code: int) -> None:
     """Simple execution tests of trestle md cidd - as currently executing."""
     with mock.patch.object(sys, 'argv', command_string.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
             # FIXME: Needs to be changed once implemented.
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == return_code
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == return_code

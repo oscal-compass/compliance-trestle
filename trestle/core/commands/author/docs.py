@@ -86,7 +86,7 @@ class Docs(AuthorCommonCommand):
                     args.governed_heading, args.header_validate, args.header_only_validate, args.recurse
                 )
         except Exception as e:
-            logger.error(f'Error "{e}"" occurred when running trestle md governed docs.')
+            logger.error(f'Error "{e}"" occurred when running trestle author docs.')
             logger.error('Exiting')
         return status
 
@@ -96,10 +96,18 @@ class Docs(AuthorCommonCommand):
         Returns:
             Unix return code.
         """
-        self.task_path.mkdir(exist_ok=True, parents=True)
-        self.template_dir.mkdir(exist_ok=True, parents=True)
+        if not self.task_path.exists():
+            self.task_path.mkdir(exist_ok=True, parents=True)
+        elif self.task_path.is_file():
+            logger.error(f'Task path: {self.task_path} is a file not a directory.')
+            return 1
+        if not self.template_dir.exists():
+            self.template_dir.mkdir(exist_ok=True, parents=True)
+        elif self.template_dir.is_file():
+            logger.error(f'Template path: {self.template_dir} is a file not a directory.')
+            return 1
         logger.debug(self.template_dir)
-        if not self._validate_template_dir(self.template_dir):
+        if not self._validate_template_dir():
             logger.error('Aborting setup')
             return 1
         template_file = self.template_dir / self.template_name
@@ -107,15 +115,15 @@ class Docs(AuthorCommonCommand):
             return 0
         fh = template_file.open('w')
         fh.write("""# Template header\nThis file is a pro-forma template.\n""")
-        logger.warning(f'Template file setup for task {self.task_name} at {template_file}')
-        logger.warning(f'Task directory is {self.task_path} ')
+        logger.info(f'Template file setup for task {self.task_name} at {template_file}')
+        logger.info(f'Task directory is {self.task_path} ')
         return 0
 
     def create_sample(self) -> int:
         """Presuming the template exists, copy into a sample markdown file with an index."""
         template_file = self.template_dir / self.template_name
 
-        if not self._validate_template_dir(self.template_dir):
+        if not self._validate_template_dir():
             logger.error('Aborting setup')
             return 1
         if not template_file.is_file():
@@ -134,9 +142,8 @@ class Docs(AuthorCommonCommand):
 
     def template_validate(self, heading: str, validate_header: bool, validate_only_header: bool) -> int:
         """Validate that the template is acceptable markdown."""
-        template_dir = self._template_dir()
-        template_file = template_dir / self.template_name
-        if not self._validate_template_dir(template_dir):
+        template_file = self.template_dir / self.template_name
+        if not self._validate_template_dir():
             logger.error('Aborting setup')
             return 1
         if not template_file.is_file():
@@ -153,7 +160,7 @@ class Docs(AuthorCommonCommand):
     def _validate_template_dir(self) -> bool:
         """Template directory should only have template file."""
         for child in self.template_dir.iterdir():
-            # Only allowable template file in the directory is the template file.
+            # Only allowable template file in the directory is the template directory.
             if child.name != self.template_name:
                 logger.error(f'Unknown file: {child.name} in template directory {self.template_dir}')
                 return False
@@ -186,7 +193,7 @@ class Docs(AuthorCommonCommand):
                         logger.info(f'VALID: {item_path}')
                 elif recurse:
                     if not self._validate_dir(
-                            template_file, governed_heading, md_dir, validate_header, validate_only_header, recurse):
+                            template_file, governed_heading, item_path, validate_header, validate_only_header, recurse):
                         status = 1
         return status
 

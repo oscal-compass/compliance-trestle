@@ -35,8 +35,8 @@ def test_get_list_cli(tmp_trestle_dir: pathlib.Path) -> None:
     with mock.patch.object(sys, 'argv', command.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == 0
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == 0
 
 
 def test_arguments(tmp_trestle_dir: pathlib.Path) -> None:
