@@ -198,6 +198,7 @@ def test_success_repeated_call(tmp_trestle_dir: pathlib.Path) -> None:
         assert wrapped_error.type == SystemExit
         assert wrapped_error.value.code == 0
 
+
 def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
     """Run an E2E workflow with two test criteria for success."""
     # hardcoded arguments for testing
@@ -206,9 +207,8 @@ def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path
     template_content = pathlib.Path('md/test_1_md_format/template.md')
     target_content = pathlib.Path('md/test_1_md_format/correct_instance_extra_features.md')
     setup_code = 0
-    template_code = 0 
+    template_code = 0
     validate_code = 0
-    
 
     # Note testdata_dir must be before tmp_trestle_dir in the argument order.
     recurse_flag = '-r' if recurse else ''
@@ -223,7 +223,7 @@ def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
         assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == setup_code 
+        assert wrapped_error.value.code == setup_code
     if setup_code > 0:
         return
     # Copy in template:
