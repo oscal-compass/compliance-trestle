@@ -61,19 +61,20 @@ nav:
         - task: api_reference/trestle.core.commands.task.md
         - merge: api_reference/trestle.core.commands.merge.md
         - cmd_utils: api_reference/trestle.core.commands.cmd_utils.md
-        - author_subs:
-          - cidd: api_reference/trestle.core.commands.author_subs.cidd.md
-          - docs: api_reference/trestle.core.commands.author_subs.docs.md
-          - consts: api_reference/trestle.core.commands.author_subs.consts.md
-          - headers: api_reference/trestle.core.commands.author_subs.headers.md
-          - folders: api_reference/trestle.core.commands.author_subs.folders.md
         - version: api_reference/trestle.core.commands.version.md
         - add: api_reference/trestle.core.commands.add.md
         - create: api_reference/trestle.core.commands.create.md
+        - author:
+          - cidd: api_reference/trestle.core.commands.author.cidd.md
+          - command: api_reference/trestle.core.commands.author.command.md
+          - docs: api_reference/trestle.core.commands.author.docs.md
+          - consts: api_reference/trestle.core.commands.author.consts.md
+          - common: api_reference/trestle.core.commands.author.common.md
+          - headers: api_reference/trestle.core.commands.author.headers.md
+          - folders: api_reference/trestle.core.commands.author.folders.md
         - replicate: api_reference/trestle.core.commands.replicate.md
         - remove: api_reference/trestle.core.commands.remove.md
         - command_docs: api_reference/trestle.core.commands.command_docs.md
-        - author: api_reference/trestle.core.commands.author.md
         - assemble: api_reference/trestle.core.commands.assemble.md
         - validate: api_reference/trestle.core.commands.validate.md
         - split: api_reference/trestle.core.commands.split.md

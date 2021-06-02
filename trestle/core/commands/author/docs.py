@@ -19,6 +19,8 @@ import logging
 import pathlib
 import shutil
 
+from pkg_resources import resource_filename
+
 import trestle.core.commands.author.consts as author_const
 import trestle.core.markdown_validator as markdown_validator
 import trestle.utils.fs as fs
@@ -113,8 +115,8 @@ class Docs(AuthorCommonCommand):
         template_file = self.template_dir / self.template_name
         if template_file.is_file():
             return 0
-        fh = template_file.open('w')
-        fh.write("""# Template header\nThis file is a pro-forma template.\n""")
+        reference_template = pathlib.Path(resource_filename('trestle.resources', 'template.md')).resolve()
+        shutil.copy(reference_template, template_file)
         logger.info(f'Template file setup for task {self.task_name} at {template_file}')
         logger.info(f'Task directory is {self.task_path} ')
         return 0
@@ -176,6 +178,7 @@ class Docs(AuthorCommonCommand):
         recurse: bool
     ) -> int:
         """Validate md files in a directory with option to recurse."""
+        # status is a linux returncode
         status = 0
         for item_path in md_dir.iterdir():
             if fs.local_and_visible(item_path):

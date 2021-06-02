@@ -35,3 +35,5 @@ task_name_long = '--task-name'
 gh_short = '-gh'
 gh_long = '--governed-heading'
 gh_help = """Governed heading: Heading where for each line is a superset of the template's content"""
+
+reference_templates = {'md': 'template.md', 'drawio': 'template.drawio'}
