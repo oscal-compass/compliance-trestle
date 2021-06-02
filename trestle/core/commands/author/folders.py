@@ -70,12 +70,12 @@ class Folders(AuthorCommonCommand):
                 status = self.create_sample()
 
             elif args.mode == 'template-validate':
-                status = self.template_validate(args.governed_heading, args.header_validate, args.header_only_validate)
+                status = self.template_validate(args.header_validate, args.header_only_validate, args.governed_heading)
             elif args.mode == 'setup':
                 status = self.setup_template()
             elif args.mode == 'validate':
                 # mode is validate
-                status = self.validate(args.governed_heading, args.header_validate, args.header_only_validate)
+                status = self.validate(args.header_validate, args.header_only_validate, args.governed_heading)
         except Exception as e:
             logger.error(f'Exception "{e}" running trestle md governed folders.')
         return status
@@ -106,7 +106,7 @@ class Folders(AuthorCommonCommand):
         logger.info(f'Task directory is {self.task_path} ')
         return 0
 
-    def template_validate(self, heading: str, validate_header: bool, validate_only_header: bool) -> int:
+    def template_validate(self, validate_header: bool, validate_only_header: bool, heading: str) -> int:
         """Validate that the template is acceptable markdown."""
         if not self.template_dir.is_dir():
             logger.error(f'Template directory {self.template_dir} for task {self.task_name} does not exist.')
@@ -138,9 +138,9 @@ class Folders(AuthorCommonCommand):
         self,
         template_dir: pathlib.Path,
         instance_dir: pathlib.Path,
-        governed_heading: str,
         validate_header: bool,
-        validate_only_header: bool
+        validate_only_header: bool,
+        governed_heading: str
     ) -> bool:
 
         r_instance_files: List[pathlib.Path] = []
@@ -177,11 +177,9 @@ class Folders(AuthorCommonCommand):
         return True
 
     def create_sample(self) -> int:
-        """Create a sample folder within the task and populate with template content.
+        """
+        Create a sample folder within the task and populate with template content.
 
-        Args:
-            task_name: the task name to generate content for
-            trestle_root: the root of the trestle project.
         Returns:
             Unix return code for running sample as a command.
         """
@@ -194,12 +192,7 @@ class Folders(AuthorCommonCommand):
             shutil.copytree(str(self.template_dir), str(sample_path))
             return 0
 
-    def validate(
-        self,
-        governed_heading: str,
-        validate_header: bool,
-        validate_only_header: bool,
-    ) -> int:
+    def validate(self, validate_header: bool, validate_only_header: bool, governed_heading: str) -> int:
         """Validate task."""
         if not self.task_path.is_dir():
             logger.error(f'Task directory {self.task_path} does not exist. Exiting validate.')
@@ -210,7 +203,7 @@ class Folders(AuthorCommonCommand):
                 if fs.is_symlink(task_instance):
                     continue
                 result = self._measure_template_folder(
-                    self.template_dir, task_instance, governed_heading, validate_header, validate_only_header
+                    self.template_dir, task_instance, validate_header, validate_only_header, governed_heading
                 )
                 if not result:
                     logger.error(
