@@ -204,7 +204,7 @@ class SSP(CommandPlusDocs):
         self._md_file.new_hr()
         self._md_file.new_paragraph()
 
-    def _add_control(
+    def _write_control(
         self,
         dest_path: pathlib.Path,
         control_handle: ControlHandle,
@@ -257,7 +257,10 @@ class SSP(CommandPlusDocs):
         logging.debug(
             f'Generate ssp in {md_path} from catalog {catalog.metadata.title}, profile {profile.metadata.title}'
         )
+        # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
+
+        # build a convenience dictionary to access control handles by name
         control_dict: Dict[str, ControlHandle] = {}
         for group in catalog.groups:
             for control in group.controls:
@@ -270,25 +273,27 @@ class SSP(CommandPlusDocs):
             for include_control in _import.include_controls:
                 control_ids.extend(include_control.with_ids)
 
+        # get list of group id's and associated controls
         needed_group_ids: Set[str] = set()
         needed_controls: List[ControlHandle] = []
-
         for control_id in control_ids:
             control_handle = control_dict[control_id]
             needed_group_ids.add(control_handle.group_id)
             needed_controls.append(control_handle)
 
+        # make the directories for each group
         for group_id in needed_group_ids:
             (md_path / group_id).mkdir(exist_ok=True)
 
-        # now get list of param substitution values
+        # assign values to class members for use when writing out the controls
         self._param_dict = profile.modify.set_parameters
         self._alters = profile.modify.alters
         self._yaml_header = yaml_header
         self._sections = sections
 
+        # write out the controls
         for control_handle in needed_controls:
             out_path = md_path / control_handle.group_id
-            self._add_control(out_path, control_handle)
+            self._write_control(out_path, control_handle)
 
         return 0
