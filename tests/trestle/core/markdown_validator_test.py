@@ -19,6 +19,7 @@ from typing import Any, Dict
 
 import pytest
 
+import trestle.core.const as const
 import trestle.core.err as err
 import trestle.core.markdown_validator as markdown_validator
 
@@ -29,7 +30,7 @@ def test_partition_ast() -> None:
     import pathlib
     import frontmatter
     test_data = pathlib.Path('tests/data/md/test_3_md_hand_edited/decisions_000.md')
-    fm = frontmatter.loads(test_data.open('r').read())
+    fm = frontmatter.loads(test_data.open('r', encoding=const.FILE_ENCODING).read())
     content = fm.content
     mistune_ast_parser = mistune.create_markdown(renderer=mistune.AstRenderer())
     parse = mistune_ast_parser(content)

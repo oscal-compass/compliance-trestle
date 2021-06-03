@@ -13,16 +13,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Trestle md governed-docs sub-command."""
+"""Trestle author docs sub-command."""
 import argparse
 import logging
 import pathlib
 import shutil
 from typing import List
 
+from pkg_resources import resource_filename
+
 import trestle.core.commands.author.consts as author_const
+import trestle.core.draw_io as draw_io
+import trestle.core.markdown_validator as markdown_validator
 import trestle.utils.fs as fs
-from trestle.core import markdown_validator
 from trestle.core.commands.author.common import AuthorCommonCommand
 
 logger = logging.getLogger(__name__)
@@ -92,18 +95,15 @@ class Folders(AuthorCommonCommand):
         elif self.template_dir.is_file():
             logger.error(f'Template path: {self.template_dir} is a file not a directory.')
             return 1
-        template_file_a = self.template_dir / 'a_template.md'
-        template_file_b = self.template_dir / 'another_template.md'
-        template_content = """---\nyaml:header\n---\n# Template header\nThis file is a pro-forma template.\n"""
-        if not template_file_a.is_file():
-            fh = template_file_a.open('w')
-            fh.write(template_content)
-        if not template_file_b.is_file():
-            fh = template_file_b.open('w')
-            fh.write(template_content)
 
-        logger.info(f'Template file setup for task {self.task_name} at {template_file_a} and {template_file_b}')
-        logger.info(f'Task directory is {self.task_path} ')
+        template_file_a_md = self.template_dir / 'a_template.md'
+        template_file_another_md = self.template_dir / 'another_template.md'
+        template_file_drawio = self.template_dir / 'architecture.drawio'
+        md_template = pathlib.Path(resource_filename('trestle.resources', 'template.md')).resolve()
+        drawio_template = pathlib.Path(resource_filename('trestle.resources', 'template.drawio')).resolve()
+        shutil.copy(md_template, template_file_a_md)
+        shutil.copy(md_template, template_file_another_md)
+        shutil.copy(drawio_template, template_file_drawio)
         return 0
 
     def template_validate(self, validate_header: bool, validate_only_header: bool, heading: str) -> int:
@@ -124,6 +124,14 @@ class Folders(AuthorCommonCommand):
                     _ = markdown_validator.MarkdownValidator(
                         template_file, validate_header, validate_only_header, heading
                     )
+                except Exception as ex:
+                    logger.error(
+                        f'Template file {template_file} for task {self.task_name} failed to validate due to {ex}'
+                    )
+                    return 1
+            elif template_file.suffix.lower().lstrip('.') == 'drawio':
+                try:
+                    _ = draw_io.DrawIOMetadataValidator(template_file)
                 except Exception as ex:
                     logger.error(
                         f'Template file {template_file} for task {self.task_name} failed to validate due to {ex}'
@@ -151,6 +159,7 @@ class Folders(AuthorCommonCommand):
         for template_file in template_dir.rglob('*'):
             r_template_path = template_file.relative_to(template_dir)
             # find example directories
+            clean_suffix = template_file.suffix.lstrip('.')
             if not fs.local_and_visible(template_file):
                 continue
             elif template_file.is_dir():
@@ -158,22 +167,29 @@ class Folders(AuthorCommonCommand):
                 if r_template_path not in r_instance_files:
                     logger.error(f'Directory {r_template_path} does not exist in instance {instance_dir}')
                     return False
-            elif template_file.suffix == '.md':
+            elif clean_suffix in author_const.reference_templates:
                 if r_template_path not in r_instance_files:
                     logger.error(
                         f'Required template file {template_file} does not exist in measured instance {instance_dir}'
                     )
                     return False
                 else:
-                    # Measure
-                    md_validator = markdown_validator.MarkdownValidator(
-                        template_file, validate_header, validate_only_header, governed_heading
-                    )
-                    full_path = instance_dir / r_template_path
-                    status = md_validator.validate(full_path)
-                    if not status:
-                        logger.error(f'Markdown file {full_path} failed validation.')
-                        return False
+                    if clean_suffix == 'md':
+                        # Measure
+                        md_validator = markdown_validator.MarkdownValidator(
+                            template_file, validate_header, validate_only_header, governed_heading
+                        )
+                        full_path = instance_dir / r_template_path
+                        status = md_validator.validate(full_path)
+                        if not status:
+                            logger.error(f'Markdown file {full_path} failed validation against {template_file}')
+                            return False
+                    elif clean_suffix == 'drawio':
+                        drawio_validator = draw_io.DrawIOMetadataValidator(template_file)
+                        status = drawio_validator.validate(full_path)
+                        if not status:
+                            logger.error(f'Drawio file {full_path} failed validation against {template_file}')
+                            return False
         return True
 
     def create_sample(self) -> int:

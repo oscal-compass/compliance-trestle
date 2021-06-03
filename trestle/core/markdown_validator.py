@@ -196,7 +196,7 @@ class MarkdownValidator:
 
         """
         try:
-            content = path.open('r').read()
+            content = path.open('r', encoding=const.FILE_ENCODING).read()
         except UnicodeDecodeError as e:
             logger.error('utf-8 decoding failed.')
             logger.error(f'See: {const.WEBSITE_ROOT}/errors/#utf-8-encoding-only')

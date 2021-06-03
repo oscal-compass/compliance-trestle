@@ -42,7 +42,7 @@ def test_create_cmd(tmp_trestle_dir: pathlib.Path) -> None:
             rc = Trestle().run()
             assert rc == 0
         model_file = tmp_trestle_dir / const.MODEL_TYPE_TO_MODEL_DIR[subcommand] / name_stem / f'{subcommand}.json'
-        with open(model_file, 'r') as fp:
+        with open(model_file, 'r', encoding=const.FILE_ENCODING) as fp:
             model = json.load(fp)
         assert name_stem in model[subcommand]['metadata']['title']
 

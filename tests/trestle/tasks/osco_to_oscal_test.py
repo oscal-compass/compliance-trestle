@@ -20,6 +20,7 @@ import pathlib
 import uuid
 from unittest.mock import Mock, patch
 
+import trestle.core.const as const
 import trestle.tasks.osco_to_oscal as osco_to_oscal
 import trestle.transforms.implementations.osco as osco
 from trestle.tasks.base_task import TaskOutcome
@@ -139,7 +140,7 @@ def test_osco_execute(tmpdir):
     assert len(os.listdir(str(tmpdir))) == 1
     f_expected = pathlib.Path('tests/data/tasks/osco/output/') / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
     f_produced = tmpdir  / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    assert [row for row in open(f_produced)] == [row for row in open(f_expected)]
+    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
 def test_osco_execute_compressed(tmpdir):
@@ -156,7 +157,7 @@ def test_osco_execute_compressed(tmpdir):
     assert len(os.listdir(str(tmpdir))) == 1
     f_expected = pathlib.Path('tests/data/tasks/osco/output-compressed/') / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
     f_produced = tmpdir  / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    assert [row for row in open(f_produced)] == [row for row in open(f_expected)]
+    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
     
 def test_osco_execute_no_config(tmpdir):
     """Test execute no config call."""
@@ -171,7 +172,7 @@ def xtest_osco_execute_no_overwrite(tmpdir):
     execute_no_overwrite_part2(tmpdir)
     f_expected = pathlib.Path('tests/data/tasks/osco/output/') / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
     f_produced = tmpdir  / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    assert [row for row in open(f_produced)] == [row for row in open(f_expected)]
+    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
     
 @patch(target='uuid.uuid4', new=uuid_mock1)
 def execute_no_overwrite_part1(tmpdir):
@@ -253,4 +254,4 @@ def test_osco_execute_input_fetcher(tmpdir):
     for fn in list_dir:
         f_expected = opth / fn
         f_produced = tmpdir  / fn
-        assert [row for row in open(f_produced)] == [row for row in open(f_expected)]
+        assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]

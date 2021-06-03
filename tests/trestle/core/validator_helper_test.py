@@ -18,6 +18,7 @@
 import pathlib
 from uuid import uuid4
 
+import trestle.core.const as const
 import trestle.core.validator_helper as validator_helper
 import trestle.oscal.catalog as catalog
 # import trestle.oscal.ssp as ssp  # noqa: E800
@@ -49,7 +50,7 @@ def test_has_no_duplicate_values_generic() -> None:
     assert not validator_helper.has_no_duplicate_values_by_name(bad_target, 'uuid')
 
     # test duplicates with raw yaml target, non-pydantic
-    read_file = bad_target_path.open('r', encoding='utf8')
+    read_file = bad_target_path.open('r', encoding=const.FILE_ENCODING)
     bad_target_yaml = yaml.load(read_file, Loader=yaml.Loader)
     assert not validator_helper.has_no_duplicate_values_generic(bad_target_yaml, 'uuid')
 

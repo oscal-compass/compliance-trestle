@@ -32,7 +32,7 @@ import yaml
 
 def update_mkdocs_meta(path: pathlib.Path, module_list: List[Any]) -> None:
     """Update the mkdocs.yml structure file to represent the latest trestle modules."""
-    yaml_structure = yaml.load(path.open('r'), yaml.FullLoader)
+    yaml_structure = yaml.load(path.open('r', encoding='utf8'), yaml.FullLoader)
     nav = yaml_structure['nav']
     for index in range(len(nav)):
         if 'Reference' in nav[index].keys():
@@ -41,13 +41,13 @@ def update_mkdocs_meta(path: pathlib.Path, module_list: List[Any]) -> None:
             nav[index]['Reference'].append({'trestle API reference': module_list})
 
     yaml_structure['nav'] = nav
-    yaml.dump(yaml_structure, path.open('w'))
+    yaml.dump(yaml_structure, path.open('w', encoding='utf8'))
 
 
 def write_module_doc_metafile(dump_location: pathlib.Path, module_name: str) -> None:
     """Create a markdown file which allows mkdocstrings to index an individual module."""
     write_file = dump_location / (module_name + '.md')
-    fh = write_file.open('w')
+    fh = write_file.open('w', encoding='utf8')
     fh.write(f'::: {module_name}\n')
     fh.write('handler: python\n')
     fh.close()
@@ -74,8 +74,8 @@ def create_module_markdowns(base_path: pathlib.Path, base_module: str, dump_loca
 def md_txt(original: pathlib.Path, md_ed_license: pathlib.Path):
     """Convert the apache license into a markdown file by wrapping the content in a text escape block."""
     assert original.exists()
-    orig_data = original.open('r').read()
-    md_fh = md_ed_license.open('w')
+    orig_data = original.open('r', encoding='utf8').read()
+    md_fh = md_ed_license.open('w', encoding='utf8')
     md_fh.write('```text\n')
     md_fh.write(orig_data)
     md_fh.write('\n```\n')

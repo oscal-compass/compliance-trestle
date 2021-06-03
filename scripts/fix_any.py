@@ -265,7 +265,7 @@ def fix_file(fname):
 
     # Find Any's and replace with appropriate singular class
     # Otherwise accumulate all class dependencies for reordering with no forward refs
-    with open(fname, 'r') as infile:
+    with open(fname, 'r', encoding='utf8') as infile:
         for r in infile.readlines():
             if r.find('.update_forward_refs()') >= 0:
                 forward_refs.append(r)
@@ -299,7 +299,7 @@ def fix_file(fname):
     reordered_classes, forward_refs = reorder(sorted_classes)
 
     # write the classes out in the fixed order
-    with open(fname, 'w') as out_file:
+    with open(fname, 'w', encoding='utf8') as out_file:
         out_file.write('# modified by fix_any.py\n')
         out_file.write(license_header)
         out_file.writelines('\n'.join(header) + '\n')

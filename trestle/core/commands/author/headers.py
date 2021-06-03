@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Trestle md governed-docs sub-command."""
+"""Trestle author headers command."""
 import argparse
 import logging
 import pathlib

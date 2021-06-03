@@ -74,7 +74,7 @@ def test_load_default_config(tmp_trestle_dir: pathlib.Path) -> None:
     config_object.add_section(section_name)
     config_object[section_name]['execute_status'] = 'True'
     config_object[section_name]['simulate_status'] = 'True'
-    config_object.write(config_path.open('w'))
+    config_object.write(config_path.open('w', encoding=const.FILE_ENCODING))
     # Now good.
 
     # should print info.
@@ -97,7 +97,7 @@ def test_load_custom_config(tmp_trestle_dir: pathlib.Path) -> None:
     config_object.add_section(section_name)
     config_object[section_name]['execute_status'] = 'True'
     config_object[section_name]['simulate_status'] = 'True'
-    config_object.write(config_path.open('w'))
+    config_object.write(config_path.open('w', encoding=const.FILE_ENCODING))
 
     args = argparse.Namespace(
         name='task', list=False, verbose=1, task='pass-fail', config='config_file.json', info=True
@@ -122,7 +122,7 @@ def test_task_cmd_not_trestle_dir(tmp_empty_cwd: pathlib.Path) -> None:
     config_object.add_section(section_name)
     config_object[section_name]['execute_status'] = 'True'
     config_object[section_name]['simulate_status'] = 'True'
-    config_object.write(config_path.open('w'))
+    config_object.write(config_path.open('w', encoding=const.FILE_ENCODING))
 
     args = argparse.Namespace(
         name='task', list=False, verbose=1, task='pass-fail', config='config_file.json', info=True
@@ -149,7 +149,7 @@ def test_pass_fail_respect_config(tmp_trestle_dir: pathlib.Path) -> None:
     config_object.add_section(section_name)
     config_object[section_name]['execute_status'] = 'False'
     config_object[section_name]['simulate_status'] = 'True'
-    config_object.write(config_path.open('w'))
+    config_object.write(config_path.open('w', encoding=const.FILE_ENCODING))
     # Now good.
 
     args = argparse.Namespace(name='task', list=False, verbose=1, task='pass-fail', config=None, info=False)
@@ -158,7 +158,7 @@ def test_pass_fail_respect_config(tmp_trestle_dir: pathlib.Path) -> None:
 
     config_object['task.pass-fail']['execute_status'] = 'True'
     config_object['task.pass-fail']['simulate_status'] = 'False'
-    config_object.write(config_path.open('w'))
+    config_object.write(config_path.open('w', encoding=const.FILE_ENCODING))
     args = argparse.Namespace(name='task', list=False, verbose=1, task='pass-fail', config=None, info=False)
     rc = taskcmd.TaskCmd()._run(args)
     assert rc > 0
@@ -182,7 +182,7 @@ def test_trestle_fail_on_task_exception(tmp_trestle_dir: pathlib.Path) -> None:
     config_object.add_section(section_name)
     config_object[section_name]['execute_status'] = 'True'
     config_object[section_name]['simulate_status'] = 'True'
-    config_object.write(config_path.open('w'))
+    config_object.write(config_path.open('w', encoding=const.FILE_ENCODING))
     # Now good.
     with mock.patch('trestle.tasks.base_task.PassFail.execute') as simulate_mock:
         simulate_mock.side_effect = err.TrestleError('stuff')

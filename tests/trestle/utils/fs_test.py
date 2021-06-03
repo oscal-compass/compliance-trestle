@@ -22,7 +22,7 @@ import pytest
 
 from tests import test_utils
 
-from trestle.core.const import IDX_SEP
+import trestle.core.const as const
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog
@@ -180,7 +180,7 @@ def test_clean_project_sub_path(tmp_path: pathlib.Path, rand_str: str) -> None:
     assert not sub_data_dir_file.exists()
 
     # create the file again
-    with open(sub_data_dir_file, 'w+'):
+    with open(sub_data_dir_file, 'w+', encoding=const.FILE_ENCODING):
         pass
 
     # clean the sub_path in the trestle project
@@ -198,7 +198,7 @@ def test_load_file(tmp_path: pathlib.Path) -> None:
 
     try:
         sample_file_path = tmp_path.joinpath('sample.txt')
-        with open(sample_file_path, 'w'):
+        with open(sample_file_path, 'w', encoding=const.FILE_ENCODING):
             fs.load_file(sample_file_path)
     except TrestleError:
         pass
@@ -223,7 +223,7 @@ def test_get_contextual_model_type(tmp_path: pathlib.Path) -> None:
     rps_dir = metadata_dir / 'responsible-parties'
     props_dir = metadata_dir / 'props'
     groups_dir = catalog_dir / 'groups'
-    group_dir = groups_dir / f'00000{IDX_SEP}group'
+    group_dir = groups_dir / f'00000{const.IDX_SEP}group'
     controls_dir = group_dir / 'controls'
 
     with mock.patch('trestle.utils.fs.get_project_model_path') as get_project_model_path_mock:
@@ -255,14 +255,14 @@ def test_get_contextual_model_type(tmp_path: pathlib.Path) -> None:
     assert cutils.get_origin(type_) == list
     assert cutils.get_inner_type(type_) == catalog.Property
     assert element == 'catalog.metadata.props'
-    (expected_type, expected_json_path) = fs.get_contextual_model_type(props_dir / f'00000{IDX_SEP}property.json')
+    (expected_type, expected_json_path) = fs.get_contextual_model_type(props_dir / f'00000{const.IDX_SEP}property.json')
     assert expected_type == catalog.Property
     assert expected_json_path == 'catalog.metadata.props.property'
     assert cutils.get_origin(type_) == list
-    assert fs.get_contextual_model_type(groups_dir / f'00000{IDX_SEP}group.json'
+    assert fs.get_contextual_model_type(groups_dir / f'00000{const.IDX_SEP}group.json'
                                         ) == (catalog.Group, 'catalog.groups.group')
     assert fs.get_contextual_model_type(group_dir) == (catalog.Group, 'catalog.groups.group')
-    assert fs.get_contextual_model_type(controls_dir / f'00000{IDX_SEP}control.json'
+    assert fs.get_contextual_model_type(controls_dir / f'00000{const.IDX_SEP}control.json'
                                         ) == (catalog.Control, 'catalog.groups.group.controls.control')
 
 
@@ -276,7 +276,7 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path) -> None:
         mycatalog_dir / 'catalog' / 'metadata' / 'roles',
         mycatalog_dir / 'catalog' / 'metadata' / 'responsible-parties',
         mycatalog_dir / 'catalog' / 'metadata' / 'props',
-        mycatalog_dir / 'catalog' / 'groups' / f'00000{IDX_SEP}group' / 'controls'
+        mycatalog_dir / 'catalog' / 'groups' / f'00000{const.IDX_SEP}group' / 'controls'
     ]
 
     for directory in directories:
@@ -286,11 +286,13 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path) -> None:
         mycatalog_dir / 'catalog.json',
         mycatalog_dir / 'catalog' / 'back-matter.json',
         mycatalog_dir / 'catalog' / 'metadata.json',
-        mycatalog_dir / 'catalog' / 'metadata' / 'roles' / f'00000{IDX_SEP}role.json',
-        mycatalog_dir / 'catalog' / 'metadata' / 'responsible-parties' / f'creator{IDX_SEP}responsible-party.json',
-        mycatalog_dir / 'catalog' / 'metadata' / 'props' / f'00000{IDX_SEP}property.json',
-        mycatalog_dir / 'catalog' / 'groups' / f'00000{IDX_SEP}group.json',
-        mycatalog_dir / 'catalog' / 'groups' / f'00000{IDX_SEP}group' / 'controls' / f'00000{IDX_SEP}control.json',
+        mycatalog_dir / 'catalog' / 'metadata' / 'roles' / f'00000{const.IDX_SEP}role.json',
+        mycatalog_dir / 'catalog' / 'metadata' / 'responsible-parties'
+        / f'creator{const.IDX_SEP}responsible-party.json',
+        mycatalog_dir / 'catalog' / 'metadata' / 'props' / f'00000{const.IDX_SEP}property.json',
+        mycatalog_dir / 'catalog' / 'groups' / f'00000{const.IDX_SEP}group.json',
+        mycatalog_dir / 'catalog' / 'groups' / f'00000{const.IDX_SEP}group' / 'controls'
+        / f'00000{const.IDX_SEP}control.json',
     ]
 
     for file in files:
@@ -307,9 +309,9 @@ def test_extract_alias() -> None:
     assert fs.extract_alias(pathlib.Path('responsible-parties.json')) == 'responsible-parties'
     assert fs.extract_alias(pathlib.Path('/roles')) == 'roles'
     assert fs.extract_alias(pathlib.Path('/roles/roles.json')) == 'roles'
-    assert fs.extract_alias(pathlib.Path(f'/roles/00000{IDX_SEP}role.json')) == 'role'
+    assert fs.extract_alias(pathlib.Path(f'/roles/00000{const.IDX_SEP}role.json')) == 'role'
     assert fs.extract_alias(
-        pathlib.Path(f'/metadata/responsible-parties/creator{IDX_SEP}responsible-party.json')
+        pathlib.Path(f'/metadata/responsible-parties/creator{const.IDX_SEP}responsible-party.json')
     ) == 'responsible-party'
 
 
@@ -385,11 +387,11 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
         assert 'groups' in alias_to_field_map
         assert 'controls' not in alias_to_field_map
 
-    stripped_catalog = fs.get_stripped_contextual_model(groups_dir / f'00000{IDX_SEP}group')
+    stripped_catalog = fs.get_stripped_contextual_model(groups_dir / f'00000{const.IDX_SEP}group')
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_group()
 
-    stripped_catalog = fs.get_stripped_contextual_model(groups_dir / f'00000{IDX_SEP}group.json')
+    stripped_catalog = fs.get_stripped_contextual_model(groups_dir / f'00000{const.IDX_SEP}group.json')
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_group()
 
@@ -441,7 +443,7 @@ def test_contextual_get_singular_alias(tmp_path: pathlib.Path, keep_cwd: pathlib
     catalog_dir = mycatalog_dir / 'catalog'
     metadata_dir = catalog_dir / 'metadata'
     groups_dir = catalog_dir / 'groups'
-    group_dir = groups_dir / f'00000{IDX_SEP}group'
+    group_dir = groups_dir / f'00000{const.IDX_SEP}group'
 
     os.chdir(mycatalog_dir)
     assert 'responsible-party' == fs.get_singular_alias(
