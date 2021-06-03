@@ -35,7 +35,7 @@ def test_ssp_generator(tmp_trestle_dir: pathlib.Path):
     assert i._run(args) == 0
     args = argparse.Namespace(file=str(prof_path), output=prof_name, verbose=True, regenerate=True)
     assert i._run(args) == 0
-    sections = 'ImplGuidance:Implicit Guidance,ExpectedEvidence:Expected Evidence'
+    sections = 'ImplGuidance:Implicit Guidance,ExpectedEvidence'
     args = argparse.Namespace(
         file=cat_name, profile=prof_name, output=ssp_name, verbose=True, sections=sections, yaml_header=str(yaml_path)
     )

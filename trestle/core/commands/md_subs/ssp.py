@@ -46,6 +46,15 @@ class SSP(CommandPlusDocs):
 
     name = 'ssp'
 
+    def __init__(self, parser=None, parent=None, name=None, out=None, err=None):
+        """Initialize the class."""
+        super().__init__(parser, parent, name, out, err)
+        self._param_dict: Dict[str, str] = None
+        self._md_file: MDWriter = None
+        self._alters: List[prof.Alter] = None
+        self._yaml_header: dict = None
+        self._sections: Dict[str, str] = None
+
     def _init_arguments(self) -> None:
         cat_help_str = 'Name of the catalog file'
         self.add_argument('-f', '--file', help=cat_help_str, required=True, type=str)
@@ -65,11 +74,6 @@ class SSP(CommandPlusDocs):
         trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
         if not trestle_root:
             logger.warning(f'Current working directory {pathlib.Path.cwd()} is not with a trestle project.')
-            return 1
-        if not fs.allowed_task_name(args.output):
-            logger.warning(
-                f'Task name {args.output} is invalid as it interferes with OSCAL and trestle reserved names.'
-            )
             return 1
         _, _, catalog = load_distributed(pathlib.Path(f'catalogs/{args.file}/catalog.json'))
         _, _, profile = load_distributed(pathlib.Path(f'profiles/{args.profile}/profile.json'))
@@ -115,48 +119,30 @@ class SSP(CommandPlusDocs):
                     return prop.value.strip()
         return ''
 
-    def _get_part(
-        self, md_file: MDWriter, control: cat.Control, part: cat.Part, param_dict: Dict[str, prof.SetParameter]
-    ):
+    def _get_part(self, control: cat.Control, part: cat.Part) -> None:
         items = []
         if part.prose is not None:
-            fixed_prose = self._replace_params(part.prose, control, param_dict)
+            fixed_prose = self._replace_params(part.prose, control, self._param_dict)
             label = self._get_label(part)
             pad = '' if label == '' else ' '
             items.append(f'{label}{pad}{fixed_prose}')
         if part.parts is not None:
             sub_list = []
             for prt in part.parts:
-                sub_list.extend(self._get_part(md_file, control, prt, param_dict))
+                sub_list.extend(self._get_part(control, prt))
             sub_list.append('')
             items.append(sub_list)
         return items
 
-    def _add_parts(self, md_file: MDWriter, control: cat.Control, param_dict: Dict[str, prof.SetParameter]):
+    def _add_parts(self, control: cat.Control) -> None:
         items = []
         for part in control.parts:
             if part.name == 'statement':
-                items.append(self._get_part(md_file, control, part, param_dict))
+                items.append(self._get_part(control, part))
         # unwrap the list if it is many levels deep
         while not isinstance(items, str) and len(items) == 1:
             items = items[0]
-        md_file.new_list(items)
-
-    def _get_named_prose_from_part(self, part: cat.Part, name: str) -> str:
-        if part.name == name:
-            return part.prose
-        if part.parts is not None:
-            for prt in part.parts:
-                prose = self._get_named_prose_from_part(prt, name)
-                if prose is not None:
-                    return prose.strip()
-        return None
-
-    def _get_named_prose(self, parts: List[cat.Part], name: str) -> str:
-        for part in parts:
-            prose = self._get_named_prose_from_part(part, name)
-            if prose is not None:
-                return prose.strip()
+        self._md_file.new_list(items)
 
     def _add_controls(self, control_handle: ControlHandle,
                       control_dict: Dict[str, ControlHandle]) -> Dict[str, ControlHandle]:
@@ -169,21 +155,20 @@ class SSP(CommandPlusDocs):
                 control_dict = self._add_controls(control_handle, control_dict)
         return control_dict
 
-    def _add_yaml_header(self, md_file: MDWriter, yaml_header: dict) -> None:
-        md_file.add_yaml_header(yaml_header)
+    def _add_yaml_header(self) -> None:
+        self._md_file.add_yaml_header(self._yaml_header)
 
-    def _add_control_description(
-        self, md_file: MDWriter, control: cat.Control, group_title: str, param_dict: Dict[str, prof.SetParameter]
-    ) -> None:
-        md_file.new_paragraph()
-        md_file.new_header(level=1, title=f'{control.id} - {group_title} {control.title}')
-        md_file.new_header(level=2, title='Control Description')
-        md_file.set_indent_level(-2)
-        self._add_parts(md_file, control, param_dict)
-        md_file.set_indent_level(0)
+    def _add_control_description(self, control_handle: ControlHandle) -> None:
+        self._md_file.new_paragraph()
+        title = f'{control_handle.control.id} - {control_handle.group_title} {control_handle.control.title}'
+        self._md_file.new_header(level=1, title=title)
+        self._md_file.new_header(level=2, title='Control Description')
+        self._md_file.set_indent_level(-2)
+        self._add_parts(control_handle.control)
+        self._md_file.set_indent_level(0)
 
-    def _get_control_section(self, control: cat.Control, section: str, alters: List[prof.Alter]) -> None:
-        for alter in alters:
+    def _get_control_section(self, control: cat.Control, section: str) -> None:
+        for alter in self._alters:
             if alter.control_id == control.id:
                 if alter.adds is not None:
                     for add in alter.adds:
@@ -193,58 +178,51 @@ class SSP(CommandPlusDocs):
                                     return part.prose
         return None
 
-    def _add_control_section(
-        self, md_file: MDWriter, control: cat.Control, section_tuple: str, alters: List[prof.Alter]
-    ) -> None:
-        prose = self._get_control_section(control, section_tuple[0], alters)
+    def _add_control_section(self, control: cat.Control, section_tuple: str) -> None:
+        prose = self._get_control_section(control, section_tuple[0])
         if prose is not None:
-            md_file.new_paragraph()
-            md_file.new_header(level=2, title=f'{control.id} Section {section_tuple[1]}')
-            md_file.new_paragraph()
-            md_file.new_line(prose)
-            md_file.new_paragraph()
+            self._md_file.new_paragraph()
+            self._md_file.new_header(level=2, title=f'{control.id} Section {section_tuple[1]}')
+            self._md_file.new_paragraph()
+            self._md_file.new_line(prose)
+            self._md_file.new_paragraph()
 
-    def _add_response(self, md_file: MDWriter, control: cat.Control) -> None:
-        md_file.new_paragraph()
-        md_file.new_header(level=2, title=f'{control.id} What is the solution and how is it implemented?')
+    def _add_response(self, control: cat.Control) -> None:
+        self._md_file.new_paragraph()
+        self._md_file.new_header(level=2, title=f'{control.id} What is the solution and how is it implemented?')
 
         for part in control.parts:
             if part.parts is not None:
                 if part.name == 'statement':
                     for prt in part.parts:
-                        md_file.new_paragraph()
-                        md_file.new_hr()
-                        md_file.new_header(level=3, title=f'Part {self._get_label(prt)}')
-                        md_file.new_paragraph()
-                        md_file.new_line('Add control implementation description here.')
-                        md_file.new_paragraph()
-        md_file.new_hr()
-        md_file.new_paragraph()
+                        self._md_file.new_paragraph()
+                        self._md_file.new_hr()
+                        self._md_file.new_header(level=3, title=f'Part {self._get_label(prt)}')
+                        self._md_file.new_paragraph()
+                        self._md_file.new_line('Add control implementation description here.')
+                        self._md_file.new_paragraph()
+        self._md_file.new_hr()
+        self._md_file.new_paragraph()
 
     def _add_control(
         self,
         dest_path: pathlib.Path,
-        control: cat.Control,
-        group_title: str,
-        param_dict: Dict[str, prof.SetParameter],
-        sections: Union[List[str], None],
-        alters: List[prof.Alter],
-        yaml_header: dict
+        control_handle: ControlHandle,
     ) -> None:
-        control_file = dest_path / (control.id + '.md')
-        md_file = MDWriter(control_file)
+        control_file = dest_path / (control_handle.control.id + '.md')
+        self._md_file = MDWriter(control_file)
 
-        self._add_yaml_header(md_file, yaml_header)
+        self._add_yaml_header()
 
-        self._add_control_description(md_file, control, group_title, param_dict)
+        self._add_control_description(control_handle)
 
-        self._add_response(md_file, control)
+        self._add_response(control_handle.control)
 
-        if sections is not None:
-            for section_tuple in sections.items():
-                self._add_control_section(md_file, control, section_tuple, alters)
+        if self._sections is not None:
+            for section_tuple in self._sections.items():
+                self._add_control_section(control_handle.control, section_tuple)
 
-        md_file.write_out()
+        self._md_file.write_out()
 
     def generate_ssp(
         self,
@@ -304,13 +282,13 @@ class SSP(CommandPlusDocs):
             (md_path / group_id).mkdir(exist_ok=True)
 
         # now get list of param substitution values
-        param_dict = profile.modify.set_parameters
+        self._param_dict = profile.modify.set_parameters
+        self._alters = profile.modify.alters
+        self._yaml_header = yaml_header
+        self._sections = sections
 
         for control_handle in needed_controls:
             out_path = md_path / control_handle.group_id
-            alters = profile.modify.alters
-            self._add_control(
-                out_path, control_handle.control, control_handle.group_title, param_dict, sections, alters, yaml_header
-            )
+            self._add_control(out_path, control_handle)
 
         return 0
