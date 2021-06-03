@@ -11,10 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Create formatted markdown files."""
+"""Create formatted markdown files with optional yaml header."""
 
+import logging
 import pathlib
 from typing import Any, List
+
+from trestle.core.err import TrestleError
+
+import yaml
+
+logger = logging.getLogger(__name__)
 
 
 class MDWriter():
@@ -26,6 +33,7 @@ class MDWriter():
         self._lines = []
         self._indent_level = 0
         self._indent_size = 2
+        self._yaml_header = None
 
     def _current_indent_space(self):
         if self._indent_level <= 0:
@@ -37,6 +45,10 @@ class MDWriter():
 
     def _add_indent_level(self, delta: int) -> None:
         self._indent_level += delta
+
+    def add_yaml_header(self, header: dict) -> None:
+        """Add the yaml header."""
+        self._yaml_header = header
 
     def set_indent_level(self, level: int) -> None:
         """Set the current indent level."""
@@ -65,8 +77,6 @@ class MDWriter():
     def new_list(self, list_: List[Any], show=True) -> None:
         """Add a list to the markdown."""
         # if string just write it out
-        while (not isinstance(list_, str)) and (len(list_) == 1):
-            list_ = list_[0]
         if isinstance(list_, str):
             self.new_line(list_)
         # it is a list with more than one item
@@ -79,5 +89,16 @@ class MDWriter():
 
     def write_out(self) -> None:
         """Write out the markdown file."""
-        with open(self._file_path, 'w', encoding='utf-8') as f:
-            f.write('\n'.join(self._lines))
+        try:
+            with open(self._file_path, 'w', encoding='utf-8') as f:
+                # Make sure yaml header is written first
+                if self._yaml_header is not None:
+                    f.write('---\n')
+                    header_str = yaml.dump(self._yaml_header, default_flow_style=False)
+                    f.write(header_str)
+                    f.write('---\n\n')
+
+                f.write('\n'.join(self._lines))
+        except IOError as e:
+            logger.debug(f'md_writer error attempting to write out md file {self._file_path} {e}')
+            raise TrestleError(f'Error attempting to write out md file {self._file_path} {e}')
