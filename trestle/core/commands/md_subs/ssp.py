@@ -178,7 +178,7 @@ class SSP(CommandPlusDocs):
         md_file.new_paragraph()
         md_file.new_header(level=1, title=f'{control.id} - {group_title} {control.title}')
         md_file.new_header(level=2, title='Control Description')
-        md_file.set_indent_level(-1)
+        md_file.set_indent_level(-2)
         self._add_parts(md_file, control, param_dict)
         md_file.set_indent_level(0)
 
@@ -254,7 +254,28 @@ class SSP(CommandPlusDocs):
         sections: Union[Dict[str, str], None],
         yaml_header: dict
     ) -> int:
-        """Generate ssp from catalog and profile."""
+        """
+        Generate a partial ssp in markdown format from catalog, profile and yaml header.
+
+        The catalog contains a list of controls and the profile selects a subset of them
+        in groups.  The profile also specifies parameters for the controls.  The result
+        is a directory of markdown files, one for each control in the profile.  Each control
+        has the yaml header at the top.
+
+        Args:
+            catalog: An OSCAL catalog
+            profile: An OSCAL profile
+            md_path: The directory into which the markdown controls are written
+            sections: A comma separated list of id:alias separated by colon to specify optional
+                additional sections to be written out.  The id corresponds to the name found
+                in the profile parts for the corresponding section, and the alias is the nicer
+                version to be printed out in the section header of the markdown.
+            yaml_header: The dictionary corresponding to the desired contents of the yaml header at the
+                top of each markdown file.
+        Returns:
+            0 on success, 1 otherwise
+
+        """
         logging.debug(
             f'Generate ssp in {md_path} from catalog {catalog.metadata.title}, profile {profile.metadata.title}'
         )
