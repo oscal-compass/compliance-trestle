@@ -71,7 +71,8 @@ def test_valid_drawio(file_path: pathlib.Path, metadata_exists: bool, metadata_v
     'bad_file_name',
     [
         (pathlib.Path('tests/data/drawio/single_tab_no_metadata_uncompressed_mangled.drawio')),
-        (pathlib.Path('tests/data/drawio/not_mxfile.drawio'))
+        (pathlib.Path('tests/data/drawio/not_mxfile.drawio')),
+        (pathlib.Path('tests/data/drawio/single_tab_no_metadata_bad_internal_structure.drawio'))
     ]
 )
 def test_bad_drawio_files(bad_file_name: pathlib.Path) -> None:
@@ -106,6 +107,12 @@ def test_bad_drawio_files(bad_file_name: pathlib.Path) -> None:
             pathlib.Path('tests/data/drawio/two_tabs_metadata_second_tab_compressed.drawio'),
             False,
             True
+        ),
+        (
+            pathlib.Path('tests/data/drawio/single_tab_metadata_compressed.drawio'),
+            pathlib.Path('tests/data/drawio/two_tabs_metadata_second_tab_bad_md.drawio'),
+            False,
+            False
         )
     ]
 )
