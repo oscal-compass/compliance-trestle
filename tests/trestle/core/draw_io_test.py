@@ -20,7 +20,7 @@ from uuid import uuid4
 
 import pytest
 
-from trestle.core.draw_io import DrawIO
+from trestle.core.draw_io import DrawIO, DrawIOMetadataValidator
 from trestle.core.err import TrestleError
 from trestle.core.markdown_validator import MarkdownValidator
 
@@ -78,3 +78,41 @@ def test_bad_drawio_files(bad_file_name: pathlib.Path) -> None:
     """This tests that exceptions are properly thrown on bad drawio files."""
     with pytest.raises(TrestleError):
         _ = DrawIO(bad_file_name)
+
+
+@pytest.mark.parametrize(
+    'template_file, sample_file, must_be_first_tab, metadata_valid',
+    [
+        (
+            pathlib.Path('tests/data/drawio/single_tab_metadata_compressed.drawio'),
+            pathlib.Path('tests/data/drawio/single_tab_metadata_compressed.drawio'),
+            True,
+            True
+        ),
+        (
+            pathlib.Path('tests/data/drawio/single_tab_metadata_compressed.drawio'),
+            pathlib.Path('tests/data/drawio/two_tabs_metadata_compressed.drawio'),
+            True,
+            True
+        ),
+        (
+            pathlib.Path('tests/data/drawio/single_tab_metadata_compressed.drawio'),
+            pathlib.Path('tests/data/drawio/two_tabs_metadata_second_tab_compressed.drawio'),
+            True,
+            False
+        ),
+        (
+            pathlib.Path('tests/data/drawio/single_tab_metadata_compressed.drawio'),
+            pathlib.Path('tests/data/drawio/two_tabs_metadata_second_tab_compressed.drawio'),
+            False,
+            True
+        )
+    ]
+)
+def test_valid_drawio_second_tab(
+    template_file: pathlib.Path, sample_file: pathlib.Path, must_be_first_tab: bool, metadata_valid: bool
+) -> None:
+    """Run various scenarios with a valid drawio and various metadata status."""
+    draw_io = DrawIOMetadataValidator(template_file, must_be_first_tab)
+    status = draw_io.validate(sample_file)
+    assert metadata_valid == status
