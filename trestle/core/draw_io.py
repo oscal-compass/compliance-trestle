@@ -68,7 +68,7 @@ class DrawIO(object):
             elif n_children == 1:
                 self.diagrams.append(list(diagram)[0])
             else:
-                err.TrestleError('Unhandled behaviour in drawio read.')
+                raise err.TrestleError('Unhandled behaviour in drawio read.')
 
     def _uncompress(self, compressed_text: str) -> Element:
         """
