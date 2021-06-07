@@ -109,18 +109,18 @@ class Headers(AuthorCommonCommand):
                 logger.error(f'Unexpected template file {template_file}')
                 logger.error('Exiting')
                 return 1
-        if template_file.suffix == '.md':
-            try:
-                _ = MarkdownValidator(template_file, True, True)
-            except Exception as ex:
-                logger.error(f'Template for task {self.task_name} failed to validate due to {ex}')
-                return 1
-        elif template_file.suffix == '.drawio':
-            try:
-                _ = DrawIOMetadataValidator(template_file)
-            except Exception as ex:
-                logger.error(f'Template for task {self.task_name} failed to validate due to {ex}')
-                return 1
+            if template_file.suffix == '.md':
+                try:
+                    _ = MarkdownValidator(template_file, True, True)
+                except Exception as ex:
+                    logger.error(f'Template for task {self.task_name} failed to validate due to {ex}')
+                    return 1
+            elif template_file.suffix == '.drawio':
+                try:
+                    _ = DrawIOMetadataValidator(template_file)
+                except Exception as ex:
+                    logger.error(f'Template for task {self.task_name} failed to validate due to {ex}')
+                    return 1
         logger.info('Templates validated')
         return 0
 
