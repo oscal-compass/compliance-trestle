@@ -1,0 +1,23 @@
+<mxfile host="65bd71144e" pages="2">
+    <diagram id="tEv97qMIT_xHugQb8GS7" name="Page-2">
+        <mxGraphModel dx="846" dy="999" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="Uolfv5q7BkdtZkpvDDIo-0"/>
+                <mxCell id="Uolfv5q7BkdtZkpvDDIo-1" parent="Uolfv5q7BkdtZkpvDDIo-0"/>
+                <mxCell id="ucdfooQvF2dfUWnlQbfL-0" value="This is a draw io file.&amp;nbsp;&lt;br&gt;It has a single tab.&lt;br&gt;The tab has no metadata." style="rounded=0;whiteSpace=wrap;html=1;" parent="Uolfv5q7BkdtZkpvDDIo-1" vertex="1">
+                    <mxGeometry x="110" y="200" width="440" height="250" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="Ul-z1ypJsJkvYuxd73nE" name="Page-1">
+        <mxGraphModel dx="846" dy="999" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <object label="" test="value" extra="value" id="1" parent="0"/>
+                <mxCell id="j0NCFHiJSFB55uN6TQXV-1" value="This is a draw io file.&amp;nbsp;&lt;br&gt;It has a single tab.&lt;br&gt;The tab has no metadata." style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="200" width="440" height="250" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

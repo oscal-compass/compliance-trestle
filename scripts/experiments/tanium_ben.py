@@ -51,7 +51,7 @@ def read_file(in_file: str):
     file_path = Path(in_file)
     data = []
     count = 0
-    with open(file_path) as fp:
+    with open(file_path, encoding='utf8') as fp:
         for line in fp:
             data.append(line)
             count = count + 1

@@ -36,7 +36,7 @@ if len(sys.argv) < 2:
     exit()
 
 fname = sys.argv[1]
-with open(fname, 'r') as infile:
+with open(fname, 'r', encoding='utf8') as infile:
     for r in infile.readlines():
         if r.find('.update_forward_refs()') >= 0:
             forward_refs.append(r)
@@ -59,7 +59,7 @@ sorted_forwards = sorted(forward_refs)
 
 outname = fname.replace('.py', '_sorted.py')
 
-with open(outname, 'w') as f:
+with open(outname, 'w', encoding='utf8') as f:
     for c in sorted_classes:
         f.writelines('\n'.join(c.lines) + '\n')
     f.writelines(sorted_forwards)

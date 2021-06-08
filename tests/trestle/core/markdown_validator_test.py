@@ -19,6 +19,7 @@ from typing import Any, Dict
 
 import pytest
 
+import trestle.core.const as const
 import trestle.core.err as err
 import trestle.core.markdown_validator as markdown_validator
 
@@ -29,7 +30,7 @@ def test_partition_ast() -> None:
     import pathlib
     import frontmatter
     test_data = pathlib.Path('tests/data/md/test_3_md_hand_edited/decisions_000.md')
-    fm = frontmatter.loads(test_data.open('r').read())
+    fm = frontmatter.loads(test_data.open('r', encoding=const.FILE_ENCODING).read())
     content = fm.content
     mistune_ast_parser = mistune.create_markdown(renderer=mistune.AstRenderer())
     parse = mistune_ast_parser(content)
@@ -222,7 +223,31 @@ def test_bad_file_path(tmp_path: pathlib.Path):
             'hello': 1,
             'world': 2,
             'banana': 3,
-        }, False)
+        }, False),
+        (
+            {
+                'hello': 'A simple element', 'world': {
+                    'required_key': '1', 'another_required_key': '2'
+                }
+            }, {
+                'hello': 'A simple element', 'world': {
+                    'required_key': '1', 'another_required_key': '2'
+                }
+            },
+            True
+        ),
+        (
+            {
+                'hello': 'A simple element', 'world': {
+                    'required_key': '1', 'another_required_key': '2'
+                }
+            }, {
+                'hello': 'A simple element', 'world': {
+                    'required_key': 'there is a missing key',
+                }
+            },
+            False
+        )
     ]
 )
 def test_key_compare(template: Dict[str, Any], candidate: Dict[str, Any], expected_status):

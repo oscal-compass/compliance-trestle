@@ -20,13 +20,14 @@ import pathlib
 
 import pytest
 
+import trestle.core.const as const
 import trestle.oscal.target as ostarget
 
 import yaml
 
 yaml_path = pathlib.Path('tests/data/yaml/')
 json_path = pathlib.Path('tests/data/json/')
-encoding = 'utf8'
+encoding = const.FILE_ENCODING
 loader = yaml.Loader
 
 

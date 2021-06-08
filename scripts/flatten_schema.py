@@ -113,18 +113,18 @@ class FlattenSchema():
 
     def replace_refs(self, schema_file_name, output_file_name):
         """Replace all refs in schema file name and output with refs removed except for cyclic ones."""
-        with open(schema_file_name) as f:
+        with open(schema_file_name, encoding='utf8') as f:
             schema = json.load(f)
 
         flat_schema = self._replace_schema_refs(schema)
 
         tmp_name = output_file_name + '.tmp'
-        with open(tmp_name, 'w') as f:
+        with open(tmp_name, 'w', encoding='utf8') as f:
             json.dump(flat_schema, f, indent=4)
 
         needed_refs = set()
         ref_str = '"$ref": "#/definitions/'
-        with open(tmp_name, 'r') as fin:
+        with open(tmp_name, 'r', encoding='utf8') as fin:
             for line in fin.readlines():
                 nref = line.find(ref_str)
                 if nref >= 0:
@@ -132,7 +132,7 @@ class FlattenSchema():
                     needed_refs.add(new_ref)
 
         out_lines = []
-        with open(tmp_name, 'r') as fin:
+        with open(tmp_name, 'r', encoding='utf8') as fin:
             for line in fin.readlines():
                 skipit = False
                 if line.find('"$id": "#/definitions/') >= 0:
@@ -145,7 +145,7 @@ class FlattenSchema():
                 if not skipit:
                     out_lines.append(line)
 
-        with open(output_file_name, 'w') as fout:
+        with open(output_file_name, 'w', encoding='utf8') as fout:
             fout.writelines(out_lines)
 
         os.remove(tmp_name)

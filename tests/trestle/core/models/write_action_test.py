@@ -19,6 +19,7 @@ import os
 
 from tests import test_utils
 
+import trestle.core.const as const
 from trestle.core.models.actions import WriteAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
@@ -28,7 +29,7 @@ def test_write_action_yaml(tmp_yaml_file, sample_target_def):
     """Test write yaml action."""
     element = Element(sample_target_def, 'target-definition')
 
-    with open(tmp_yaml_file, 'w+') as writer:
+    with open(tmp_yaml_file, 'w+', encoding=const.FILE_ENCODING) as writer:
         wa = WriteAction(writer, element, FileContentType.YAML)
         wa.execute()
         test_utils.verify_file_content(tmp_yaml_file, element.get())
@@ -40,7 +41,7 @@ def test_write_action_json(tmp_json_file, sample_target_def):
     """Test write json action."""
     element = Element(sample_target_def, 'target-definition')
 
-    with open(tmp_json_file, 'w+') as writer:
+    with open(tmp_json_file, 'w+', encoding=const.FILE_ENCODING) as writer:
         wa = WriteAction(writer, element, FileContentType.JSON)
         wa.execute()
         test_utils.verify_file_content(tmp_json_file, element.get())

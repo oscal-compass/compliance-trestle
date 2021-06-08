@@ -28,6 +28,7 @@ import pytest
 from tests import test_utils
 
 import trestle.core.commands.import_ as importcmd
+import trestle.core.const as const
 import trestle.core.err as err
 import trestle.oscal
 from trestle.cli import Trestle
@@ -116,7 +117,7 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path) -> None:
     }
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     dup_file_name = f'{tmp_trestle_dir.parent}/dup-{rand_str}.json'
-    dup_file = pathlib.Path(dup_file_name).open('w+', encoding='utf8')
+    dup_file = pathlib.Path(dup_file_name).open('w+', encoding=const.FILE_ENCODING)
     dup_file.write(json.dumps(dup_cat))
     dup_file.close()
     j = importcmd.ImportCmd()
@@ -194,7 +195,7 @@ def test_import_bad_working_directory(tmp_path: pathlib.Path) -> None:
 
 def test_import_from_inside_trestle_project_is_bad(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for attempting import from a trestle project directory."""
-    sample_file = open('infile.json', 'w+')
+    sample_file = open('infile.json', 'w+', encoding=const.FILE_ENCODING)
     sample_file.write('{}')
     sample_file.close()
     args = argparse.Namespace(file='infile.json', output='catalog', verbose=True)
@@ -218,7 +219,7 @@ def test_import_load_file_failure(tmp_trestle_dir: pathlib.Path) -> None:
     # Create a file with bad json
     sample_data = '"star": {'
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    bad_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding='utf8')
+    bad_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding=const.FILE_ENCODING)
     bad_file.write(sample_data)
     bad_file.close()
     with patch('trestle.utils.fs.load_file') as load_file_mock:
@@ -250,7 +251,7 @@ def test_import_root_key_failure(tmp_trestle_dir: pathlib.Path) -> None:
     """Test root key is not found."""
     sample_data = {'id': '0000', 'title': 'nothing'}
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding='utf8')
+    sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding=const.FILE_ENCODING)
     sample_file.write(json.dumps(sample_data))
     sample_file.close()
     args = argparse.Namespace(file=sample_file.name, output='catalog', verbose=True)
@@ -263,7 +264,7 @@ def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model failures throw errors and exit badly."""
     sample_data = {'id': '0000'}
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding='utf8')
+    sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding=const.FILE_ENCODING)
     sample_file.write(json.dumps(sample_data))
     sample_file.close()
     with patch('trestle.core.parser.parse_file') as parse_file_mock:

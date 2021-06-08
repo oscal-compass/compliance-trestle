@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for trestle md governed-docs subcommand."""
+"""Tests for trestle author docs subcommand."""
 import pathlib
 import shutil
 import sys
@@ -28,18 +28,17 @@ import trestle.cli
 @pytest.mark.parametrize(
     'command_string, return_code',
     [
-        ('trestle md governed-docs setup', 1), ('trestle md governed-docs setup --task-name foobaa', 0),
-        ('trestle md governed-docs setup --task-name catalogs', 1)
+        ('trestle author docs setup', 2), ('trestle author docs setup --task-name foobaa', 0),
+        ('trestle author docs setup --task-name catalogs', 1)
     ]
 )
 def test_governed_docs_high(tmp_trestle_dir: pathlib.Path, command_string: str, return_code: int) -> None:
-    """Simple execution tests of trestle md governed-docs."""
+    """Simple execution tests of trestle author docs."""
     with mock.patch.object(sys, 'argv', command_string.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
-            # FIXME: Needs to be changed once implemented.
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == return_code
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == return_code
 
 
 @pytest.mark.parametrize(
@@ -124,39 +123,36 @@ def test_e2e(
     """Run an E2E workflow with two test criteria for success."""
     # Note testdata_dir must be before tmp_trestle_dir in the argument order.
     recurse_flag = '-r' if recurse else ''
-    command_string_setup = f'trestle md governed-docs setup -tn {task_name}'
-    command_string_create_sample = f'trestle md governed-docs create-sample -tn {task_name}'
-    command_string_validate_template = f'trestle md governed-docs template-validate -tn {task_name}'
-    command_string_validate_content = (
-        f'trestle md governed-docs validate -tn {task_name} --header-validate {recurse_flag}'
-    )
-    template_target_loc = tmp_trestle_dir / '.trestle' / 'md' / task_name / 'template.md'
+    command_string_setup = f'trestle author docs setup -tn {task_name}'
+    command_string_create_sample = f'trestle author docs create-sample -tn {task_name}'
+    command_string_validate_template = f'trestle author docs template-validate -tn {task_name}'
+    command_string_validate_content = (f'trestle author docs validate -tn {task_name} --header-validate {recurse_flag}')
+    template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name / 'template.md'
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}.md'
     # Test setup
     with mock.patch.object(sys, 'argv', command_string_setup.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == setup_code
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == setup_code
     if setup_code > 0:
         return
-
     # Copy in template:
     shutil.copyfile(str(testdata_dir / template_content), str(template_target_loc))
 
     with mock.patch.object(sys, 'argv', command_string_validate_template.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == template_code
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == template_code
     if template_code > 0:
         return
     # Create sample - should always work if we are here.
     with mock.patch.object(sys, 'argv', command_string_create_sample.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == 0
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == 0
 
     shutil.copyfile(str(testdata_dir / target_content), str(test_content_loc))
     if recurse:
@@ -170,34 +166,94 @@ def test_e2e(
     with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == validate_code
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == validate_code
 
 
 def test_failure_bad_template_dir(tmp_trestle_dir: pathlib.Path) -> None:
     """Create and test a bad directory."""
-    setup_ = 'trestle md governed-docs setup --task-name foobaa'
+    setup_ = 'trestle author docs setup --task-name foobaa'
 
-    bad_template_sub_directory = tmp_trestle_dir / '.trestle' / 'md' / 'foobar' / 'test'
+    bad_template_sub_directory = tmp_trestle_dir / '.trestle' / 'author' / 'foobaa' / 'test'
     bad_template_sub_directory.mkdir(parents=True, exist_ok=True)
     with mock.patch.object(sys, 'argv', setup_.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == 1
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == 1
 
 
 def test_success_repeated_call(tmp_trestle_dir: pathlib.Path) -> None:
     """Test double setup."""
-    setup_ = 'trestle md governed-docs setup --task-name foobaa'
+    setup_ = 'trestle author docs setup --task-name foobaa'
 
     with mock.patch.object(sys, 'argv', setup_.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == 0
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == 0
     with mock.patch.object(sys, 'argv', setup_.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
-            assert wrapped_error == SystemExit
-            assert wrapped_error.code == 0
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == 0
+
+
+def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+    """Run an E2E workflow with two test criteria for success."""
+    # hardcoded arguments for testing
+    task_name = 'test_task'
+    recurse = False
+    template_content = pathlib.Path('md/test_1_md_format/template.md')
+    target_content = pathlib.Path('md/test_1_md_format/correct_instance_extra_features.md')
+    setup_code = 0
+    template_code = 0
+    validate_code = 0
+
+    # Note testdata_dir must be before tmp_trestle_dir in the argument order.
+    recurse_flag = '-r' if recurse else ''
+    command_string_setup = f'trestle author docs setup -tn {task_name}'
+    command_string_create_sample = f'trestle author docs create-sample -tn {task_name}'
+    command_string_validate_template = f'trestle author docs template-validate -tn {task_name}'
+    command_string_validate_content = (f'trestle author docs validate -tn {task_name} --header-validate {recurse_flag}')
+    template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name / 'template.md'
+    test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}.md'
+    # Test setup
+    with mock.patch.object(sys, 'argv', command_string_setup.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == setup_code
+    if setup_code > 0:
+        return
+    # Copy in template:
+    shutil.copyfile(str(testdata_dir / template_content), str(template_target_loc))
+
+    with mock.patch.object(sys, 'argv', command_string_validate_template.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == template_code
+    if template_code > 0:
+        return
+    # Create sample - should always work if we are here.
+    with mock.patch.object(sys, 'argv', command_string_create_sample.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == 0
+
+    shutil.copyfile(str(testdata_dir / target_content), str(test_content_loc))
+    if recurse:
+        # choose source file based on expected result
+        sub_file_name = 'correct_instance_extra_features.md' if validate_code else 'bad_instance_missing_heading.md'
+        sub_file_path = testdata_dir / 'author/test_1_md_format' / sub_file_name
+        subdir = tmp_trestle_dir / task_name / 'subdir'
+        subdir.mkdir()
+        sub_content = subdir / f'{uuid4()}.md'
+        shutil.copyfile(str(sub_file_path), str(sub_content))
+    with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == validate_code

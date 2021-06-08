@@ -19,6 +19,7 @@ import pathlib
 
 from tests import test_utils
 
+import trestle.core.const as const
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import WriteFileAction
 from trestle.core.models.elements import Element
@@ -63,13 +64,13 @@ def test_write_file_rollback(tmp_yaml_file: pathlib.Path, sample_target_def):
     test_utils.verify_file_content(tmp_yaml_file, element.get())
 
     # verify the file content is not empty
-    with open(tmp_yaml_file, 'r', encoding='utf8') as read_file:
+    with open(tmp_yaml_file, 'r', encoding=const.FILE_ENCODING) as read_file:
         assert read_file.tell() >= 0
 
     wa.rollback()
 
     # verify the file content is empty
-    with open(tmp_yaml_file, 'r', encoding='utf8') as read_file:
+    with open(tmp_yaml_file, 'r', encoding=const.FILE_ENCODING) as read_file:
         assert read_file.tell() == 0
 
 
@@ -78,7 +79,7 @@ def test_write_existing_file_rollback(tmp_yaml_file, sample_target_def):
     # add some content
     tmp_yaml_file.touch()
     current_pos = 0
-    with open(tmp_yaml_file, 'a+') as fp:
+    with open(tmp_yaml_file, 'a+', encoding=const.FILE_ENCODING) as fp:
         fp.write('....\n')
         current_pos = fp.tell()
 
@@ -88,12 +89,12 @@ def test_write_existing_file_rollback(tmp_yaml_file, sample_target_def):
     wa.execute()
 
     # verify the file content is not empty
-    with open(tmp_yaml_file, 'a+', encoding='utf8') as fp:
+    with open(tmp_yaml_file, 'a+', encoding=const.FILE_ENCODING) as fp:
         assert fp.tell() > current_pos
 
     # rollback to the original
     wa.rollback()
 
     # # verify the file content is empty
-    with open(tmp_yaml_file, 'a+', encoding='utf8') as fp:
+    with open(tmp_yaml_file, 'a+', encoding=const.FILE_ENCODING) as fp:
         assert fp.tell() == current_pos

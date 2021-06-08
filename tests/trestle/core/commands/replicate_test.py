@@ -148,7 +148,7 @@ def test_replicate_load_file_failure(tmp_trestle_dir: Path) -> None:
     source_dir = Path('catalogs/bad_catalog')
     source_dir.mkdir(exist_ok=True)
     bad_file_path = source_dir / 'catalog.json'
-    bad_file = bad_file_path.open('w+', encoding='utf8')
+    bad_file = bad_file_path.open('w+', encoding=const.FILE_ENCODING)
     bad_file.write(sample_data)
     bad_file.close()
 
