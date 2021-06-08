@@ -17,12 +17,16 @@ import argparse
 import logging
 import pathlib
 from typing import Dict, List, Set, Union
+from uuid import uuid4
 
+import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
+import trestle.oscal.ssp as ossp
 import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.markdown_validator import MarkdownValidator
 from trestle.utils.load_distributed import load_distributed
 from trestle.utils.md_writer import MDWriter
 
@@ -75,29 +79,33 @@ class SSP(CommandPlusDocs):
         if not trestle_root:
             logger.warning(f'Current working directory {pathlib.Path.cwd()} is not with a trestle project.')
             return 1
-        _, _, catalog = load_distributed(pathlib.Path(f'catalogs/{args.file}/catalog.json'))
-        _, _, profile = load_distributed(pathlib.Path(f'profiles/{args.profile}/profile.json'))
 
-        try:
-            logging.debug(f'Loading yaml header file {args.yaml_header}')
-            yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'), yaml.FullLoader)
-        except yaml.YAMLError as e:
-            logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
-            return 1
-        markdown_path = trestle_root / ('md/' + args.output)
+        if args.mode == 'setup':
+            _, _, catalog = load_distributed(pathlib.Path(f'catalogs/{args.file}/catalog.json'))
+            _, _, profile = load_distributed(pathlib.Path(f'profiles/{args.profile}/profile.json'))
 
-        sections = None
-        if args.sections is not None:
-            section_tuples = args.sections.strip("'").split(',')
-            sections = {}
-            for section in section_tuples:
-                if ':' in section:
-                    s = section.split(':')
-                    sections[s[0]] = s[1]
-                else:
-                    sections[section] = section
+            try:
+                logging.debug(f'Loading yaml header file {args.yaml_header}')
+                yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'), yaml.FullLoader)
+            except yaml.YAMLError as e:
+                logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
+                return 1
+            markdown_path = trestle_root / ('md/' + args.output)
 
-        return self.generate_ssp(catalog, profile, markdown_path, sections, yaml_header)
+            sections = None
+            if args.sections is not None:
+                section_tuples = args.sections.strip("'").split(',')
+                sections = {}
+                for section in section_tuples:
+                    if ':' in section:
+                        s = section.split(':')
+                        sections[s[0]] = s[1]
+                    else:
+                        sections[section] = section
+
+            return self.generate_ssp(catalog, profile, markdown_path, sections, yaml_header)
+        else:
+            return self.assemble_ssp(args.file, args.output)
 
     def _replace_params(self, text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
         # replace params with assignments from the profile
@@ -297,3 +305,46 @@ class SSP(CommandPlusDocs):
             self._write_control(out_path, control_handle)
 
         return 0
+
+    def _get_implementations(self, control_file: pathlib.Path) -> List[ossp.ImplementedRequirement]:
+        control_id = control_file.stem
+        parse_tree = MarkdownValidator.load_markdown_parsetree(control_file)
+        tree = parse_tree[0] if len(parse_tree) == 1 else parse_tree[1]
+        imp_reqs: list[ossp.ImplementedRequirement] = []
+        ii = 0
+        while ii < len(tree):
+            item = tree[ii]
+            if item['type'] == 'thematic_break':
+                section: str = tree[ii + 1]['children'][0]['text']
+                if not section.startswith('Part '):
+                    break
+                text = tree[ii + 2]['children'][0]['text']
+                by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
+                by_comp.description = text
+                imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
+                imp_req.control_id = control_id
+                imp_req.by_components = {str(uuid4()): by_comp}
+                imp_reqs.append(imp_req)
+                ii += 2
+            ii += 1
+        return imp_reqs
+
+    def assemble_ssp(self, md_name, ssp_name) -> int:
+        """Assemble the markdown directory into an ssp."""
+        # find all groups in the markdown dir
+        group_ids = []
+        trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
+        md_dir = trestle_root / ('md/' + md_name)
+        for gdir in md_dir.glob('*/'):
+            group_ids.append(str(gdir.stem))
+        imp_reqs: List[ossp.ImplementedRequirement] = []
+        for group_id in group_ids:
+            group_path = md_dir / group_id
+            for control_file in group_path.glob('*.md'):
+                imp_reqs.extend(self._get_implementations(control_file))
+        control_imp: ossp.ControlImplementation = gens.generate_sample_model(ossp.ControlImplementation)
+        control_imp.implemented_requirements = imp_reqs
+        control_imp.description = 'This is the control implementation for the system.'
+        ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
+        ssp.control_implementation = control_imp
+        assert ssp

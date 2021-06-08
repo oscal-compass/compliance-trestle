@@ -15,30 +15,44 @@
 
 import argparse
 import pathlib
+from typing import Tuple
 
 from tests import test_utils
 
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.commands.md_subs.ssp import SSP
 
+cat_name = 'my_cat'
+prof_name = 'my_prof'
+ssp_name = 'my_ssp'
 
-def test_ssp_generator(tmp_trestle_dir: pathlib.Path):
-    """Test the ssp generator."""
+
+def setup_for_ssp() -> Tuple[argparse.Namespace, str]:
+    """Create the markdown ssp content from catalog and profile."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     prof_path = test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile.json'
-    yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
-    cat_name = 'my_cat'
-    prof_name = 'my_prof'
-    ssp_name = 'my_ssp'
     i = ImportCmd()
     args = argparse.Namespace(file=str(cat_path), output=cat_name, verbose=True, regenerate=True)
     assert i._run(args) == 0
     args = argparse.Namespace(file=str(prof_path), output=prof_name, verbose=True, regenerate=True)
     assert i._run(args) == 0
+    yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
     sections = 'ImplGuidance:Implicit Guidance,ExpectedEvidence'
     args = argparse.Namespace(
-        file=cat_name, profile=prof_name, output=ssp_name, verbose=True, sections=sections, yaml_header=str(yaml_path)
+        file=cat_name,
+        profile=prof_name,
+        output=ssp_name,
+        verbose=True,
+        sections=sections,
+        mode='setup',
+        yaml_header=str(yaml_path)
     )
+    return args, sections
+
+
+def test_ssp_generator(tmp_trestle_dir: pathlib.Path):
+    """Test the ssp generator."""
+    args, sections = setup_for_ssp()
     ssp_cmd = SSP()
     assert ssp_cmd._run(args) == 0
     ac_dir = tmp_trestle_dir / ('md/' + ssp_name + '/ac')
@@ -51,6 +65,21 @@ def test_ssp_generator(tmp_trestle_dir: pathlib.Path):
 
     yaml_path = test_utils.YAML_TEST_DATA_PATH / 'bad_simple.yaml'
     args = argparse.Namespace(
-        file=cat_name, profile=prof_name, output=ssp_name, verbose=True, sections=sections, yaml_header=str(yaml_path)
+        file=cat_name,
+        profile=prof_name,
+        output=ssp_name,
+        verbose=True,
+        sections=sections,
+        mode='setup',
+        yaml_header=str(yaml_path)
     )
     assert ssp_cmd._run(args) == 1
+
+
+def test_ssp_assemble(tmp_trestle_dir: pathlib.Path):
+    """Test ssp assemble."""
+    args, sections = setup_for_ssp()
+    ssp_cmd = SSP()
+    assert ssp_cmd._run(args) == 0
+    args = argparse.Namespace(file=ssp_name, profile=prof_name, output=ssp_name, verbose=True, mode='create-sample')
+    assert ssp_cmd._run(args) == 0
