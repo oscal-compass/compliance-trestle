@@ -158,7 +158,8 @@ class MarkdownValidator:
         template_path: pathlib.Path,
         yaml_header_validate: bool,
         yaml_only_validate: bool,
-        strict_heading_validate: Optional[str] = None
+        strict_heading_validate: Optional[str] = None,
+        relative_to: Optional[pathlib.Path] = None
     ) -> None:
         """
         Initialize markdown validator.
@@ -172,14 +173,16 @@ class MarkdownValidator:
         self._yaml_header_validate = yaml_header_validate
         self._yaml_only_validate = yaml_only_validate
         self.template_path = template_path
+        if relative_to:
+            self.rel = relative_to
+        else:
+            self.rel = pathlib.Path('/').resolve()
         if not self.template_path.is_file():
-            logger.error(f'Provided template {self.template_path.resolve()} is not a file')
-            raise err.TrestleError(f'Unable to find markdown template {self.template_path.resolve()}')
+            logger.error(f'Provided template {self.template_path} is not a file')
+            raise err.TrestleError(f'Unable to find markdown template {self.template_path}')
         template_header, template_parse = self.load_markdown_parsetree(self.template_path)
         if template_header == {} and (self._yaml_only_validate or self._yaml_header_validate):
-            raise err.TrestleError(
-                f'Expected yaml header for markdown template where none exists {self.template_path.resolve()}'
-            )
+            raise err.TrestleError(f'Expected yaml header for markdown template where none exists {self.template_path}')
         self._template_header = template_header
         self._template_parse = template_parse
         self._strict_heading_validate = strict_heading_validate
@@ -238,7 +241,6 @@ class MarkdownValidator:
         Returns:
             Whether or not the validation passes.
         """
-        logger.info(f'Validating {candidate} against{self.template_path}')
         header_content, mistune_parse_content = self.load_markdown_parsetree(candidate)
         if self._yaml_header_validate or self._yaml_only_validate:
             header_status = self.compare_keys(self._template_header, header_content)
@@ -273,10 +275,13 @@ class MarkdownValidator:
             return False
         for key in template.keys():
             if key in candidate.keys():
-                if type(template[key]) == dict and type(candidate[key]) == dict:
-                    status = cls.compare_keys(template[key], candidate[key])
-                    if not status:
-                        return status
+                if type(template[key]) == dict:
+                    if type(candidate[key]) == dict:
+                        status = cls.compare_keys(template[key], candidate[key])
+                        if not status:
+                            return status
+                    else:
+                        return False
             else:
                 return False
         return True

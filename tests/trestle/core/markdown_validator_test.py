@@ -223,7 +223,31 @@ def test_bad_file_path(tmp_path: pathlib.Path):
             'hello': 1,
             'world': 2,
             'banana': 3,
-        }, False)
+        }, False),
+        (
+            {
+                'hello': 'A simple element', 'world': {
+                    'required_key': '1', 'another_required_key': '2'
+                }
+            }, {
+                'hello': 'A simple element', 'world': {
+                    'required_key': '1', 'another_required_key': '2'
+                }
+            },
+            True
+        ),
+        (
+            {
+                'hello': 'A simple element', 'world': {
+                    'required_key': '1', 'another_required_key': '2'
+                }
+            }, {
+                'hello': 'A simple element', 'world': {
+                    'required_key': 'there is a missing key',
+                }
+            },
+            False
+        )
     ]
 )
 def test_key_compare(template: Dict[str, Any], candidate: Dict[str, Any], expected_status):
