@@ -1,8 +1,5 @@
 extra_css:
 - css/extra.css
-google_analytics:
-- G-XT3KGMHSY8
-- auto
 markdown_extensions:
 - admonition
 - markdown_include.include
