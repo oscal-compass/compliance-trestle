@@ -11,6 +11,7 @@ on:
 
 jobs:
   lint:
+    if: ${{ github.base_ref == 'develop' }}
     concurrency: 
       group: ${{ github.head_ref }}-${{ github.workflow }}
       cancel-in-progress: true
