@@ -23,6 +23,7 @@ from unittest.mock import patch
 
 import pytest
 
+import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core import generators
 from trestle.core.err import TrestleError
@@ -157,7 +158,7 @@ def test_https_fetcher(tmp_trestle_dir, monkeypatch):
     fetcher._refresh = True
     fetcher._cache_only = False
     fetcher._update_cache()
-    assert len(open(fetcher._inst_cache_path).read()) > 0
+    assert len(open(fetcher._inst_cache_path, encoding=const.FILE_ENCODING).read()) > 0
     dummy_existing_file = fetcher._inst_cache_path.__str__()
     # Now we'll patch _update_cache() to fail with JSONDecodeError:
     with patch('requests.Response.json') as json_mock:

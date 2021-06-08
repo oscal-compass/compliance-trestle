@@ -136,7 +136,7 @@ class TaniumToOscal(TaskBase):
         if not self._simulate:
             if self._verbose:
                 logger.info(f'input: {ifile}') 
-        with open(ifile, 'r') as fp:
+        with open(ifile, 'r', encoding=const.FILE_ENCODING) as fp:
             blob = fp.read()
         return blob
         
