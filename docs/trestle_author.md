@@ -7,7 +7,7 @@ When this is considered, many organisations using `{github|gitlab|bitbucket}` re
 
 To support this trestle has the concept of 'governing' documents that are authored documents: Where structural conditions are enforced on the markdown documents to allow automation and to ensure business processes are met.
 
-Living in the `gitOps` world this capability is anchored with `markdown` files as the core of the workflows. Currently `drawio` files are also supported for a subset of enforcement mechanisms.
+Living in the `GitOps` world this capability is anchored with `markdown` files as the core of the workflows. Currently `drawio` files are also supported for a subset of enforcement mechanisms.
 
 ### Why is this capability in trestle?
 
@@ -16,7 +16,7 @@ While trestle provides editing support for OSCAL there is an unfortunate truth t
 1. OSCAL does not cover the lower level operational workflows.
 1. Some users will not be comfortable editing in json/yaml/xml formats
 
-The markdown centric workflows allow transition path where capability is [being developed](<>)
+The markdown centric workflows allow transition path where capability is [being developed](https://github.com/IBM/compliance-trestle/issues/555)
 
 ## Governance mechanisms
 

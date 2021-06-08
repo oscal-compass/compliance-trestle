@@ -17,6 +17,7 @@
 import logging
 import pathlib
 
+from trestle.core import const
 from trestle.transforms.transformer_singleton import transformer_factory
 
 logger = logging.getLogger(__name__)
@@ -26,7 +27,7 @@ logger.addHandler(logging.StreamHandler())
 sample_data_f = pathlib.Path('tests/data/tasks/tanium/input/Tanium.comply-nist-results')
 
 if __name__ == '__main__':
-    stringed = sample_data_f.open('r', encoding='utf8').read()
+    stringed = sample_data_f.open('r', encoding=const.FILE_ENCODING).read()
     tanium_tf = transformer_factory.get('tanium')
     output_oscal = tanium_tf.transform(stringed)
     json_str = output_oscal.oscal_serialize_json()
