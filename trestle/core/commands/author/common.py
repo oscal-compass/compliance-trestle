@@ -49,3 +49,7 @@ class AuthorCommonCommand(CommandPlusDocs):
         self.task_path = self.trestle_root / self.task_name
         self.template_dir = self.trestle_root / const.TRESTLE_CONFIG_DIR / 'author' / self.task_name
         return 0
+
+    def rel_dir(self, path: pathlib.Path) -> str:
+        """Stringify a directory relative to trestle root."""
+        return str(path.relative_to(self.trestle_root))
