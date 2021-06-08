@@ -17,7 +17,6 @@ import argparse
 import logging
 import pathlib
 from typing import Dict, List, Set, Union
-from uuid import uuid4
 
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
@@ -321,9 +320,13 @@ class SSP(CommandPlusDocs):
                 text = tree[ii + 2]['children'][0]['text']
                 by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
                 by_comp.description = text
+                statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
+                part_label = section.split(' ')[1].replace('.', '')
+                statement_label = f'{control_id}_smt.{part_label}'
+                statement.by_components = {statement_label: by_comp}
                 imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
                 imp_req.control_id = control_id
-                imp_req.by_components = {str(uuid4()): by_comp}
+                imp_req.statements = {statement_label: statement}
                 imp_reqs.append(imp_req)
                 ii += 2
             ii += 1
@@ -347,4 +350,10 @@ class SSP(CommandPlusDocs):
         control_imp.description = 'This is the control implementation for the system.'
         ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
         ssp.control_implementation = control_imp
-        assert ssp
+        import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
+        import_profile.href = 'simple_profile.json'
+        ssp.import_profile = import_profile
+        ssp_dir = trestle_root / 'system-security-plans/my_ssp'
+        ssp_dir.mkdir(exist_ok=True, parents=True)
+        ssp.oscal_write(ssp_dir / 'system-security-plan.json')
+        return 0
