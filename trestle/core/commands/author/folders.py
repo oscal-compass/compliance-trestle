@@ -88,12 +88,12 @@ class Folders(AuthorCommonCommand):
         if not self.task_path.exists():
             self.task_path.mkdir(exist_ok=True, parents=True)
         elif self.task_path.is_file():
-            logger.error(f'Task path: {self.task_path} is a file not a directory.')
+            logger.error(f'Task path: {self.rel_dir(self.task_path)} is a file not a directory.')
             return 1
         if not self.template_dir.exists():
             self.template_dir.mkdir(exist_ok=True, parents=True)
         elif self.template_dir.is_file():
-            logger.error(f'Template path: {self.template_dir} is a file not a directory.')
+            logger.error(f'Template path: {self.rel_dir(self.template_dir)} is a file not a directory.')
             return 1
 
         template_file_a_md = self.template_dir / 'a_template.md'
@@ -109,7 +109,9 @@ class Folders(AuthorCommonCommand):
     def template_validate(self, validate_header: bool, validate_only_header: bool, heading: str) -> int:
         """Validate that the template is acceptable markdown."""
         if not self.template_dir.is_dir():
-            logger.error(f'Template directory {self.template_dir} for task {self.task_name} does not exist.')
+            logger.error(
+                f'Template directory {self.rel_dir(self.template_dir)} for task {self.task_name} does not exist.'
+            )
             return 1
         # get list of files:
         template_files = self.template_dir.rglob('*')
@@ -126,7 +128,8 @@ class Folders(AuthorCommonCommand):
                     )
                 except Exception as ex:
                     logger.error(
-                        f'Template file {template_file} for task {self.task_name} failed to validate due to {ex}'
+                        f'Template file {self.rel_dir(template_file)} for task {self.task_name}'
+                        + f' failed to validate due to {ex}'
                     )
                     return 1
             elif template_file.suffix.lower().lstrip('.') == 'drawio':
@@ -134,11 +137,15 @@ class Folders(AuthorCommonCommand):
                     _ = draw_io.DrawIOMetadataValidator(template_file)
                 except Exception as ex:
                     logger.error(
-                        f'Template file {template_file} for task {self.task_name} failed to validate due to {ex}'
+                        f'Template file {self.rel_dir(template_file)} for task {self.task_name}'
+                        + f' failed to validate due to {ex}'
                     )
                     return 1
             else:
-                logger.info(f'File: {template_file} within the template directory was ignored as it is not markdown.')
+                logger.info(
+                    f'File: {self.rel_dir(template_file)} within the template directory was ignored'
+                    + 'as it is not markdown.'
+                )
         logger.info(f'TEMPLATES VALID: {self.task_name}.')
         return 0
 
@@ -165,12 +172,13 @@ class Folders(AuthorCommonCommand):
             elif template_file.is_dir():
                 # assert template directories exist
                 if r_template_path not in r_instance_files:
-                    logger.error(f'Directory {r_template_path} does not exist in instance {instance_dir}')
+                    logger.error(f'Directory {r_template_path} does not exist in instance {self.rel_dir(instance_dir)}')
                     return False
             elif clean_suffix in author_const.reference_templates:
                 if r_template_path not in r_instance_files:
                     logger.error(
-                        f'Required template file {template_file} does not exist in measured instance {instance_dir}'
+                        f'Required template file {self.rel_dir(template_file)} does not exist in measured instance'
+                        + f'{self.rel_dir(instance_dir)}'
                     )
                     return False
                 else:
@@ -182,13 +190,19 @@ class Folders(AuthorCommonCommand):
                         full_path = instance_dir / r_template_path
                         status = md_validator.validate(full_path)
                         if not status:
-                            logger.error(f'Markdown file {full_path} failed validation against {template_file}')
+                            logger.error(
+                                f'Markdown file {self.rel_dir(full_path)} failed validation against'
+                                + f' {self.rel_dir(template_file)}'
+                            )
                             return False
                     elif clean_suffix == 'drawio':
                         drawio_validator = draw_io.DrawIOMetadataValidator(template_file)
                         status = drawio_validator.validate(full_path)
                         if not status:
-                            logger.error(f'Drawio file {full_path} failed validation against {template_file}')
+                            logger.error(
+                                f'Drawio file {self.rel_dir(full_path)} failed validation against'
+                                + f' {self.rel_dir(template_file)}'
+                            )
                             return False
         return True
 
@@ -223,9 +237,13 @@ class Folders(AuthorCommonCommand):
                 )
                 if not result:
                     logger.error(
-                        'Governed-folder validation failed for task' + f'{self.task_name} on directory {task_instance}'
+                        'Governed-folder validation failed for task'
+                        + f'{self.task_name} on directory {self.rel_dir(task_instance)}'
                     )
                     return 1
             else:
-                logger.info(f'Unexpected file {self.task_path} identified in {self.task_name} directory, ignoring.')
+                logger.info(
+                    f'Unexpected file {self.rel_dir(self.task_instance)} identified in {self.rel_dir(self.task_name)}'
+                    + ' directory, ignoring.'
+                )
         return 0

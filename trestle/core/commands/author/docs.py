@@ -101,12 +101,12 @@ class Docs(AuthorCommonCommand):
         if not self.task_path.exists():
             self.task_path.mkdir(exist_ok=True, parents=True)
         elif self.task_path.is_file():
-            logger.error(f'Task path: {self.task_path} is a file not a directory.')
+            logger.error(f'Task path: {self.rel_dir(self.task_path)} is a file not a directory.')
             return 1
         if not self.template_dir.exists():
             self.template_dir.mkdir(exist_ok=True, parents=True)
         elif self.template_dir.is_file():
-            logger.error(f'Template path: {self.template_dir} is a file not a directory.')
+            logger.error(f'Template path: {self.rel_dir(self.template_dir)} is a file not a directory.')
             return 1
         logger.debug(self.template_dir)
         if not self._validate_template_dir():
@@ -117,8 +117,8 @@ class Docs(AuthorCommonCommand):
             return 0
         reference_template = pathlib.Path(resource_filename('trestle.resources', 'template.md')).resolve()
         shutil.copy(reference_template, template_file)
-        logger.info(f'Template file setup for task {self.task_name} at {template_file}')
-        logger.info(f'Task directory is {self.task_path} ')
+        logger.info(f'Template file setup for task {self.task_name} at {self.rel_dir(template_file)}')
+        logger.info(f'Task directory is {self.rel_dir(self.task_path)}')
         return 0
 
     def create_sample(self) -> int:
@@ -149,7 +149,7 @@ class Docs(AuthorCommonCommand):
             logger.error('Aborting setup')
             return 1
         if not template_file.is_file():
-            logger.error(f'Required template file: {template_file} does not exist. Exiting.')
+            logger.error(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
             return 1
         try:
             _ = markdown_validator.MarkdownValidator(template_file, validate_header, validate_only_header, heading)
@@ -164,7 +164,7 @@ class Docs(AuthorCommonCommand):
         for child in self.template_dir.iterdir():
             # Only allowable template file in the directory is the template directory.
             if child.name != self.template_name:
-                logger.error(f'Unknown file: {child.name} in template directory {self.template_dir}')
+                logger.error(f'Unknown file: {child.name} in template directory {self.rel_dir(self.template_dir)}')
                 return False
         return True
 
@@ -184,16 +184,18 @@ class Docs(AuthorCommonCommand):
             if fs.local_and_visible(item_path):
                 if item_path.is_file():
                     if not item_path.suffix == '.md':
-                        logger.warning(f'Unexpected file {item_path} in folder {md_dir}, skipping.')
+                        logger.warning(
+                            f'Unexpected file {self.rel_dir(item_path)} in folder {self.rel_dir(md_dir)}, skipping.'
+                        )
                         continue
                     md_validator = markdown_validator.MarkdownValidator(
                         template_file, validate_header, validate_only_header, governed_heading
                     )
                     if not md_validator.validate(item_path):
-                        logger.info(f'INVALID: {item_path}')
+                        logger.info(f'INVALID: {self.rel_dir(item_path)}')
                         status = 1
                     else:
-                        logger.info(f'VALID: {item_path}')
+                        logger.info(f'VALID: {self.rel_dir(item_path)}')
                 elif recurse:
                     if not self._validate_dir(
                             template_file, governed_heading, item_path, validate_header, validate_only_header, recurse):
@@ -203,10 +205,10 @@ class Docs(AuthorCommonCommand):
     def validate(self, governed_heading: str, validate_header: bool, validate_only_header: bool, recurse: bool) -> int:
         """Validate task."""
         if not self.task_path.is_dir():
-            logger.error(f'Task directory {self.task_path} does not exist. Exiting validate.')
+            logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
         template_file = self.template_dir / self.template_name
         if not template_file.is_file():
-            logger.error(f'Required template file: {template_file} does not exist. Exiting.')
+            logger.error(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
             return 1
         return self._validate_dir(
             template_file, governed_heading, self.task_path, validate_header, validate_only_header, recurse

@@ -89,16 +89,16 @@ class Headers(AuthorCommonCommand):
         if not self.task_path.exists():
             self.task_path.mkdir(exist_ok=True, parents=True)
         elif self.task_path.is_file():
-            logger.error(f'Task path: {self.task_path} is a file not a directory.')
+            logger.error(f'Task path: {self.rel_dir(self.task_path)} is a file not a directory.')
             return 1
         if not self.template_dir.exists():
             self.template_dir.mkdir(exist_ok=True, parents=True)
-        logger.info(f'Populating template files to {self.template_dir}')
+        logger.info(f'Populating template files to {self.rel_dir(self.template_dir)}')
         for template in author_const.reference_templates.values():
             template_path = pathlib.Path(resource_filename('trestle.resources', template)).resolve()
             destination_path = self.template_dir / template
             shutil.copy(template_path, destination_path)
-            logger.info(f'Template directory populated {destination_path}')
+            logger.info(f'Template directory populated {self.rel_dir(destination_path)}')
         return 0
 
     def template_validate(self) -> int:
@@ -106,7 +106,7 @@ class Headers(AuthorCommonCommand):
         logger.info('Checking template file integrity')
         for template_file in self.template_dir.iterdir():
             if template_file.name not in author_const.reference_templates.values():
-                logger.error(f'Unexpected template file {template_file}')
+                logger.error(f'Unexpected template file {self.rel_dir(template_file)}')
                 logger.error('Exiting')
                 return 1
             if template_file.suffix == '.md':
@@ -150,7 +150,7 @@ class Headers(AuthorCommonCommand):
                         if not validate_status:
                             return False
                     else:
-                        logger.info(f'Unsupported file {candidate_path} ignored.')
+                        logger.info(f'Unsupported file {self.rel_dir(candidate_path)} ignored.')
                 elif recurse:
                     if not self._validate_dir(template_lut, candidate_path, recurse):
                         return False
@@ -160,13 +160,13 @@ class Headers(AuthorCommonCommand):
         """Run validation based on available templates."""
         template_lut = self._discover_templates()
         if not self.task_path.is_dir():
-            logger.error(f'Task directory {self.task_path} does not exist. Exiting validate.')
+            logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
         try:
             valid = self._validate_dir(template_lut, self.task_path, recurse)
             if valid:
                 return 0
             else:
-                logger.info('validation ')
+                logger.info(f'validation failed on {self.rel_dir(self.task_path)}')
                 return 1
         except Exception as e:
             logger.error(f'Error during header validation {e}')
