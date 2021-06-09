@@ -23,14 +23,13 @@ from trestle.core import parser
 import yaml
 
 yaml_path = pathlib.Path('tests/data/yaml/')
-encoding = 'utf8'
 
 
 def test_parse_dict() -> None:
     """Test parse_dict."""
     file_name = 'good_target.yaml'
 
-    with open(pathlib.Path.joinpath(yaml_path, file_name), 'r', encoding=encoding) as f:
+    with open(pathlib.Path.joinpath(yaml_path, file_name), 'r', encoding=const.FILE_ENCODING) as f:
         data = yaml.load(f, yaml.FullLoader)
         target = parser.parse_dict(data['target-definition'], 'trestle.oscal.target.TargetDefinition')
         assert target is not None

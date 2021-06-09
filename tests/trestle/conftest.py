@@ -29,6 +29,7 @@ import trestle.core.generators as gens
 from trestle.cli import Trestle
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.component import ComponentDefinition, DefinedComponent
+from trestle.oscal.profile import Profile
 from trestle.oscal.target import TargetDefinition
 
 TEST_CONFIG: dict = {}
@@ -97,6 +98,14 @@ def sample_catalog():
     file_path = pathlib.Path(test_utils.JSON_NIST_DATA_PATH) / test_utils.JSON_NIST_CATALOG_NAME
     catalog_obj = Catalog.oscal_read(file_path)
     return catalog_obj
+
+
+@pytest.fixture(scope='function')
+def sample_profile():
+    """Return a valid catalog object."""
+    file_path = pathlib.Path(test_utils.JSON_NIST_DATA_PATH) / test_utils.JSON_NIST_PROFILE_NAME
+    profile_obj = Profile.oscal_read(file_path)
+    return profile_obj
 
 
 @pytest.fixture(scope='function')

@@ -20,6 +20,7 @@ import pathlib
 import uuid
 from unittest.mock import Mock, patch
 
+import trestle.core.const as const
 import trestle.tasks.tanium_to_oscal as tanium_to_oscal
 import trestle.transforms.implementations.tanium as tanium
 from trestle.tasks.base_task import TaskOutcome
@@ -130,7 +131,7 @@ def test_execute(tmpdir):
     assert len(os.listdir(str(tmpdir))) == 1
     f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.json'
     f_produced = tmpdir  / 'Tanium.oscal.json'
-    assert [row for row in open(f_produced)] == [row for row in open(f_expected)]
+    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
 
 def test_execute_no_config(tmpdir):
     """Test execute no config call."""
@@ -146,7 +147,7 @@ def test_execute_no_overwrite_dir(tmpdir):
     execute_no_overwrite_dir_part2(tmpdir)
     f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.json'
     f_produced = tmpdir  / 'Tanium.oscal.json'
-    assert [row for row in open(f_produced)] == [row for row in open(f_expected)]
+    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
     
 @patch(target='uuid.uuid4', new=uuid_mock1)
 def execute_no_overwrite_dir_part1(tmpdir):
@@ -227,4 +228,4 @@ def test_execute_override_timestamp(tmpdir):
     assert len(os.listdir(str(tmpdir))) == 1
     f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.2020.json'
     f_produced = tmpdir  / 'Tanium.oscal.json'
-    assert [row for row in open(f_produced)] == [row for row in open(f_expected)]
+    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]

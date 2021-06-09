@@ -21,6 +21,7 @@ import pytest
 
 from tests import test_utils
 
+import trestle.core.const as const
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import RemovePathAction
 from trestle.utils import trash
@@ -47,7 +48,7 @@ def test_remove_path_file(tmp_path: pathlib.Path) -> None:
     # write some content in the file
     file_pos = 0
     dummy_data = 'DUMMY DATA'
-    with open(tmp_data_file, 'a+') as fp:
+    with open(tmp_data_file, 'a+', encoding=const.FILE_ENCODING) as fp:
         fp.write(dummy_data)
         file_pos = fp.tell()
     assert file_pos >= 0
@@ -63,7 +64,7 @@ def test_remove_path_file(tmp_path: pathlib.Path) -> None:
     rpa.rollback()
     tmp_data_file_trash.exists()
     tmp_data_file.exists()
-    with open(tmp_data_file, 'a+') as fp:
+    with open(tmp_data_file, 'a+', encoding=const.FILE_ENCODING) as fp:
         assert file_pos == fp.tell()
 
     # remove dir

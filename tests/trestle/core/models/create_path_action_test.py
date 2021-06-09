@@ -21,6 +21,7 @@ import pytest
 
 from tests import test_utils
 
+import trestle.core.const as const
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction
 
@@ -80,7 +81,7 @@ def test_create_path_with_content_clear_option(tmp_path: pathlib.Path):
     # write some content in the file
     file_pos = 0
     dummy_data = ''
-    with open(tmp_data_dir_file, 'a+') as fp:
+    with open(tmp_data_dir_file, 'a+', encoding=const.FILE_ENCODING) as fp:
         fp.write(dummy_data)
         file_pos = fp.tell()
     assert file_pos >= 0
@@ -90,7 +91,7 @@ def test_create_path_with_content_clear_option(tmp_path: pathlib.Path):
     cpa.execute()
     assert len(cpa.get_created_paths()) == 0
     assert tmp_data_dir_file.exists()
-    with open(tmp_data_dir_file, 'a+') as fp:
+    with open(tmp_data_dir_file, 'a+', encoding=const.FILE_ENCODING) as fp:
         assert file_pos == fp.tell()
 
     # create action to create a file with clearing content
@@ -98,7 +99,7 @@ def test_create_path_with_content_clear_option(tmp_path: pathlib.Path):
     cpa.execute()
     assert len(cpa.get_created_paths()) == 0
     assert tmp_data_dir_file.exists()
-    with open(tmp_data_dir_file, 'a+') as fp:
+    with open(tmp_data_dir_file, 'a+', encoding=const.FILE_ENCODING) as fp:
         assert 0 == fp.tell()
         data = fp.readline()
         assert data == ''
@@ -107,7 +108,7 @@ def test_create_path_with_content_clear_option(tmp_path: pathlib.Path):
     cpa.rollback()
     assert tmp_data_dir.exists()
     assert tmp_data_dir_file.exists()
-    with open(tmp_data_dir_file, 'a+') as fp:
+    with open(tmp_data_dir_file, 'a+', encoding=const.FILE_ENCODING) as fp:
         assert file_pos == fp.tell()
         fp.readline()
 
