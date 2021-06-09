@@ -223,3 +223,93 @@ trestle_root
 #### Recursive (`-r`, `--recurse`)
 
 By default `author headers` only indexes a flat directory. The recursive option allows the discovery of sub directories.
+
+## `trestle author ssp-generate`
+
+The `ssp-generate` sub-command creates a partial ssp from a catalog, profile and yaml header file.  It can also assemble the markdown files
+into a single json SSP file.  The catalog consists of a number of controls with parameters, and the profile specifies a subset of
+those controls along with corresponding parameter values.  This command merges the information from the two files and generates a
+directory containing a set of markdown files, one for each control in the profile.  Each markdown file has the yaml header embedded
+at the start of the file.
+
+Example usage for creation of the markdown:
+
+`trestle author ssp-generate -p my_prof -y /my_yaml_dir/header.yaml -s "ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence" -o my_ssp`
+
+In this example the catalog and profile have previously been imported into the trestle project directory, making sure to import the
+catalog using the name specified in the import href of the profile.  Note that the path in the href is ignored.  The yaml
+header file can be anywhere in the file system.  In this case the two sections loaded are `ImplGuidance` and `ExpectedEvidence` -
+and their aliases are provided with full spacing and spelling so the section headers will have proper titles.  The output will be
+placed in the trestle subdirectory `my_ssp` with a subdirectory for each control group.
+
+<br>
+<details>
+<summary>The resulting files look like this</summary>
+
+```
+---
+control-origination:
+- Service Provider Corporate
+- Service Provider System Specific
+responsible-roles:
+- Customer
+---
+
+
+# ac-1 - AC Access Control Policy and Procedures
+## Control Description
+
+The organization:
+
+a. Develops, documents, and disseminates to Assignment: organization-defined personnel or roles:
+
+    1. An access control policy that addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
+    2. Procedures to facilitate the implementation of the access control policy and associated access controls; and
+
+b. Reviews and updates the current:
+
+    1. Access control policy at least annually; and
+    2. Access control procedures at least annually.
+
+
+
+## ac-1 What is the solution and how is it implemented?
+
+---
+### Part a.
+
+Add control implementation description here.
+
+
+---
+### Part b.
+
+Add control implementation description here.
+
+---
+
+
+## ac-1 Section Implementation Guidance
+
+Perform the needed tasks.
+
+## ac-1 Section Expected Evidence
+
+Provide detailed logs.
+                       
+```
+
+</details>
+<br>
+
+Note that for each statement in the control description there is a corresponding response section in which to provide a detailed response for later inclusion in the final ssp as the control implementation.
+
+Also note that the optional final sections are provided, and labeled using the alias given at the command line.
+
+## `trestle author ssp-generate`
+
+After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:
+
+`trestle author ssp-assemble -m my_ssp -o my_json_ssp`
+
+This will assemble the markdown files in the my_ssp directory and create a json SSP with name my_json_ssp in the system-security-plans directory.
