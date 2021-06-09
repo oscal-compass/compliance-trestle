@@ -156,7 +156,7 @@ class SSP(AuthorCommonCommand):
             items = items[0]
         self._md_file.new_list(items)
 
-    def _add_controls(self, control_handle: ControlHandle,
+    def _get_controls(self, control_handle: ControlHandle,
                       control_dict: Dict[str, ControlHandle]) -> Dict[str, ControlHandle]:
         control_dict[control_handle.control.id] = control_handle
         if control_handle.control.controls is not None:
@@ -164,7 +164,7 @@ class SSP(AuthorCommonCommand):
             group_title = control_handle.group_title
             for sub_control in control_handle.control.controls:
                 control_handle = ControlHandle(group_id, group_title, sub_control)
-                control_dict = self._add_controls(control_handle, control_dict)
+                control_dict = self._get_controls(control_handle, control_dict)
         return control_dict
 
     def _add_yaml_header(self) -> None:
@@ -277,7 +277,7 @@ class SSP(AuthorCommonCommand):
         for group in catalog.groups:
             for control in group.controls:
                 control_handle = ControlHandle(group.id, group.title, control)
-                control_dict = self._add_controls(control_handle, control_dict)
+                control_dict = self._get_controls(control_handle, control_dict)
 
         # get list of control_ids needed by profile
         control_ids: List[str] = []
