@@ -224,9 +224,9 @@ trestle_root
 
 By default `author headers` only indexes a flat directory. The recursive option allows the discovery of sub directories.
 
-## `trestle author ssp`
+## `trestle author ssp-generate`
 
-The `ssp` sub-command creates a partial ssp from a catalog, profile and yaml header file.  It can also assemble the markdown files
+The `ssp-generate` sub-command creates a partial ssp from a catalog, profile and yaml header file.  It can also assemble the markdown files
 into a single json SSP file.  The catalog consists of a number of controls with parameters, and the profile specifies a subset of
 those controls along with corresponding parameter values.  This command merges the information from the two files and generates a
 directory containing a set of markdown files, one for each control in the profile.  Each markdown file has the yaml header embedded
@@ -234,7 +234,7 @@ at the start of the file.
 
 Example usage for creation of the markdown:
 
-`trestle author ssp -f my_prof -yh /my_yaml_dir/header.yaml -s "ImplGuidance:Implied Guidance,ExpectedEvidence:Expected Evidence" -o my_ssp setup`
+`trestle author ssp-generate -p my_prof -y /my_yaml_dir/header.yaml -s "ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence" -o my_ssp`
 
 In this example the catalog and profile have previously been imported into the trestle project directory, making sure to import the
 catalog using the name specified in the import href of the profile.  Note that the path in the href is ignored.  The yaml
@@ -289,7 +289,7 @@ Add control implementation description here.
 ---
 
 
-## ac-1 Section Implied Guidance
+## ac-1 Section Implementation Guidance
 
 Perform the needed tasks.
 
@@ -306,8 +306,10 @@ Note that for each statement in the control description there is a corresponding
 
 Also note that the optional final sections are provided, and labeled using the alias given at the command line.
 
+## `trestle author ssp-generate`
+
 After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:
 
-`trestle author ssp -f my_ssp -o my_json_ssp assemble`
+`trestle author ssp-assemble -m my_ssp -o my_json_ssp`
 
 This will assemble the markdown files in the my_ssp directory and create a json SSP with name my_json_ssp in the system-security-plans directory.

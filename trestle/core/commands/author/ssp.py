@@ -44,31 +44,22 @@ class ControlHandle():
         self.control = control
 
 
-class SSP(AuthorCommonCommand):
-    """Create SSP in markdown form from Catalog and Profile, or assemble the markdown into a json SSP."""
+class SSPGenerate(AuthorCommonCommand):
+    """Generate SSP in markdown form from Catalog and Profile."""
 
-    name = 'ssp'
-
-    def __init__(self, parser=None, parent=None, name=None, out=None, err=None):
-        """Initialize the class."""
-        super().__init__(parser, parent, name, out, err)
-        self._param_dict: Dict[str, str] = None
-        self._md_file: MDWriter = None
-        self._alters: List[prof.Alter] = None
-        self._yaml_header: dict = None
-        self._sections: Dict[str, str] = None
+    name = 'ssp-generate'
 
     def _init_arguments(self) -> None:
-        file_help_str = 'Name of the profile file'
-        self.add_argument('-f', '--file', help=file_help_str, required=True, type=str)
-        yaml_help_str = 'Path to the yaml header file'
-        self.add_argument('-yh', '--yaml-header', help=yaml_help_str, required=True, type=str)
-        sections_help_str = 'Comma separated list of section:alias pairs for sections to output'
-        self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
-        task_help_str = 'Name of the generated ssp markdown folder'
-        self.add_argument('-o', '--output', help=task_help_str, required=True, type=str)
+        file_help_str = 'Name of the profile model in the trestle workspace'
+        self.add_argument('-p', '--profile', help=file_help_str, required=True, type=str)
+        output_help_str = 'Name of the output generated ssp markdown folder'
+        self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
         verbose_help_str = 'Display verbose output'
         self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
+        yaml_help_str = 'Path to the yaml header file'
+        self.add_argument('-y', '--yaml-header', help=yaml_help_str, required=True, type=str)
+        sections_help_str = 'Comma separated list of section:alias pairs for sections to output'
+        self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
@@ -80,36 +71,71 @@ class SSP(AuthorCommonCommand):
             logger.warning(f'{args.output} is not an allowed directory name')
             return 1
 
-        if args.mode == 'setup':
-            profile: prof.Profile
-            _, _, profile = load_distributed(pathlib.Path(f'profiles/{args.file}/profile.json'))
-            cat_href = profile.imports[0].href
-            cat_name = fs.model_name_from_href_str(cat_href)
+        profile: prof.Profile
+        _, _, profile = load_distributed(pathlib.Path(f'profiles/{args.profile}/profile.json'))
+        cat_href = profile.imports[0].href
+        cat_name = fs.model_name_from_href_str(cat_href)
 
-            _, _, catalog = load_distributed(pathlib.Path(f'catalogs/{cat_name}/catalog.json'))
+        _, _, catalog = load_distributed(pathlib.Path(f'catalogs/{cat_name}/catalog.json'))
 
-            try:
-                logging.debug(f'Loading yaml header file {args.yaml_header}')
-                yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'), yaml.FullLoader)
-            except yaml.YAMLError as e:
-                logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
-                return 1
-            markdown_path = trestle_root / args.output
+        try:
+            logging.debug(f'Loading yaml header file {args.yaml_header}')
+            yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'), yaml.FullLoader)
+        except yaml.YAMLError as e:
+            logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
+            return 1
+        markdown_path = trestle_root / args.output
 
-            sections = None
-            if args.sections is not None:
-                section_tuples = args.sections.strip("'").split(',')
-                sections = {}
-                for section in section_tuples:
-                    if ':' in section:
-                        s = section.split(':')
-                        sections[s[0]] = s[1]
-                    else:
-                        sections[section] = section
+        sections = None
+        if args.sections is not None:
+            section_tuples = args.sections.strip("'").split(',')
+            sections = {}
+            for section in section_tuples:
+                if ':' in section:
+                    s = section.split(':')
+                    sections[s[0]] = s[1]
+                else:
+                    sections[section] = section
 
-            return self.generate_ssp(catalog, profile, markdown_path, sections, yaml_header)
-        else:
-            return self.assemble_ssp(args.file, args.output)
+        ssp_manager = SSPManager()
+
+        return ssp_manager.generate_ssp(catalog, profile, markdown_path, sections, yaml_header)
+
+
+class SSPAssemble(AuthorCommonCommand):
+    """Assemble SSP in json format from a directory of markdown files."""
+
+    name = 'ssp-assemble'
+
+    def _init_arguments(self) -> None:
+        file_help_str = 'Name of the input markdown file directory'
+        self.add_argument('-m', '--markdown', help=file_help_str, required=True, type=str)
+        output_help_str = 'Name of the output generated json SSP'
+        self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
+        verbose_help_str = 'Display verbose output'
+        self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
+
+    def _run(self, args: argparse.Namespace) -> int:
+        log.set_log_level_from_args(args)
+        trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
+        if not trestle_root:
+            logger.warning(f'Current working directory {pathlib.Path.cwd()} is not with a trestle project.')
+            return 1
+
+        ssp_manager = SSPManager()
+        return ssp_manager.assemble_ssp(args.markdown, args.output)
+
+
+class SSPManager():
+    """Manage generation of SSP in markdown format from profile+catalog, then assembly into json format SSP."""
+
+    def __init__(self):
+        """Initialize the class."""
+        self._param_dict: Dict[str, str] = None
+        self._md_file: MDWriter = None
+        self._alters: List[prof.Alter] = None
+        self._yaml_header: dict = None
+        self._sections: Dict[str, str] = None
 
     def _replace_params(self, text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
         # replace params with assignments from the profile
