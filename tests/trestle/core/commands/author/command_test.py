@@ -23,17 +23,6 @@ import pytest
 import trestle.cli
 
 
-def test_cidd_success_cli(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test happy path of md cidd subcommand from the cli."""
-    command = 'trestle author cidd'
-    with mock.patch.object(sys, 'argv', command.split()):
-        with pytest.raises(SystemExit) as wrapped_error:
-            trestle.cli.run()
-            # FIXME: Needs to be changed once implemented.
-        assert wrapped_error.type == SystemExit
-        assert wrapped_error.value.code == 0
-
-
 def test_governed_docs_cli(tmp_trestle_dir: pathlib.Path) -> None:
     """Test happy path of md governed-docs subcommand."""
     command = 'trestle author docs'
@@ -57,8 +46,7 @@ def test_governed_folders_cli(tmp_trestle_dir: pathlib.Path) -> None:
 
 
 @pytest.mark.parametrize(
-    'command_string',
-    [('trestle author docs setup -tn test'), ('trestle author folders setup -tn test'), ('trestle author cidd')]
+    'command_string', [('trestle author docs setup -tn test'), ('trestle author folders setup -tn test')]
 )
 def test_failure_not_trestle(command_string, tmp_path: pathlib.Path) -> None:
     """Test for failure based on not in trestle directory."""

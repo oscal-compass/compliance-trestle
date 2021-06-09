@@ -16,7 +16,7 @@
 import argparse
 import logging
 import pathlib
-from typing import Dict, List, Set, Union
+from typing import Dict, List, Optional, Set, Union
 
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
@@ -24,7 +24,7 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 import trestle.utils.fs as fs
 import trestle.utils.log as log
-from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.markdown_validator import MarkdownValidator
 from trestle.utils.load_distributed import load_distributed
 from trestle.utils.md_writer import MDWriter
@@ -44,8 +44,8 @@ class ControlHandle():
         self.control = control
 
 
-class SSP(CommandPlusDocs):
-    """Create SSP in markdown form from Catalog and Profile."""
+class SSP(AuthorCommonCommand):
+    """Create SSP in markdown form from Catalog and Profile, or assemble the markdown into a json SSP."""
 
     name = 'ssp'
 
@@ -59,10 +59,8 @@ class SSP(CommandPlusDocs):
         self._sections: Dict[str, str] = None
 
     def _init_arguments(self) -> None:
-        cat_help_str = 'Name of the catalog file'
-        self.add_argument('-f', '--file', help=cat_help_str, required=True, type=str)
-        prof_help_str = 'Name of the profile file'
-        self.add_argument('-p', '--profile', help=prof_help_str, required=True, type=str)
+        file_help_str = 'Name of the profile file'
+        self.add_argument('-f', '--file', help=file_help_str, required=True, type=str)
         yaml_help_str = 'Path to the yaml header file'
         self.add_argument('-yh', '--yaml-header', help=yaml_help_str, required=True, type=str)
         sections_help_str = 'Comma separated list of section:alias pairs for sections to output'
@@ -78,10 +76,17 @@ class SSP(CommandPlusDocs):
         if not trestle_root:
             logger.warning(f'Current working directory {pathlib.Path.cwd()} is not with a trestle project.')
             return 1
+        if not fs.allowed_task_name(args.output):
+            logger.warning(f'{args.output} is not an allowed directory name')
+            return 1
 
         if args.mode == 'setup':
-            _, _, catalog = load_distributed(pathlib.Path(f'catalogs/{args.file}/catalog.json'))
-            _, _, profile = load_distributed(pathlib.Path(f'profiles/{args.profile}/profile.json'))
+            profile: prof.Profile
+            _, _, profile = load_distributed(pathlib.Path(f'profiles/{args.file}/profile.json'))
+            cat_href = profile.imports[0].href
+            cat_name = fs.model_name_from_href_str(cat_href)
+
+            _, _, catalog = load_distributed(pathlib.Path(f'catalogs/{cat_name}/catalog.json'))
 
             try:
                 logging.debug(f'Loading yaml header file {args.yaml_header}')
@@ -89,7 +94,7 @@ class SSP(CommandPlusDocs):
             except yaml.YAMLError as e:
                 logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
                 return 1
-            markdown_path = trestle_root / ('md/' + args.output)
+            markdown_path = trestle_root / args.output
 
             sections = None
             if args.sections is not None:
@@ -126,7 +131,7 @@ class SSP(CommandPlusDocs):
                     return prop.value.strip()
         return ''
 
-    def _get_part(self, control: cat.Control, part: cat.Part) -> None:
+    def _get_part(self, control: cat.Control, part: cat.Part) -> List[Union[str, List[str]]]:
         items = []
         if part.prose is not None:
             fixed_prose = self._replace_params(part.prose, control, self._param_dict)
@@ -174,7 +179,7 @@ class SSP(CommandPlusDocs):
         self._add_parts(control_handle.control)
         self._md_file.set_indent_level(0)
 
-    def _get_control_section(self, control: cat.Control, section: str) -> None:
+    def _get_control_section(self, control: cat.Control, section: str) -> Optional[str]:
         for alter in self._alters:
             if alter.control_id == control.id:
                 if alter.adds is not None:
@@ -236,7 +241,7 @@ class SSP(CommandPlusDocs):
         catalog: cat.Catalog,
         profile: prof.Profile,
         md_path: pathlib.Path,
-        sections: Union[Dict[str, str], None],
+        sections: Optional[Dict[str, str]],
         yaml_header: dict
     ) -> int:
         """
@@ -337,7 +342,7 @@ class SSP(CommandPlusDocs):
         # find all groups in the markdown dir
         group_ids = []
         trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
-        md_dir = trestle_root / ('md/' + md_name)
+        md_dir = trestle_root / md_name
         for gdir in md_dir.glob('*/'):
             group_ids.append(str(gdir.stem))
         imp_reqs: List[ossp.ImplementedRequirement] = []
@@ -351,9 +356,9 @@ class SSP(CommandPlusDocs):
         ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
         ssp.control_implementation = control_imp
         import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
-        import_profile.href = 'simple_profile.json'
+        import_profile.href = 'REPLACE_ME'
         ssp.import_profile = import_profile
-        ssp_dir = trestle_root / 'system-security-plans/my_ssp'
+        ssp_dir = trestle_root / ('system-security-plans/' + ssp_name)
         ssp_dir.mkdir(exist_ok=True, parents=True)
         ssp.oscal_write(ssp_dir / 'system-security-plan.json')
         return 0

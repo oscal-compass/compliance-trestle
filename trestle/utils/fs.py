@@ -439,3 +439,17 @@ def allowed_task_name(name: str) -> bool:
         logger.error('tasks name must not look like a file path (e.g. contain a suffix')
         return False
     return True
+
+
+def model_name_from_href_str(href: str) -> str:
+    """Find model name from href."""
+    model_name = href.split('/')[-1]
+    dot_pos = model_name.rfind('.')
+    if dot_pos >= 0:
+        model_name = model_name[:dot_pos]
+    return model_name
+
+
+def model_name_from_href_path(href: pathlib.Path) -> str:
+    """Find model name from path."""
+    return href.stem
