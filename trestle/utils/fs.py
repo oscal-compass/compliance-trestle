@@ -23,14 +23,14 @@ from typing import Any, Dict, List, Optional, Tuple, Type, cast
 
 from pydantic import create_model
 
+from ruamel.yaml import YAML
+
 from trestle.core import const
 from trestle.core import err
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
-
-import yaml
 
 if os.name == 'nt':  # pragma: no cover
     import win32api
@@ -244,7 +244,8 @@ def load_file(file_name: pathlib.Path) -> Dict[str, Any]:
     content_type = FileContentType.to_content_type(file_name.suffix)
     with file_name.open('r', encoding=const.FILE_ENCODING) as f:
         if content_type == FileContentType.YAML:
-            return yaml.load(f, yaml.FullLoader)
+            yaml = YAML(typ='safe')
+            return yaml.load(f)
         elif content_type == FileContentType.JSON:
             return json.load(f)
 
