@@ -133,7 +133,18 @@ def find_values_by_name(object_of_interest: Any, name_of_interest: str) -> List[
 def has_no_duplicate_values_by_name(object_of_interest: Any, name_of_interest: str) -> bool:
     """Determine if duplicate values of type exist in object."""
     loe = find_values_by_name(object_of_interest, name_of_interest)
-    return len(loe) == len(set(loe))
+    set_loe = set(loe)
+    if len(loe) == len(set_loe):
+        return True
+    else:
+        items = {}
+        for item in loe:
+            items[item] = items.get(item, 0) + 1
+        # now print items
+        for item, instances in items.items():
+            if instances > 1:
+                logger.info(f'Duplicate detected of item {item} with {instances} instances.')
+    return False
 
 
 def find_all_attribs_by_regex(object_of_interest: Any, regex_of_interest: str) -> List[Tuple[str, Any]]:
