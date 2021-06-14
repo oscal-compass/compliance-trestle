@@ -27,12 +27,15 @@ import pathlib
 import shutil
 from typing import Any, List
 
-import yaml
+from ruamel.yaml import YAML
+
 
 
 def update_mkdocs_meta(path: pathlib.Path, module_list: List[Any]) -> None:
     """Update the mkdocs.yml structure file to represent the latest trestle modules."""
-    yaml_structure = yaml.load(path.open('r', encoding='utf8'), yaml.FullLoader)
+    yaml = YAML(typ='safe')
+    yaml.default_flow_style = False
+    yaml_structure = yaml.load(path.open('r', encoding='utf8'))
     nav = yaml_structure['nav']
     for index in range(len(nav)):
         if 'Reference' in nav[index].keys():

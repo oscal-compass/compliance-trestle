@@ -26,8 +26,7 @@ from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError, TrestleNotFoundError
 from trestle.core.models.file_content_type import FileContentType
 
-import yaml
-
+from ruamel.yaml import YAML
 
 class ElementPath:
     """Element path wrapper of an element.
@@ -218,6 +217,7 @@ class Element:
 
         if wrapper_alias = IGNORE_WRAPPER_ALIAS, then it is ignored and assumed to be json-serializable during to_json()
         """
+        # FIXME: There are instances where elem is a list.
         self._elem: OscalBaseModel = elem
 
         if wrapper_alias == '' and wrapper_alias != self.IGNORE_WRAPPER_ALIAS:
@@ -386,7 +386,14 @@ class Element:
 
     def to_yaml(self) -> str:
         """Convert into YAML string."""
-        yaml_data = yaml.dump(yaml.safe_load(self.to_json()))
+        yaml = YAML(typ='safe')
+        yaml.default_flow_style = False
+        from io import StringIO
+        string_stream = StringIO()
+        yaml.dump(yaml.load(self.to_json()), string_stream)
+        yaml_data = string_stream.getvalue()
+        string_stream.close()
+        
         return yaml_data
 
     def to_json(self) -> str:
@@ -394,6 +401,9 @@ class Element:
         if self._wrapper_alias == self.IGNORE_WRAPPER_ALIAS:
             json_data = json.dumps(self._elem, sort_keys=False, indent=4)
         else:
+            # Note before trying to edit this
+            # This transient model allows self._elem not be an OscalBaseModel (e.g. a DICT or LIST)
+            # typing need to be clarified.
             dynamic_passer = {}
             dynamic_passer['TransientField'] = (self._elem.__class__, Field(self, alias=self._wrapper_alias))
             wrapper_model = create_model('TransientModel', __base__=OscalBaseModel, **dynamic_passer)  # type: ignore
