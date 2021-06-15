@@ -302,7 +302,9 @@ class OscalBaseModel(BaseModel):
         try:
             if content_type == FileContentType.YAML:
                 yaml = YAML(typ='safe')
-                obj = yaml.load(path.open(encoding=const.FILE_ENCODING))
+                fh = path.open('r', encoding=const.FILE_ENCODING)
+                obj = yaml.load(fh)
+                fh.close()
             elif content_type == FileContentType.JSON:
                 obj = load_file(
                     path,
