@@ -272,6 +272,9 @@ class OscalBaseModel(BaseModel):
             yaml.dump(yaml.load(self.oscal_serialize_json()), write_file)
         elif content_type == FileContentType.JSON:
             write_file.write(self.oscal_serialize_json(pretty=True))
+        # Flush / close required (by experience) due to flushing issues in tests.
+        write_file.flush()
+        write_file.close()
 
     @classmethod
     def oscal_read(cls, path: pathlib.Path) -> 'OscalBaseModel':
