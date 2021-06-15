@@ -20,13 +20,14 @@ from typing import Dict, List, Optional, Union
 from pydantic import Field, create_model
 from pydantic.error_wrappers import ValidationError
 
+from ruamel.yaml import YAML
+
 import trestle.core.const as const
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError, TrestleNotFoundError
 from trestle.core.models.file_content_type import FileContentType
 
-from ruamel.yaml import YAML
 
 class ElementPath:
     """Element path wrapper of an element.
@@ -393,7 +394,7 @@ class Element:
         yaml.dump(yaml.load(self.to_json()), string_stream)
         yaml_data = string_stream.getvalue()
         string_stream.close()
-        
+
         return yaml_data
 
     def to_json(self) -> str:

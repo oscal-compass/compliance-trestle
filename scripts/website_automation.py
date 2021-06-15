@@ -30,7 +30,6 @@ from typing import Any, List
 from ruamel.yaml import YAML
 
 
-
 def update_mkdocs_meta(path: pathlib.Path, module_list: List[Any]) -> None:
     """Update the mkdocs.yml structure file to represent the latest trestle modules."""
     yaml = YAML(typ='safe')

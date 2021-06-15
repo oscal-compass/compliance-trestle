@@ -57,7 +57,7 @@ docs-validate:: docs-automation
 docs-serve: docs-automation
 	mkdocs serve	
 
-# Something f
+# Something funky about these tests.
 # clean::
 # 	find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 

@@ -18,11 +18,11 @@ import json
 import logging
 from typing import List
 
+from ruamel.yaml import YAML
+
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
 from trestle.transforms.utils.osco_helper import ResultsMgr
-
-from ruamel.yaml import YAML
 
 logger = logging.getLogger(__name__)
 

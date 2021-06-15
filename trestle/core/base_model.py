@@ -35,12 +35,12 @@ from pydantic import BaseModel, Extra, Field, create_model
 from pydantic.fields import ModelField
 from pydantic.parse import load_file
 
+from ruamel.yaml import YAML
+
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.utils import classname_to_alias, get_origin, is_collection_field_type
-
-from ruamel.yaml import YAML
 
 logger = logging.getLogger(__name__)
 
@@ -233,10 +233,11 @@ class OscalBaseModel(BaseModel):
         """
         Return an 'oscal wrapped' json object serialized in a compressed form.
 
+        Args:
+            pretty: Whether or not to pretty-print json output or have in compressed form.
         Returns:
             Oscal model serialized to a json object including packaging inside of a single top level key.
         """
-
         if pretty:
             wrapped = self._oscal_wrap()
             wrapped_str = wrapped.json(exclude_none=True, by_alias=True, indent=2)
@@ -264,7 +265,6 @@ class OscalBaseModel(BaseModel):
         Raises:
             err.TrestleError: If a unknown file extension is provided.
         """
-
         content_type = FileContentType.to_content_type(path.suffix)
         write_file = pathlib.Path(path).open('w', encoding=const.FILE_ENCODING)
         if content_type == FileContentType.YAML:
@@ -297,7 +297,7 @@ class OscalBaseModel(BaseModel):
 
         obj: Dict[str, Any] = {}
         try:
-            if content_type == FileContentType.YAML: 
+            if content_type == FileContentType.YAML:
                 yaml = YAML(typ='safe')
                 obj = yaml.load(path.open(encoding=const.FILE_ENCODING))
             elif content_type == FileContentType.JSON:
@@ -418,4 +418,3 @@ class OscalBaseModel(BaseModel):
         if not cls.is_collection_container():
             raise err.TrestleError('OscalBaseModel is not wrapping a collection type')
         return get_origin(cls.__fields__['__root__'].outer_type_)
-

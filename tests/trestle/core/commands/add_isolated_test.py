@@ -18,20 +18,15 @@ import pathlib
 import sys
 from unittest.mock import patch
 
-import pytest
-
 from tests import test_utils
 
 from trestle.cli import Trestle
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal.catalog import Catalog
-from trestle.utils.fs import get_stripped_contextual_model
 
 
 def test_run(tmp_path, sample_catalog_missing_roles, keep_cwd):
     """Test _run for AddCmd."""
-    # expected catalog after add of Responsible-Party
-    #ntp = tmp_path / 'helloooo'
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_roles_double_rp.json')
     expected_catalog_roles2_rp = Catalog.oscal_read(file_path)
 

@@ -19,7 +19,6 @@ import logging
 import pathlib
 from typing import List
 
-import traceback
 import trestle.core.const as const
 import trestle.core.err as err
 import trestle.core.generators as gens

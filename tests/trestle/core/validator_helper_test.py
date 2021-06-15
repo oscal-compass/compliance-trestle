@@ -18,13 +18,13 @@
 import pathlib
 from uuid import uuid4
 
+from ruamel.yaml import YAML
+
 import trestle.core.const as const
 import trestle.core.validator_helper as validator_helper
 import trestle.oscal.catalog as catalog
 # import trestle.oscal.ssp as ssp  # noqa: E800
 import trestle.oscal.target as ostarget
-
-from ruamel.yaml import YAML
 
 catalog_path = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
 ssp_path = pathlib.Path('nist-content/src/examples/ssp/json/ssp-example.json')

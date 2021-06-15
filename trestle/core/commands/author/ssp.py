@@ -18,7 +18,6 @@ import logging
 import pathlib
 from typing import Dict, List, Optional, Set, Union
 
-
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
@@ -32,8 +31,6 @@ from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.markdown_validator import MarkdownValidator
 from trestle.utils.load_distributed import load_distributed
 from trestle.utils.md_writer import MDWriter
-
-
 
 logger = logging.getLogger(__name__)
 

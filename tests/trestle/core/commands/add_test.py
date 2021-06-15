@@ -33,7 +33,7 @@ from trestle.oscal.catalog import BackMatter, Catalog
 from trestle.utils.fs import get_stripped_contextual_model
 
 
-def test_add(tmp_path,keep_cwd):
+def test_add(tmp_path, keep_cwd):
     """Test AddCmd.add() method for trestle add."""
     file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / 'minimal_catalog_missing_roles.json'
     minimal_catalog_missing_roles = Catalog.oscal_read(file_path)
@@ -86,7 +86,7 @@ def test_add(tmp_path,keep_cwd):
     assert actual_update_action3 == expected_update_action_3
 
 
-def test_add_failure(tmp_path, sample_catalog_minimal,keep_cwd):
+def test_add_failure(tmp_path, sample_catalog_minimal, keep_cwd):
     """Test AddCmd.add() method for trestle add."""
     content_type = FileContentType.JSON
 

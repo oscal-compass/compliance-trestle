@@ -20,11 +20,11 @@ import pathlib
 
 import pytest
 
-import trestle.core.const as const
-import trestle.oscal.target as ostarget
-
 from ruamel.yaml import YAML
 from ruamel.yaml.parser import ParserError
+
+import trestle.core.const as const
+import trestle.oscal.target as ostarget
 
 yaml_path = pathlib.Path('tests/data/yaml/')
 json_path = pathlib.Path('tests/data/json/')
