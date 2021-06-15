@@ -34,7 +34,9 @@ def update_mkdocs_meta(path: pathlib.Path, module_list: List[Any]) -> None:
     """Update the mkdocs.yml structure file to represent the latest trestle modules."""
     yaml = YAML(typ='safe')
     yaml.default_flow_style = False
-    yaml_structure = yaml.load(path.open('r', encoding='utf8'))
+    fh_read = path.open('r', encoding='utf8')
+    yaml_structure = yaml.load(fh_read)
+    fh_read.close()
     nav = yaml_structure['nav']
     for index in range(len(nav)):
         if 'Reference' in nav[index].keys():
@@ -43,7 +45,9 @@ def update_mkdocs_meta(path: pathlib.Path, module_list: List[Any]) -> None:
             nav[index]['Reference'].append({'trestle API reference': module_list})
 
     yaml_structure['nav'] = nav
-    yaml.dump(yaml_structure, path.open('w', encoding='utf8'))
+    fh_write = path.open('w', encoding='utf8')
+    yaml.dump(yaml_structure, fh_write)
+    fh_write.close()
 
 
 def write_module_doc_metafile(dump_location: pathlib.Path, module_name: str) -> None:
