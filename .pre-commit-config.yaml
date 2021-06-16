@@ -38,7 +38,7 @@ repos:
     rev: 0.7.1 # Do not change version. 0.6.0 introduces breaking changes.
     hooks:
     - id: mdformat
-      exclude: "CHANGELOG.md|docs/mkdocs_code_of_conduct.md|docs/api_reference|tests/data/md"
+      exclude: "CHANGELOG.md|docs/mkdocs_code_of_conduct.md|docs/api_reference|tests/data/author"
       additional_dependencies:
       - mdformat-tables
       - mdformat-config
