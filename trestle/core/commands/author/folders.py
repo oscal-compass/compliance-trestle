@@ -63,6 +63,12 @@ class Folders(AuthorCommonCommand):
         self.add_argument(
             author_const.task_name_short, author_const.task_name_long, help=tn_help_str, required=True, type=str
         )
+        self.add_argument(
+            author_const.short_readme_validate,
+            author_const.long_readme_validate,
+            help=author_const.readme_validate_folders_help,
+            action='store_true'
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         if self._initialize(args):
@@ -73,12 +79,16 @@ class Folders(AuthorCommonCommand):
                 status = self.create_sample()
 
             elif args.mode == 'template-validate':
-                status = self.template_validate(args.header_validate, args.header_only_validate, args.governed_heading)
+                status = self.template_validate(
+                    args.header_validate, args.header_only_validate, args.governed_heading, args.readme_validate
+                )
             elif args.mode == 'setup':
                 status = self.setup_template()
             elif args.mode == 'validate':
                 # mode is validate
-                status = self.validate(args.header_validate, args.header_only_validate, args.governed_heading)
+                status = self.validate(
+                    args.header_validate, args.header_only_validate, args.governed_heading, args.readme_validate
+                )
         except Exception as e:
             logger.error(f'Exception "{e}" running trestle md governed folders.')
         return status
@@ -106,7 +116,9 @@ class Folders(AuthorCommonCommand):
         shutil.copy(drawio_template, template_file_drawio)
         return 0
 
-    def template_validate(self, validate_header: bool, validate_only_header: bool, heading: str) -> int:
+    def template_validate(
+        self, validate_header: bool, validate_only_header: bool, heading: str, readme_validate: bool
+    ) -> int:
         """Validate that the template is acceptable markdown."""
         if not self.template_dir.is_dir():
             logger.error(
@@ -122,6 +134,9 @@ class Folders(AuthorCommonCommand):
             elif template_file.is_dir():
                 continue
             elif template_file.suffix.lower() == '.md':
+                if not readme_validate and template_file.name == 'readme.md':
+                    logger.error('Template directory contains a readme.md file and readme validation is off.')
+                    return 1
                 try:
                     _ = markdown_validator.MarkdownValidator(
                         template_file, validate_header, validate_only_header, heading
@@ -155,12 +170,15 @@ class Folders(AuthorCommonCommand):
         instance_dir: pathlib.Path,
         validate_header: bool,
         validate_only_header: bool,
-        governed_heading: str
+        governed_heading: str,
+        readme_validate: bool
     ) -> bool:
 
         r_instance_files: List[pathlib.Path] = []
         for instance_file in instance_dir.rglob('*'):
             if fs.local_and_visible(instance_file):
+                if instance_file.name.lower() == 'readme.md' and not readme_validate:
+                    continue
                 r_instance_files.append(instance_file.relative_to(instance_dir))
 
         for template_file in template_dir.rglob('*'):
@@ -168,6 +186,8 @@ class Folders(AuthorCommonCommand):
             # find example directories
             clean_suffix = template_file.suffix.lstrip('.')
             if not fs.local_and_visible(template_file):
+                continue
+            if not readme_validate and template_file.name.lower() == 'readme.md':
                 continue
             elif template_file.is_dir():
                 # assert template directories exist
@@ -222,7 +242,9 @@ class Folders(AuthorCommonCommand):
             shutil.copytree(str(self.template_dir), str(sample_path))
             return 0
 
-    def validate(self, validate_header: bool, validate_only_header: bool, governed_heading: str) -> int:
+    def validate(
+        self, validate_header: bool, validate_only_header: bool, governed_heading: str, readme_validate: bool
+    ) -> int:
         """Validate task."""
         if not self.task_path.is_dir():
             logger.error(f'Task directory {self.task_path} does not exist. Exiting validate.')
@@ -233,7 +255,12 @@ class Folders(AuthorCommonCommand):
                 if fs.is_symlink(task_instance):
                     continue
                 result = self._measure_template_folder(
-                    self.template_dir, task_instance, validate_header, validate_only_header, governed_heading
+                    self.template_dir,
+                    task_instance,
+                    validate_header,
+                    validate_only_header,
+                    governed_heading,
+                    readme_validate
                 )
                 if not result:
                     logger.error(
