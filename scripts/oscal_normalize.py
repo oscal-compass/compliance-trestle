@@ -19,8 +19,8 @@ Script to noramlize oscal.
 It then reorders the classes so there are minimal forwards required.
 This script is normally called by gen_oscal.py when models are generated.
 """
+
 import logging
-import operator
 import pathlib
 import re
 
@@ -32,6 +32,9 @@ logger.addHandler(logging.StreamHandler())
 
 base64_str = 'Base64'
 class_header = 'class '
+
+fstems = ['assessment_plan', 'assessment_results', 'catalog', 'component', 'poam', 'profile', 'ssp']
+
 
 license_header = (
     '# -*- mode:python; coding:utf-8 -*-\n'
@@ -49,6 +52,17 @@ license_header = (
     '# See the License for the specific language governing permissions and\n'
     '# limitations under the License.\n'
 )
+
+main_header = """
+from __future__ import annotations
+
+from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional
+
+from pydantic import AnyUrl, EmailStr, Field, conint, constr
+from trestle.core.base_model import OscalBaseModel
+"""
 
 
 class RelOrder():
@@ -68,11 +82,13 @@ class ClassText():
         self.lines = [first_line.rstrip()]
         n = first_line.find('(')
         self.name = first_line[len(class_header):n]
-        self.parent_name = parent_name
+        self.parent_names = [parent_name]
+        self.orig_name = self.name
         self.refs = set()
         self.full_refs = set()
         self.found_all_links = False
         self.is_self_ref = False
+        self.is_local = False
 
     def add_line(self, line):
         """Add new line to class text."""
@@ -80,7 +96,7 @@ class ClassText():
 
     def add_ref_if_good(self, ref_name):
         """Add non-empty refs."""
-        if ref_name:
+        if ref_name and 'common.' not in ref_name:
             self.refs.add(ref_name)
 
     def add_ref_pattern(self, p, line):
@@ -141,6 +157,11 @@ class ClassText():
             if n > ro.latest_dep:
                 ro.latest_dep = n
         return ro
+
+    def strip_prefix(self, prefix):
+        """Strip the prefix from the name only."""
+        if self.name.startswith(prefix):
+            self.name = self.name.replace(prefix, '', 1)
 
 
 def find_forward_refs(class_list, orders):
@@ -261,7 +282,7 @@ def load_classes(fstem):
     class_text = None
     done_header = False
 
-    fname = pathlib.Path('trestle/oscal') / (fstem + '.py')
+    fname = pathlib.Path('trestle/oscal/tmp') / (fstem + '.py')
 
     # Otherwise accumulate all class dependencies for reordering with no forward refs
     with open(fname, 'r', encoding='utf8') as infile:
@@ -286,7 +307,6 @@ def load_classes(fstem):
                         r_orig = r
                         r = r.replace('List[Any]', f'List[{refs[0]}]')
                         print(f'{r_orig} -> {r}')
-                    # class_text.add_all_refs(r)
                     class_text.add_line(r.rstrip())
 
     all_classes.append(class_text)  # don't forget final class
@@ -296,15 +316,387 @@ def load_classes(fstem):
 
     return all_classes
 
-def load_all_files():
-    fstems = ['assessment_plan', 'assessment_response', 'catalog', 'component', 'poam', 'profile', 'ssp']
+
+def find_unique_classes():
+    """Load all oscal files and find unique classes."""
     all_classes = []
     for fstem in fstems:
         all_classes.extend(load_classes(fstem))
     unique_classes = []
     for a in all_classes:
-        for u in unique_classes:
+        if a.name == 'Model':
+            continue
+        is_unique = True
+        for i, u in enumerate(unique_classes):
             if a.lines == u.lines:
+                is_unique = False
                 break
-        unique_classes.append(a)
+        if is_unique:
+            unique_classes.append(a)
+        else:
+            unique_classes[i].parent_names.append(a.parent_names[0])
+    return unique_classes
 
+
+def strip_prefixes(classes):
+    """Strip prefixes from class names."""
+    prefixes = [
+        'OscalMetadata',
+        'OscalAssessmentCommon',
+        'OscalImplementationCommon',
+        'OscalComponentDefinition',
+        'OscalCatalog',
+        'OscalSsp',
+        'OscalPoam',
+        'OscalProfile',
+        'OscalAr',
+        'OscalAp',
+        'Common'
+    ]
+    new_classes = []
+    for c in classes:
+        for prefix in prefixes:
+            c.strip_prefix(prefix)
+        new_classes.append(c)
+    return new_classes
+
+
+def make_special_name_changes(classes):
+    """Make known special case changes."""
+    new_classes = []
+    changes = {
+        'OscalImplementationCommonImplementationStatus': 'Ssp_ImplementationStatus',
+        'OscalSspStatus': 'Ssp_SystemCharacteristicsStatus',
+        'Status': 'Ssp_SystemComponentStatus'
+    }
+    for c in classes:
+        if 'ssp' in c.parent_names and c.name in changes:
+            c.name = changes[c.name]
+        new_classes.append(c)
+    return new_classes
+
+
+def fix_clashes(classes):
+    """Fix clashes in names."""
+    lookup = {
+        'assessment_plan': 'Ap',
+        'assessment_results': 'Ar',
+        'catalog': 'Cat',
+        'component': 'Comp',
+        'poam': 'Poam',
+        'profile': 'Prof',
+        'ssp': 'Ssp'
+    }
+    nclasses = len(classes)
+    changes = []
+    for i in range(nclasses):
+        for j in range(i + 1, nclasses):
+            if classes[i].name == classes[j].name:
+                a = classes[i]
+                b = classes[j]
+                a_parents = a.parent_names
+                b_parents = b.parent_names
+                for a_parent in a_parents:
+                    for b_parent in b_parents:
+                        a_pre = lookup[a_parent]
+                        a_new = a.name if a.name.startswith(a_pre) else a_pre + '_' + a.name
+                        b_pre = lookup[b_parent]
+                        b_new = b.name if b.name.startswith(b_pre) else b_pre + '_' + b.name
+                        if a.name != a_new:
+                            changes.append((a_parent, a.name, a_new))
+                        if b.name != b_new:
+                            changes.append((b_parent, b.name, b_new))
+
+    # now make the actual class name changes
+    new_classes = []
+    for c in classes:
+        for change in changes:
+            for parent_name in c.parent_names:
+                if parent_name == change[0] and c.name == change[1]:
+                    c.name = change[2]
+                    # this will need to be present in all parent classes
+                    c.is_local = True
+                    break
+        new_classes.append(c)
+    return new_classes
+
+
+def check_ok(classes):
+    """Confirm no name or content matches across classes."""
+    nclasses = len(classes)
+    for i in range(nclasses):
+        for j in range(i + 1, nclasses):
+            if classes[i].name == classes[j].name:
+                print(f'Name clash with {classes[i].name}')
+                return False
+            if classes[i].lines == classes[j].lines:
+                print(f'Body clash of {classes[i].name} with {classes[j].name}')
+                return False
+    return True
+
+
+def find_str(classes, s):
+    """Find string somewhere in class text."""
+    for i, c in enumerate(classes):
+        for line in c.lines:
+            if s in line:
+                return i
+    return -1
+
+
+def token_in_line(line, token):
+    """Find if token is present in string."""
+    pattern = r'(^|[^a-zA-Z_]+)' + token + r'($|[^a-zA-Z_]+)'
+    p = re.compile(pattern)
+    hits = p.findall(line)
+    return len(hits) > 0
+
+
+
+def replace_token(line, str1, str2):
+    """Replace token str1 with new str2 in line."""
+    # pull out what you want to keep on left and right
+    # rather than capture what you want and replace it
+    if str1 not in line:
+        return line
+    pattern = r'(^|.*[^a-zA-Z_]+)' + str1 + r'($|[^a-zA-Z0-9_]+.*)'
+    line = re.sub(pattern, r'\1' + str2 + r'\2', line)
+    return line
+
+
+def replace_names_in_classes(classes, changes):
+    """Replace references in class text corresponding to changes provided."""
+    new_classes = []
+    for i, c in enumerate(classes):
+        for change in changes:
+            # any change that was made in parent needs to be made in this class
+            if change[0] in c.parent_names:
+                lines = []
+                for line in c.lines:
+                    if ('alias' in line) or (("'" not in line) and ('"' not in line)):    #FIXME need to exclude text in quotes
+                        line = replace_token(line, change[1], change[2])
+                    lines.append(line)
+                c.lines = lines
+        new_classes.append(c)
+    return new_classes
+
+
+def find_changes(classes):
+    """Find all class names that changed and note parent."""
+    # some class names will change in several parents
+    changes = []
+    for c in classes:
+        if c.name != c.orig_name:
+            # make note of a change for all parents involved
+            for parent_name in c.parent_names:
+                changes.append((parent_name, c.orig_name, c.name))
+    return changes
+
+
+def is_common(cls):
+    if '_' in cls.name:
+        return False
+    if len(cls.parent_names) == 1:
+        return False
+    return True
+
+
+def refine_split(com, file_classes):
+    """Make sure no references in common link to the other files."""
+    # get list of original names in current common file
+    common_names = []
+    for c in com:
+        common_names.append(c.orig_name)
+
+    # find all original names of classes in other files that shouldn't be refd by common
+    names = set()
+    for stem in fstems:
+        for c in file_classes[stem]:
+            if (c.is_local) or (c.orig_name not in common_names):
+                names.add(c.orig_name)
+    names = list(names)
+
+    # if any common classes references outside common - exclude it from common
+    not_com = []
+    for c in com:
+        excluded = False
+        for line in c.lines:
+            if excluded:
+                break
+            if '"' not in line and "'" not in line:
+                for name in names:
+                    if token_in_line(line, name):
+                        not_com.append(c.name)
+                        excluded = True
+                        break
+
+    # remove all not_com from com and add to other files as needed by parents
+    new_com = []
+    for c in com:
+        if c.name in not_com:
+            for parent in c.parent_names:
+                file_classes[parent].append(c)
+        else:
+            new_com.append(c)
+    return new_com, file_classes
+        
+
+
+
+
+def split_classes(classes):
+    """Split into separate common and other files."""
+    com = []
+    file_classes = {}
+    for stem in fstems:
+        file_classes[stem] = []
+
+    for c in classes:
+        if is_common(c):
+            com.append(c)
+        else:
+            c.name = c.name.split('_')[-1]
+            for parent in c.parent_names:
+                # the class carries with it that it is local and bound to the parent
+                file_classes[parent].append(c)
+
+    # keep removing classes in com that have external dependencies until it is clean
+    new_ncom = 0
+    while new_ncom != len(com):
+        new_ncom = len(com)
+        com, file_classes = refine_split(com, file_classes)
+    return com, file_classes
+
+
+
+def reorder_classes(classes):
+    """Reorder the classes to minimize needed forwards."""
+    new_classes = []
+    for c in classes:
+        for line in c.lines:
+            _ = c.add_all_refs(line)
+        new_classes.append(c)
+    reordered, forward_refs = reorder(classes)
+    return reordered, forward_refs
+
+
+def write_oscal(classes, forward_refs, fstem):
+    """Write out oscal.py with all classes in it."""
+    with open(f'trestle/oscal/{fstem}.py', 'w', encoding='utf8') as out_file:
+        out_file.write(license_header)
+        out_file.write('\n\n')
+        out_file.write(main_header)
+        if fstem != 'common':
+            out_file.write('import trestle.oscal.common as common\n')
+        out_file.write('\n\n')
+        for c in classes:
+            out_file.writelines('\n'.join(c.lines) + '\n')
+        out_file.writelines('\n'.join(forward_refs) + '\n')
+
+
+def write_changes(changes):
+    """Write out the name changes."""
+    with open('trestle/oscal/changes.txt', 'w', encoding='utf8') as out_file:
+        for c in changes:
+            out_file.write(f'{c[0]:20s} {c[2]:30s} {c[1]}\n')
+        out_file.write('\n\nPrefix added\n\n')
+        for c in changes:
+            if c[2] not in c[1]:
+                out_file.write(f'{c[0]:20s} {c[2]:30s} {c[1]}\n')
+
+
+def write_unchanged(classes):
+    """Write out classes that did not change name."""
+    names = []
+    for c in classes:
+        if c.name == c.orig_name:
+            names.append(c.name)
+    with open('trestle/oscal/unchanged.txt', 'w', encoding='utf8') as out_file:
+        out_file.write('\n'.join(names))
+
+
+def dump_classes_as_python(classes, stem, changes, com_names):
+    """Find changes within the names and apply to all refs."""
+    # then reorder and dump
+    for i, c in enumerate(classes):
+        lines = []
+        for line in c.lines:
+            for item in changes.items():
+                new_name = item[1]
+                # if not in common then need to add common. to common names
+                if stem != 'common' and new_name in com_names:
+                    tentative_name = 'common.' + new_name
+                    if tentative_name not in line:
+                        new_name = tentative_name
+                line = replace_token(line, item[0], new_name)
+            lines.append(line)
+        classes[i].lines = lines
+    ordered, forward_refs = reorder_classes(classes)
+    write_oscal(ordered, forward_refs, stem)
+
+
+def find_full_changes(com, file_classes):
+    ###Find all name changes and what files made them."""
+    changes = {}
+    com_names = []
+    for c in com:
+        changes[c.orig_name] = c.name
+        com_names.append(c.name)
+    for fstem in fstems:
+        for c in file_classes[fstem]:
+            changes[c.orig_name] = c.name
+    return changes, com_names
+
+            
+    
+
+
+
+if __name__ == '__main__':
+    # find all unique classes
+    # and keep track of parents when classes duplicate
+    uc = find_unique_classes()
+    print(f'{len(uc)} unique classes')
+
+    # make early substitutions of known special cases
+    uc = make_special_name_changes(uc)
+
+    # strip prefixes in names only
+    uc = strip_prefixes(uc)
+
+    # find clashes in names and add short prefix to name
+    uc = fix_clashes(uc)
+
+    # find all name changes
+    # changes = find_changes(uc)
+    # write_changes(changes)
+    # write_unchanged(uc)
+
+    com, file_classes = split_classes(uc)
+
+    changes, com_names = find_full_changes(com, file_classes)
+
+    dump_classes_as_python(com, 'common', changes, com_names)
+    for item in file_classes.items():
+        dump_classes_as_python(item[1], item[0], changes, com_names)
+
+    # take com class, find changes in it, apply them to refs
+
+    # make file of changes
+    #write_changes(changes)
+
+    # make file of classes that did not change
+    #write_unchanged(uc)
+
+    # replace all refs with new names
+    #uc = replace_names_in_classes(uc, changes)
+
+    # sanity checks
+    #ok = check_ok(uc)
+    #assert(ok)
+
+    # reorder classes and find needed forwards
+    #final_order, forward_refs = reorder_classes(uc)
+
+    # write it out
+    #write_oscal(final_order, forward_refs)
