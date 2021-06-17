@@ -3,6 +3,13 @@
 
 <!--next-version-placeholder-->
 
+## v0.18.0 (2021-06-17)
+### Feature
+* Allow explicit inclusion / exclusion of readme files in author workflows ([#570](https://github.com/IBM/compliance-trestle/issues/570)) ([`0ca1d20`](https://github.com/IBM/compliance-trestle/commit/0ca1d202fa4865acf20fb9156a9c13437350b16e))
+
+### Fix
+* Replace yaml library to ensure that errors are thrown / recognised on duplicate keys. ([#569](https://github.com/IBM/compliance-trestle/issues/569)) ([`9464420`](https://github.com/IBM/compliance-trestle/commit/9464420cb3bba1dc684051ff35e2d13e9a115203))
+
 ## v0.17.0 (2021-06-09)
 ### Feature
 * Ssp generation of markdown files for groups of controls ([#556](https://github.com/IBM/compliance-trestle/issues/556)) ([`1dcf139`](https://github.com/IBM/compliance-trestle/commit/1dcf1395469b20b32e67c02cc52ede15d5b35f4b))
