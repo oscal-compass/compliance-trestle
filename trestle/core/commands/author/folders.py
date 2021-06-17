@@ -268,9 +268,11 @@ class Folders(AuthorCommonCommand):
                         + f'{self.task_name} on directory {self.rel_dir(task_instance)}'
                     )
                     return 1
+            elif task_instance.name.lower() == 'readme.md':
+                logger.debug('Ignoring readme in root of task instance directory.')
             else:
                 logger.info(
-                    f'Unexpected file {self.rel_dir(self.task_instance)} identified in {self.rel_dir(self.task_name)}'
+                    f'Unexpected file {self.rel_dir(task_instance)} identified in {self.task_name}'
                     + ' directory, ignoring.'
                 )
         return 0

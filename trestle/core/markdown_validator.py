@@ -245,7 +245,7 @@ class MarkdownValidator:
         if self._yaml_header_validate or self._yaml_only_validate:
             header_status = self.compare_keys(self._template_header, header_content)
             if not header_status:
-                logger.warning(f'YAML header mismatch between template {self.template_path} and instance {candidate}')
+                logger.info(f'YAML header mismatch between template {self.template_path} and instance {candidate}')
                 return False
         if self._yaml_only_validate:
             return True
