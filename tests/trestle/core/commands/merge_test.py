@@ -21,7 +21,7 @@ from pathlib import Path
 
 from tests import test_utils
 
-import trestle.oscal.catalog as oscatalog
+import trestle.oscal.common as common
 from trestle.core.commands.merge import MergeCmd
 from trestle.core.commands.split import SplitCmd
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
@@ -87,7 +87,7 @@ def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
     stripped_catalog = stripped_catalog_type.oscal_read(catalog_file)
 
     # Back-matter model needs to be complete and if it is decomposed, needs to be merged recursively first
-    back_matter = oscatalog.BackMatter.oscal_read(back_matter_file)
+    back_matter = common.BackMatter.oscal_read(back_matter_file)
 
     # Back-matter needs to be inserted in a stripped Catalog that does NOT exclude the back-matter fields
 
@@ -282,8 +282,7 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
 
     # Back-matter model needs to be complete and if it is decomposed, needs to be merged recursively first
     roles = [
-        oscommon.Role.oscal_read(roles_dir / '00000__role.json'),
-        oscommon.Role.oscal_read(roles_dir / '00001__role.json')
+        common.Role.oscal_read(roles_dir / '00000__role.json'), common.Role.oscal_read(roles_dir / '00001__role.json')
     ]
 
     # Back-matter needs to be inserted in a stripped Catalog that does NOT exclude the back-matter fields

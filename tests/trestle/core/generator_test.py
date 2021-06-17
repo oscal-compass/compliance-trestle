@@ -30,9 +30,9 @@ import pytest
 import trestle.core.err as err
 import trestle.core.generators as gens
 import trestle.oscal as oscal
-import trestle.oscal.assessment_plan as ap
 import trestle.oscal.assessment_results as ar
 import trestle.oscal.catalog as catalog
+import trestle.oscal.common as common
 import trestle.oscal.ssp as ssp
 from trestle.core.base_model import OscalBaseModel
 
@@ -55,7 +55,7 @@ def test_get_sample_value_by_type() -> None:
     assert gens.generate_sample_value_by_type(float, '') == 0.0
     assert gens.generate_sample_value_by_type(ConstrainedStr, '') == '00000000-0000-4000-8000-000000000000'
     uuid_ = gens.generate_sample_value_by_type(ConstrainedStr, 'uuid')
-    assert gens.generate_sample_value_by_type(ssp.Type, '') == ssp.Type('person')
+    assert gens.generate_sample_value_by_type(common.Type, '') == common.Type('person')
     assert is_valid_uuid(uuid_) and str(uuid_) != '00000000-0000-4000-8000-000000000000'
     assert gens.generate_sample_value_by_type(ConstrainedStr, 'date_authorized') == date.today().isoformat()
     assert gens.generate_sample_value_by_type(pydantic.networks.EmailStr,
@@ -69,7 +69,7 @@ def test_get_sample_value_by_type() -> None:
 
 def test_generate_sample_with_conint() -> None:
     """Generate a sample model where it is known to contain conint fields."""
-    gens.generate_sample_model(ap.AtFrequency)
+    gens.generate_sample_model(common.AtFrequency)
 
 
 def test_generate_sample_with_list_primitives() -> None:

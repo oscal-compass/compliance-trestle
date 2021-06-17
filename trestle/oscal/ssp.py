@@ -697,4 +697,6 @@ class SystemSecurityPlan(OscalBaseModel):
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
 
 
+class Model(OscalBaseModel):
+    system_security_plan: SystemSecurityPlan = Field(..., alias='system-security-plan')
 

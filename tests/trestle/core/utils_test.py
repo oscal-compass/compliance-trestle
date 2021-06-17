@@ -23,8 +23,8 @@ import trestle.core.utils as mutils
 import trestle.oscal.assessment_plan as assessment_plan
 import trestle.oscal.assessment_results as assessment_results
 import trestle.oscal.catalog as catalog
-import trestle.oscal.component as component
 import trestle.oscal.common as common
+import trestle.oscal.component as component
 import trestle.oscal.poam as poam
 import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp

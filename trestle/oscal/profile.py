@@ -337,4 +337,8 @@ class Profile(OscalBaseModel):
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
 
 
+class Model(OscalBaseModel):
+    profile: Profile
+
+
 Group.update_forward_refs()

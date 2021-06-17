@@ -312,4 +312,6 @@ class ComponentDefinition(OscalBaseModel):
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
 
 
+class Model(OscalBaseModel):
+    component_definition: ComponentDefinition = Field(..., alias='component-definition')
 

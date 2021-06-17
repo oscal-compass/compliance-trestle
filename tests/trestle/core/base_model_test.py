@@ -24,8 +24,7 @@ import trestle.core.base_model as ospydantic
 import trestle.core.err as err
 import trestle.oscal
 import trestle.oscal.catalog as oscatalog
-import trestle.oscal.component as component
-import trestle.oscal.poam as poam
+import trestle.oscal.common as common
 import trestle.oscal.target as ostarget
 from trestle.core.base_model import OscalBaseModel
 
@@ -38,7 +37,7 @@ def test_echo_tmp_path(tmp_path) -> None:
 
 def simple_catalog() -> oscatalog.Catalog:
     """Return a skeleton catalog with datetime.now()."""
-    m = oscommon.Metadata(
+    m = common.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now(),
@@ -52,7 +51,7 @@ def simple_catalog() -> oscatalog.Catalog:
 
 def simple_catalog_utc() -> oscatalog.Catalog:
     """Return a skeleton catalog with datetime.now()."""
-    m = oscommon.Metadata(
+    m = common.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(timezone.utc),
@@ -66,7 +65,7 @@ def simple_catalog_utc() -> oscatalog.Catalog:
 
 def simple_catalog_with_tz() -> oscatalog.Catalog:
     """Return a skeleton catalog with datetime.now()."""
-    m = oscommon.Metadata(
+    m = common.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
@@ -128,7 +127,7 @@ def test_broken_tz() -> None:
 
     taz = BrokenTimezone()
 
-    m = oscommon.Metadata(
+    m = common.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now(tz=taz),
@@ -232,7 +231,7 @@ def test_multiple_variable_strip() -> None:
 def test_copy_to() -> None:
     """Test the copy to functionality."""
     # Complex variable
-    c_m = oscommon.Metadata(
+    c_m = common.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now(),
@@ -251,13 +250,13 @@ def test_copy_to() -> None:
     # component.Remarks (type str)
     # poam.RiskStatus (type str)
     # note the testing conduction
-    remark = component.Remarks(__root__='hello')
-    _ = remark.copy_to(poam.RiskStatus)
+    remark = common.Remarks(__root__='hello')
+    _ = remark.copy_to(common.RiskStatus)
 
 
 def test_copy_from() -> None:
     """Test copy from function."""
-    m = oscommon.Metadata(
+    m = common.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),

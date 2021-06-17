@@ -617,6 +617,7 @@ def write_unchanged(classes):
 
 def dump_classes_as_python(classes, stem, changes, com_names):
     """Find changes within the names and apply to all refs."""
+    # FIXME add Model to each file
     # then reorder and dump
     for i, c in enumerate(classes):
         lines = []

@@ -552,4 +552,8 @@ class Activity(OscalBaseModel):
     remarks: Optional[common.Remarks] = None
 
 
+class Model(OscalBaseModel):
+    plan_of_action_and_milestones: PlanOfActionAndMilestones = Field(
+        ..., alias='plan-of-action-and-milestones'
+    )
 

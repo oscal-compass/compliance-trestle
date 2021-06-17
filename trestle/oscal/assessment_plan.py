@@ -538,4 +538,6 @@ class AssessmentPlan(OscalBaseModel):
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
 
 
+class Model(OscalBaseModel):
+    assessment_plan: AssessmentPlan = Field(..., alias='assessment-plan')
 

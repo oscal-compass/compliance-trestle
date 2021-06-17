@@ -31,7 +31,7 @@ from trestle import cli
 from trestle.core.generators import generate_sample_model
 from trestle.core.validator_factory import validator_factory
 from trestle.oscal.catalog import Catalog
-from trestle.oscal.common import PartyUuid, ResponsibleParty, Role, RoleId
+from trestle.oscal.common import PartyUuid, ResponsibleParty, Role, RoleId, SystemUser
 
 test_data_dir = pathlib.Path('tests/data').resolve()
 

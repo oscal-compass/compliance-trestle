@@ -672,4 +672,6 @@ class AssessmentResults(OscalBaseModel):
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
 
 
+class Model(OscalBaseModel):
+    AssessmentResults: AssessmentResults = Field(..., alias='assessment-results')
 

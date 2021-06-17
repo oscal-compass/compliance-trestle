@@ -23,10 +23,10 @@ import pytest
 from tests import test_utils
 
 import trestle.core.const as const
+import trestle.oscal.common as common
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog
-import trestle.oscal.common as common
 from trestle.utils import fs
 
 if os.name == 'nt':  # pragma: no cover

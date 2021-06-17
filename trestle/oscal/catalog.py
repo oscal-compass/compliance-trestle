@@ -104,5 +104,9 @@ class Catalog(OscalBaseModel):
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
 
 
+class Model(OscalBaseModel):
+    catalog: Catalog
+
+
 Control.update_forward_refs()
 Group.update_forward_refs()
