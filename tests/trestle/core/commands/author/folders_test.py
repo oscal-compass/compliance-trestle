@@ -109,7 +109,7 @@ def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: st
             False
         ),
         (
-            'another_test_task',
+            'another_test_task_1',
             pathlib.Path('author/governed_folders/utf16test_good'),
             pathlib.Path('author/governed_folders/utf16test_bad'),
             0,
@@ -118,7 +118,7 @@ def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: st
             False
         ),
         (
-            'another_test_task',
+            'another_test_task_2',
             pathlib.Path('author/governed_folders/utf16test_bad'),
             pathlib.Path('author/governed_folders/utf16test_good'),
             0,
@@ -127,7 +127,7 @@ def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: st
             False
         ),
         (
-            'another_test_task',
+            'another_test_task_3',
             pathlib.Path('author/governed_folders/template_with_readme'),
             pathlib.Path('author/governed_folders/good_instance_with_readme'),
             0,
@@ -136,7 +136,7 @@ def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: st
             False
         ),
         (
-            'another_test_task',
+            'another_test_task_4',
             pathlib.Path('author/governed_folders/template_with_readme'),
             pathlib.Path('author/governed_folders/good_instance_with_readme'),
             0,
@@ -145,7 +145,7 @@ def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: st
             True
         ),
         (
-            'another_test_task',
+            'another_test_task_5',
             pathlib.Path('author/governed_folders/template_folder'),
             pathlib.Path('author/governed_folders/good_instance_with_readme'),
             0,
@@ -156,7 +156,7 @@ def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: st
         # Note this will pass as templates are permissive to allow extra files
         # (e.g. it validates what people want to be validated and not supplementary assets)
         (
-            'another_test_task',
+            'another_test_task_6',
             pathlib.Path('author/governed_folders/template_folder'),
             pathlib.Path('author/governed_folders/good_instance_with_readme'),
             0,
@@ -165,7 +165,7 @@ def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: st
             True
         ),
         (
-            'another_test_task',
+            'another_test_task_7',
             pathlib.Path('author/governed_folders/template_with_readme'),
             pathlib.Path('author/governed_folders/good_instance'),
             0,
@@ -174,7 +174,7 @@ def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: st
             True
         ),
         (
-            'another_test_task',
+            'another_test_task_8',
             pathlib.Path('author/governed_folders/template_with_readme'),
             pathlib.Path('author/governed_folders/good_instance'),
             0,
@@ -182,6 +182,42 @@ def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: st
             1,
             False
         ),
+        (
+            'another_test_task_9',
+            pathlib.Path('author/governed_folders/template_folder_with_drawio'),
+            pathlib.Path('author/governed_folders/bad_folder_is_a_file'),
+            0,
+            0,
+            0,  # this passes as random extra files are allowed there. This should be looked at.
+            True
+        ),
+        (
+            'another_test_task_10',
+            pathlib.Path('author/governed_folders/bad_folder_is_a_file'),
+            pathlib.Path('author/governed_folders/good_instance'),
+            0,
+            1,
+            1,
+            True
+        ),
+        (
+            'another_test_task_11',
+            pathlib.Path('author/governed_folders/template_folder_with_drawio'),
+            pathlib.Path('author/governed_folders/template_folder_with_drawio'),
+            0,
+            0,
+            0,
+            True
+        ),
+        (
+            'another_test_task_12',
+            pathlib.Path('author/governed_folders/template_folder_with_drawio'),
+            pathlib.Path('author/governed_folders/folder_with_bad_drawio'),
+            0,
+            0,
+            1,
+            True
+        )
     ]
 )
 def test_e2e(
@@ -212,7 +248,11 @@ def test_e2e(
     if setup_code > 0:
         return
     shutil.rmtree(str(template_target_loc))
-    shutil.copytree(str(testdata_dir / template_content), str(template_target_loc))
+    template_loc = testdata_dir / template_content
+    if template_loc.is_dir():
+        shutil.copytree(str(template_loc), str(template_target_loc))
+    else:
+        shutil.copy2(str(template_loc), str(template_target_loc))
 
     with mock.patch.object(sys, 'argv', command_string_validate_template.split()):
         with pytest.raises(SystemExit) as wrapped_error:
@@ -228,8 +268,12 @@ def test_e2e(
             trestle.cli.run()
         assert wrapped_error.type == SystemExit
         assert wrapped_error.value.code == 0
+    target_source = testdata_dir / target_content
+    if target_source.is_dir():
+        shutil.copytree(str(target_source), str(test_content_loc))
+    else:
+        shutil.copy2(str(target_source), str(test_content_loc))
 
-    shutil.copytree(str(testdata_dir / target_content), str(test_content_loc))
     with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
