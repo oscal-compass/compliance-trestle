@@ -17,14 +17,14 @@ import argparse
 import pathlib
 from typing import Tuple
 
+from ruamel.yaml import YAML
+
 from tests import test_utils
 
 import trestle.utils.fs as fs
 from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.markdown_validator import MarkdownValidator
-
-import yaml
 
 prof_name = 'my_prof'
 ssp_name = 'my_ssp'
@@ -62,7 +62,9 @@ def test_ssp_generator(tmp_trestle_dir: pathlib.Path):
     assert ac_1.stat().st_size > 1000
     assert ac_2.stat().st_size > 2000
     with open(yaml_path, 'r', encoding='utf8') as f:
-        expected_header = yaml.load(f, yaml.FullLoader)
+        yaml = YAML(typ='safe')
+
+        expected_header = yaml.load(f)
     header, tree = MarkdownValidator.load_markdown_parsetree(ac_1)
     assert tree is not None
     assert expected_header == header

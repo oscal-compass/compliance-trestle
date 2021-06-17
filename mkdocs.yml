@@ -9,7 +9,7 @@ markdown_extensions:
 - pymdownx.tabbed
 - pymdownx.tasklist
 - toc:
-    permalink: "\xA4"
+    permalink: ¤
 nav:
 - Trestle overview: index.md
 - Installation: python_trestle_setup.md
@@ -62,11 +62,11 @@ nav:
         - add: api_reference/trestle.core.commands.add.md
         - create: api_reference/trestle.core.commands.create.md
         - author:
-          - cidd: api_reference/trestle.core.commands.author.cidd.md
           - command: api_reference/trestle.core.commands.author.command.md
           - docs: api_reference/trestle.core.commands.author.docs.md
           - consts: api_reference/trestle.core.commands.author.consts.md
           - common: api_reference/trestle.core.commands.author.common.md
+          - ssp: api_reference/trestle.core.commands.author.ssp.md
           - headers: api_reference/trestle.core.commands.author.headers.md
           - folders: api_reference/trestle.core.commands.author.folders.md
         - replicate: api_reference/trestle.core.commands.replicate.md
@@ -89,6 +89,7 @@ nav:
     - utils:
       - log: api_reference/trestle.utils.log.md
       - load_distributed: api_reference/trestle.utils.load_distributed.md
+      - md_writer: api_reference/trestle.utils.md_writer.md
       - trash: api_reference/trestle.utils.trash.md
       - fs: api_reference/trestle.utils.fs.md
     - oscal:

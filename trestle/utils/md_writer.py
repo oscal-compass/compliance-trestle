@@ -17,9 +17,10 @@ import logging
 import pathlib
 from typing import Any, List
 
-from trestle.core.err import TrestleError
+from ruamel.yaml import YAML
 
-import yaml
+import trestle.core.const as const
+from trestle.core.err import TrestleError
 
 logger = logging.getLogger(__name__)
 
@@ -90,12 +91,13 @@ class MDWriter():
     def write_out(self) -> None:
         """Write out the markdown file."""
         try:
-            with open(self._file_path, 'w', encoding='utf-8') as f:
+            with open(self._file_path, 'w', encoding=const.FILE_ENCODING) as f:
                 # Make sure yaml header is written first
                 if self._yaml_header is not None:
                     f.write('---\n')
-                    header_str = yaml.dump(self._yaml_header, default_flow_style=False)
-                    f.write(header_str)
+                    yaml = YAML(typ='safe')
+                    yaml.default_flow_style = False
+                    yaml.dump(self._yaml_header, f)
                     f.write('---\n\n')
 
                 f.write('\n'.join(self._lines))

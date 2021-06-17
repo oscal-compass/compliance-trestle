@@ -18,6 +18,9 @@ import logging
 import pathlib
 from typing import Dict, List, Optional, Set, Union
 
+from ruamel.yaml import YAML
+from ruamel.yaml.error import YAMLError
+
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
@@ -28,8 +31,6 @@ from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.markdown_validator import MarkdownValidator
 from trestle.utils.load_distributed import load_distributed
 from trestle.utils.md_writer import MDWriter
-
-import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -80,8 +81,9 @@ class SSPGenerate(AuthorCommonCommand):
 
         try:
             logging.debug(f'Loading yaml header file {args.yaml_header}')
-            yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'), yaml.FullLoader)
-        except yaml.YAMLError as e:
+            yaml = YAML(typ='safe')
+            yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
+        except YAMLError as e:
             logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
             return 1
         markdown_path = trestle_root / args.output

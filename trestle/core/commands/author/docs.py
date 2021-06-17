@@ -65,6 +65,12 @@ class Docs(AuthorCommonCommand):
         self.add_argument(
             author_const.task_name_short, author_const.task_name_long, help=tn_help_str, required=True, type=str
         )
+        self.add_argument(
+            author_const.short_readme_validate,
+            author_const.long_readme_validate,
+            help=author_const.readme_validate_help,
+            action='store_true'
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         if self._initialize(args):
@@ -85,7 +91,11 @@ class Docs(AuthorCommonCommand):
             elif args.mode == 'validate':
                 # mode is validate
                 status = self.validate(
-                    args.governed_heading, args.header_validate, args.header_only_validate, args.recurse
+                    args.governed_heading,
+                    args.header_validate,
+                    args.header_only_validate,
+                    args.recurse,
+                    args.readme_validate
                 )
         except Exception as e:
             logger.error(f'Error "{e}"" occurred when running trestle author docs.')
@@ -163,7 +173,7 @@ class Docs(AuthorCommonCommand):
         """Template directory should only have template file."""
         for child in self.template_dir.iterdir():
             # Only allowable template file in the directory is the template directory.
-            if child.name != self.template_name:
+            if child.name != self.template_name and child.name.lower() != 'readme.md':
                 logger.error(f'Unknown file: {child.name} in template directory {self.rel_dir(self.template_dir)}')
                 return False
         return True
@@ -175,7 +185,8 @@ class Docs(AuthorCommonCommand):
         md_dir: pathlib.Path,
         validate_header: bool,
         validate_only_header: bool,
-        recurse: bool
+        recurse: bool,
+        readme_validate: bool
     ) -> int:
         """Validate md files in a directory with option to recurse."""
         # status is a linux returncode
@@ -188,6 +199,9 @@ class Docs(AuthorCommonCommand):
                             f'Unexpected file {self.rel_dir(item_path)} in folder {self.rel_dir(md_dir)}, skipping.'
                         )
                         continue
+                    if not readme_validate:
+                        if item_path.name.lower() == 'readme.md':
+                            continue
                     md_validator = markdown_validator.MarkdownValidator(
                         template_file, validate_header, validate_only_header, governed_heading
                     )
@@ -197,13 +211,37 @@ class Docs(AuthorCommonCommand):
                     else:
                         logger.info(f'VALID: {self.rel_dir(item_path)}')
                 elif recurse:
-                    if not self._validate_dir(
-                            template_file, governed_heading, item_path, validate_header, validate_only_header, recurse):
+                    if not self._validate_dir(template_file,
+                                              governed_heading,
+                                              item_path,
+                                              validate_header,
+                                              validate_only_header,
+                                              recurse,
+                                              readme_validate):
                         status = 1
         return status
 
-    def validate(self, governed_heading: str, validate_header: bool, validate_only_header: bool, recurse: bool) -> int:
-        """Validate task."""
+    def validate(
+        self,
+        governed_heading: str,
+        validate_header: bool,
+        validate_only_header: bool,
+        recurse: bool,
+        readme_validate: bool
+    ) -> int:
+        """
+        Validate task.
+
+        Args:
+            governed_heading: A heading for which structural enforcement (see online docs).
+            validate_header: Whether or not to validate the key structure of the yaml header to the markdown document.
+            validate_only_header: Whether to validate just the yaml header.
+            recurse: Whether to allow validated files to be in a directory tree.
+            readme_validate: Whether to validate readme files, otherwise they will be ignored.
+
+        Returns:
+            Return code to be used for the command.
+        """
         if not self.task_path.is_dir():
             logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
         template_file = self.template_dir / self.template_name
@@ -211,5 +249,11 @@ class Docs(AuthorCommonCommand):
             logger.error(f'Required template file: {self.rel_dir(template_file)} does not exist. Exiting.')
             return 1
         return self._validate_dir(
-            template_file, governed_heading, self.task_path, validate_header, validate_only_header, recurse
+            template_file,
+            governed_heading,
+            self.task_path,
+            validate_header,
+            validate_only_header,
+            recurse,
+            readme_validate
         )
