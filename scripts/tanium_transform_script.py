@@ -24,11 +24,11 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
-sample_data_f = pathlib.Path('tests/data/tasks/tanium/input/Tanium.comply-nist-results')
+sample_data_f = pathlib.Path('small_sample_tanium.json')
 
 if __name__ == '__main__':
     stringed = sample_data_f.open('r', encoding=const.FILE_ENCODING).read()
     tanium_tf = transformer_factory.get('tanium')
     output_oscal = tanium_tf.transform(stringed)
     json_str = output_oscal.oscal_serialize_json()
-    logging.info(json_str)
+    logger.info(json_str)
