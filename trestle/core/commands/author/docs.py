@@ -195,7 +195,7 @@ class Docs(AuthorCommonCommand):
             if fs.local_and_visible(item_path):
                 if item_path.is_file():
                     if not item_path.suffix == '.md':
-                        logger.warning(
+                        logger.info(
                             f'Unexpected file {self.rel_dir(item_path)} in folder {self.rel_dir(md_dir)}, skipping.'
                         )
                         continue
