@@ -11,21 +11,21 @@
       
       
       
-        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/trestle_md/">
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/trestle_author/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.1.5">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.8">
     
     
       
-        <title>CLI for markdown governance - Compliance Trestle</title>
+        <title>CLI for authoring governed content - Compliance Trestle</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.bde7dde4.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ca7ac06f.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ef6f36e2.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.f1a3b89f.min.css">
         
           
           
@@ -50,10 +50,8 @@
     
     
       
-        
-<script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","G-XT3KGMHSY8","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
-<script async src="https://www.google-analytics.com/analytics.js"></script>
-      
+
+
     
     
   </head>
@@ -75,7 +73,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#trestle-cli-for-governance-of-markdown-documents" class="md-skip">
+        <a href="#trestle-cli-for-governance-of-authored-documents" class="md-skip">
           Skip to content
         </a>
       
@@ -105,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CLI for markdown governance
+              CLI for authoring governed content
             
           </span>
         </div>
@@ -364,12 +362,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          CLI for markdown governance
+          CLI for authoring governed content
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        CLI for markdown governance
+        CLI for authoring governed content
       </a>
       
         
@@ -391,19 +389,12 @@
     Overview
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#structural-enforcement-mechanisms" class="md-nav__link">
-    Structural enforcement mechanisms
-  </a>
-  
-    <nav class="md-nav" aria-label="Structural enforcement mechanisms">
+    <nav class="md-nav" aria-label="Overview">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#strict-header-heading-conformance-mechanisms" class="md-nav__link">
-    Strict header / heading conformance mechanisms
+  <a href="#why-is-this-capability-in-trestle" class="md-nav__link">
+    Why is this capability in trestle?
   </a>
   
 </li>
@@ -414,29 +405,162 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#trestle-md-governed-docs" class="md-nav__link">
-    trestle md governed-docs
+  <a href="#governance-mechanisms" class="md-nav__link">
+    Governance mechanisms
+  </a>
+  
+    <nav class="md-nav" aria-label="Governance mechanisms">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#markdown-structural-enforcement" class="md-nav__link">
+    Markdown structural enforcement
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#strict-header-heading-conformance-mechanisms" class="md-nav__link">
+    Strict header / heading conformance mechanisms
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#drawio-enforcement-mechanisms" class="md-nav__link">
+    Drawio enforcement mechanisms
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-author-governed-docs" class="md-nav__link">
+    trestle author governed-docs
+  </a>
+  
+    <nav class="md-nav" aria-label="trestle author governed-docs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extra-options" class="md-nav__link">
+    Extra options
+  </a>
+  
+    <nav class="md-nav" aria-label="Extra options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recursive-r-recurse" class="md-nav__link">
+    recursive (-r, --recurse)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#header-only-validation-hov-header-only-validate" class="md-nav__link">
+    Header only validation (-hov, --header-only-validate)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-author-folders" class="md-nav__link">
+    trestle author folders
+  </a>
+  
+    <nav class="md-nav" aria-label="trestle author folders">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-options" class="md-nav__link">
+    Supported options
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#header-validate-hv-header-validate" class="md-nav__link">
+    Header validate (-hv/--header-validate)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#header-only-validation-hov-header-only-validate_1" class="md-nav__link">
+    Header only validation (-hov, --header-only-validate)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-author-headers" class="md-nav__link">
+    trestle author headers
+  </a>
+  
+    <nav class="md-nav" aria-label="trestle author headers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-options_1" class="md-nav__link">
+    Supported options
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recursive-r-recurse_1" class="md-nav__link">
+    Recursive (-r, --recurse)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-author-ssp-generate" class="md-nav__link">
+    trestle author ssp-generate
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#trestle-md-governed-folders" class="md-nav__link">
-    trestle md governed-folders
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-md-header" class="md-nav__link">
-    trestle md header
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-md-governed-projects" class="md-nav__link">
-    trestle md governed-projects
+  <a href="#trestle-author-ssp-generate_1" class="md-nav__link">
+    trestle author ssp-generate
   </a>
   
 </li>
@@ -633,10 +757,73 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_1" type="checkbox" id="__nav_7_2_1" >
+      
+      <label class="md-nav__link" for="__nav_7_2_1">
+        tasks
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="tasks" data-md-level="3">
+        <label class="md-nav__title" for="__nav_7_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          tasks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.cli/" class="md-nav__link">
-        cli
+      <a href="../api_reference/trestle.tasks.base_task/" class="md-nav__link">
+        base_task
       </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.transform/" class="md-nav__link">
+        transform
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.osco_to_oscal/" class="md-nav__link">
+        osco_to_oscal
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.tanium_to_oscal/" class="md-nav__link">
+        tanium_to_oscal
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -667,9 +854,120 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.all_validator/" class="md-nav__link">
-        all_validator
+      <a href="../api_reference/trestle.core.validator/" class="md-nav__link">
+        validator
       </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.oscal_version_validator/" class="md-nav__link">
+        oscal_version_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.validator_helper/" class="md-nav__link">
+        validator_helper
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_4" type="checkbox" id="__nav_7_2_2_4" >
+      
+      <label class="md-nav__link" for="__nav_7_2_2_4">
+        models
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="models" data-md-level="4">
+        <label class="md-nav__title" for="__nav_7_2_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.interfaces/" class="md-nav__link">
+        interfaces
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.elements/" class="md-nav__link">
+        elements
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.actions/" class="md-nav__link">
+        actions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.plans/" class="md-nav__link">
+        plans
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.models.file_content_type/" class="md-nav__link">
+        file_content_type
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -690,30 +988,9 @@
   
   
   
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_3" type="checkbox" id="__nav_7_2_2_3" >
-      
-      <label class="md-nav__link" for="__nav_7_2_2_3">
-        commands
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="commands" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_3">
-          <span class="md-nav__icon md-icon"></span>
-          commands
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.add/" class="md-nav__link">
-        add
+      <a href="../api_reference/trestle.core.duplicates_validator/" class="md-nav__link">
+        duplicates_validator
       </a>
     </li>
   
@@ -724,8 +1001,101 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.assemble/" class="md-nav__link">
-        assemble
+      <a href="../api_reference/trestle.core.generators/" class="md-nav__link">
+        generators
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.ncname_validator/" class="md-nav__link">
+        ncname_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.parser/" class="md-nav__link">
+        parser
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.all_validator/" class="md-nav__link">
+        all_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12" type="checkbox" id="__nav_7_2_2_12" >
+      
+      <label class="md-nav__link" for="__nav_7_2_2_12">
+        commands
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="commands" data-md-level="4">
+        <label class="md-nav__title" for="__nav_7_2_2_12">
+          <span class="md-nav__icon md-icon"></span>
+          commands
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.task/" class="md-nav__link">
+        task
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.merge/" class="md-nav__link">
+        merge
       </a>
     </li>
   
@@ -748,8 +1118,20 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.command_docs/" class="md-nav__link">
-        command_docs
+      <a href="../api_reference/trestle.core.commands.version/" class="md-nav__link">
+        version
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.add/" class="md-nav__link">
+        add
       </a>
     </li>
   
@@ -762,6 +1144,189 @@
     <li class="md-nav__item">
       <a href="../api_reference/trestle.core.commands.create/" class="md-nav__link">
         create
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12_7" type="checkbox" id="__nav_7_2_2_12_7" >
+      
+      <label class="md-nav__link" for="__nav_7_2_2_12_7">
+        author
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="author" data-md-level="5">
+        <label class="md-nav__title" for="__nav_7_2_2_12_7">
+          <span class="md-nav__icon md-icon"></span>
+          author
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.author.command/" class="md-nav__link">
+        command
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.author.docs/" class="md-nav__link">
+        docs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.author.consts/" class="md-nav__link">
+        consts
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.author.common/" class="md-nav__link">
+        common
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.author.ssp/" class="md-nav__link">
+        ssp
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.author.headers/" class="md-nav__link">
+        headers
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.author.folders/" class="md-nav__link">
+        folders
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.replicate/" class="md-nav__link">
+        replicate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.remove/" class="md-nav__link">
+        remove
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.command_docs/" class="md-nav__link">
+        command_docs
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.assemble/" class="md-nav__link">
+        assemble
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.validate/" class="md-nav__link">
+        validate
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.split/" class="md-nav__link">
+        split
       </a>
     </li>
   
@@ -791,75 +1356,6 @@
   
 
           
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.md/" class="md-nav__link">
-        md
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_3_9" type="checkbox" id="__nav_7_2_2_3_9" >
-      
-      <label class="md-nav__link" for="__nav_7_2_2_3_9">
-        md_subs
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="md_subs" data-md-level="5">
-        <label class="md-nav__title" for="__nav_7_2_2_3_9">
-          <span class="md-nav__icon md-icon"></span>
-          md_subs
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.md_subs.cidd/" class="md-nav__link">
-        cidd
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.md_subs.governed_docs/" class="md-nav__link">
-        governed_docs
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.md_subs.governed_folders/" class="md-nav__link">
-        governed_folders
-      </a>
-    </li>
-  
-
-          
         </ul>
       </nav>
     </li>
@@ -871,110 +1367,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.merge/" class="md-nav__link">
-        merge
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.remove/" class="md-nav__link">
-        remove
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.replicate/" class="md-nav__link">
-        replicate
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.split/" class="md-nav__link">
-        split
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.task/" class="md-nav__link">
-        task
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.validate/" class="md-nav__link">
-        validate
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.commands.version/" class="md-nav__link">
-        version
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.const/" class="md-nav__link">
-        const
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.duplicates_validator/" class="md-nav__link">
-        duplicates_validator
+      <a href="../api_reference/trestle.core.object_factory/" class="md-nav__link">
+        object_factory
       </a>
     </li>
   
@@ -997,8 +1391,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.generators/" class="md-nav__link">
-        generators
+      <a href="../api_reference/trestle.core.const/" class="md-nav__link">
+        const
       </a>
     </li>
   
@@ -1009,143 +1403,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.markdown_validator/" class="md-nav__link">
-        markdown_validator
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_9" type="checkbox" id="__nav_7_2_2_9" >
-      
-      <label class="md-nav__link" for="__nav_7_2_2_9">
-        models
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="models" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_9">
-          <span class="md-nav__icon md-icon"></span>
-          models
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.models.actions/" class="md-nav__link">
-        actions
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.models.elements/" class="md-nav__link">
-        elements
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.models.file_content_type/" class="md-nav__link">
-        file_content_type
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.models.interfaces/" class="md-nav__link">
-        interfaces
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.models.plans/" class="md-nav__link">
-        plans
-      </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.ncname_validator/" class="md-nav__link">
-        ncname_validator
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.object_factory/" class="md-nav__link">
-        object_factory
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.oscal_version_validator/" class="md-nav__link">
-        oscal_version_validator
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.parser/" class="md-nav__link">
-        parser
+      <a href="../api_reference/trestle.core.draw_io/" class="md-nav__link">
+        draw_io
       </a>
     </li>
   
@@ -1167,18 +1426,42 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.markdown_validator/" class="md-nav__link">
+        markdown_validator
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.validator_factory/" class="md-nav__link">
+        validator_factory
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
     
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_15" type="checkbox" id="__nav_7_2_2_15" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_20" type="checkbox" id="__nav_7_2_2_20" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_15">
+      <label class="md-nav__link" for="__nav_7_2_2_20">
         remote
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_15">
+        <label class="md-nav__title" for="__nav_7_2_2_20">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -1202,13 +1485,40 @@
   
 
           
+        </ul>
+      </nav>
+    </li>
+  
+
+          
             
   
   
   
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.utils/" class="md-nav__link">
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_3" type="checkbox" id="__nav_7_2_3" >
+      
+      <label class="md-nav__link" for="__nav_7_2_3">
         utils
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="utils" data-md-level="3">
+        <label class="md-nav__title" for="__nav_7_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          utils
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.utils.log/" class="md-nav__link">
+        log
       </a>
     </li>
   
@@ -1219,8 +1529,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.validator/" class="md-nav__link">
-        validator
+      <a href="../api_reference/trestle.utils.load_distributed/" class="md-nav__link">
+        load_distributed
       </a>
     </li>
   
@@ -1231,8 +1541,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.validator_factory/" class="md-nav__link">
-        validator_factory
+      <a href="../api_reference/trestle.utils.md_writer/" class="md-nav__link">
+        md_writer
       </a>
     </li>
   
@@ -1243,8 +1553,20 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.validator_helper/" class="md-nav__link">
-        validator_helper
+      <a href="../api_reference/trestle.utils.trash/" class="md-nav__link">
+        trash
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.utils.fs/" class="md-nav__link">
+        fs
       </a>
     </li>
   
@@ -1264,14 +1586,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_3" type="checkbox" id="__nav_7_2_3" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_4" type="checkbox" id="__nav_7_2_4" >
       
-      <label class="md-nav__link" for="__nav_7_2_3">
+      <label class="md-nav__link" for="__nav_7_2_4">
         oscal
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="oscal" data-md-level="3">
-        <label class="md-nav__title" for="__nav_7_2_3">
+        <label class="md-nav__title" for="__nav_7_2_4">
           <span class="md-nav__icon md-icon"></span>
           oscal
         </label>
@@ -1282,44 +1604,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.oscal.assessment_plan/" class="md-nav__link">
-        assessment_plan
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
-        assessment_results
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../api_reference/trestle.oscal.catalog/" class="md-nav__link">
         catalog
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.oscal.component/" class="md-nav__link">
-        component
       </a>
     </li>
   
@@ -1354,8 +1640,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.oscal.ssp/" class="md-nav__link">
-        ssp
+      <a href="../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
       </a>
     </li>
   
@@ -1373,40 +1659,13 @@
   
 
           
-        </ul>
-      </nav>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_4" type="checkbox" id="__nav_7_2_4" >
-      
-      <label class="md-nav__link" for="__nav_7_2_4">
-        tasks
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="tasks" data-md-level="3">
-        <label class="md-nav__title" for="__nav_7_2_4">
-          <span class="md-nav__icon md-icon"></span>
-          tasks
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
             
   
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.tasks.base_task/" class="md-nav__link">
-        base_task
+      <a href="../api_reference/trestle.oscal.ssp/" class="md-nav__link">
+        ssp
       </a>
     </li>
   
@@ -1417,8 +1676,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.tasks.osco_to_oscal/" class="md-nav__link">
-        osco_to_oscal
+      <a href="../api_reference/trestle.oscal.component/" class="md-nav__link">
+        component
       </a>
     </li>
   
@@ -1429,20 +1688,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.tasks.tanium_to_oscal/" class="md-nav__link">
-        tanium_to_oscal
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.tasks.transform/" class="md-nav__link">
-        transform
+      <a href="../api_reference/trestle.oscal.assessment_plan/" class="md-nav__link">
+        assessment_plan
       </a>
     </li>
   
@@ -1479,37 +1726,10 @@
   
   
   
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_5_1" type="checkbox" id="__nav_7_2_5_1" >
-      
-      <label class="md-nav__link" for="__nav_7_2_5_1">
-        implementations
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-      <nav class="md-nav" aria-label="implementations" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_5_1">
-          <span class="md-nav__icon md-icon"></span>
-          implementations
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.transforms.implementations.tanium/" class="md-nav__link">
-        tanium
+      <a href="../api_reference/trestle.transforms.transformer_factory/" class="md-nav__link">
+        transformer_factory
       </a>
-    </li>
-  
-
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -1521,18 +1741,6 @@
     <li class="md-nav__item">
       <a href="../api_reference/trestle.transforms.results/" class="md-nav__link">
         results
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.transforms.transformer_factory/" class="md-nav__link">
-        transformer_factory
       </a>
     </li>
   
@@ -1558,14 +1766,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_5_5" type="checkbox" id="__nav_7_2_5_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_5_4" type="checkbox" id="__nav_7_2_5_4" >
       
-      <label class="md-nav__link" for="__nav_7_2_5_5">
+      <label class="md-nav__link" for="__nav_7_2_5_4">
         utils
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="utils" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_5_5">
+        <label class="md-nav__title" for="__nav_7_2_5_4">
           <span class="md-nav__icon md-icon"></span>
           utils
         </label>
@@ -1583,8 +1791,14 @@
   
 
           
-        </ul>
-      </nav>
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.transforms.utils.osco_helper/" class="md-nav__link">
+        osco_helper
+      </a>
     </li>
   
 
@@ -1603,16 +1817,16 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_6" type="checkbox" id="__nav_7_2_6" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_5_5" type="checkbox" id="__nav_7_2_5_5" >
       
-      <label class="md-nav__link" for="__nav_7_2_6">
-        utils
+      <label class="md-nav__link" for="__nav_7_2_5_5">
+        implementations
         <span class="md-nav__icon md-icon"></span>
       </label>
-      <nav class="md-nav" aria-label="utils" data-md-level="3">
-        <label class="md-nav__title" for="__nav_7_2_6">
+      <nav class="md-nav" aria-label="implementations" data-md-level="4">
+        <label class="md-nav__title" for="__nav_7_2_5_5">
           <span class="md-nav__icon md-icon"></span>
-          utils
+          implementations
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -1621,8 +1835,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.utils.fs/" class="md-nav__link">
-        fs
+      <a href="../api_reference/trestle.transforms.implementations.tanium/" class="md-nav__link">
+        tanium
       </a>
     </li>
   
@@ -1633,32 +1847,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.utils.load_distributed/" class="md-nav__link">
-        load_distributed
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.utils.log/" class="md-nav__link">
-        log
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../api_reference/trestle.utils.trash/" class="md-nav__link">
-        trash
+      <a href="../api_reference/trestle.transforms.implementations.osco/" class="md-nav__link">
+        osco
       </a>
     </li>
   
@@ -1666,6 +1856,24 @@
           
         </ul>
       </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.cli/" class="md-nav__link">
+        cli
+      </a>
     </li>
   
 
@@ -1712,19 +1920,12 @@
     Overview
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#structural-enforcement-mechanisms" class="md-nav__link">
-    Structural enforcement mechanisms
-  </a>
-  
-    <nav class="md-nav" aria-label="Structural enforcement mechanisms">
+    <nav class="md-nav" aria-label="Overview">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#strict-header-heading-conformance-mechanisms" class="md-nav__link">
-    Strict header / heading conformance mechanisms
+  <a href="#why-is-this-capability-in-trestle" class="md-nav__link">
+    Why is this capability in trestle?
   </a>
   
 </li>
@@ -1735,29 +1936,162 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#trestle-md-governed-docs" class="md-nav__link">
-    trestle md governed-docs
+  <a href="#governance-mechanisms" class="md-nav__link">
+    Governance mechanisms
+  </a>
+  
+    <nav class="md-nav" aria-label="Governance mechanisms">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#markdown-structural-enforcement" class="md-nav__link">
+    Markdown structural enforcement
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#strict-header-heading-conformance-mechanisms" class="md-nav__link">
+    Strict header / heading conformance mechanisms
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#drawio-enforcement-mechanisms" class="md-nav__link">
+    Drawio enforcement mechanisms
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-author-governed-docs" class="md-nav__link">
+    trestle author governed-docs
+  </a>
+  
+    <nav class="md-nav" aria-label="trestle author governed-docs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#extra-options" class="md-nav__link">
+    Extra options
+  </a>
+  
+    <nav class="md-nav" aria-label="Extra options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recursive-r-recurse" class="md-nav__link">
+    recursive (-r, --recurse)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#header-only-validation-hov-header-only-validate" class="md-nav__link">
+    Header only validation (-hov, --header-only-validate)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-author-folders" class="md-nav__link">
+    trestle author folders
+  </a>
+  
+    <nav class="md-nav" aria-label="trestle author folders">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-options" class="md-nav__link">
+    Supported options
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#header-validate-hv-header-validate" class="md-nav__link">
+    Header validate (-hv/--header-validate)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#header-only-validation-hov-header-only-validate_1" class="md-nav__link">
+    Header only validation (-hov, --header-only-validate)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-author-headers" class="md-nav__link">
+    trestle author headers
+  </a>
+  
+    <nav class="md-nav" aria-label="trestle author headers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-options_1" class="md-nav__link">
+    Supported options
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#recursive-r-recurse_1" class="md-nav__link">
+    Recursive (-r, --recurse)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-author-ssp-generate" class="md-nav__link">
+    trestle author ssp-generate
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#trestle-md-governed-folders" class="md-nav__link">
-    trestle md governed-folders
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-md-header" class="md-nav__link">
-    trestle md header
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#trestle-md-governed-projects" class="md-nav__link">
-    trestle md governed-projects
+  <a href="#trestle-author-ssp-generate_1" class="md-nav__link">
+    trestle author ssp-generate
   </a>
   
 </li>
@@ -1774,18 +2108,26 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/IBM/compliance-trestle/edit/master/docs/trestle_md.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/IBM/compliance-trestle/edit/master/docs/trestle_author.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                <h1 id="trestle-cli-for-governance-of-markdown-documents">trestle CLI for governance of markdown documents<a class="headerlink" href="#trestle-cli-for-governance-of-markdown-documents" title="Permanent link">¤</a></h1>
+                <h1 id="trestle-cli-for-governance-of-authored-documents">trestle CLI for governance of authored documents<a class="headerlink" href="#trestle-cli-for-governance-of-authored-documents" title="Permanent link">¤</a></h1>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¤</a></h2>
 <p>The premise of trestle is to support managing compliance artifacts as code.
 When this is considered, many organisations using <code>{github|gitlab|bitbucket}</code> rely on markdown documents for documentary artifacts that may either directly or indirectly support compliance efforts.</p>
-<p>To support this trestle has the concept of 'governing' markdown documents: Where structural conditions are enforced on the markdown documents to allow automation and to ensure business processes are met.</p>
-<p>Anticipate that further capability is added to this space as content evolves over time.</p>
-<h2 id="structural-enforcement-mechanisms">Structural enforcement mechanisms<a class="headerlink" href="#structural-enforcement-mechanisms" title="Permanent link">¤</a></h2>
+<p>To support this trestle has the concept of 'governing' documents that are authored documents: Where structural conditions are enforced on the markdown documents to allow automation and to ensure business processes are met.</p>
+<p>Living in the <code>GitOps</code> world this capability is anchored with <code>markdown</code> files as the core of the workflows. Currently <code>drawio</code> files are also supported for a subset of enforcement mechanisms.</p>
+<h3 id="why-is-this-capability-in-trestle">Why is this capability in trestle?<a class="headerlink" href="#why-is-this-capability-in-trestle" title="Permanent link">¤</a></h3>
+<p>While trestle provides editing support for OSCAL there is an unfortunate truth that for some compliance workflows:</p>
+<ol>
+<li>OSCAL does not cover the lower level operational workflows.</li>
+<li>Some users will not be comfortable editing in json/yaml/xml formats</li>
+</ol>
+<p>The markdown centric workflows allow transition path where capability is <a href="https://github.com/IBM/compliance-trestle/issues/555">being developed</a></p>
+<h2 id="governance-mechanisms">Governance mechanisms<a class="headerlink" href="#governance-mechanisms" title="Permanent link">¤</a></h2>
+<h3 id="markdown-structural-enforcement">Markdown structural enforcement<a class="headerlink" href="#markdown-structural-enforcement" title="Permanent link">¤</a></h3>
 <p>In order for trestle to enforce structure an approach has been taken for how to template markdown documents. There are two mechanism that are enforced:</p>
 <ol>
 <li>Enforcing a heading structure within the markdown document:</li>
@@ -1855,42 +2197,150 @@ my_key_2: my value
 my_other key with strange stuff?? my value
 </code></pre></div>
 <p>This capability, where available, is activated by <code>--governed-heading</code> or <code>-gh</code></p>
-<h2 id="trestle-md-governed-docs"><code>trestle md governed-docs</code><a class="headerlink" href="#trestle-md-governed-docs" title="Permanent link">¤</a></h2>
-<p>Governed docs is designed to support enforcing and generating templating markdown files within a single folder based on
-a task name.</p>
-<p><code>trestle md governed-docs setup -tn my_task_name</code> Create the necessary directory structures for running governed docs validation.
-A template file will be created in <code>TRESTLE_ROOT/.trestle/md/my_task_name/template.md</code> and be applied to all markdown files here: <code>TRESTLE_ROOT/my_task_name/*.md</code>.</p>
-<p><code>trestle md governed-docs create-sample -tn my_task_name</code> Creates a sample file in <code>TRESTLE_ROOT/my_task_name/</code></p>
-<p><code>trestle md governed-docs template-validate -tn my_task_name</code> Ensures that the markdown is parseable. If <code>--governed-heading 'heading name'</code> is passed it ensures that the required heading exists.</p>
-<p><code>trestle md governed-docs validate -tn my_task_name</code> validates the markdown, optionally with a <code>--governed-heading</code> or <code>-hv</code> yaml header based on this <code>TRESTLE_ROOT/.trestle/md/my_task_name/template.md</code> template to all markdown files here: <code>TRESTLE_ROOT/my_task_name/*.md</code>.</p>
-<h2 id="trestle-md-governed-folders"><code>trestle md</code> governed-folders<a class="headerlink" href="#trestle-md-governed-folders" title="Permanent link">¤</a></h2>
-<p>Governed-folders is designed to allow the assembly of groups of templates where the folder assembly is the unique instance.</p>
-<p>For example given the following template setup using <code>trestle md governed-docs setup -tn my_task_2</code></p>
+<h3 id="drawio-enforcement-mechanisms">Drawio enforcement mechanisms<a class="headerlink" href="#drawio-enforcement-mechanisms" title="Permanent link">¤</a></h3>
+<p>Drawio or <a href="https://app.diagrams.net/">diagrams.net</a> is a diagramming platform which has significant use for architecture diagrams. In the context of governance of content trestle is supporting enforcement of metadata.</p>
+<p>Drawio (or <code>mxgraph</code>) files have a set of data fields. In a drawio file this is available the edit menu as <em>edit data</em>. The diagram below shows how to access the (meta)data.</p>
+<p><img alt="Accessing the drawio data editor" src="../assets/drawio_data_menu.png" title="Accessing the drawio data editor" /></p>
+<p>The data presents as a set of key-value pairs which can be edited (see below). The data is bound to each tab in a drawio file. The trestle CLI currently expects that metadata (whether from the template or file to be measured) is in the first tab when editing the draw io file.</p>
+<p><img alt="Editing drawio data" src="../assets/drawio_editing_data.png" title="Editing drawio data" /></p>
+<h2 id="trestle-author-governed-docs"><code>trestle author governed-docs</code><a class="headerlink" href="#trestle-author-governed-docs" title="Permanent link">¤</a></h2>
+<p><code>author docs</code> is designed to support enforcing and generating templating markdown files within a single folder based on a task name. Currently <code>author docs</code> supports markdown files only.</p>
+<p><code>trestle author docs setup -tn my_task_name</code> Create the necessary directory structures for running governed docs validation.
+A template file will be created in <code>TRESTLE_ROOT/.trestle/author/my_task_name/template.md</code> and be applied to all markdown files here: <code>TRESTLE_ROOT/my_task_name/*.md</code>.</p>
+<p><code>trestle author docs create-sample -tn my_task_name</code> Creates a sample file in <code>TRESTLE_ROOT/my_task_name/</code></p>
+<p><code>trestle author docs template-validate -tn my_task_name</code> Ensures that the markdown is parseable. If <code>--governed-heading 'heading name'</code> is passed it ensures that the required heading exists.</p>
+<p><code>trestle author docs validate -tn my_task_name</code> validates the markdown, optionally with a <code>--governed-heading</code> or <code>-hv</code> yaml header based on this <code>TRESTLE_ROOT/.trestle/author/my_task_name/template.md</code> template to all markdown files here: <code>TRESTLE_ROOT/my_task_name/*.md</code>.</p>
+<h3 id="extra-options">Extra options<a class="headerlink" href="#extra-options" title="Permanent link">¤</a></h3>
+<h4 id="recursive-r-recurse">recursive (<code>-r</code>, <code>--recurse</code>)<a class="headerlink" href="#recursive-r-recurse" title="Permanent link">¤</a></h4>
+<p>By default <code>author docs</code> only indexes a flat directory. The recursive option allows the markdown files to be nested in sub-directories.</p>
+<h4 id="header-only-validation-hov-header-only-validate">Header only validation (<code>-hov</code>, <code>--header-only-validate</code>)<a class="headerlink" href="#header-only-validation-hov-header-only-validate" title="Permanent link">¤</a></h4>
+<p>Turns off the validation of the structure of the document and only validates the yaml header structure.</p>
+<h2 id="trestle-author-folders"><code>trestle author folders</code><a class="headerlink" href="#trestle-author-folders" title="Permanent link">¤</a></h2>
+<p>`author folders is designed to allow the assembly of groups of templates where the folder assembly is the unique instance. Trestle author folders supports validation of both markdown and drawio files. Note that headers / metadata must be specified in each applicable template.</p>
+<p>For example given the following template setup using <code>trestle author folders setup -tn my_task_2</code></p>
 <div class="highlight"><pre><span></span><code>trestle_root
  ┣ .trestle
- ┃ ┣ md
+ ┃ ┣ author
  ┃ ┃ ┗ my_task_2
  ┃ ┃ ┃ ┣ a_template.md
- ┃ ┃ ┃ ┗ another_template.md
+ ┃ ┃ ┃ ┣ another_template.md
+ ┃ ┃ ┃ ┗ template.drawio
  ┃ ┗ config.ini
 </code></pre></div>
-<p>Each task folder is required to meet template requirements for both <code>a_template.md</code> and <code>another_template.md</code>.
-The names, numbers, and nesting of folders is arbitrary.</p>
-<p>Following the similar structure of <code>governed-docs</code>, measurement occurs in the <code>my_task_2</code> where this structure is enforced for every directory.</p>
+<p>Each task folder is required to meet template requirements for both <code>a_template.md</code>, <code>another_template.md</code>, and template.drawio.
+The names, numbers, and nesting of folders is user specifiable, however, unlike <code>docs</code> the names must be carried over to each instances.</p>
+<p>Following the similar structure of <code>docs</code>, measurement occurs in the <code>my_task_2</code> where this structure is enforced for every directory.</p>
 <div class="highlight"><pre><span></span><code>trestle_root
  ┣ .trestle
  ┣ my_task_2
  ┃ ┣ User_chosen_name
  ┃ ┃ ┣ a_template.md
+ ┃ ┃ ┣ template.drawio
  ┃ ┃ ┗ another_template.md
+
  ┃ ┗ Second_user_chosen_name
  ┃ ┃ ┣ a_template.md
+ ┃ ┃ ┣ template.drawio
  ┃ ┃ ┗ another_template.md
 </code></pre></div>
-<h2 id="trestle-md-header"><code>trestle md</code> header<a class="headerlink" href="#trestle-md-header" title="Permanent link">¤</a></h2>
-<p>Future capability</p>
-<h2 id="trestle-md-governed-projects"><code>trestle md</code> governed-projects<a class="headerlink" href="#trestle-md-governed-projects" title="Permanent link">¤</a></h2>
-<p>Future capability</p>
+<h3 id="supported-options">Supported options<a class="headerlink" href="#supported-options" title="Permanent link">¤</a></h3>
+<h4 id="header-validate-hv-header-validate">Header validate (<code>-hv</code>/<code>--header-validate</code>)<a class="headerlink" href="#header-validate-hv-header-validate" title="Permanent link">¤</a></h4>
+<p>Validate the headers in markdown and metadata in drawio files.</p>
+<h4 id="header-only-validation-hov-header-only-validate_1">Header only validation (<code>-hov</code>, <code>--header-only-validate</code>)<a class="headerlink" href="#header-only-validation-hov-header-only-validate_1" title="Permanent link">¤</a></h4>
+<p>Turns off the validation of the structure of the document and only validates the yaml header structure and drawio files.</p>
+<h2 id="trestle-author-headers"><code>trestle author headers</code><a class="headerlink" href="#trestle-author-headers" title="Permanent link">¤</a></h2>
+<p>Trestle author headers supports a different usecase that of <code>docs</code> and <code>folders</code> above: Some content is governed, however, it the content is non-standardized.</p>
+<p>The result: metadata but not content needs to be measured. <code>author headers</code> provides this functionality for drawio and markdown files.</p>
+<p><code>trestle author headers setup -tn my_task_name</code> Create the necessary directory structures for running header only validation. Per supported file type (e.g. drawio and md) a template file will be generated with the format of <code>template.{extension name}</code> e.g.</p>
+<p>e.g.:
+trestle_root
+┣ .trestle
+┃ ┣ md
+┃ ┃ ┗ my_task_2
+┃ ┃ ┃ ┣ template.md
+┃ ┃ ┃ ┗ template.drawio
+┃ ┗ config.ini</p>
+<p><code>trestle author headers template-validate -tn my_task_name</code> Ensures that the respective template files are parseable.</p>
+<p><code>trestle author headers validate -tn my_task_name</code> Will validate all files within the directory against the templates by matching the extensions.</p>
+<h3 id="supported-options_1">Supported options<a class="headerlink" href="#supported-options_1" title="Permanent link">¤</a></h3>
+<h4 id="recursive-r-recurse_1">Recursive (<code>-r</code>, <code>--recurse</code>)<a class="headerlink" href="#recursive-r-recurse_1" title="Permanent link">¤</a></h4>
+<p>By default <code>author headers</code> only indexes a flat directory. The recursive option allows the discovery of sub directories.</p>
+<h2 id="trestle-author-ssp-generate"><code>trestle author ssp-generate</code><a class="headerlink" href="#trestle-author-ssp-generate" title="Permanent link">¤</a></h2>
+<p>The <code>ssp-generate</code> sub-command creates a partial ssp from a catalog, profile and yaml header file.  It can also assemble the markdown files
+into a single json SSP file.  The catalog consists of a number of controls with parameters, and the profile specifies a subset of
+those controls along with corresponding parameter values.  This command merges the information from the two files and generates a
+directory containing a set of markdown files, one for each control in the profile.  Each markdown file has the yaml header embedded
+at the start of the file.</p>
+<p>Example usage for creation of the markdown:</p>
+<p><code>trestle author ssp-generate -p my_prof -y /my_yaml_dir/header.yaml -s "ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence" -o my_ssp</code></p>
+<p>In this example the catalog and profile have previously been imported into the trestle project directory, making sure to import the
+catalog using the name specified in the import href of the profile.  Note that the path in the href is ignored.  The yaml
+header file can be anywhere in the file system.  In this case the two sections loaded are <code>ImplGuidance</code> and <code>ExpectedEvidence</code> -
+and their aliases are provided with full spacing and spelling so the section headers will have proper titles.  The output will be
+placed in the trestle subdirectory <code>my_ssp</code> with a subdirectory for each control group.</p>
+<p><br></p>
+<details>
+<summary>The resulting files look like this</summary>
+
+<div class="highlight"><pre><span></span><code>---
+control-origination:
+- Service Provider Corporate
+- Service Provider System Specific
+responsible-roles:
+- Customer
+---
+
+
+# ac-1 - AC Access Control Policy and Procedures
+## Control Description
+
+The organization:
+
+a. Develops, documents, and disseminates to Assignment: organization-defined personnel or roles:
+
+    1. An access control policy that addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
+    2. Procedures to facilitate the implementation of the access control policy and associated access controls; and
+
+b. Reviews and updates the current:
+
+    1. Access control policy at least annually; and
+    2. Access control procedures at least annually.
+
+
+
+## ac-1 What is the solution and how is it implemented?
+
+---
+### Part a.
+
+Add control implementation description here.
+
+
+---
+### Part b.
+
+Add control implementation description here.
+
+---
+
+
+## ac-1 Section Implementation Guidance
+
+Perform the needed tasks.
+
+## ac-1 Section Expected Evidence
+
+Provide detailed logs.
+</code></pre></div>
+
+</details>
+<p><br></p>
+<p>Note that for each statement in the control description there is a corresponding response section in which to provide a detailed response for later inclusion in the final ssp as the control implementation.</p>
+<p>Also note that the optional final sections are provided, and labeled using the alias given at the command line.</p>
+<h2 id="trestle-author-ssp-generate_1"><code>trestle author ssp-generate</code><a class="headerlink" href="#trestle-author-ssp-generate_1" title="Permanent link">¤</a></h2>
+<p>After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:</p>
+<p><code>trestle author ssp-assemble -m my_ssp -o my_json_ssp</code></p>
+<p>This will assemble the markdown files in the my_ssp directory and create a json SSP with name my_json_ssp in the system-security-plans directory.</p>
                 
               
               
@@ -1909,7 +2359,8 @@ The names, numbers, and nesting of folders is arbitrary.</p>
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../cli/" class="md-footer__link md-footer__link--prev" rel="prev">
+        
+        <a href="../cli/" class="md-footer__link md-footer__link--prev" aria-label="Previous: CLI for OSCAL documents" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -1924,7 +2375,8 @@ The names, numbers, and nesting of folders is arbitrary.</p>
         </a>
       
       
-        <a href="../mkdocs_code_of_conduct/" class="md-footer__link md-footer__link--next" rel="next">
+        
+        <a href="../mkdocs_code_of_conduct/" class="md-footer__link md-footer__link--next" aria-label="Next: Code of Conduct" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
@@ -1959,10 +2411,10 @@ The names, numbers, and nesting of folders is arbitrary.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../assets/javascripts/workers/search.d351de03.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.b0710199.min.js", "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.a1609d9a.min.js"></script>
+      <script src="../assets/javascripts/bundle.76f349be.min.js"></script>
       
     
   </body>
