@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.18.1 (2021-06-17)
+### Fix
+* Small scale fixes to the author validation system. (#572) ([#573](https://github.com/IBM/compliance-trestle/issues/573)) ([`04e16cc`](https://github.com/IBM/compliance-trestle/commit/04e16ccd508607eadb2c0ab4db69fb324cf0e24c))
+
 ## v0.18.0 (2021-06-17)
 ### Feature
 * Allow explicit inclusion / exclusion of readme files in author workflows ([#570](https://github.com/IBM/compliance-trestle/issues/570)) ([`0ca1d20`](https://github.com/IBM/compliance-trestle/commit/0ca1d202fa4865acf20fb9156a9c13437350b16e))
