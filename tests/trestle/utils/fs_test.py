@@ -26,6 +26,7 @@ import trestle.core.const as const
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog
+import trestle.oscal.common as common
 from trestle.utils import fs
 
 if os.name == 'nt':  # pragma: no cover
@@ -236,27 +237,27 @@ def test_get_contextual_model_type(tmp_path: pathlib.Path) -> None:
 
     assert fs.get_contextual_model_type(mycatalog_dir) == (catalog.Catalog, 'catalog')
     assert fs.get_contextual_model_type(mycatalog_dir / 'catalog.json') == (catalog.Catalog, 'catalog')
-    assert fs.get_contextual_model_type(catalog_dir / 'back-matter.json') == (catalog.BackMatter, 'catalog.back-matter')
-    assert fs.get_contextual_model_type(catalog_dir / 'metadata.yaml') == (catalog.Metadata, 'catalog.metadata')
-    assert fs.get_contextual_model_type(metadata_dir) == (catalog.Metadata, 'catalog.metadata')
+    assert fs.get_contextual_model_type(catalog_dir / 'back-matter.json') == (common.BackMatter, 'catalog.back-matter')
+    assert fs.get_contextual_model_type(catalog_dir / 'metadata.yaml') == (common.Metadata, 'catalog.metadata')
+    assert fs.get_contextual_model_type(metadata_dir) == (common.Metadata, 'catalog.metadata')
     # The line below is no longer possible to execute in many situations due to the constrained lists
-    # assert fs.get_contextual_model_type(roles_dir) == (List[catalog.Role], 'catalog.metadata.roles') # noqa: E800
+    # assert fs.get_contextual_model_type(roles_dir) == (List[common.Role], 'catalog.metadata.roles') # noqa: E800
     (type_, element) = fs.get_contextual_model_type(roles_dir)
     assert cutils.get_origin(type_) == list
     assert element == 'catalog.metadata.roles'
-    assert fs.get_contextual_model_type(roles_dir / '00000__role.json') == (catalog.Role, 'catalog.metadata.roles.role')
+    assert fs.get_contextual_model_type(roles_dir / '00000__role.json') == (common.Role, 'catalog.metadata.roles.role')
     assert fs.get_contextual_model_type(rps_dir) == (
-        Dict[str, catalog.ResponsibleParty], 'catalog.metadata.responsible-parties'
+        Dict[str, common.ResponsibleParty], 'catalog.metadata.responsible-parties'
     )
     assert fs.get_contextual_model_type(
         rps_dir / 'creator__responsible-party.json'
-    ) == (catalog.ResponsibleParty, 'catalog.metadata.responsible-parties.responsible-party')
+    ) == (common.ResponsibleParty, 'catalog.metadata.responsible-parties.responsible-party')
     (type_, element) = fs.get_contextual_model_type(props_dir)
     assert cutils.get_origin(type_) == list
-    assert cutils.get_inner_type(type_) == catalog.Property
+    assert cutils.get_inner_type(type_) == common.Property
     assert element == 'catalog.metadata.props'
     (expected_type, expected_json_path) = fs.get_contextual_model_type(props_dir / f'00000{const.IDX_SEP}property.json')
-    assert expected_type == catalog.Property
+    assert expected_type == common.Property
     assert expected_json_path == 'catalog.metadata.props.property'
     assert cutils.get_origin(type_) == list
     assert fs.get_contextual_model_type(groups_dir / f'00000{const.IDX_SEP}group.json'

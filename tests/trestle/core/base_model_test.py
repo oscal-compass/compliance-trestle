@@ -38,7 +38,7 @@ def test_echo_tmp_path(tmp_path) -> None:
 
 def simple_catalog() -> oscatalog.Catalog:
     """Return a skeleton catalog with datetime.now()."""
-    m = oscatalog.Metadata(
+    m = oscommon.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now(),
@@ -52,7 +52,7 @@ def simple_catalog() -> oscatalog.Catalog:
 
 def simple_catalog_utc() -> oscatalog.Catalog:
     """Return a skeleton catalog with datetime.now()."""
-    m = oscatalog.Metadata(
+    m = oscommon.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(timezone.utc),
@@ -66,7 +66,7 @@ def simple_catalog_utc() -> oscatalog.Catalog:
 
 def simple_catalog_with_tz() -> oscatalog.Catalog:
     """Return a skeleton catalog with datetime.now()."""
-    m = oscatalog.Metadata(
+    m = oscommon.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
@@ -128,7 +128,7 @@ def test_broken_tz() -> None:
 
     taz = BrokenTimezone()
 
-    m = oscatalog.Metadata(
+    m = oscommon.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now(tz=taz),
@@ -232,7 +232,7 @@ def test_multiple_variable_strip() -> None:
 def test_copy_to() -> None:
     """Test the copy to functionality."""
     # Complex variable
-    c_m = oscatalog.Metadata(
+    c_m = oscommon.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now(),
@@ -257,7 +257,7 @@ def test_copy_to() -> None:
 
 def test_copy_from() -> None:
     """Test copy from function."""
-    m = oscatalog.Metadata(
+    m = oscommon.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),

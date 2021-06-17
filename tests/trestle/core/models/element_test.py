@@ -145,6 +145,6 @@ def test_element_str(sample_target_def):
 
 def test_get_singular_model_from_json():
     """Test get singular model from json."""
-    assert get_singular_model_from_json('catalog.metadata', catalog.Catalog) == catalog.Metadata
-    assert get_singular_model_from_json('catalog.metadata.roles.*', catalog.Catalog) == catalog.Role
+    assert get_singular_model_from_json('catalog.metadata', catalog.Catalog) == common.Metadata
+    assert get_singular_model_from_json('catalog.metadata.roles.*', catalog.Catalog) == common.Role
     assert get_singular_model_from_json('catalog.groups.*.controls.*.controls.*', catalog.Catalog) == catalog.Control

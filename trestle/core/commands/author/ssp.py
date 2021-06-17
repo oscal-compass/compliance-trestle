@@ -23,6 +23,7 @@ from ruamel.yaml.error import YAMLError
 
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
+import trestle.oscal.common as common
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 import trestle.utils.fs as fs
@@ -152,14 +153,14 @@ class SSPManager():
 
         return text
 
-    def _get_label(self, part: cat.Part) -> str:
+    def _get_label(self, part: common.Part) -> str:
         if part.props is not None:
             for prop in part.props:
                 if prop.name == 'label':
                     return prop.value.strip()
         return ''
 
-    def _get_part(self, control: cat.Control, part: cat.Part) -> List[Union[str, List[str]]]:
+    def _get_part(self, control: cat.Control, part: common.Part) -> List[Union[str, List[str]]]:
         items = []
         if part.prose is not None:
             fixed_prose = self._replace_params(part.prose, control, self._param_dict)

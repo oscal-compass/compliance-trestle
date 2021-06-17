@@ -282,8 +282,8 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
 
     # Back-matter model needs to be complete and if it is decomposed, needs to be merged recursively first
     roles = [
-        oscatalog.Role.oscal_read(roles_dir / '00000__role.json'),
-        oscatalog.Role.oscal_read(roles_dir / '00001__role.json')
+        oscommon.Role.oscal_read(roles_dir / '00000__role.json'),
+        oscommon.Role.oscal_read(roles_dir / '00001__role.json')
     ]
 
     # Back-matter needs to be inserted in a stripped Catalog that does NOT exclude the back-matter fields

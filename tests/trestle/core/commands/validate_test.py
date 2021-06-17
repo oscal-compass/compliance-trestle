@@ -31,6 +31,7 @@ from trestle import cli
 from trestle.core.generators import generate_sample_model
 from trestle.core.validator_factory import validator_factory
 from trestle.oscal.catalog import Catalog
+from trestle.oscal.common import PartyUuid, ResponsibleParty, Role, RoleId
 
 test_data_dir = pathlib.Path('tests/data').resolve()
 
@@ -130,8 +131,8 @@ def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -
 def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathlib.Path) -> None:
     """Test good and bad roleid cases."""
     (tmp_trestle_dir / 'assessment-plans/my_ap').mkdir(exist_ok=True, parents=True)
-    role_ids = [ap.RoleId(__root__='role1'), ap.RoleId(__root__=new_role), ap.RoleId(__root__='REPLACE_ME')]
-    system_user = ap.SystemUser(role_ids=role_ids)
+    role_ids = [RoleId(__root__='role1'), RoleId(__root__=new_role), RoleId(__root__='REPLACE_ME')]
+    system_user = SystemUser(role_ids=role_ids)
     local_definitions = ap.LocalDefinitions(users={'my_users': system_user})
     ap_obj = generate_sample_model(ap.AssessmentPlan)
     ap_obj.local_definitions = local_definitions
@@ -169,9 +170,9 @@ def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathl
 def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir: pathlib.Path) -> None:
     """Test validation of roles and references to them in responsible-parties."""
     (tmp_trestle_dir / 'assessment-plans/my_ap').mkdir(exist_ok=True, parents=True)
-    roles = [ap.Role(id='id1', title='title1'), ap.Role(id='id2', title='title2'), ap.Role(id='id3', title='title3')]
-    party1 = ap.ResponsibleParty(party_uuids=[ap.PartyUuid(__root__=str(uuid4()))])
-    party2 = ap.ResponsibleParty(party_uuids=[ap.PartyUuid(__root__=str(uuid4()))])
+    roles = [Role(id='id1', title='title1'), ap.Role(id='id2', title='title2'), ap.Role(id='id3', title='title3')]
+    party1 = ResponsibleParty(party_uuids=[PartyUuid(__root__=str(uuid4()))])
+    party2 = ResponsibleParty(party_uuids=[PartyUuid(__root__=str(uuid4()))])
     responsible_parties = {test_id: party1, 'id2': party2}
     ap_obj = generate_sample_model(ap.AssessmentPlan)
     ap_obj.metadata.roles = roles

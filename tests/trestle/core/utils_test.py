@@ -24,6 +24,7 @@ import trestle.oscal.assessment_plan as assessment_plan
 import trestle.oscal.assessment_results as assessment_results
 import trestle.oscal.catalog as catalog
 import trestle.oscal.component as component
+import trestle.oscal.common as common
 import trestle.oscal.poam as poam
 import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp
@@ -42,11 +43,11 @@ def test_get_elements() -> None:
     """Test getting flat list of elements."""
     good_sample = load_good_catalog()
 
-    mdlist = mutils.get_elements_of_model_type(good_sample, catalog.Metadata)
+    mdlist = mutils.get_elements_of_model_type(good_sample, common.Metadata)
     assert (type(mdlist) == list)
     # can only be 1 metadata
     assert (len(mdlist) == 1)
-    assert (type(mdlist[0]) == catalog.Metadata)
+    assert (type(mdlist[0]) == common.Metadata)
 
     control_list = mutils.get_elements_of_model_type(good_sample, catalog.Control)
     assert (len(control_list) >= 1)
@@ -69,19 +70,19 @@ def test_is_collection_field_type() -> None:
     assert mutils.is_collection_field_type(metadata_field.outer_type_) is False  # Metadata
 
     assert mutils.is_collection_field_type(type(good_catalog.metadata.roles)) is False  # list
-    roles_field = catalog.Metadata.alias_to_field_map()['roles']
+    roles_field = common.Metadata.alias_to_field_map()['roles']
     assert mutils.is_collection_field_type(roles_field.outer_type_) is True  # List[Role]
     assert mutils.is_collection_field_type(roles_field.type_) is False  # Role
 
     assert mutils.is_collection_field_type(type(good_catalog.metadata.responsible_parties)) is False  # list
-    responsible_parties_field = catalog.Metadata.alias_to_field_map()['responsible-parties']
+    responsible_parties_field = common.Metadata.alias_to_field_map()['responsible-parties']
     assert mutils.is_collection_field_type(responsible_parties_field.outer_type_) is True  # Dict[str, ResponsibleParty]
     assert mutils.is_collection_field_type(responsible_parties_field.type_) is False  # ResponsibleParty
 
     assert mutils.is_collection_field_type(
         type(good_catalog.metadata.parties[0].addresses[0].addr_lines)
     ) is False  # list
-    postal_address_field = catalog.Address.alias_to_field_map()['addr-lines']
+    postal_address_field = common.Address.alias_to_field_map()['addr-lines']
     assert mutils.is_collection_field_type(postal_address_field.outer_type_) is True  # List[AddrLine]
     assert mutils.is_collection_field_type(postal_address_field.type_) is False  # AddrLine
 
@@ -104,18 +105,18 @@ def test_get_inner_type() -> None:
         mutils.get_inner_type(type(good_catalog.metadata.roles))
 
     # Type of field roles is a collection field type
-    roles_field = catalog.Metadata.alias_to_field_map()['roles']
+    roles_field = common.Metadata.alias_to_field_map()['roles']
     role_type = mutils.get_inner_type(roles_field.outer_type_)
-    assert role_type == catalog.Role
+    assert role_type == common.Role
 
     with pytest.raises(err.TrestleError):
         # Type of responsible_parties object is not a collection field type
         mutils.get_inner_type(type(good_catalog.metadata.responsible_parties))
 
     # Type of field responsible-parties is a collection field type
-    responsible_parties_field = catalog.Metadata.alias_to_field_map()['responsible-parties']
+    responsible_parties_field = common.Metadata.alias_to_field_map()['responsible-parties']
     responsible_party_type = mutils.get_inner_type(responsible_parties_field.outer_type_)
-    assert responsible_party_type == catalog.ResponsibleParty
+    assert responsible_party_type == common.ResponsibleParty
 
 
 def test_get_root_model() -> None:
@@ -157,21 +158,21 @@ def test_classname_to_alias() -> None:
     json_alias = mutils.classname_to_alias(full_classname, 'field')
     assert json_alias == 'catalog'
 
-    short_classname = catalog.ResponsibleParty.__name__
+    short_classname = common.ResponsibleParty.__name__
     full_classname = f'{module_name}.{short_classname}'
     json_alias = mutils.classname_to_alias(short_classname, 'json')
     assert json_alias == 'responsible-party'
     json_alias = mutils.classname_to_alias(full_classname, 'field')
     assert json_alias == 'responsible_party'
 
-    short_classname = catalog.Property.__name__
+    short_classname = common.Property.__name__
     full_classname = f'{module_name}.{short_classname}'
     json_alias = mutils.classname_to_alias(short_classname, 'json')
     assert json_alias == 'property'
     json_alias = mutils.classname_to_alias(full_classname, 'field')
     assert json_alias == 'property'
 
-    short_classname = catalog.MemberOfOrganization.__name__
+    short_classname = common.MemberOfOrganization.__name__
     full_classname = f'{module_name}.{short_classname}'
     json_alias = mutils.classname_to_alias(short_classname, 'json')
     assert json_alias == 'member-of-organization'
@@ -216,7 +217,7 @@ def test_get_target_model() -> None:
     assert (mutils.get_target_model(['catalog', 'metadata', 'roles'], catalog.Catalog)).__origin__ is list
     assert mutils.get_inner_type(
         mutils.get_target_model(['catalog', 'metadata', 'roles'], catalog.Catalog)
-    ) is catalog.Role
+    ) is common.Role
 
     assert mutils.is_collection_field_type(
         mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog)
@@ -224,16 +225,16 @@ def test_get_target_model() -> None:
     assert mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog).__origin__ is dict
     assert mutils.get_inner_type(
         mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog)
-    ) is catalog.ResponsibleParty
+    ) is common.ResponsibleParty
 
     assert mutils.is_collection_field_type(
         mutils.get_target_model(['catalog', 'metadata', 'responsible-parties', 'creator'], catalog.Catalog)
     ) is False
     assert mutils.get_target_model(
         ['catalog', 'metadata', 'responsible-parties', 'creator'], catalog.Catalog
-    ) is catalog.ResponsibleParty
+    ) is common.ResponsibleParty
 
-    assert mutils.get_target_model(['catalog', 'metadata'], catalog.Catalog) is catalog.Metadata
+    assert mutils.get_target_model(['catalog', 'metadata'], catalog.Catalog) is common.Metadata
 
     with pytest.raises(err.TrestleError):
         mutils.get_target_model(['catalog', 'metadata', 'bad_element'], catalog.Catalog)

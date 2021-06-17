@@ -20,7 +20,8 @@ from pathlib import Path
 
 from tests import test_utils
 
-from trestle.oscal.catalog import Catalog, ResponsibleParty, Role
+from trestle.oscal.catalog import Catalog
+from trestle.oscal.common import ResponsibleParty, Role
 from trestle.utils import fs
 from trestle.utils.load_distributed import _load_dict, _load_list, load_distributed
 

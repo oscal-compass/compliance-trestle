@@ -22,16 +22,13 @@ from typing import Any, Dict, List, Union, ValuesView
 
 from trestle.oscal.assessment_results import ControlSelection
 from trestle.oscal.assessment_results import Finding
-from trestle.oscal.assessment_results import ImplementedComponent
-from trestle.oscal.assessment_results import InventoryItem
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
-from trestle.oscal.assessment_results import Property
 from trestle.oscal.assessment_results import Result
 from trestle.oscal.assessment_results import ReviewedControls
-from trestle.oscal.assessment_results import Status
-from trestle.oscal.assessment_results import SubjectReference
+from trestle.oscal.assessment_results import Status1
 from trestle.oscal.assessment_results import SystemComponent
+from trestle.oscal.common import ImplementedComponent, InventoryItem, Property, SubjectReference
 
 logger = logging.getLogger(__name__)
 
@@ -228,7 +225,7 @@ class ResultsMgr():
                     if component.description == component_description:
                         return
         component_ref = str(uuid.uuid4())
-        status = Status(state='operational')
+        status = Status1(state='operational')
         component = SystemComponent(
             type=component_type, title=component_title, description=component_description, status=status
         )

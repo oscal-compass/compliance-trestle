@@ -98,23 +98,23 @@ def test_generate_sample_model() -> None:
     assert is_valid_uuid(actual_ctlg.uuid)
     actual_ctlg.uuid = expected_ctlg.uuid
     # Check if last-modified datetime is of type datetime, and then equate in actual and expected
-    assert type(actual_ctlg.metadata) is catalog.Metadata
+    assert type(actual_ctlg.metadata) is common.Metadata
     actual_ctlg.metadata.last_modified = expected_ctlg.metadata.last_modified
     # Check that expected generated catalog is now same a actual catalog
     assert expected_ctlg == actual_ctlg
 
     # Test list type models
-    expected_role = catalog.Role(**{'id': 'REPLACE_ME', 'title': 'REPLACE_ME'})
-    list_role = gens.generate_sample_model(List[catalog.Role])
+    expected_role = common.Role(**{'id': 'REPLACE_ME', 'title': 'REPLACE_ME'})
+    list_role = gens.generate_sample_model(List[common.Role])
     assert type(list_role) is list
     actual_role = list_role[0]
     assert expected_role == actual_role
 
     # Test dict type models
     expected_rp = {'party-uuids': ['00000000-0000-4000-8000-000000000000']}
-    expected_rp = catalog.ResponsibleParty(**expected_rp)
+    expected_rp = common.ResponsibleParty(**expected_rp)
     expected_rp_dict = {'REPLACE_ME': expected_rp}
-    actual_rp_dict = gens.generate_sample_model(Dict[str, catalog.ResponsibleParty])
+    actual_rp_dict = gens.generate_sample_model(Dict[str, common.ResponsibleParty])
     assert type(actual_rp_dict) is dict
     assert expected_rp_dict == actual_rp_dict
 

@@ -29,7 +29,8 @@ from trestle.core.commands.add import AddCmd
 from trestle.core.models.actions import UpdateAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
-from trestle.oscal.catalog import BackMatter, Catalog
+from trestle.oscal.catalog import Catalog
+from trestle.oscal.common import BackMatter
 from trestle.utils.fs import get_stripped_contextual_model
 
 
