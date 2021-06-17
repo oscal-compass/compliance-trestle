@@ -56,6 +56,12 @@ class Headers(AuthorCommonCommand):
         self.add_argument(
             author_const.task_name_short, author_const.task_name_long, help=tn_help_str, required=True, type=str
         )
+        self.add_argument(
+            author_const.short_readme_validate,
+            author_const.long_readme_validate,
+            help=author_const.readme_validate_help,
+            action='store_true'
+        )
 
     def _run(self, args: argparse.Namespace) -> int:
         if self._initialize(args):
@@ -71,7 +77,7 @@ class Headers(AuthorCommonCommand):
                 status = self.setup()
             elif args.mode == 'validate':
                 # mode is validate
-                status = self.validate(args.recurse)
+                status = self.validate(args.recurse, args.readme_validate)
         except Exception as e:
             logger.error(f'Error "{e}"" occurred when running trestle author docs.')
             logger.error('Exiting')
@@ -105,7 +111,8 @@ class Headers(AuthorCommonCommand):
         """Validate the integrity of the template files."""
         logger.info('Checking template file integrity')
         for template_file in self.template_dir.iterdir():
-            if template_file.name not in author_const.reference_templates.values():
+            if (template_file.name not in author_const.reference_templates.values()
+                    and template_file.name.lower() != 'readme.md'):
                 logger.error(f'Unexpected template file {self.rel_dir(template_file)}')
                 logger.error('Exiting')
                 return 1
@@ -134,7 +141,9 @@ class Headers(AuthorCommonCommand):
                 new_templates[template_name] = template_path
         return new_templates
 
-    def _validate_dir(self, template_lut: Dict[str, pathlib.Path], candidate_dir: pathlib.Path, recurse: bool) -> bool:
+    def _validate_dir(
+        self, template_lut: Dict[str, pathlib.Path], candidate_dir: pathlib.Path, recurse: bool, readme_validate: bool
+    ) -> bool:
         for candidate_path in candidate_dir.iterdir():
             if fs.local_and_visible(candidate_path):
                 if candidate_path.is_file():
@@ -152,17 +161,17 @@ class Headers(AuthorCommonCommand):
                     else:
                         logger.info(f'Unsupported file {self.rel_dir(candidate_path)} ignored.')
                 elif recurse:
-                    if not self._validate_dir(template_lut, candidate_path, recurse):
+                    if not self._validate_dir(template_lut, candidate_path, recurse, readme_validate):
                         return False
         return True
 
-    def validate(self, recurse: bool) -> int:
+    def validate(self, recurse: bool, readme_validate: bool) -> int:
         """Run validation based on available templates."""
         template_lut = self._discover_templates()
         if not self.task_path.is_dir():
             logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
         try:
-            valid = self._validate_dir(template_lut, self.task_path, recurse)
+            valid = self._validate_dir(template_lut, self.task_path, recurse, readme_validate)
             if valid:
                 return 0
             else:

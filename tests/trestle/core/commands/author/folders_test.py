@@ -43,98 +43,165 @@ def test_governed_folders_high(tmp_trestle_dir: pathlib.Path, command_string: st
 
 
 @pytest.mark.parametrize(
-    'task_name, template_content, target_content, setup_code, template_code, validate_code',
+    'task_name, template_content, target_content, setup_code, template_code, validate_code, readme_validate',
     [
         (
             'test_task',
-            pathlib.Path('md/governed_folders/template_folder'),
-            pathlib.Path('md/governed_folders/good_instance'),
+            pathlib.Path('author/governed_folders/template_folder'),
+            pathlib.Path('author/governed_folders/good_instance'),
             0,
             0,
-            0
+            0,
+            False
         ),
         (
             'catalogs',
-            pathlib.Path('md/governed_folders/template_folder'),
-            pathlib.Path('md/governed_folders/good_instance'),
+            pathlib.Path('author/governed_folders/template_folder'),
+            pathlib.Path('author/governed_folders/good_instance'),
             1,
             1,
-            1
+            1,
+            False
         ),
         (
             'another_test_task/with_a_sub_dir',
-            pathlib.Path('md/governed_folders/template_folder'),
-            pathlib.Path('md/governed_folders/good_instance_limits_of_changes'),
+            pathlib.Path('author/governed_folders/template_folder'),
+            pathlib.Path('author/governed_folders/good_instance_limits_of_changes'),
             0,
             0,
-            0
+            0,
+            False
         ),
         (
             'another_test_task/with_a_sub_dir',
-            pathlib.Path('md/governed_folders/template_folder'),
-            pathlib.Path('md/governed_folders/bad_instance_renamed'),
+            pathlib.Path('author/governed_folders/template_folder'),
+            pathlib.Path('author/governed_folders/bad_instance_renamed'),
             0,
             0,
-            1
+            1,
+            False
         ),
         (
             'another_test_task/with_a_sub_dir',
-            pathlib.Path('md/governed_folders/template_folder'),
-            pathlib.Path('md/governed_folders/bad_instance_mixed_name'),
+            pathlib.Path('author/governed_folders/template_folder'),
+            pathlib.Path('author/governed_folders/bad_instance_mixed_name'),
             0,
             0,
-            1
+            1,
+            False
         ),
         (
             'another_test_task/with_a_sub_dir',
-            pathlib.Path('md/governed_folders/template_folder'),
-            pathlib.Path('md/governed_folders/bad_instance_missing'),
+            pathlib.Path('author/governed_folders/template_folder'),
+            pathlib.Path('author/governed_folders/bad_instance_missing'),
             0,
             0,
-            1
+            1,
+            False
         ),
         (
             'another_test_task/with_a_sub_dir',
-            pathlib.Path('md/governed_folders/template_folder'),
-            pathlib.Path('md/governed_folders/bad_instance_bad_content'),
+            pathlib.Path('author/governed_folders/template_folder'),
+            pathlib.Path('author/governed_folders/bad_instance_bad_content'),
             0,
             0,
-            1
+            1,
+            False
         ),
         (
             'another_test_task',
-            pathlib.Path('md/governed_folders/utf16test_good'),
-            pathlib.Path('md/governed_folders/utf16test_bad'),
+            pathlib.Path('author/governed_folders/utf16test_good'),
+            pathlib.Path('author/governed_folders/utf16test_bad'),
             0,
             0,
-            1
+            1,
+            False
         ),
         (
             'another_test_task',
-            pathlib.Path('md/governed_folders/utf16test_bad'),
-            pathlib.Path('md/governed_folders/utf16test_good'),
+            pathlib.Path('author/governed_folders/utf16test_bad'),
+            pathlib.Path('author/governed_folders/utf16test_good'),
             0,
             1,
-            1
-        )
+            1,
+            False
+        ),
+        (
+            'another_test_task',
+            pathlib.Path('author/governed_folders/template_with_readme'),
+            pathlib.Path('author/governed_folders/good_instance_with_readme'),
+            0,
+            1,
+            1,
+            False
+        ),
+        (
+            'another_test_task',
+            pathlib.Path('author/governed_folders/template_with_readme'),
+            pathlib.Path('author/governed_folders/good_instance_with_readme'),
+            0,
+            0,
+            0,
+            True
+        ),
+        (
+            'another_test_task',
+            pathlib.Path('author/governed_folders/template_folder'),
+            pathlib.Path('author/governed_folders/good_instance_with_readme'),
+            0,
+            0,
+            0,
+            False
+        ),
+        # Note this will pass as templates are permissive to allow extra files
+        # (e.g. it validates what people want to be validated and not supplementary assets)
+        (
+            'another_test_task',
+            pathlib.Path('author/governed_folders/template_folder'),
+            pathlib.Path('author/governed_folders/good_instance_with_readme'),
+            0,
+            0,
+            0,
+            True
+        ),
+        (
+            'another_test_task',
+            pathlib.Path('author/governed_folders/template_with_readme'),
+            pathlib.Path('author/governed_folders/good_instance'),
+            0,
+            0,
+            1,
+            True
+        ),
+        (
+            'another_test_task',
+            pathlib.Path('author/governed_folders/template_with_readme'),
+            pathlib.Path('author/governed_folders/good_instance'),
+            0,
+            1,
+            1,
+            False
+        ),
     ]
 )
 def test_e2e(
     task_name: str,
     template_content: pathlib.Path,
     target_content: pathlib.Path,
-    setup_code: bool,
-    template_code: bool,
-    validate_code: bool,
+    setup_code: int,
+    template_code: int,
+    validate_code: int,
+    readme_validate: bool,
     testdata_dir: pathlib.Path,
     tmp_trestle_dir: pathlib.Path
 ) -> None:
     """Run an E2E workflow with two test criteria for success."""
     # Note testdata_dir must be before tmp_trestle_dir in the argument order.
-    command_string_setup = f'trestle author folders setup -tn {task_name}'
-    command_string_create_sample = f'trestle author folders create-sample -tn {task_name}'
-    command_string_validate_template = f'trestle author folders template-validate -tn {task_name}'
-    command_string_validate_content = f'trestle author folders validate -tn {task_name} --header-validate'
+    readme_flag = '-rv' if readme_validate else ''
+    command_string_setup = f'trestle author folders setup -tn {task_name} {readme_flag}'
+    command_string_create_sample = f'trestle author folders create-sample -tn {task_name} {readme_flag}'
+    command_string_validate_template = f'trestle author folders template-validate -tn {task_name} {readme_flag}'
+    command_string_validate_content = f'trestle author folders validate -tn {task_name} --header-validate {readme_flag}'
     template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}'
     with mock.patch.object(sys, 'argv', command_string_setup.split()):

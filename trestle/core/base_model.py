@@ -35,12 +35,12 @@ from pydantic import BaseModel, Extra, Field, create_model
 from pydantic.fields import ModelField
 from pydantic.parse import load_file
 
+from ruamel.yaml import YAML
+
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.utils import classname_to_alias, get_origin, is_collection_field_type
-
-import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -222,17 +222,33 @@ class OscalBaseModel(BaseModel):
         wrapped_model = wrapper_model(**{classname_to_alias(class_name, 'json'): self})
         return wrapped_model
 
-    def oscal_serialize_json(self) -> str:
+    def oscal_dict(self) -> Dict[str, Any]:
+        """Return a dictionary including the root wrapping object key."""
+        class_name = self.__class__.__name__
+        result = {}
+        result[classname_to_alias(class_name, 'json')] = self.dict(by_alias=True, exclude_none=True)
+        return result
+
+    def oscal_serialize_json(self, pretty: Optional[bool] = False) -> str:
         """
         Return an 'oscal wrapped' json object serialized in a compressed form.
 
+        Args:
+            pretty: Whether or not to pretty-print json output or have in compressed form.
         Returns:
             Oscal model serialized to a json object including packaging inside of a single top level key.
         """
-        class_name = self.__class__.__name__
-        tl_alias = classname_to_alias(class_name, 'json')
-        raw_model = self.json(exclude_none=True, by_alias=True)
-        wrapped_str = f'{{"{tl_alias}": {raw_model}}}'
+        if pretty:
+            wrapped = self._oscal_wrap()
+            wrapped_str = wrapped.json(exclude_none=True, by_alias=True, indent=2)
+
+        else:
+            # Ma
+            class_name = self.__class__.__name__
+            tl_alias = classname_to_alias(class_name, 'json')
+            raw_model = self.json(exclude_none=True, by_alias=True)
+
+            wrapped_str = f'{{"{tl_alias}": {raw_model}}}'
         return wrapped_str
 
     def oscal_write(self, path: pathlib.Path) -> None:
@@ -249,14 +265,16 @@ class OscalBaseModel(BaseModel):
         Raises:
             err.TrestleError: If a unknown file extension is provided.
         """
-        wrapped_model = self._oscal_wrap()
-        #
         content_type = FileContentType.to_content_type(path.suffix)
         write_file = pathlib.Path(path).open('w', encoding=const.FILE_ENCODING)
         if content_type == FileContentType.YAML:
-            yaml.dump(yaml.safe_load(wrapped_model.json(exclude_none=True, by_alias=True)), write_file)
+            yaml = YAML(typ='safe')
+            yaml.dump(yaml.load(self.oscal_serialize_json()), write_file)
         elif content_type == FileContentType.JSON:
-            write_file.write(wrapped_model.json(exclude_none=True, by_alias=True, indent=2))
+            write_file.write(self.oscal_serialize_json(pretty=True))
+        # Flush / close required (by experience) due to flushing issues in tests.
+        write_file.flush()
+        write_file.close()
 
     @classmethod
     def oscal_read(cls, path: pathlib.Path) -> 'OscalBaseModel':
@@ -283,7 +301,10 @@ class OscalBaseModel(BaseModel):
         obj: Dict[str, Any] = {}
         try:
             if content_type == FileContentType.YAML:
-                obj = yaml.safe_load(path.open(encoding=const.FILE_ENCODING))
+                yaml = YAML(typ='safe')
+                fh = path.open('r', encoding=const.FILE_ENCODING)
+                obj = yaml.load(fh)
+                fh.close()
             elif content_type == FileContentType.JSON:
                 obj = load_file(
                     path,

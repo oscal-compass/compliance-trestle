@@ -18,11 +18,11 @@ import json
 import logging
 from typing import List
 
+from ruamel.yaml import YAML
+
 from trestle.transforms.results import Results
 from trestle.transforms.transformer_factory import ResultsTransformer
 from trestle.transforms.utils.osco_helper import ResultsMgr
-
-import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -56,8 +56,8 @@ class OscoTransformer(ResultsTransformer):
                             for resource in cluster['resources']:
                                 self._results_mgr.ingest(resource)
         except json.decoder.JSONDecodeError:
-            # osco data
-            resource = yaml.load(blob, Loader=yaml.Loader)
+            yaml = YAML(typ='safe')
+            resource = yaml.load(blob)
             self._results_mgr.ingest(resource)
         results.__root__.append(self._results_mgr.result)
         return results

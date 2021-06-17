@@ -76,15 +76,15 @@ def prepare_element_paths(base_dir, element_args) -> List[ElementPath]:
 
 
 def prepare_trestle_project_dir(
-    tmp_path, content_type: FileContentType, model_obj: OscalBaseModel, models_dir_name: str
+    repo_dir: pathlib.Path, content_type: FileContentType, model_obj: OscalBaseModel, models_dir_name: str
 ):
     """Prepare a temp directory with an example OSCAL model."""
-    ensure_trestle_config_dir(tmp_path)
+    ensure_trestle_config_dir(repo_dir)
 
     model_alias = utils.classname_to_alias(model_obj.__class__.__name__, 'json')
 
     file_ext = FileContentType.to_file_extension(content_type)
-    models_full_path = tmp_path / models_dir_name / 'my_test_model'
+    models_full_path = repo_dir / models_dir_name / 'my_test_model'
     model_def_file = models_full_path / f'{model_alias}{file_ext}'
     models_full_path.mkdir(exist_ok=True, parents=True)
     model_obj.oscal_write(model_def_file)

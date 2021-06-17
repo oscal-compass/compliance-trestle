@@ -46,8 +46,8 @@ def test_governed_docs_high(tmp_trestle_dir: pathlib.Path, command_string: str, 
     [
         (
             'test_task',
-            pathlib.Path('md/test_1_md_format/template.md'),
-            pathlib.Path('md/test_1_md_format/correct_instance_extra_features.md'),
+            pathlib.Path('author/test_1_md_format/template.md'),
+            pathlib.Path('author/test_1_md_format/correct_instance_extra_features.md'),
             False,
             0,
             0,
@@ -55,8 +55,8 @@ def test_governed_docs_high(tmp_trestle_dir: pathlib.Path, command_string: str, 
         ),
         (
             'catalogs',
-            pathlib.Path('md/test_1_md_format/template.md'),
-            pathlib.Path('md/test_1_md_format/correct_instance_extra_features.md'),
+            pathlib.Path('author/test_1_md_format/template.md'),
+            pathlib.Path('author/test_1_md_format/correct_instance_extra_features.md'),
             False,
             1,
             1,
@@ -64,17 +64,8 @@ def test_governed_docs_high(tmp_trestle_dir: pathlib.Path, command_string: str, 
         ),
         (
             'test_task',
-            pathlib.Path('md/test_1_md_format/template.md'),
-            pathlib.Path('md/test_1_md_format/bad_instance_missing_heading.md'),
-            False,
-            0,
-            0,
-            1
-        ),
-        (
-            'test_task',
-            pathlib.Path('md/utf16test/sample_okay.md'),
-            pathlib.Path('md/utf16test/sample_utf16.md'),
+            pathlib.Path('author/test_1_md_format/template.md'),
+            pathlib.Path('author/test_1_md_format/bad_instance_missing_heading.md'),
             False,
             0,
             0,
@@ -82,8 +73,17 @@ def test_governed_docs_high(tmp_trestle_dir: pathlib.Path, command_string: str, 
         ),
         (
             'test_task',
-            pathlib.Path('md/utf16test/sample_utf16.md'),
-            pathlib.Path('md/utf16test/sample_okay.md'),
+            pathlib.Path('author/utf16test/sample_okay.md'),
+            pathlib.Path('author/utf16test/sample_utf16.md'),
+            False,
+            0,
+            0,
+            1
+        ),
+        (
+            'test_task',
+            pathlib.Path('author/utf16test/sample_utf16.md'),
+            pathlib.Path('author/utf16test/sample_okay.md'),
             False,
             0,
             1,
@@ -91,8 +91,8 @@ def test_governed_docs_high(tmp_trestle_dir: pathlib.Path, command_string: str, 
         ),
         (
             'test_task',
-            pathlib.Path('md/test_1_md_format/template.md'),
-            pathlib.Path('md/test_1_md_format/correct_instance_extra_features.md'),
+            pathlib.Path('author/test_1_md_format/template.md'),
+            pathlib.Path('author/test_1_md_format/correct_instance_extra_features.md'),
             True,
             0,
             0,
@@ -100,8 +100,8 @@ def test_governed_docs_high(tmp_trestle_dir: pathlib.Path, command_string: str, 
         ),
         (
             'test_task',
-            pathlib.Path('md/test_1_md_format/template.md'),
-            pathlib.Path('md/test_1_md_format/correct_instance_extra_features.md'),
+            pathlib.Path('author/test_1_md_format/template.md'),
+            pathlib.Path('author/test_1_md_format/correct_instance_extra_features.md'),
             True,
             0,
             0,
@@ -114,9 +114,9 @@ def test_e2e(
     template_content: pathlib.Path,
     target_content: pathlib.Path,
     recurse: bool,
-    setup_code: bool,
-    template_code: bool,
-    validate_code: bool,
+    setup_code: int,
+    template_code: int,
+    validate_code: int,
     testdata_dir: pathlib.Path,
     tmp_trestle_dir: pathlib.Path
 ) -> None:
@@ -158,7 +158,7 @@ def test_e2e(
     if recurse:
         # choose source file based on expected result
         sub_file_name = 'correct_instance_extra_features.md' if validate_code else 'bad_instance_missing_heading.md'
-        sub_file_path = testdata_dir / 'md/test_1_md_format' / sub_file_name
+        sub_file_path = testdata_dir / 'author/test_1_md_format' / sub_file_name
         subdir = tmp_trestle_dir / task_name / 'subdir'
         subdir.mkdir()
         sub_content = subdir / f'{uuid4()}.md'
@@ -204,8 +204,8 @@ def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path
     # hardcoded arguments for testing
     task_name = 'test_task'
     recurse = False
-    template_content = pathlib.Path('md/test_1_md_format/template.md')
-    target_content = pathlib.Path('md/test_1_md_format/correct_instance_extra_features.md')
+    template_content = pathlib.Path('author/test_1_md_format/template.md')
+    target_content = pathlib.Path('author/test_1_md_format/correct_instance_extra_features.md')
     setup_code = 0
     template_code = 0
     validate_code = 0
@@ -252,6 +252,102 @@ def test_e2e_debugging(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path
         subdir.mkdir()
         sub_content = subdir / f'{uuid4()}.md'
         shutil.copyfile(str(sub_file_path), str(sub_content))
+    with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == validate_code
+
+
+@pytest.mark.parametrize(
+    'task_name, template_source_directory, target_source_directory, readme_validate, template_code, validate_code',
+    [
+        (
+            'test_task_0',
+            pathlib.Path('author/docs/template_folder_valid_with_readme'),
+            pathlib.Path('author/docs/candidate_valid_readme'),
+            False,
+            0,
+            0
+        ),
+        (
+            'test_task_1',
+            pathlib.Path('author/docs/template_folder_valid_with_readme'),
+            pathlib.Path('author/docs/candidate_valid_readme'),
+            True,
+            0,
+            1
+        ),
+        (
+            'test_task_2',
+            pathlib.Path('author/docs/template_folder_invalid'),
+            pathlib.Path('author/docs/candidate_valid_readme'),
+            False,
+            1,
+            1
+        ),
+        (
+            'test_task_3',
+            pathlib.Path('author/docs/template_folder_invalid'),
+            pathlib.Path('author/docs/candidate_valid_readme'),
+            True,
+            1,
+            1
+        ),
+        (
+            'test_task_4',
+            pathlib.Path('author/docs/template_folder_valid_with_readme'),
+            pathlib.Path('author/docs/candidate_invalid_readme'),
+            False,
+            0,
+            1
+        ),
+        (
+            'test_task_5',
+            pathlib.Path('author/docs/template_folder_valid_with_readme'),
+            pathlib.Path('author/docs/candidate_invalid_readme'),
+            True,
+            0,
+            1
+        )
+    ]
+)
+def test_directory_content(
+    task_name: str,
+    template_source_directory: pathlib.Path,
+    target_source_directory: pathlib.Path,
+    readme_validate: bool,
+    template_code: int,
+    validate_code: int,
+    testdata_dir: pathlib.Path,
+    tmp_trestle_dir: pathlib.Path
+):
+    """Test setup where groups of files are tested to allow testing of readme flags."""
+    readme_validate_flag = '-rv' if readme_validate else ''
+    command_string_create_sample = f'trestle author docs create-sample -tn {task_name}'
+    command_string_validate_template = f'trestle author docs template-validate -tn {task_name}'
+    command_string_validate_content = (
+        f'trestle author docs validate -tn {task_name} --header-validate {readme_validate_flag}'
+    )
+    template_target_directory = tmp_trestle_dir / '.trestle' / 'author' / task_name
+    task_directory = tmp_trestle_dir / task_name
+    # Test setup
+    shutil.copytree(str(testdata_dir / template_source_directory), str(template_target_directory))
+    shutil.copytree(str(testdata_dir / target_source_directory), str(task_directory))
+    with mock.patch.object(sys, 'argv', command_string_validate_template.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == template_code
+    if template_code > 0:
+        return
+    # Create sample - should always work if we are here.
+    with mock.patch.object(sys, 'argv', command_string_create_sample.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == 0
+
     with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()

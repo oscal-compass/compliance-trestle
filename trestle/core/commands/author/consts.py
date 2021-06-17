@@ -31,6 +31,14 @@ mode_choices = ['validate', 'template-validate', 'setup', 'create-sample']
 task_name_short = '-tn'
 task_name_long = '--task-name'
 
+# Readme validate
+short_readme_validate = '-rv'
+long_readme_validate = '--readme-validate'
+readme_validate_help = 'Enable to validate README.md files otherwise README files are excluded.'
+readme_validate_folders_help = (
+    'Enable to validate README.md files. Required if readme files are included in the' + 'template.'
+)
+
 # Governed heading - capability: To be removed
 gh_short = '-gh'
 gh_long = '--governed-heading'
