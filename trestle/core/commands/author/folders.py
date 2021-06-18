@@ -202,12 +202,13 @@ class Folders(AuthorCommonCommand):
                     )
                     return False
                 else:
+                    full_path = instance_dir / r_template_path
                     if clean_suffix == 'md':
                         # Measure
                         md_validator = markdown_validator.MarkdownValidator(
                             template_file, validate_header, validate_only_header, governed_heading
                         )
-                        full_path = instance_dir / r_template_path
+
                         status = md_validator.validate(full_path)
                         if not status:
                             logger.error(
@@ -269,8 +270,8 @@ class Folders(AuthorCommonCommand):
                     )
                     return 1
             else:
-                logger.info(
-                    f'Unexpected file {self.rel_dir(self.task_instance)} identified in {self.rel_dir(self.task_name)}'
+                logger.warning(
+                    f'Unexpected file {self.rel_dir(task_instance)} identified in {self.task_name}'
                     + ' directory, ignoring.'
                 )
         return 0
