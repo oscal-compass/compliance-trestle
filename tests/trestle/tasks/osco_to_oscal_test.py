@@ -155,8 +155,8 @@ def test_osco_execute_compressed(tmp_path):
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     assert len(os.listdir(str(tmp_path))) == 1
-    f_expected = pathlib.Path('tests/data/tasks/osco/output-compressed/') / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    f_produced = tmp_path  / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
+    f_expected = pathlib.Path('tests/data/tasks/osco/output-compressed/') / 'ssg-rhel7-ds-cis-111.222.333.444-pod.oscal.json'
+    f_produced = tmp_path  / 'ssg-rhel7-ds-cis-111.222.333.444-pod.oscal.json'
     assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
     
 def test_osco_execute_no_config(tmp_path):

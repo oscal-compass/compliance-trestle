@@ -24,7 +24,6 @@ from xml.etree.ElementTree import Element
 from defusedxml import ElementTree
 
 from trestle.oscal.assessment_results import ControlSelection
-from trestle.oscal.assessment_results import Finding
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
 from trestle.oscal.assessment_results import Result
@@ -42,7 +41,6 @@ t_component_ref = str
 t_control = str
 t_control_selection = ControlSelection
 t_element = Element
-t_finding = Finding
 t_inventory = InventoryItem
 t_inventory_ref = str
 t_local_definitions = LocalDefinitions1
@@ -55,7 +53,6 @@ t_reviewed_controls = ReviewedControls
 
 t_observation_list = List[Observation]
 t_component_map = Dict[t_component_ref, t_component]
-t_findings_map = Dict[t_control, Any]
 t_inventory_map = Dict[t_target, t_inventory]
 t_results_map = Dict[str, Any]
 
@@ -246,7 +243,6 @@ class ResultsMgr():
         self.timestamp = timestamp
         self.observation_list: t_observation_list = []
         self.component_map: t_component_map = {}
-        self.findings_map: t_findings_map = {}
         self.inventory_map: t_inventory_map = {}
         self.results_map: t_results_map = {}
         self.ns = 'http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco'
@@ -254,21 +250,13 @@ class ResultsMgr():
     @property
     def components(self) -> t_component_map:
         """OSCAL components."""
-        return self.component_map
+        return list(self.component_map.values())
 
     @property
     def control_selections(self) -> List[t_control_selection]:
         """OSCAL control selections."""
         prop = []
         prop.append(ControlSelection())
-        return prop
-
-    @property
-    def findings(self) -> List[t_finding]:
-        """OSCAL findings."""
-        control = ''
-        finding = Finding(uuid=str(uuid.uuid4()), title=control, description=control)
-        prop = [finding]
         return prop
 
     @property
@@ -305,7 +293,6 @@ class ResultsMgr():
             start=self.timestamp,
             end=self.timestamp,
             reviewed_controls=self.reviewed_controls,
-            findings=self.findings,
         )
         if len(self.inventory) > 0:
             prop.local_definitions = self.local_definitions
@@ -319,7 +306,6 @@ class ResultsMgr():
         analysis = []
         analysis.append(f'inventory: {len(self.inventory)}')
         analysis.append(f'observations: {len(self.observations)}')
-        analysis.append(f'findings: {len(self.findings_map)}')
         analysis.append(f'results: {self.results_map}')
         return analysis
 
@@ -337,7 +323,11 @@ class ResultsMgr():
         component_ref = str(uuid.uuid4())
         status = Status1(state='operational')
         component = SystemComponent(
-            type=component_type, title=component_title, description=component_description, status=status
+            uuid=component_ref,
+            type=component_type,
+            title=component_title,
+            description=component_description,
+            status=status
         )
         self.component_map[component_ref] = component
 
@@ -380,7 +370,7 @@ class ResultsMgr():
         observation = Observation(
             uuid=str(uuid.uuid4()), description=rule_use.idref, methods=['TEST-AUTOMATED'], collected=self.timestamp
         )
-        subject_reference = SubjectReference(uuid_ref=self._get_inventory_ref(rule_use), type='inventory-item')
+        subject_reference = SubjectReference(subject_uuid=self._get_inventory_ref(rule_use), type='inventory-item')
         observation.subjects = [subject_reference]
         props = []
         props.append(Property(name='scanner_name', value=rule_use.scanner_name, ns=self.ns))
@@ -400,12 +390,6 @@ class ResultsMgr():
         self.observation_list.append(observation)
         rule_use.observation = observation
 
-    def _finding_extract(self, rule_use: RuleUse) -> None:
-        """Extract finding from RuleUse."""
-        if rule_use.result not in self.results_map.keys():
-            self.results_map[rule_use.result] = 0
-        self.results_map[rule_use.result] += 1
-
     def _process(self, co_report: ComplianceOperatorReport) -> None:
         """Process ingested data."""
         rule_use_generator = co_report.rule_use_generator()
@@ -413,7 +397,6 @@ class ResultsMgr():
             self._component_extract(rule_use)
             self._inventory_extract(rule_use)
             self._observation_extract(rule_use)
-            self._finding_extract(rule_use)
 
     def ingest(self, osco_json: t_osco_json) -> None:
         """Process OSCO json."""
