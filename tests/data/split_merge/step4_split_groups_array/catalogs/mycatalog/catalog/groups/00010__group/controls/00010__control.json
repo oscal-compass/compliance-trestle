@@ -7,7 +7,7 @@
             {
                 "id": "pe-11_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "an orderly shutdown of the system",
                         "transition of the system to long-term alternate power"

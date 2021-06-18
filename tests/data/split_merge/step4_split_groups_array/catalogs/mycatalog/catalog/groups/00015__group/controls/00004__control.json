@@ -281,7 +281,7 @@
                     {
                         "id": "ra-5.2_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 " {{ ra-5.2_prm_2 }} ",
                                 "prior to a new scan",

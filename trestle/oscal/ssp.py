@@ -53,7 +53,7 @@ class SetParameter(OscalBaseModel):
         description="A reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
         title='Parameter ID',
     )
-    values: List[common.Value] = Field(..., min_items=1)
+    values: List[common.Value] = Field(...)
     remarks: Optional[common.Remarks] = None
 
 
@@ -80,10 +80,10 @@ class Satisfied(OscalBaseModel):
         description='An implementation statement that describes the aspects of a control or control statement implementation that a leveraging system is implementing based on a requirement from a leveraged system.',
         title='Satisfied Control Implementation Responsibility Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     remarks: Optional[common.Remarks] = None
 
@@ -111,10 +111,10 @@ class Inherited(OscalBaseModel):
         description='An implementation statement that describes the aspects of a control or control statement implementation that a leveraging system is inheriting from a leveraged system.',
         title='Inherited Control Implementation Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
 
 
@@ -141,10 +141,10 @@ class Responsibility(OscalBaseModel):
         description='An implementation statement that describes the aspects of the control or control statement implementation that a leveraging system must implement to satisfy the control provided by a leveraged system.',
         title='Control Implementation Responsibility Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     remarks: Optional[common.Remarks] = None
 
@@ -162,10 +162,10 @@ class Provided(OscalBaseModel):
         description='An implementation statement that describes the aspects of the control or control statement implementation that can be provided to another system leveraging this system.',
         title='Provided Control Implementation Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     remarks: Optional[common.Remarks] = None
 
@@ -177,8 +177,8 @@ class Diagram(OscalBaseModel):
     description: Optional[str] = Field(
         None, description='A summary of the diagram.', title='Diagram Description'
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     caption: Optional[str] = Field(
         None, description='A brief caption to annotate the diagram.', title='Caption'
     )
@@ -302,18 +302,18 @@ class SystemComponent(OscalBaseModel):
         description='A summary of the technological or business purpose of the component.',
         title='Purpose',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     status: SystemComponentStatus = Field(
         ...,
         description='Describes the operational status of the system component.',
         title='SystemComponentStatus',
     )
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     protocols: Optional[List[common.Protocol]] = Field(
-        None, min_items=1
+        None
     )
     remarks: Optional[common.Remarks] = None
 
@@ -324,9 +324,9 @@ class AuthorizationBoundary(OscalBaseModel):
         description="A summary of the system's authorization boundary.",
         title='Authorization Boundary Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
-    diagrams: Optional[List[Diagram]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    diagrams: Optional[List[Diagram]] = Field(None)
     remarks: Optional[str] = Field(
         None,
         description="Commentary about the system's authorization boundary that enhances the diagram.",
@@ -340,10 +340,10 @@ class Export(OscalBaseModel):
         description='An implementation statement that describes the aspects of the control or control statement implementation that can be available to another system leveraging this system.',
         title='Control Implementation Export Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
-    provided: Optional[List[Provided]] = Field(None, min_items=1)
-    responsibilities: Optional[List[Responsibility]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    provided: Optional[List[Provided]] = Field(None)
+    responsibilities: Optional[List[Responsibility]] = Field(None)
     remarks: Optional[common.Remarks] = None
 
 
@@ -368,10 +368,10 @@ class ByComponent(OscalBaseModel):
         description='An implementation statement that describes how a control or a control statement is implemented within the referenced system component.',
         title='Control Implementation Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     set_parameters: Optional[List[SetParameter]] = Field(
-        None, alias='set-parameters', min_items=1
+        None, alias='set-parameters'
     )
     implementation_status: Optional[
         ImplementationStatus
@@ -381,10 +381,10 @@ class ByComponent(OscalBaseModel):
         description='Identifies content intended for external consumption, such as with leveraged organizations.',
         title='Export',
     )
-    inherited: Optional[List[Inherited]] = Field(None, min_items=1)
-    satisfied: Optional[List[Satisfied]] = Field(None, min_items=1)
+    inherited: Optional[List[Inherited]] = Field(None)
+    satisfied: Optional[List[Satisfied]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     remarks: Optional[common.Remarks] = None
 
@@ -402,8 +402,8 @@ class LeveragedAuthorization(OscalBaseModel):
         description='A human readable name for the leveraged authorization in the context of the system.',
         title='title field',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     party_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -417,15 +417,15 @@ class LeveragedAuthorization(OscalBaseModel):
 
 
 class SystemImplementation(OscalBaseModel):
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     leveraged_authorizations: Optional[List[LeveragedAuthorization]] = Field(
-        None, alias='leveraged-authorizations', min_items=1
+        None, alias='leveraged-authorizations'
     )
-    users: List[common.SystemUser] = Field(..., min_items=1)
-    components: List[SystemComponent] = Field(..., min_items=1)
+    users: List[common.SystemUser] = Field(...)
+    components: List[SystemComponent] = Field(...)
     inventory_items: Optional[List[common.InventoryItem]] = Field(
-        None, alias='inventory-items', min_items=1
+        None, alias='inventory-items'
     )
     remarks: Optional[common.Remarks] = None
 
@@ -436,9 +436,9 @@ class DataFlow(OscalBaseModel):
         description="A summary of the system's data flow.",
         title='Data Flow Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
-    diagrams: Optional[List[Diagram]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    diagrams: Optional[List[Diagram]] = Field(None)
     remarks: Optional[common.Remarks] = None
 
 
@@ -448,15 +448,15 @@ class NetworkArchitecture(OscalBaseModel):
         description="A summary of the system's network architecture.",
         title='Network Architecture Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
-    diagrams: Optional[List[Diagram]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    diagrams: Optional[List[Diagram]] = Field(None)
     remarks: Optional[common.Remarks] = None
 
 
 class AvailabilityImpact(OscalBaseModel):
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     base: Base
     selected: Optional[Selected] = None
     adjustment_justification: Optional[AdjustmentJustification] = Field(
@@ -465,8 +465,8 @@ class AvailabilityImpact(OscalBaseModel):
 
 
 class IntegrityImpact(OscalBaseModel):
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     base: Base
     selected: Optional[Selected] = None
     adjustment_justification: Optional[AdjustmentJustification] = Field(
@@ -475,8 +475,8 @@ class IntegrityImpact(OscalBaseModel):
 
 
 class ConfidentialityImpact(OscalBaseModel):
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     base: Base
     selected: Optional[Selected] = None
     adjustment_justification: Optional[AdjustmentJustification] = Field(
@@ -498,7 +498,7 @@ class Categorization(OscalBaseModel):
         title='Information common.Type Identification System',
     )
     information_type_ids: Optional[List[InformationTypeId]] = Field(
-        None, alias='information-type-ids', min_items=1
+        None, alias='information-type-ids'
     )
 
 
@@ -522,9 +522,9 @@ class InformationType(OscalBaseModel):
         description='A summary of how this information type is used within the system.',
         title='Information common.Type Description',
     )
-    categorizations: Optional[List[Categorization]] = Field(None, min_items=1)
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    categorizations: Optional[List[Categorization]] = Field(None)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     confidentiality_impact: ConfidentialityImpact = Field(
         ...,
         alias='confidentiality-impact',
@@ -546,16 +546,16 @@ class InformationType(OscalBaseModel):
 
 
 class SystemInformation(OscalBaseModel):
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     information_types: List[InformationType] = Field(
-        ..., alias='information-types', min_items=1
+        ..., alias='information-types'
     )
 
 
 class SystemCharacteristics(OscalBaseModel):
     system_ids: List[common.SystemId] = Field(
-        ..., alias='system-ids', min_items=1
+        ..., alias='system-ids'
     )
     system_name: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
@@ -572,8 +572,8 @@ class SystemCharacteristics(OscalBaseModel):
     description: str = Field(
         ..., description='A summary of the system.', title='System Description'
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     date_authorized: Optional[DateAuthorized] = Field(
         None, alias='date-authorized'
     )
@@ -598,7 +598,7 @@ class SystemCharacteristics(OscalBaseModel):
     )
     data_flow: Optional[DataFlow] = Field(None, alias='data-flow')
     responsible_parties: Optional[List[common.ResponsibleParty]] = Field(
-        None, alias='responsible-parties', min_items=1
+        None, alias='responsible-parties'
     )
     remarks: Optional[common.Remarks] = None
 
@@ -619,13 +619,13 @@ class Statement(OscalBaseModel):
         description='A globally unique identifier that can be used to reference this control statement entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
         title='Control Statement Reference Universally Unique Identifier',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     by_components: Optional[List[ByComponent]] = Field(
-        None, alias='by-components', min_items=1
+        None, alias='by-components'
     )
     remarks: Optional[common.Remarks] = None
 
@@ -646,17 +646,17 @@ class ImplementedRequirement(OscalBaseModel):
         description='A reference to a control with a corresponding id value.',
         title='Control Identifier Reference',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     set_parameters: Optional[List[SetParameter]] = Field(
-        None, alias='set-parameters', min_items=1
+        None, alias='set-parameters'
     )
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
-    statements: Optional[List[Statement]] = Field(None, min_items=1)
+    statements: Optional[List[Statement]] = Field(None)
     by_components: Optional[List[ByComponent]] = Field(
-        None, alias='by-components', min_items=1
+        None, alias='by-components'
     )
     remarks: Optional[common.Remarks] = None
 
@@ -668,10 +668,10 @@ class ControlImplementation(OscalBaseModel):
         title='Control Implementation Description',
     )
     set_parameters: Optional[List[SetParameter]] = Field(
-        None, alias='set-parameters', min_items=1
+        None, alias='set-parameters'
     )
     implemented_requirements: List[ImplementedRequirement] = Field(
-        ..., alias='implemented-requirements', min_items=1
+        ..., alias='implemented-requirements'
     )
 
 
@@ -699,4 +699,3 @@ class SystemSecurityPlan(OscalBaseModel):
 
 class Model(OscalBaseModel):
     system_security_plan: SystemSecurityPlan = Field(..., alias='system-security-plan')
-

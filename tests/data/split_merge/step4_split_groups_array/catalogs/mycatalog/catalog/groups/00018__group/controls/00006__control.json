@@ -193,7 +193,7 @@
                     {
                         "id": "si-7.1_prm_2",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "at startup",
                                 "at {{ si-7.1_prm_3 }} ",
@@ -358,7 +358,7 @@
                     {
                         "id": "si-7.5_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "shut the system down",
                                 "restart the system",
@@ -509,7 +509,7 @@
                     {
                         "id": "si-7.8_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "generate an audit record",
                                 "alert current user",

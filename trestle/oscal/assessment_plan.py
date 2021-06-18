@@ -36,7 +36,7 @@ class SelectControlById(OscalBaseModel):
         title='Control Identifier Reference',
     )
     statement_ids: Optional[List[common.StatementId]] = Field(
-        None, alias='statement-ids', min_items=1
+        None, alias='statement-ids'
     )
 
 
@@ -103,7 +103,7 @@ class SetParameter(OscalBaseModel):
         description="A reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
         title='Parameter ID',
     )
-    values: List[common.Value] = Field(..., min_items=1)
+    values: List[common.Value] = Field(...)
     remarks: Optional[common.Remarks] = None
 
 
@@ -131,8 +131,8 @@ class FindingTarget(OscalBaseModel):
         description="A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied.",
         title='Objective SystemComponentStatus Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     status: SystemComponentStatus = Field(
         ...,
         description='A determination of if the objective is satisfied or not within a given system.',
@@ -146,7 +146,7 @@ class FindingTarget(OscalBaseModel):
 
 class TermsAndConditions(OscalBaseModel):
     parts: Optional[List[common.AssessmentPart]] = Field(
-        None, min_items=1
+        None
     )
 
 
@@ -176,22 +176,22 @@ class Entry(OscalBaseModel):
         description='Identifies the end date and time of the event. If the event is a point in time, the start and end will be the same date and time.',
         title='End',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     logged_by: Optional[List[common.LoggedBy]] = Field(
-        None, alias='logged-by', min_items=1
+        None, alias='logged-by'
     )
     status_change: Optional[common.RiskStatus] = Field(
         None, alias='status-change'
     )
     related_responses: Optional[List[common.RelatedResponse]] = Field(
-        None, alias='related-responses', min_items=1
+        None, alias='related-responses'
     )
     remarks: Optional[common.Remarks] = None
 
 
 class RiskLog(OscalBaseModel):
-    entries: List[Entry] = Field(..., min_items=1)
+    entries: List[Entry] = Field(...)
 
 
 class SystemComponent(OscalBaseModel):
@@ -222,28 +222,28 @@ class SystemComponent(OscalBaseModel):
         description='A summary of the technological or business purpose of the component.',
         title='Purpose',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     status: Status1 = Field(
         ...,
         description='Describes the operational status of the system component.',
         title='SystemComponentStatus',
     )
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     protocols: Optional[List[common.Protocol]] = Field(
-        None, min_items=1
+        None
     )
     remarks: Optional[common.Remarks] = None
 
 
 class AssessmentAssets(OscalBaseModel):
     components: Optional[List[SystemComponent]] = Field(
-        None, min_items=1
+        None
     )
     assessment_platforms: List[common.AssessmentPlatform] = Field(
-        ..., alias='assessment-platforms', min_items=1
+        ..., alias='assessment-platforms'
     )
 
 
@@ -253,8 +253,8 @@ class ControlSelection(OscalBaseModel):
         description='A human-readable description of in-scope controls specified for assessment.',
         title='Assessed Controls Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     include_all: Optional[Dict[str, Any]] = Field(
         None,
         alias='include-all',
@@ -262,18 +262,18 @@ class ControlSelection(OscalBaseModel):
         title='All',
     )
     include_controls: Optional[List[SelectControlById]] = Field(
-        None, alias='include-controls', min_items=1
+        None, alias='include-controls'
     )
     exclude_controls: Optional[List[SelectControlById]] = Field(
-        None, alias='exclude-controls', min_items=1
+        None, alias='exclude-controls'
     )
     remarks: Optional[common.Remarks] = None
 
 
 class Origin(OscalBaseModel):
-    actors: List[common.OriginActor] = Field(..., min_items=1)
+    actors: List[common.OriginActor] = Field(...)
     related_tasks: Optional[List[common.RelatedTask]] = Field(
-        None, alias='related-tasks', min_items=1
+        None, alias='related-tasks'
     )
 
 
@@ -283,13 +283,13 @@ class ReviewedControls(OscalBaseModel):
         description='A human-readable description of control objectives.',
         title='Control Objective Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     control_selections: List[ControlSelection] = Field(
-        ..., alias='control-selections', min_items=1
+        ..., alias='control-selections'
     )
     control_objective_selections: Optional[List[common.ControlObjectiveSelection]] = Field(
-        None, alias='control-objective-selections', min_items=1
+        None, alias='control-objective-selections'
     )
     remarks: Optional[common.Remarks] = None
 
@@ -310,16 +310,16 @@ class Observation(OscalBaseModel):
         description='A human-readable description of this assessment observation.',
         title='Observation Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
-    methods: List[Method] = Field(..., min_items=1)
-    types: Optional[List[common.Type2]] = Field(None, min_items=1)
-    origins: Optional[List[Origin]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    methods: List[Method] = Field(...)
+    types: Optional[List[common.Type2]] = Field(None)
+    origins: Optional[List[Origin]] = Field(None)
     subjects: Optional[List[common.SubjectReference]] = Field(
-        None, min_items=1
+        None
     )
     relevant_evidence: Optional[List[common.RelevantEvidence]] = Field(
-        None, alias='relevant-evidence', min_items=1
+        None, alias='relevant-evidence'
     )
     collected: datetime = Field(
         ...,
@@ -357,21 +357,21 @@ class Response(OscalBaseModel):
         description='A human-readable description of this response plan.',
         title='Response Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
-    origins: Optional[List[Origin]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    origins: Optional[List[Origin]] = Field(None)
     required_assets: Optional[List[common.RequiredAsset]] = Field(
-        None, alias='required-assets', min_items=1
+        None, alias='required-assets'
     )
-    tasks: Optional[List[common.Task]] = Field(None, min_items=1)
+    tasks: Optional[List[common.Task]] = Field(None)
     remarks: Optional[common.Remarks] = None
 
 
 class Characterization(OscalBaseModel):
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     origin: Origin
-    facets: List[common.Facet] = Field(..., min_items=1)
+    facets: List[common.Facet] = Field(...)
 
 
 class Risk(OscalBaseModel):
@@ -393,22 +393,22 @@ class Risk(OscalBaseModel):
         description='An summary of impact for how the risk affects the system.',
         title='Risk Statement',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     status: constr(
         regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
     ) = Field(
         ..., description='Describes the status of the associated risk.', title='SystemComponentStatus'
     )
-    origins: Optional[List[Origin]] = Field(None, min_items=1)
+    origins: Optional[List[Origin]] = Field(None)
     threat_ids: Optional[List[common.ThreatId]] = Field(
-        None, alias='threat-ids', min_items=1
+        None, alias='threat-ids'
     )
     characterizations: Optional[List[Characterization]] = Field(
-        None, min_items=1
+        None
     )
     mitigating_factors: Optional[List[common.MitigatingFactor]] = Field(
-        None, alias='mitigating-factors', min_items=1
+        None, alias='mitigating-factors'
     )
     deadline: Optional[datetime] = Field(
         None,
@@ -416,7 +416,7 @@ class Risk(OscalBaseModel):
         title='Risk Resolution Deadline',
     )
     remediations: Optional[List[Response]] = Field(
-        None, min_items=1
+        None
     )
     risk_log: Optional[RiskLog] = Field(
         None,
@@ -425,7 +425,7 @@ class Risk(OscalBaseModel):
         title='Risk Log',
     )
     related_observations: Optional[List[common.RelatedObservation]] = Field(
-        None, alias='related-observations', min_items=1
+        None, alias='related-observations'
     )
 
 
@@ -445,13 +445,13 @@ class Step(OscalBaseModel):
         description='A human-readable description of this step.',
         title='Step Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     reviewed_controls: Optional[ReviewedControls] = Field(
         None, alias='reviewed-controls'
     )
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     remarks: Optional[common.Remarks] = None
 
@@ -474,32 +474,32 @@ class Activity(OscalBaseModel):
         description='A human-readable description of this included activity.',
         title='Included Activity Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
-    steps: Optional[List[Step]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    steps: Optional[List[Step]] = Field(None)
     related_controls: Optional[ReviewedControls] = Field(
         None, alias='related-controls'
     )
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     remarks: Optional[common.Remarks] = None
 
 
 class LocalDefinitions(OscalBaseModel):
     components: Optional[List[SystemComponent]] = Field(
-        None, min_items=1
+        None
     )
     inventory_items: Optional[List[common.InventoryItem]] = Field(
-        None, alias='inventory-items', min_items=1
+        None, alias='inventory-items'
     )
     users: Optional[List[common.SystemUser]] = Field(
-        None, min_items=1
+        None
     )
     objectives_and_methods: Optional[List[common.LocalObjective]] = Field(
-        None, alias='objectives-and-methods', min_items=1
+        None, alias='objectives-and-methods'
     )
-    activities: Optional[List[Activity]] = Field(None, min_items=1)
+    activities: Optional[List[Activity]] = Field(None)
     remarks: Optional[common.Remarks] = None
 
 
@@ -529,15 +529,14 @@ class AssessmentPlan(OscalBaseModel):
         ..., alias='reviewed-controls'
     )
     assessment_subjects: Optional[List[common.AssessmentSubject]] = Field(
-        None, alias='assessment-subjects', min_items=1
+        None, alias='assessment-subjects'
     )
     assessment_assets: Optional[AssessmentAssets] = Field(
         None, alias='assessment-assets'
     )
-    tasks: Optional[List[common.Task]] = Field(None, min_items=1)
+    tasks: Optional[List[common.Task]] = Field(None)
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
 
 
 class Model(OscalBaseModel):
     assessment_plan: AssessmentPlan = Field(..., alias='assessment-plan')
-

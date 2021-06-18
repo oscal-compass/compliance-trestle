@@ -227,7 +227,7 @@
                     {
                         "id": "cm-7.2_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 " {{ cm-7.2_prm_2 }} ",
                                 "rules authorizing the terms and conditions of software program usage"

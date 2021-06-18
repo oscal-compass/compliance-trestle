@@ -255,7 +255,7 @@
                     {
                         "id": "pe-2.3_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "security clearances for all information contained within the system",
                                 "formal access authorizations for all information contained within the system",

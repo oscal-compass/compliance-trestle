@@ -333,7 +333,7 @@
                     {
                         "id": "ia-2.6_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "local",
                                 "network",
@@ -344,7 +344,7 @@
                     {
                         "id": "ia-2.6_prm_2",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "privileged accounts",
                                 "non-privileged accounts"
@@ -446,7 +446,7 @@
                     {
                         "id": "ia-2.8_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "privileged accounts",
                                 "non-privileged accounts"

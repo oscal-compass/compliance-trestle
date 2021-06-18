@@ -7,7 +7,7 @@
             {
                 "id": "sc-8_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "confidentiality",
                         "integrity"
@@ -140,7 +140,7 @@
                     {
                         "id": "sc-8.1_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "prevent unauthorized disclosure of information",
                                 "detect changes to information"
@@ -193,7 +193,7 @@
                     {
                         "id": "sc-8.2_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "confidentiality",
                                 "integrity"
@@ -336,7 +336,7 @@
                     {
                         "id": "sc-8.5_prm_2",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "prevent unauthorized disclosure of information",
                                 "detect changes to information"

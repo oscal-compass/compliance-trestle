@@ -11,7 +11,7 @@
             {
                 "id": "pe-3_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         " {{ pe-3_prm_3 }} ",
                         "guards"
@@ -475,7 +475,7 @@
                     {
                         "id": "pe-3.5_prm_2",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "detect",
                                 "prevent"

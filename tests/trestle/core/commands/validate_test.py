@@ -123,17 +123,15 @@ def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -
     'name, mode, parent, new_role, code',
     [
         ('my_ap', '-f', False, 'role', 0), ('my_ap', '-n', False, 'role', 0), ('my_ap', '-f', True, 'role', 0),
-        ('my_ap', '-t', False, 'role', 0), ('my_ap', '-a', False, 'role', 0), ('my_ap', '-f', False, 'r:ole', 1),
-        ('my_ap', '-n', False, 'r:ole', 1), ('my_ap', '-f', True, 'r:ole', 1), ('my_ap', '-t', False, 'r:ole', 1),
-        ('my_ap', '-a', False, 'r:ole', 1), ('foo', '-n', False, 'role', 1)
+        ('my_ap', '-t', False, 'role', 0), ('my_ap', '-a', False, 'role', 0), ('foo', '-n', False, 'role', 1)
     ]
 )
 def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathlib.Path) -> None:
     """Test good and bad roleid cases."""
     (tmp_trestle_dir / 'assessment-plans/my_ap').mkdir(exist_ok=True, parents=True)
     role_ids = [RoleId(__root__='role1'), RoleId(__root__=new_role), RoleId(__root__='REPLACE_ME')]
-    system_user = SystemUser(role_ids=role_ids)
-    local_definitions = ap.LocalDefinitions(users={'my_users': system_user})
+    system_user = SystemUser(uuid=str(uuid4()), role_ids=role_ids)
+    local_definitions = ap.LocalDefinitions(users=[system_user])
     ap_obj = generate_sample_model(ap.AssessmentPlan)
     ap_obj.local_definitions = local_definitions
     ap_path = tmp_trestle_dir / 'assessment-plans/my_ap/assessment-plan.json'
@@ -170,10 +168,10 @@ def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathl
 def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir: pathlib.Path) -> None:
     """Test validation of roles and references to them in responsible-parties."""
     (tmp_trestle_dir / 'assessment-plans/my_ap').mkdir(exist_ok=True, parents=True)
-    roles = [Role(id='id1', title='title1'), ap.Role(id='id2', title='title2'), ap.Role(id='id3', title='title3')]
-    party1 = ResponsibleParty(party_uuids=[PartyUuid(__root__=str(uuid4()))])
-    party2 = ResponsibleParty(party_uuids=[PartyUuid(__root__=str(uuid4()))])
-    responsible_parties = {test_id: party1, 'id2': party2}
+    roles = [Role(id='id1', title='title1'), Role(id='id2', title='title2'), Role(id='id3', title='title3')]
+    party1 = ResponsibleParty(role_id=test_id, party_uuids=[PartyUuid(__root__=str(uuid4()))])
+    party2 = ResponsibleParty(role_id='id2', party_uuids=[PartyUuid(__root__=str(uuid4()))])
+    responsible_parties = [party1, party2]
     ap_obj = generate_sample_model(ap.AssessmentPlan)
     ap_obj.metadata.roles = roles
     ap_obj.metadata.responsible_parties = responsible_parties

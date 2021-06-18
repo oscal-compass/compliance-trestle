@@ -424,7 +424,7 @@
                     {
                         "id": "sc-7.5_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "at managed interfaces",
                                 "for {{ sc-7.5_prm_2 }} "

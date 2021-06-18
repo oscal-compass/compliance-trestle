@@ -7,7 +7,7 @@
             {
                 "id": "sc-42_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "the use of devices possessing {{ sc-42_prm_2 }} in {{ sc-42_prm_3 }} ",
                         "the remote activation of environmental sensing capabilities on organizational systems or system components with the following exceptions: {{ sc-42_prm_4 }} "

@@ -11,7 +11,7 @@
             {
                 "id": "ra-6_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         " {{ ra-6_prm_3 }} ",
                         "when the following events or indicators occur: {{ ra-6_prm_4 }} "

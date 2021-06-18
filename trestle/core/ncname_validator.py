@@ -28,6 +28,7 @@ class NcNameValidator(Validator):
 
     def _model_is_valid_role_id(self, model: OscalBaseModel) -> bool:
         """Handle specific case for role_id."""
+        # FIXME oscal 1.0.0 may make this test unneeded
         role_ids_list = find_values_by_name(model, 'role_ids')
         p = re.compile(NCNAME_REGEX)
         for role_id_list in role_ids_list:

@@ -30,10 +30,29 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(logging.StreamHandler())
 
-base64_str = 'Base64'
 class_header = 'class '
 
 fstems = ['assessment_plan', 'assessment_results', 'catalog', 'component', 'poam', 'profile', 'ssp']
+
+alias_map = {
+    'assessment_plan': 'assessment-plan',
+    'assessment_results': 'assessment-results',
+    'catalog': 'catalog',
+    'component': 'component-definition',
+    'poam': 'plan-of-action-and-milestones',
+    'profile': 'profile',
+    'ssp': 'system-security-plan'
+}
+
+camel_map = {
+    'assessment_plan': 'AssessmentPlan',
+    'assessment_results': 'AssessmentResults',
+    'catalog': 'Catalog',
+    'component': 'ComponentDefinition',
+    'poam': 'PlanOfActionAndMilestones',
+    'profile': 'Profile',
+    'ssp': 'SystemSecurityPlan'
+}
 
 
 license_header = (
@@ -237,42 +256,6 @@ def constrain_oscal_version(class_list):
     return class_list
 
 
-def remove_duplicate_classes(class_list):
-    """Remove duplicate classes with name ending 1, 2 etc. and fix all refs to them."""
-    replaced_names = {}
-    new_list = []
-    for c in class_list:
-        if c.name == base64_str:
-            continue
-        if c.name[-1].isdigit():
-            base_name = c.name[:-1]
-            base_index = ClassText.find_index(class_list, base_name)
-            c_base = class_list[base_index]
-            if len(c_base.lines) != len(c.lines):
-                continue
-            different = False
-            for i in range(1, len(c_base.lines)):
-                if c_base.lines[i] != c.lines[i]:
-                    different = True
-                    break
-            if not different:
-                replaced_names[c.name] = c_base.name
-    # now have list of duplicate classes that should be culled
-    for c in class_list:
-        if c.name in replaced_names.keys():
-            continue
-        new_list.append(c)
-    final_list = []
-    for c in new_list:
-        for i in range(len(c.lines)):
-            line = c.lines[i]
-            for key, value in replaced_names.items():
-                line = line.replace(key, value)
-            c.lines[i] = line
-        final_list.append(c)
-    return final_list
-
-
 def load_classes(fstem):
     """Load all classes from a file."""
     all_classes = []
@@ -452,7 +435,6 @@ def token_in_line(line, token):
     return len(hits) > 0
 
 
-
 def replace_token(line, str1, str2):
     """Replace token str1 with new str2 in line."""
     # pull out what you want to keep on left and right
@@ -462,35 +444,6 @@ def replace_token(line, str1, str2):
     pattern = r'(^|.*[^a-zA-Z_]+)' + str1 + r'($|[^a-zA-Z0-9_]+.*)'
     line = re.sub(pattern, r'\1' + str2 + r'\2', line)
     return line
-
-
-def replace_names_in_classes(classes, changes):
-    """Replace references in class text corresponding to changes provided."""
-    new_classes = []
-    for i, c in enumerate(classes):
-        for change in changes:
-            # any change that was made in parent needs to be made in this class
-            if change[0] in c.parent_names:
-                lines = []
-                for line in c.lines:
-                    if ('alias' in line) or (("'" not in line) and ('"' not in line)):    #FIXME need to exclude text in quotes
-                        line = replace_token(line, change[1], change[2])
-                    lines.append(line)
-                c.lines = lines
-        new_classes.append(c)
-    return new_classes
-
-
-def find_changes(classes):
-    """Find all class names that changed and note parent."""
-    # some class names will change in several parents
-    changes = []
-    for c in classes:
-        if c.name != c.orig_name:
-            # make note of a change for all parents involved
-            for parent_name in c.parent_names:
-                changes.append((parent_name, c.orig_name, c.name))
-    return changes
 
 
 def is_common(cls):
@@ -541,9 +494,6 @@ def refine_split(com, file_classes):
     return new_com, file_classes
         
 
-
-
-
 def split_classes(classes):
     """Split into separate common and other files."""
     com = []
@@ -583,41 +533,37 @@ def reorder_classes(classes):
 def write_oscal(classes, forward_refs, fstem):
     """Write out oscal.py with all classes in it."""
     with open(f'trestle/oscal/{fstem}.py', 'w', encoding='utf8') as out_file:
+        is_common = fstem == 'common'
+
         out_file.write(license_header)
         out_file.write('\n\n')
         out_file.write(main_header)
-        if fstem != 'common':
+
+        if not is_common:
             out_file.write('import trestle.oscal.common as common\n')
         out_file.write('\n\n')
+
         for c in classes:
             out_file.writelines('\n'.join(c.lines) + '\n')
-        out_file.writelines('\n'.join(forward_refs) + '\n')
 
+        if not is_common:
+            out_file.writelines('class Model(OscalBaseModel):\n')
+            alias = alias_map[fstem]
+            snake = alias.replace('-', '_')
+            class_name = camel_map[fstem]
+            if '-' in alias:
+                out_file.writelines(f"    {snake}: {class_name} = Field(..., alias='{alias}')\n")
+            else:
+                out_file.writelines(f'    {snake}: {class_name}\n')
 
-def write_changes(changes):
-    """Write out the name changes."""
-    with open('trestle/oscal/changes.txt', 'w', encoding='utf8') as out_file:
-        for c in changes:
-            out_file.write(f'{c[0]:20s} {c[2]:30s} {c[1]}\n')
-        out_file.write('\n\nPrefix added\n\n')
-        for c in changes:
-            if c[2] not in c[1]:
-                out_file.write(f'{c[0]:20s} {c[2]:30s} {c[1]}\n')
-
-
-def write_unchanged(classes):
-    """Write out classes that did not change name."""
-    names = []
-    for c in classes:
-        if c.name == c.orig_name:
-            names.append(c.name)
-    with open('trestle/oscal/unchanged.txt', 'w', encoding='utf8') as out_file:
-        out_file.write('\n'.join(names))
+        if forward_refs:
+            if not is_common:
+                out_file.writelines('\n\n')
+            out_file.writelines('\n'.join(forward_refs) + '\n')
 
 
 def dump_classes_as_python(classes, stem, changes, com_names):
     """Find changes within the names and apply to all refs."""
-    # FIXME add Model to each file
     # then reorder and dump
     for i, c in enumerate(classes):
         lines = []
@@ -648,16 +594,19 @@ def find_full_changes(com, file_classes):
             changes[c.orig_name] = c.name
     return changes, com_names
 
-            
-    
 
+def kill_min_items(classes):
+    for i, c in enumerate(classes):
+        for j, line in enumerate(c.lines):
+            c.lines[j] = line.replace(', min_items=1', '')
+        classes[i] = c
+    return classes
 
 
 if __name__ == '__main__':
+    """Main invocation."""
     # find all unique classes
-    # and keep track of parents when classes duplicate
     uc = find_unique_classes()
-    print(f'{len(uc)} unique classes')
 
     # make early substitutions of known special cases
     uc = make_special_name_changes(uc)
@@ -668,10 +617,7 @@ if __name__ == '__main__':
     # find clashes in names and add short prefix to name
     uc = fix_clashes(uc)
 
-    # find all name changes
-    # changes = find_changes(uc)
-    # write_changes(changes)
-    # write_unchanged(uc)
+    uc = kill_min_items(uc)
 
     com, file_classes = split_classes(uc)
 
@@ -680,24 +626,3 @@ if __name__ == '__main__':
     dump_classes_as_python(com, 'common', changes, com_names)
     for item in file_classes.items():
         dump_classes_as_python(item[1], item[0], changes, com_names)
-
-    # take com class, find changes in it, apply them to refs
-
-    # make file of changes
-    #write_changes(changes)
-
-    # make file of classes that did not change
-    #write_unchanged(uc)
-
-    # replace all refs with new names
-    #uc = replace_names_in_classes(uc, changes)
-
-    # sanity checks
-    #ok = check_ok(uc)
-    #assert(ok)
-
-    # reorder classes and find needed forwards
-    #final_order, forward_refs = reorder_classes(uc)
-
-    # write it out
-    #write_oscal(final_order, forward_refs)

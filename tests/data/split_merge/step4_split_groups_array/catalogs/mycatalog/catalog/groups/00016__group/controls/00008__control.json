@@ -355,7 +355,7 @@
                     {
                         "id": "sa-9.5_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "information processing",
                                 "information or data",

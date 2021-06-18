@@ -15,7 +15,7 @@
             {
                 "id": "ac-7_prm_3",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "lock the account or node for an {{ ac-7_prm_4 }} ",
                         "lock the account or node until released by an administrator",

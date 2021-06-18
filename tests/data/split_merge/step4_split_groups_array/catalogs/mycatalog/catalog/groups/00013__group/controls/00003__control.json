@@ -187,7 +187,7 @@
                     {
                         "id": "ps-4.2_prm_2",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "notify {{ ps-4.2_prm_3 }} of individual termination actions",
                                 "disable access to system resources"

@@ -204,7 +204,7 @@
                     {
                         "id": "si-13.4_prm_2",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "Activate {{ si-13.4_prm_3 }} ",
                                 "Automatically shut down the system",

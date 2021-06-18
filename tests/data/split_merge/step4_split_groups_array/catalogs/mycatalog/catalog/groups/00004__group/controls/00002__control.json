@@ -15,7 +15,7 @@
             {
                 "id": "cm-3_prm_3",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         " {{ cm-3_prm_4 }} ",
                         "when {{ cm-3_prm_5 }} "

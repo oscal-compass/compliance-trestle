@@ -306,7 +306,7 @@
                     {
                         "id": "cm-8.3_prm_3",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "disable network access by such components",
                                 "isolate the components",
@@ -416,7 +416,7 @@
                     {
                         "id": "cm-8.4_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "name",
                                 "position",

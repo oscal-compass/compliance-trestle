@@ -7,7 +7,7 @@
             {
                 "id": "ca-3_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "interconnection security agreements",
                         "information exchange security agreements",

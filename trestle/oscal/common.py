@@ -406,7 +406,7 @@ class ParameterConstraint(OscalBaseModel):
         description='A textual summary of the constraint to be applied.',
         title='Constraint Description',
     )
-    tests: Optional[List[Test]] = Field(None, min_items=1)
+    tests: Optional[List[Test]] = Field(None)
 
 
 class ParameterGuideline(OscalBaseModel):
@@ -435,7 +435,7 @@ class ParameterSelection(OscalBaseModel):
         description='Describes the number of selections that must occur. Without this setting, only one value should be assumed to be permitted.',
         title='Parameter Cardinality',
     )
-    choice: Optional[List[str]] = Field(None, min_items=1)
+    choice: Optional[List[str]] = Field(None)
 
 
 class Transport(Enum):
@@ -495,7 +495,7 @@ class Rlink(OscalBaseModel):
         description='Specifies a media type as defined by the Internet Assigned Numbers Authority (IANA) Media Types Registry.',
         title='Media Type',
     )
-    hashes: Optional[List[Hash]] = Field(None, min_items=1)
+    hashes: Optional[List[Hash]] = Field(None)
 
 
 class Property(OscalBaseModel):
@@ -548,10 +548,10 @@ class ResponsibleParty(OscalBaseModel):
         title='Responsible Role',
     )
     party_uuids: List[PartyUuid] = Field(
-        ..., alias='party-uuids', min_items=1
+        ..., alias='party-uuids'
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     remarks: Optional[Remarks] = None
 
 
@@ -564,10 +564,10 @@ class ResponsibleRole(OscalBaseModel):
         description='The role that is responsible for the business function.',
         title='Responsible Role ID',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     party_uuids: Optional[List[PartyUuid]] = Field(
-        None, alias='party-uuids', min_items=1
+        None, alias='party-uuids'
     )
     remarks: Optional[Remarks] = None
 
@@ -579,7 +579,7 @@ class Address(OscalBaseModel):
         )
     ] = Field(None, description='Indicates the type of address.', title='Address Type')
     addr_lines: Optional[List[AddrLine]] = Field(
-        None, alias='addr-lines', min_items=1
+        None, alias='addr-lines'
     )
     city: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
         None,
@@ -610,8 +610,8 @@ class ControlObjectiveSelection(OscalBaseModel):
         description='A human-readable description of this collection of control objectives.',
         title='Control Objectives Description',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     include_all: Optional[Dict[str, Any]] = Field(
         None,
         alias='include-all',
@@ -620,10 +620,10 @@ class ControlObjectiveSelection(OscalBaseModel):
     )
     include_objectives: Optional[
         List[SelectObjectiveById]
-    ] = Field(None, alias='include-objectives', min_items=1)
+    ] = Field(None, alias='include-objectives')
     exclude_objectives: Optional[
         List[SelectObjectiveById]
-    ] = Field(None, alias='exclude-objectives', min_items=1)
+    ] = Field(None, alias='exclude-objectives')
     remarks: Optional[Remarks] = None
 
 
@@ -640,9 +640,9 @@ class AssessmentSubjectPlaceholder(OscalBaseModel):
         description='A human-readable description of intent of this assessment subject placeholder.',
         title='Assessment Subject Placeholder Description',
     )
-    sources: List[Source] = Field(..., min_items=1)
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    sources: List[Source] = Field(...)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     remarks: Optional[Remarks] = None
 
 
@@ -662,8 +662,8 @@ class SelectSubjectById(OscalBaseModel):
         description='Used to indicate the type of object pointed to by the uuid-ref within a subject.',
         title='Subject Universally Unique Identifier Reference Type',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     remarks: Optional[Remarks] = None
 
 
@@ -688,8 +688,8 @@ class SubjectReference(OscalBaseModel):
         description='The title or name for the referenced subject.',
         title='Subject Reference Title',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     remarks: Optional[Remarks] = None
 
 
@@ -702,10 +702,10 @@ class UsesComponent(OscalBaseModel):
         description='A reference to a component that is implemented as part of an inventory item.',
         title='Component Universally Unique Identifier Reference',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     responsible_parties: Optional[List[ResponsibleParty]] = Field(
-        None, alias='responsible-parties', min_items=1
+        None, alias='responsible-parties'
     )
     remarks: Optional[Remarks] = None
 
@@ -723,10 +723,10 @@ class AssessmentPlatform(OscalBaseModel):
         description='The title or name for the assessment platform.',
         title='Assessment Platform Title',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     uses_components: Optional[List[UsesComponent]] = Field(
-        None, alias='uses-components', min_items=1
+        None, alias='uses-components'
     )
     remarks: Optional[Remarks] = None
 
@@ -742,8 +742,8 @@ class RelevantEvidence(OscalBaseModel):
         description='A human-readable description of this evidence.',
         title='Relevant Evidence Description',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     remarks: Optional[Remarks] = None
 
 
@@ -767,8 +767,8 @@ class OriginActor(OscalBaseModel):
         description='For a party, this can optionally be used to specify the role the actor was performing.',
         title='Actor Role',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
 
 
 class MitigatingFactor(OscalBaseModel):
@@ -794,10 +794,10 @@ class MitigatingFactor(OscalBaseModel):
         description='A human-readable description of this mitigating factor.',
         title='Mitigating Factor Description',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     subjects: Optional[List[SubjectReference]] = Field(
-        None, min_items=1
+        None
     )
 
 
@@ -817,8 +817,8 @@ class Facet(OscalBaseModel):
     value: constr(regex=r'^\S(.*\S)?$') = Field(
         ..., description='Indicates the value of the facet.', title='Facet Value'
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     remarks: Optional[Remarks] = None
 
 
@@ -831,7 +831,7 @@ class RequiredAsset(OscalBaseModel):
         title='Required Universally Unique Identifier',
     )
     subjects: Optional[List[SubjectReference]] = Field(
-        None, min_items=1
+        None
     )
     title: Optional[str] = Field(
         None,
@@ -843,8 +843,8 @@ class RequiredAsset(OscalBaseModel):
         description='A human-readable description of this required asset.',
         title='Description of Required Asset',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     remarks: Optional[Remarks] = None
 
 
@@ -885,14 +885,14 @@ class AssessmentPart(OscalBaseModel):
         description='A name given to the part, which may be used by a tool for display and navigation.',
         title='Part Title',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
     prose: Optional[str] = Field(
         None,
         description='Permits multiple paragraphs, lists, tables etc.',
         title='Part Text',
     )
     parts: Optional[List[AssessmentPart]] = None
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None)
 
 
 class Part(OscalBaseModel):
@@ -932,14 +932,14 @@ class Part(OscalBaseModel):
         description='A name given to the part, which may be used by a tool for display and navigation.',
         title='Part Title',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
     prose: Optional[str] = Field(
         None,
         description='Permits multiple paragraphs, lists, tables etc.',
         title='Part Text',
     )
     parts: Optional[List[Part]] = None
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    links: Optional[List[Link]] = Field(None)
 
 
 class Parameter(OscalBaseModel):
@@ -970,8 +970,8 @@ class Parameter(OscalBaseModel):
         description='Another parameter invoking this one',
         title='Depends on',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     label: Optional[str] = Field(
         None,
         description='A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.',
@@ -982,9 +982,9 @@ class Parameter(OscalBaseModel):
         description='Describes the purpose and use of a parameter',
         title='Parameter Usage Description',
     )
-    constraints: Optional[List[ParameterConstraint]] = Field(None, min_items=1)
-    guidelines: Optional[List[ParameterGuideline]] = Field(None, min_items=1)
-    values: Optional[List[ParameterValue]] = Field(None, min_items=1)
+    constraints: Optional[List[ParameterConstraint]] = Field(None)
+    guidelines: Optional[List[ParameterGuideline]] = Field(None)
+    values: Optional[List[ParameterValue]] = Field(None)
     select: Optional[ParameterSelection] = None
     remarks: Optional[Remarks] = None
 
@@ -1010,7 +1010,7 @@ class Protocol(OscalBaseModel):
         title='Protocol Title',
     )
     port_ranges: Optional[List[PortRange]] = Field(
-        None, alias='port-ranges', min_items=1
+        None, alias='port-ranges'
     )
 
 
@@ -1026,7 +1026,7 @@ class AuthorizedPrivilege(OscalBaseModel):
         title='Privilege Description',
     )
     functions_performed: List[FunctionPerformed] = Field(
-        ..., alias='functions-performed', min_items=1
+        ..., alias='functions-performed'
     )
 
 
@@ -1039,10 +1039,10 @@ class ImplementedComponent(OscalBaseModel):
         description='A reference to a component that is implemented as part of an inventory item.',
         title='Component Universally Unique Identifier Reference',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     responsible_parties: Optional[List[ResponsibleParty]] = Field(
-        None, alias='responsible-parties', min_items=1
+        None, alias='responsible-parties'
     )
     remarks: Optional[Remarks] = None
 
@@ -1060,13 +1060,13 @@ class InventoryItem(OscalBaseModel):
         description='A summary of the inventory item stating its purpose within the system.',
         title='Inventory Item Description',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     responsible_parties: Optional[List[ResponsibleParty]] = Field(
-        None, alias='responsible-parties', min_items=1
+        None, alias='responsible-parties'
     )
     implemented_components: Optional[List[ImplementedComponent]] = Field(
-        None, alias='implemented-components', min_items=1
+        None, alias='implemented-components'
     )
     remarks: Optional[Remarks] = None
 
@@ -1085,8 +1085,8 @@ class Revision(OscalBaseModel):
     oscal_version: Optional[OscalVersion] = Field(
         None, alias='oscal-version'
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     remarks: Optional[Remarks] = None
 
 
@@ -1105,14 +1105,14 @@ class Location(OscalBaseModel):
     )
     address: Address
     email_addresses: Optional[List[EmailAddress]] = Field(
-        None, alias='email-addresses', min_items=1
+        None, alias='email-addresses'
     )
     telephone_numbers: Optional[List[TelephoneNumber]] = Field(
-        None, alias='telephone-numbers', min_items=1
+        None, alias='telephone-numbers'
     )
-    urls: Optional[List[AnyUrl]] = Field(None, min_items=1)
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    urls: Optional[List[AnyUrl]] = Field(None)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     remarks: Optional[Remarks] = None
 
 
@@ -1141,22 +1141,22 @@ class Party(OscalBaseModel):
         title='Party Short Name',
     )
     external_ids: Optional[List[ExternalId]] = Field(
-        None, alias='external-ids', min_items=1
+        None, alias='external-ids'
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     email_addresses: Optional[List[EmailAddress]] = Field(
-        None, alias='email-addresses', min_items=1
+        None, alias='email-addresses'
     )
     telephone_numbers: Optional[List[TelephoneNumber]] = Field(
-        None, alias='telephone-numbers', min_items=1
+        None, alias='telephone-numbers'
     )
-    addresses: Optional[List[Address]] = Field(None, min_items=1)
+    addresses: Optional[List[Address]] = Field(None)
     location_uuids: Optional[List[LocationUuid]] = Field(
-        None, alias='location-uuids', min_items=1
+        None, alias='location-uuids'
     )
     member_of_organizations: Optional[List[MemberOfOrganization]] = Field(
-        None, alias='member-of-organizations', min_items=1
+        None, alias='member-of-organizations'
     )
     remarks: Optional[Remarks] = None
 
@@ -1185,8 +1185,8 @@ class Role(OscalBaseModel):
         description="A summary of the role's purpose and associated responsibilities.",
         title='Role Description',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     remarks: Optional[Remarks] = None
 
 
@@ -1194,8 +1194,8 @@ class Citation(OscalBaseModel):
     text: str = Field(
         ..., description='A line of citation text.', title='Citation Text'
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
 
 
 class Resource(OscalBaseModel):
@@ -1216,16 +1216,16 @@ class Resource(OscalBaseModel):
         description='A short summary of the resource used to indicate the purpose of the resource.',
         title='Resource Description',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
     document_ids: Optional[List[DocumentId]] = Field(
-        None, alias='document-ids', min_items=1
+        None, alias='document-ids'
     )
     citation: Optional[Citation] = Field(
         None,
         description='A citation consisting of end note text and optional structured bibliographic data.',
         title='Citation',
     )
-    rlinks: Optional[List[Rlink]] = Field(None, min_items=1)
+    rlinks: Optional[List[Rlink]] = Field(None)
     base64: Optional[Base64] = Field(
         None,
         description='The Base64 alphabet in RFC 2045 - aligned with XSD.',
@@ -1235,7 +1235,7 @@ class Resource(OscalBaseModel):
 
 
 class BackMatter(OscalBaseModel):
-    resources: Optional[List[Resource]] = Field(None, min_items=1)
+    resources: Optional[List[Resource]] = Field(None)
 
 
 class LocalObjective(OscalBaseModel):
@@ -1252,9 +1252,9 @@ class LocalObjective(OscalBaseModel):
         description='A human-readable description of this control objective.',
         title='Objective Description',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    parts: List[Part] = Field(..., min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    parts: List[Part] = Field(...)
     remarks: Optional[Remarks] = None
 
 
@@ -1271,8 +1271,8 @@ class AssessmentMethod(OscalBaseModel):
         description='A human-readable description of this assessment method.',
         title='Assessment Method Description',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     part: AssessmentPart
     remarks: Optional[Remarks] = None
 
@@ -1290,8 +1290,8 @@ class AssessmentSubject(OscalBaseModel):
         description='A human-readable description of the collection of subjects being included in this assessment.',
         title='Include Subjects Description',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     include_all: Optional[Dict[str, Any]] = Field(
         None,
         alias='include-all',
@@ -1299,10 +1299,10 @@ class AssessmentSubject(OscalBaseModel):
         title='All',
     )
     include_subjects: Optional[List[SelectSubjectById]] = Field(
-        None, alias='include-subjects', min_items=1
+        None, alias='include-subjects'
     )
     exclude_subjects: Optional[List[SelectSubjectById]] = Field(
-        None, alias='exclude-subjects', min_items=1
+        None, alias='exclude-subjects'
     )
     remarks: Optional[Remarks] = None
 
@@ -1316,7 +1316,7 @@ class IdentifiedSubject(OscalBaseModel):
         description='References a unique assessment subject placeholder defined by this task.',
         title='Assessment Subject Placeholder Universally Unique Identifier Reference',
     )
-    subjects: List[AssessmentSubject] = Field(..., min_items=1)
+    subjects: List[AssessmentSubject] = Field(...)
 
 
 class RelatedTask(OscalBaseModel):
@@ -1328,13 +1328,13 @@ class RelatedTask(OscalBaseModel):
         description='References a unique task by UUID.',
         title='Task Universally Unique Identifier Reference',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     responsible_parties: Optional[List[ResponsibleParty]] = Field(
-        None, alias='responsible-parties', min_items=1
+        None, alias='responsible-parties'
     )
     subjects: Optional[List[AssessmentSubject]] = Field(
-        None, min_items=1
+        None
     )
     identified_subject: Optional[IdentifiedSubject] = Field(
         None,
@@ -1354,10 +1354,10 @@ class RelatedResponse(OscalBaseModel):
         description='References a unique risk response by UUID.',
         title='Response Universally Unique Identifier Reference',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     related_tasks: Optional[List[RelatedTask]] = Field(
-        None, alias='related-tasks', min_items=1
+        None, alias='related-tasks'
     )
     remarks: Optional[Remarks] = None
 
@@ -1386,14 +1386,14 @@ class SystemUser(OscalBaseModel):
         description="A summary of the user's purpose within the system.",
         title='User Description',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     role_ids: Optional[List[RoleId]] = Field(
-        None, alias='role-ids', min_items=1
+        None, alias='role-ids'
     )
     authorized_privileges: Optional[
         List[AuthorizedPrivilege]
-    ] = Field(None, alias='authorized-privileges', min_items=1)
+    ] = Field(None, alias='authorized-privileges')
     remarks: Optional[Remarks] = None
 
 
@@ -1407,17 +1407,17 @@ class Metadata(OscalBaseModel):
     last_modified: LastModified = Field(..., alias='last-modified')
     version: Version
     oscal_version: OscalVersion = Field(..., alias='oscal-version')
-    revisions: Optional[List[Revision]] = Field(None, min_items=1)
+    revisions: Optional[List[Revision]] = Field(None)
     document_ids: Optional[List[DocumentId]] = Field(
-        None, alias='document-ids', min_items=1
+        None, alias='document-ids'
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
-    roles: Optional[List[Role]] = Field(None, min_items=1)
-    locations: Optional[List[Location]] = Field(None, min_items=1)
-    parties: Optional[List[Party]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
+    roles: Optional[List[Role]] = Field(None)
+    locations: Optional[List[Location]] = Field(None)
+    parties: Optional[List[Party]] = Field(None)
     responsible_parties: Optional[List[ResponsibleParty]] = Field(
-        None, alias='responsible-parties', min_items=1
+        None, alias='responsible-parties'
     )
     remarks: Optional[Remarks] = None
 
@@ -1431,12 +1431,12 @@ class AssociatedActivity(OscalBaseModel):
         description='References an activity defined in the list of activities.',
         title='Activity Universally Unique Identifier Reference',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     responsible_roles: Optional[List[ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
-    subjects: List[AssessmentSubject] = Field(..., min_items=1)
+    subjects: List[AssessmentSubject] = Field(...)
     remarks: Optional[Remarks] = None
 
 
@@ -1457,23 +1457,23 @@ class Task(OscalBaseModel):
         description='A human-readable description of this task.',
         title='Task Description',
     )
-    props: Optional[List[Property]] = Field(None, min_items=1)
-    links: Optional[List[Link]] = Field(None, min_items=1)
+    props: Optional[List[Property]] = Field(None)
+    links: Optional[List[Link]] = Field(None)
     timing: Optional[Timing] = Field(
         None,
         description='The timing under which the task is intended to occur.',
         title='Event Timing',
     )
-    dependencies: Optional[List[Dependency]] = Field(None, min_items=1)
+    dependencies: Optional[List[Dependency]] = Field(None)
     tasks: Optional[List[Task]] = None
     associated_activities: Optional[List[AssociatedActivity]] = Field(
-        None, alias='associated-activities', min_items=1
+        None, alias='associated-activities'
     )
     subjects: Optional[List[AssessmentSubject]] = Field(
-        None, min_items=1
+        None
     )
     responsible_roles: Optional[List[ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     remarks: Optional[Remarks] = None
 

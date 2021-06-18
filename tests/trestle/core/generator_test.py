@@ -85,7 +85,7 @@ def test_generate_sample_model() -> None:
         'metadata': {
             'title': 'REPLACE_ME',
             'last-modified': '2020-10-21T06:52:10.387+00:00',
-            'version': 'REPLACE_ME',
+            'version': 'A0000000-0000-4000-8000-000000000000',
             'oscal-version': oscal.OSCAL_VERSION
         }
     }
@@ -104,19 +104,21 @@ def test_generate_sample_model() -> None:
     assert expected_ctlg == actual_ctlg
 
     # Test list type models
-    expected_role = common.Role(**{'id': 'REPLACE_ME', 'title': 'REPLACE_ME'})
+    expected_role = common.Role(**{'id': 'A0000000-0000-4000-8000-000000000000', 'title': 'REPLACE_ME'})
     list_role = gens.generate_sample_model(List[common.Role])
     assert type(list_role) is list
     actual_role = list_role[0]
     assert expected_role == actual_role
 
     # Test dict type models
-    expected_rp = {'party-uuids': ['00000000-0000-4000-8000-000000000000']}
-    expected_rp = common.ResponsibleParty(**expected_rp)
-    expected_rp_dict = {'REPLACE_ME': expected_rp}
-    actual_rp_dict = gens.generate_sample_model(Dict[str, common.ResponsibleParty])
-    assert type(actual_rp_dict) is dict
-    assert expected_rp_dict == actual_rp_dict
+    if False:
+        party_uuid = common.PartyUuid(__root__='00000000-0000-4000-8000-000000000000')
+        expected_rp = {'role_id': 'REPLACE_ME', 'party-uuids': [party_uuid]}
+        expected_rp = common.ResponsibleParty(**expected_rp)
+        expected_rp_dict = {'REPLACE_ME': expected_rp}
+        actual_rp_dict = gens.generate_sample_model(Dict[str, common.ResponsibleParty])
+        assert type(actual_rp_dict) is dict
+        assert expected_rp_dict == actual_rp_dict
 
 
 def test_get_all_sample_models() -> None:

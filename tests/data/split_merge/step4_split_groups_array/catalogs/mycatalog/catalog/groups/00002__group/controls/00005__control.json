@@ -362,7 +362,7 @@
                     {
                         "id": "au-6.5_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "vulnerability scanning information",
                                 "performance data",
@@ -455,7 +455,7 @@
                     {
                         "id": "au-6.7_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "system process",
                                 "role",

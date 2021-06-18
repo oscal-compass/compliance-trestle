@@ -11,7 +11,7 @@
             {
                 "id": "ia-3_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "local",
                         "remote",
@@ -101,7 +101,7 @@
                     {
                         "id": "ia-3.1_prm_2",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "local",
                                 "remote",

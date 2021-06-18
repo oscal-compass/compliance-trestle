@@ -73,7 +73,7 @@
                     {
                         "id": "sc-15.1_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "physical",
                                 "logical"

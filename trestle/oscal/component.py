@@ -46,7 +46,7 @@ class SetParameter(OscalBaseModel):
         description="A reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
         title='Parameter ID',
     )
-    values: List[common.Value] = Field(..., min_items=1)
+    values: List[common.Value] = Field(...)
     remarks: Optional[common.Remarks] = None
 
 
@@ -107,10 +107,10 @@ class Statement(OscalBaseModel):
         description='A summary of how the containing control statement is implemented by the component or capability.',
         title='Statement Implementation Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     remarks: Optional[common.Remarks] = None
 
@@ -143,18 +143,18 @@ class SystemComponent(OscalBaseModel):
         description='A summary of the technological or business purpose of the component.',
         title='Purpose',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     status: SystemComponentStatus = Field(
         ...,
         description='Describes the operational status of the system component.',
         title='SystemComponentStatus',
     )
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     protocols: Optional[List[common.Protocol]] = Field(
-        None, min_items=1
+        None
     )
     remarks: Optional[common.Remarks] = None
 
@@ -180,16 +180,16 @@ class ImplementedRequirement(OscalBaseModel):
         description='A description of how the specified control is implemented for the containing component or capability.',
         title='Control Implementation Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     set_parameters: Optional[List[SetParameter]] = Field(
-        None, alias='set-parameters', min_items=1
+        None, alias='set-parameters'
     )
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     statements: Optional[List[Statement]] = Field(
-        None, min_items=1
+        None
     )
     remarks: Optional[common.Remarks] = None
 
@@ -212,14 +212,14 @@ class ControlImplementation(OscalBaseModel):
         description='A description of how the specified set of controls are implemented for the containing component or capability.',
         title='Control Implementation Description',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     set_parameters: Optional[List[SetParameter]] = Field(
-        None, alias='set-parameters', min_items=1
+        None, alias='set-parameters'
     )
     implemented_requirements: List[
         ImplementedRequirement
-    ] = Field(..., alias='implemented-requirements', min_items=1)
+    ] = Field(..., alias='implemented-requirements')
 
 
 class DefinedComponent(OscalBaseModel):
@@ -250,17 +250,17 @@ class DefinedComponent(OscalBaseModel):
         description='A summary of the technological or business purpose of the component.',
         title='Purpose',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles', min_items=1
+        None, alias='responsible-roles'
     )
     protocols: Optional[List[common.Protocol]] = Field(
-        None, min_items=1
+        None
     )
     control_implementations: Optional[
         List[ControlImplementation]
-    ] = Field(None, alias='control-implementations', min_items=1)
+    ] = Field(None, alias='control-implementations')
     remarks: Optional[common.Remarks] = None
 
 
@@ -280,14 +280,14 @@ class Capability(OscalBaseModel):
     description: str = Field(
         ..., description='A summary of the capability.', title='Capability Description'
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     incorporates_components: Optional[
         List[IncorporatesComponent]
-    ] = Field(None, alias='incorporates-components', min_items=1)
+    ] = Field(None, alias='incorporates-components')
     control_implementations: Optional[
         List[ControlImplementation]
-    ] = Field(None, alias='control-implementations', min_items=1)
+    ] = Field(None, alias='control-implementations')
     remarks: Optional[common.Remarks] = None
 
 
@@ -302,16 +302,15 @@ class ComponentDefinition(OscalBaseModel):
     metadata: common.Metadata
     import_component_definitions: Optional[
         List[ImportComponentDefinition]
-    ] = Field(None, alias='import-component-definitions', min_items=1)
+    ] = Field(None, alias='import-component-definitions')
     components: Optional[List[DefinedComponent]] = Field(
-        None, min_items=1
+        None
     )
     capabilities: Optional[List[Capability]] = Field(
-        None, min_items=1
+        None
     )
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
 
 
 class Model(OscalBaseModel):
     component_definition: ComponentDefinition = Field(..., alias='component-definition')
-

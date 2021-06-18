@@ -7,7 +7,7 @@
             {
                 "id": "si-3_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "signature based",
                         "non-signature based"
@@ -21,7 +21,7 @@
             {
                 "id": "si-3_prm_3",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "endpoint",
                         "network entry and exit points"
@@ -31,7 +31,7 @@
             {
                 "id": "si-3_prm_4",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "block malicious code",
                         "quarantine malicious code",
@@ -483,7 +483,7 @@
                     {
                         "id": "si-3.8_prm_3",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "issue a warning",
                                 "audit the command execution",

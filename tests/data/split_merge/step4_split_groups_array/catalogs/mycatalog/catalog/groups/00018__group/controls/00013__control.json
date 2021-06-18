@@ -11,7 +11,7 @@
             {
                 "id": "si-14_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "upon end of session of use",
                         "periodically at {{ si-14_prm_3 }} "

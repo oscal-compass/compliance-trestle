@@ -7,7 +7,7 @@
             {
                 "id": "sa-22_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "in-house support",
                         " {{ sa-22_prm_2 }} "

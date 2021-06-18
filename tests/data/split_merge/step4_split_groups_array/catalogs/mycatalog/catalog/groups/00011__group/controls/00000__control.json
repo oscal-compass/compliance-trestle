@@ -11,7 +11,7 @@
             {
                 "id": "pl-1_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "organization-level",
                         "mission/business process-level",

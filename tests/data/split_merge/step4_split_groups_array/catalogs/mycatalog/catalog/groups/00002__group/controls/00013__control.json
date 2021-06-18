@@ -11,7 +11,7 @@
             {
                 "id": "au-14_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "record",
                         "view",

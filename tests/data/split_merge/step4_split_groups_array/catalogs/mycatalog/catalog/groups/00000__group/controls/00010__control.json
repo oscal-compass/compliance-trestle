@@ -7,7 +7,7 @@
             {
                 "id": "ac-11_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "initiating a device lock after {{ ac-11_prm_2 }} of inactivity",
                         "requiring the user to initiate a device lock before leaving the system unattended"

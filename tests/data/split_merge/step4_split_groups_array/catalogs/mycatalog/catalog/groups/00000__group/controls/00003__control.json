@@ -263,7 +263,7 @@
                     {
                         "id": "ac-4.4_prm_2",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "decrypting the information",
                                 "blocking the flow of the encrypted information",
@@ -446,7 +446,7 @@
                     {
                         "id": "ac-4.8_prm_3",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "Block",
                                 "Strip",
@@ -834,7 +834,7 @@
                     {
                         "id": "ac-4.17_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "organization",
                                 "system",
@@ -1153,7 +1153,7 @@
                     {
                         "id": "ac-4.25_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "delivery of malicious content, command and control of malicious code, malicious code augmentation, and steganography encoded data",
                                 "spillage of sensitive information"

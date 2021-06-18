@@ -11,7 +11,7 @@
             {
                 "id": "sc-6_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "priority",
                         "quota",

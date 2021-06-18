@@ -39,7 +39,7 @@ class OSCALVersionValidator(Validator):
             True (valid) if the OSCAL version in the model is supported.
         """
         try:
-            oscal_version = model.metadata.oscal_version
+            oscal_version = model.metadata.oscal_version.__root__
             if type(oscal_version) is not str:
                 oscal_version = oscal_version.__root__
         except Exception as err:

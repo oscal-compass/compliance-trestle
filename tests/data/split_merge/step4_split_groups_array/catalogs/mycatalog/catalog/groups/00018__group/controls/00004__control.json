@@ -11,7 +11,7 @@
             {
                 "id": "si-5_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         " {{ si-5_prm_3 }} ",
                         " {{ si-5_prm_4 }} ",

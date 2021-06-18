@@ -286,7 +286,7 @@
                     {
                         "id": "ca-2.2_prm_3",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "in-depth monitoring",
                                 "security instrumentation",

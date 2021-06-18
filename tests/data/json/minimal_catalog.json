@@ -12,13 +12,14 @@
            "title": "a_role"
          }
       ],
-      "responsible-parties": {
-        "organisation": {
+      "responsible-parties": [
+        {
+          "role_id": "organization",
           "party-uuids": [
             "00000000-0000-4000-8000-000000000000"
           ]
         }
-      }
+      ]
     }
   }
 }

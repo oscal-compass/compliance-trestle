@@ -23,7 +23,7 @@
             {
                 "id": "si-4_prm_5",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "as needed",
                         " {{ si-4_prm_6 }} "
@@ -1287,7 +1287,7 @@
                     {
                         "id": "si-4.22_prm_2",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "Audit",
                                 "Alert {{ si-4.22_prm_3 }} "

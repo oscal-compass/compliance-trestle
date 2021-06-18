@@ -11,7 +11,7 @@
             {
                 "id": "pl-4_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         " {{ pl-4_prm_3 }} ",
                         "when the rules are revised or updated"

@@ -11,7 +11,7 @@
             {
                 "id": "si-6_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         " {{ si-6_prm_3 }} ",
                         "upon command by user with appropriate privilege",
@@ -36,7 +36,7 @@
             {
                 "id": "si-6_prm_6",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "Shut the system down",
                         "Restart the system",

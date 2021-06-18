@@ -84,8 +84,8 @@ class SelectControlById(OscalBaseModel):
         description='When a control is included, whether its child (dependent) controls are also included.',
         title='Include contained controls with control',
     )
-    with_ids: Optional[List[WithId]] = Field(None, alias='with-ids', min_items=1)
-    matching: Optional[List[Matching]] = Field(None, min_items=1)
+    with_ids: Optional[List[WithId]] = Field(None, alias='with-ids')
+    matching: Optional[List[Matching]] = Field(None)
 
 
 class Remove(OscalBaseModel):
@@ -156,10 +156,10 @@ class Import(OscalBaseModel):
     )
     include_all: Optional[IncludeAll] = Field(None, alias='include-all')
     include_controls: Optional[List[SelectControlById]] = Field(
-        None, alias='include-controls', min_items=1
+        None, alias='include-controls'
     )
     exclude_controls: Optional[List[SelectControlById]] = Field(
-        None, alias='exclude-controls', min_items=1
+        None, alias='exclude-controls'
     )
 
 
@@ -171,10 +171,10 @@ class InsertControls(OscalBaseModel):
     )
     include_all: Optional[IncludeAll] = Field(None, alias='include-all')
     include_controls: Optional[List[SelectControlById]] = Field(
-        None, alias='include-controls', min_items=1
+        None, alias='include-controls'
     )
     exclude_controls: Optional[List[SelectControlById]] = Field(
-        None, alias='exclude-controls', min_items=1
+        None, alias='exclude-controls'
     )
 
 
@@ -203,13 +203,13 @@ class Group(OscalBaseModel):
         description='A name given to the group, which may be used by a tool for display and navigation.',
         title='Group Title',
     )
-    params: Optional[List[common.Parameter]] = Field(None, min_items=1)
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
-    parts: Optional[List[common.Part]] = Field(None, min_items=1)
+    params: Optional[List[common.Parameter]] = Field(None)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    parts: Optional[List[common.Part]] = Field(None)
     groups: Optional[List[Group]] = None
     insert_controls: Optional[List[InsertControls]] = Field(
-        None, alias='insert-controls', min_items=1
+        None, alias='insert-controls'
     )
 
 
@@ -242,8 +242,8 @@ class SetParameter(OscalBaseModel):
         description='Another parameter invoking this one',
         title='Depends on',
     )
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
     label: Optional[str] = Field(
         None,
         description='A short, placeholder name for the parameter, which can be used as a substitute for a value if no value is assigned.',
@@ -254,9 +254,9 @@ class SetParameter(OscalBaseModel):
         description='Describes the purpose and use of a parameter',
         title='Parameter Usage Description',
     )
-    constraints: Optional[List[common.ParameterConstraint]] = Field(None, min_items=1)
-    guidelines: Optional[List[common.ParameterGuideline]] = Field(None, min_items=1)
-    values: Optional[List[common.ParameterValue]] = Field(None, min_items=1)
+    constraints: Optional[List[common.ParameterConstraint]] = Field(None)
+    guidelines: Optional[List[common.ParameterGuideline]] = Field(None)
+    values: Optional[List[common.ParameterValue]] = Field(None)
     select: Optional[common.ParameterSelection] = None
 
 
@@ -281,16 +281,16 @@ class Add(OscalBaseModel):
         description='A name given to the control, which may be used by a tool for display and navigation.',
         title='Title Change',
     )
-    params: Optional[List[common.Parameter]] = Field(None, min_items=1)
-    props: Optional[List[common.Property]] = Field(None, min_items=1)
-    links: Optional[List[common.Link]] = Field(None, min_items=1)
-    parts: Optional[List[common.Part]] = Field(None, min_items=1)
+    params: Optional[List[common.Parameter]] = Field(None)
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    parts: Optional[List[common.Part]] = Field(None)
 
 
 class Custom(OscalBaseModel):
-    groups: Optional[List[Group]] = Field(None, min_items=1)
+    groups: Optional[List[Group]] = Field(None)
     insert_controls: Optional[List[InsertControls]] = Field(
-        None, alias='insert-controls', min_items=1
+        None, alias='insert-controls'
     )
 
 
@@ -305,8 +305,8 @@ class Alter(OscalBaseModel):
         description='A reference to a control with a corresponding id value.',
         title='Control Identifier Reference',
     )
-    removes: Optional[List[Remove]] = Field(None, min_items=1)
-    adds: Optional[List[Add]] = Field(None, min_items=1)
+    removes: Optional[List[Remove]] = Field(None)
+    adds: Optional[List[Add]] = Field(None)
 
 
 class Merge(OscalBaseModel):
@@ -317,9 +317,9 @@ class Merge(OscalBaseModel):
 
 class Modify(OscalBaseModel):
     set_parameters: Optional[List[SetParameter]] = Field(
-        None, alias='set-parameters', min_items=1
+        None, alias='set-parameters'
     )
-    alters: Optional[List[Alter]] = Field(None, min_items=1)
+    alters: Optional[List[Alter]] = Field(None)
 
 
 class Profile(OscalBaseModel):
@@ -331,7 +331,7 @@ class Profile(OscalBaseModel):
         title='Catalog Universally Unique Identifier',
     )
     metadata: common.Metadata
-    imports: List[Import] = Field(..., min_items=1)
+    imports: List[Import] = Field(...)
     merge: Optional[Merge] = None
     modify: Optional[Modify] = None
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
