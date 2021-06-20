@@ -27,6 +27,7 @@ from pydantic import ConstrainedStr
 
 import pytest
 
+import trestle.core.const as const
 import trestle.core.err as err
 import trestle.core.generators as gens
 import trestle.oscal as oscal
@@ -53,10 +54,10 @@ def test_get_sample_value_by_type() -> None:
     assert gens.generate_sample_value_by_type(int, '') == 0
     assert gens.generate_sample_value_by_type(str, '') == 'REPLACE_ME'
     assert gens.generate_sample_value_by_type(float, '') == 0.0
-    assert gens.generate_sample_value_by_type(ConstrainedStr, '') == '00000000-0000-4000-8000-000000000000'
+    assert gens.generate_sample_value_by_type(ConstrainedStr, '') == const.SAMPLE_UUID_STR
     uuid_ = gens.generate_sample_value_by_type(ConstrainedStr, 'uuid')
     assert gens.generate_sample_value_by_type(common.Type, '') == common.Type('person')
-    assert is_valid_uuid(uuid_) and str(uuid_) != '00000000-0000-4000-8000-000000000000'
+    assert is_valid_uuid(uuid_) and str(uuid_) != const.SAMPLE_UUID_STR
     assert gens.generate_sample_value_by_type(ConstrainedStr, 'date_authorized') == date.today().isoformat()
     assert gens.generate_sample_value_by_type(pydantic.networks.EmailStr,
                                               'anything') == pydantic.networks.EmailStr('dummy@sample.com')
@@ -104,7 +105,7 @@ def test_generate_sample_model() -> None:
     assert expected_ctlg == actual_ctlg
 
     # Test list type models
-    expected_role = common.Role(**{'id': 'A0000000-0000-4000-8000-000000000000', 'title': 'REPLACE_ME'})
+    expected_role = common.Role(**{'id': const.SAMPLE_UUID_STR, 'title': 'REPLACE_ME'})
     list_role = gens.generate_sample_model(List[common.Role])
     assert type(list_role) is list
     actual_role = list_role[0]
@@ -112,7 +113,7 @@ def test_generate_sample_model() -> None:
 
     # Test dict type models
     if False:
-        party_uuid = common.PartyUuid(__root__='00000000-0000-4000-8000-000000000000')
+        party_uuid = common.PartyUuid(__root__=const.SAMPLE_UUID_STR)
         expected_rp = {'role_id': 'REPLACE_ME', 'party-uuids': [party_uuid]}
         expected_rp = common.ResponsibleParty(**expected_rp)
         expected_rp_dict = {'REPLACE_ME': expected_rp}
@@ -129,7 +130,7 @@ def test_get_all_sample_models() -> None:
         clsmembers = inspect.getmembers(sys.modules[f'trestle.oscal.{name}'], inspect.isclass)
         for _, oscal_cls in clsmembers:
             # This removes some enums and other objects.
-
+            # add check that it is not OscalBaseModel
             if issubclass(oscal_cls, OscalBaseModel):
                 gens.generate_sample_model(oscal_cls)
 

@@ -24,6 +24,7 @@ from typing import Any, Dict, List, Type, TypeVar, Union, cast
 import pydantic.networks
 from pydantic import ConstrainedStr
 
+import trestle.core.const as const
 import trestle.core.err as err
 import trestle.core.utils as utils
 from trestle.core.base_model import OscalBaseModel
@@ -70,7 +71,7 @@ def generate_sample_value_by_type(
             return str(date.today().isoformat())
         elif field_name == 'oscal_version':
             return OSCAL_VERSION
-        return 'A0000000-0000-4000-8000-000000000000'
+        return const.SAMPLE_UUID_STR
     elif hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__:
         # create an int value as close to the floor as possible does not test upper bound
         multiple = type_.multiple_of or 1  # default to every integer
