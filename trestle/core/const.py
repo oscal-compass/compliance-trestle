@@ -105,3 +105,6 @@ WEBSITE_ROOT = 'https://ibm.github.io/compliance-trestle'
 BUG_REPORT = 'https://github.com/IBM/compliance-trestle/issues/new/choose'
 
 NCNAME_REGEX = r'^[a-zA-Z_][\w.-]*$'
+
+# Sample objects
+SAMPLE_UUID_STR = 'A0000000-0000-4000-8000-000000000000'
