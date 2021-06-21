@@ -36,7 +36,6 @@ class ValidateCmd(CommandPlusDocs):
     def _run(self, args: argparse.Namespace) -> int:
         logger.debug('Entering trestle validate.')
         log.set_log_level_from_args(args)
-
         validator = vfact.validator_factory.get(args)
 
         try:

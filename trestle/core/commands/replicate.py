@@ -16,7 +16,6 @@
 """Trestle Replicate Command."""
 import argparse
 import logging
-import pathlib
 from typing import Type, TypeVar
 
 from trestle.core import validator_helper
@@ -173,10 +172,12 @@ class ReplicateCmd(CommandPlusDocs):
         logger.debug('Entering replicate_object.')
 
         # 1 Bad working directory if not running from current working directory
-        cwd = pathlib.Path.cwd()
-        trestle_root = fs.get_trestle_project_root(cwd)
+        # comment cwd = pathlib.Path.cwd()
+        # comment trestle_root = fs.get_trestle_project_root(cwd)
+        trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
         if trestle_root is None:
-            logger.error(f'Current working directory: {cwd} is not within a trestle project.')
+            # comment logger.error(f'Current working directory: {cwd} is not within a trestle project.')
+            logger.error(f'Given directory: {trestle_root} is not a trestle project.')
             return 1
 
         plural_path = fs.model_type_to_model_dir(model_alias)

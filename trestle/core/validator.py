@@ -16,7 +16,6 @@
 
 import argparse
 import logging
-import pathlib
 from abc import ABC, abstractmethod
 from typing import TypeVar
 
@@ -53,7 +52,8 @@ class Validator(ABC):
 
     def validate(self, args: argparse.Namespace) -> int:
         """Perform the validation according to user options."""
-        trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
+        # comment trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
+        trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
 
         # validate by type - all of type or just specified by name
         if 'type' in args and args.type is not None:
@@ -61,7 +61,7 @@ class Validator(ABC):
             if 'name' in args and args.name is not None:
                 models = [args.name]
             else:
-                models = fs.get_models_of_type(args.type)
+                models = fs.get_models_of_type(args.type, trestle_root)
             models_path = trestle_root / fs.model_type_to_model_dir(args.type)
             for m in models:
                 model_path = models_path / m
@@ -78,7 +78,7 @@ class Validator(ABC):
 
         # validate all
         if 'all' in args and args.all:
-            model_tups = fs.get_all_models()
+            model_tups = fs.get_all_models(trestle_root)
             for mt in model_tups:
                 model_path = trestle_root / fs.model_type_to_model_dir(mt[0]) / mt[1]
                 _, _, model = load_distributed(model_path)

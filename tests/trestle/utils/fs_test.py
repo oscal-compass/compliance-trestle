@@ -504,7 +504,8 @@ def test_get_models_of_type(tmp_trestle_dir) -> None:
     (catalogs_dir / 'mycatalog2').mkdir()
     (catalogs_dir / '.myfile').touch()
     (targets_dir / 'mytarget').mkdir()
-    models = fs.get_models_of_type('catalog')
+    # comment models = fs.get_models_of_type('catalog')
+    models = fs.get_models_of_type('catalog', tmp_trestle_dir)
     assert len(models) == 2
     assert 'mycatalog' in models
     assert 'mycatalog2' in models
@@ -514,13 +515,15 @@ def test_get_models_of_type(tmp_trestle_dir) -> None:
     assert ('catalog', 'mycatalog2') in all_models
     assert ('target-definition', 'mytarget') in all_models
     with pytest.raises(TrestleError):
-        fs.get_models_of_type('foo')
+        # comment fs.get_models_of_type('foo')
+        fs.get_models_of_type('foo', tmp_trestle_dir)
 
 
 def test_get_models_of_type_bad_cwd(tmp_path) -> None:
     """Test fs.get_models_of_type() from outside trestle dir."""
     with pytest.raises(TrestleError):
-        fs.get_models_of_type('catalog')
+        # comment fs.get_models_of_type('catalog')
+        fs.get_models_of_type('catalog', tmp_path)
 
 
 def test_is_hidden_posix(tmp_path) -> None:

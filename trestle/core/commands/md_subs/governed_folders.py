@@ -43,9 +43,11 @@ that directory tree are enforced."""
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
-        trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
+        # comment trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
+        trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
         if not trestle_root:
-            logger.error(f'Current working directory {pathlib.Path.cwd()} is not with a trestle project.')
+            # comment logger.error(f'Current working directory {pathlib.Path.cwd()} is not with a trestle project.')
+            logger.error(f'Given directory: {trestle_root} is not a trestle project.')
             return 1
         if not fs.allowed_task_name(args.task_name):
             logger.error(

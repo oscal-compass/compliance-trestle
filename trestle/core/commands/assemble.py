@@ -17,7 +17,6 @@
 
 import argparse
 import logging
-from pathlib import Path
 from typing import Type, TypeVar
 
 from trestle.core import const
@@ -154,20 +153,23 @@ class AssembleCmd(CommandPlusDocs):
         """Assemble a top level OSCAL model within the trestle dist directory."""
         log.set_log_level_from_args(args)
         logger.info(f'Assembling models of type {model_alias}.')
-        trestle_root = fs.get_trestle_project_root(Path.cwd())
-        if not trestle_root:
-            logger.error(f'Current working directory {Path.cwd()} is not with a trestle project.')
-            return 1
-        if not trestle_root == Path.cwd():
-            logger.error(f'Current working directory {Path.cwd()} is not the top level trestle project directory.')
-            return 1
+
+        # comment trestle_root = fs.get_trestle_project_root(Path.cwd())
+        # comment if not trestle_root:
+        # comment    logger.error(f'Current working directory {Path.cwd()} is not with a trestle project.')
+        # comment    return 1
+        # comment if not trestle_root == Path.cwd():
+        # comment    logger.error(f'Current working directory {Path.cwd()} is not the top level trestle project'
+        # comment                 + ' directory.')
+        # comment    return 1
+        trestle_root = args.trestle_root
 
         model_names = []
         if 'name' in args and args.name:
             model_names = [args.name]
             logger.info(f'Assembling single model of type {model_alias}: {args.name}.')
         else:
-            model_names = fs.get_models_of_type(model_alias)
+            model_names = fs.get_models_of_type(model_alias, trestle_root)
             nmodels = len(model_names)
             logger.info(f'Assembling {nmodels} found models of type {model_alias}.')
         if len(model_names) == 0:
@@ -176,7 +178,8 @@ class AssembleCmd(CommandPlusDocs):
 
         for model_name in model_names:
             # contruct path to the model file name
-            root_model_dir = Path.cwd() / fs.model_type_to_model_dir(model_alias)
+            # comment root_model_dir = Path.cwd() / fs.model_type_to_model_dir(model_alias)
+            root_model_dir = trestle_root / fs.model_type_to_model_dir(model_alias)
             try:
                 model_file_type = fs.get_contextual_file_type(root_model_dir / model_name)
             except Exception as e:
