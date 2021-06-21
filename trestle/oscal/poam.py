@@ -554,6 +554,3 @@ class Activity(OscalBaseModel):
 
 class Model(OscalBaseModel):
     plan_of_action_and_milestones: PlanOfActionAndMilestones = Field(..., alias='plan-of-action-and-milestones')
-
-#SystemComponent.update_forward_refs()
-SystemComponentStatus.update_forward_refs()
