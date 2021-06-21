@@ -222,7 +222,7 @@ def test_get_target_model() -> None:
     assert mutils.is_collection_field_type(
         mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog)
     ) is True
-    assert mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog).__origin__ is dict
+    assert mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog).__origin__ is list
     assert mutils.get_inner_type(
         mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog)
     ) is common.ResponsibleParty
