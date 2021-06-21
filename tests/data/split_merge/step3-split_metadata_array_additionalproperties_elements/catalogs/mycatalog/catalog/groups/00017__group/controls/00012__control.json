@@ -1,0 +1,282 @@
+{
+    "control": {
+        "id": "sc-13",
+        "class": "SP800-53",
+        "title": "Cryptographic Protection",
+        "params": [
+            {
+                "id": "sc-13_prm_1",
+                "label": "organization-defined cryptographic uses"
+            },
+            {
+                "id": "sc-13_prm_2",
+                "label": "organization-defined types of cryptography for each specified cryptographic use"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-13"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-13"
+            }
+        ],
+        "links": [
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-18",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-19",
+                "rel": "related"
+            },
+            {
+                "href": "#au-9",
+                "rel": "related"
+            },
+            {
+                "href": "#au-10",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-11",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-9",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-20",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-23",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-28",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-40",
+                "rel": "related"
+            },
+            {
+                "href": "#si-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-13_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "sc-13_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Determine the {{ insert: param, sc-13_prm_1 }}; and"
+                    },
+                    {
+                        "id": "sc-13_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Implement the following types of cryptography required for each specified cryptographic use: {{ insert: param, sc-13_prm_2 }}."
+                    }
+                ]
+            },
+            {
+                "id": "sc-13_gdn",
+                "name": "guidance",
+                "prose": "Cryptography can be employed to support a variety of security solutions, including the protection of classified information and controlled unclassified information, the provision and implementation of digital signatures, and the enforcement of information separation when authorized individuals have the necessary clearances but lack the necessary formal access approvals. Cryptography can also be used to support random number and hash generation. Generally applicable cryptographic standards include FIPS-validated cryptography and NSA-approved cryptography. For example, organizations that need to protect classified information may specify the use of NSA-approved cryptography. Organizations that need to provision and implement digital signatures may specify the use of FIPS-validated cryptography. Cryptography is implemented in accordance with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-13.1",
+                "class": "SP800-53-enhancement",
+                "title": "Fips-validated Cryptography",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-13(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-13.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-13",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sc-13.2",
+                "class": "SP800-53-enhancement",
+                "title": "Nsa-approved Cryptography",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-13(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-13.02"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-13",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sc-13.3",
+                "class": "SP800-53-enhancement",
+                "title": "Individuals Without Formal Access Approvals",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-13(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-13.03"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-13",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sc-13.4",
+                "class": "SP800-53-enhancement",
+                "title": "Digital Signatures",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-13(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-13.04"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-13",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,667 @@
+{
+    "control": {
+        "id": "cp-2",
+        "class": "SP800-53",
+        "title": "Contingency Plan",
+        "params": [
+            {
+                "id": "cp-2_prm_1",
+                "label": "organization-defined personnel or roles"
+            },
+            {
+                "id": "cp-2_prm_2",
+                "label": "organization-defined key contingency personnel (identified by name and/or by role) and organizational elements"
+            },
+            {
+                "id": "cp-2_prm_3",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "cp-2_prm_4",
+                "label": "organization-defined key contingency personnel (identified by name and/or by role) and organizational elements"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CP-2"
+            },
+            {
+                "name": "sort-id",
+                "value": "cp-02"
+            }
+        ],
+        "links": [
+            {
+                "href": "#bc39f179-c735-4da2-b7a7-b2b622119755",
+                "rel": "reference"
+            },
+            {
+                "href": "#d4296805-2dca-4c63-a95f-eeccaa826aec",
+                "rel": "reference"
+            },
+            {
+                "href": "#cp-3",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-7",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-8",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-10",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-11",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-13",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-9",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-6",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-5",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-11",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-15",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-20",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-23",
+                "rel": "related"
+            },
+            {
+                "href": "#si-12",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cp-2_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "cp-2_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Develop a contingency plan for the system that:",
+                        "parts": [
+                            {
+                                "id": "cp-2_smt.a.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Identifies essential mission and business functions and associated contingency requirements;"
+                            },
+                            {
+                                "id": "cp-2_smt.a.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "Provides recovery objectives, restoration priorities, and metrics;"
+                            },
+                            {
+                                "id": "cp-2_smt.a.3",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": "Addresses contingency roles, responsibilities, assigned individuals with contact information;"
+                            },
+                            {
+                                "id": "cp-2_smt.a.4",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "4."
+                                    }
+                                ],
+                                "prose": "Addresses maintaining essential mission and business functions despite a system disruption, compromise, or failure;"
+                            },
+                            {
+                                "id": "cp-2_smt.a.5",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "5."
+                                    }
+                                ],
+                                "prose": "Addresses eventual, full system restoration without deterioration of the controls originally planned and implemented;"
+                            },
+                            {
+                                "id": "cp-2_smt.a.6",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "6."
+                                    }
+                                ],
+                                "prose": "Addresses the sharing of contingency information; and"
+                            },
+                            {
+                                "id": "cp-2_smt.a.7",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "7."
+                                    }
+                                ],
+                                "prose": "Is reviewed and approved by {{ insert: param, cp-2_prm_1 }};"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "cp-2_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Distribute copies of the contingency plan to {{ insert: param, cp-2_prm_2 }};"
+                    },
+                    {
+                        "id": "cp-2_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Coordinate contingency planning activities with incident handling activities;"
+                    },
+                    {
+                        "id": "cp-2_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Review the contingency plan for the system {{ insert: param, cp-2_prm_3 }};"
+                    },
+                    {
+                        "id": "cp-2_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Update the contingency plan to address changes to the organization, system, or environment of operation and problems encountered during contingency plan implementation, execution, or testing;"
+                    },
+                    {
+                        "id": "cp-2_smt.f",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "f."
+                            }
+                        ],
+                        "prose": "Communicate contingency plan changes to {{ insert: param, cp-2_prm_4 }};"
+                    },
+                    {
+                        "id": "cp-2_smt.g",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "g."
+                            }
+                        ],
+                        "prose": "Incorporate lessons learned from contingency plan testing, training, or actual contingency activities into contingency testing and training; and"
+                    },
+                    {
+                        "id": "cp-2_smt.h",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "h."
+                            }
+                        ],
+                        "prose": "Protect the contingency plan from unauthorized disclosure and modification."
+                    }
+                ]
+            },
+            {
+                "id": "cp-2_gdn",
+                "name": "guidance",
+                "prose": "Contingency planning for systems is part of an overall program for achieving continuity of operations for organizational mission and business functions. Contingency planning addresses system restoration and implementation of alternative mission or business processes when systems are compromised or breached. Contingency planning is considered throughout the system development life cycle and is a fundamental part of the system design. Systems can be designed for redundancy, to provide backup capabilities, and for resilience. Contingency plans reflect the degree of restoration required for organizational systems since not all systems need to fully recover to achieve the level of continuity of operations desired. System recovery objectives reflect applicable laws, executive orders, directives, regulations, policies, standards, guidelines, organizational risk tolerance, and system impact level.\n\nActions addressed in contingency plans include orderly system degradation, system shutdown, fallback to a manual mode, alternate information flows, and operating in modes reserved for when systems are under attack. By coordinating contingency planning with incident handling activities, organizations ensure that the necessary planning activities are in place and activated in the event of an incident. Organizations consider whether continuity of operations during an incident conflicts with the capability to automatically disable the system, as specified in [IR-4(5)](#ir-4.5). Incident response planning is part of contingency planning for organizations and is addressed in the [IR](#ir) (Incident Response) family."
+            }
+        ],
+        "controls": [
+            {
+                "id": "cp-2.1",
+                "class": "SP800-53-enhancement",
+                "title": "Coordinate with Related Plans",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-2(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-02.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-2.1_smt",
+                        "name": "statement",
+                        "prose": "Coordinate contingency plan development with organizational elements responsible for related plans."
+                    },
+                    {
+                        "id": "cp-2.1_gdn",
+                        "name": "guidance",
+                        "prose": "Plans that are related to contingency plans include Business Continuity Plans, Disaster Recovery Plans, Critical Infrastructure Plans, Continuity of Operations Plans, Crisis Communications Plans, Insider Threat Implementation Plans, Data Breach Response Plans, Cyber Incident Response Plans, Breach Response Plans, and Occupant Emergency Plans."
+                    }
+                ]
+            },
+            {
+                "id": "cp-2.2",
+                "class": "SP800-53-enhancement",
+                "title": "Capacity Planning",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-2(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-02.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-2",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pe-11",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-13",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-14",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-18",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-2.2_smt",
+                        "name": "statement",
+                        "prose": "Conduct capacity planning so that necessary capacity for information processing, telecommunications, and environmental support exists during contingency operations."
+                    },
+                    {
+                        "id": "cp-2.2_gdn",
+                        "name": "guidance",
+                        "prose": "Capacity planning is needed because different threats can result in a reduction of the available processing, telecommunications, and support services intended to support essential mission and business functions. Organizations anticipate degraded operations during contingency operations and factor the degradation into capacity planning. For capacity planning, environmental support refers to any environmental factor for which the organization determines that it needs to provide support in a contingency situation, even if in a degraded state. Such determinations are based on an organizational assessment of risk, system categorization (impact level), and organizational risk tolerance."
+                    }
+                ]
+            },
+            {
+                "id": "cp-2.3",
+                "class": "SP800-53-enhancement",
+                "title": "Resume Mission and Business Functions",
+                "params": [
+                    {
+                        "id": "cp-2.3_prm_1",
+                        "select": {
+                            "choice": [
+                                "all",
+                                "essential"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "cp-2.3_prm_2",
+                        "label": "organization-defined time period"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-2(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-02.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-2.3_smt",
+                        "name": "statement",
+                        "prose": "Plan for the resumption of {{ insert: param, cp-2.3_prm_1 }} mission and business functions within {{ insert: param, cp-2.3_prm_2 }} of contingency plan activation."
+                    },
+                    {
+                        "id": "cp-2.3_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations may choose to conduct contingency planning activities to resume mission and business functions as part of business continuity planning or as part of business impact analyses. Organizations prioritize the resumption of mission and business functions. The time period for resuming mission and business functions may be dependent on the severity and extent of the disruptions to the system and its supporting infrastructure."
+                    }
+                ]
+            },
+            {
+                "id": "cp-2.4",
+                "class": "SP800-53-enhancement",
+                "title": "Resume All Mission and Business Functions",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-2(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-02.04"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-2.3",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "cp-2.5",
+                "class": "SP800-53-enhancement",
+                "title": "Continue Mission and Business Functions",
+                "params": [
+                    {
+                        "id": "cp-2.5_prm_1",
+                        "select": {
+                            "choice": [
+                                "all",
+                                "essential"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-2(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-02.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-2.5_smt",
+                        "name": "statement",
+                        "prose": "Plan for the continuance of {{ insert: param, cp-2.5_prm_1 }} mission and business functions with minimal or no loss of operational continuity and sustains that continuity until full system restoration at primary processing and/or storage sites."
+                    },
+                    {
+                        "id": "cp-2.5_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations may choose to conduct the contingency planning activities to continue mission and business functions as part of business continuity planning or business impact analyses. Primary processing and/or storage sites defined by organizations as part of contingency planning may change depending on the circumstances associated with the contingency."
+                    }
+                ]
+            },
+            {
+                "id": "cp-2.6",
+                "class": "SP800-53-enhancement",
+                "title": "Alternate Processing and Storage Sites",
+                "params": [
+                    {
+                        "id": "cp-2.6_prm_1",
+                        "select": {
+                            "choice": [
+                                "all",
+                                "essential"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-2(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-02.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-2.6_smt",
+                        "name": "statement",
+                        "prose": "Plan for the transfer of {{ insert: param, cp-2.6_prm_1 }} mission and business functions to alternate processing and/or storage sites with minimal or no loss of operational continuity and sustain that continuity through system restoration to primary processing and/or storage sites."
+                    },
+                    {
+                        "id": "cp-2.6_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations may choose to conduct contingency planning activities for alternate processing and storage sites as part of business continuity planning or business impact analyses. Primary processing and/or storage sites defined by organizations as part of contingency planning may change depending on the circumstances associated with the contingency."
+                    }
+                ]
+            },
+            {
+                "id": "cp-2.7",
+                "class": "SP800-53-enhancement",
+                "title": "Coordinate with External Service Providers",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-2(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-02.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-2",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sa-9",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-2.7_smt",
+                        "name": "statement",
+                        "prose": "Coordinate the contingency plan with the contingency plans of external service providers to ensure that contingency requirements can be satisfied."
+                    },
+                    {
+                        "id": "cp-2.7_gdn",
+                        "name": "guidance",
+                        "prose": "When the capability of an organization to carry out its mission and business functions is dependent on external service providers, developing a comprehensive and timely contingency plan may become more challenging. When mission and business functions are dependent on external service providers, organizations coordinate contingency planning activities with the external entities to ensure that the individual plans reflect the overall contingency needs of the organization."
+                    }
+                ]
+            },
+            {
+                "id": "cp-2.8",
+                "class": "SP800-53-enhancement",
+                "title": "Identify Critical Assets",
+                "params": [
+                    {
+                        "id": "cp-2.8_prm_1",
+                        "select": {
+                            "choice": [
+                                "all",
+                                "essential"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-2(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-02.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-2",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ra-9",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-2.8_smt",
+                        "name": "statement",
+                        "prose": "Identify critical system assets supporting {{ insert: param, cp-2.8_prm_1 }} mission and business functions."
+                    },
+                    {
+                        "id": "cp-2.8_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations may choose to identify critical assets as part of criticality analysis, business continuity planning, or business impact analyses. Organizations identify critical system assets so that additional controls can be employed (beyond the controls routinely implemented) to help ensure that organizational mission and business functions can continue to be conducted during contingency operations. The identification of critical information assets also facilitates the prioritization of organizational resources. Critical system assets include technical and operational aspects. Technical aspects include system components, information technology services, information technology products, and mechanisms. Operational aspects include procedures (i.e., manually executed operations) and personnel (i.e., individuals operating technical controls and/or executing manual procedures). Organizational program protection plans can assist in identifying critical assets. If critical assets are resident within or supported by external service providers, organizations consider implementing [CP-2(7)](#cp-2.7) as a control enhancement."
+                    }
+                ]
+            }
+        ]
+    }
+}

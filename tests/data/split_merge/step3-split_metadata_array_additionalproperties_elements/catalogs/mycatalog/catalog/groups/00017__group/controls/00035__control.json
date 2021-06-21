@@ -1,0 +1,181 @@
+{
+    "control": {
+        "id": "sc-36",
+        "class": "SP800-53",
+        "title": "Distributed Processing and Storage",
+        "params": [
+            {
+                "id": "sc-36_prm_1",
+                "select": {
+                    "choice": [
+                        "physical locations",
+                        "logical domains"
+                    ]
+                }
+            },
+            {
+                "id": "sc-36_prm_2",
+                "label": "organization-defined processing and storage components"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-36"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-36"
+            }
+        ],
+        "links": [
+            {
+                "href": "#61ccf0f4-d3e7-42db-9796-ce6cb1c85989",
+                "rel": "reference"
+            },
+            {
+                "href": "#cp-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-7",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-32",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-36_smt",
+                "name": "statement",
+                "prose": "Distribute the following processing and storage components across multiple {{ insert: param, sc-36_prm_1 }}: {{ insert: param, sc-36_prm_2 }}."
+            },
+            {
+                "id": "sc-36_gdn",
+                "name": "guidance",
+                "prose": "Distributing processing and storage across multiple physical locations or logical domains provides a degree of redundancy or overlap for organizations. The redundancy and overlap increase the work factor of adversaries to adversely impact organizational operations, assets, and individuals. The use of distributed processing and storage does not assume a single primary processing or storage location. Therefore, it allows for parallel processing and storage."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-36.1",
+                "class": "SP800-53-enhancement",
+                "title": "Polling Techniques",
+                "params": [
+                    {
+                        "id": "sc-36.1_prm_1",
+                        "label": "organization-defined distributed processing and storage components"
+                    },
+                    {
+                        "id": "sc-36.1_prm_2",
+                        "label": "organization-defined actions"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-36(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-36.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-36",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#si-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-36.1_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "sc-36.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Employ polling techniques to identify potential faults, errors, or compromises to the following processing and storage components: {{ insert: param, sc-36.1_prm_1 }}; and"
+                            },
+                            {
+                                "id": "sc-36.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Take the following actions in response to identified faults, errors, or compromises: {{ insert: param, sc-36.1_prm_2 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sc-36.1_gdn",
+                        "name": "guidance",
+                        "prose": "Distributed processing and/or storage may be used to reduce opportunities for adversaries to compromise the confidentiality, integrity, or availability of organizational information and systems. However, the distribution of processing and storage components does not prevent adversaries from compromising one or more of the components. Polling compares the processing results and/or storage content from the distributed components and subsequently votes on the outcomes. Polling identifies potential faults, compromises, or errors in the distributed processing and storage components."
+                    }
+                ]
+            },
+            {
+                "id": "sc-36.2",
+                "class": "SP800-53-enhancement",
+                "title": "Synchronization",
+                "params": [
+                    {
+                        "id": "sc-36.2_prm_1",
+                        "label": "organization-defined duplicate systems or system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-36(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-36.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-36",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cp-9",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-36.2_smt",
+                        "name": "statement",
+                        "prose": "Synchronize the following duplicate systems or system components: {{ insert: param, sc-36.2_prm_1 }}."
+                    },
+                    {
+                        "id": "sc-36.2_gdn",
+                        "name": "guidance",
+                        "prose": " [SC-36](#sc-36) and [CP-9(6)](#cp-9.6) require the duplication of systems or system components in distributed locations. The synchronization of duplicated and redundant services and data helps to ensure that information contained in the distributed locations can be used in the mission or business functions of organizations, as needed."
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,195 @@
+{
+    "control": {
+        "id": "ca-8",
+        "class": "SP800-53",
+        "title": "Penetration Testing",
+        "params": [
+            {
+                "id": "ca-8_prm_1",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "ca-8_prm_2",
+                "label": "organization-defined systems or system components"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CA-8"
+            },
+            {
+                "name": "sort-id",
+                "value": "ca-08"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ra-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-11",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-6",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ca-8_smt",
+                "name": "statement",
+                "prose": "Conduct penetration testing {{ insert: param, ca-8_prm_1 }} on {{ insert: param, ca-8_prm_2 }}."
+            },
+            {
+                "id": "ca-8_gdn",
+                "name": "guidance",
+                "prose": "Penetration testing is a specialized type of assessment conducted on systems or individual system components to identify vulnerabilities that could be exploited by adversaries. Penetration testing goes beyond automated vulnerability scanning and is conducted by agents and teams with demonstrable skills and experience that include technical expertise in network, operating system, and/or application level security. Penetration testing can be used to validate vulnerabilities or determine the degree of penetration resistance of systems to adversaries within specified constraints. Such constraints include time, resources, and skills. Penetration testing attempts to duplicate the actions of adversaries and provides a more in-depth analysis of security- and privacy-related weaknesses or deficiencies. Penetration testing is especially important when organizations are transitioning from older technologies to newer technologies (e.g., transitioning from IPv4 to IPv6 network protocols).\n\nOrganizations can use the results of vulnerability analyses to support penetration testing activities. Penetration testing can be conducted internally or externally on the hardware, software, or firmware components of a system and can exercise both physical and technical controls. A standard method for penetration testing includes a pretest analysis based on full knowledge of the system, pretest identification of potential vulnerabilities based on the pretest analysis, and testing designed to determine the exploitability of vulnerabilities. All parties agree to the rules of engagement before commencing penetration testing scenarios. Organizations correlate the rules of engagement for the penetration tests with the tools, techniques, and procedures that are anticipated to be employed by adversaries. Penetration testing may result in the exposure of information that is protected by laws or regulations, to individuals conducting the testing. Rules of engagement, contracts, or other appropriate mechanisms can be used to communicate expectations for how to protect this information. Risk assessments guide the decisions on the level of independence required for the personnel conducting penetration testing."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ca-8.1",
+                "class": "SP800-53-enhancement",
+                "title": "Independent Penetration Testing Agent or Team",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CA-8(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ca-08.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ca-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ca-2",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ca-8.1_smt",
+                        "name": "statement",
+                        "prose": "Employ an independent penetration testing agent or team to perform penetration testing on the system or system components."
+                    },
+                    {
+                        "id": "ca-8.1_gdn",
+                        "name": "guidance",
+                        "prose": "Independent penetration testing agents or teams are individuals or groups who conduct impartial penetration testing of organizational systems. Impartiality implies that penetration testing agents or teams are free from perceived or actual conflicts of interest with respect to the development, operation, or management of the systems that are the targets of the penetration testing. [CA-2(1)](#ca-2.1) provides additional information on independent assessments that can be applied to penetration testing."
+                    }
+                ]
+            },
+            {
+                "id": "ca-8.2",
+                "class": "SP800-53-enhancement",
+                "title": "Red Team Exercises",
+                "params": [
+                    {
+                        "id": "ca-8.2_prm_1",
+                        "label": "organization-defined red team exercises"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CA-8(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ca-08.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ca-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ca-8.2_smt",
+                        "name": "statement",
+                        "prose": "Employ the following red-team exercises to simulate attempts by adversaries to compromise organizational systems in accordance with applicable rules of engagement: {{ insert: param, ca-8.2_prm_1 }}."
+                    },
+                    {
+                        "id": "ca-8.2_gdn",
+                        "name": "guidance",
+                        "prose": "Red team exercises extend the objectives of penetration testing by examining the security and privacy posture of organizations and the capability to implement effective cyber defenses. Red team exercises simulate attempts by adversaries to compromise mission and business functions and provide a comprehensive assessment of the security and privacy posture of systems and organizations. Such attempts may include technology-based attacks and social engineering-based attacks. Technology-based attacks include interactions with hardware, software, or firmware components and/or mission and business processes. Social engineering-based attacks include interactions via email, telephone, shoulder surfing, or personal conversations. Red team exercises are most effective when conducted by penetration testing agents and teams with knowledge of and experience with current adversarial tactics, techniques, procedures, and tools. While penetration testing may be primarily laboratory-based testing, organizations can use red team exercises to provide more comprehensive assessments that reflect real-world conditions. The results from red team exercises can be used by organizations to improve security and privacy awareness and training and to assess control effectiveness."
+                    }
+                ]
+            },
+            {
+                "id": "ca-8.3",
+                "class": "SP800-53-enhancement",
+                "title": "Facility Penetration Testing",
+                "params": [
+                    {
+                        "id": "ca-8.3_prm_1",
+                        "label": "organization-defined frequency"
+                    },
+                    {
+                        "id": "ca-8.3_prm_2",
+                        "select": {
+                            "choice": [
+                                "announced",
+                                "unannounced"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CA-8(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ca-08.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ca-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ca-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ca-8.3_smt",
+                        "name": "statement",
+                        "prose": "Employ a penetration testing process that includes {{ insert: param, ca-8.3_prm_1 }} {{ insert: param, ca-8.3_prm_2 }} attempts to bypass or circumvent controls associated with physical access points to the facility."
+                    },
+                    {
+                        "id": "ca-8.3_gdn",
+                        "name": "guidance",
+                        "prose": "Penetration testing of physical access points can provide information on critical vulnerabilities in the operating environments of organizational systems. Such information can be used to correct weaknesses or deficiencies in physical controls that are necessary to protect organizational systems."
+                    }
+                ]
+            }
+        ]
+    }
+}

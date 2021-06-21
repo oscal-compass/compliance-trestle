@@ -1,0 +1,84 @@
+{
+    "control": {
+        "id": "pe-15",
+        "class": "SP800-53",
+        "title": "Water Damage Protection",
+        "props": [
+            {
+                "name": "label",
+                "value": "PE-15"
+            },
+            {
+                "name": "sort-id",
+                "value": "pe-15"
+            }
+        ],
+        "links": [
+            {
+                "href": "#at-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-10",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pe-15_smt",
+                "name": "statement",
+                "prose": "Protect the system from damage resulting from water leakage by providing master shutoff or isolation valves that are accessible, working properly, and known to key personnel."
+            },
+            {
+                "id": "pe-15_gdn",
+                "name": "guidance",
+                "prose": "The provision of water damage protection primarily applies to organizational facilities that contain concentrations of system resources, including data centers, server rooms, and mainframe computer rooms. Isolation valves can be employed in addition to or in lieu of master shutoff valves to shut off water supplies in specific areas of concern without affecting entire organizations."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pe-15.1",
+                "class": "SP800-53-enhancement",
+                "title": "Automation Support",
+                "params": [
+                    {
+                        "id": "pe-15.1_prm_1",
+                        "label": "organization-defined personnel or roles"
+                    },
+                    {
+                        "id": "pe-15.1_prm_2",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PE-15(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pe-15.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pe-15",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pe-15.1_smt",
+                        "name": "statement",
+                        "prose": "Detect the presence of water near the system and alert {{ insert: param, pe-15.1_prm_1 }} using {{ insert: param, pe-15.1_prm_2 }}."
+                    },
+                    {
+                        "id": "pe-15.1_gdn",
+                        "name": "guidance",
+                        "prose": "Automated mechanisms include notification systems, water detection sensors, and alarms."
+                    }
+                ]
+            }
+        ]
+    }
+}

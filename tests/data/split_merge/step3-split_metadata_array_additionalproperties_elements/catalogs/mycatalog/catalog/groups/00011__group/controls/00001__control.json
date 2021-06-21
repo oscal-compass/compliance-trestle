@@ -1,0 +1,513 @@
+{
+    "control": {
+        "id": "pl-2",
+        "class": "SP800-53",
+        "title": "System Security and Privacy Plans",
+        "params": [
+            {
+                "id": "pl-2_prm_1",
+                "label": "organization-defined individuals or groups"
+            },
+            {
+                "id": "pl-2_prm_2",
+                "label": "organization-defined personnel or roles"
+            },
+            {
+                "id": "pl-2_prm_3",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PL-2"
+            },
+            {
+                "name": "sort-id",
+                "value": "pl-02"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#30eb758a-2707-4bca-90ad-949a74d4eb16",
+                "rel": "reference"
+            },
+            {
+                "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
+                "rel": "reference"
+            },
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#61ccf0f4-d3e7-42db-9796-ce6cb1c85989",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-14",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-20",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-7",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-13",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-5",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-5",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-7",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-10",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-11",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-1",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-7",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-10",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-11",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-17",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-22",
+                "rel": "related"
+            },
+            {
+                "href": "#si-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-4",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pl-2_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "pl-2_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Develop security and privacy plans for the system that:",
+                        "parts": [
+                            {
+                                "id": "pl-2_smt.a.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Are consistent with the organization\u2019s enterprise architecture;"
+                            },
+                            {
+                                "id": "pl-2_smt.a.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "Explicitly define the constituent system components;"
+                            },
+                            {
+                                "id": "pl-2_smt.a.3",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": "Describe the operational context of the system in terms of mission and business processes;"
+                            },
+                            {
+                                "id": "pl-2_smt.a.4",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "4."
+                                    }
+                                ],
+                                "prose": "Identify the individuals that fulfill system roles and responsibilities;"
+                            },
+                            {
+                                "id": "pl-2_smt.a.5",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "5."
+                                    }
+                                ],
+                                "prose": "Identify the information types processed, stored, and transmitted by the system;"
+                            },
+                            {
+                                "id": "pl-2_smt.a.6",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "6."
+                                    }
+                                ],
+                                "prose": "Provide the security categorization of the system, including supporting rationale;"
+                            },
+                            {
+                                "id": "pl-2_smt.a.7",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "7."
+                                    }
+                                ],
+                                "prose": "Describe any specific threats to the system that are of concern to the organization;"
+                            },
+                            {
+                                "id": "pl-2_smt.a.8",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "8."
+                                    }
+                                ],
+                                "prose": "Provide the results of a privacy risk assessment for systems processing personally identifiable information;"
+                            },
+                            {
+                                "id": "pl-2_smt.a.9",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "9."
+                                    }
+                                ],
+                                "prose": "Describe the operational environment for the system and any dependencies on or connections to other systems or system components;"
+                            },
+                            {
+                                "id": "pl-2_smt.a.10",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "10."
+                                    }
+                                ],
+                                "prose": "Provide an overview of the security and privacy requirements for the system;"
+                            },
+                            {
+                                "id": "pl-2_smt.a.11",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "11."
+                                    }
+                                ],
+                                "prose": "Identify any relevant control baselines or overlays, if applicable;"
+                            },
+                            {
+                                "id": "pl-2_smt.a.12",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "12."
+                                    }
+                                ],
+                                "prose": "Describe the controls in place or planned for meeting the security and privacy requirements, including a rationale for any tailoring decisions;"
+                            },
+                            {
+                                "id": "pl-2_smt.a.13",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "13."
+                                    }
+                                ],
+                                "prose": "Include risk determinations for security and privacy architecture and design decisions;"
+                            },
+                            {
+                                "id": "pl-2_smt.a.14",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "14."
+                                    }
+                                ],
+                                "prose": "Include security- and privacy-related activities affecting the system that require planning and coordination with {{ insert: param, pl-2_prm_1 }}; and"
+                            },
+                            {
+                                "id": "pl-2_smt.a.15",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "15."
+                                    }
+                                ],
+                                "prose": "Are reviewed and approved by the authorizing official or designated representative prior to plan implementation."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "pl-2_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Distribute copies of the plans and communicate subsequent changes to the plans to {{ insert: param, pl-2_prm_2 }};"
+                    },
+                    {
+                        "id": "pl-2_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Review the plans {{ insert: param, pl-2_prm_3 }};"
+                    },
+                    {
+                        "id": "pl-2_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Update the plans to address changes to the system and environment of operation or problems identified during plan implementation or control assessments; and"
+                    },
+                    {
+                        "id": "pl-2_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Protect the plans from unauthorized disclosure and modification."
+                    }
+                ]
+            },
+            {
+                "id": "pl-2_gdn",
+                "name": "guidance",
+                "prose": "System security and privacy plans are scoped to the system and system components within the defined authorization boundary and contain an overview of the security and privacy requirements for the system and the controls selected to satisfy the requirements. The plans describe the intended application of each selected control in the context of the system with a sufficient level of detail to correctly implement the control and to subsequently assess the effectiveness of the control. The control documentation describes how system-specific and hybrid controls are implemented and the plans and expectations regarding the functionality of the system. System security and privacy plans can also be used in the design and development of systems in support of life cycle-based security and privacy engineering processes. System security and privacy plans are living documents that are updated and adapted throughout the system development life cycle (e.g., during capability determination, analysis of alternatives, requests for proposal, and design reviews). [Section 2.1](#c3397cc9-83c6-4459-adb2-836739dc1b94) describes the different types of requirements that are relevant to organizations during the system development life cycle and the relationship between requirements and controls.\n\nOrganizations may develop a single, integrated security and privacy plan or maintain separate plans. Security and privacy plans relate security and privacy requirements to a set of controls and control enhancements. The plans describe how the controls and control enhancements meet the security and privacy requirements but do not provide detailed, technical descriptions of the design or implementation of the controls and control enhancements. Security and privacy plans contain sufficient information (including specifications of control parameter values for selection and assignment operations explicitly or by reference) to enable a design and implementation that is unambiguously compliant with the intent of the plans and subsequent determinations of risk to organizational operations and assets, individuals, other organizations, and the Nation if the plan is implemented.\n\nSecurity and privacy plans need not be single documents. The plans can be a collection of various documents, including documents that already exist. Effective security and privacy plans make extensive use of references to policies, procedures, and additional documents, including design and implementation specifications where more detailed information can be obtained. The use of references helps reduce the documentation associated with security and privacy programs and maintains the security- and privacy-related information in other established management and operational areas, including enterprise architecture, system development life cycle, systems engineering, and acquisition. Security and privacy plans need not contain detailed contingency plan or incident response plan information but can instead provide\u2014explicitly or by reference\u2014sufficient information to define what needs to be accomplished by those plans.\n\nSecurity- and privacy-related activities that may require coordination and planning with other individuals or groups within the organization include assessments, audits, inspections, hardware and software maintenance, acquisition and supply chain risk management, patch management, and contingency plan testing. Planning and coordination include emergency and nonemergency (i.e., planned or non-urgent unplanned) situations. The process defined by organizations to plan and coordinate security- and privacy-related activities can also be included in other documents, as appropriate."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pl-2.1",
+                "class": "SP800-53-enhancement",
+                "title": "Concept of Operations",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PL-2(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pl-02.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pl-7",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "pl-2.2",
+                "class": "SP800-53-enhancement",
+                "title": "Functional Architecture",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PL-2(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pl-02.02"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pl-8",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "pl-2.3",
+                "class": "SP800-53-enhancement",
+                "title": "Plan and Coordinate with Other Organizational Entities",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PL-2(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pl-02.03"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pl-2",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            }
+        ]
+    }
+}

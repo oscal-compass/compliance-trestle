@@ -1,0 +1,577 @@
+{
+    "control": {
+        "id": "ma-4",
+        "class": "SP800-53",
+        "title": "Nonlocal Maintenance",
+        "props": [
+            {
+                "name": "label",
+                "value": "MA-4"
+            },
+            {
+                "name": "sort-id",
+                "value": "ma-04"
+            }
+        ],
+        "links": [
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#736d6310-e403-4b57-a79d-9967970c66d7",
+                "rel": "reference"
+            },
+            {
+                "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
+                "rel": "reference"
+            },
+            {
+                "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
+                "rel": "reference"
+            },
+            {
+                "href": "#a5b1d18d-e670-4586-9e6d-4a88b7ba3df6",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#au-2",
+                "rel": "related"
+            },
+            {
+                "href": "#au-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-5",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-10",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ma-4_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ma-4_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Approve and monitor nonlocal maintenance and diagnostic activities;"
+                    },
+                    {
+                        "id": "ma-4_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Allow the use of nonlocal maintenance and diagnostic tools only as consistent with organizational policy and documented in the security plan for the system;"
+                    },
+                    {
+                        "id": "ma-4_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Employ strong authentication in the establishment of nonlocal maintenance and diagnostic sessions;"
+                    },
+                    {
+                        "id": "ma-4_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Maintain records for nonlocal maintenance and diagnostic activities; and"
+                    },
+                    {
+                        "id": "ma-4_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Terminate session and network connections when nonlocal maintenance is completed."
+                    }
+                ]
+            },
+            {
+                "id": "ma-4_gdn",
+                "name": "guidance",
+                "prose": "Nonlocal maintenance and diagnostic activities are conducted by individuals who communicate through either an external or internal network. Local maintenance and diagnostic activities are carried out by individuals who are physically present at the system location and not communicating across a network connection. Authentication techniques used to establish nonlocal maintenance and diagnostic sessions reflect the network access requirements in [IA-2](#ia-2). Strong authentication requires authenticators that are resistant to replay attacks and employ multi-factor authentication. Strong authenticators include PKI where certificates are stored on a token protected by a password, passphrase, or biometric. Enforcing requirements in [MA-4](#ma-4) is accomplished, in part, by other controls. [SP 800-63B](#e59c5a7c-8b1f-49ca-8de0-6ee0882180ce) provides additional guidance on strong authentication and authenticators."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ma-4.1",
+                "class": "SP800-53-enhancement",
+                "title": "Logging and Review",
+                "params": [
+                    {
+                        "id": "ma-4.1_prm_1",
+                        "label": "organization-defined audit events"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-4(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-04.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-12",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-4.1_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ma-4.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Log {{ insert: param, ma-4.1_prm_1 }} for nonlocal maintenance and diagnostic sessions; and"
+                            },
+                            {
+                                "id": "ma-4.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Review the audit records of the maintenance and diagnostic sessions to detect anomalous behavior."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ma-4.1_gdn",
+                        "name": "guidance",
+                        "prose": "Audit logging for nonlocal maintenance is enforced by [AU-2](#au-2). Audit events are defined in [AU-2a](#au-2_smt.a)."
+                    }
+                ]
+            },
+            {
+                "id": "ma-4.2",
+                "class": "SP800-53-enhancement",
+                "title": "Document Nonlocal Maintenance",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-4(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-04.02"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-1",
+                        "rel": "incorporated-into"
+                    },
+                    {
+                        "href": "#ma-4",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ma-4.3",
+                "class": "SP800-53-enhancement",
+                "title": "Comparable Security and Sanitization",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-4(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-04.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#mp-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-4.3_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ma-4.3_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Require that nonlocal maintenance and diagnostic services be performed from a system that implements a security capability comparable to the capability implemented on the system being serviced; or"
+                            },
+                            {
+                                "id": "ma-4.3_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Remove the component to be serviced from the system prior to nonlocal maintenance or diagnostic services; sanitize the component (for organizational information); and after the service is performed, inspect and sanitize the component (for potentially malicious software) before reconnecting the component to the system."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ma-4.3_gdn",
+                        "name": "guidance",
+                        "prose": "Comparable security capability on systems, diagnostic tools, and equipment providing maintenance services implies that the implemented controls on those systems, tools, and equipment are at least as comprehensive as the controls on the system being serviced."
+                    }
+                ]
+            },
+            {
+                "id": "ma-4.4",
+                "class": "SP800-53-enhancement",
+                "title": "Authentication and Separation of Maintenance Sessions",
+                "params": [
+                    {
+                        "id": "ma-4.4_prm_1",
+                        "label": "organization-defined authenticators that are replay resistant"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-4(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-04.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-4.4_smt",
+                        "name": "statement",
+                        "prose": "Protect nonlocal maintenance sessions by:",
+                        "parts": [
+                            {
+                                "id": "ma-4.4_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Employing {{ insert: param, ma-4.4_prm_1 }}; and"
+                            },
+                            {
+                                "id": "ma-4.4_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Separating the maintenance sessions from other network sessions with the system by either:",
+                                "parts": [
+                                    {
+                                        "id": "ma-4.4_smt.b.1",
+                                        "name": "item",
+                                        "props": [
+                                            {
+                                                "name": "label",
+                                                "value": "(1)"
+                                            }
+                                        ],
+                                        "prose": "Physically separated communications paths; or"
+                                    },
+                                    {
+                                        "id": "ma-4.4_smt.b.2",
+                                        "name": "item",
+                                        "props": [
+                                            {
+                                                "name": "label",
+                                                "value": "(2)"
+                                            }
+                                        ],
+                                        "prose": "Logically separated communications paths."
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ma-4.4_gdn",
+                        "name": "guidance",
+                        "prose": "Communications paths can be logically separated using encryption."
+                    }
+                ]
+            },
+            {
+                "id": "ma-4.5",
+                "class": "SP800-53-enhancement",
+                "title": "Approvals and Notifications",
+                "params": [
+                    {
+                        "id": "ma-4.5_prm_1",
+                        "label": "organization-defined personnel or roles"
+                    },
+                    {
+                        "id": "ma-4.5_prm_2",
+                        "label": "organization-defined personnel or roles"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-4(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-04.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-4.5_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ma-4.5_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Require the approval of each nonlocal maintenance session by {{ insert: param, ma-4.5_prm_1 }}; and"
+                            },
+                            {
+                                "id": "ma-4.5_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Notify the following personnel or roles of the date and time of planned nonlocal maintenance: {{ insert: param, ma-4.5_prm_2 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ma-4.5_gdn",
+                        "name": "guidance",
+                        "prose": "Notification may be performed by maintenance personnel. Approval of nonlocal maintenance is accomplished by personnel with sufficient information security and system knowledge to determine the appropriateness of the proposed maintenance."
+                    }
+                ]
+            },
+            {
+                "id": "ma-4.6",
+                "class": "SP800-53-enhancement",
+                "title": "Cryptographic Protection",
+                "params": [
+                    {
+                        "id": "ma-4.6_prm_1",
+                        "label": "organization-defined cryptographic mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-4(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-04.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-4.6_smt",
+                        "name": "statement",
+                        "prose": "Implement the following cryptographic mechanisms to protect the integrity and confidentiality of nonlocal maintenance and diagnostic communications: {{ insert: param, ma-4.6_prm_1 }}."
+                    },
+                    {
+                        "id": "ma-4.6_gdn",
+                        "name": "guidance",
+                        "prose": "Failure to protect nonlocal maintenance and diagnostic communications can result in unauthorized individuals gaining access to organizational information. Unauthorized access during remote maintenance sessions can result in a variety of hostile actions, including malicious code insertion, unauthorized changes to system parameters, and exfiltration of organizational information. Such actions can result in the loss or degradation of mission or business capabilities."
+                    }
+                ]
+            },
+            {
+                "id": "ma-4.7",
+                "class": "SP800-53-enhancement",
+                "title": "Disconnect Verification",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "MA-4(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ma-04.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ma-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-12",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ma-4.7_smt",
+                        "name": "statement",
+                        "prose": "Verify session and network connection termination after the completion of nonlocal maintenance and diagnostic sessions."
+                    },
+                    {
+                        "id": "ma-4.7_gdn",
+                        "name": "guidance",
+                        "prose": "Verifying the termination of a connection once maintenance is completed ensures that connections established during nonlocal maintenance and diagnostic sessions have been terminated and are no longer available for use."
+                    }
+                ]
+            }
+        ]
+    }
+}

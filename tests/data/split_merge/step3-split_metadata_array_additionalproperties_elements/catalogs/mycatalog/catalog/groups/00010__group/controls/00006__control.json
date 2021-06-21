@@ -1,0 +1,31 @@
+{
+    "control": {
+        "id": "pe-7",
+        "class": "SP800-53",
+        "title": "Visitor Control",
+        "props": [
+            {
+                "name": "label",
+                "value": "PE-7"
+            },
+            {
+                "name": "sort-id",
+                "value": "pe-07"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#pe-2",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

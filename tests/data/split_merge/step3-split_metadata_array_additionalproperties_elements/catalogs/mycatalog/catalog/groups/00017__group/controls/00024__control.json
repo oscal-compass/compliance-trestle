@@ -1,0 +1,45 @@
+{
+    "control": {
+        "id": "sc-25",
+        "class": "SP800-53",
+        "title": "Thin Nodes",
+        "params": [
+            {
+                "id": "sc-25_prm_1",
+                "label": "organization-defined system components"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-25"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-25"
+            }
+        ],
+        "links": [
+            {
+                "href": "#sc-30",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-44",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-25_smt",
+                "name": "statement",
+                "prose": "Employ minimal functionality and information storage on the following system components: {{ insert: param, sc-25_prm_1 }}."
+            },
+            {
+                "id": "sc-25_gdn",
+                "name": "guidance",
+                "prose": "The deployment of system components with minimal functionality reduces the need to secure every endpoint and may reduce the exposure of information, systems, and services to attacks. Reduced or minimal functionality includes diskless nodes and thin client technologies."
+            }
+        ]
+    }
+}

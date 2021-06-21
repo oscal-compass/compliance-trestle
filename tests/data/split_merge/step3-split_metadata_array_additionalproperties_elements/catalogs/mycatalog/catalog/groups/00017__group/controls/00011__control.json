@@ -1,0 +1,362 @@
+{
+    "control": {
+        "id": "sc-12",
+        "class": "SP800-53",
+        "title": "Cryptographic Key Establishment and Management",
+        "params": [
+            {
+                "id": "sc-12_prm_1",
+                "label": "organization-defined requirements for key generation, distribution, storage, access, and destruction"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-12"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-12"
+            }
+        ],
+        "links": [
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#20957dbb-6a1e-40a2-b38a-66f67d33ac2e",
+                "rel": "reference"
+            },
+            {
+                "href": "#0d083d8a-5cc6-46f1-8d79-3081d42bcb75",
+                "rel": "reference"
+            },
+            {
+                "href": "#eef62b16-c796-4554-955c-505824135b8a",
+                "rel": "reference"
+            },
+            {
+                "href": "#110e26af-4765-49e1-8740-6750f83fcda1",
+                "rel": "reference"
+            },
+            {
+                "href": "#e7942589-e267-4a5a-a3d9-f39a7aae81f0",
+                "rel": "reference"
+            },
+            {
+                "href": "#8306620b-1920-4d73-8b21-12008528595f",
+                "rel": "reference"
+            },
+            {
+                "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
+                "rel": "reference"
+            },
+            {
+                "href": "#849b2358-683f-4d97-b111-1cc3d522ded5",
+                "rel": "reference"
+            },
+            {
+                "href": "#3915a084-b87b-4f02-83d4-c369e746292f",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#au-9",
+                "rel": "related"
+            },
+            {
+                "href": "#au-10",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-11",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-13",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-17",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-20",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-37",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-40",
+                "rel": "related"
+            },
+            {
+                "href": "#si-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-12_smt",
+                "name": "statement",
+                "prose": "Establish and manage cryptographic keys when cryptography is employed within the system in accordance with the following key management requirements: {{ insert: param, sc-12_prm_1 }}."
+            },
+            {
+                "id": "sc-12_gdn",
+                "name": "guidance",
+                "prose": "Cryptographic key management and establishment can be performed using manual procedures or automated mechanisms with supporting manual procedures. Organizations define key management requirements in accordance with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines and specify appropriate options, parameters, and levels. Organizations manage trust stores to ensure that only approved trust anchors are part of such trust stores. This includes certificates with visibility external to organizational systems and certificates related to the internal operations of systems. [NIST CMVP](#1acdc775-aafb-4d11-9341-dc6a822e9d38) and [NIST CAVP](#84dc1b0c-acb7-4269-84c4-00dbabacd78c) provide additional information on validated cryptographic modules and algorithms that can be used in cryptographic key management and establishment."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-12.1",
+                "class": "SP800-53-enhancement",
+                "title": "Availability",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-12(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-12.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-12",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-12.1_smt",
+                        "name": "statement",
+                        "prose": "Maintain availability of information in the event of the loss of cryptographic keys by users."
+                    },
+                    {
+                        "id": "sc-12.1_gdn",
+                        "name": "guidance",
+                        "prose": "Escrowing of encryption keys is a common practice for ensuring availability in the event of key loss. A forgotten passphrase is an example of losing a cryptographic key."
+                    }
+                ]
+            },
+            {
+                "id": "sc-12.2",
+                "class": "SP800-53-enhancement",
+                "title": "Symmetric Keys",
+                "params": [
+                    {
+                        "id": "sc-12.2_prm_1",
+                        "select": {
+                            "choice": [
+                                "NIST FIPS-validated",
+                                "NSA-approved"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-12(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-12.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-12",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-12.2_smt",
+                        "name": "statement",
+                        "prose": "Produce, control, and distribute symmetric cryptographic keys using {{ insert: param, sc-12.2_prm_1 }} key management technology and processes."
+                    },
+                    {
+                        "id": "sc-12.2_gdn",
+                        "name": "guidance",
+                        "prose": " [SP 800-56A](#20957dbb-6a1e-40a2-b38a-66f67d33ac2e), [SP 800-56B](#0d083d8a-5cc6-46f1-8d79-3081d42bcb75), and [SP 800-56C](#eef62b16-c796-4554-955c-505824135b8a) provide guidance on cryptographic key establishment schemes and key derivation methods. [SP 800-57-1](#110e26af-4765-49e1-8740-6750f83fcda1), [SP 800-57-2](#e7942589-e267-4a5a-a3d9-f39a7aae81f0), and [SP 800-57-3](#8306620b-1920-4d73-8b21-12008528595f) provide guidance on cryptographic key management."
+                    }
+                ]
+            },
+            {
+                "id": "sc-12.3",
+                "class": "SP800-53-enhancement",
+                "title": "Asymmetric Keys",
+                "params": [
+                    {
+                        "id": "sc-12.3_prm_1",
+                        "select": {
+                            "choice": [
+                                "NSA-approved key management technology and processes",
+                                "prepositioned keying material",
+                                "DoD-approved or DoD-issued Medium Assurance PKI certificates",
+                                "DoD-approved or DoD-issued Medium Hardware Assurance PKI certificates and hardware security tokens that protect the user\u2019s private key",
+                                "certificates issued in accordance with organization-defined requirements"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-12(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-12.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-12",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-12.3_smt",
+                        "name": "statement",
+                        "prose": "Produce, control, and distribute asymmetric cryptographic keys using {{ insert: param, sc-12.3_prm_1 }}."
+                    },
+                    {
+                        "id": "sc-12.3_gdn",
+                        "name": "guidance",
+                        "prose": " [SP 800-56A](#20957dbb-6a1e-40a2-b38a-66f67d33ac2e), [SP 800-56B](#0d083d8a-5cc6-46f1-8d79-3081d42bcb75), and [SP 800-56C](#eef62b16-c796-4554-955c-505824135b8a) provide guidance on cryptographic key establishment schemes and key derivation methods. [SP 800-57-1](#110e26af-4765-49e1-8740-6750f83fcda1), [SP 800-57-2](#e7942589-e267-4a5a-a3d9-f39a7aae81f0), and [SP 800-57-3](#8306620b-1920-4d73-8b21-12008528595f) provide guidance on cryptographic key management."
+                    }
+                ]
+            },
+            {
+                "id": "sc-12.4",
+                "class": "SP800-53-enhancement",
+                "title": "PKI Certificates",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-12(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-12.04"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-12.3",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sc-12.5",
+                "class": "SP800-53-enhancement",
+                "title": "PKI Certificates / Hardware Tokens",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-12(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-12.05"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-12.3",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "sc-12.6",
+                "class": "SP800-53-enhancement",
+                "title": "Physical Control of Keys",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-12(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-12.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-12",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-12.6_smt",
+                        "name": "statement",
+                        "prose": "Maintain physical control of cryptographic keys when stored information is encrypted by external service providers."
+                    },
+                    {
+                        "id": "sc-12.6_gdn",
+                        "name": "guidance",
+                        "prose": "For organizations that use external service providers (e.g., cloud service or data center providers), physical control of cryptographic keys provides additional assurance that information stored by such external providers is not subject to unauthorized disclosure or modification."
+                    }
+                ]
+            }
+        ]
+    }
+}

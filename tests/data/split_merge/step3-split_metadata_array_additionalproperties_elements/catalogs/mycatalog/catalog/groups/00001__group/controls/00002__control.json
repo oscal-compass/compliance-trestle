@@ -1,0 +1,444 @@
+{
+    "control": {
+        "id": "at-3",
+        "class": "SP800-53",
+        "title": "Role-based Training",
+        "params": [
+            {
+                "id": "at-3_prm_1",
+                "label": "organization-defined roles and responsibilities"
+            },
+            {
+                "id": "at-3_prm_2",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "at-3_prm_3",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "at-3_prm_4",
+                "label": "organization-defined events"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AT-3"
+            },
+            {
+                "name": "sort-id",
+                "value": "at-03"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#511f6832-23ca-49a3-8c0f-ce493373cab8",
+                "rel": "reference"
+            },
+            {
+                "href": "#276bd50a-7e58-48e5-a405-8c8cb91d7a5f",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-22",
+                "rel": "related"
+            },
+            {
+                "href": "#at-2",
+                "rel": "related"
+            },
+            {
+                "href": "#at-4",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-13",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-23",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-11",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-16",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-6",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-11",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "at-3_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "at-3_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Provide role-based security and privacy training to personnel with the following roles and responsibilities: {{ insert: param, at-3_prm_1 }}:",
+                        "parts": [
+                            {
+                                "id": "at-3_smt.a.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Before authorizing access to the system, information, or performing assigned duties, and {{ insert: param, at-3_prm_2 }} thereafter; and"
+                            },
+                            {
+                                "id": "at-3_smt.a.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "When required by system changes;"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "at-3_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Update role-based training content {{ insert: param, at-3_prm_3 }} and following {{ insert: param, at-3_prm_4 }}; and"
+                    },
+                    {
+                        "id": "at-3_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Incorporate lessons learned from internal or external security incidents or breaches into role-based training."
+                    }
+                ]
+            },
+            {
+                "id": "at-3_gdn",
+                "name": "guidance",
+                "prose": "Organizations determine the content of training based on the assigned roles and responsibilities of individuals as well as the security and privacy requirements of organizations and the systems to which personnel have authorized access, including technical training specifically tailored for assigned duties. Roles that may require role-based training include senior leaders or management officials (e.g., head of agency/chief executive officer, chief information officer, senior accountable official for risk management, senior agency information security officer, senior agency official for privacy), system owners; authorizing officials; system security officers; privacy officers; acquisition and procurement officials; enterprise architects; systems engineers; software developers; systems security engineers; privacy engineers; system, network, and database administrators; auditors; personnel conducting configuration management activities; personnel performing verification and validation activities; personnel with access to system-level software; control assessors; personnel with contingency planning and incident response duties; personnel with privacy management responsibilities; and personnel with access to personally identifiable information.\n\nComprehensive role-based training addresses management, operational, and technical roles and responsibilities covering physical, personnel, and technical controls. Role-based training also includes policies, procedures, tools, methods, and artifacts for the security and privacy roles defined. Organizations provide the training necessary for individuals to fulfill their responsibilities related to operations and supply chain risk management within the context of organizational security and privacy programs. Role-based training also applies to contractors who provide services to federal agencies. Types of training include web-based and computer-based training, classroom-style training, and hands-on training (including micro-training). Updating role-based training on a regular basis helps to ensure that the content remains relevant and effective. Events that may precipitate an update to role-based training content include, but are not limited to, assessment or audit findings, security incidents or breaches, or changes in applicable laws, executive orders, directives, regulations, policies, standards, and guidelines."
+            }
+        ],
+        "controls": [
+            {
+                "id": "at-3.1",
+                "class": "SP800-53-enhancement",
+                "title": "Environmental Controls",
+                "params": [
+                    {
+                        "id": "at-3.1_prm_1",
+                        "label": "organization-defined personnel or roles"
+                    },
+                    {
+                        "id": "at-3.1_prm_2",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AT-3(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "at-03.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#at-3",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pe-1",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-11",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-13",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-14",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-15",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "at-3.1_smt",
+                        "name": "statement",
+                        "prose": "Provide {{ insert: param, at-3.1_prm_1 }} with initial and {{ insert: param, at-3.1_prm_2 }} training in the employment and operation of environmental controls."
+                    },
+                    {
+                        "id": "at-3.1_gdn",
+                        "name": "guidance",
+                        "prose": "Environmental controls include fire suppression and detection devices or systems, sprinkler systems, handheld fire extinguishers, fixed fire hoses, smoke detectors, temperature or humidity, heating, ventilation, air conditioning, and power within the facility."
+                    }
+                ]
+            },
+            {
+                "id": "at-3.2",
+                "class": "SP800-53-enhancement",
+                "title": "Physical Security Controls",
+                "params": [
+                    {
+                        "id": "at-3.2_prm_1",
+                        "label": "organization-defined personnel or roles"
+                    },
+                    {
+                        "id": "at-3.2_prm_2",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AT-3(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "at-03.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#at-3",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pe-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "at-3.2_smt",
+                        "name": "statement",
+                        "prose": "Provide {{ insert: param, at-3.2_prm_1 }} with initial and {{ insert: param, at-3.2_prm_2 }} training in the employment and operation of physical security controls."
+                    },
+                    {
+                        "id": "at-3.2_gdn",
+                        "name": "guidance",
+                        "prose": "Physical security controls include physical access control devices, physical intrusion and detection alarms, operating procedures for facility security guards, and monitoring or surveillance equipment."
+                    }
+                ]
+            },
+            {
+                "id": "at-3.3",
+                "class": "SP800-53-enhancement",
+                "title": "Practical Exercises",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AT-3(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "at-03.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#at-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "at-3.3_smt",
+                        "name": "statement",
+                        "prose": "Provide practical exercises in security and privacy training that reinforce training objectives."
+                    },
+                    {
+                        "id": "at-3.3_gdn",
+                        "name": "guidance",
+                        "prose": "Practical exercises for security include training for software developers that addresses simulated attacks that exploit common software vulnerabilities or spear or whale phishing attacks targeted at senior leaders or executives. Practical exercises for privacy include modules with quizzes on identifying and processing personally identifiable information in various scenarios or scenarios on conducting privacy impact assessments."
+                    }
+                ]
+            },
+            {
+                "id": "at-3.4",
+                "class": "SP800-53-enhancement",
+                "title": "Suspicious Communications and Anomalous System Behavior",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AT-3(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "at-03.04"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#at-2.4",
+                        "rel": "moved-to"
+                    }
+                ]
+            },
+            {
+                "id": "at-3.5",
+                "class": "SP800-53-enhancement",
+                "title": "Processing Personally Identifiable Information",
+                "params": [
+                    {
+                        "id": "at-3.5_prm_1",
+                        "label": "organization-defined personnel or roles"
+                    },
+                    {
+                        "id": "at-3.5_prm_2",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AT-3(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "at-03.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#at-3",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pt-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pt-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pt-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pt-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "at-3.5_smt",
+                        "name": "statement",
+                        "prose": "Provide {{ insert: param, at-3.5_prm_1 }} with initial and {{ insert: param, at-3.5_prm_2 }} training in the employment and operation of personally identifiable information processing and transparency controls."
+                    },
+                    {
+                        "id": "at-3.5_gdn",
+                        "name": "guidance",
+                        "prose": "Personally identifiable information processing and transparency controls include the organization\u2019s authority to process personally identifiable information and personally identifiable information processing purposes. Role-based training for federal agencies addresses the types of information that may constitute personally identifiable information and the risks, considerations, and obligations associated with its processing. Such training also considers the authority to process personally identifiable information documented in privacy policies and notices, system of records notices, computer matching agreements and notices, privacy impact assessments, [PRIVACT](#18e71fec-c6fd-475a-925a-5d8495cf8455) statements, contracts, information sharing agreements, memoranda of understanding, and/or other documentation."
+                    }
+                ]
+            }
+        ]
+    }
+}

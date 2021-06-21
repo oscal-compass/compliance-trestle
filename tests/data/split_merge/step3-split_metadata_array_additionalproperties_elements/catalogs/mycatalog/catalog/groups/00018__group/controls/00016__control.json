@@ -1,0 +1,53 @@
+{
+    "control": {
+        "id": "si-17",
+        "class": "SP800-53",
+        "title": "Fail-safe Procedures",
+        "params": [
+            {
+                "id": "si-17_prm_1",
+                "label": "organization-defined list of failure conditions and associated fail-safe procedures"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SI-17"
+            },
+            {
+                "name": "sort-id",
+                "value": "si-17"
+            }
+        ],
+        "links": [
+            {
+                "href": "#cp-12",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-13",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-24",
+                "rel": "related"
+            },
+            {
+                "href": "#si-13",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "si-17_smt",
+                "name": "statement",
+                "prose": "Implement the indicated fail-safe procedures when the indicated failures occur: {{ insert: param, si-17_prm_1 }}."
+            },
+            {
+                "id": "si-17_gdn",
+                "name": "guidance",
+                "prose": "Failure conditions include the loss of communications among critical system components or between system components and operational facilities. Fail-safe procedures include alerting operator personnel and providing specific instructions on subsequent steps to take. Subsequent steps may include doing nothing, reestablishing system settings, shutting down processes, restarting the system, or contacting designated organizational personnel."
+            }
+        ]
+    }
+}

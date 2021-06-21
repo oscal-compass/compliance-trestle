@@ -1,0 +1,41 @@
+{
+    "control": {
+        "id": "sc-27",
+        "class": "SP800-53",
+        "title": "Platform-independent Applications",
+        "params": [
+            {
+                "id": "sc-27_prm_1",
+                "label": "organization-defined platform-independent applications"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-27"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-27"
+            }
+        ],
+        "links": [
+            {
+                "href": "#sc-29",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-27_smt",
+                "name": "statement",
+                "prose": "Include within organizational systems the following platform independent applications: {{ insert: param, sc-27_prm_1 }}."
+            },
+            {
+                "id": "sc-27_gdn",
+                "name": "guidance",
+                "prose": "Platforms are combinations of hardware, firmware, and software components used to execute software applications. Platforms include operating systems, the underlying computer architectures, or both. Platform-independent applications are applications with the capability to execute on multiple platforms. Such applications promote portability and reconstitution on different platforms. Application portability and the ability to reconstitute on different platforms increase the availability of mission-essential functions within organizations in situations where systems with specific operating systems are under attack."
+            }
+        ]
+    }
+}

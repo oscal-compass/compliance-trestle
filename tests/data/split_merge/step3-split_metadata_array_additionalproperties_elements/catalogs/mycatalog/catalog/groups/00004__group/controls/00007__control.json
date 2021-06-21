@@ -1,0 +1,655 @@
+{
+    "control": {
+        "id": "cm-8",
+        "class": "SP800-53",
+        "title": "System Component Inventory",
+        "params": [
+            {
+                "id": "cm-8_prm_1",
+                "label": "organization-defined information deemed necessary to achieve effective system component accountability"
+            },
+            {
+                "id": "cm-8_prm_2",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CM-8"
+            },
+            {
+                "name": "sort-id",
+                "value": "cm-08"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#110e26af-4765-49e1-8740-6750f83fcda1",
+                "rel": "reference"
+            },
+            {
+                "href": "#e7942589-e267-4a5a-a3d9-f39a7aae81f0",
+                "rel": "reference"
+            },
+            {
+                "href": "#8306620b-1920-4d73-8b21-12008528595f",
+                "rel": "reference"
+            },
+            {
+                "href": "#20db4e66-e257-450c-b2e4-2bb9a62a2c88",
+                "rel": "reference"
+            },
+            {
+                "href": "#70402863-5078-43af-9a6c-e11b0f3ec370",
+                "rel": "reference"
+            },
+            {
+                "href": "#996241f8-f692-42d5-91f1-ce8b752e39e6",
+                "rel": "reference"
+            },
+            {
+                "href": "#cm-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-7",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-10",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-11",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-13",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-9",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-6",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-20",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-5",
+                "rel": "related"
+            },
+            {
+                "href": "#si-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-4",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cm-8_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "cm-8_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Develop and document an inventory of system components that:",
+                        "parts": [
+                            {
+                                "id": "cm-8_smt.a.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Accurately reflects the system;"
+                            },
+                            {
+                                "id": "cm-8_smt.a.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "Includes all components within the system;"
+                            },
+                            {
+                                "id": "cm-8_smt.a.3",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": "Does not include duplicate accounting of components or components assigned to any other system;"
+                            },
+                            {
+                                "id": "cm-8_smt.a.4",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "4."
+                                    }
+                                ],
+                                "prose": "Is at the level of granularity deemed necessary for tracking and reporting; and"
+                            },
+                            {
+                                "id": "cm-8_smt.a.5",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "5."
+                                    }
+                                ],
+                                "prose": "Includes the following information to achieve system component accountability: {{ insert: param, cm-8_prm_1 }}; and"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "cm-8_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Review and update the system component inventory {{ insert: param, cm-8_prm_2 }}."
+                    }
+                ]
+            },
+            {
+                "id": "cm-8_gdn",
+                "name": "guidance",
+                "prose": "System components are discrete, identifiable information technology assets that include hardware, software, and firmware. Organizations may choose to implement centralized system component inventories that include components from all organizational systems. In such situations, organizations ensure that the inventories include system-specific information required for component accountability. The information necessary for effective accountability of system components includes the system name, software owners, software version numbers, hardware inventory specifications, software license information, and for networked components, the machine names and network addresses across all implemented protocols (e.g., IPv4, IPv6). Inventory specifications include date of receipt, cost, model, serial number, manufacturer, supplier information, component type, and physical location.\n\nPreventing duplicate accounting of system components addresses the lack of accountability that occurs when component ownership and system association is not known, especially in large or complex connected systems. Effective prevention of duplicate accounting of system components necessitates use of a unique identifier for each component. For software inventory, centrally managed software that is accessed via other systems is addressed as a component of the system on which it is installed and managed. Software installed on multiple organizational systems and managed at the system level is addressed for each individual system and may appear more than once in a centralized component inventory, necessitating a system association for each software instance in the centralized inventory to avoid duplicate accounting of components. Scanning systems implementing multiple network protocols (e.g., IPv4 and IPv6) can result in duplicate components being identified in different address spaces. The implementation of [CM-8(7)](#cm-8.7) can help to eliminate duplicate accounting of components."
+            }
+        ],
+        "controls": [
+            {
+                "id": "cm-8.1",
+                "class": "SP800-53-enhancement",
+                "title": "Updates During Installation and Removal",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-8(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-08.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pm-16",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-8.1_smt",
+                        "name": "statement",
+                        "prose": "Update the inventory of system components as part of component installations, removals, and system updates."
+                    },
+                    {
+                        "id": "cm-8.1_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations can improve the accuracy, completeness, and consistency of system component inventories if the inventories are updated as part of component installations or removals or during general system updates. If inventories are not updated at these key times, there is a greater likelihood that the information will not be appropriately captured and documented. System updates include hardware, software, and firmware components."
+                    }
+                ]
+            },
+            {
+                "id": "cm-8.2",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Maintenance",
+                "params": [
+                    {
+                        "id": "cm-8.2_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-8(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-08.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-8.2_smt",
+                        "name": "statement",
+                        "prose": "Maintain the currency, completeness, accuracy, and availability of the inventory of system components using {{ insert: param, cm-8.2_prm_1 }}."
+                    },
+                    {
+                        "id": "cm-8.2_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations maintain system inventories to the extent feasible. For example, virtual machines can be difficult to monitor because such machines are not visible to the network when not in use. In such cases, organizations maintain as up-to-date, complete, and accurate an inventory as is deemed reasonable. Automated maintenance can be achieved by the implementation of [CM-2(2)](#cm-2.2) for organizations that combine system component inventory and baseline configuration activities."
+                    }
+                ]
+            },
+            {
+                "id": "cm-8.3",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Unauthorized Component Detection",
+                "params": [
+                    {
+                        "id": "cm-8.3_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    },
+                    {
+                        "id": "cm-8.3_prm_2",
+                        "label": "organization-defined frequency"
+                    },
+                    {
+                        "id": "cm-8.3_prm_3",
+                        "select": {
+                            "how-many": "one-or-more",
+                            "choice": [
+                                "disable network access by such components",
+                                "isolate the components",
+                                "notify {{ insert: param, cm-8.3_prm_4 }} "
+                            ]
+                        }
+                    },
+                    {
+                        "id": "cm-8.3_prm_4",
+                        "depends-on": "cm-8.3_prm_3",
+                        "label": "organization-defined personnel or roles"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-8(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-08.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-19",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ca-7",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ra-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-39",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-44",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-8.3_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "cm-8.3_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Detect the presence of unauthorized hardware, software, and firmware components within the system using {{ insert: param, cm-8.3_prm_1 }} {{ insert: param, cm-8.3_prm_2 }}; and"
+                            },
+                            {
+                                "id": "cm-8.3_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Take the following actions when unauthorized components are detected: {{ insert: param, cm-8.3_prm_3 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "cm-8.3_gdn",
+                        "name": "guidance",
+                        "prose": "Automated unauthorized component detection is applied in addition to the monitoring for unauthorized remote connections and mobile devices. Monitoring for unauthorized system components may be accomplished on an ongoing basis or by the periodic scanning of systems for that purpose. Automated mechanisms may also be used to prevent the connection of unauthorized components (see [CM-7(9)](#cm-7.9)). Automated mechanisms can be implemented in systems or in separate system components. When acquiring and implementing automated mechanisms, organizations consider whether such mechanisms depend on the ability of the system component to support an agent or supplicant in order to be detected since some types of components do not have or cannot support agents (e.g., IoT devices, sensors). Isolation can be achieved , for example, by placing unauthorized system components in separate domains or subnets or quarantining such components. This type of component isolation is commonly referred to as \"sandboxing.\" "
+                    }
+                ]
+            },
+            {
+                "id": "cm-8.4",
+                "class": "SP800-53-enhancement",
+                "title": "Accountability Information",
+                "params": [
+                    {
+                        "id": "cm-8.4_prm_1",
+                        "select": {
+                            "how-many": "one-or-more",
+                            "choice": [
+                                "name",
+                                "position",
+                                "role"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-8(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-08.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-8.4_smt",
+                        "name": "statement",
+                        "prose": "Include in the system component inventory information, a means for identifying by {{ insert: param, cm-8.4_prm_1 }}, individuals responsible and accountable for administering those components."
+                    },
+                    {
+                        "id": "cm-8.4_gdn",
+                        "name": "guidance",
+                        "prose": "Identifying individuals who are responsible and accountable for administering system components ensures that the assigned components are properly administered and that organizations can contact those individuals if some action is required (e.g., when the component is determined to be the source of a breach, needs to be recalled or replaced, or needs to be relocated)."
+                    }
+                ]
+            },
+            {
+                "id": "cm-8.5",
+                "class": "SP800-53-enhancement",
+                "title": "No Duplicate Accounting of Components",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-8(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-08.05"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-8",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "cm-8.6",
+                "class": "SP800-53-enhancement",
+                "title": "Assessed Configurations and Approved Deviations",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-8(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-08.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-8.6_smt",
+                        "name": "statement",
+                        "prose": "Include assessed component configurations and any approved deviations to current deployed configurations in the system component inventory."
+                    },
+                    {
+                        "id": "cm-8.6_gdn",
+                        "name": "guidance",
+                        "prose": "Assessed configurations and approved deviations focus on configuration settings established by organizations for system components, the specific components that have been assessed to determine compliance with the required configuration settings, and any approved deviations from established configuration settings."
+                    }
+                ]
+            },
+            {
+                "id": "cm-8.7",
+                "class": "SP800-53-enhancement",
+                "title": "Centralized Repository",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-8(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-08.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-8.7_smt",
+                        "name": "statement",
+                        "prose": "Provide a centralized repository for the inventory of system components."
+                    },
+                    {
+                        "id": "cm-8.7_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations may implement centralized system component inventories that include components from all organizational systems. Centralized repositories of component inventories provide opportunities for efficiencies in accounting for organizational hardware, software, and firmware assets. Such repositories may also help organizations rapidly identify the location and responsible individuals of components that have been compromised, breached, or are otherwise in need of mitigation actions. Organizations ensure that the resulting centralized inventories include system-specific information required for proper component accountability."
+                    }
+                ]
+            },
+            {
+                "id": "cm-8.8",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Location Tracking",
+                "params": [
+                    {
+                        "id": "cm-8.8_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-8(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-08.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-8.8_smt",
+                        "name": "statement",
+                        "prose": "Support the tracking of system components by geographic location using {{ insert: param, cm-8.8_prm_1 }}."
+                    },
+                    {
+                        "id": "cm-8.8_gdn",
+                        "name": "guidance",
+                        "prose": "The use of automated mechanisms to track the location of system components can increase the accuracy of component inventories. Such capability may help organizations rapidly identify the location and responsible individuals of system components that have been compromised, breached, or are otherwise in need of mitigation actions. The use of tracking mechanisms can be coordinated with senior agency officials for privacy if there are implications that affect individual privacy."
+                    }
+                ]
+            },
+            {
+                "id": "cm-8.9",
+                "class": "SP800-53-enhancement",
+                "title": "Assignment of Components to Systems",
+                "params": [
+                    {
+                        "id": "cm-8.9_prm_1",
+                        "label": "organization-defined personnel or roles"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-8(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-08.09"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-8.9_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "cm-8.9_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Assign system components to a system; and"
+                            },
+                            {
+                                "id": "cm-8.9_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Receive an acknowledgement from {{ insert: param, cm-8.9_prm_1 }} of this assignment."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "cm-8.9_gdn",
+                        "name": "guidance",
+                        "prose": "System components that are not assigned to a system may be unmanaged, lack the required protection, and become an organizational vulnerability."
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,59 @@
+{
+    "control": {
+        "id": "sc-14",
+        "class": "SP800-53",
+        "title": "Public Access Protections",
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-14"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-14"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-2",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#ac-5",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#si-3",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#si-4",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#si-5",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#si-7",
+                "rel": "incorporated-into"
+            },
+            {
+                "href": "#si-10",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

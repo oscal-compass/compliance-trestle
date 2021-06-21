@@ -1,0 +1,82 @@
+{
+    "control": {
+        "id": "pe-19",
+        "class": "SP800-53",
+        "title": "Information Leakage",
+        "props": [
+            {
+                "name": "label",
+                "value": "PE-19"
+            },
+            {
+                "name": "sort-id",
+                "value": "pe-19"
+            }
+        ],
+        "links": [
+            {
+                "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-18",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-18",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-20",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pe-19_smt",
+                "name": "statement",
+                "prose": "Protect the system from information leakage due to electromagnetic signals emanations."
+            },
+            {
+                "id": "pe-19_gdn",
+                "name": "guidance",
+                "prose": "Information leakage is the intentional or unintentional release of data or information to an untrusted environment from electromagnetic signals emanations. The security categories or classifications of systems (with respect to confidentiality), organizational security policies, and risk tolerance guide the selection of controls employed to protect systems against information leakage due to electromagnetic signals emanations."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pe-19.1",
+                "class": "SP800-53-enhancement",
+                "title": "National Emissions Policies and Procedures",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PE-19(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pe-19.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pe-19",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pe-19.1_smt",
+                        "name": "statement",
+                        "prose": "Protect system components, associated data communications, and networks in accordance with national Emissions Security policies and procedures based on the security category or classification of the information."
+                    },
+                    {
+                        "id": "pe-19.1_gdn",
+                        "name": "guidance",
+                        "prose": "Emissions Security (EMSEC) policies include the former TEMPEST policies."
+                    }
+                ]
+            }
+        ]
+    }
+}

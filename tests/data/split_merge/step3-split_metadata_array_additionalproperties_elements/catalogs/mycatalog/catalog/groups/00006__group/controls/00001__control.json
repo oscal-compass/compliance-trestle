@@ -1,0 +1,665 @@
+{
+    "control": {
+        "id": "ia-2",
+        "class": "SP800-53",
+        "title": "Identification and Authentication (organizational Users)",
+        "props": [
+            {
+                "name": "label",
+                "value": "IA-2"
+            },
+            {
+                "name": "sort-id",
+                "value": "ia-02"
+            }
+        ],
+        "links": [
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
+                "rel": "reference"
+            },
+            {
+                "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
+                "rel": "reference"
+            },
+            {
+                "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
+                "rel": "reference"
+            },
+            {
+                "href": "#858705be-3c1f-48aa-a328-0ce398d95ef0",
+                "rel": "reference"
+            },
+            {
+                "href": "#7af2e6ec-9f7e-4232-ad3f-09888eb0793a",
+                "rel": "reference"
+            },
+            {
+                "href": "#828856bd-d7c4-427b-8b51-815517ec382d",
+                "rel": "reference"
+            },
+            {
+                "href": "#10963761-58fc-4b20-b3d6-b44a54daba03",
+                "rel": "reference"
+            },
+            {
+                "href": "#d9e036ba-6eec-46a6-9340-b0bf1fea23b4",
+                "rel": "reference"
+            },
+            {
+                "href": "#e8552d48-cf41-40aa-8b06-f45f7fb4706c",
+                "rel": "reference"
+            },
+            {
+                "href": "#15dc76ff-b17a-4eeb-8948-8ea8de3ccc2c",
+                "rel": "reference"
+            },
+            {
+                "href": "#4b38e961-1125-4a5b-aa35-1d6c02846dad",
+                "rel": "reference"
+            },
+            {
+                "href": "#91701292-8bcd-4d2e-a5bd-59ab61e34b3c",
+                "rel": "reference"
+            },
+            {
+                "href": "#4f5f51ac-2b8d-4b90-a3c7-46f56e967617",
+                "rel": "reference"
+            },
+            {
+                "href": "#604774da-9e1d-48eb-9c62-4e959dc80737",
+                "rel": "reference"
+            },
+            {
+                "href": "#7f473f21-fdbf-4a6c-81a1-0ab95919609d",
+                "rel": "reference"
+            },
+            {
+                "href": "#3915a084-b87b-4f02-83d4-c369e746292f",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-14",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-18",
+                "rel": "related"
+            },
+            {
+                "href": "#au-1",
+                "rel": "related"
+            },
+            {
+                "href": "#au-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-5",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ia-2_smt",
+                "name": "statement",
+                "prose": "Uniquely identify and authenticate organizational users and associate that unique identification with processes acting on behalf of those users."
+            },
+            {
+                "id": "ia-2_gdn",
+                "name": "guidance",
+                "prose": "Organizations can satisfy the identification and authentication requirements by complying with the requirements in [HSPD 12](#f16e438e-7114-4144-bfe2-2dfcad8cb2d0). Organizational users include employees or individuals who organizations consider to have an equivalent status to employees (e.g., contractors and guest researchers). Unique identification and authentication of users applies to all accesses other than those that are explicitly identified in [AC-14](#ac-14) and that occur through the authorized use of group authenticators without individual authentication. Since processes execute on behalf of groups and roles, organizations may require unique identification of individuals in group accounts or for detailed accountability of individual activity.\n\nOrganizations employ passwords, physical authenticators, or biometrics to authenticate user identities or, in the case of multi-factor authentication, some combination thereof. Access to organizational systems is defined as either local access or network access. Local access is any access to organizational systems by users or processes acting on behalf of users, where access is obtained through direct connections without the use of networks. Network access is access to organizational systems by users (or processes acting on behalf of users) where access is obtained through network connections (i.e., nonlocal accesses). Remote access is a type of network access that involves communication through external networks. Internal networks include local area networks and wide area networks.\n\nThe use of encrypted virtual private networks for network connections between organization-controlled endpoints and non-organization-controlled endpoints may be treated as internal networks with respect to protecting the confidentiality and integrity of information traversing the network. Identification and authentication requirements for non-organizational users are described in [IA-8](#ia-8)."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ia-2.1",
+                "class": "SP800-53-enhancement",
+                "title": "Multi-factor Authentication to Privileged Accounts",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-2(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-02.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-2.1_smt",
+                        "name": "statement",
+                        "prose": "Implement multi-factor authentication for access to privileged accounts."
+                    },
+                    {
+                        "id": "ia-2.1_gdn",
+                        "name": "guidance",
+                        "prose": "Multi-factor authentication requires the use of two or more different factors to achieve authentication. The authentication factors are defined as follows: something you know (e.g., a personal identification number [PIN]), something you have (e.g., a physical authenticator such as a cryptographic private key), or something you are (e.g., a biometric). Multi-factor authentication solutions that feature physical authenticators include hardware authenticators that provide time-based or challenge-response outputs and smart cards such as the U.S. Government Personal Identity Verification (PIV) card or the Department of Defense (DoD) Common Access Card (CAC). In addition to authenticating users at the system level (i.e., at logon), organizations may employ authentication mechanisms at the application level, at their discretion, to provide increased security. Regardless of the type of access (i.e., local, network, remote), privileged accounts are authenticated using multi-factor options appropriate for the level of risk. Organizations can add additional security measures, such as additional or more rigorous authentication mechanisms, for specific types of access."
+                    }
+                ]
+            },
+            {
+                "id": "ia-2.2",
+                "class": "SP800-53-enhancement",
+                "title": "Multi-factor Authentication to Non-privileged Accounts",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-2(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-02.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-2.2_smt",
+                        "name": "statement",
+                        "prose": "Implement multi-factor authentication for access to non-privileged accounts."
+                    },
+                    {
+                        "id": "ia-2.2_gdn",
+                        "name": "guidance",
+                        "prose": "Multi-factor authentication requires the use of two or more different factors to achieve authentication. The authentication factors are defined as follows: something you know (e.g., a personal identification number [PIN]), something you have (e.g., a physical authenticator such as a cryptographic private key), or something you are (e.g., a biometric). Multi-factor authentication solutions that feature physical authenticators include hardware authenticators that provide time-based or challenge-response outputs and smart cards such as the U.S. Government Personal Identity Verification card or the DoD Common Access Card. In addition to authenticating users at the system level, organizations may also employ authentication mechanisms at the application level, at their discretion, to provide increased information security. Regardless of the type of access (i.e., local, network, remote), non-privileged accounts are authenticated using multi-factor options appropriate for the level of risk. Organizations can provide additional security measures, such as additional or more rigorous authentication mechanisms, for specific types of access."
+                    }
+                ]
+            },
+            {
+                "id": "ia-2.3",
+                "class": "SP800-53-enhancement",
+                "title": "Local Access to Privileged Accounts",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-2(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-02.03"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2.1",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ia-2.4",
+                "class": "SP800-53-enhancement",
+                "title": "Local Access to Non-privileged Accounts",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-2(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-02.04"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2.2",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ia-2.5",
+                "class": "SP800-53-enhancement",
+                "title": "Individual Authentication with Group Authentication",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-2(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-02.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-2.5_smt",
+                        "name": "statement",
+                        "prose": "When shared accounts or authenticators are employed, require users to be individually authenticated before granting access to the shared accounts or resources."
+                    },
+                    {
+                        "id": "ia-2.5_gdn",
+                        "name": "guidance",
+                        "prose": "Individual authentication prior to shared group authentication mitigates the risk of using group accounts or authenticators."
+                    }
+                ]
+            },
+            {
+                "id": "ia-2.6",
+                "class": "SP800-53-enhancement",
+                "title": "Access to Accounts \u2014separate Device",
+                "params": [
+                    {
+                        "id": "ia-2.6_prm_1",
+                        "select": {
+                            "how-many": "one-or-more",
+                            "choice": [
+                                "local",
+                                "network",
+                                "remote"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "ia-2.6_prm_2",
+                        "select": {
+                            "how-many": "one-or-more",
+                            "choice": [
+                                "privileged accounts",
+                                "non-privileged accounts"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "ia-2.6_prm_3",
+                        "label": "organization-defined strength of mechanism requirements"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-2(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-02.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-2.6_smt",
+                        "name": "statement",
+                        "prose": "Implement multi-factor authentication for {{ insert: param, ia-2.6_prm_1 }} access to {{ insert: param, ia-2.6_prm_2 }} such that:",
+                        "parts": [
+                            {
+                                "id": "ia-2.6_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "One of the factors is provided by a device separate from the system gaining access; and"
+                            },
+                            {
+                                "id": "ia-2.6_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "The device meets {{ insert: param, ia-2.6_prm_3 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ia-2.6_gdn",
+                        "name": "guidance",
+                        "prose": "The purpose of requiring a device that is separate from the system to which the user is attempting to gain access for one of the factors during multi-factor authentication is to reduce the likelihood of compromising authenticators or credentials stored on the system. Adversaries may be able to compromise such authenticators or credentials and subsequently impersonate authorized users. Implementing one of the factors on a separate device (e.g., a hardware token), provides a greater strength of mechanism and an increased level of assurance in the authentication process."
+                    }
+                ]
+            },
+            {
+                "id": "ia-2.7",
+                "class": "SP800-53-enhancement",
+                "title": "Network Access to Non-privileged Accounts \u2014 Separate Device",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-2(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-02.07"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2.6",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ia-2.8",
+                "class": "SP800-53-enhancement",
+                "title": "Access to Accounts \u2014 Replay Resistant",
+                "params": [
+                    {
+                        "id": "ia-2.8_prm_1",
+                        "select": {
+                            "how-many": "one-or-more",
+                            "choice": [
+                                "privileged accounts",
+                                "non-privileged accounts"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-2(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-02.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-2.8_smt",
+                        "name": "statement",
+                        "prose": "Implement replay-resistant authentication mechanisms for access to {{ insert: param, ia-2.8_prm_1 }}."
+                    },
+                    {
+                        "id": "ia-2.8_gdn",
+                        "name": "guidance",
+                        "prose": "Authentication processes resist replay attacks if it is impractical to achieve successful authentications by replaying previous authentication messages. Replay-resistant techniques include protocols that use nonces or challenges such as time synchronous or cryptographic authenticators."
+                    }
+                ]
+            },
+            {
+                "id": "ia-2.9",
+                "class": "SP800-53-enhancement",
+                "title": "Network Access to Non-privileged Accounts \u2014 Replay Resistant",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-2(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-02.09"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2.8",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ia-2.10",
+                "class": "SP800-53-enhancement",
+                "title": "Single Sign-on",
+                "params": [
+                    {
+                        "id": "ia-2.10_prm_1",
+                        "label": "organization-defined system accounts and services"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-2(10)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-02.10"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-2.10_smt",
+                        "name": "statement",
+                        "prose": "Provide a single sign-on capability for {{ insert: param, ia-2.10_prm_1 }}."
+                    },
+                    {
+                        "id": "ia-2.10_gdn",
+                        "name": "guidance",
+                        "prose": "Single sign-on enables users to log in once and gain access to multiple system resources. Organizations consider the operational efficiencies provided by single sign-on capabilities with the risk introduced by allowing access to multiple systems via a single authentication event. Single sign-on can present opportunities to improve system security, for example by providing the ability to add multi-factor authentication for applications and systems (existing and new) that may not be able to natively support multi-factor authentication."
+                    }
+                ]
+            },
+            {
+                "id": "ia-2.11",
+                "class": "SP800-53-enhancement",
+                "title": "Remote Access \u2014 Separate Device",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-2(11)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-02.11"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2.6",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ia-2.12",
+                "class": "SP800-53-enhancement",
+                "title": "Acceptance of PIV Credentials",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-2(12)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-02.12"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-2.12_smt",
+                        "name": "statement",
+                        "prose": "Accept and electronically verify Personal Identity Verification-compliant credentials."
+                    },
+                    {
+                        "id": "ia-2.12_gdn",
+                        "name": "guidance",
+                        "prose": "Acceptance of Personal Identity Verification (PIV)-compliant credentials applies to organizations implementing logical access control and physical access control systems. PIV-compliant credentials are those credentials issued by federal agencies that conform to FIPS Publication 201 and supporting guidance documents. The adequacy and reliability of PIV card issuers are authorized using [SP 800-79-2](#10963761-58fc-4b20-b3d6-b44a54daba03). Acceptance of PIV-compliant credentials includes derived PIV credentials, the use of which is addressed in [SP 800-166](#e8552d48-cf41-40aa-8b06-f45f7fb4706c). The DOD Common Access Card (CAC) is an example of a PIV credential."
+                    }
+                ]
+            },
+            {
+                "id": "ia-2.13",
+                "class": "SP800-53-enhancement",
+                "title": "Out-of-band Authentication",
+                "params": [
+                    {
+                        "id": "ia-2.13_prm_1",
+                        "label": "organization-defined conditions"
+                    },
+                    {
+                        "id": "ia-2.13_prm_2",
+                        "label": "organization-defined out-of-band authentication"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-2(13)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-02.13"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ia-10",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-11",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-37",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-2.13_smt",
+                        "name": "statement",
+                        "prose": "Implement the following out-of-band authentication mechanisms under {{ insert: param, ia-2.13_prm_1 }}: {{ insert: param, ia-2.13_prm_2 }}."
+                    },
+                    {
+                        "id": "ia-2.13_gdn",
+                        "name": "guidance",
+                        "prose": "Out-of-band authentication refers to the use of two separate communication paths to identify and authenticate users or devices to an information system. The first path (i.e., the in-band path) is used to identify and authenticate users or devices and is generally the path through which information flows. The second path (i.e., the out-of-band path) is used to independently verify the authentication and/or requested action. For example, a user authenticates via a notebook computer to a remote server to which the user desires access and requests some action of the server via that communication path. Subsequently, the server contacts the user via the user\u2019s cell phone to verify that the requested action originated from the user. The user may confirm the intended action to an individual on the telephone or provide an authentication code via the telephone. Out-of-band authentication can be used to mitigate actual or suspected \"man-in the-middle\" attacks. The conditions or criteria for activation include suspicious activities, new threat indicators, elevated threat levels, or the impact or classification level of information in requested transactions."
+                    }
+                ]
+            }
+        ]
+    }
+}

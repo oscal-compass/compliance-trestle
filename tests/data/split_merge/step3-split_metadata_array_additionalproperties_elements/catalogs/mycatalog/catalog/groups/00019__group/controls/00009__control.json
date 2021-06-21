@@ -1,0 +1,97 @@
+{
+    "control": {
+        "id": "sr-10",
+        "class": "SP800-53",
+        "title": "Inspection of Systems or Components",
+        "params": [
+            {
+                "id": "sr-10_prm_1",
+                "select": {
+                    "how-many": "one-or-more",
+                    "choice": [
+                        "at random",
+                        "at {{ insert: param, sr-10_prm_2 }}, upon {{ insert: param, sr-10_prm_3 }} "
+                    ]
+                }
+            },
+            {
+                "id": "sr-10_prm_2",
+                "depends-on": "sr-10_prm_1",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "sr-10_prm_3",
+                "depends-on": "sr-10_prm_1",
+                "label": "organization-defined indications of need for inspection"
+            },
+            {
+                "id": "sr-10_prm_4",
+                "label": "organization-defined systems or system components"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SR-10"
+            },
+            {
+                "name": "sort-id",
+                "value": "sr-10"
+            }
+        ],
+        "links": [
+            {
+                "href": "#15a95e24-65b6-4686-bc18-90855a10457d",
+                "rel": "reference"
+            },
+            {
+                "href": "#at-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-30",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-11",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sr-10_smt",
+                "name": "statement",
+                "prose": "Inspect the following systems or system components {{ insert: param, sr-10_prm_1 }} to detect tampering: {{ insert: param, sr-10_prm_4 }}."
+            },
+            {
+                "id": "sr-10_gdn",
+                "name": "guidance",
+                "prose": "The inspection of systems or systems components for tamper resistance and detection addresses physical and logical tampering and is applied to systems and system components removed from organization-controlled areas. Indications of a need for inspection include changes in packaging, specifications, factory location, or entity in which the part is purchased, and when individuals return from travel to high-risk locations."
+            }
+        ]
+    }
+}

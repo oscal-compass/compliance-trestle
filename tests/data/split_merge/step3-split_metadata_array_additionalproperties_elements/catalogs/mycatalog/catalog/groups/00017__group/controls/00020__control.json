@@ -1,0 +1,70 @@
+{
+    "control": {
+        "id": "sc-21",
+        "class": "SP800-53",
+        "title": "Secure Name/address Resolution Service (recursive or Caching Resolver)",
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-21"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-21"
+            }
+        ],
+        "links": [
+            {
+                "href": "#fe209006-bfd4-4033-a79a-9fee1adaf372",
+                "rel": "reference"
+            },
+            {
+                "href": "#sc-20",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-22",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-21_smt",
+                "name": "statement",
+                "prose": "Request and perform data origin authentication and data integrity verification on the name/address resolution responses the system receives from authoritative sources."
+            },
+            {
+                "id": "sc-21_gdn",
+                "name": "guidance",
+                "prose": "Each client of name resolution services either performs this validation on its own or has authenticated channels to trusted validation providers. Systems that provide name and address resolution services for local clients include recursive resolving or caching domain name system (DNS) servers. DNS client resolvers either perform validation of DNSSEC signatures, or clients use authenticated channels to recursive resolvers that perform such validations. Systems that use technologies other than the DNS to map between host and service names and network addresses provide some other means to enable clients to verify the authenticity and integrity of response data."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-21.1",
+                "class": "SP800-53-enhancement",
+                "title": "Data Origin and Integrity",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-21(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-21.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-21",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            }
+        ]
+    }
+}

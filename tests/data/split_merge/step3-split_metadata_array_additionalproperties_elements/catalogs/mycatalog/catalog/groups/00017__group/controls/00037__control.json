@@ -1,0 +1,81 @@
+{
+    "control": {
+        "id": "sc-38",
+        "class": "SP800-53",
+        "title": "Operations Security",
+        "params": [
+            {
+                "id": "sc-38_prm_1",
+                "label": "organization-defined operations security controls"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-38"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-38"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ca-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-7",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-1",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-12",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-38_smt",
+                "name": "statement",
+                "prose": "Employ the following operations security controls to protect key organizational information throughout the system development life cycle: {{ insert: param, sc-38_prm_1 }}."
+            },
+            {
+                "id": "sc-38_gdn",
+                "name": "guidance",
+                "prose": "Operations security (OPSEC) is a systematic process by which potential adversaries can be denied information about the capabilities and intentions of organizations by identifying, controlling, and protecting generally unclassified information that specifically relates to the planning and execution of sensitive organizational activities. The OPSEC process involves five steps: identification of critical information, analysis of threats, analysis of vulnerabilities, assessment of risks, and the application of appropriate countermeasures. OPSEC controls are applied to organizational systems and the environments in which those systems operate. OPSEC controls protect the confidentiality of information, including limiting the sharing of information with suppliers, potential suppliers, and other non-organizational elements and individuals. Information critical to organizational mission and business functions includes user identities, element uses, suppliers, supply chain processes, functional requirements, security requirements, system design specifications, testing and evaluation protocols, and security control implementation details."
+            }
+        ]
+    }
+}

@@ -1,0 +1,115 @@
+{
+    "control": {
+        "id": "pe-9",
+        "class": "SP800-53",
+        "title": "Power Equipment and Cabling",
+        "props": [
+            {
+                "name": "label",
+                "value": "PE-9"
+            },
+            {
+                "name": "sort-id",
+                "value": "pe-09"
+            }
+        ],
+        "links": [
+            {
+                "href": "#pe-4",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pe-9_smt",
+                "name": "statement",
+                "prose": "Protect power equipment and power cabling for the system from damage and destruction."
+            },
+            {
+                "id": "pe-9_gdn",
+                "name": "guidance",
+                "prose": "Organizations determine the types of protection necessary for the power equipment and cabling employed at different locations that are both internal and external to organizational facilities and environments of operation. Types of power equipment and cabling include internal cabling and uninterruptable power sources in offices or data centers, generators and power cabling outside of buildings, and power sources for self-contained components such as satellites, vehicles, and other deployable systems."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pe-9.1",
+                "class": "SP800-53-enhancement",
+                "title": "Redundant Cabling",
+                "params": [
+                    {
+                        "id": "pe-9.1_prm_1",
+                        "label": "organization-defined distance"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PE-9(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pe-09.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pe-9",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pe-9.1_smt",
+                        "name": "statement",
+                        "prose": "Employ redundant power cabling paths that are physically separated by {{ insert: param, pe-9.1_prm_1 }}."
+                    },
+                    {
+                        "id": "pe-9.1_gdn",
+                        "name": "guidance",
+                        "prose": "Physically separate and redundant power cables ensure that power continues to flow in the event that one of the cables is cut or otherwise damaged."
+                    }
+                ]
+            },
+            {
+                "id": "pe-9.2",
+                "class": "SP800-53-enhancement",
+                "title": "Automatic Voltage Controls",
+                "params": [
+                    {
+                        "id": "pe-9.2_prm_1",
+                        "label": "organization-defined critical system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PE-9(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pe-09.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pe-9",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pe-9.2_smt",
+                        "name": "statement",
+                        "prose": "Employ automatic voltage controls for {{ insert: param, pe-9.2_prm_1 }}."
+                    },
+                    {
+                        "id": "pe-9.2_gdn",
+                        "name": "guidance",
+                        "prose": "Automatic voltage controls can monitor and control voltage. Such controls include voltage regulators, voltage conditioners, and voltage stabilizers."
+                    }
+                ]
+            }
+        ]
+    }
+}

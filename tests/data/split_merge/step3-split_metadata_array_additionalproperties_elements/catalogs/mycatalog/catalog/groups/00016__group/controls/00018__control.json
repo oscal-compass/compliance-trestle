@@ -1,0 +1,129 @@
+{
+    "control": {
+        "id": "sa-19",
+        "class": "SP800-53",
+        "title": "Component Authenticity",
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-19"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-19"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#sr-11",
+                "rel": "moved-to"
+            }
+        ],
+        "controls": [
+            {
+                "id": "sa-19.1",
+                "class": "SP800-53-enhancement",
+                "title": "Anti-counterfeit Training",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-19(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-19.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-11.1",
+                        "rel": "moved-to"
+                    }
+                ]
+            },
+            {
+                "id": "sa-19.2",
+                "class": "SP800-53-enhancement",
+                "title": "Configuration Control for Component Service and Repair",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-19(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-19.02"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-11.2",
+                        "rel": "moved-to"
+                    }
+                ]
+            },
+            {
+                "id": "sa-19.3",
+                "class": "SP800-53-enhancement",
+                "title": "Component Disposal",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-19(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-19.03"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-12",
+                        "rel": "moved-to"
+                    }
+                ]
+            },
+            {
+                "id": "sa-19.4",
+                "class": "SP800-53-enhancement",
+                "title": "Anti-counterfeit Scanning",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-19(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-19.04"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-11.3",
+                        "rel": "moved-to"
+                    }
+                ]
+            }
+        ]
+    }
+}

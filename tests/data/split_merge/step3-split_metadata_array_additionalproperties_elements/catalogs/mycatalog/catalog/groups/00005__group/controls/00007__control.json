@@ -1,0 +1,313 @@
+{
+    "control": {
+        "id": "cp-8",
+        "class": "SP800-53",
+        "title": "Telecommunications Services",
+        "params": [
+            {
+                "id": "cp-8_prm_1",
+                "label": "organization-defined system operations"
+            },
+            {
+                "id": "cp-8_prm_2",
+                "label": "organization-defined time period"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CP-8"
+            },
+            {
+                "name": "sort-id",
+                "value": "cp-08"
+            }
+        ],
+        "links": [
+            {
+                "href": "#bc39f179-c735-4da2-b7a7-b2b622119755",
+                "rel": "reference"
+            },
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-7",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-11",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cp-8_smt",
+                "name": "statement",
+                "prose": "Establish alternate telecommunications services, including necessary agreements to permit the resumption of {{ insert: param, cp-8_prm_1 }} for essential mission and business functions within {{ insert: param, cp-8_prm_2 }} when the primary telecommunications capabilities are unavailable at either the primary or alternate processing or storage sites."
+            },
+            {
+                "id": "cp-8_gdn",
+                "name": "guidance",
+                "prose": "Telecommunications services (for data and voice) for primary and alternate processing and storage sites are in scope for [CP-8](#cp-8). Alternate telecommunications services reflect the continuity requirements in contingency plans to maintain essential mission and business functions despite the loss of primary telecommunications services. Organizations may specify different time periods for primary or alternate sites. Alternate telecommunications services include additional organizational or commercial ground-based circuits or lines, network-based approaches to telecommunications, or the use of satellites. Organizations consider factors such as availability, quality of service, and access when entering into alternate telecommunications agreements."
+            }
+        ],
+        "controls": [
+            {
+                "id": "cp-8.1",
+                "class": "SP800-53-enhancement",
+                "title": "Priority of Service Provisions",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-8(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-08.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-8.1_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "cp-8.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Develop primary and alternate telecommunications service agreements that contain priority-of-service provisions in accordance with availability requirements (including recovery time objectives); and"
+                            },
+                            {
+                                "id": "cp-8.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Request Telecommunications Service Priority for all telecommunications services used for national security emergency preparedness if the primary and/or alternate telecommunications services are provided by a common carrier."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "cp-8.1_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations consider the potential mission or business impact in situations where telecommunications service providers are servicing other organizations with similar priority of service provisions. Telecommunications Service Priority (TSP) is a Federal Communications Commission (FCC) program that directs telecommunications service providers (e.g., wireline and wireless phone companies) to give preferential treatment to users enrolled in the program when they need to add new lines or have their lines restored following a disruption of service, regardless of the cause. The FCC sets the rules and policies for the TSP program, and the Department of Homeland Security manages the TSP program. The TSP program is always in effect and not contingent on a major disaster or attack taking place. Federal sponsorship is required to enroll in the TSP program."
+                    }
+                ]
+            },
+            {
+                "id": "cp-8.2",
+                "class": "SP800-53-enhancement",
+                "title": "Single Points of Failure",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-8(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-08.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-8.2_smt",
+                        "name": "statement",
+                        "prose": "Obtain alternate telecommunications services to reduce the likelihood of sharing a single point of failure with primary telecommunications services."
+                    },
+                    {
+                        "id": "cp-8.2_gdn",
+                        "name": "guidance",
+                        "prose": "In certain circumstances, telecommunications service providers or services may share the same physical lines, which increases the vulnerability of a single failure point. It is important to have provider transparency for the actual physical transmission capability for telecommunication services."
+                    }
+                ]
+            },
+            {
+                "id": "cp-8.3",
+                "class": "SP800-53-enhancement",
+                "title": "Separation of Primary and Alternate Providers",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-8(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-08.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-8.3_smt",
+                        "name": "statement",
+                        "prose": "Obtain alternate telecommunications services from providers that are separated from primary service providers to reduce susceptibility to the same threats."
+                    },
+                    {
+                        "id": "cp-8.3_gdn",
+                        "name": "guidance",
+                        "prose": "Threats that affect telecommunications services are defined in organizational assessments of risk and include natural disasters, structural failures, cyber or physical attacks, and errors of omission or commission. Organizations can reduce common susceptibilities by minimizing shared infrastructure among telecommunications service providers and achieving sufficient geographic separation between services. Organizations may consider using a single service provider in situations where the service provider can provide alternate telecommunications services that meet the separation needs addressed in the risk assessment."
+                    }
+                ]
+            },
+            {
+                "id": "cp-8.4",
+                "class": "SP800-53-enhancement",
+                "title": "Provider Contingency Plan",
+                "params": [
+                    {
+                        "id": "cp-8.4_prm_1",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-8(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-08.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cp-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cp-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-8.4_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "cp-8.4_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Require primary and alternate telecommunications service providers to have contingency plans;"
+                            },
+                            {
+                                "id": "cp-8.4_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Review provider contingency plans to ensure that the plans meet organizational contingency requirements; and"
+                            },
+                            {
+                                "id": "cp-8.4_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Obtain evidence of contingency testing and training by providers {{ insert: param, cp-8.4_prm_1 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "cp-8.4_gdn",
+                        "name": "guidance",
+                        "prose": "Reviews of provider contingency plans consider the proprietary nature of such plans. In some situations, a summary of provider contingency plans may be sufficient evidence for organizations to satisfy the review requirement. Telecommunications service providers may also participate in ongoing disaster recovery exercises in coordination with the Department of Homeland Security and state and local governments. Organizations may use these types of activities to satisfy evidentiary requirements related to service provider contingency plan reviews, testing, and training."
+                    }
+                ]
+            },
+            {
+                "id": "cp-8.5",
+                "class": "SP800-53-enhancement",
+                "title": "Alternate Telecommunication Service Testing",
+                "params": [
+                    {
+                        "id": "cp-8.5_prm_1",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-8(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-08.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cp-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-8.5_smt",
+                        "name": "statement",
+                        "prose": "Test alternate telecommunication services {{ insert: param, cp-8.5_prm_1 }}."
+                    },
+                    {
+                        "id": "cp-8.5_gdn",
+                        "name": "guidance",
+                        "prose": "Alternate telecommunications services testing is arranged through contractual agreements with service providers. The testing may occur in parallel with normal operations to ensure that there is no degradation in organizational missions or functions."
+                    }
+                ]
+            }
+        ]
+    }
+}

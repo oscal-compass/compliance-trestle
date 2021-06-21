@@ -1,0 +1,45 @@
+{
+    "control": {
+        "id": "sr-12",
+        "class": "SP800-53",
+        "title": "Component Disposal",
+        "params": [
+            {
+                "id": "sr-12_prm_1",
+                "label": "organization-defined data, documentation, tools, or system components"
+            },
+            {
+                "id": "sr-12_prm_2",
+                "label": "organization-defined techniques and methods"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SR-12"
+            },
+            {
+                "name": "sort-id",
+                "value": "sr-12"
+            }
+        ],
+        "links": [
+            {
+                "href": "#mp-6",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sr-12_smt",
+                "name": "statement",
+                "prose": "Dispose of {{ insert: param, sr-12_prm_1 }} using the following techniques and methods: {{ insert: param, sr-12_prm_2 }}."
+            },
+            {
+                "id": "sr-12_gdn",
+                "name": "guidance",
+                "prose": "Data, documentation, tools, or system components can be disposed of at any time during the system development life cycle (not only in the disposal or retirement phase of the life cycle). For example, disposal can occur during research and development, design, prototyping, or operations/maintenance and include methods such as disk cleaning, removal of cryptographic keys, partial reuse of components. Opportunities for compromise during disposal affect physical and logical data, including system documentation in paper-based or digital files; shipping and delivery documentation; memory sticks with software code; or complete routers or servers that include permanent media, which contain sensitive or proprietary information. Additionally, proper disposal of system components helps to prevent such components from entering the gray market."
+            }
+        ]
+    }
+}

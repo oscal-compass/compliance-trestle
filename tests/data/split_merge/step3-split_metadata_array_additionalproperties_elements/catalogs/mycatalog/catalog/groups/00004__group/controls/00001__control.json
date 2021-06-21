@@ -1,0 +1,473 @@
+{
+    "control": {
+        "id": "cm-2",
+        "class": "SP800-53",
+        "title": "Baseline Configuration",
+        "params": [
+            {
+                "id": "cm-2_prm_1",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "cm-2_prm_2",
+                "label": "organization-defined circumstances"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CM-2"
+            },
+            {
+                "name": "sort-id",
+                "value": "cm-02"
+            }
+        ],
+        "links": [
+            {
+                "href": "#0f66be67-85e7-4ca6-bd19-39453e9f4394",
+                "rel": "reference"
+            },
+            {
+                "href": "#20db4e66-e257-450c-b2e4-2bb9a62a2c88",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-19",
+                "rel": "related"
+            },
+            {
+                "href": "#au-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-1",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-3",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-5",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-10",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-12",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-15",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-18",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cm-2_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "cm-2_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Develop, document, and maintain under configuration control, a current baseline configuration of the system; and"
+                    },
+                    {
+                        "id": "cm-2_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Review and update the baseline configuration of the system:",
+                        "parts": [
+                            {
+                                "id": "cm-2_smt.b.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": " {{ insert: param, cm-2_prm_1 }};"
+                            },
+                            {
+                                "id": "cm-2_smt.b.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "When required due to {{ insert: param, cm-2_prm_2 }}; and"
+                            },
+                            {
+                                "id": "cm-2_smt.b.3",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": "When system components are installed or upgraded."
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "cm-2_gdn",
+                "name": "guidance",
+                "prose": "Baseline configurations for systems and system components include connectivity, operational, and communications aspects of systems. Baseline configurations are documented, formally reviewed, and agreed-upon specifications for systems or configuration items within those systems. Baseline configurations serve as a basis for future builds, releases, or changes to systems and include security and privacy control implementations, operational procedures, information about system components, network topology, and logical placement of components in the system architecture. Maintaining baseline configurations requires creating new baselines as organizational systems change over time. Baseline configurations of systems reflect the current enterprise architecture."
+            }
+        ],
+        "controls": [
+            {
+                "id": "cm-2.1",
+                "class": "SP800-53-enhancement",
+                "title": "Reviews and Updates",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-2(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-02.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-2",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "cm-2.2",
+                "class": "SP800-53-enhancement",
+                "title": "Automation Support for Accuracy and Currency",
+                "params": [
+                    {
+                        "id": "cm-2.2_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-2(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-02.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-2",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-7",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ra-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-2.2_smt",
+                        "name": "statement",
+                        "prose": "Maintain the currency, completeness, accuracy, and availability of the baseline configuration of the system using {{ insert: param, cm-2.2_prm_1 }}."
+                    },
+                    {
+                        "id": "cm-2.2_gdn",
+                        "name": "guidance",
+                        "prose": "Automated mechanisms that help organizations maintain consistent baseline configurations for systems include configuration management tools, hardware, software, firmware inventory tools, and network management tools. Automated tools can be used at the organization level, mission and business process level, or system level on workstations, servers, notebook computers, network components, or mobile devices. Tools can be used to track version numbers on operating systems, applications, types of software installed, and current patch levels. Automation support for accuracy and currency can be satisfied by the implementation of [CM-8(2)](#cm-8.2) for organizations that combine system component inventory and baseline configuration activities."
+                    }
+                ]
+            },
+            {
+                "id": "cm-2.3",
+                "class": "SP800-53-enhancement",
+                "title": "Retention of Previous Configurations",
+                "params": [
+                    {
+                        "id": "cm-2.3_prm_1",
+                        "label": "organization-defined number"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-2(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-02.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-2.3_smt",
+                        "name": "statement",
+                        "prose": "Retain {{ insert: param, cm-2.3_prm_1 }} of previous versions of baseline configurations of the system to support rollback."
+                    },
+                    {
+                        "id": "cm-2.3_gdn",
+                        "name": "guidance",
+                        "prose": "Retaining previous versions of baseline configurations to support rollback include hardware, software, firmware, configuration files, configuration records, and associated documentation."
+                    }
+                ]
+            },
+            {
+                "id": "cm-2.4",
+                "class": "SP800-53-enhancement",
+                "title": "Unauthorized Software",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-2(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-02.04"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-7.4",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "cm-2.5",
+                "class": "SP800-53-enhancement",
+                "title": "Authorized Software",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-2(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-02.05"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-7.5",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "cm-2.6",
+                "class": "SP800-53-enhancement",
+                "title": "Development and Test Environments",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-2(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-02.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-2",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-2.6_smt",
+                        "name": "statement",
+                        "prose": "Maintain a baseline configuration for system development and test environments that is managed separately from the operational baseline configuration."
+                    },
+                    {
+                        "id": "cm-2.6_gdn",
+                        "name": "guidance",
+                        "prose": "Establishing separate baseline configurations for development, testing, and operational environments protects systems from unplanned or unexpected events related to development and testing activities. Separate baseline configurations allow organizations to apply the configuration management that is most appropriate for each type of configuration. For example, the management of operational configurations typically emphasizes the need for stability, while the management of development or test configurations requires greater flexibility. Configurations in the test environment mirror configurations in the operational environment to the extent practicable so that the results of the testing are representative of the proposed changes to the operational systems. Separate baseline configurations do not necessarily require separate physical environments."
+                    }
+                ]
+            },
+            {
+                "id": "cm-2.7",
+                "class": "SP800-53-enhancement",
+                "title": "Configure Systems and Components for High-risk Areas",
+                "params": [
+                    {
+                        "id": "cm-2.7_prm_1",
+                        "label": "organization-defined systems or system components"
+                    },
+                    {
+                        "id": "cm-2.7_prm_2",
+                        "label": "organization-defined configurations"
+                    },
+                    {
+                        "id": "cm-2.7_prm_3",
+                        "label": "organization-defined controls"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-2(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-02.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-2",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#mp-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#mp-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-2.7_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "cm-2.7_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Issue {{ insert: param, cm-2.7_prm_1 }} with {{ insert: param, cm-2.7_prm_2 }} to individuals traveling to locations that the organization deems to be of significant risk; and"
+                            },
+                            {
+                                "id": "cm-2.7_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Apply the following controls to the systems or components when the individuals return from travel: {{ insert: param, cm-2.7_prm_3 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "cm-2.7_gdn",
+                        "name": "guidance",
+                        "prose": "When it is known that systems or system components will be in high-risk areas external to the organization, additional controls may be implemented to counter the increased threat in such areas. For example, organizations can take actions for notebook computers used by individuals departing on and returning from travel. Actions include determining the locations that are of concern, defining the required configurations for the components, ensuring that components are configured as intended before travel is initiated, and applying controls to the components after travel is completed. Specially configured notebook computers include computers with sanitized hard drives, limited applications, and more stringent configuration settings. Controls applied to mobile devices upon return from travel include examining the mobile device for signs of physical tampering and purging and reimaging disk drives. Protecting information that resides on mobile devices is addressed in the [MP](#mp) (Media Protection) family."
+                    }
+                ]
+            }
+        ]
+    }
+}

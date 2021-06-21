@@ -1,0 +1,176 @@
+{
+    "control": {
+        "id": "pt-7",
+        "class": "SP800-53",
+        "title": "Specific Categories of Personally Identifiable Information",
+        "params": [
+            {
+                "id": "pt-7_prm_1",
+                "label": "organization-defined processing conditions"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PT-7"
+            },
+            {
+                "name": "sort-id",
+                "value": "pt-07"
+            }
+        ],
+        "links": [
+            {
+                "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
+                "rel": "reference"
+            },
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#3671ff20-c17c-44d6-8a88-7de203fa74aa",
+                "rel": "reference"
+            },
+            {
+                "href": "#c28ae9a8-1121-42a9-a85e-00cfcc9b9a94",
+                "rel": "reference"
+            },
+            {
+                "href": "#ir-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pt-7_smt",
+                "name": "statement",
+                "prose": "Apply {{ insert: param, pt-7_prm_1 }} for specific categories of personally identifiable information."
+            },
+            {
+                "id": "pt-7_gdn",
+                "name": "guidance",
+                "prose": "Organizations apply any conditions or protections that may be necessary for specific categories of personally identifiable information. These conditions may be required by laws, executive orders, directives, regulations, policies, standards, or guidelines. The requirements may also come from the results of privacy risk assessments that factor in contextual changes that may result in an organizational determination that a particular category of personally identifiable information is particularly sensitive or raises particular privacy risks. Organizations consult with the senior agency official for privacy and legal counsel regarding any protections that may be necessary."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pt-7.1",
+                "class": "SP800-53-enhancement",
+                "title": "Social Security Numbers",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PT-7(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pt-07.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pt-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ia-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pt-7.1_smt",
+                        "name": "statement",
+                        "prose": "When a system processes Social Security numbers:",
+                        "parts": [
+                            {
+                                "id": "pt-7.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Eliminate unnecessary collection, maintenance, and use of Social Security numbers, and explore alternatives to their use as a personal identifier;"
+                            },
+                            {
+                                "id": "pt-7.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Do not deny any individual any right, benefit, or privilege provided by law because of such individual\u2019s refusal to disclose his or her Social Security number; and"
+                            },
+                            {
+                                "id": "pt-7.1_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Inform any individual who is asked to disclose his or her Social Security number whether that disclosure is mandatory or voluntary, by what statutory or other authority such number is solicited, and what uses will be made of it."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "pt-7.1_gdn",
+                        "name": "guidance",
+                        "prose": "Federal law and policy establish specific requirements for organizations\u2019 processing of Social Security numbers. Organizations take steps to eliminate unnecessary uses of Social Security numbers and other sensitive information and observe any particular requirements that apply."
+                    }
+                ]
+            },
+            {
+                "id": "pt-7.2",
+                "class": "SP800-53-enhancement",
+                "title": "First Amendment Information",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PT-7(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pt-07.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pt-7",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pt-7.2_smt",
+                        "name": "statement",
+                        "prose": "Prohibit the processing of information describing how any individual exercises rights guaranteed by the First Amendment unless expressly authorized by statute or by the individual or unless pertinent to and within the scope of an authorized law enforcement activity."
+                    },
+                    {
+                        "id": "pt-7.2_gdn",
+                        "name": "guidance",
+                        "prose": "The [PRIVACT](#18e71fec-c6fd-475a-925a-5d8495cf8455) limits agencies\u2019 ability to process information that describes how individuals exercise rights guaranteed by the First Amendment. Organizations consult with the senior agency official for privacy and legal counsel regarding these requirements."
+                    }
+                ]
+            }
+        ]
+    }
+}

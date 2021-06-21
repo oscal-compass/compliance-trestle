@@ -1,0 +1,54 @@
+{
+    "control": {
+        "id": "sc-46",
+        "class": "SP800-53",
+        "title": "Cross Domain Policy Enforcement",
+        "params": [
+            {
+                "id": "sc-46_prm_1",
+                "select": {
+                    "choice": [
+                        "physically",
+                        "logically"
+                    ]
+                }
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-46"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-46"
+            }
+        ],
+        "links": [
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-46_smt",
+                "name": "statement",
+                "prose": "Implement a policy enforcement mechanism {{ insert: param, sc-46_prm_1 }} between the physical and/or network interfaces for the connecting security domains."
+            },
+            {
+                "id": "sc-46_gdn",
+                "name": "guidance",
+                "prose": "For logical policy enforcement mechanisms, organizations avoid creating a logical path between interfaces to prevent the ability to bypass the policy enforcement mechanism. For physical policy enforcement mechanisms, the robustness of physical isolation afforded by the physical implementation of policy enforcement to preclude the presence of logical covert channels penetrating the security domain may be needed. Contact [ncdsmo@nsa.gov](mailto:ncdsmo@nsa.gov) for more information."
+            }
+        ]
+    }
+}

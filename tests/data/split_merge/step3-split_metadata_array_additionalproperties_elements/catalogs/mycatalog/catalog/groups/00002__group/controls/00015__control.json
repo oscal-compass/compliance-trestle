@@ -1,0 +1,202 @@
+{
+    "control": {
+        "id": "au-16",
+        "class": "SP800-53",
+        "title": "Cross-organizational Audit Logging",
+        "params": [
+            {
+                "id": "au-16_prm_1",
+                "label": "organization-defined methods"
+            },
+            {
+                "id": "au-16_prm_2",
+                "label": "organization-defined audit information"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AU-16"
+            },
+            {
+                "name": "sort-id",
+                "value": "au-16"
+            }
+        ],
+        "links": [
+            {
+                "href": "#au-3",
+                "rel": "related"
+            },
+            {
+                "href": "#au-6",
+                "rel": "related"
+            },
+            {
+                "href": "#au-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "au-16_smt",
+                "name": "statement",
+                "prose": "Employ {{ insert: param, au-16_prm_1 }} for coordinating {{ insert: param, au-16_prm_2 }} among external organizations when audit information is transmitted across organizational boundaries."
+            },
+            {
+                "id": "au-16_gdn",
+                "name": "guidance",
+                "prose": "When organizations use systems or services of external organizations, the audit logging capability necessitates a coordinated, cross-organization approach. For example, maintaining the identity of individuals who request specific services across organizational boundaries may often be difficult, and doing so may prove to have significant performance and privacy ramifications. Therefore, it is often the case that cross-organizational audit logging simply captures the identity of individuals who issue requests at the initial system, and subsequent systems record that the requests originated from authorized individuals. Organizations consider including processes for coordinating audit information requirements and protection of audit information in information exchange agreements."
+            }
+        ],
+        "controls": [
+            {
+                "id": "au-16.1",
+                "class": "SP800-53-enhancement",
+                "title": "Identity Preservation",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AU-16(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "au-16.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#au-16",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ia-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-8",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "au-16.1_smt",
+                        "name": "statement",
+                        "prose": "Preserve the identity of individuals in cross-organizational audit trails."
+                    },
+                    {
+                        "id": "au-16.1_gdn",
+                        "name": "guidance",
+                        "prose": "Identity preservation is applied when there is a need to be able to trace actions that are performed across organizational boundaries to a specific individual."
+                    }
+                ]
+            },
+            {
+                "id": "au-16.2",
+                "class": "SP800-53-enhancement",
+                "title": "Sharing of Audit Information",
+                "params": [
+                    {
+                        "id": "au-16.2_prm_1",
+                        "label": "organization-defined organizations"
+                    },
+                    {
+                        "id": "au-16.2_prm_2",
+                        "label": "organization-defined cross-organizational sharing agreements"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AU-16(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "au-16.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#au-16",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ir-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "au-16.2_smt",
+                        "name": "statement",
+                        "prose": "Provide cross-organizational audit information to {{ insert: param, au-16.2_prm_1 }} based on {{ insert: param, au-16.2_prm_2 }}."
+                    },
+                    {
+                        "id": "au-16.2_gdn",
+                        "name": "guidance",
+                        "prose": "Due to the distributed nature of the audit information, cross-organization sharing of audit information may be essential for effective analysis of the auditing being performed. For example, the audit records of one organization may not provide sufficient information to determine the appropriate or inappropriate use of organizational information resources by individuals in other organizations. In some instances, only individuals\u2019 home organizations have the appropriate knowledge to make such determinations, thus requiring the sharing of audit information among organizations."
+                    }
+                ]
+            },
+            {
+                "id": "au-16.3",
+                "class": "SP800-53-enhancement",
+                "title": "Disassociability",
+                "params": [
+                    {
+                        "id": "au-16.3_prm_1",
+                        "label": "organization-defined measures"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AU-16(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "au-16.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#au-16",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "au-16.3_smt",
+                        "name": "statement",
+                        "prose": "Implement {{ insert: param, au-16.3_prm_1 }} to disassociate individuals from audit information transmitted across organizational boundaries."
+                    },
+                    {
+                        "id": "au-16.3_gdn",
+                        "name": "guidance",
+                        "prose": "Preserving identities in audit trails could have privacy ramifications, such as enabling the tracking and profiling of individuals, but may not be operationally necessary. These risks could be further amplified when transmitting information across organizational boundaries. Implementing privacy-enhancing cryptographic techniques can disassociate individuals from audit information and reduce privacy risk while maintaining accountability."
+                    }
+                ]
+            }
+        ]
+    }
+}

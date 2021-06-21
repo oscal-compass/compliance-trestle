@@ -1,0 +1,61 @@
+{
+    "control": {
+        "id": "sr-7",
+        "class": "SP800-53",
+        "title": "Supply Chain Operations Security",
+        "params": [
+            {
+                "id": "sr-7_prm_1",
+                "label": "organization-defined Operations Security (OPSEC) controls"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SR-7"
+            },
+            {
+                "name": "sort-id",
+                "value": "sr-07"
+            }
+        ],
+        "links": [
+            {
+                "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
+                "rel": "reference"
+            },
+            {
+                "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                "rel": "reference"
+            },
+            {
+                "href": "#863caf2a-978a-4260-9e8d-4a8929bce40c",
+                "rel": "reference"
+            },
+            {
+                "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                "rel": "reference"
+            },
+            {
+                "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
+                "rel": "reference"
+            },
+            {
+                "href": "#sc-38",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sr-7_smt",
+                "name": "statement",
+                "prose": "Employ the following Operations Security (OPSEC) controls to protect supply chain-related information for the system, system component, or system service: {{ insert: param, sr-7_prm_1 }}."
+            },
+            {
+                "id": "sr-7_gdn",
+                "name": "guidance",
+                "prose": "Supply chain OPSEC expands the scope of OPSEC to include suppliers and potential suppliers. OPSEC is a process that includes identifying critical information, analyzing friendly actions related to operations and other activities to identify actions that can be observed by potential adversaries, determining indicators that potential adversaries might obtain that could be interpreted or pieced together to derive information in sufficient time to cause harm to organizations, implementing safeguards or countermeasures to eliminate or reduce exploitable vulnerabilities and risk to an acceptable level, and considering how aggregated information may expose users or specific uses of the supply chain. Supply chain information includes user identities; uses for systems, system components, and system services; supplier identities; security and privacy requirements; system and component configurations; supplier processes; design specifications; and testing and evaluation results. Supply chain OPSEC may require organizations to withhold mission or business information from suppliers and may include the use of intermediaries to hide the end use or users of systems, system components, or system services."
+            }
+        ]
+    }
+}

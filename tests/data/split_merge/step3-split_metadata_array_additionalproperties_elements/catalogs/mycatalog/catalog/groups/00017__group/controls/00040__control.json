@@ -1,0 +1,58 @@
+{
+    "control": {
+        "id": "sc-41",
+        "class": "SP800-53",
+        "title": "Port and I/O Device Access",
+        "params": [
+            {
+                "id": "sc-41_prm_1",
+                "select": {
+                    "choice": [
+                        "Physically",
+                        "Logically"
+                    ]
+                }
+            },
+            {
+                "id": "sc-41_prm_2",
+                "label": "organization-defined connection ports or input/output devices"
+            },
+            {
+                "id": "sc-41_prm_3",
+                "label": "organization-defined systems or system components"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-41"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-41"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-20",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-41_smt",
+                "name": "statement",
+                "prose": " {{ insert: param, sc-41_prm_1 }} disable or remove {{ insert: param, sc-41_prm_2 }} on the following systems or system components: {{ insert: param, sc-41_prm_3 }}."
+            },
+            {
+                "id": "sc-41_gdn",
+                "name": "guidance",
+                "prose": "Connection ports include Universal Serial Bus (USB), Thunderbolt, and Firewire (IEEE 1394). Input/output (I/O) devices include compact disc and digital versatile disc drives. Disabling or removing such connection ports and I/O devices helps prevent the exfiltration of information from systems and the introduction of malicious code from those ports or devices. Physically disabling or removing ports and/or devices is the stronger action."
+            }
+        ]
+    }
+}

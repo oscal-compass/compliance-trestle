@@ -1,0 +1,53 @@
+{
+    "control": {
+        "id": "ac-23",
+        "class": "SP800-53",
+        "title": "Data Mining Protection",
+        "params": [
+            {
+                "id": "ac-23_prm_1",
+                "label": "organization-defined data mining prevention and detection techniques"
+            },
+            {
+                "id": "ac-23_prm_2",
+                "label": "organization-defined data storage objects"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-23"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-23"
+            }
+        ],
+        "links": [
+            {
+                "href": "#0af071a6-cf8e-48ee-8c82-fe91efa20f94",
+                "rel": "reference"
+            },
+            {
+                "href": "#pm-12",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-2",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-23_smt",
+                "name": "statement",
+                "prose": "Employ {{ insert: param, ac-23_prm_1 }} for {{ insert: param, ac-23_prm_2 }} to detect and protect against unauthorized data mining."
+            },
+            {
+                "id": "ac-23_gdn",
+                "name": "guidance",
+                "prose": "Data mining is an analytical process that attempts to find correlations or patterns in large data sets for the purpose of data or knowledge discovery. Data storage objects include database records and database fields. Sensitive information can be extracted from data mining operations. When information is personally identifiable information, it may lead to unanticipated revelations about individuals and give rise to privacy risks. Prior to performing data mining activities, organizations determine whether such activities are authorized. Organizations may be subject to applicable laws, executive orders, directives, regulations, or policies that address data mining requirements. Organizational personnel consult with the senior agency official for privacy and legal counsel regarding such requirements.\n\nData mining prevention and detection techniques include limiting the number and frequency of database queries to increase the work factor needed to determine the contents of databases, limiting types of responses provided to database queries, applying differential privacy techniques or homomorphic encryption, and notifying personnel when atypical database queries or accesses occur. Data mining protection focuses on protecting information from data mining while such information resides in organizational data stores. In contrast, [AU-13](#au-13) focuses on monitoring for organizational information that may have been mined or otherwise obtained from data stores and is available as open-source information residing on external sites, such as social networking or social media websites.\n\n [EO 13587](#0af071a6-cf8e-48ee-8c82-fe91efa20f94) requires the establishment of an insider threat program for deterring, detecting, and mitigating insider threats, including the safeguarding of sensitive information from exploitation, compromise, or other unauthorized disclosure. Data mining protection requires organizations to identify appropriate techniques to prevent and detect unnecessary or unauthorized data mining. Data mining can be used by an insider to collect organizational information for the purpose of exfiltration."
+            }
+        ]
+    }
+}

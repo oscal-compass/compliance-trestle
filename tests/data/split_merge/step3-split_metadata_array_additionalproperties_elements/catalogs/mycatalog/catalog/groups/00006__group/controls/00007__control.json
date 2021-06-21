@@ -1,0 +1,356 @@
+{
+    "control": {
+        "id": "ia-8",
+        "class": "SP800-53",
+        "title": "Identification and Authentication (non-organizational Users)",
+        "props": [
+            {
+                "name": "label",
+                "value": "IA-8"
+            },
+            {
+                "name": "sort-id",
+                "value": "ia-08"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#a1555677-2b9d-4868-a97b-a1363aff32f5",
+                "rel": "reference"
+            },
+            {
+                "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
+                "rel": "reference"
+            },
+            {
+                "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
+                "rel": "reference"
+            },
+            {
+                "href": "#10963761-58fc-4b20-b3d6-b44a54daba03",
+                "rel": "reference"
+            },
+            {
+                "href": "#2100332a-16a5-4598-bacf-7261baea9711",
+                "rel": "reference"
+            },
+            {
+                "href": "#98d415ca-7281-4064-9931-0c366637e324",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-14",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-18",
+                "rel": "related"
+            },
+            {
+                "href": "#au-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-10",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-11",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ia-8_smt",
+                "name": "statement",
+                "prose": "Uniquely identify and authenticate non-organizational users or processes acting on behalf of non-organizational users."
+            },
+            {
+                "id": "ia-8_gdn",
+                "name": "guidance",
+                "prose": "Non-organizational users include system users other than organizational users explicitly covered by [IA-2](#ia-2). Non-organizational users are uniquely identified and authenticated for accesses other than those explicitly identified and documented in [AC-14](#ac-14). Identification and authentication of non-organizational users accessing federal systems may be required to protect federal, proprietary, or privacy-related information (with exceptions noted for national security systems). Organizations consider many factors\u2014including security, privacy, scalability, and practicality\u2014when balancing the need to ensure ease of use for access to federal information and systems with the need to protect and adequately mitigate risk."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ia-8.1",
+                "class": "SP800-53-enhancement",
+                "title": "Acceptance of PIV Credentials from Other Agencies",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-8(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-08.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-8",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pe-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-8.1_smt",
+                        "name": "statement",
+                        "prose": "Accept and electronically verify Personal Identity Verification-compliant credentials from other federal agencies."
+                    },
+                    {
+                        "id": "ia-8.1_gdn",
+                        "name": "guidance",
+                        "prose": "Acceptance of Personal Identity Verification (PIV) credentials from other federal agencies applies to both logical and physical access control systems. PIV credentials are those credentials issued by federal agencies that conform to FIPS Publication 201 and supporting guidelines. The adequacy and reliability of PIV card issuers are addressed and authorized using [SP 800-79-2](#10963761-58fc-4b20-b3d6-b44a54daba03)."
+                    }
+                ]
+            },
+            {
+                "id": "ia-8.2",
+                "class": "SP800-53-enhancement",
+                "title": "Acceptance of External Authenticators",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-8(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-08.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-8.2_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ia-8.2_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Accept only external authenticators that are NIST-compliant; and"
+                            },
+                            {
+                                "id": "ia-8.2_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Document and maintain a list of accepted external authenticators."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ia-8.2_gdn",
+                        "name": "guidance",
+                        "prose": "Acceptance of only NIST-compliant external authenticators applies to organizational systems that are accessible to the public (e.g., public-facing websites). External authenticators are issued by nonfederal government entities and are compliant with [SP 800-63B](#e59c5a7c-8b1f-49ca-8de0-6ee0882180ce). Approved external authenticators meet or exceed the minimum Federal Government-wide technical, security, privacy, and organizational maturity requirements. Meeting or exceeding Federal requirements allows Federal Government relying parties to trust external authenticators in connection with an authentication transaction at a specified authenticator assurance level."
+                    }
+                ]
+            },
+            {
+                "id": "ia-8.3",
+                "class": "SP800-53-enhancement",
+                "title": "Use of Ficam-approved Products",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-8(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-08.03"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-8.2",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ia-8.4",
+                "class": "SP800-53-enhancement",
+                "title": "Use of Defined Profiles",
+                "params": [
+                    {
+                        "id": "ia-8.4_prm_1",
+                        "label": "organization-defined identity management profiles"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-8(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-08.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-8.4_smt",
+                        "name": "statement",
+                        "prose": "Conform to the following profiles for identity management {{ insert: param, ia-8.4_prm_1 }}."
+                    },
+                    {
+                        "id": "ia-8.4_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations define profiles for identity management based on open identity management standards. To ensure that open identity management standards are viable, robust, reliable, sustainable, and interoperable as documented, the Federal Government assesses and scopes the standards and technology implementations against applicable laws, executive orders, directives, policies, regulations, standards, and guidelines."
+                    }
+                ]
+            },
+            {
+                "id": "ia-8.5",
+                "class": "SP800-53-enhancement",
+                "title": "Acceptance of PIV-I Credentials",
+                "params": [
+                    {
+                        "id": "ia-8.5_prm_1",
+                        "label": "organization-defined policy"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-8(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-08.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-8.5_smt",
+                        "name": "statement",
+                        "prose": "Accept and verify federated or PKI credentials that meet {{ insert: param, ia-8.5_prm_1 }}."
+                    },
+                    {
+                        "id": "ia-8.5_gdn",
+                        "name": "guidance",
+                        "prose": "Acceptance of PIV-I credentials can be implemented by PIV, PIV-I, and other commercial or external identity providers. The acceptance and verification of PIV-I-compliant credentials apply to both logical and physical access control systems. The acceptance and verification of PIV-I credentials address nonfederal issuers of identity cards that desire to interoperate with United States Government PIV systems and that can be trusted by Federal Government-relying parties. The X.509 certificate policy for the Federal Bridge Certification Authority (FBCA) addresses PIV-I requirements. The PIV-I card is commensurate with the PIV credentials as defined in cited references. PIV-I credentials are the credentials issued by a PIV-I provider whose PIV-I certificate policy maps to the Federal Bridge PIV-I Certificate Policy. A PIV-I provider is cross-certified with the FBCA (directly or through another PKI bridge) with policies that have been mapped and approved as meeting the requirements of the PIV-I policies defined in the FBCA certificate policy."
+                    }
+                ]
+            },
+            {
+                "id": "ia-8.6",
+                "class": "SP800-53-enhancement",
+                "title": "Disassociability",
+                "params": [
+                    {
+                        "id": "ia-8.6_prm_1",
+                        "label": "organization-defined measures"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-8(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-08.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-8",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-8.6_smt",
+                        "name": "statement",
+                        "prose": "Implement the following measures to disassociate user attributes or identifier assertion relationships among individuals, credential service providers, and relying parties: {{ insert: param, ia-8.6_prm_1 }}."
+                    },
+                    {
+                        "id": "ia-8.6_gdn",
+                        "name": "guidance",
+                        "prose": "Federated identity solutions can create increased privacy risks due to the tracking and profiling of individuals. Using identifier mapping tables or cryptographic techniques to blind credential service providers and relying parties from each other or to make identity attributes less visible to transmitting parties can reduce these privacy risks."
+                    }
+                ]
+            }
+        ]
+    }
+}

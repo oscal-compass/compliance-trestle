@@ -1,0 +1,294 @@
+{
+    "control": {
+        "id": "ps-6",
+        "class": "SP800-53",
+        "title": "Access Agreements",
+        "params": [
+            {
+                "id": "ps-6_prm_1",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "ps-6_prm_2",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PS-6"
+            },
+            {
+                "name": "sort-id",
+                "value": "ps-06"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-21",
+                "rel": "related"
+            },
+            {
+                "href": "#si-12",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ps-6_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ps-6_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Develop and document access agreements for organizational systems;"
+                    },
+                    {
+                        "id": "ps-6_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Review and update the access agreements {{ insert: param, ps-6_prm_1 }}; and"
+                    },
+                    {
+                        "id": "ps-6_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Verify that individuals requiring access to organizational information and systems:",
+                        "parts": [
+                            {
+                                "id": "ps-6_smt.c.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Sign appropriate access agreements prior to being granted access; and"
+                            },
+                            {
+                                "id": "ps-6_smt.c.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "Re-sign access agreements to maintain access to organizational systems when access agreements have been updated or {{ insert: param, ps-6_prm_2 }}."
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "ps-6_gdn",
+                "name": "guidance",
+                "prose": "Access agreements include nondisclosure agreements, acceptable use agreements, rules of behavior, and conflict-of-interest agreements. Signed access agreements include an acknowledgement that individuals have read, understand, and agree to abide by the constraints associated with organizational systems to which access is authorized. Organizations can use electronic signatures to acknowledge access agreements unless specifically prohibited by organizational policy."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ps-6.1",
+                "class": "SP800-53-enhancement",
+                "title": "Information Requiring Special Protection",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PS-6(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ps-06.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ps-3",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ps-6.2",
+                "class": "SP800-53-enhancement",
+                "title": "Classified Information Requiring Special Protection",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PS-6(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ps-06.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ps-6",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ps-6.2_smt",
+                        "name": "statement",
+                        "prose": "Verify that access to classified information requiring special protection is granted only to individuals who:",
+                        "parts": [
+                            {
+                                "id": "ps-6.2_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Have a valid access authorization that is demonstrated by assigned official government duties;"
+                            },
+                            {
+                                "id": "ps-6.2_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Satisfy associated personnel security criteria; and"
+                            },
+                            {
+                                "id": "ps-6.2_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Have read, understood, and signed a nondisclosure agreement."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ps-6.2_gdn",
+                        "name": "guidance",
+                        "prose": "Classified information that requires special protection includes collateral information, Special Access Program (SAP) information, and Sensitive Compartmented Information (SCI). Personnel security criteria reflect applicable laws, executive orders, directives, regulations, policies, standards, and guidelines."
+                    }
+                ]
+            },
+            {
+                "id": "ps-6.3",
+                "class": "SP800-53-enhancement",
+                "title": "Post-employment Requirements",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PS-6(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ps-06.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ps-6",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ps-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ps-6.3_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ps-6.3_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Notify individuals of applicable, legally binding post-employment requirements for protection of organizational information; and"
+                            },
+                            {
+                                "id": "ps-6.3_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Require individuals to sign an acknowledgment of these requirements, if applicable, as part of granting initial access to covered information."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ps-6.3_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations consult with the Office of the General Counsel regarding matters of post-employment requirements on terminated individuals."
+                    }
+                ]
+            }
+        ]
+    }
+}

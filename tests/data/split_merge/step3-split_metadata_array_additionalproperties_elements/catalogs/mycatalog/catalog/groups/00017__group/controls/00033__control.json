@@ -1,0 +1,216 @@
+{
+    "control": {
+        "id": "sc-34",
+        "class": "SP800-53",
+        "title": "Non-modifiable Executable Programs",
+        "params": [
+            {
+                "id": "sc-34_prm_1",
+                "label": "organization-defined system components"
+            },
+            {
+                "id": "sc-34_prm_2",
+                "label": "organization-defined applications"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-34"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-34"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            },
+            {
+                "href": "#si-14",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-34_smt",
+                "name": "statement",
+                "prose": "For {{ insert: param, sc-34_prm_1 }}, load and execute:",
+                "parts": [
+                    {
+                        "id": "sc-34_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "The operating environment from hardware-enforced, read-only media; and"
+                    },
+                    {
+                        "id": "sc-34_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "The following applications from hardware-enforced, read-only media: {{ insert: param, sc-34_prm_2 }}."
+                    }
+                ]
+            },
+            {
+                "id": "sc-34_gdn",
+                "name": "guidance",
+                "prose": "The operating environment for a system contains the code that hosts applications, including operating systems, executives, or virtual machine monitors (i.e., hypervisors). It can also include certain applications that run directly on hardware platforms. Hardware-enforced, read-only media include Compact Disc-Recordable (CD-R) and Digital Versatile Disc-Recordable (DVD-R) disk drives as well as one-time, programmable, read-only memory. The use of non-modifiable storage ensures the integrity of software from the point of creation of the read-only image. The use of reprogrammable, read-only memory can be accepted as read-only media provided that integrity can be adequately protected from the point of initial writing to the insertion of the memory into the system, and there are reliable hardware protections against reprogramming the memory while installed in organizational systems."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-34.1",
+                "class": "SP800-53-enhancement",
+                "title": "No Writable Storage",
+                "params": [
+                    {
+                        "id": "sc-34.1_prm_1",
+                        "label": "organization-defined system components"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-34(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-34.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-34",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-19",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#mp-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-34.1_smt",
+                        "name": "statement",
+                        "prose": "Employ {{ insert: param, sc-34.1_prm_1 }} with no writeable storage that is persistent across component restart or power on/off."
+                    },
+                    {
+                        "id": "sc-34.1_gdn",
+                        "name": "guidance",
+                        "prose": "Disallowing writeable storage eliminates the possibility of malicious code insertion via persistent, writeable storage within the designated system components. The restriction applies to fixed and removable storage, with the latter being addressed either directly or as specific restrictions imposed through access controls for mobile devices."
+                    }
+                ]
+            },
+            {
+                "id": "sc-34.2",
+                "class": "SP800-53-enhancement",
+                "title": "Integrity Protection on Read-only Media",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-34(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-34.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-34",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cm-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cm-9",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#mp-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#mp-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#mp-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-28",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-34.2_smt",
+                        "name": "statement",
+                        "prose": "Protect the integrity of information prior to storage on read-only media and control the media after such information has been recorded onto the media."
+                    },
+                    {
+                        "id": "sc-34.2_gdn",
+                        "name": "guidance",
+                        "prose": "Controls prevent the substitution of media into systems or the reprogramming of programmable read-only media prior to installation into the systems. Integrity protection controls include a combination of prevention, detection, and response."
+                    }
+                ]
+            },
+            {
+                "id": "sc-34.3",
+                "class": "SP800-53-enhancement",
+                "title": "Hardware-based Protection",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-34(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-34.03"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-51",
+                        "rel": "moved-to"
+                    }
+                ]
+            }
+        ]
+    }
+}

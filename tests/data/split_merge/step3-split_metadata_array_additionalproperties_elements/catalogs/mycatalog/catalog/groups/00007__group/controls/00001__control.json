@@ -1,0 +1,254 @@
+{
+    "control": {
+        "id": "ir-2",
+        "class": "SP800-53",
+        "title": "Incident Response Training",
+        "params": [
+            {
+                "id": "ir-2_prm_1",
+                "label": "organization-defined time period"
+            },
+            {
+                "id": "ir-2_prm_2",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "ir-2_prm_3",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "ir-2_prm_4",
+                "label": "organization-defined events"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "IR-2"
+            },
+            {
+                "name": "sort-id",
+                "value": "ir-02"
+            }
+        ],
+        "links": [
+            {
+                "href": "#5f4705ac-8d17-438c-b23a-ac7f12362ae4",
+                "rel": "reference"
+            },
+            {
+                "href": "#511f6832-23ca-49a3-8c0f-ce493373cab8",
+                "rel": "reference"
+            },
+            {
+                "href": "#at-2",
+                "rel": "related"
+            },
+            {
+                "href": "#at-3",
+                "rel": "related"
+            },
+            {
+                "href": "#at-4",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-9",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ir-2_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ir-2_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Provide incident response training to system users consistent with assigned roles and responsibilities:",
+                        "parts": [
+                            {
+                                "id": "ir-2_smt.a.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Within {{ insert: param, ir-2_prm_1 }} of assuming an incident response role or responsibility or acquiring system access;"
+                            },
+                            {
+                                "id": "ir-2_smt.a.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "When required by system changes; and"
+                            },
+                            {
+                                "id": "ir-2_smt.a.3",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": " {{ insert: param, ir-2_prm_2 }} thereafter; and"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ir-2_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Review and update incident response training content {{ insert: param, ir-2_prm_3 }} and following {{ insert: param, ir-2_prm_4 }}."
+                    }
+                ]
+            },
+            {
+                "id": "ir-2_gdn",
+                "name": "guidance",
+                "prose": "Incident response training is associated with the assigned roles and responsibilities of organizational personnel to ensure that the appropriate content and level of detail are included in such training. For example, users may only need to know who to call or how to recognize an incident; system administrators may require additional training on how to handle incidents; and incident responders may receive more specific training on forensics, data collection techniques, reporting, system recovery, and system restoration. Incident response training includes user training in identifying and reporting suspicious activities from external and internal sources. Incident response training for users may be provided as part of [AT-2](#at-2) or [AT-3](#at-3). Events that may precipitate an update to incident response training content include, but are not limited to, incident response plan testing or response to an actual incident (lessons learned), assessment or audit findings, or changes in applicable laws, executive orders, directives, regulations, policies, standards, and guidelines."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ir-2.1",
+                "class": "SP800-53-enhancement",
+                "title": "Simulated Events",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IR-2(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ir-02.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ir-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ir-2.1_smt",
+                        "name": "statement",
+                        "prose": "Incorporate simulated events into incident response training to facilitate the required response by personnel in crisis situations."
+                    },
+                    {
+                        "id": "ir-2.1_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations establish requirements for responding to incidents in incident response plans. Incorporating simulated events into incident response training helps to ensure that personnel understand their individual responsibilities and what specific actions to take in crisis situations."
+                    }
+                ]
+            },
+            {
+                "id": "ir-2.2",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Training Environments",
+                "params": [
+                    {
+                        "id": "ir-2.2_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IR-2(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ir-02.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ir-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ir-2.2_smt",
+                        "name": "statement",
+                        "prose": "Provide an incident response training environment using {{ insert: param, ir-2.2_prm_1 }}."
+                    },
+                    {
+                        "id": "ir-2.2_gdn",
+                        "name": "guidance",
+                        "prose": "Automated mechanisms can provide a more thorough and realistic incident response training environment. This can be accomplished, for example, by providing more complete coverage of incident response issues, selecting more realistic training scenarios and environments, and stressing the response capability."
+                    }
+                ]
+            },
+            {
+                "id": "ir-2.3",
+                "class": "SP800-53-enhancement",
+                "title": "Breach",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IR-2(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ir-02.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ir-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ir-2.3_smt",
+                        "name": "statement",
+                        "prose": "Provide incident response training on how to identify and respond to a breach, including the organization\u2019s process for reporting a breach."
+                    },
+                    {
+                        "id": "ir-2.3_gdn",
+                        "name": "guidance",
+                        "prose": "For federal agencies, an incident that involves personally identifiable information is considered a breach. A breach results in the loss of control, compromise, unauthorized disclosure, unauthorized acquisition, or a similar occurrence where a person other than an authorized user accesses or potentially accesses personally identifiable information or an authorized user accesses or potentially accesses such information for other than authorized purposes. The incident response training emphasizes the obligation of individuals to report both confirmed and suspected breaches involving information in any medium or form, including paper, oral, and electronic. Incident response training includes tabletop exercises that simulate a breach. See [IR-2(1)](#ir-2.1)."
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,335 @@
+{
+    "control": {
+        "id": "sr-3",
+        "class": "SP800-53",
+        "title": "Supply Chain Controls and Processes",
+        "params": [
+            {
+                "id": "sr-3_prm_1",
+                "label": "organization-defined system or system component"
+            },
+            {
+                "id": "sr-3_prm_2",
+                "label": "organization-defined supply chain personnel"
+            },
+            {
+                "id": "sr-3_prm_3",
+                "label": "organization-defined supply chain controls"
+            },
+            {
+                "id": "sr-3_prm_4",
+                "select": {
+                    "choice": [
+                        "security and privacy plans",
+                        "supply chain risk management plan",
+                        " {{ insert: param, sr-3_prm_5 }} "
+                    ]
+                }
+            },
+            {
+                "id": "sr-3_prm_5",
+                "depends-on": "sr-3_prm_4",
+                "label": "organization-defined document"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SR-3"
+            },
+            {
+                "name": "sort-id",
+                "value": "sr-03"
+            }
+        ],
+        "links": [
+            {
+                "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
+                "rel": "reference"
+            },
+            {
+                "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
+                "rel": "reference"
+            },
+            {
+                "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
+                "rel": "reference"
+            },
+            {
+                "href": "#15a95e24-65b6-4686-bc18-90855a10457d",
+                "rel": "reference"
+            },
+            {
+                "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                "rel": "reference"
+            },
+            {
+                "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                "rel": "reference"
+            },
+            {
+                "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
+                "rel": "reference"
+            },
+            {
+                "href": "#ca-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-6",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-16",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-30",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-15",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-29",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-30",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-38",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-6",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-11",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sr-3_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "sr-3_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Establish a process or processes to identify and address weaknesses or deficiencies in the supply chain elements and processes of {{ insert: param, sr-3_prm_1 }} in coordination with {{ insert: param, sr-3_prm_2 }};"
+                    },
+                    {
+                        "id": "sr-3_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Employ the following controls to protect against supply chain risks to the system, system component, or system service and to limit the harm or consequences from supply chain-related events: {{ insert: param, sr-3_prm_3 }}; and"
+                    },
+                    {
+                        "id": "sr-3_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Document the selected and implemented supply chain processes and controls in {{ insert: param, sr-3_prm_4 }}."
+                    }
+                ]
+            },
+            {
+                "id": "sr-3_gdn",
+                "name": "guidance",
+                "prose": "Supply chain elements include organizations, entities, or tools employed for the research and development, design, manufacturing, acquisition, delivery, integration, operations and maintenance, and disposal of systems and system components. Supply chain processes include hardware, software, and firmware development processes; shipping and handling procedures; personnel security and physical security programs; configuration management tools, techniques, and measures to maintain provenance; or other programs, processes, or procedures associated with the development, acquisition, maintenance and disposal of systems and system components. Supply chain elements and processes may be provided by organizations, system integrators, or external providers. Weaknesses or deficiencies in supply chain elements or processes represent potential vulnerabilities that can be exploited by adversaries to cause harm to the organization and affect its ability to carry out its core missions or business functions. Supply chain personnel are individuals with roles and responsibilities in the supply chain."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sr-3.1",
+                "class": "SP800-53-enhancement",
+                "title": "Diverse Supply Base",
+                "params": [
+                    {
+                        "id": "sr-3.1_prm_1",
+                        "label": "organization-defined system components and services"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SR-3(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sr-03.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sr-3.1_smt",
+                        "name": "statement",
+                        "prose": "Employ a diverse set of sources for the following system components and services: {{ insert: param, sr-3.1_prm_1 }}."
+                    },
+                    {
+                        "id": "sr-3.1_gdn",
+                        "name": "guidance",
+                        "prose": "Diversifying the supply of systems, system components, and services can reduce the probability that adversaries will successfully identify and target the supply chain and can reduce the impact of a supply chain event or compromise. Identifying multiple suppliers for replacement components can reduce the probability that the replacement component will become unavailable. Employing a diverse set of developers or logistics service providers can reduce the impact of a natural disaster or other supply chain event. Organizations consider designing the system to include diverse materials and components."
+                    }
+                ]
+            },
+            {
+                "id": "sr-3.2",
+                "class": "SP800-53-enhancement",
+                "title": "Limitation of Harm",
+                "params": [
+                    {
+                        "id": "sr-3.2_prm_1",
+                        "label": "organization-defined controls"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SR-3(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sr-03.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sr-3.2_smt",
+                        "name": "statement",
+                        "prose": "Employ the following controls to limit harm from potential adversaries identifying and targeting the organizational supply chain: {{ insert: param, sr-3.2_prm_1 }}."
+                    },
+                    {
+                        "id": "sr-3.2_gdn",
+                        "name": "guidance",
+                        "prose": "Controls that can be implemented to reduce the probability of adversaries successfully identifying and targeting the supply chain include avoiding the purchase of custom or non-standardized configurations, employing approved vendor lists with standing reputations in industry, following pre-agreed maintenance schedules and update and patch delivery mechanisms, maintaining a contingency plan in case of a supply chain event, using procurement carve-outs that provide exclusions to commitments or obligations, using diverse delivery routes, and minimizing the time between purchase decisions and delivery."
+                    }
+                ]
+            },
+            {
+                "id": "sr-3.3",
+                "class": "SP800-53-enhancement",
+                "title": "Sub-tier Flow Down",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SR-3(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sr-03.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-3",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sr-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sr-8",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sr-3.3_smt",
+                        "name": "statement",
+                        "prose": "Ensure that the controls included in the contracts of prime contractors are also included in the contracts of subcontractors."
+                    },
+                    {
+                        "id": "sr-3.3_gdn",
+                        "name": "guidance",
+                        "prose": "To manage supply chain risk effectively and holistically, it is important that organizations ensure that supply chain risk management controls are included at all tiers in the supply chain. This includes ensuring that Tier 1 (prime) contractors have implemented processes to facilitate the \"flow down\" of supply chain risk management controls to sub-tier contractors. The controls subject to flow down are identified in [SR-3b](#sr-3_smt.b)."
+                    }
+                ]
+            }
+        ]
+    }
+}

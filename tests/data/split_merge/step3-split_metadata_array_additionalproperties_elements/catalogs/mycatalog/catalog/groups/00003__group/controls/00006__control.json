@@ -1,0 +1,607 @@
+{
+    "control": {
+        "id": "ca-7",
+        "class": "SP800-53",
+        "title": "Continuous Monitoring",
+        "params": [
+            {
+                "id": "ca-7_prm_1",
+                "label": "organization-defined system-level metrics"
+            },
+            {
+                "id": "ca-7_prm_2",
+                "label": "organization-defined frequencies"
+            },
+            {
+                "id": "ca-7_prm_3",
+                "label": "organization-defined frequencies"
+            },
+            {
+                "id": "ca-7_prm_4",
+                "label": "organization-defined personnel or roles"
+            },
+            {
+                "id": "ca-7_prm_5",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CA-7"
+            },
+            {
+                "name": "sort-id",
+                "value": "ca-07"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
+                "rel": "reference"
+            },
+            {
+                "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
+                "rel": "reference"
+            },
+            {
+                "href": "#a21aef46-7330-48a0-b2e1-c5bb8b2dd11d",
+                "rel": "reference"
+            },
+            {
+                "href": "#122177fa-c4ed-485d-8345-3082c0fb9a06",
+                "rel": "reference"
+            },
+            {
+                "href": "#067223d8-1ec7-45c5-b21b-c848da6de8fb",
+                "rel": "reference"
+            },
+            {
+                "href": "#bbac9fc2-df5b-4f2d-bf99-90d0ade45349",
+                "rel": "reference"
+            },
+            {
+                "href": "#98d415ca-7281-4064-9931-0c366637e324",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#at-4",
+                "rel": "related"
+            },
+            {
+                "href": "#au-6",
+                "rel": "related"
+            },
+            {
+                "href": "#au-13",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-3",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-4",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-11",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-6",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-14",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-16",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-20",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-6",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-10",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-12",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-14",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-23",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-28",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-31",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-7",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-11",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-18",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-38",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-43",
+                "rel": "related"
+            },
+            {
+                "href": "#si-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            },
+            {
+                "href": "#si-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-6",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ca-7_smt",
+                "name": "statement",
+                "prose": "Develop a system-level continuous monitoring strategy and implement continuous monitoring in accordance with the organization-level continuous monitoring strategy that includes:",
+                "parts": [
+                    {
+                        "id": "ca-7_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Establishing the following system-level metrics to be monitored: {{ insert: param, ca-7_prm_1 }};"
+                    },
+                    {
+                        "id": "ca-7_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Establishing {{ insert: param, ca-7_prm_2 }} for monitoring and {{ insert: param, ca-7_prm_3 }} for assessment of control effectiveness;"
+                    },
+                    {
+                        "id": "ca-7_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Ongoing control assessments in accordance with the continuous monitoring strategy;"
+                    },
+                    {
+                        "id": "ca-7_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Ongoing monitoring of system and organization-defined metrics in accordance with the continuous monitoring strategy;"
+                    },
+                    {
+                        "id": "ca-7_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Correlation and analysis of information generated by control assessments and monitoring;"
+                    },
+                    {
+                        "id": "ca-7_smt.f",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "f."
+                            }
+                        ],
+                        "prose": "Response actions to address results of the analysis of control assessment and monitoring information; and"
+                    },
+                    {
+                        "id": "ca-7_smt.g",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "g."
+                            }
+                        ],
+                        "prose": "Reporting the security and privacy status of the system to {{ insert: param, ca-7_prm_4 }} {{ insert: param, ca-7_prm_5 }}."
+                    }
+                ]
+            },
+            {
+                "id": "ca-7_gdn",
+                "name": "guidance",
+                "prose": "Continuous monitoring at the system level facilitates ongoing awareness of the system security and privacy posture to support organizational risk management decisions. The terms \"continuous\" and \"ongoing\" imply that organizations assess and monitor their controls and risks at a frequency sufficient to support risk-based decisions. Different types of controls may require different monitoring frequencies. The results of continuous monitoring generate risk response actions by organizations. When monitoring the effectiveness of multiple controls that have been grouped into capabilities, a root-cause analysis may be needed to determine the specific control that has failed. Continuous monitoring programs allow organizations to maintain the authorizations of systems and common controls in highly dynamic environments of operation with changing mission and business needs, threats, vulnerabilities, and technologies. Having access to security and privacy information on a continuing basis through reports and dashboards gives organizational officials the ability to make effective and timely risk management decisions, including ongoing authorization decisions.\n\nAutomation supports more frequent updates to hardware, software, and firmware inventories, authorization packages, and other system information. Effectiveness is further enhanced when continuous monitoring outputs are formatted to provide information that is specific, measurable, actionable, relevant, and timely. Continuous monitoring activities are scaled in accordance with the security categories of systems. Monitoring requirements, including the need for specific monitoring, may be referenced in other controls and control enhancements, such as [AC-2g](#ac-2_smt.g), [AC-2(7)](#ac-2.7), [AC-2(12)(a)](#ac-2.12_smt.a), [AC-2(7)(b)](#ac-2.7_smt.b), [AC-2(7)(c)](#ac-2.7_smt.c), [AC-17(1)](#ac-17.1), [AT-4a](#at-4_smt.a), [AU-13](#au-13), [AU-13(1)](#au-13.1), [AU-13(2)](#au-13.2), [CM-3f](#cm-3_smt.f), [CM-6d](#cm-6_smt.d), [CM-11c](#cm-11_smt.c), [IR-5](#ir-5), [MA-2b](#ma-2_smt.b), [MA-3a](#ma-3_smt.a), [MA-4a](#ma-4_smt.a), [PE-3d](#pe-3_smt.d), [PE-6](#pe-6), [PE-14b](#pe-14_smt.b), [PE-16](#pe-16), [PE-20](#pe-20), [PM-6](#pm-6), [PM-23](#pm-23), [PM-31](#pm-31), [PS-7e](#ps-7_smt.e), [SA-9c](#sa-9_smt.c), [SR-4](#sr-4), [SC-5(3)(b)](#sc-5.3_smt.b), [SC-7a](#sc-7_smt.a), [SC-7(24)(b)](#sc-7.24_smt.b), [SC-18b](#sc-18_smt.b), [SC-43b](#sc-43_smt.b), and [SI-4](#si-4)."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ca-7.1",
+                "class": "SP800-53-enhancement",
+                "title": "Independent Assessment",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CA-7(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ca-07.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ca-7",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ca-7.1_smt",
+                        "name": "statement",
+                        "prose": "Employ independent assessors or assessment teams to monitor the controls in the system on an ongoing basis."
+                    },
+                    {
+                        "id": "ca-7.1_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations maximize the value of control assessments by requiring that assessments be conducted by assessors with appropriate levels of independence. The level of required independence is based on organizational continuous monitoring strategies. Assessor independence provides a degree of impartiality to the monitoring process. To achieve such impartiality, assessors do not create a mutual or conflicting interest with the organizations where the assessments are being conducted, assess their own work, act as management or employees of the organizations they are serving, or place themselves in advocacy positions for the organizations acquiring their services."
+                    }
+                ]
+            },
+            {
+                "id": "ca-7.2",
+                "class": "SP800-53-enhancement",
+                "title": "Types of Assessments",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CA-7(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ca-07.02"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ca-2",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ca-7.3",
+                "class": "SP800-53-enhancement",
+                "title": "Trend Analyses",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CA-7(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ca-07.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ca-7",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ca-7.3_smt",
+                        "name": "statement",
+                        "prose": "Employ trend analyses to determine if control implementations, the frequency of continuous monitoring activities, and the types of activities used in the continuous monitoring process need to be modified based on empirical data."
+                    },
+                    {
+                        "id": "ca-7.3_gdn",
+                        "name": "guidance",
+                        "prose": "Trend analyses include examining recent threat information that addresses the types of threat events that have occurred in the organization or the Federal Government, success rates of certain types of attacks, emerging vulnerabilities in technologies, evolving social engineering techniques, the effectiveness of configuration settings, results from multiple control assessments, and findings from Inspectors General or auditors."
+                    }
+                ]
+            },
+            {
+                "id": "ca-7.4",
+                "class": "SP800-53-enhancement",
+                "title": "Risk Monitoring",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CA-7(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ca-07.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ca-7",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ca-7.4_smt",
+                        "name": "statement",
+                        "prose": "Ensure risk monitoring is an integral part of the continuous monitoring strategy that includes the following:",
+                        "parts": [
+                            {
+                                "id": "ca-7.4_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Effectiveness monitoring;"
+                            },
+                            {
+                                "id": "ca-7.4_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Compliance monitoring; and"
+                            },
+                            {
+                                "id": "ca-7.4_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Change monitoring."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ca-7.4_gdn",
+                        "name": "guidance",
+                        "prose": "Risk monitoring is informed by the established organizational risk tolerance. Effectiveness monitoring determines the ongoing effectiveness of the implemented risk response measures. Compliance monitoring verifies that required risk response measures are implemented. It also verifies that security and privacy requirements are satisfied. Change monitoring identifies changes to organizational systems and environments of operation that may affect security and privacy risk."
+                    }
+                ]
+            },
+            {
+                "id": "ca-7.5",
+                "class": "SP800-53-enhancement",
+                "title": "Consistency Analysis",
+                "params": [
+                    {
+                        "id": "ca-7.5_prm_1",
+                        "label": "organization-defined actions"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CA-7(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ca-07.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ca-7",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ca-7.5_smt",
+                        "name": "statement",
+                        "prose": "Employ the following actions to validate that policies are established and implemented controls are operating in a consistent manner: {{ insert: param, ca-7.5_prm_1 }}."
+                    },
+                    {
+                        "id": "ca-7.5_gdn",
+                        "name": "guidance",
+                        "prose": "Security and privacy controls are often added incrementally to a system. As a result, policies for selecting and implementing controls may be inconsistent, and the controls could fail to work together in a consistent or coordinated manner. At a minimum, the lack of consistency and coordination could mean that there are unacceptable security and privacy gaps in the system. At worst, it could mean that some of the controls implemented in one location or by one component are actually impeding the functionality of other controls (e.g., encrypting internal network traffic can impede monitoring). In other situations, failing to consistently monitor all implemented network protocols (e.g., a dual stack of IPv4 and IPv6) may create unintended vulnerabilities in the system that could be exploited by adversaries. It is important to validate\u2014through testing, monitoring, and analysis\u2014that the implemented controls are operating in a consistent, coordinated, non-interfering manner."
+                    }
+                ]
+            },
+            {
+                "id": "ca-7.6",
+                "class": "SP800-53-enhancement",
+                "title": "Automation Support for Monitoring",
+                "params": [
+                    {
+                        "id": "ca-7.6_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CA-7(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ca-07.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ca-7",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ca-7.6_smt",
+                        "name": "statement",
+                        "prose": "Ensure the accuracy, currency, and availability of monitoring results for the system using {{ insert: param, ca-7.6_prm_1 }}."
+                    },
+                    {
+                        "id": "ca-7.6_gdn",
+                        "name": "guidance",
+                        "prose": "Using automated tools for monitoring helps to maintain the accuracy, currency, and availability of monitoring information which in turns helps to increase the level of ongoing awareness of the system security and privacy posture in support of organizational risk management decisions."
+                    }
+                ]
+            }
+        ]
+    }
+}

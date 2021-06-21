@@ -1,0 +1,1127 @@
+{
+    "control": {
+        "id": "ia-5",
+        "class": "SP800-53",
+        "title": "Authenticator Management",
+        "params": [
+            {
+                "id": "ia-5_prm_1",
+                "label": "organization-defined time period by authenticator type"
+            },
+            {
+                "id": "ia-5_prm_2",
+                "label": "organization-defined events"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "IA-5"
+            },
+            {
+                "name": "sort-id",
+                "value": "ia-05"
+            }
+        ],
+        "links": [
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#eea3c092-42ed-4382-a6f4-1adadef01b9d",
+                "rel": "reference"
+            },
+            {
+                "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
+                "rel": "reference"
+            },
+            {
+                "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
+                "rel": "reference"
+            },
+            {
+                "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
+                "rel": "reference"
+            },
+            {
+                "href": "#858705be-3c1f-48aa-a328-0ce398d95ef0",
+                "rel": "reference"
+            },
+            {
+                "href": "#7af2e6ec-9f7e-4232-ad3f-09888eb0793a",
+                "rel": "reference"
+            },
+            {
+                "href": "#828856bd-d7c4-427b-8b51-815517ec382d",
+                "rel": "reference"
+            },
+            {
+                "href": "#15dc76ff-b17a-4eeb-8948-8ea8de3ccc2c",
+                "rel": "reference"
+            },
+            {
+                "href": "#91701292-8bcd-4d2e-a5bd-59ab61e34b3c",
+                "rel": "reference"
+            },
+            {
+                "href": "#4f5f51ac-2b8d-4b90-a3c7-46f56e967617",
+                "rel": "reference"
+            },
+            {
+                "href": "#604774da-9e1d-48eb-9c62-4e959dc80737",
+                "rel": "reference"
+            },
+            {
+                "href": "#81aeb0a3-d0ee-4e44-b842-6bf28d2bd7f5",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-9",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-13",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ia-5_smt",
+                "name": "statement",
+                "prose": "Manage system authenticators by:",
+                "parts": [
+                    {
+                        "id": "ia-5_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Verifying, as part of the initial authenticator distribution, the identity of the individual, group, role, service, or device receiving the authenticator;"
+                    },
+                    {
+                        "id": "ia-5_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Establishing initial authenticator content for any authenticators issued by the organization;"
+                    },
+                    {
+                        "id": "ia-5_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Ensuring that authenticators have sufficient strength of mechanism for their intended use;"
+                    },
+                    {
+                        "id": "ia-5_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Establishing and implementing administrative procedures for initial authenticator distribution, for lost or compromised or damaged authenticators, and for revoking authenticators;"
+                    },
+                    {
+                        "id": "ia-5_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Changing default authenticators prior to first use;"
+                    },
+                    {
+                        "id": "ia-5_smt.f",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "f."
+                            }
+                        ],
+                        "prose": "Changing or refreshing authenticators {{ insert: param, ia-5_prm_1 }} or when {{ insert: param, ia-5_prm_2 }} occur;"
+                    },
+                    {
+                        "id": "ia-5_smt.g",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "g."
+                            }
+                        ],
+                        "prose": "Protecting authenticator content from unauthorized disclosure and modification;"
+                    },
+                    {
+                        "id": "ia-5_smt.h",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "h."
+                            }
+                        ],
+                        "prose": "Requiring individuals to take, and having devices implement, specific controls to protect authenticators; and"
+                    },
+                    {
+                        "id": "ia-5_smt.i",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "i."
+                            }
+                        ],
+                        "prose": "Changing authenticators for group or role accounts when membership to those accounts changes."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5_gdn",
+                "name": "guidance",
+                "prose": "Authenticators include passwords, cryptographic devices, biometrics, certificates, one-time password devices, and ID badges. Device authenticators include certificates and passwords. Initial authenticator content is the actual content of the authenticator (e.g., the initial password). In contrast, the requirements for authenticator content contain specific criteria or characteristics (e.g., minimum password length). Developers may deliver system components with factory default authentication credentials (i.e., passwords) to allow for initial installation and configuration. Default authentication credentials are often well known, easily discoverable, and present a significant risk. The requirement to protect individual authenticators may be implemented via control [PL-4](#pl-4) or [PS-6](#ps-6) for authenticators in the possession of individuals and by controls [AC-3](#ac-3), [AC-6](#ac-6), and [SC-28](#sc-28) for authenticators stored in organizational systems, including passwords stored in hashed or encrypted formats or files containing encrypted or hashed passwords accessible with administrator privileges.\n\nSystems support authenticator management by organization-defined settings and restrictions for various authenticator characteristics (e.g., minimum password length, validation time window for time synchronous one-time tokens, and number of allowed rejections during the verification stage of biometric authentication). Actions can be taken to safeguard individual authenticators, including maintaining possession of authenticators, not sharing authenticators with others, and immediately reporting lost, stolen, or compromised authenticators. Authenticator management includes issuing and revoking authenticators for temporary access when no longer needed."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ia-5.1",
+                "class": "SP800-53-enhancement",
+                "title": "Password-based Authentication",
+                "params": [
+                    {
+                        "id": "ia-5.1_prm_1",
+                        "label": "organization-defined frequency"
+                    },
+                    {
+                        "id": "ia-5.1_prm_2",
+                        "label": "organization-defined composition and complexity rules"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ia-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.1_smt",
+                        "name": "statement",
+                        "prose": "For password-based authentication:",
+                        "parts": [
+                            {
+                                "id": "ia-5.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Maintain a list of commonly-used, expected, or compromised passwords and update the list {{ insert: param, ia-5.1_prm_1 }} and when organizational passwords are suspected to have been compromised directly or indirectly;"
+                            },
+                            {
+                                "id": "ia-5.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Verify, when users create or update passwords, that the passwords are not found on the list of commonly-used, expected, or compromised passwords in IA-5(1)(a);"
+                            },
+                            {
+                                "id": "ia-5.1_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Transmit passwords only over cryptographically-protected channels;"
+                            },
+                            {
+                                "id": "ia-5.1_smt.d",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(d)"
+                                    }
+                                ],
+                                "prose": "Store passwords using an approved salted key derivation function, preferably using a keyed hash;"
+                            },
+                            {
+                                "id": "ia-5.1_smt.e",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(e)"
+                                    }
+                                ],
+                                "prose": "Require immediate selection of a new password upon account recovery;"
+                            },
+                            {
+                                "id": "ia-5.1_smt.f",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(f)"
+                                    }
+                                ],
+                                "prose": "Allow user selection of long passwords and passphrases, including spaces and all printable characters;"
+                            },
+                            {
+                                "id": "ia-5.1_smt.g",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(g)"
+                                    }
+                                ],
+                                "prose": "Employ automated tools to assist the user in selecting strong password authenticators; and"
+                            },
+                            {
+                                "id": "ia-5.1_smt.h",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(h)"
+                                    }
+                                ],
+                                "prose": "Enforce the following composition and complexity rules: {{ insert: param, ia-5.1_prm_2 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ia-5.1_gdn",
+                        "name": "guidance",
+                        "prose": "Password-based authentication applies to passwords regardless of whether they are used in single-factor or multi-factor authentication. Long passwords or passphrases are preferable over shorter passwords. Enforced composition rules provide marginal security benefits while decreasing usability. However, organizations may choose to establish certain rules for password generation (e.g., minimum character length for long passwords) under certain circumstances and can enforce this requirement in IA-5(1)(h). Account recovery can occur, for example, in situations when a password is forgotten. Cryptographically protected passwords include salted one-way cryptographic hashes of passwords. The list of commonly used, compromised, or expected passwords includes passwords obtained from previous breach corpuses, dictionary words, and repetitive or sequential characters. The list includes context-specific words, such as the name of the service, username, and derivatives thereof."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.2",
+                "class": "SP800-53-enhancement",
+                "title": "Public Key-based Authentication",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ia-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-17",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.2_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ia-5.2_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "For public key-based authentication:",
+                                "parts": [
+                                    {
+                                        "id": "ia-5.2_smt.a.1",
+                                        "name": "item",
+                                        "props": [
+                                            {
+                                                "name": "label",
+                                                "value": "(1)"
+                                            }
+                                        ],
+                                        "prose": "Enforce authorized access to the corresponding private key; and"
+                                    },
+                                    {
+                                        "id": "ia-5.2_smt.a.2",
+                                        "name": "item",
+                                        "props": [
+                                            {
+                                                "name": "label",
+                                                "value": "(2)"
+                                            }
+                                        ],
+                                        "prose": "Map the authenticated identity to the account of the individual or group; and"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "ia-5.2_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "When public key infrastructure (PKI) is used:",
+                                "parts": [
+                                    {
+                                        "id": "ia-5.2_smt.b.1",
+                                        "name": "item",
+                                        "props": [
+                                            {
+                                                "name": "label",
+                                                "value": "(1)"
+                                            }
+                                        ],
+                                        "prose": "Validate certificates by constructing and verifying a certification path to an accepted trust anchor, including checking certificate status information; and"
+                                    },
+                                    {
+                                        "id": "ia-5.2_smt.b.2",
+                                        "name": "item",
+                                        "props": [
+                                            {
+                                                "name": "label",
+                                                "value": "(2)"
+                                            }
+                                        ],
+                                        "prose": "Implement a local cache of revocation data to support path discovery and validation."
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ia-5.2_gdn",
+                        "name": "guidance",
+                        "prose": "Public key cryptography is a valid authentication mechanism for individuals, machines, and devices. For PKI solutions, status information for certification paths includes certificate revocation lists or certificate status protocol responses. For PIV cards, certificate validation involves the construction and verification of a certification path to the Common Policy Root trust anchor, which includes certificate policy processing. Implementing a local cache of revocation data to support path discovery and validation also supports system availability in situations where organizations are unable to access revocation information via the network."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.3",
+                "class": "SP800-53-enhancement",
+                "title": "In-person or Trusted External Party Registration",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.03"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-12.4",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.4",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Support for Password Strength Determination",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.04"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5.1",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.5",
+                "class": "SP800-53-enhancement",
+                "title": "Change Authenticators Prior to Delivery",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.5_smt",
+                        "name": "statement",
+                        "prose": "Require developers and installers of system components to provide unique authenticators or change default authenticators prior to delivery and installation."
+                    },
+                    {
+                        "id": "ia-5.5_gdn",
+                        "name": "guidance",
+                        "prose": "Changing authenticators prior to the delivery and installation of system components extends the requirement for organizations to change default authenticators upon system installation by requiring developers and/or installers to provide unique authenticators or change default authenticators for system components prior to delivery and/or installation. However, it typically does not apply to developers of commercial off-the-shelf information technology products. Requirements for unique authenticators can be included in acquisition documents prepared by organizations when procuring systems or system components."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.6",
+                "class": "SP800-53-enhancement",
+                "title": "Protection of Authenticators",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ra-2",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.6_smt",
+                        "name": "statement",
+                        "prose": "Protect authenticators commensurate with the security category of the information to which use of the authenticator permits access."
+                    },
+                    {
+                        "id": "ia-5.6_gdn",
+                        "name": "guidance",
+                        "prose": "For systems that contain multiple security categories of information without reliable physical or logical separation between categories, authenticators used to grant access to the systems are protected commensurate with the highest security category of information on the systems. Security categories of information are determined as part of the security categorization process."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.7",
+                "class": "SP800-53-enhancement",
+                "title": "No Embedded Unencrypted Static Authenticators",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.7_smt",
+                        "name": "statement",
+                        "prose": "Ensure that unencrypted static authenticators are not embedded in applications or other forms of static storage."
+                    },
+                    {
+                        "id": "ia-5.7_gdn",
+                        "name": "guidance",
+                        "prose": "In addition to applications, other forms of static storage include access scripts and function keys. Organizations exercise caution when determining whether embedded or stored authenticators are in encrypted or unencrypted form. If authenticators are used in the manner stored, then those representations are considered unencrypted authenticators."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.8",
+                "class": "SP800-53-enhancement",
+                "title": "Multiple System Accounts",
+                "params": [
+                    {
+                        "id": "ia-5.8_prm_1",
+                        "label": "organization-defined security controls"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ps-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.8_smt",
+                        "name": "statement",
+                        "prose": "Implement {{ insert: param, ia-5.8_prm_1 }} to manage the risk of compromise due to individuals having accounts on multiple systems."
+                    },
+                    {
+                        "id": "ia-5.8_gdn",
+                        "name": "guidance",
+                        "prose": "When individuals have accounts on multiple systems and use the same authenticators such as passwords, there is the risk that a compromise of one account may lead to the compromise of other accounts. Alternative approaches include having different authenticators (passwords) on all systems, employing a single sign-on or federation mechanism, or using some form of one-time passwords on all systems. Organizations can also use rules of behavior (see [PL-4](#pl-4)) and access agreements (see [PS-6](#ps-6)) to mitigate the risk of multiple system accounts."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.9",
+                "class": "SP800-53-enhancement",
+                "title": "Federated Credential Management",
+                "params": [
+                    {
+                        "id": "ia-5.9_prm_1",
+                        "label": "organization-defined external organizations"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.09"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-7",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-16",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.9_smt",
+                        "name": "statement",
+                        "prose": "Use the following external organizations to federate credentials: {{ insert: param, ia-5.9_prm_1 }}."
+                    },
+                    {
+                        "id": "ia-5.9_gdn",
+                        "name": "guidance",
+                        "prose": "Federation provides organizations with the capability to authenticate individuals and devices when conducting cross-organization activities involving the processing, storage, or transmission of information. Using a specific list of approved external organizations for authentication helps to ensure that those organizations are vetted and trusted."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.10",
+                "class": "SP800-53-enhancement",
+                "title": "Dynamic Credential Binding",
+                "params": [
+                    {
+                        "id": "ia-5.10_prm_1",
+                        "label": "organization-defined binding rules"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(10)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.10"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-16",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.10_smt",
+                        "name": "statement",
+                        "prose": "Bind identities and authenticators dynamically using the following rules: {{ insert: param, ia-5.10_prm_1 }}."
+                    },
+                    {
+                        "id": "ia-5.10_gdn",
+                        "name": "guidance",
+                        "prose": "Authentication requires some form of binding between an identity and the authenticator that is used to confirm the identity. In conventional approaches, binding is established by pre-provisioning both the identity and the authenticator to the system. For example, the binding between a username (i.e., identity) and a password (i.e., authenticator) is accomplished by provisioning the identity and authenticator as a pair in the system. New authentication techniques allow the binding between the identity and the authenticator to be implemented external to a system. For example, with smartcard credentials, the identity and authenticator are bound together on the smartcard. Using these credentials, systems can authenticate identities that have not been pre-provisioned, dynamically provisioning the identity after authentication. In these situations, organizations can anticipate the dynamic provisioning of identities. Pre-established trust relationships and mechanisms with appropriate authorities to validate identities and related credentials are essential."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.11",
+                "class": "SP800-53-enhancement",
+                "title": "Hardware Token-based Authentication",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(11)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.11"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-2.1",
+                        "rel": "incorporated-into"
+                    },
+                    {
+                        "href": "#ia-2.2",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.12",
+                "class": "SP800-53-enhancement",
+                "title": "Biometric Authentication Performance",
+                "params": [
+                    {
+                        "id": "ia-5.12_prm_1",
+                        "label": "organization-defined biometric quality requirements"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(12)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.12"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.12_smt",
+                        "name": "statement",
+                        "prose": "For biometric-based authentication, employ mechanisms that satisfy the following biometric quality requirements {{ insert: param, ia-5.12_prm_1 }}."
+                    },
+                    {
+                        "id": "ia-5.12_gdn",
+                        "name": "guidance",
+                        "prose": "Unlike password-based authentication, which provides exact matches of user-input passwords to stored passwords, biometric authentication does not provide exact matches. Depending on the type of biometric and the type of collection mechanism, there is likely to be some divergence from the presented biometric and the stored biometric that serves as the basis for comparison. Matching performance is the rate at which a biometric algorithm correctly results in a match for a genuine user and rejects other users. Biometric performance requirements include the match rate, which reflects the accuracy of the biometric matching algorithm used by a system."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.13",
+                "class": "SP800-53-enhancement",
+                "title": "Expiration of Cached Authenticators",
+                "params": [
+                    {
+                        "id": "ia-5.13_prm_1",
+                        "label": "organization-defined time period"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(13)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.13"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.13_smt",
+                        "name": "statement",
+                        "prose": "Prohibit the use of cached authenticators after {{ insert: param, ia-5.13_prm_1 }}."
+                    },
+                    {
+                        "id": "ia-5.13_gdn",
+                        "name": "guidance",
+                        "prose": "Cached authenticators are used to authenticate to the local machine when the network is not available. If cached authentication information is out of date, the validity of the authentication information may be questionable."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.14",
+                "class": "SP800-53-enhancement",
+                "title": "Managing Content of PKI Trust Stores",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(14)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.14"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.14_smt",
+                        "name": "statement",
+                        "prose": "For PKI-based authentication, employ an organization-wide methodology for managing the content of PKI trust stores installed across all platforms, including networks, operating systems, browsers, and applications."
+                    },
+                    {
+                        "id": "ia-5.14_gdn",
+                        "name": "guidance",
+                        "prose": "An organization-wide methodology for managing the content of PKI trust stores helps improve the accuracy and currency of PKI-based authentication credentials across the organization."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.15",
+                "class": "SP800-53-enhancement",
+                "title": "Gsa-approved Products and Services",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(15)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.15"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.15_smt",
+                        "name": "statement",
+                        "prose": "Use only General Services Administration-approved products and services for identity, credential, and access management."
+                    },
+                    {
+                        "id": "ia-5.15_gdn",
+                        "name": "guidance",
+                        "prose": "General Services Administration (GSA)-approved products and services are products and services that have been approved through the GSA conformance program, where applicable, and posted to the GSA Approved Products List. GSA provides guidance for teams to design and build functional and secure systems that comply with Federal Identity, Credential, and Access Management (FICAM) policies, technologies, and implementation patterns."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.16",
+                "class": "SP800-53-enhancement",
+                "title": "In-person or Trusted External Party Authenticator Issuance",
+                "params": [
+                    {
+                        "id": "ia-5.16_prm_1",
+                        "label": "organization-defined types of and/or specific authenticators"
+                    },
+                    {
+                        "id": "ia-5.16_prm_2",
+                        "select": {
+                            "choice": [
+                                "in person",
+                                "by a trusted external party"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "ia-5.16_prm_3",
+                        "label": "organization-defined registration authority"
+                    },
+                    {
+                        "id": "ia-5.16_prm_4",
+                        "label": "organization-defined personnel or roles"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(16)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.16"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ia-12",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.16_smt",
+                        "name": "statement",
+                        "prose": "Require that the issuance of {{ insert: param, ia-5.16_prm_1 }} be conducted {{ insert: param, ia-5.16_prm_2 }} before {{ insert: param, ia-5.16_prm_3 }} with authorization by {{ insert: param, ia-5.16_prm_4 }}."
+                    },
+                    {
+                        "id": "ia-5.16_gdn",
+                        "name": "guidance",
+                        "prose": "Issuing authenticators in person or by a trusted external party enhances and reinforces the trustworthiness of the identity proofing process."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.17",
+                "class": "SP800-53-enhancement",
+                "title": "Presentation Attack Detection for Biometric Authenticators",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(17)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.17"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.17_smt",
+                        "name": "statement",
+                        "prose": "Employ presentation attack detection mechanisms for biometric-based authentication."
+                    },
+                    {
+                        "id": "ia-5.17_gdn",
+                        "name": "guidance",
+                        "prose": "Biometric characteristics do not constitute secrets. Such characteristics can be obtained by online web accesses, taking a picture of someone with a camera phone to obtain facial images with or without their knowledge, lifting from objects that someone has touched (e.g., a latent fingerprint), or capturing a high-resolution image (e.g., an iris pattern). Presentation attack detection technologies including liveness detection, can mitigate the risk of these types of attacks by making it difficult to produce artifacts intended to defeat the biometric sensor."
+                    }
+                ]
+            },
+            {
+                "id": "ia-5.18",
+                "class": "SP800-53-enhancement",
+                "title": "Password Managers",
+                "params": [
+                    {
+                        "id": "ia-5.18_prm_1",
+                        "label": "organization-defined password managers"
+                    },
+                    {
+                        "id": "ia-5.18_prm_2",
+                        "label": "organization-defined controls"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IA-5(18)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ia-05.18"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ia-5",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ia-5.18_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ia-5.18_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Employ {{ insert: param, ia-5.18_prm_1 }} to generate and manage passwords; and"
+                            },
+                            {
+                                "id": "ia-5.18_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Protect the passwords using {{ insert: param, ia-5.18_prm_2 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ia-5.18_gdn",
+                        "name": "guidance",
+                        "prose": "For systems where static passwords are employed, it is often a challenge to ensure that the passwords are suitably complex and that the same passwords are not employed on multiple systems. A password manager is a solution to this problem as it automatically generates and stores strong and different passwords for various accounts. A potential risk of using password managers is that adversaries can target the collection of passwords generated by the password manager. Therefore, the collection of passwords requires protection including encrypting the passwords (see [IA-5(1)(d)](#ia-5.1_smt.d)) and storing the collection offline in a token."
+                    }
+                ]
+            }
+        ]
+    }
+}

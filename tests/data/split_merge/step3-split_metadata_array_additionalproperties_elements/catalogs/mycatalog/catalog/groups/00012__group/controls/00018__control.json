@@ -1,0 +1,55 @@
+{
+    "control": {
+        "id": "pm-19",
+        "class": "SP800-53",
+        "title": "Privacy Program Leadership Role",
+        "props": [
+            {
+                "name": "label",
+                "value": "PM-19"
+            },
+            {
+                "name": "sort-id",
+                "value": "pm-19"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#pm-18",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-20",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-23",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-24",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-27",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pm-19_smt",
+                "name": "statement",
+                "prose": "Appoint a senior agency official for privacy with the authority, mission, accountability, and resources to coordinate, develop, and implement, applicable privacy requirements and manage privacy risks through the organization-wide privacy program."
+            },
+            {
+                "id": "pm-19_gdn",
+                "name": "guidance",
+                "prose": "The privacy officer is an organizational official. For federal agencies\u2014as defined by applicable laws, executive orders, directives, regulations, policies, standards, and guidelines\u2014this official is designated as the senior agency official for privacy. Organizations may also refer to this official as the chief privacy officer. The senior agency official for privacy also has roles on the data management board (see [PM-23](#pm-23)) and the data integrity board (see [PM-24](#pm-24))."
+            }
+        ]
+    }
+}

@@ -1,0 +1,53 @@
+{
+    "control": {
+        "id": "sa-20",
+        "class": "SP800-53",
+        "title": "Customized Development of Critical Components",
+        "params": [
+            {
+                "id": "sa-20_prm_1",
+                "label": "organization-defined critical system components"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-20"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-20"
+            }
+        ],
+        "links": [
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sa-20_smt",
+                "name": "statement",
+                "prose": "Reimplement or custom develop the following critical system components: {{ insert: param, sa-20_prm_1 }}."
+            },
+            {
+                "id": "sa-20_gdn",
+                "name": "guidance",
+                "prose": "Organizations determine that certain system components likely cannot be trusted due to specific threats to and vulnerabilities in those components for which there are no viable security controls to adequately mitigate risk. Reimplementation or custom development of such components may satisfy requirements for higher assurance and is carried out by initiating changes to system components (including hardware, software, and firmware) such that the standard attacks by adversaries are less likely to succeed. In situations where no alternative sourcing is available and organizations choose not to reimplement or custom develop critical system components, additional controls can be employed. Controls include enhanced auditing, restrictions on source code and system utility access, and protection from deletion of system and application files."
+            }
+        ]
+    }
+}

@@ -1,0 +1,172 @@
+{
+    "control": {
+        "id": "ir-7",
+        "class": "SP800-53",
+        "title": "Incident Response Assistance",
+        "props": [
+            {
+                "name": "label",
+                "value": "IR-7"
+            },
+            {
+                "name": "sort-id",
+                "value": "ir-07"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#2be7b163-e50a-435c-8906-f1162f2a457a",
+                "rel": "reference"
+            },
+            {
+                "href": "#at-2",
+                "rel": "related"
+            },
+            {
+                "href": "#at-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-22",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-26",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-9",
+                "rel": "related"
+            },
+            {
+                "href": "#si-18",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ir-7_smt",
+                "name": "statement",
+                "prose": "Provide an incident response support resource, integral to the organizational incident response capability, that offers advice and assistance to users of the system for the handling and reporting of incidents."
+            },
+            {
+                "id": "ir-7_gdn",
+                "name": "guidance",
+                "prose": "Incident response support resources provided by organizations include help desks, assistance groups, automated ticketing systems to open and track incident response tickets, and access to forensics services or consumer redress services, when required."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ir-7.1",
+                "class": "SP800-53-enhancement",
+                "title": "Automation Support for Availability of Information and Support",
+                "params": [
+                    {
+                        "id": "ir-7.1_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IR-7(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ir-07.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ir-7",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ir-7.1_smt",
+                        "name": "statement",
+                        "prose": "Increase the availability of incident response information and support using {{ insert: param, ir-7.1_prm_1 }}."
+                    },
+                    {
+                        "id": "ir-7.1_gdn",
+                        "name": "guidance",
+                        "prose": "Automated mechanisms can provide a push or pull capability for users to obtain incident response assistance. For example, individuals may have access to a website to query the assistance capability, or the assistance capability can proactively send incident response information to users (general distribution or targeted) as part of increasing understanding of current response capabilities and support."
+                    }
+                ]
+            },
+            {
+                "id": "ir-7.2",
+                "class": "SP800-53-enhancement",
+                "title": "Coordination with External Providers",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "IR-7(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ir-07.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ir-7",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ir-7.2_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "ir-7.2_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Establish a direct, cooperative relationship between its incident response capability and external providers of system protection capability; and"
+                            },
+                            {
+                                "id": "ir-7.2_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Identify organizational incident response team members to the external providers."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ir-7.2_gdn",
+                        "name": "guidance",
+                        "prose": "External providers of a system protection capability include the Computer Network Defense program within the U.S. Department of Defense. External providers help to protect, monitor, analyze, detect, and respond to unauthorized activity within organizational information systems and networks. It may be beneficial to have agreements in place with external providers to clarify the roles and responsibilities of each party before an incident occurs."
+                    }
+                ]
+            }
+        ]
+    }
+}

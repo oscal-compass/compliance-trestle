@@ -1,0 +1,65 @@
+{
+    "control": {
+        "id": "sc-50",
+        "class": "SP800-53",
+        "title": "Software-enforced Separation and Policy Enforcement",
+        "params": [
+            {
+                "id": "sc-50_prm_1",
+                "label": "organization-defined security domains"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-50"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-50"
+            }
+        ],
+        "links": [
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-49",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-50_smt",
+                "name": "statement",
+                "prose": "Implement software-enforced separation and policy enforcement mechanisms between {{ insert: param, sc-50_prm_1 }}."
+            },
+            {
+                "id": "sc-50_gdn",
+                "name": "guidance",
+                "prose": "System owners may require additional strength of mechanism to ensure domain separation and policy enforcement for specific types of threats and environments of operation."
+            }
+        ]
+    }
+}

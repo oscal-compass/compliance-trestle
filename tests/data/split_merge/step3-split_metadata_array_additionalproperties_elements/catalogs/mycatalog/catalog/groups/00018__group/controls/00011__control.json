@@ -1,0 +1,298 @@
+{
+    "control": {
+        "id": "si-12",
+        "class": "SP800-53",
+        "title": "Information Management and Retention",
+        "props": [
+            {
+                "name": "label",
+                "value": "SI-12"
+            },
+            {
+                "name": "sort-id",
+                "value": "si-12"
+            }
+        ],
+        "links": [
+            {
+                "href": "#e922fc50-b1f9-469f-92ef-ed7d9803611c",
+                "rel": "reference"
+            },
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-16",
+                "rel": "related"
+            },
+            {
+                "href": "#au-5",
+                "rel": "related"
+            },
+            {
+                "href": "#au-11",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-5",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-8",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-3",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-6",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-6",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-2",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "si-12_smt",
+                "name": "statement",
+                "prose": "Manage and retain information within the system and information output from the system in accordance with applicable laws, executive orders, directives, regulations, policies, standards, guidelines and operational requirements."
+            },
+            {
+                "id": "si-12_gdn",
+                "name": "guidance",
+                "prose": "Information management and retention requirements cover the full life cycle of information, in some cases extending beyond system disposal. Information to be retained may also include policies, procedures, plans, reports, data output from control implementation, and other types of administrative information. The National Archives and Records Administration (NARA) provides federal policy and guidance on records retention and schedules. If organizations have a records management office, consider coordinating with records management personnel. Records produced from the output of implemented controls that may require management and retention include, but are not limited to: All XX-1, [AC-6(9)](#ac-6.9), [AT-4](#at-4), [AU-12](#au-12), [CA-2](#ca-2), [CA-3](#ca-3), [CA-5](#ca-5), [CA-6](#ca-6), [CA-7](#ca-7), [CA-8](#ca-8), [CA-9](#ca-9), [CM-2](#cm-2), [CM-3](#cm-3), [CM-4](#cm-4), [CM-6](#cm-6), [CM-8](#cm-8), [CM-9](#cm-9), [CM-12](#cm-12), [CM-13](#cm-13), [CP-2](#cp-2), [IR-6](#ir-6), [IR-8](#ir-8), [MA-2](#ma-2), [MA-4](#ma-4), [PE-2](#pe-2), [PE-8](#pe-8), [PE-16](#pe-16), [PE-17](#pe-17), [PL-2](#pl-2), [PL-4](#pl-4), [PL-7](#pl-7), [PL-8](#pl-8), [PM-5](#pm-5), [PM-8](#pm-8), [PM-9](#pm-9), [PM-18](#pm-18), [PM-21](#pm-21), [PM-27](#pm-27), [PM-28](#pm-28), [PM-30](#pm-30), [PM-31](#pm-31), [PS-2](#ps-2), [PS-6](#ps-6), [PS-7](#ps-7), [PT-2](#pt-2), [PT-3](#pt-3), [PT-7](#pt-7), [RA-2](#ra-2), [RA-3](#ra-3), [RA-5](#ra-5), [RA-8](#ra-8), [SA-4](#sa-4), [SA-5](#sa-5), [SA-8](#sa-8), [SA-10](#sa-10), [SI-4](#si-4), [SR-2](#sr-2), [SR-4](#sr-4), [SR-8](#sr-8)."
+            }
+        ],
+        "controls": [
+            {
+                "id": "si-12.1",
+                "class": "SP800-53-enhancement",
+                "title": "Limit Personally Identifiable Information Elements",
+                "params": [
+                    {
+                        "id": "si-12.1_prm_1",
+                        "label": "organization-defined elements of personally identifiable information"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-12(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-12.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-12",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pm-25",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-12.1_smt",
+                        "name": "statement",
+                        "prose": "Limit personally identifiable information being processed in the information life cycle to the following elements of personally identifiable information: {{ insert: param, si-12.1_prm_1 }}."
+                    },
+                    {
+                        "id": "si-12.1_gdn",
+                        "name": "guidance",
+                        "prose": "Limiting the use of personally identifiable information throughout the information life cycle when the information is not needed for operational purposes helps to reduce the level of privacy risk created by a system. The information life cycle includes information creation, collection, use, processing, storage, maintenance, dissemination, disclosure, and disposition. Risk assessments as well as applicable laws, regulations, and policies can provide useful inputs to determining which elements of personally identifiable information may create risk."
+                    }
+                ]
+            },
+            {
+                "id": "si-12.2",
+                "class": "SP800-53-enhancement",
+                "title": "Minimize Personally Identifiable Information in Testing, Training, and Research",
+                "params": [
+                    {
+                        "id": "si-12.2_prm_1",
+                        "label": "organization-defined techniques"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-12(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-12.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-12",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pm-22",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pm-25",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-19",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-12.2_smt",
+                        "name": "statement",
+                        "prose": "Use the following techniques to minimize the use of personally identifiable information for research, testing, or training: {{ insert: param, si-12.2_prm_1 }}."
+                    },
+                    {
+                        "id": "si-12.2_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations can minimize the risk to an individual\u2019s privacy by employing techniques such as de-identification or synthetic data. Limiting the use of personally identifiable information throughout the information life cycle when the information is not needed for research, testing, or training helps reduce the level of privacy risk created by a system. Risk assessments as well as applicable laws, regulations, and policies can provide useful inputs to determining the techniques to use and when to use them."
+                    }
+                ]
+            },
+            {
+                "id": "si-12.3",
+                "class": "SP800-53-enhancement",
+                "title": "Information Disposal",
+                "params": [
+                    {
+                        "id": "si-12.3_prm_1",
+                        "label": "organization-defined techniques"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-12(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-12.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-12",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-12.3_smt",
+                        "name": "statement",
+                        "prose": "Use the following techniques to dispose of, destroy, or erase information following the retention period: {{ insert: param, si-12.3_prm_1 }}."
+                    },
+                    {
+                        "id": "si-12.3_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations can minimize both security and privacy risks by disposing of information when it is no longer needed. The disposal or destruction of information applies to originals as well as copies and archived records, including system logs that may contain personally identifiable information."
+                    }
+                ]
+            }
+        ]
+    }
+}

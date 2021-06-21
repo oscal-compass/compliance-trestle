@@ -1,0 +1,400 @@
+{
+    "control": {
+        "id": "cm-5",
+        "class": "SP800-53",
+        "title": "Access Restrictions for Change",
+        "props": [
+            {
+                "name": "label",
+                "value": "CM-5"
+            },
+            {
+                "name": "sort-id",
+                "value": "cm-05"
+            }
+        ],
+        "links": [
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-28",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-34",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-37",
+                "rel": "related"
+            },
+            {
+                "href": "#si-2",
+                "rel": "related"
+            },
+            {
+                "href": "#si-10",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cm-5_smt",
+                "name": "statement",
+                "prose": "Define, document, approve, and enforce physical and logical access restrictions associated with changes to the system."
+            },
+            {
+                "id": "cm-5_gdn",
+                "name": "guidance",
+                "prose": "Changes to the hardware, software, or firmware components of systems or the operational procedures related to the system can potentially have significant effects on the security of the systems or individuals\u2019 privacy. Therefore, organizations permit only qualified and authorized individuals to access systems for purposes of initiating changes. Access restrictions include physical and logical access controls (see [AC-3](#ac-3) and [PE-3](#pe-3)), software libraries, workflow automation, media libraries, abstract layers (i.e., changes implemented into external interfaces rather than directly into systems), and change windows (i.e., changes occur only during specified times)."
+            }
+        ],
+        "controls": [
+            {
+                "id": "cm-5.1",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Access Enforcement and Audit Records",
+                "params": [
+                    {
+                        "id": "cm-5.1_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-5(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-05.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-7",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cm-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cm-11",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-12",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-5.1_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "cm-5.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Enforce access restrictions using {{ insert: param, cm-5.1_prm_1 }}; and"
+                            },
+                            {
+                                "id": "cm-5.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Automatically generate audit records of the enforcement actions."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "cm-5.1_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations log system accesses associated with applying configuration changes to ensure that configuration change control is implemented and to support after-the-fact actions should organizations discover any unauthorized changes."
+                    }
+                ]
+            },
+            {
+                "id": "cm-5.2",
+                "class": "SP800-53-enhancement",
+                "title": "Review System Changes",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-5(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-05.02"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-3.7",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "cm-5.3",
+                "class": "SP800-53-enhancement",
+                "title": "Signed Components",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-5(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-05.03"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-14",
+                        "rel": "moved-to"
+                    }
+                ]
+            },
+            {
+                "id": "cm-5.4",
+                "class": "SP800-53-enhancement",
+                "title": "Dual Authorization",
+                "params": [
+                    {
+                        "id": "cm-5.4_prm_1",
+                        "label": "organization-defined system components and system-level information"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-5(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-05.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cm-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-5.4_smt",
+                        "name": "statement",
+                        "prose": "Enforce dual authorization for implementing changes to {{ insert: param, cm-5.4_prm_1 }}."
+                    },
+                    {
+                        "id": "cm-5.4_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations employ dual authorization to help ensure that any changes to selected system components and information cannot occur unless two qualified individuals approve and implement such changes. The two individuals possess the skills and expertise to determine if the proposed changes are correct implementations of approved changes. The individuals are also accountable for the changes. Dual authorization may also be known as two-person control. To reduce the risk of collusion, organizations consider rotating dual authorization duties to other individuals. System-level information includes operational procedures."
+                    }
+                ]
+            },
+            {
+                "id": "cm-5.5",
+                "class": "SP800-53-enhancement",
+                "title": "Privilege Limitation for Production and Operation",
+                "params": [
+                    {
+                        "id": "cm-5.5_prm_1",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-5(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-05.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-2",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-5.5_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "cm-5.5_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Limit privileges to change system components and system-related information within a production or operational environment; and"
+                            },
+                            {
+                                "id": "cm-5.5_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Review and reevaluate privileges {{ insert: param, cm-5.5_prm_1 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "cm-5.5_gdn",
+                        "name": "guidance",
+                        "prose": "In many organizations, systems support multiple mission and business functions. Limiting privileges to change system components with respect to operational systems is necessary because changes to a system component may have far-reaching effects on mission and business processes supported by the system. The relationships between systems and mission/business processes are, in some cases, unknown to developers. System-related information includes operational procedures."
+                    }
+                ]
+            },
+            {
+                "id": "cm-5.6",
+                "class": "SP800-53-enhancement",
+                "title": "Limit Library Privileges",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-5(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-05.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-2",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-5.6_smt",
+                        "name": "statement",
+                        "prose": "Limit privileges to change software resident within software libraries."
+                    },
+                    {
+                        "id": "cm-5.6_gdn",
+                        "name": "guidance",
+                        "prose": "Software libraries include privileged programs."
+                    }
+                ]
+            },
+            {
+                "id": "cm-5.7",
+                "class": "SP800-53-enhancement",
+                "title": "Automatic Implementation of Security Safeguards",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-5(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-05.07"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-7",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            }
+        ]
+    }
+}

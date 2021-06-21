@@ -1,0 +1,131 @@
+{
+    "control": {
+        "id": "pm-12",
+        "class": "SP800-53",
+        "title": "Insider Threat Program",
+        "props": [
+            {
+                "name": "label",
+                "value": "PM-12"
+            },
+            {
+                "name": "sort-id",
+                "value": "pm-12"
+            }
+        ],
+        "links": [
+            {
+                "href": "#0af071a6-cf8e-48ee-8c82-fe91efa20f94",
+                "rel": "reference"
+            },
+            {
+                "href": "#528135e3-c65b-461a-93d3-46513610f792",
+                "rel": "reference"
+            },
+            {
+                "href": "#06d74ea9-2178-449c-a9c5-b2980f804ac8",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#at-2",
+                "rel": "related"
+            },
+            {
+                "href": "#au-6",
+                "rel": "related"
+            },
+            {
+                "href": "#au-7",
+                "rel": "related"
+            },
+            {
+                "href": "#au-10",
+                "rel": "related"
+            },
+            {
+                "href": "#au-12",
+                "rel": "related"
+            },
+            {
+                "href": "#au-13",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-7",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-16",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ps-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-38",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-14",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pm-12_smt",
+                "name": "statement",
+                "prose": "Implement an insider threat program that includes a cross-discipline insider threat incident handling team."
+            },
+            {
+                "id": "pm-12_gdn",
+                "name": "guidance",
+                "prose": "Organizations that handle classified information are required, under Executive Order 13587 [EO 13587](#0af071a6-cf8e-48ee-8c82-fe91efa20f94) and the National Insider Threat Policy [ODNI NITP](#06d74ea9-2178-449c-a9c5-b2980f804ac8), to establish insider threat programs. The same standards and guidelines that apply to insider threat programs in classified environments can also be employed effectively to improve the security of controlled unclassified and other information in non-national security systems. Insider threat programs include controls to detect and prevent malicious insider activity through the centralized integration and analysis of both technical and nontechnical information to identify potential insider threat concerns. A senior official is designated by the department or agency head as the responsible individual to implement and provide oversight for the program. In addition to the centralized integration and analysis capability, insider threat programs require organizations to prepare department or agency insider threat policies and implementation plans, conduct host-based user monitoring of individual employee activities on government-owned classified computers, provide insider threat awareness training to employees, receive access to information from offices in the department or agency for insider threat analysis, and conduct self-assessments of department or agency insider threat posture.\n\nInsider threat programs can leverage the existence of incident handling teams that organizations may already have in place, such as computer security incident response teams. Human resources records are especially important in this effort, as there is compelling evidence to show that some types of insider crimes are often preceded by nontechnical behaviors in the workplace, including ongoing patterns of disgruntled behavior and conflicts with coworkers and other colleagues. These precursors can guide organizational officials in more focused, targeted monitoring efforts. However, the use of human resource records could raise significant concerns for privacy. The participation of a legal team, including consultation with the senior agency official for privacy, ensures that monitoring activities are performed in accordance with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines."
+            }
+        ]
+    }
+}

@@ -1,0 +1,680 @@
+{
+    "control": {
+        "id": "sa-11",
+        "class": "SP800-53",
+        "title": "Developer Testing and Evaluation",
+        "params": [
+            {
+                "id": "sa-11_prm_1",
+                "select": {
+                    "how-many": "one-or-more",
+                    "choice": [
+                        "unit",
+                        "integration",
+                        "system",
+                        "regression"
+                    ]
+                }
+            },
+            {
+                "id": "sa-11_prm_2",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "sa-11_prm_3",
+                "label": "organization-defined depth and coverage"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SA-11"
+            },
+            {
+                "name": "sort-id",
+                "value": "sa-11"
+            }
+        ],
+        "links": [
+            {
+                "href": "#4452efc0-e79e-47b8-aa30-b54f3ef61c2f",
+                "rel": "reference"
+            },
+            {
+                "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                "rel": "reference"
+            },
+            {
+                "href": "#a21aef46-7330-48a0-b2e1-c5bb8b2dd11d",
+                "rel": "reference"
+            },
+            {
+                "href": "#708b94e1-3d5e-4b22-ab43-1c69f3a97e37",
+                "rel": "reference"
+            },
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#ca-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-7",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-15",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-17",
+                "rel": "related"
+            },
+            {
+                "href": "#si-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-6",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sa-11_smt",
+                "name": "statement",
+                "prose": "Require the developer of the system, system component, or system service, at all post-design stages of the system development life cycle, to:",
+                "parts": [
+                    {
+                        "id": "sa-11_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Develop and implement a plan for ongoing security and privacy control assessments;"
+                    },
+                    {
+                        "id": "sa-11_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Perform {{ insert: param, sa-11_prm_1 }} testing/evaluation {{ insert: param, sa-11_prm_2 }} at {{ insert: param, sa-11_prm_3 }};"
+                    },
+                    {
+                        "id": "sa-11_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Produce evidence of the execution of the assessment plan and the results of the testing and evaluation;"
+                    },
+                    {
+                        "id": "sa-11_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Implement a verifiable flaw remediation process; and"
+                    },
+                    {
+                        "id": "sa-11_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Correct flaws identified during testing and evaluation."
+                    }
+                ]
+            },
+            {
+                "id": "sa-11_gdn",
+                "name": "guidance",
+                "prose": "Developmental testing and evaluation confirms that the required controls are implemented correctly, operating as intended, enforcing the desired security and privacy policies, and meeting established security and privacy requirements. Security properties of systems and the privacy of individuals may be affected by the interconnection of system components or changes to those components. The interconnections or changes\u2014including upgrading or replacing applications, operating systems, and firmware\u2014may adversely affect previously implemented controls. Ongoing assessment during development allows for additional types of testing and evaluation that developers can conduct to reduce or eliminate potential flaws. Testing custom software applications may require approaches such as manual code review, security architecture review, and penetration testing, as well as and static analysis, dynamic analysis, binary analysis, or a hybrid of the three analysis approaches.\n\nDevelopers can use the analysis approaches, along with security instrumentation and fuzzing, in a variety of tools and in source code reviews. The security and privacy assessment plans include the specific activities that developers plan to carry out, including the types of analyses, testing, evaluation, and reviews of software and firmware components; the degree of rigor to be applied; the frequency of the ongoing testing and evaluation; and the types of artifacts produced during those processes. The depth of testing and evaluation refers to the rigor and level of detail associated with the assessment process. The coverage of testing and evaluation refers to the scope (i.e., number and type) of the artifacts included in the assessment process. Contracts specify the acceptance criteria for security and privacy assessment plans, flaw remediation processes, and the evidence that the plans and processes have been diligently applied. Methods for reviewing and protecting assessment plans, evidence, and documentation are commensurate with the security category or classification level of the system. Contracts may specify protection requirements for documentation."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sa-11.1",
+                "class": "SP800-53-enhancement",
+                "title": "Static Code Analysis",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-11(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-11.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-11",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-11.1_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to employ static code analysis tools to identify common flaws and document the results of the analysis."
+                    },
+                    {
+                        "id": "sa-11.1_gdn",
+                        "name": "guidance",
+                        "prose": "Static code analysis provides a technology and methodology for security reviews and includes checking for weaknesses in the code as well as for the incorporation of libraries or other included code with known vulnerabilities or that are out-of-date and not supported. Static code analysis can be used to identify vulnerabilities and enforce secure coding practices. It is most effective when used early in the development process, when each code change can automatically be scanned for potential weaknesses. Static code analysis can provide clear remediation guidance and identify defects for developers to fix. Evidence of the correct implementation of static analysis can include aggregate defect density for critical defect types, evidence that defects were inspected by developers or security professionals, and evidence that defects were remediated. A high density of ignored findings, commonly referred to as false positives, indicates a potential problem with the analysis process or the analysis tool. In such cases, organizations weigh the validity of the evidence against evidence from other sources."
+                    }
+                ]
+            },
+            {
+                "id": "sa-11.2",
+                "class": "SP800-53-enhancement",
+                "title": "Threat Modeling and Vulnerability Analyses",
+                "params": [
+                    {
+                        "id": "sa-11.2_prm_1",
+                        "label": "organization-defined information concerning impact, environment of operations, known or assumed threats, and acceptable risk levels"
+                    },
+                    {
+                        "id": "sa-11.2_prm_2",
+                        "label": "organization-defined tools and methods"
+                    },
+                    {
+                        "id": "sa-11.2_prm_3",
+                        "label": "organization-defined breadth and depth of modeling and analyses"
+                    },
+                    {
+                        "id": "sa-11.2_prm_4",
+                        "label": "organization-defined acceptance criteria"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-11(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-11.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-11",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pm-15",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ra-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ra-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-11.2_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to perform threat modeling and vulnerability analyses during development and the subsequent testing and evaluation of the system, component, or service that:",
+                        "parts": [
+                            {
+                                "id": "sa-11.2_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Uses the following contextual information: {{ insert: param, sa-11.2_prm_1 }};"
+                            },
+                            {
+                                "id": "sa-11.2_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Employs the following tools and methods: {{ insert: param, sa-11.2_prm_2 }};"
+                            },
+                            {
+                                "id": "sa-11.2_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Conducts the modeling and analyses at the following level of rigor: {{ insert: param, sa-11.2_prm_3 }}; and"
+                            },
+                            {
+                                "id": "sa-11.2_smt.d",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(d)"
+                                    }
+                                ],
+                                "prose": "Produces evidence that meets the following acceptance criteria: {{ insert: param, sa-11.2_prm_4 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sa-11.2_gdn",
+                        "name": "guidance",
+                        "prose": "Systems, system components, and system services may deviate significantly from the functional and design specifications created during the requirements and design stages of the system development life cycle. Therefore, updates to threat modeling and vulnerability analyses of those systems, system components, and system services during development and prior to delivery are critical to the effective operation of those systems, components, and services. Threat modeling and vulnerability analyses at this stage of the system development life cycle ensure that design and implementation changes have been accounted for and that vulnerabilities created because of those changes have been reviewed and mitigated."
+                    }
+                ]
+            },
+            {
+                "id": "sa-11.3",
+                "class": "SP800-53-enhancement",
+                "title": "Independent Verification of Assessment Plans and Evidence",
+                "params": [
+                    {
+                        "id": "sa-11.3_prm_1",
+                        "label": "organization-defined independence criteria"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-11(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-11.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-11",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#at-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ra-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-11.3_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "sa-11.3_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Require an independent agent satisfying {{ insert: param, sa-11.3_prm_1 }} to verify the correct implementation of the developer security and privacy assessment plans and the evidence produced during testing and evaluation; and"
+                            },
+                            {
+                                "id": "sa-11.3_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Verify that the independent agent is provided with sufficient information to complete the verification process or granted the authority to obtain such information."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sa-11.3_gdn",
+                        "name": "guidance",
+                        "prose": "Independent agents have the qualifications\u2014including the expertise, skills, training, certifications, and experience\u2014to verify the correct implementation of developer security and privacy assessment plans."
+                    }
+                ]
+            },
+            {
+                "id": "sa-11.4",
+                "class": "SP800-53-enhancement",
+                "title": "Manual Code Reviews",
+                "params": [
+                    {
+                        "id": "sa-11.4_prm_1",
+                        "label": "organization-defined specific code"
+                    },
+                    {
+                        "id": "sa-11.4_prm_2",
+                        "label": "organization-defined processes, procedures, and/or techniques"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-11(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-11.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-11",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-11.4_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to perform a manual code review of {{ insert: param, sa-11.4_prm_1 }} using the following processes, procedures, and/or techniques: {{ insert: param, sa-11.4_prm_2 }}."
+                    },
+                    {
+                        "id": "sa-11.4_gdn",
+                        "name": "guidance",
+                        "prose": "Manual code reviews are usually reserved for the critical software and firmware components of systems. Manual code reviews are effective at identifying weaknesses that require knowledge of the application\u2019s requirements or context that, in most cases, is unavailable to automated analytic tools and techniques, such as static and dynamic analysis. The benefits of manual code review include the ability to verify access control matrices against application controls and review detailed aspects of cryptographic implementations and controls."
+                    }
+                ]
+            },
+            {
+                "id": "sa-11.5",
+                "class": "SP800-53-enhancement",
+                "title": "Penetration Testing",
+                "params": [
+                    {
+                        "id": "sa-11.5_prm_1",
+                        "label": "organization-defined breadth and depth of testing"
+                    },
+                    {
+                        "id": "sa-11.5_prm_2",
+                        "label": "organization-defined constraints"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-11(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-11.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-11",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ca-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pm-14",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pm-25",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pt-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-11.5_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to perform penetration testing:",
+                        "parts": [
+                            {
+                                "id": "sa-11.5_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "At the following level of rigor: {{ insert: param, sa-11.5_prm_1 }}; and"
+                            },
+                            {
+                                "id": "sa-11.5_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Under the following constraints: {{ insert: param, sa-11.5_prm_2 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sa-11.5_gdn",
+                        "name": "guidance",
+                        "prose": "Penetration testing is an assessment methodology in which assessors, using all available information technology product or system documentation and working under specific constraints, attempt to circumvent the implemented security and privacy features of information technology products and systems. Useful information for assessors who conduct penetration testing includes product and system design specifications, source code, and administrator and operator manuals. Penetration testing can include white-box, gray-box, or black-box testing with analyses performed by skilled professionals who simulate adversary actions. The objective of penetration testing is to discover vulnerabilities in systems, system components, and services that result from implementation errors, configuration faults, or other operational weaknesses or deficiencies. Penetration tests can be performed in conjunction with automated and manual code reviews to provide a greater level of analysis than would ordinarily be possible. When user session information and other personally identifiable information is captured or recorded during penetration testing, such information is handled appropriately to protect privacy."
+                    }
+                ]
+            },
+            {
+                "id": "sa-11.6",
+                "class": "SP800-53-enhancement",
+                "title": "Attack Surface Reviews",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-11(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-11.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-11",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sa-15",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-11.6_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to perform attack surface reviews."
+                    },
+                    {
+                        "id": "sa-11.6_gdn",
+                        "name": "guidance",
+                        "prose": "Attack surfaces of systems and system components are exposed areas that make those systems more vulnerable to attacks. Attack surfaces include any accessible areas where weaknesses or deficiencies in the hardware, software, and firmware components provide opportunities for adversaries to exploit vulnerabilities. Attack surface reviews ensure that developers analyze the design and implementation changes to systems and mitigate attack vectors generated as a result of the changes. The correction of identified flaws includes deprecation of unsafe functions."
+                    }
+                ]
+            },
+            {
+                "id": "sa-11.7",
+                "class": "SP800-53-enhancement",
+                "title": "Verify Scope of Testing and Evaluation",
+                "params": [
+                    {
+                        "id": "sa-11.7_prm_1",
+                        "label": "organization-defined breadth and depth of testing and evaluation"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-11(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-11.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-11",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sa-15",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-11.7_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to verify that the scope of testing and evaluation provides complete coverage of the required controls at the following level of rigor: {{ insert: param, sa-11.7_prm_1 }}."
+                    },
+                    {
+                        "id": "sa-11.7_gdn",
+                        "name": "guidance",
+                        "prose": "Verifying that testing and evaluation provides complete coverage of required controls can be accomplished by a variety of analytic techniques ranging from informal to formal. Each of these techniques provides an increasing level of assurance that corresponds to the degree of formality of the analysis. Rigorously demonstrating control coverage at the highest levels of assurance can be achieved using formal modeling and analysis techniques, including correlation between control implementation and corresponding test cases."
+                    }
+                ]
+            },
+            {
+                "id": "sa-11.8",
+                "class": "SP800-53-enhancement",
+                "title": "Dynamic Code Analysis",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-11(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-11.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-11",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-11.8_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to employ dynamic code analysis tools to identify common flaws and document the results of the analysis."
+                    },
+                    {
+                        "id": "sa-11.8_gdn",
+                        "name": "guidance",
+                        "prose": "Dynamic code analysis provides runtime verification of software programs using tools capable of monitoring programs for memory corruption, user privilege issues, and other potential security problems. Dynamic code analysis employs runtime tools to ensure that security functionality performs in the way it was designed. A type of dynamic analysis, known as fuzz testing, induces program failures by deliberately introducing malformed or random data into software programs. Fuzz testing strategies are derived from the intended use of applications and the functional and design specifications for the applications. To understand the scope of dynamic code analysis and the assurance provided, organizations may also consider conducting code coverage analysis (i.e., checking the degree to which the code has been tested using metrics such as percent of subroutines tested or percent of program statements called during execution of the test suite) and/or concordance analysis (i.e., checking for words that are out of place in software code, such as non-English language words or derogatory terms)."
+                    }
+                ]
+            },
+            {
+                "id": "sa-11.9",
+                "class": "SP800-53-enhancement",
+                "title": "Interactive Application Security Testing",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SA-11(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sa-11.09"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sa-11",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sa-11.9_smt",
+                        "name": "statement",
+                        "prose": "Require the developer of the system, system component, or system service to employ interactive application security testing tools to identify flaws and document the results."
+                    },
+                    {
+                        "id": "sa-11.9_gdn",
+                        "name": "guidance",
+                        "prose": "Interactive (also known as instrumentation-based) application security testing is a method of detecting vulnerabilities by observing applications as they run during testing. The use of instrumentation relies on direct measurements of the actual running applications and uses access to the code, user interaction, libraries, frameworks, backend connections, and configurations to directly measure control effectiveness. When combined with analysis techniques, interactive application security testing can identify a broad range of potential vulnerabilities and confirm control effectiveness. Instrumentation-based testing works in real time and can be used continuously throughout the system development life cycle."
+                    }
+                ]
+            }
+        ]
+    }
+}

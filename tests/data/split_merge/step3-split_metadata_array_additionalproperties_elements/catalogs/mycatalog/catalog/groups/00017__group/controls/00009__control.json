@@ -1,0 +1,45 @@
+{
+    "control": {
+        "id": "sc-10",
+        "class": "SP800-53",
+        "title": "Network Disconnect",
+        "params": [
+            {
+                "id": "sc-10_prm_1",
+                "label": "organization-defined time period"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-10"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-10"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-23",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-10_smt",
+                "name": "statement",
+                "prose": "Terminate the network connection associated with a communications session at the end of the session or after {{ insert: param, sc-10_prm_1 }} of inactivity."
+            },
+            {
+                "id": "sc-10_gdn",
+                "name": "guidance",
+                "prose": "Network disconnect applies to internal and external networks. Terminating network connections associated with specific communications sessions includes de-allocating TCP/IP address or port pairs at the operating system level and de-allocating the networking assignments at the application level if multiple application sessions are using a single operating system-level network connection. Periods of inactivity may be established by organizations and include time periods by type of network access or for specific network accesses."
+            }
+        ]
+    }
+}

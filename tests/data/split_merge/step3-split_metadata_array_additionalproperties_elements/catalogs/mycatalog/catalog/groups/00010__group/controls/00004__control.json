@@ -1,0 +1,142 @@
+{
+    "control": {
+        "id": "pe-5",
+        "class": "SP800-53",
+        "title": "Access Control for Output Devices",
+        "params": [
+            {
+                "id": "pe-5_prm_1",
+                "label": "organization-defined output devices"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PE-5"
+            },
+            {
+                "name": "sort-id",
+                "value": "pe-05"
+            }
+        ],
+        "links": [
+            {
+                "href": "#4c501da5-9d79-4cb6-ba80-97260e1ce327",
+                "rel": "reference"
+            },
+            {
+                "href": "#pe-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-18",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pe-5_smt",
+                "name": "statement",
+                "prose": "Control physical access to output from {{ insert: param, pe-5_prm_1 }} to prevent unauthorized individuals from obtaining the output."
+            },
+            {
+                "id": "pe-5_gdn",
+                "name": "guidance",
+                "prose": "Controlling physical access to output devices includes placing output devices in locked rooms or other secured areas with keypad or card reader access controls and allowing access to authorized individuals only, placing output devices in locations that can be monitored by personnel, installing monitor or screen filters, and using headphones. Examples of output devices include monitors, printers, scanners, audio devices, facsimile machines, and copiers."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pe-5.1",
+                "class": "SP800-53-enhancement",
+                "title": "Access to Output by Authorized Individuals",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PE-5(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pe-05.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pe-5",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "pe-5.2",
+                "class": "SP800-53-enhancement",
+                "title": "Link to Individual Identity",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PE-5(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pe-05.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pe-5",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pe-5.2_smt",
+                        "name": "statement",
+                        "prose": "Link individual identity to receipt of output from output devices."
+                    },
+                    {
+                        "id": "pe-5.2_gdn",
+                        "name": "guidance",
+                        "prose": "Methods for linking individual identity to the receipt of output from output devices include installing security functionality on facsimile machines, copiers, and printers. Such functionality allows organizations to implement authentication on output devices prior to the release of output to individuals."
+                    }
+                ]
+            },
+            {
+                "id": "pe-5.3",
+                "class": "SP800-53-enhancement",
+                "title": "Marking Output Devices",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PE-5(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pe-05.03"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pe-22",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            }
+        ]
+    }
+}

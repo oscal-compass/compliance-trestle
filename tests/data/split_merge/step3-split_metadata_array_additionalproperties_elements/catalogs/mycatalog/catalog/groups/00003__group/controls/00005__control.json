@@ -1,0 +1,237 @@
+{
+    "control": {
+        "id": "ca-6",
+        "class": "SP800-53",
+        "title": "Authorization",
+        "params": [
+            {
+                "id": "ca-6_prm_1",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CA-6"
+            },
+            {
+                "name": "sort-id",
+                "value": "ca-06"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
+                "rel": "reference"
+            },
+            {
+                "href": "#067223d8-1ec7-45c5-b21b-c848da6de8fb",
+                "rel": "reference"
+            },
+            {
+                "href": "#ca-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-7",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-10",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-10",
+                "rel": "related"
+            },
+            {
+                "href": "#si-12",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ca-6_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ca-6_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Assign a senior official as the authorizing official for the system;"
+                    },
+                    {
+                        "id": "ca-6_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Assign a senior official as the authorizing official for common controls available for inheritance by organizational systems;"
+                    },
+                    {
+                        "id": "ca-6_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Ensure that the authorizing official for the system, before commencing operations:",
+                        "parts": [
+                            {
+                                "id": "ca-6_smt.c.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Accepts the use of common controls inherited by the system; and"
+                            },
+                            {
+                                "id": "ca-6_smt.c.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "Authorizes the system to operate;"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "ca-6_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Ensure that the authorizing official for common controls authorizes the use of those controls for inheritance by organizational systems;"
+                    },
+                    {
+                        "id": "ca-6_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Update the authorizations {{ insert: param, ca-6_prm_1 }}."
+                    }
+                ]
+            },
+            {
+                "id": "ca-6_gdn",
+                "name": "guidance",
+                "prose": "Authorizations are official management decisions by senior officials to authorize operation of systems, authorize the use of common controls for inheritance by organizational systems, and explicitly accept the risk to organizational operations and assets, individuals, other organizations, and the Nation based on the implementation of agreed-upon controls. Authorizing officials provide budgetary oversight for organizational systems and common controls or assume responsibility for the mission and business functions supported by those systems or common controls. The authorization process is a federal responsibility, and therefore, authorizing officials must be federal employees. Authorizing officials are both responsible and accountable for security and privacy risks associated with the operation and use of organizational systems. Nonfederal organizations may have similar processes to authorize systems and senior officials that assume the authorization role and associated responsibilities.\n\nAuthorizing officials issue ongoing authorizations of systems based on evidence produced from implemented continuous monitoring programs. Robust continuous monitoring programs reduce the need for separate reauthorization processes. Through the employment of comprehensive continuous monitoring processes, the information contained in authorization packages (i.e., security and privacy plans, assessment reports, and plans of action and milestones) is updated on an ongoing basis. This provides authorizing officials, common control providers, and system owners with an up-to-date status of the security and privacy posture of their systems, controls, and operating environments. To reduce the cost of reauthorization, authorizing officials can leverage the results of continuous monitoring processes to the maximum extent possible as the basis for rendering reauthorization decisions."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ca-6.1",
+                "class": "SP800-53-enhancement",
+                "title": "Joint Authorization \u2014 Intra-organization",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CA-6(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ca-06.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ca-6",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ca-6.1_smt",
+                        "name": "statement",
+                        "prose": "Employ a joint authorization process for the system that includes multiple authorizing officials from the same organization conducting the authorization."
+                    },
+                    {
+                        "id": "ca-6.1_gdn",
+                        "name": "guidance",
+                        "prose": "Assigning multiple authorizing officials from the same organization to serve as co-authorizing officials for the system increases the level of independence in the risk-based decision-making process. It also implements the concepts of separation of duties and dual authorization as applied to the system authorization process. The intra-organization joint authorization process is most relevant for connected systems, shared systems, and systems with multiple information owners."
+                    }
+                ]
+            },
+            {
+                "id": "ca-6.2",
+                "class": "SP800-53-enhancement",
+                "title": "Joint Authorization \u2014 Inter-organization",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CA-6(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ca-06.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ca-6",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ca-6.2_smt",
+                        "name": "statement",
+                        "prose": "Employ a joint authorization process for the system that includes multiple authorizing officials with at least one authorizing official from an organization external to the organization conducting the authorization."
+                    },
+                    {
+                        "id": "ca-6.2_gdn",
+                        "name": "guidance",
+                        "prose": "Assigning multiple authorizing officials, at least one of whom comes from an external organization, to serve as co-authorizing officials for the system increases the level of independence in the risk-based decision-making process. It implements the concepts of separation of duties and dual authorization as applied to the system authorization process. Employing authorizing officials from external organizations to supplement the authorizing official from the organization that owns or hosts the system may be necessary when the external organizations have a vested interest or equities in the outcome of the authorization decision. The inter-organization joint authorization process is relevant and appropriate for connected systems, shared systems or services, and systems with multiple information owners. The authorizing officials from the external organizations are key stakeholders of the system undergoing authorization."
+                    }
+                ]
+            }
+        ]
+    }
+}

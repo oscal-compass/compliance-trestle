@@ -1,0 +1,53 @@
+{
+    "control": {
+        "id": "cp-13",
+        "class": "SP800-53",
+        "title": "Alternative Security Mechanisms",
+        "params": [
+            {
+                "id": "cp-13_prm_1",
+                "label": "organization-defined alternative or supplemental security mechanisms"
+            },
+            {
+                "id": "cp-13_prm_2",
+                "label": "organization-defined security functions"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CP-13"
+            },
+            {
+                "name": "sort-id",
+                "value": "cp-13"
+            }
+        ],
+        "links": [
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-11",
+                "rel": "related"
+            },
+            {
+                "href": "#si-13",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cp-13_smt",
+                "name": "statement",
+                "prose": "Employ {{ insert: param, cp-13_prm_1 }} for satisfying {{ insert: param, cp-13_prm_2 }} when the primary means of implementing the security function is unavailable or compromised."
+            },
+            {
+                "id": "cp-13_gdn",
+                "name": "guidance",
+                "prose": "Use of alternative security mechanisms supports system resiliency, contingency planning, and continuity of operations. To ensure mission and business continuity, organizations can implement alternative or supplemental security mechanisms. The mechanisms may be less effective than the primary mechanisms. However, having the capability to readily employ alternative or supplemental mechanisms enhances mission and business continuity that might otherwise be adversely impacted if operations had to be curtailed until the primary means of implementing the functions was restored. Given the cost and level of effort required to provide such alternative capabilities, the alternative or supplemental mechanisms are only applied to critical security capabilities provided by systems, system components, or system services. For example, an organization may issue one-time pads to senior executives, officials, and system administrators if multi-factor tokens\u2014the standard means for achieving secure authentication\u2014 are compromised."
+            }
+        ]
+    }
+}

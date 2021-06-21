@@ -1,0 +1,207 @@
+{
+    "control": {
+        "id": "cp-6",
+        "class": "SP800-53",
+        "title": "Alternate Storage Site",
+        "props": [
+            {
+                "name": "label",
+                "value": "CP-6"
+            },
+            {
+                "name": "sort-id",
+                "value": "cp-06"
+            }
+        ],
+        "links": [
+            {
+                "href": "#bc39f179-c735-4da2-b7a7-b2b622119755",
+                "rel": "reference"
+            },
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-7",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-8",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-10",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-5",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-36",
+                "rel": "related"
+            },
+            {
+                "href": "#si-13",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cp-6_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "cp-6_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Establish an alternate storage site, including necessary agreements to permit the storage and retrieval of system backup information; and"
+                    },
+                    {
+                        "id": "cp-6_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Ensure that the alternate storage site provides controls equivalent to that of the primary site."
+                    }
+                ]
+            },
+            {
+                "id": "cp-6_gdn",
+                "name": "guidance",
+                "prose": "Alternate storage sites are geographically distinct from primary storage sites and maintain duplicate copies of information and data if the primary storage site is not available. Similarly, alternate processing sites provide processing capability if the primary processing site is not available. Geographically distributed architectures that support contingency requirements may be considered alternate storage sites. Items covered by alternate storage site agreements include environmental conditions at the alternate sites, access rules for systems and facilities, physical and environmental protection requirements, and coordination of delivery and retrieval of backup media. Alternate storage sites reflect the requirements in contingency plans so that organizations can maintain essential mission and business functions despite compromise, failure, or disruption in organizational systems."
+            }
+        ],
+        "controls": [
+            {
+                "id": "cp-6.1",
+                "class": "SP800-53-enhancement",
+                "title": "Separation from Primary Site",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-6(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-06.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-6",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ra-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-6.1_smt",
+                        "name": "statement",
+                        "prose": "Identify an alternate storage site that is sufficiently separated from the primary storage site to reduce susceptibility to the same threats."
+                    },
+                    {
+                        "id": "cp-6.1_gdn",
+                        "name": "guidance",
+                        "prose": "Threats that affect alternate storage sites are defined in organizational risk assessments and include natural disasters, structural failures, hostile attacks, and errors of omission or commission. Organizations determine what is considered a sufficient degree of separation between primary and alternate storage sites based on the types of threats that are of concern. For threats such as hostile attacks, the degree of separation between sites is less relevant."
+                    }
+                ]
+            },
+            {
+                "id": "cp-6.2",
+                "class": "SP800-53-enhancement",
+                "title": "Recovery Time and Recovery Point Objectives",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-6(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-06.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-6",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-6.2_smt",
+                        "name": "statement",
+                        "prose": "Configure the alternate storage site to facilitate recovery operations in accordance with recovery time and recovery point objectives."
+                    },
+                    {
+                        "id": "cp-6.2_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations establish recovery time and recovery point objectives as part of contingency planning. Configuration of the alternate storage site includes physical facilities and the systems supporting recovery operations that ensure accessibility and correct execution."
+                    }
+                ]
+            },
+            {
+                "id": "cp-6.3",
+                "class": "SP800-53-enhancement",
+                "title": "Accessibility",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CP-6(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cp-06.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cp-6",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ra-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-6.3_smt",
+                        "name": "statement",
+                        "prose": "Identify potential accessibility problems to the alternate storage site in the event of an area-wide disruption or disaster and outline explicit mitigation actions."
+                    },
+                    {
+                        "id": "cp-6.3_gdn",
+                        "name": "guidance",
+                        "prose": "Area-wide disruptions refer to those types of disruptions that are broad in geographic scope with such determinations made by organizations based on organizational assessments of risk. Explicit mitigation actions include duplicating backup information at other alternate storage sites if access problems occur at originally designated alternate sites or planning for physical access to retrieve backup information if electronic accessibility to the alternate site is disrupted."
+                    }
+                ]
+            }
+        ]
+    }
+}

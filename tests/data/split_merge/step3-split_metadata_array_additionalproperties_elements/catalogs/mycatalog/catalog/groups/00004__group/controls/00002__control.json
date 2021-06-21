@@ -1,0 +1,655 @@
+{
+    "control": {
+        "id": "cm-3",
+        "class": "SP800-53",
+        "title": "Configuration Change Control",
+        "params": [
+            {
+                "id": "cm-3_prm_1",
+                "label": "organization-defined time period"
+            },
+            {
+                "id": "cm-3_prm_2",
+                "label": "organization-defined configuration change control element"
+            },
+            {
+                "id": "cm-3_prm_3",
+                "select": {
+                    "how-many": "one-or-more",
+                    "choice": [
+                        " {{ insert: param, cm-3_prm_4 }} ",
+                        "when {{ insert: param, cm-3_prm_5 }} "
+                    ]
+                }
+            },
+            {
+                "id": "cm-3_prm_4",
+                "depends-on": "cm-3_prm_3",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "cm-3_prm_5",
+                "depends-on": "cm-3_prm_3",
+                "label": "organization-defined configuration change conditions"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "CM-3"
+            },
+            {
+                "name": "sort-id",
+                "value": "cm-03"
+            }
+        ],
+        "links": [
+            {
+                "href": "#0f66be67-85e7-4ca6-bd19-39453e9f4394",
+                "rel": "reference"
+            },
+            {
+                "href": "#20db4e66-e257-450c-b2e4-2bb9a62a2c88",
+                "rel": "reference"
+            },
+            {
+                "href": "#98d415ca-7281-4064-9931-0c366637e324",
+                "rel": "reference"
+            },
+            {
+                "href": "#ca-7",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-4",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-5",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-11",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-16",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-28",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-34",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-37",
+                "rel": "related"
+            },
+            {
+                "href": "#si-2",
+                "rel": "related"
+            },
+            {
+                "href": "#si-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            },
+            {
+                "href": "#si-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-11",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "cm-3_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "cm-3_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Determine and document the types of changes to the system that are configuration-controlled;"
+                    },
+                    {
+                        "id": "cm-3_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Review proposed configuration-controlled changes to the system and approve or disapprove such changes with explicit consideration for security and privacy impact analyses;"
+                    },
+                    {
+                        "id": "cm-3_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Document configuration change decisions associated with the system;"
+                    },
+                    {
+                        "id": "cm-3_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Implement approved configuration-controlled changes to the system;"
+                    },
+                    {
+                        "id": "cm-3_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Retain records of configuration-controlled changes to the system for {{ insert: param, cm-3_prm_1 }};"
+                    },
+                    {
+                        "id": "cm-3_smt.f",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "f."
+                            }
+                        ],
+                        "prose": "Monitor and review activities associated with configuration-controlled changes to the system; and"
+                    },
+                    {
+                        "id": "cm-3_smt.g",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "g."
+                            }
+                        ],
+                        "prose": "Coordinate and provide oversight for configuration change control activities through {{ insert: param, cm-3_prm_2 }} that convenes {{ insert: param, cm-3_prm_3 }}."
+                    }
+                ]
+            },
+            {
+                "id": "cm-3_gdn",
+                "name": "guidance",
+                "prose": "Configuration change control for organizational systems involves the systematic proposal, justification, implementation, testing, review, and disposition of system changes, including system upgrades and modifications. Configuration change control includes changes to baseline configurations, configuration items of systems, operational procedures, configuration settings for system components, remediate vulnerabilities, and unscheduled or unauthorized changes. Processes for managing configuration changes to systems include Configuration Control Boards or Change Advisory Boards that review and approve proposed changes. For changes that impact privacy risk, the senior agency official for privacy updates privacy impact assessments and system of records notices. For new systems or major upgrades, organizations consider including representatives from the development organizations on the Configuration Control Boards or Change Advisory Boards. Auditing of changes includes activities before and after changes are made to systems and the auditing activities required to implement such changes. See also [SA-10](#sa-10)."
+            }
+        ],
+        "controls": [
+            {
+                "id": "cm-3.1",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Documentation, Notification, and Prohibition of Changes",
+                "params": [
+                    {
+                        "id": "cm-3.1_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    },
+                    {
+                        "id": "cm-3.1_prm_2",
+                        "label": "organization-defined approval authorities"
+                    },
+                    {
+                        "id": "cm-3.1_prm_3",
+                        "label": "organization-defined time period"
+                    },
+                    {
+                        "id": "cm-3.1_prm_4",
+                        "label": "organization-defined personnel"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-3(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-03.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-3.1_smt",
+                        "name": "statement",
+                        "prose": "Use {{ insert: param, cm-3.1_prm_1 }} to:",
+                        "parts": [
+                            {
+                                "id": "cm-3.1_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Document proposed changes to the system;"
+                            },
+                            {
+                                "id": "cm-3.1_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Notify {{ insert: param, cm-3.1_prm_2 }} of proposed changes to the system and request change approval;"
+                            },
+                            {
+                                "id": "cm-3.1_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Highlight proposed changes to the system that have not been approved or disapproved within {{ insert: param, cm-3.1_prm_3 }};"
+                            },
+                            {
+                                "id": "cm-3.1_smt.d",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(d)"
+                                    }
+                                ],
+                                "prose": "Prohibit changes to the system until designated approvals are received;"
+                            },
+                            {
+                                "id": "cm-3.1_smt.e",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(e)"
+                                    }
+                                ],
+                                "prose": "Document all changes to the system; and"
+                            },
+                            {
+                                "id": "cm-3.1_smt.f",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(f)"
+                                    }
+                                ],
+                                "prose": "Notify {{ insert: param, cm-3.1_prm_4 }} when approved changes to the system are completed."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "cm-3.1_gdn",
+                        "name": "guidance",
+                        "prose": "None."
+                    }
+                ]
+            },
+            {
+                "id": "cm-3.2",
+                "class": "SP800-53-enhancement",
+                "title": "Testing, Validation, and Documentation of Changes",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-3(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-03.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-3.2_smt",
+                        "name": "statement",
+                        "prose": "Test, validate, and document changes to the system before finalizing the implementation of the changes."
+                    },
+                    {
+                        "id": "cm-3.2_gdn",
+                        "name": "guidance",
+                        "prose": "Changes to systems include modifications to hardware, software, or firmware components and configuration settings defined in [CM-6](#cm-6). Organizations ensure that testing does not interfere with system operations that support organizational mission and business functions. Individuals or groups conducting tests understand security and privacy policies and procedures, system security and privacy policies and procedures, and the health, safety, and environmental risks associated with specific facilities or processes. Operational systems may need to be taken offline, or replicated to the extent feasible, before testing can be conducted. If systems must be taken offline for testing, the tests are scheduled to occur during planned system outages whenever possible. If the testing cannot be conducted on operational systems, organizations employ compensating controls."
+                    }
+                ]
+            },
+            {
+                "id": "cm-3.3",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Change Implementation",
+                "params": [
+                    {
+                        "id": "cm-3.3_prm_1",
+                        "label": "organization-defined automated mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-3(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-03.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-3.3_smt",
+                        "name": "statement",
+                        "prose": "Implement changes to the current system baseline and deploy the updated baseline across the installed base using {{ insert: param, cm-3.3_prm_1 }}."
+                    },
+                    {
+                        "id": "cm-3.3_gdn",
+                        "name": "guidance",
+                        "prose": "Automated tools can improve the accuracy, consistency, and availability of configuration baseline information. Automation can also provide data aggregation and data correlation capabilities, alerting mechanisms, and dashboards to support risk-based decision-making within the organization."
+                    }
+                ]
+            },
+            {
+                "id": "cm-3.4",
+                "class": "SP800-53-enhancement",
+                "title": "Security and Privacy Representatives",
+                "params": [
+                    {
+                        "id": "cm-3.4_prm_1",
+                        "label": "organization-defined security and privacy representatives"
+                    },
+                    {
+                        "id": "cm-3.4_prm_2",
+                        "label": "organization-defined configuration change control element"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-3(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-03.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-3.4_smt",
+                        "name": "statement",
+                        "prose": "Require {{ insert: param, cm-3.4_prm_1 }} to be members of the {{ insert: param, cm-3.4_prm_2 }}."
+                    },
+                    {
+                        "id": "cm-3.4_gdn",
+                        "name": "guidance",
+                        "prose": "Information security and privacy representatives include system security officers, senior agency information security officers, senior agency officials for privacy, or system privacy officers. Representation by personnel with information security and privacy expertise is important because changes to system configurations can have unintended side effects, some of which may be security- or privacy-relevant. Detecting such changes early in the process can help avoid unintended, negative consequences that could ultimately affect the security and privacy posture of systems. The configuration change control element referred to in the second organization-defined parameter reflects the change control elements defined by organizations in [CM-3g](#cm-3_smt.g)."
+                    }
+                ]
+            },
+            {
+                "id": "cm-3.5",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Security Response",
+                "params": [
+                    {
+                        "id": "cm-3.5_prm_1",
+                        "label": "organization-defined security responses"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-3(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-03.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-3.5_smt",
+                        "name": "statement",
+                        "prose": "Implement the following security responses automatically if baseline configurations are changed in an unauthorized manner: {{ insert: param, cm-3.5_prm_1 }}."
+                    },
+                    {
+                        "id": "cm-3.5_gdn",
+                        "name": "guidance",
+                        "prose": "Automated security responses include halting selected system functions, halting system processing, and issuing alerts or notifications to organizational personnel when there is an unauthorized modification of a configuration item."
+                    }
+                ]
+            },
+            {
+                "id": "cm-3.6",
+                "class": "SP800-53-enhancement",
+                "title": "Cryptography Management",
+                "params": [
+                    {
+                        "id": "cm-3.6_prm_1",
+                        "label": "organization-defined controls"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-3(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-03.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-3",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-3.6_smt",
+                        "name": "statement",
+                        "prose": "Ensure that cryptographic mechanisms used to provide the following controls are under configuration management: {{ insert: param, cm-3.6_prm_1 }}."
+                    },
+                    {
+                        "id": "cm-3.6_gdn",
+                        "name": "guidance",
+                        "prose": "The controls referenced in the control enhancement refer to security and privacy controls from the control catalog. Regardless of the cryptographic mechanisms employed, processes and procedures are in place to manage those mechanisms. For example, if system components use certificates for identification and authentication, a process is implemented to address the expiration of those certificates."
+                    }
+                ]
+            },
+            {
+                "id": "cm-3.7",
+                "class": "SP800-53-enhancement",
+                "title": "Review System Changes",
+                "params": [
+                    {
+                        "id": "cm-3.7_prm_1",
+                        "label": "organization-defined frequency"
+                    },
+                    {
+                        "id": "cm-3.7_prm_2",
+                        "label": "organization-defined circumstances"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-3(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-03.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-3",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-7",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cm-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-3.7_smt",
+                        "name": "statement",
+                        "prose": "Review changes to the system {{ insert: param, cm-3.7_prm_1 }} or when {{ insert: param, cm-3.7_prm_2 }} to determine whether unauthorized changes have occurred."
+                    },
+                    {
+                        "id": "cm-3.7_gdn",
+                        "name": "guidance",
+                        "prose": "Indications that warrant a review of changes to the system and the specific circumstances justifying such reviews may be obtained from activities carried out by organizations during the configuration change process or continuous monitoring process."
+                    }
+                ]
+            },
+            {
+                "id": "cm-3.8",
+                "class": "SP800-53-enhancement",
+                "title": "Prevent or Restrict Configuration Changes",
+                "params": [
+                    {
+                        "id": "cm-3.8_prm_1",
+                        "label": "organization-defined circumstances"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "CM-3(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "cm-03.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#cm-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "cm-3.8_smt",
+                        "name": "statement",
+                        "prose": "Prevent or restrict changes to the configuration of the system under the following circumstances: {{ insert: param, cm-3.8_prm_1 }}."
+                    },
+                    {
+                        "id": "cm-3.8_gdn",
+                        "name": "guidance",
+                        "prose": "System configuration changes can adversely affect critical system security and privacy functionality. Change restrictions can be enforced through automated mechanisms."
+                    }
+                ]
+            }
+        ]
+    }
+}

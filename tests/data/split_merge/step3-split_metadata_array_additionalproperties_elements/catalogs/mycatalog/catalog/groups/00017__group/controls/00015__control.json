@@ -1,0 +1,192 @@
+{
+    "control": {
+        "id": "sc-16",
+        "class": "SP800-53",
+        "title": "Transmission of Security and Privacy Attributes",
+        "params": [
+            {
+                "id": "sc-16_prm_1",
+                "label": "organization-defined security and privacy attributes"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-16"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-16"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-16",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-16_smt",
+                "name": "statement",
+                "prose": "Associate {{ insert: param, sc-16_prm_1 }} with information exchanged between systems and between system components."
+            },
+            {
+                "id": "sc-16_gdn",
+                "name": "guidance",
+                "prose": "Security and privacy attributes can be explicitly or implicitly associated with the information contained in organizational systems or system components. Attributes are abstractions that represent the basic properties or characteristics of an entity with respect to protecting information or the management of personally identifiable information. Attributes are typically associated with internal data structures, including records, buffers, and files within the system. Security and privacy attributes are used to implement access control and information flow control policies; reflect special dissemination, management, or distribution instructions, including permitted uses of personally identifiable information; or support other aspects of the information security and privacy policies. Privacy attributes may be used independently or in conjunction with security attributes."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-16.1",
+                "class": "SP800-53-enhancement",
+                "title": "Integrity Verification",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-16(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-16.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-16",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-10",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-8",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-16.1_smt",
+                        "name": "statement",
+                        "prose": "Verify the integrity of transmitted security and privacy attributes."
+                    },
+                    {
+                        "id": "sc-16.1_gdn",
+                        "name": "guidance",
+                        "prose": "Part of verifying the integrity of transmitted information is ensuring that security and privacy attributes that are associated with such information have not been modified in an unauthorized manner. Unauthorized modification of security or privacy attributes can result in a loss of integrity for transmitted information."
+                    }
+                ]
+            },
+            {
+                "id": "sc-16.2",
+                "class": "SP800-53-enhancement",
+                "title": "Anti-spoofing Mechanisms",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-16(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-16.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-16",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#si-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-16.2_smt",
+                        "name": "statement",
+                        "prose": "Implement anti-spoofing mechanisms to prevent adversaries from falsifying the security attributes indicating the successful application of the security process."
+                    },
+                    {
+                        "id": "sc-16.2_gdn",
+                        "name": "guidance",
+                        "prose": "Some attack vectors operate by altering the security attributes of an information system to intentionally and maliciously implement an insufficient level of security within the system. The alteration of attributes leads organizations to believe that a greater number of security functions are in place and operational than have actually been implemented."
+                    }
+                ]
+            },
+            {
+                "id": "sc-16.3",
+                "class": "SP800-53-enhancement",
+                "title": "Cryptographic Binding",
+                "params": [
+                    {
+                        "id": "sc-16.3_prm_1",
+                        "label": "organization-defined mechanisms or techniques"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-16(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-16.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-16",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-16",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-16.3_smt",
+                        "name": "statement",
+                        "prose": "Implement {{ insert: param, sc-16.3_prm_1 }} to bind security and privacy attributes to transmitted information."
+                    },
+                    {
+                        "id": "sc-16.3_gdn",
+                        "name": "guidance",
+                        "prose": "Cryptographic mechanisms and techniques can provide strong security and privacy attribute binding to transmitted information to help ensure the integrity of such information."
+                    }
+                ]
+            }
+        ]
+    }
+}

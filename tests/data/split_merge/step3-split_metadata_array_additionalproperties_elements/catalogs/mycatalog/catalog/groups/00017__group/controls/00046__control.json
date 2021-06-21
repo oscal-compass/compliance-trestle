@@ -1,0 +1,57 @@
+{
+    "control": {
+        "id": "sc-47",
+        "class": "SP800-53",
+        "title": "Alternate Communications Paths",
+        "params": [
+            {
+                "id": "sc-47_prm_1",
+                "label": "organization-defined alternate communications paths"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-47"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-47"
+            }
+        ],
+        "links": [
+            {
+                "href": "#bc39f179-c735-4da2-b7a7-b2b622119755",
+                "rel": "reference"
+            },
+            {
+                "href": "#49b8aa2d-a88c-4bff-9f20-876ccb8f7dcb",
+                "rel": "reference"
+            },
+            {
+                "href": "#61ccf0f4-d3e7-42db-9796-ce6cb1c85989",
+                "rel": "reference"
+            },
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-47_smt",
+                "name": "statement",
+                "prose": "Establish {{ insert: param, sc-47_prm_1 }} for system operations organizational command and control."
+            },
+            {
+                "id": "sc-47_gdn",
+                "name": "guidance",
+                "prose": "An incident, whether adversarial- or nonadversarial-based, can disrupt established communications paths used for system operations and organizational command and control. Alternate communications paths reduce the risk of all communications paths being affected by the same incident. To compound the problem, the inability of organizational officials to obtain timely information about disruptions or to provide timely direction to operational elements after a communications path incident, can impact the ability of the organization to respond to such incidents in a timely manner. Establishing alternate communications paths for command and control purposes, including designating alternative decision makers if primary decision makers are unavailable and establishing the extent and limitations of their actions, can greatly facilitate the organization\u2019s ability to continue to operate and take appropriate actions during an incident."
+            }
+        ]
+    }
+}

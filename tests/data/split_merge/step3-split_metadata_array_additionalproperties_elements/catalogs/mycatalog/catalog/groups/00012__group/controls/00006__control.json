@@ -1,0 +1,128 @@
+{
+    "control": {
+        "id": "pm-7",
+        "class": "SP800-53",
+        "title": "Enterprise Architecture",
+        "props": [
+            {
+                "name": "label",
+                "value": "PM-7"
+            },
+            {
+                "name": "sort-id",
+                "value": "pm-07"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
+                "rel": "reference"
+            },
+            {
+                "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
+                "rel": "reference"
+            },
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#61ccf0f4-d3e7-42db-9796-ce6cb1c85989",
+                "rel": "reference"
+            },
+            {
+                "href": "#au-6",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-11",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-17",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pm-7_smt",
+                "name": "statement",
+                "prose": "Develop and maintain an enterprise architecture with consideration for information security, privacy, and the resulting risk to organizational operations and assets, individuals, other organizations, and the Nation."
+            },
+            {
+                "id": "pm-7_gdn",
+                "name": "guidance",
+                "prose": "The integration of security and privacy requirements and controls into the enterprise architecture helps to ensure that security and privacy considerations are addressed throughout the system development life cycle and are explicitly related to the organization\u2019s mission and business processes. The process of security and privacy requirements integration also embeds into the enterprise architecture and the organization\u2019s security and privacy architectures consistent with the organizational risk management strategy. For PM-7, security and privacy architectures are developed at a system-of-systems level, representing all organizational systems. For [PL-8](#pl-8), the security and privacy architectures are developed at a level that represents an individual system. The system-level architectures are consistent with the security and privacy architectures defined for the organization. Security and privacy requirements and control integration are most effectively accomplished through the rigorous application of the Risk Management Framework [SP 800-37](#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8) and supporting security standards and guidelines."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pm-7.1",
+                "class": "SP800-53-enhancement",
+                "title": "Offloading",
+                "params": [
+                    {
+                        "id": "pm-7.1_prm_1",
+                        "label": "organization-defined non-essential functions or services"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PM-7(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pm-07.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pm-7",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sa-8",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pm-7.1_smt",
+                        "name": "statement",
+                        "prose": "Offload {{ insert: param, pm-7.1_prm_1 }} to other systems, system components, or an external provider."
+                    },
+                    {
+                        "id": "pm-7.1_gdn",
+                        "name": "guidance",
+                        "prose": "Not every function or service that a system provides is essential to organizational mission or business functions. Printing or copying is an example of a non-essential but supporting service for an organization. Whenever feasible, such supportive but non-essential functions or services are not co-located with the functions or services that support essential mission or business functions. Maintaining such functions on the same system or system component increases the attack surface of the organization\u2019s mission-essential functions or services. Moving supportive but non-essential functions to a non-critical system, system component, or external provider can also increase efficiency by putting those functions or services under the control of individuals or providers who are subject matter experts in the functions or services."
+                    }
+                ]
+            }
+        ]
+    }
+}

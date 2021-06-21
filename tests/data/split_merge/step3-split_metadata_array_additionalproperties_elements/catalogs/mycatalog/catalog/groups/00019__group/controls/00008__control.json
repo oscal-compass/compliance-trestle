@@ -1,0 +1,114 @@
+{
+    "control": {
+        "id": "sr-9",
+        "class": "SP800-53",
+        "title": "Tamper Resistance and Detection",
+        "props": [
+            {
+                "name": "label",
+                "value": "SR-9"
+            },
+            {
+                "name": "sort-id",
+                "value": "sr-09"
+            }
+        ],
+        "links": [
+            {
+                "href": "#15a95e24-65b6-4686-bc18-90855a10457d",
+                "rel": "reference"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-30",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-15",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-11",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sr-9_smt",
+                "name": "statement",
+                "prose": "Implement a tamper protection program for the system, system component, or system service."
+            },
+            {
+                "id": "sr-9_gdn",
+                "name": "guidance",
+                "prose": "Anti-tamper technologies, tools, and techniques provide a level of protection for systems, system components, and services against many threats, including reverse engineering, modification, and substitution. Strong identification combined with tamper resistance and/or tamper detection is essential to protecting systems and components during distribution and when in use."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sr-9.1",
+                "class": "SP800-53-enhancement",
+                "title": "Multiple Stages of System Development Life Cycle",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SR-9(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sr-09.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-9",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sa-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sr-9.1_smt",
+                        "name": "statement",
+                        "prose": "Employ anti-tamper technologies, tools, and techniques throughout the system development life cycle."
+                    },
+                    {
+                        "id": "sr-9.1_gdn",
+                        "name": "guidance",
+                        "prose": "The system development life cycle includes research and development, design, manufacturing, acquisition, delivery, integration, operations and maintenance, and disposal. Organizations use a combination of hardware and software techniques for tamper resistance and detection. Organizations use obfuscation and self-checking to make reverse engineering and modifications more difficult, time-consuming, and expensive for adversaries. The customization of systems and system components can make substitutions easier to detect and therefore limit damage."
+                    }
+                ]
+            }
+        ]
+    }
+}

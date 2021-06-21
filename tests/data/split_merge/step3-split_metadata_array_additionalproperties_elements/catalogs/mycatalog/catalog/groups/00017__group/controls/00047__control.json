@@ -1,0 +1,110 @@
+{
+    "control": {
+        "id": "sc-48",
+        "class": "SP800-53",
+        "title": "Sensor Relocation",
+        "params": [
+            {
+                "id": "sc-48_prm_1",
+                "label": "organization-defined sensors and monitoring capabilities"
+            },
+            {
+                "id": "sc-48_prm_2",
+                "label": "organization-defined locations"
+            },
+            {
+                "id": "sc-48_prm_3",
+                "label": "organization-defined conditions or circumstances"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-48"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-48"
+            }
+        ],
+        "links": [
+            {
+                "href": "#61ccf0f4-d3e7-42db-9796-ce6cb1c85989",
+                "rel": "reference"
+            },
+            {
+                "href": "#au-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-48_smt",
+                "name": "statement",
+                "prose": "Relocate {{ insert: param, sc-48_prm_1 }} to {{ insert: param, sc-48_prm_2 }} under the following conditions or circumstances: {{ insert: param, sc-48_prm_3 }}."
+            },
+            {
+                "id": "sc-48_gdn",
+                "name": "guidance",
+                "prose": "Adversaries may take various paths and use different approaches as they move laterally through an organization (including its systems) to reach their target or as they attempt to exfiltrate information from the organization. The organization often only has a limited set of monitoring and detection capabilities, and they may be focused on the critical or likely infiltration or exfiltration paths. By using communications paths that the organization typically does not monitor, the adversary can increase its chances of achieving its desired goals. By relocating its sensors or monitoring capabilities to new locations, the organization can impede the adversary\u2019s ability to achieve its goals. The relocation of the sensors or monitoring capabilities might be done based on threat information that the organization has acquired or randomly to confuse the adversary and make its lateral transition through the system or organization more challenging."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-48.1",
+                "class": "SP800-53-enhancement",
+                "title": "Dynamic Relocation of Sensors or Monitoring Capabilities",
+                "params": [
+                    {
+                        "id": "sc-48.1_prm_1",
+                        "label": "organization-defined sensors and monitoring capabilities"
+                    },
+                    {
+                        "id": "sc-48.1_prm_2",
+                        "label": "organization-defined locations"
+                    },
+                    {
+                        "id": "sc-48.1_prm_3",
+                        "label": "organization-defined conditions or circumstances"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-48(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-48.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-48",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-48.1_smt",
+                        "name": "statement",
+                        "prose": "Dynamically relocate {{ insert: param, sc-48.1_prm_1 }} to {{ insert: param, sc-48.1_prm_2 }} under the following conditions or circumstances: {{ insert: param, sc-48.1_prm_3 }}."
+                    },
+                    {
+                        "id": "sc-48.1_gdn",
+                        "name": "guidance",
+                        "prose": "None."
+                    }
+                ]
+            }
+        ]
+    }
+}

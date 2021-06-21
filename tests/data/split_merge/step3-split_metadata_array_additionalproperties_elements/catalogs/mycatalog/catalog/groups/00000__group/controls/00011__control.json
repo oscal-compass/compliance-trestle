@@ -1,0 +1,162 @@
+{
+    "control": {
+        "id": "ac-12",
+        "class": "SP800-53",
+        "title": "Session Termination",
+        "params": [
+            {
+                "id": "ac-12_prm_1",
+                "label": "organization-defined conditions or trigger events requiring session disconnect"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-12"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-12"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-23",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-12_smt",
+                "name": "statement",
+                "prose": "Automatically terminate a user session after {{ insert: param, ac-12_prm_1 }}."
+            },
+            {
+                "id": "ac-12_gdn",
+                "name": "guidance",
+                "prose": "Session termination addresses the termination of user-initiated logical sessions (in contrast to [SC-10](#sc-10), which addresses the termination of network connections associated with communications sessions (i.e., network disconnect)). A logical session (for local, network, and remote access) is initiated whenever a user (or process acting on behalf of a user) accesses an organizational system. Such user sessions can be terminated without terminating network sessions. Session termination ends all processes associated with a user\u2019s logical session except for those processes that are specifically created by the user (i.e., session owner) to continue after the session is terminated. Conditions or trigger events that require automatic termination of the session include organization-defined periods of user inactivity, targeted responses to certain types of incidents, or time-of-day restrictions on system use."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ac-12.1",
+                "class": "SP800-53-enhancement",
+                "title": "User-initiated Logouts",
+                "params": [
+                    {
+                        "id": "ac-12.1_prm_1",
+                        "label": "organization-defined information resources"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-12(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-12.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-12",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-12.1_smt",
+                        "name": "statement",
+                        "prose": "Provide a logout capability for user-initiated communications sessions whenever authentication is used to gain access to {{ insert: param, ac-12.1_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-12.1_gdn",
+                        "name": "guidance",
+                        "prose": "Information resources to which users gain access via authentication include local workstations, databases, and password-protected websites or web-based services."
+                    }
+                ]
+            },
+            {
+                "id": "ac-12.2",
+                "class": "SP800-53-enhancement",
+                "title": "Termination Message",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-12(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-12.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-12",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-12.2_smt",
+                        "name": "statement",
+                        "prose": "Display an explicit logout message to users indicating the termination of authenticated communications sessions."
+                    },
+                    {
+                        "id": "ac-12.2_gdn",
+                        "name": "guidance",
+                        "prose": "Logout messages for web access can be displayed after authenticated sessions have been terminated. However, for certain types of sessions, including file transfer protocol (FTP) sessions, systems typically send logout messages as final messages prior to terminating sessions."
+                    }
+                ]
+            },
+            {
+                "id": "ac-12.3",
+                "class": "SP800-53-enhancement",
+                "title": "Timeout Warning Message",
+                "params": [
+                    {
+                        "id": "ac-12.3_prm_1",
+                        "label": "organization-defined time until end of session"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "AC-12(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ac-12.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-12",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ac-12.3_smt",
+                        "name": "statement",
+                        "prose": "Display an explicit message to users indicating that the session will end in {{ insert: param, ac-12.3_prm_1 }}."
+                    },
+                    {
+                        "id": "ac-12.3_gdn",
+                        "name": "guidance",
+                        "prose": "To increase usability, notify users of pending session termination and prompt users to continue the session. The pending session termination time period is based on the parameters defined in the [AC-12](#ac-12) base control."
+                    }
+                ]
+            }
+        ]
+    }
+}

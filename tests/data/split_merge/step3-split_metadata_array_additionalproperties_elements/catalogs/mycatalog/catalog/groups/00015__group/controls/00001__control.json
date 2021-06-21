@@ -1,0 +1,196 @@
+{
+    "control": {
+        "id": "ra-2",
+        "class": "SP800-53",
+        "title": "Security Categorization",
+        "props": [
+            {
+                "name": "label",
+                "value": "RA-2"
+            },
+            {
+                "name": "sort-id",
+                "value": "ra-02"
+            }
+        ],
+        "links": [
+            {
+                "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
+                "rel": "reference"
+            },
+            {
+                "href": "#599fb53d-5041-444e-a7fe-640d6d30ad05",
+                "rel": "reference"
+            },
+            {
+                "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                "rel": "reference"
+            },
+            {
+                "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
+                "rel": "reference"
+            },
+            {
+                "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
+                "rel": "reference"
+            },
+            {
+                "href": "#e72fde0b-6fc2-497e-a9db-d8fce5a11b8a",
+                "rel": "reference"
+            },
+            {
+                "href": "#9be5d661-421f-41ad-854e-86f98b811891",
+                "rel": "reference"
+            },
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#4e4fbc93-333d-45e6-a875-de36b878b6b9",
+                "rel": "reference"
+            },
+            {
+                "href": "#c28ae9a8-1121-42a9-a85e-00cfcc9b9a94",
+                "rel": "reference"
+            },
+            {
+                "href": "#cm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-10",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-11",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-38",
+                "rel": "related"
+            },
+            {
+                "href": "#si-12",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ra-2_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ra-2_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Categorize the system and information it processes, stores, and transmits;"
+                    },
+                    {
+                        "id": "ra-2_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Document the security categorization results, including supporting rationale, in the security plan for the system; and"
+                    },
+                    {
+                        "id": "ra-2_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Verify that the authorizing official or authorizing official designated representative reviews and approves the security categorization decision."
+                    }
+                ]
+            },
+            {
+                "id": "ra-2_gdn",
+                "name": "guidance",
+                "prose": "Security categories describe the potential adverse impacts or negative consequences to organizational operations, organizational assets, and individuals if organizational information and systems are compromised through a loss of confidentiality, integrity, or availability. Security categorization is also a type of asset loss characterization in systems security engineering processes that is carried out throughout the system development life cycle. Organizations can use privacy risk assessments or privacy impact assessments to better understand the potential adverse effects on individuals. [CNSSI 1253](#4e4fbc93-333d-45e6-a875-de36b878b6b9) provides additional guidance on categorization for national security systems.\n\nOrganizations conduct the security categorization process as an organization-wide activity with the direct involvement of chief information officers, senior agency information security officers, senior agency officials for privacy, system owners, mission and business owners, and information owners or stewards. Organizations consider the potential adverse impacts to other organizations and, in accordance with [USA PATRIOT](#13f0c39d-eaf7-417a-baef-69a041878bb5) and Homeland Security Presidential Directives, potential national-level adverse impacts.\n\nSecurity categorization processes facilitate the development of inventories of information assets and, along with [CM-8](#cm-8), mappings to specific system components where information is processed, stored, or transmitted. The security categorization process is revisited throughout the system development life cycle to ensure that the security categories remain accurate and relevant."
+            }
+        ],
+        "controls": [
+            {
+                "id": "ra-2.1",
+                "class": "SP800-53-enhancement",
+                "title": "Impact-level Prioritization",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "RA-2(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "ra-02.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ra-2",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "ra-2.1_smt",
+                        "name": "statement",
+                        "prose": "Conduct an impact-level prioritization of organizational systems to obtain additional granularity on system impact levels."
+                    },
+                    {
+                        "id": "ra-2.1_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations apply the \"high-water mark\" concept to each system categorized in accordance with [FIPS 199](#628d22a1-6a11-4784-bc59-5cd9497b5445), resulting in systems designated as low impact, moderate impact, or high impact. Organizations that desire additional granularity in the system impact designations for risk-based decision-making, can further partition the systems into sub-categories of the initial system categorization. For example, an impact-level prioritization on a moderate-impact system can produce three new sub-categories: low-moderate systems, moderate-moderate systems, and high-moderate systems. Impact-level prioritization and the resulting sub-categories of the system give organizations an opportunity to focus their investments related to security control selection and the tailoring of control baselines in responding to identified risks. Impact-level prioritization can also be used to determine those systems that may be of heightened interest or value to adversaries or represent a critical loss to the federal enterprise, sometimes described as high value assets. For such high value assets, organizations may be more focused on complexity, aggregation, and information exchanges. Systems with high value assets can be prioritized by partitioning high-impact systems into low-high systems, moderate-high systems, and high-high systems. Alternatively, organizations can apply the guidance in [CNSSI 1253](#4e4fbc93-333d-45e6-a875-de36b878b6b9) for security objective-related categorization."
+                    }
+                ]
+            }
+        ]
+    }
+}

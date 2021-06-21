@@ -1,0 +1,235 @@
+{
+    "control": {
+        "id": "si-14",
+        "class": "SP800-53",
+        "title": "Non-persistence",
+        "params": [
+            {
+                "id": "si-14_prm_1",
+                "label": "organization-defined system components and services"
+            },
+            {
+                "id": "si-14_prm_2",
+                "select": {
+                    "how-many": "one-or-more",
+                    "choice": [
+                        "upon end of session of use",
+                        "periodically at {{ insert: param, si-14_prm_3 }} "
+                    ]
+                }
+            },
+            {
+                "id": "si-14_prm_3",
+                "depends-on": "si-14_prm_2",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SI-14"
+            },
+            {
+                "name": "sort-id",
+                "value": "si-14"
+            }
+        ],
+        "links": [
+            {
+                "href": "#sc-30",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-34",
+                "rel": "related"
+            },
+            {
+                "href": "#si-21",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "si-14_smt",
+                "name": "statement",
+                "prose": "Implement non-persistent {{ insert: param, si-14_prm_1 }} that are initiated in a known state and terminated {{ insert: param, si-14_prm_2 }}."
+            },
+            {
+                "id": "si-14_gdn",
+                "name": "guidance",
+                "prose": "Implementation of non-persistent components and services mitigates risk from advanced persistent threats (APTs) by reducing the targeting capability of adversaries (i.e., window of opportunity and available attack surface) to initiate and complete attacks. By implementing the concept of non-persistence for selected system components, organizations can provide a trusted, known state computing resource for a specific time period that does not give adversaries sufficient time to exploit vulnerabilities in organizational systems or operating environments. Since the APT is a high-end, sophisticated threat with regard to capability, intent, and targeting, organizations assume that over an extended period, a percentage of attacks will be successful. Non-persistent system components and services are activated as required using protected information and terminated periodically or at the end of sessions. Non-persistence increases the work factor of adversaries attempting to compromise or breach organizational systems.\n\nNon-persistence can be achieved by refreshing system components, periodically reimaging components, or using a variety of common virtualization techniques. Non-persistent services can be implemented by using virtualization techniques as part of virtual machines or as new instances of processes on physical machines (either persistent or non-persistent). The benefit of periodic refreshes of system components and services is that it does not require organizations to first determine whether compromises of components or services have occurred (something that may often be difficult to determine). The refresh of selected system components and services occurs with sufficient frequency to prevent the spread or intended impact of attacks, but not with such frequency that it makes the system unstable. Refreshes of critical components and services may be done periodically to hinder the ability of adversaries to exploit optimum windows of vulnerabilities."
+            }
+        ],
+        "controls": [
+            {
+                "id": "si-14.1",
+                "class": "SP800-53-enhancement",
+                "title": "Refresh from Trusted Sources",
+                "params": [
+                    {
+                        "id": "si-14.1_prm_1",
+                        "label": "organization-defined trusted sources"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-14(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-14.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-14",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-14.1_smt",
+                        "name": "statement",
+                        "prose": "Obtain software and data employed during system component and service refreshes from the following trusted sources: {{ insert: param, si-14.1_prm_1 }}."
+                    },
+                    {
+                        "id": "si-14.1_gdn",
+                        "name": "guidance",
+                        "prose": "Trusted sources include software and data from write-once, read-only media or from selected offline secure storage facilities."
+                    }
+                ]
+            },
+            {
+                "id": "si-14.2",
+                "class": "SP800-53-enhancement",
+                "title": "Non-persistent Information",
+                "params": [
+                    {
+                        "id": "si-14.2_prm_1",
+                        "select": {
+                            "choice": [
+                                "Refresh {{ insert: param, si-14.2_prm_2 }} {{ insert: param, si-14.2_prm_3 }} ",
+                                "Generate {{ insert: param, si-14.2_prm_4 }} on demand"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "si-14.2_prm_2",
+                        "depends-on": "si-14.2_prm_1",
+                        "label": "organization-defined information"
+                    },
+                    {
+                        "id": "si-14.2_prm_3",
+                        "depends-on": "si-14.2_prm_1",
+                        "label": "organization-defined frequency"
+                    },
+                    {
+                        "id": "si-14.2_prm_4",
+                        "depends-on": "si-14.2_prm_1",
+                        "label": "organization-defined information"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-14(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-14.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-14",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-14.2_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "si-14.2_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": " {{ insert: param, si-14.2_prm_1 }}; and"
+                            },
+                            {
+                                "id": "si-14.2_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Delete information when no longer needed."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "si-14.2_gdn",
+                        "name": "guidance",
+                        "prose": "Retaining information longer than is needed makes the information a potential target for advanced adversaries searching for high value assets to compromise through unauthorized disclosure, unauthorized modification, or exfiltration. For system-related information, unnecessary retention provides advanced adversaries information that can assist in their reconnaissance and lateral movement through the system."
+                    }
+                ]
+            },
+            {
+                "id": "si-14.3",
+                "class": "SP800-53-enhancement",
+                "title": "Non-persistent Connectivity",
+                "params": [
+                    {
+                        "id": "si-14.3_prm_1",
+                        "select": {
+                            "choice": [
+                                "completion of a request",
+                                "a period of non-use"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-14(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-14.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-14",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-10",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-14.3_smt",
+                        "name": "statement",
+                        "prose": "Establish connections to the system on demand and terminate connections after {{ insert: param, si-14.3_prm_1 }}."
+                    },
+                    {
+                        "id": "si-14.3_gdn",
+                        "name": "guidance",
+                        "prose": "Persistent connections to systems can provide advanced adversaries with paths to move laterally through systems and potentially position themselves closer to high value assets. Limiting the availability of such connections impedes the adversary\u2019s ability to move freely through organizational systems."
+                    }
+                ]
+            }
+        ]
+    }
+}

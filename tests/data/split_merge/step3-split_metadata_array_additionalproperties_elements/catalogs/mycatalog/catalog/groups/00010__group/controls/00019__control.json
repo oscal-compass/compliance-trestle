@@ -1,0 +1,57 @@
+{
+    "control": {
+        "id": "pe-20",
+        "class": "SP800-53",
+        "title": "Asset Monitoring and Tracking",
+        "params": [
+            {
+                "id": "pe-20_prm_1",
+                "label": "organization-defined asset location technologies"
+            },
+            {
+                "id": "pe-20_prm_2",
+                "label": "organization-defined assets"
+            },
+            {
+                "id": "pe-20_prm_3",
+                "label": "organization-defined controlled areas"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PE-20"
+            },
+            {
+                "name": "sort-id",
+                "value": "pe-20"
+            }
+        ],
+        "links": [
+            {
+                "href": "#cm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-16",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-8",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pe-20_smt",
+                "name": "statement",
+                "prose": "Employ {{ insert: param, pe-20_prm_1 }} to track and monitor the location and movement of {{ insert: param, pe-20_prm_2 }} within {{ insert: param, pe-20_prm_3 }}."
+            },
+            {
+                "id": "pe-20_gdn",
+                "name": "guidance",
+                "prose": "Asset location technologies can help ensure that critical assets\u2014including vehicles, equipment, and system components\u2014remain in authorized locations. Organizations consult with the Office of the General Counsel and senior agency official for privacy regarding the deployment and use of asset location technologies to address potential privacy concerns."
+            }
+        ]
+    }
+}

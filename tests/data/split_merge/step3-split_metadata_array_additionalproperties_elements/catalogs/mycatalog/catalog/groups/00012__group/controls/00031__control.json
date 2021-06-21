@@ -1,0 +1,61 @@
+{
+    "control": {
+        "id": "pm-32",
+        "class": "SP800-53",
+        "title": "Purposing",
+        "params": [
+            {
+                "id": "pm-32_prm_1",
+                "label": "organization-defined systems or systems components"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PM-32"
+            },
+            {
+                "name": "sort-id",
+                "value": "pm-32"
+            }
+        ],
+        "links": [
+            {
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#61ccf0f4-d3e7-42db-9796-ce6cb1c85989",
+                "rel": "reference"
+            },
+            {
+                "href": "#ca-7",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-9",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pm-32_smt",
+                "name": "statement",
+                "prose": "Analyze {{ insert: param, pm-32_prm_1 }} supporting mission essential services or functions to ensure that the information resources are being used consistent with their intended purpose."
+            },
+            {
+                "id": "pm-32_gdn",
+                "name": "guidance",
+                "prose": "Systems are designed to support a specific mission or business function. However, over time, systems and system components may be used to support services and functions that are outside of the scope of the intended mission or business functions. This can result in exposing information resources to unintended environments and uses that can significantly increase threat exposure. In doing so, the systems are more vulnerable to compromise, which can ultimately impact the services and functions for which they were intended. This is especially impactful for mission-essential services and functions. By analyzing resource use, organizations can identify such potential exposures."
+            }
+        ]
+    }
+}

@@ -1,0 +1,312 @@
+{
+    "control": {
+        "id": "sc-28",
+        "class": "SP800-53",
+        "title": "Protection of Information at Rest",
+        "params": [
+            {
+                "id": "sc-28_prm_1",
+                "select": {
+                    "how-many": "one-or-more",
+                    "choice": [
+                        "confidentiality",
+                        "integrity"
+                    ]
+                }
+            },
+            {
+                "id": "sc-28_prm_2",
+                "label": "organization-defined information at rest"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-28"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-28"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#20957dbb-6a1e-40a2-b38a-66f67d33ac2e",
+                "rel": "reference"
+            },
+            {
+                "href": "#0d083d8a-5cc6-46f1-8d79-3081d42bcb75",
+                "rel": "reference"
+            },
+            {
+                "href": "#eef62b16-c796-4554-955c-505824135b8a",
+                "rel": "reference"
+            },
+            {
+                "href": "#110e26af-4765-49e1-8740-6750f83fcda1",
+                "rel": "reference"
+            },
+            {
+                "href": "#e7942589-e267-4a5a-a3d9-f39a7aae81f0",
+                "rel": "reference"
+            },
+            {
+                "href": "#8306620b-1920-4d73-8b21-12008528595f",
+                "rel": "reference"
+            },
+            {
+                "href": "#22f2d4f0-4365-4e88-a30d-275c1f5473ea",
+                "rel": "reference"
+            },
+            {
+                "href": "#0f66be67-85e7-4ca6-bd19-39453e9f4394",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-6",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-19",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-7",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-3",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-5",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cp-9",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-4",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-5",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-12",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-13",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-34",
+                "rel": "related"
+            },
+            {
+                "href": "#si-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            },
+            {
+                "href": "#si-16",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-28_smt",
+                "name": "statement",
+                "prose": "Protect the {{ insert: param, sc-28_prm_1 }} of the following information at rest: {{ insert: param, sc-28_prm_2 }}."
+            },
+            {
+                "id": "sc-28_gdn",
+                "name": "guidance",
+                "prose": "Information at rest refers to the state of information when it is not in process or in transit and is located on system components. Such components include internal or external hard disk drives, storage area network devices, or databases. However, the focus of protecting information at rest is not on the type of storage device or frequency of access but rather on the state of the information. Information at rest addresses the confidentiality and integrity of information and covers user information and system information. System-related information that requires protection includes configurations or rule sets for firewalls, intrusion detection and prevention systems, filtering routers, and authentication information. Organizations may employ different mechanisms to achieve confidentiality and integrity protections, including the use of cryptographic mechanisms and file share scanning. Integrity protection can be achieved, for example, by implementing write-once-read-many (WORM) technologies. When adequate protection of information at rest cannot otherwise be achieved, organizations may employ other controls, including frequent scanning to identify malicious code at rest and secure offline storage in lieu of online storage."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-28.1",
+                "class": "SP800-53-enhancement",
+                "title": "Cryptographic Protection",
+                "params": [
+                    {
+                        "id": "sc-28.1_prm_1",
+                        "label": "organization-defined system components or media"
+                    },
+                    {
+                        "id": "sc-28.1_prm_2",
+                        "label": "organization-defined information"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-28(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-28.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-28",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-19",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-28.1_smt",
+                        "name": "statement",
+                        "prose": "Implement cryptographic mechanisms to prevent unauthorized disclosure and modification of the following information at rest on {{ insert: param, sc-28.1_prm_1 }}: {{ insert: param, sc-28.1_prm_2 }}."
+                    },
+                    {
+                        "id": "sc-28.1_gdn",
+                        "name": "guidance",
+                        "prose": "The selection of cryptographic mechanisms is based on the need to protect the confidentiality and integrity of organizational information. The strength of mechanism is commensurate with the security category or classification of the information. Organizations have the flexibility to encrypt information on system components or media or encrypt data structures, including files, records, or fields."
+                    }
+                ]
+            },
+            {
+                "id": "sc-28.2",
+                "class": "SP800-53-enhancement",
+                "title": "Offline Storage",
+                "params": [
+                    {
+                        "id": "sc-28.2_prm_1",
+                        "label": "organization-defined information"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-28(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-28.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-28",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-28.2_smt",
+                        "name": "statement",
+                        "prose": "Remove the following information from online storage and store offline in a secure location: {{ insert: param, sc-28.2_prm_1 }}."
+                    },
+                    {
+                        "id": "sc-28.2_gdn",
+                        "name": "guidance",
+                        "prose": "Removing organizational information from online storage to offline storage eliminates the possibility of individuals gaining unauthorized access to the information through a network. Therefore, organizations may choose to move information to offline storage in lieu of protecting such information in online storage."
+                    }
+                ]
+            },
+            {
+                "id": "sc-28.3",
+                "class": "SP800-53-enhancement",
+                "title": "Cryptographic Keys",
+                "params": [
+                    {
+                        "id": "sc-28.3_prm_1",
+                        "select": {
+                            "choice": [
+                                " {{ insert: param, sc-28.3_prm_2 }} ",
+                                "hardware-protected key store"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "sc-28.3_prm_2",
+                        "depends-on": "sc-28.3_prm_1",
+                        "label": "organization-defined safeguards"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-28(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-28.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-28",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-28.3_smt",
+                        "name": "statement",
+                        "prose": "Provide protected storage for cryptographic keys {{ insert: param, sc-28.3_prm_1 }}."
+                    },
+                    {
+                        "id": "sc-28.3_gdn",
+                        "name": "guidance",
+                        "prose": "A Trusted Platform Module (TPM) is an example of a hardware-protected data store that can be used to protect cryptographic keys."
+                    }
+                ]
+            }
+        ]
+    }
+}

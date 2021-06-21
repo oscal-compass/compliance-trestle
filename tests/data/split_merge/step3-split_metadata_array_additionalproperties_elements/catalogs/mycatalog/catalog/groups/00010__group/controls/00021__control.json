@@ -1,0 +1,57 @@
+{
+    "control": {
+        "id": "pe-22",
+        "class": "SP800-53",
+        "title": "Component Marking",
+        "params": [
+            {
+                "id": "pe-22_prm_1",
+                "label": "organization-defined system hardware components"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PE-22"
+            },
+            {
+                "name": "sort-id",
+                "value": "pe-22"
+            }
+        ],
+        "links": [
+            {
+                "href": "#4c501da5-9d79-4cb6-ba80-97260e1ce327",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-16",
+                "rel": "related"
+            },
+            {
+                "href": "#mp-3",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pe-22_smt",
+                "name": "statement",
+                "prose": "Mark {{ insert: param, pe-22_prm_1 }} indicating the impact level or classification level of the information permitted to be processed, stored, or transmitted by the hardware component."
+            },
+            {
+                "id": "pe-22_gdn",
+                "name": "guidance",
+                "prose": "Hardware components that may require marking include input and output devices. Input devices include desktop and notebook computers, keyboards, tablets, and smart phones. Output devices include printers, monitors/video displays, facsimile machines, scanners, copiers, and audio devices. Permissions controlling output to the output devices are addressed in [AC-3](#ac-3) or [AC-4](#ac-4). Components are marked to indicate the impact level or classification level of the system to which the devices are connected, or the impact level or classification level of the information permitted to be output. Security marking refers to the use of human-readable security attributes. Security labeling refers to the use of security attributes for internal system data structures. Security marking is generally not required for hardware components that process, store, or transmit information determined by organizations to be in the public domain or to be publicly releasable. However, organizations may require markings for hardware components that process, store, or transmit public information in order to indicate that such information is publicly releasable. Marking of system hardware components reflects applicable laws, executive orders, directives, policies, regulations, and standards."
+            }
+        ]
+    }
+}

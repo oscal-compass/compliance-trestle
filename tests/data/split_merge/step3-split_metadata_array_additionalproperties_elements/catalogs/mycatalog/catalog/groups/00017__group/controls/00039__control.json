@@ -1,0 +1,241 @@
+{
+    "control": {
+        "id": "sc-40",
+        "class": "SP800-53",
+        "title": "Wireless Link Protection",
+        "params": [
+            {
+                "id": "sc-40_prm_1",
+                "label": "organization-defined wireless links"
+            },
+            {
+                "id": "sc-40_prm_2",
+                "label": "organization-defined types of signal parameter attacks or references to sources for such attacks"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-40"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-40"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-18",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-5",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-40_smt",
+                "name": "statement",
+                "prose": "Protect external and internal {{ insert: param, sc-40_prm_1 }} from the following signal parameter attacks: {{ insert: param, sc-40_prm_2 }}."
+            },
+            {
+                "id": "sc-40_gdn",
+                "name": "guidance",
+                "prose": "Wireless link protection applies to internal and external wireless communication links that may be visible to individuals who are not authorized system users. Adversaries can exploit the signal parameters of wireless links if such links are not adequately protected. There are many ways to exploit the signal parameters of wireless links to gain intelligence, deny service, or spoof system users. Protection of wireless links reduces the impact of attacks that are unique to wireless systems. If organizations rely on commercial service providers for transmission services as commodity items rather than as fully dedicated services, it may not be possible to implement wireless link protections to the extent necessary to meet organizational security requirements."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-40.1",
+                "class": "SP800-53-enhancement",
+                "title": "Electromagnetic Interference",
+                "params": [
+                    {
+                        "id": "sc-40.1_prm_1",
+                        "label": "organization-defined level of protection"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-40(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-40.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-40",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pe-21",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-40.1_smt",
+                        "name": "statement",
+                        "prose": "Implement cryptographic mechanisms that achieve {{ insert: param, sc-40.1_prm_1 }} against the effects of intentional electromagnetic interference."
+                    },
+                    {
+                        "id": "sc-40.1_gdn",
+                        "name": "guidance",
+                        "prose": "The implementation of cryptographic mechanisms for electromagnetic interference protects systems against intentional jamming that might deny or impair communications by ensuring that wireless spread spectrum waveforms used to provide anti-jam protection are not predictable by unauthorized individuals. The implementation of cryptographic mechanisms may also coincidentally mitigate the effects of unintentional jamming due to interference from legitimate transmitters that share the same spectrum. Mission requirements, projected threats, concept of operations, and laws, executive orders, directives, regulations, policies, and standards determine levels of wireless link availability, cryptography needed, and performance."
+                    }
+                ]
+            },
+            {
+                "id": "sc-40.2",
+                "class": "SP800-53-enhancement",
+                "title": "Reduce Detection Potential",
+                "params": [
+                    {
+                        "id": "sc-40.2_prm_1",
+                        "label": "organization-defined level of reduction"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-40(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-40.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-40",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-40.2_smt",
+                        "name": "statement",
+                        "prose": "Implement cryptographic mechanisms to reduce the detection potential of wireless links to {{ insert: param, sc-40.2_prm_1 }}."
+                    },
+                    {
+                        "id": "sc-40.2_gdn",
+                        "name": "guidance",
+                        "prose": "The implementation of cryptographic mechanisms to reduce detection potential is used for covert communications and to protect wireless transmitters from geo-location. It also ensures that the spread spectrum waveforms used to achieve a low probability of detection are not predictable by unauthorized individuals. Mission requirements, projected threats, concept of operations, and applicable laws, executive orders, directives, regulations, policies, and standards determine the levels to which wireless links are undetectable."
+                    }
+                ]
+            },
+            {
+                "id": "sc-40.3",
+                "class": "SP800-53-enhancement",
+                "title": "Imitative or Manipulative Communications Deception",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-40(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-40.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-40",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-4",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-40.3_smt",
+                        "name": "statement",
+                        "prose": "Implement cryptographic mechanisms to identify and reject wireless transmissions that are deliberate attempts to achieve imitative or manipulative communications deception based on signal parameters."
+                    },
+                    {
+                        "id": "sc-40.3_gdn",
+                        "name": "guidance",
+                        "prose": "The implementation of cryptographic mechanisms to identify and reject imitative or manipulative communications ensures that the signal parameters of wireless transmissions are not predictable by unauthorized individuals. Such unpredictability reduces the probability of imitative or manipulative communications deception based on signal parameters alone."
+                    }
+                ]
+            },
+            {
+                "id": "sc-40.4",
+                "class": "SP800-53-enhancement",
+                "title": "Signal Parameter Identification",
+                "params": [
+                    {
+                        "id": "sc-40.4_prm_1",
+                        "label": "organization-defined wireless transmitters"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-40(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-40.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-40",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#sc-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sc-13",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-40.4_smt",
+                        "name": "statement",
+                        "prose": "Implement cryptographic mechanisms to prevent the identification of {{ insert: param, sc-40.4_prm_1 }} by using the transmitter signal parameters."
+                    },
+                    {
+                        "id": "sc-40.4_gdn",
+                        "name": "guidance",
+                        "prose": "The implementation of cryptographic mechanisms to prevent the identification of wireless transmitters protects against the unique identification of wireless transmitters for the purposes of intelligence exploitation by ensuring that anti-fingerprinting alterations to signal parameters are not predictable by unauthorized individuals. It also provides anonymity when required. Radio fingerprinting techniques identify the unique signal parameters of transmitters to fingerprint such transmitters for purposes of tracking and mission or user identification."
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,223 @@
+{
+    "control": {
+        "id": "sr-5",
+        "class": "SP800-53",
+        "title": "Acquisition Strategies, Tools, and Methods",
+        "params": [
+            {
+                "id": "sr-5_prm_1",
+                "label": "organization-defined acquisition strategies, contract tools, and procurement methods"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SR-5"
+            },
+            {
+                "name": "sort-id",
+                "value": "sr-05"
+            }
+        ],
+        "links": [
+            {
+                "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
+                "rel": "reference"
+            },
+            {
+                "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
+                "rel": "reference"
+            },
+            {
+                "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
+                "rel": "reference"
+            },
+            {
+                "href": "#863caf2a-978a-4260-9e8d-4a8929bce40c",
+                "rel": "reference"
+            },
+            {
+                "href": "#15a95e24-65b6-4686-bc18-90855a10457d",
+                "rel": "reference"
+            },
+            {
+                "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
+                "rel": "reference"
+            },
+            {
+                "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
+                "rel": "reference"
+            },
+            {
+                "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
+                "rel": "reference"
+            },
+            {
+                "href": "#38ff38f0-1366-4f50-a4c9-26a39aacee16",
+                "rel": "reference"
+            },
+            {
+                "href": "#at-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-2",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-3",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-8",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sa-15",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-6",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-11",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sr-5_smt",
+                "name": "statement",
+                "prose": "Employ the following acquisition strategies, contract tools, and procurement methods to protect against, identify, and mitigate supply chain risks: {{ insert: param, sr-5_prm_1 }}."
+            },
+            {
+                "id": "sr-5_gdn",
+                "name": "guidance",
+                "prose": "The use of the acquisition process provides an important vehicle to protect the supply chain. There are many useful tools and techniques available, including obscuring the end use of a system or system component, using blind or filtered buys, requiring tamper-evident packaging, or using trusted or controlled distribution. The results from a supply chain risk assessment can guide and inform the strategies, tools, and methods that are most applicable to the situation. Tools and techniques may provide protections against unauthorized production, theft, tampering, insertion of counterfeits, insertion of malicious software or backdoors, and poor development practices throughout the system development life cycle. Organizations also consider providing incentives for suppliers who implement controls, promote transparency into their processes and security and privacy practices, provide contract language that addresses the prohibition of tainted or counterfeit components, and restrict purchases from untrustworthy suppliers. Organizations consider providing training, education, and awareness programs for personnel regarding supply chain risk, available mitigation strategies, and when the programs should be employed. Methods for reviewing and protecting development plans, documentation, and evidence are commensurate with the security and privacy requirements of the organization. Contracts may specify documentation protection requirements."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sr-5.1",
+                "class": "SP800-53-enhancement",
+                "title": "Adequate Supply",
+                "params": [
+                    {
+                        "id": "sr-5.1_prm_1",
+                        "label": "organization-defined critical system components"
+                    },
+                    {
+                        "id": "sr-5.1_prm_2",
+                        "label": "organization-defined controls"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SR-5(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sr-05.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ra-9",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sr-5.1_smt",
+                        "name": "statement",
+                        "prose": "Employ the following controls to ensure an adequate supply of {{ insert: param, sr-5.1_prm_1 }}: {{ insert: param, sr-5.1_prm_2 }}."
+                    },
+                    {
+                        "id": "sr-5.1_gdn",
+                        "name": "guidance",
+                        "prose": "Adversaries can attempt to impede organizational operations by disrupting the supply of critical system components or corrupting supplier operations. Organizations may track systems and component mean time to failure to mitigate the loss of temporary or permanent system function. Controls to ensure that adequate supplies of critical system components include the use of multiple suppliers throughout the supply chain for the identified critical components, stockpiling spare components to ensure operation during mission-critical times, and the identification of functionally identical or similar components that may be used, if necessary."
+                    }
+                ]
+            },
+            {
+                "id": "sr-5.2",
+                "class": "SP800-53-enhancement",
+                "title": "Assessments Prior to Selection, Acceptance, Modification, or Update",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SR-5(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sr-05.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sr-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ca-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ra-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sa-11",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sr-5.2_smt",
+                        "name": "statement",
+                        "prose": "Assess the system, system component, or system service prior to selection, acceptance, modification, or update."
+                    },
+                    {
+                        "id": "sr-5.2_gdn",
+                        "name": "guidance",
+                        "prose": "Organizational personnel or independent, external entities conduct assessments of systems, components, products, tools, and services to uncover evidence of tampering, unintentional and intentional vulnerabilities, or evidence of non-compliance with supply chain controls. These include malicious code, malicious processes, defective software, backdoors, and counterfeits. Assessments can include evaluations; design proposal reviews; visual or physical inspection; static and dynamic analyses; visual, x-ray, or magnetic particle inspections; simulations; white, gray, or black box testing; fuzz testing; stress testing; and penetration testing (see [SR-6(1)](#sr-6.1)). Evidence generated during assessments is documented for follow-on actions by organizations. The evidence generated during the organizational or independent assessments of supply chain elements may be used to improve supply chain processes and inform the supply chain risk management process. The evidence can be leveraged in follow-on assessments. Evidence and other documentation may be shared in accordance with organizational agreements."
+                    }
+                ]
+            }
+        ]
+    }
+}

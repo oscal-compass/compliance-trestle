@@ -1,0 +1,84 @@
+{
+    "control": {
+        "id": "pe-18",
+        "class": "SP800-53",
+        "title": "Location of System Components",
+        "params": [
+            {
+                "id": "pe-18_prm_1",
+                "label": "organization-defined physical and environmental hazards"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PE-18"
+            },
+            {
+                "name": "sort-id",
+                "value": "pe-18"
+            }
+        ],
+        "links": [
+            {
+                "href": "#cp-2",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-5",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-19",
+                "rel": "related"
+            },
+            {
+                "href": "#pe-20",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pe-18_smt",
+                "name": "statement",
+                "prose": "Position system components within the facility to minimize potential damage from {{ insert: param, pe-18_prm_1 }} and to minimize the opportunity for unauthorized access."
+            },
+            {
+                "id": "pe-18_gdn",
+                "name": "guidance",
+                "prose": "Physical and environmental hazards include floods, fires, tornadoes, earthquakes, hurricanes, terrorism, vandalism, an electromagnetic pulse, electrical interference, and other forms of incoming electromagnetic radiation. Organizations consider the location of entry points where unauthorized individuals, while not being granted access, might nonetheless be near systems. Such proximity can increase the risk of unauthorized access to organizational communications using wireless packet sniffers or microphones, or unauthorized disclosure of information."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pe-18.1",
+                "class": "SP800-53-enhancement",
+                "title": "Facility Site",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PE-18(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pe-18.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pe-23",
+                        "rel": "moved-to"
+                    }
+                ]
+            }
+        ]
+    }
+}

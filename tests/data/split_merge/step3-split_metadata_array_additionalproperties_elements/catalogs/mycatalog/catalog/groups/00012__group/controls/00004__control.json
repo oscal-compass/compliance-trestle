@@ -1,0 +1,126 @@
+{
+    "control": {
+        "id": "pm-5",
+        "class": "SP800-53",
+        "title": "System Inventory",
+        "params": [
+            {
+                "id": "pm-5_prm_1",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PM-5"
+            },
+            {
+                "name": "sort-id",
+                "value": "pm-05"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#98d415ca-7281-4064-9931-0c366637e324",
+                "rel": "reference"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pm-5_smt",
+                "name": "statement",
+                "prose": "Develop and update {{ insert: param, pm-5_prm_1 }} an inventory of organizational systems."
+            },
+            {
+                "id": "pm-5_gdn",
+                "name": "guidance",
+                "prose": " [OMB A-130](#27847491-5ce1-4f6a-a1e4-9e483782f0ef) provides guidance on developing systems inventories and associated reporting requirements. System inventory refers to an organization-wide inventory of systems, not system components as described in [CM-8](#cm-8)."
+            }
+        ],
+        "controls": [
+            {
+                "id": "pm-5.1",
+                "class": "SP800-53-enhancement",
+                "title": "Inventory of Personally Identifiable Information",
+                "params": [
+                    {
+                        "id": "pm-5.1_prm_1",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "PM-5(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "pm-05.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pm-5",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cm-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cm-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#cm-13",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pl-8",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pm-22",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pt-3",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pt-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-12",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#si-18",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "pm-5.1_smt",
+                        "name": "statement",
+                        "prose": "Establish, maintain, and update {{ insert: param, pm-5.1_prm_1 }} an inventory of all systems, applications, and projects that process personally identifiable information."
+                    },
+                    {
+                        "id": "pm-5.1_gdn",
+                        "name": "guidance",
+                        "prose": "An inventory of systems, applications, and projects that process personally identifiable information supports the mapping of data actions, providing individuals with privacy notices, maintaining accurate personally identifiable information, and limiting the processing of personally identifiable information when such information is not needed for operational purposes. Organizations may use this inventory to ensure that systems only process the personally identifiable information for authorized purposes and that this processing is still relevant and necessary for the purpose specified therein."
+                    }
+                ]
+            }
+        ]
+    }
+}

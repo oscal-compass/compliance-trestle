@@ -1,0 +1,154 @@
+{
+    "control": {
+        "id": "sc-37",
+        "class": "SP800-53",
+        "title": "Out-of-band Channels",
+        "params": [
+            {
+                "id": "sc-37_prm_1",
+                "label": "organization-defined information, system components, or devices"
+            },
+            {
+                "id": "sc-37_prm_2",
+                "label": "organization-defined individuals or systems"
+            },
+            {
+                "id": "sc-37_prm_3",
+                "label": "organization-defined out-of-band channels"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SC-37"
+            },
+            {
+                "name": "sort-id",
+                "value": "sc-37"
+            }
+        ],
+        "links": [
+            {
+                "href": "#110e26af-4765-49e1-8740-6750f83fcda1",
+                "rel": "reference"
+            },
+            {
+                "href": "#e7942589-e267-4a5a-a3d9-f39a7aae81f0",
+                "rel": "reference"
+            },
+            {
+                "href": "#8306620b-1920-4d73-8b21-12008528595f",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-2",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-3",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-5",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-7",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-12",
+                "rel": "related"
+            },
+            {
+                "href": "#si-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "sc-37_smt",
+                "name": "statement",
+                "prose": "Employ the following out-of-band channels for the physical delivery or electronic transmission of {{ insert: param, sc-37_prm_1 }} to {{ insert: param, sc-37_prm_2 }}: {{ insert: param, sc-37_prm_3 }}."
+            },
+            {
+                "id": "sc-37_gdn",
+                "name": "guidance",
+                "prose": "Out-of-band channels include local, non-network accesses to systems; network paths physically separate from network paths used for operational traffic; or non-electronic paths, such as the U.S. Postal Service. The use of out-of-band channels is contrasted with the use of in-band channels (i.e., the same channels) that carry routine operational traffic. Out-of-band channels do not have the same vulnerability or exposure as in-band channels. Therefore, the confidentiality, integrity, or availability compromises of in-band channels will not compromise or adversely affect the out-of-band channels. Organizations may employ out-of-band channels in the delivery or transmission of organizational items, including authenticators and credentials; cryptographic key management information; system and data backups; configuration management changes for hardware, firmware, or software; security updates; maintenance information; and malicious code protection updates."
+            }
+        ],
+        "controls": [
+            {
+                "id": "sc-37.1",
+                "class": "SP800-53-enhancement",
+                "title": "Ensure Delivery and Transmission",
+                "params": [
+                    {
+                        "id": "sc-37.1_prm_1",
+                        "label": "organization-defined controls"
+                    },
+                    {
+                        "id": "sc-37.1_prm_2",
+                        "label": "organization-defined individuals or systems"
+                    },
+                    {
+                        "id": "sc-37.1_prm_3",
+                        "label": "organization-defined information, system components, or devices"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SC-37(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "sc-37.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#sc-37",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "sc-37.1_smt",
+                        "name": "statement",
+                        "prose": "Employ {{ insert: param, sc-37.1_prm_1 }} to ensure that only {{ insert: param, sc-37.1_prm_2 }} receive the following information, system components, or devices: {{ insert: param, sc-37.1_prm_3 }}."
+                    },
+                    {
+                        "id": "sc-37.1_gdn",
+                        "name": "guidance",
+                        "prose": "Techniques employed by organizations to ensure that only designated systems or individuals receive certain information, system components, or devices include sending authenticators via an approved courier service but requiring recipients to show some form of government-issued photographic identification as a condition of receipt."
+                    }
+                ]
+            }
+        ]
+    }
+}

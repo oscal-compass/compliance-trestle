@@ -1,0 +1,49 @@
+{
+    "control": {
+        "id": "si-16",
+        "class": "SP800-53",
+        "title": "Memory Protection",
+        "params": [
+            {
+                "id": "si-16_prm_1",
+                "label": "organization-defined controls"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SI-16"
+            },
+            {
+                "name": "sort-id",
+                "value": "si-16"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ac-25",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "si-16_smt",
+                "name": "statement",
+                "prose": "Implement the following controls to protect the system memory from unauthorized code execution: {{ insert: param, si-16_prm_1 }}."
+            },
+            {
+                "id": "si-16_gdn",
+                "name": "guidance",
+                "prose": "Some adversaries launch attacks with the intent of executing code in non-executable regions of memory or in memory locations that are prohibited. Controls employed to protect memory include data execution prevention and address space layout randomization. Data execution prevention controls can either be hardware-enforced or software-enforced with hardware enforcement providing the greater strength of mechanism."
+            }
+        ]
+    }
+}

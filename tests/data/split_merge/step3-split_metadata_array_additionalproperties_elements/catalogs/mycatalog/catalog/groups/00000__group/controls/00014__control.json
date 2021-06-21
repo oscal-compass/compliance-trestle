@@ -1,0 +1,27 @@
+{
+    "control": {
+        "id": "ac-15",
+        "class": "SP800-53",
+        "title": "Automated Marking",
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-15"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-15"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#mp-3",
+                "rel": "incorporated-into"
+            }
+        ]
+    }
+}

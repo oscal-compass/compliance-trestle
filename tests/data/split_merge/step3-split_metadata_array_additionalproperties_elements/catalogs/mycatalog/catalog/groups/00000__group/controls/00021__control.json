@@ -1,0 +1,102 @@
+{
+    "control": {
+        "id": "ac-22",
+        "class": "SP800-53",
+        "title": "Publicly Accessible Content",
+        "params": [
+            {
+                "id": "ac-22_prm_1",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "AC-22"
+            },
+            {
+                "name": "sort-id",
+                "value": "ac-22"
+            }
+        ],
+        "links": [
+            {
+                "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#at-2",
+                "rel": "related"
+            },
+            {
+                "href": "#at-3",
+                "rel": "related"
+            },
+            {
+                "href": "#au-13",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "ac-22_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "ac-22_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Designate individuals authorized to make information publicly accessible;"
+                    },
+                    {
+                        "id": "ac-22_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Train authorized individuals to ensure that publicly accessible information does not contain nonpublic information;"
+                    },
+                    {
+                        "id": "ac-22_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Review the proposed content of information prior to posting onto the publicly accessible system to ensure that nonpublic information is not included; and"
+                    },
+                    {
+                        "id": "ac-22_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Review the content on the publicly accessible system for nonpublic information {{ insert: param, ac-22_prm_1 }} and remove such information, if discovered."
+                    }
+                ]
+            },
+            {
+                "id": "ac-22_gdn",
+                "name": "guidance",
+                "prose": "In accordance with applicable laws, executive orders, directives, policies, regulations, standards, and guidelines, the public is not authorized to have access to nonpublic information, including information protected under the [PRIVACT](#18e71fec-c6fd-475a-925a-5d8495cf8455) and proprietary information. Publicly accessible content addresses systems that are controlled by the organization and accessible to the public, typically without identification or authentication. Posting information on non-organizational systems (e.g., non-organizational public websites, forums, and social media) is covered by organizational policy. While organizations may have individuals who are responsible for developing and implementing policies about the information that can be made publicly accessible, publicly accessible content addresses the management of the individuals who make such information publicly accessible."
+            }
+        ]
+    }
+}

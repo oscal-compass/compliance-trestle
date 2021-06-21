@@ -1,0 +1,145 @@
+{
+    "control": {
+        "id": "pm-28",
+        "class": "SP800-53",
+        "title": "Risk Framing",
+        "params": [
+            {
+                "id": "pm-28_prm_1",
+                "label": "organization-defined personnel"
+            },
+            {
+                "id": "pm-28_prm_2",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "PM-28"
+            },
+            {
+                "name": "sort-id",
+                "value": "pm-28"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
+                "rel": "reference"
+            },
+            {
+                "href": "#ca-7",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-9",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-7",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "pm-28_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "pm-28_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Identify and document:",
+                        "parts": [
+                            {
+                                "id": "pm-28_smt.a.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Assumptions affecting risk assessments, risk responses, and risk monitoring;"
+                            },
+                            {
+                                "id": "pm-28_smt.a.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "Constraints affecting risk assessments, risk responses, and risk monitoring;"
+                            },
+                            {
+                                "id": "pm-28_smt.a.3",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "3."
+                                    }
+                                ],
+                                "prose": "Priorities and trade-offs considered by the organization for managing risk; and"
+                            },
+                            {
+                                "id": "pm-28_smt.a.4",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "4."
+                                    }
+                                ],
+                                "prose": "Organizational risk tolerance;"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "pm-28_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Distribute the results of risk framing activities to {{ insert: param, pm-28_prm_1 }}; and"
+                    },
+                    {
+                        "id": "pm-28_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Review and update risk framing considerations {{ insert: param, pm-28_prm_2 }}."
+                    }
+                ]
+            },
+            {
+                "id": "pm-28_gdn",
+                "name": "guidance",
+                "prose": "Risk framing is most effective when conducted at the organization level and in consultation with stakeholders throughout the organization including mission, business, and system owners. The assumptions, constraints, risk tolerance, priorities, and trade-offs identified as part of the risk framing process inform the risk management strategy, which in turn informs the conduct of risk assessment, risk response, and risk monitoring activities. Risk framing results are shared with organizational personnel, including mission and business owners, information owners or stewards, system owners, authorizing officials, senior agency information security officer, senior agency official for privacy, and senior accountable official for risk management."
+            }
+        ]
+    }
+}

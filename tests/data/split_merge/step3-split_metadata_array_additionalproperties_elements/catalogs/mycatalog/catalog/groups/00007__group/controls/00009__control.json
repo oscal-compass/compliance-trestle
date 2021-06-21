@@ -1,0 +1,27 @@
+{
+    "control": {
+        "id": "ir-10",
+        "class": "SP800-53",
+        "title": "Integrated Information Security Analysis Team",
+        "props": [
+            {
+                "name": "label",
+                "value": "IR-10"
+            },
+            {
+                "name": "sort-id",
+                "value": "ir-10"
+            },
+            {
+                "name": "status",
+                "value": "withdrawn"
+            }
+        ],
+        "links": [
+            {
+                "href": "#ir-4.11",
+                "rel": "moved-to"
+            }
+        ]
+    }
+}

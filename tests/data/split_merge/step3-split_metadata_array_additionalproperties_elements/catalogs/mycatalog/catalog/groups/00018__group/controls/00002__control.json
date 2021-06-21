@@ -1,0 +1,648 @@
+{
+    "control": {
+        "id": "si-3",
+        "class": "SP800-53",
+        "title": "Malicious Code Protection",
+        "params": [
+            {
+                "id": "si-3_prm_1",
+                "select": {
+                    "how-many": "one-or-more",
+                    "choice": [
+                        "signature based",
+                        "non-signature based"
+                    ]
+                }
+            },
+            {
+                "id": "si-3_prm_2",
+                "label": "organization-defined frequency"
+            },
+            {
+                "id": "si-3_prm_3",
+                "select": {
+                    "how-many": "one-or-more",
+                    "choice": [
+                        "endpoint",
+                        "network entry and exit points"
+                    ]
+                }
+            },
+            {
+                "id": "si-3_prm_4",
+                "select": {
+                    "how-many": "one-or-more",
+                    "choice": [
+                        "block malicious code",
+                        "quarantine malicious code",
+                        "take {{ insert: param, si-3_prm_5 }} "
+                    ]
+                }
+            },
+            {
+                "id": "si-3_prm_5",
+                "depends-on": "si-3_prm_4",
+                "label": "organization-defined action"
+            },
+            {
+                "id": "si-3_prm_6",
+                "label": "organization-defined personnel or roles"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SI-3"
+            },
+            {
+                "name": "sort-id",
+                "value": "si-03"
+            }
+        ],
+        "links": [
+            {
+                "href": "#3dd249b0-f57d-44ba-a03e-c3eab1b835ff",
+                "rel": "reference"
+            },
+            {
+                "href": "#88660532-2dcf-442e-845c-03340ce48999",
+                "rel": "reference"
+            },
+            {
+                "href": "#1c71b420-2bd9-4e52-9fc8-390f58b85b59",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-19",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-3",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-9",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-23",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-26",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-28",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-44",
+                "rel": "related"
+            },
+            {
+                "href": "#si-2",
+                "rel": "related"
+            },
+            {
+                "href": "#si-4",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            },
+            {
+                "href": "#si-8",
+                "rel": "related"
+            },
+            {
+                "href": "#si-15",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "si-3_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "si-3_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Implement {{ insert: param, si-3_prm_1 }} malicious code protection mechanisms at system entry and exit points to detect and eradicate malicious code;"
+                    },
+                    {
+                        "id": "si-3_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Automatically update malicious code protection mechanisms as new releases are available in accordance with organizational configuration management policy and procedures;"
+                    },
+                    {
+                        "id": "si-3_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Configure malicious code protection mechanisms to:",
+                        "parts": [
+                            {
+                                "id": "si-3_smt.c.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Perform periodic scans of the system {{ insert: param, si-3_prm_2 }} and real-time scans of files from external sources at {{ insert: param, si-3_prm_3 }} as the files are downloaded, opened, or executed in accordance with organizational policy; and"
+                            },
+                            {
+                                "id": "si-3_smt.c.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": " {{ insert: param, si-3_prm_4 }}; and send alert to {{ insert: param, si-3_prm_6 }} in response to malicious code detection; and"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "si-3_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Address the receipt of false positives during malicious code detection and eradication and the resulting potential impact on the availability of the system."
+                    }
+                ]
+            },
+            {
+                "id": "si-3_gdn",
+                "name": "guidance",
+                "prose": "System entry and exit points include firewalls, remote access servers, workstations, electronic mail servers, web servers, proxy servers, notebook computers, and mobile devices. Malicious code includes viruses, worms, Trojan horses, and spyware. Malicious code can also be encoded in various formats contained within compressed or hidden files or hidden in files using techniques such as steganography. Malicious code can be inserted into systems in a variety of ways, including by electronic mail, the world-wide web, and portable storage devices. Malicious code insertions occur through the exploitation of system vulnerabilities. A variety of technologies and methods exist to limit or eliminate the effects of malicious code.\n\nMalicious code protection mechanisms include both signature- and nonsignature-based technologies. Nonsignature-based detection mechanisms include artificial intelligence techniques that use heuristics to detect, analyze, and describe the characteristics or behavior of malicious code and to provide controls against such code for which signatures do not yet exist or for which existing signatures may not be effective. Malicious code for which active signatures do not yet exist or may be ineffective includes polymorphic malicious code (i.e., code that changes signatures when it replicates). Nonsignature-based mechanisms also include reputation-based technologies. In addition to the above technologies, pervasive configuration management, comprehensive software integrity controls, and anti-exploitation software may be effective in preventing the execution of unauthorized code. Malicious code may be present in commercial off-the-shelf software as well as custom-built software and could include logic bombs, backdoors, and other types of attacks that could affect organizational mission and business functions.\n\nIn situations where malicious code cannot be detected by detection methods or technologies, organizations rely on other types of controls, including secure coding practices, configuration management and control, trusted procurement processes, and monitoring practices to ensure that software does not perform functions other than the functions intended. Organizations may determine that, in response to the detection of malicious code, different actions may be warranted. For example, organizations can define actions in response to malicious code detection during periodic scans, the detection of malicious downloads, or the detection of maliciousness when attempting to open or execute files."
+            }
+        ],
+        "controls": [
+            {
+                "id": "si-3.1",
+                "class": "SP800-53-enhancement",
+                "title": "Central Management",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-3(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-03.01"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#pl-9",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "si-3.2",
+                "class": "SP800-53-enhancement",
+                "title": "Automatic Updates",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-3(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-03.02"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-3",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "si-3.3",
+                "class": "SP800-53-enhancement",
+                "title": "Non-privileged Users",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-3(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-03.03"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-6.10",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "si-3.4",
+                "class": "SP800-53-enhancement",
+                "title": "Updates Only by Privileged Users",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-3(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-03.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-3",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-3.4_smt",
+                        "name": "statement",
+                        "prose": "Update malicious code protection mechanisms only when directed by a privileged user."
+                    },
+                    {
+                        "id": "si-3.4_gdn",
+                        "name": "guidance",
+                        "prose": "Protection mechanisms for malicious code are typically categorized as security-related software and, as such, are only updated by organizational personnel with appropriate access privileges."
+                    }
+                ]
+            },
+            {
+                "id": "si-3.5",
+                "class": "SP800-53-enhancement",
+                "title": "Portable Storage Devices",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-3(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-03.05"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#mp-7",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "si-3.6",
+                "class": "SP800-53-enhancement",
+                "title": "Testing and Verification",
+                "params": [
+                    {
+                        "id": "si-3.6_prm_1",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-3(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-03.06"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-3",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ca-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ca-7",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ra-5",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-3.6_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "si-3.6_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Test malicious code protection mechanisms {{ insert: param, si-3.6_prm_1 }} by introducing known benign code into the system; and"
+                            },
+                            {
+                                "id": "si-3.6_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Verify that the detection of the code and the associated incident reporting occur."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "si-3.6_gdn",
+                        "name": "guidance",
+                        "prose": "None."
+                    }
+                ]
+            },
+            {
+                "id": "si-3.7",
+                "class": "SP800-53-enhancement",
+                "title": "Nonsignature-based Detection",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-3(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-03.07"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-3",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "si-3.8",
+                "class": "SP800-53-enhancement",
+                "title": "Detect Unauthorized Commands",
+                "params": [
+                    {
+                        "id": "si-3.8_prm_1",
+                        "label": "organization-defined system hardware components"
+                    },
+                    {
+                        "id": "si-3.8_prm_2",
+                        "label": "organization-defined unauthorized operating system commands"
+                    },
+                    {
+                        "id": "si-3.8_prm_3",
+                        "select": {
+                            "how-many": "one-or-more",
+                            "choice": [
+                                "issue a warning",
+                                "audit the command execution",
+                                "prevent the execution of the command"
+                            ]
+                        }
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-3(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-03.08"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-3",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-12",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-3.8_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "si-3.8_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Detect the following unauthorized operating system commands through the kernel application programming interface on {{ insert: param, si-3.8_prm_1 }}: {{ insert: param, si-3.8_prm_2 }}; and"
+                            },
+                            {
+                                "id": "si-3.8_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": " {{ insert: param, si-3.8_prm_3 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "si-3.8_gdn",
+                        "name": "guidance",
+                        "prose": "Detecting unauthorized commands can be applied to critical interfaces other than kernel-based interfaces, including interfaces with virtual machines and privileged applications. Unauthorized operating system commands include commands for kernel functions from system processes that are not trusted to initiate such commands as well as commands for kernel functions that are suspicious even though commands of that type are reasonable for processes to initiate. Organizations can define the malicious commands to be detected by a combination of command types, command classes, or specific instances of commands. Organizations can also define hardware components by component type, component, component location in the network, or a combination thereof. Organizations may select different actions for different types, classes, or instances of malicious commands."
+                    }
+                ]
+            },
+            {
+                "id": "si-3.9",
+                "class": "SP800-53-enhancement",
+                "title": "Authenticate Remote Commands",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-3(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-03.09"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-17.10",
+                        "rel": "moved-to"
+                    }
+                ]
+            },
+            {
+                "id": "si-3.10",
+                "class": "SP800-53-enhancement",
+                "title": "Malicious Code Analysis",
+                "params": [
+                    {
+                        "id": "si-3.10_prm_1",
+                        "label": "organization-defined tools and techniques"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-3(10)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-03.10"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-3",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-3.10_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "si-3.10_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Employ the following tools and techniques to analyze the characteristics and behavior of malicious code: {{ insert: param, si-3.10_prm_1 }}; and"
+                            },
+                            {
+                                "id": "si-3.10_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Incorporate the results from malicious code analysis into organizational incident response and flaw remediation processes."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "si-3.10_gdn",
+                        "name": "guidance",
+                        "prose": "The use of malicious code analysis tools provides organizations with a more in-depth understanding of adversary tradecraft (i.e., tactics, techniques, and procedures) and the functionality and purpose of specific instances of malicious code. Understanding the characteristics of malicious code facilitates effective organizational responses to current and future threats. Organizations can conduct malicious code analyses by employing reverse engineering techniques or by monitoring the behavior of executing code."
+                    }
+                ]
+            }
+        ]
+    }
+}

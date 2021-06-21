@@ -1,0 +1,1515 @@
+{
+    "control": {
+        "id": "si-4",
+        "class": "SP800-53",
+        "title": "System Monitoring",
+        "params": [
+            {
+                "id": "si-4_prm_1",
+                "label": "organization-defined monitoring objectives"
+            },
+            {
+                "id": "si-4_prm_2",
+                "label": "organization-defined techniques and methods"
+            },
+            {
+                "id": "si-4_prm_3",
+                "label": "organization-defined system monitoring information"
+            },
+            {
+                "id": "si-4_prm_4",
+                "label": "organization-defined personnel or roles"
+            },
+            {
+                "id": "si-4_prm_5",
+                "select": {
+                    "how-many": "one-or-more",
+                    "choice": [
+                        "as needed",
+                        " {{ insert: param, si-4_prm_6 }} "
+                    ]
+                }
+            },
+            {
+                "id": "si-4_prm_6",
+                "depends-on": "si-4_prm_5",
+                "label": "organization-defined frequency"
+            }
+        ],
+        "props": [
+            {
+                "name": "label",
+                "value": "SI-4"
+            },
+            {
+                "name": "sort-id",
+                "value": "si-04"
+            }
+        ],
+        "links": [
+            {
+                "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
+                "rel": "reference"
+            },
+            {
+                "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
+                "rel": "reference"
+            },
+            {
+                "href": "#49b8aa2d-a88c-4bff-9f20-876ccb8f7dcb",
+                "rel": "reference"
+            },
+            {
+                "href": "#3dd249b0-f57d-44ba-a03e-c3eab1b835ff",
+                "rel": "reference"
+            },
+            {
+                "href": "#5eee45d8-3313-4fdc-8d54-1742092bbdd6",
+                "rel": "reference"
+            },
+            {
+                "href": "#25e3e57b-dc2f-4934-af9b-050b020c6f0e",
+                "rel": "reference"
+            },
+            {
+                "href": "#067223d8-1ec7-45c5-b21b-c848da6de8fb",
+                "rel": "reference"
+            },
+            {
+                "href": "#ac-2",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-8",
+                "rel": "related"
+            },
+            {
+                "href": "#ac-17",
+                "rel": "related"
+            },
+            {
+                "href": "#au-2",
+                "rel": "related"
+            },
+            {
+                "href": "#au-6",
+                "rel": "related"
+            },
+            {
+                "href": "#au-7",
+                "rel": "related"
+            },
+            {
+                "href": "#au-9",
+                "rel": "related"
+            },
+            {
+                "href": "#au-12",
+                "rel": "related"
+            },
+            {
+                "href": "#au-13",
+                "rel": "related"
+            },
+            {
+                "href": "#au-14",
+                "rel": "related"
+            },
+            {
+                "href": "#ca-7",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-3",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-6",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-8",
+                "rel": "related"
+            },
+            {
+                "href": "#cm-11",
+                "rel": "related"
+            },
+            {
+                "href": "#ia-10",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-3",
+                "rel": "related"
+            },
+            {
+                "href": "#ma-4",
+                "rel": "related"
+            },
+            {
+                "href": "#pl-9",
+                "rel": "related"
+            },
+            {
+                "href": "#pm-12",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-5",
+                "rel": "related"
+            },
+            {
+                "href": "#ra-10",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-5",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-18",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-26",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-31",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-35",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-36",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-37",
+                "rel": "related"
+            },
+            {
+                "href": "#sc-43",
+                "rel": "related"
+            },
+            {
+                "href": "#si-3",
+                "rel": "related"
+            },
+            {
+                "href": "#si-6",
+                "rel": "related"
+            },
+            {
+                "href": "#si-7",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-9",
+                "rel": "related"
+            },
+            {
+                "href": "#sr-10",
+                "rel": "related"
+            }
+        ],
+        "parts": [
+            {
+                "id": "si-4_smt",
+                "name": "statement",
+                "parts": [
+                    {
+                        "id": "si-4_smt.a",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "a."
+                            }
+                        ],
+                        "prose": "Monitor the system to detect:",
+                        "parts": [
+                            {
+                                "id": "si-4_smt.a.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Attacks and indicators of potential attacks in accordance with the following monitoring objectives: {{ insert: param, si-4_prm_1 }}; and"
+                            },
+                            {
+                                "id": "si-4_smt.a.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "Unauthorized local, network, and remote connections;"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "si-4_smt.b",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "b."
+                            }
+                        ],
+                        "prose": "Identify unauthorized use of the system through the following techniques and methods: {{ insert: param, si-4_prm_2 }};"
+                    },
+                    {
+                        "id": "si-4_smt.c",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "c."
+                            }
+                        ],
+                        "prose": "Invoke internal monitoring capabilities or deploy monitoring devices:",
+                        "parts": [
+                            {
+                                "id": "si-4_smt.c.1",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "1."
+                                    }
+                                ],
+                                "prose": "Strategically within the system to collect organization-determined essential information; and"
+                            },
+                            {
+                                "id": "si-4_smt.c.2",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "2."
+                                    }
+                                ],
+                                "prose": "At ad hoc locations within the system to track specific types of transactions of interest to the organization;"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "si-4_smt.d",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "d."
+                            }
+                        ],
+                        "prose": "Analyze detected events and anomalies;"
+                    },
+                    {
+                        "id": "si-4_smt.e",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "e."
+                            }
+                        ],
+                        "prose": "Adjust the level of system monitoring activity when there is a change in risk to organizational operations and assets, individuals, other organizations, or the Nation;"
+                    },
+                    {
+                        "id": "si-4_smt.f",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "f."
+                            }
+                        ],
+                        "prose": "Obtain legal opinion regarding system monitoring activities; and"
+                    },
+                    {
+                        "id": "si-4_smt.g",
+                        "name": "item",
+                        "props": [
+                            {
+                                "name": "label",
+                                "value": "g."
+                            }
+                        ],
+                        "prose": "Provide {{ insert: param, si-4_prm_3 }} to {{ insert: param, si-4_prm_4 }} {{ insert: param, si-4_prm_5 }}."
+                    }
+                ]
+            },
+            {
+                "id": "si-4_gdn",
+                "name": "guidance",
+                "prose": "System monitoring includes external and internal monitoring. External monitoring includes the observation of events occurring at external interfaces to the system. Internal monitoring includes the observation of events occurring within the system. Organizations monitor systems by observing audit activities in real time or by observing other system aspects such as access patterns, characteristics of access, and other actions. The monitoring objectives guide and inform the determination of the events. System monitoring capabilities are achieved through a variety of tools and techniques, including intrusion detection and prevention systems, malicious code protection software, scanning tools, audit record monitoring software, and network monitoring software.\n\nDepending on the security architecture, the distribution and configuration of monitoring devices may impact throughput at key internal and external boundaries as well as at other locations across a network due to the introduction of network throughput latency. If throughput management is needed, such devices are strategically located and deployed as part of an established organization-wide security architecture. Strategic locations for monitoring devices include selected perimeter locations and near key servers and server farms that support critical applications. Monitoring devices are typically employed at the managed interfaces associated with controls [SC-7](#sc-7) and [AC-17](#ac-17). The information collected is a function of the organizational monitoring objectives and the capability of systems to support such objectives. Specific types of transactions of interest include Hypertext Transfer Protocol (HTTP) traffic that bypasses HTTP proxies. System monitoring is an integral part of organizational continuous monitoring and incident response programs, and output from system monitoring serves as input to those programs. System monitoring requirements, including the need for specific types of system monitoring, may be referenced in other controls (e.g., [AC-2g](#ac-2_smt.g), [AC-2(7)](#ac-2.7), [AC-2(12)(a)](#ac-2.12_smt.a), [AC-17(1)](#ac-17.1), [AU-13](#au-13), [AU-13(1)](#au-13.1), [AU-13(2)](#au-13.2), [CM-3f](#cm-3_smt.f), [CM-6d](#cm-6_smt.d), [MA-3a](#ma-3_smt.a), [MA-4a](#ma-4_smt.a), [SC-5(3)(b)](#sc-5.3_smt.b), [SC-7a](#sc-7_smt.a), [SC-7(24)(b)](#sc-7.24_smt.b), [SC-18b](#sc-18_smt.b), [SC-43b](#sc-43_smt.b)). Adjustments to levels of system monitoring are based on law enforcement information, intelligence information, or other sources of information. The legality of system monitoring activities is based on applicable laws, executive orders, directives, regulations, policies, standards, and guidelines."
+            }
+        ],
+        "controls": [
+            {
+                "id": "si-4.1",
+                "class": "SP800-53-enhancement",
+                "title": "System-wide Intrusion Detection System",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(1)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.01"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.1_smt",
+                        "name": "statement",
+                        "prose": "Connect and configure individual intrusion detection tools into a system-wide intrusion detection system."
+                    },
+                    {
+                        "id": "si-4.1_gdn",
+                        "name": "guidance",
+                        "prose": "Linking individual intrusion detection tools into a system-wide intrusion detection system provides additional coverage and effective detection capabilities. The information contained in one intrusion detection tool can be shared widely across the organization, making the system-wide detection capability more robust and powerful."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.2",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Tools and Mechanisms for Real-time Analysis",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(2)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.02"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pm-23",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pm-25",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.2_smt",
+                        "name": "statement",
+                        "prose": "Employ automated tools and mechanisms to support near real-time analysis of events."
+                    },
+                    {
+                        "id": "si-4.2_gdn",
+                        "name": "guidance",
+                        "prose": "Automated tools and mechanisms include host-based, network-based, transport-based, or storage-based event monitoring tools and mechanisms or security information and event management (SIEM) technologies that provide real-time analysis of alerts and notifications generated by organizational systems. Automated monitoring techniques can create unintended privacy risks because automated controls may connect to external or otherwise unrelated systems. The matching of records between these systems may create linkages with unintended consequences. Organizations assess and document these risks in their privacy impact assessment and make determinations that are in alignment with their privacy program plan."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.3",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Tool and Mechanism Integration",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(3)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.03"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#pm-23",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pm-25",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.3_smt",
+                        "name": "statement",
+                        "prose": "Employ automated tools and mechanisms to integrate intrusion detection tools and mechanisms into access control and flow control mechanisms."
+                    },
+                    {
+                        "id": "si-4.3_gdn",
+                        "name": "guidance",
+                        "prose": "Using automated tools and mechanisms to integrate intrusion detection tools and mechanisms into access and flow control mechanisms facilitates a rapid response to attacks by enabling the reconfiguration of mechanisms in support of attack isolation and elimination."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.4",
+                "class": "SP800-53-enhancement",
+                "title": "Inbound and Outbound Communications Traffic",
+                "params": [
+                    {
+                        "id": "si-4.4_prm_1",
+                        "label": "organization-defined frequency"
+                    },
+                    {
+                        "id": "si-4.4_prm_2",
+                        "label": "organization-defined unusual or unauthorized activities or conditions"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(4)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.04"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.4_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "si-4.4_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Determine criteria for unusual or unauthorized activities or conditions for inbound and outbound communications traffic;"
+                            },
+                            {
+                                "id": "si-4.4_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Monitor inbound and outbound communications traffic {{ insert: param, si-4.4_prm_1 }} for {{ insert: param, si-4.4_prm_2 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "si-4.4_gdn",
+                        "name": "guidance",
+                        "prose": "Unusual or unauthorized activities or conditions related to system inbound and outbound communications traffic includes internal traffic that indicates the presence of malicious code or unauthorized use of legitimate code or credentials within organizational systems or propagating among system components, signaling to external systems, and the unauthorized exporting of information. Evidence of malicious code or unauthorized use of legitimate code or credentials is used to identify potentially compromised systems or system components."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.5",
+                "class": "SP800-53-enhancement",
+                "title": "System-generated Alerts",
+                "params": [
+                    {
+                        "id": "si-4.5_prm_1",
+                        "label": "organization-defined personnel or roles"
+                    },
+                    {
+                        "id": "si-4.5_prm_2",
+                        "label": "organization-defined compromise indicators"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(5)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.05"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#au-5",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.5_smt",
+                        "name": "statement",
+                        "prose": "Alert {{ insert: param, si-4.5_prm_1 }} when the following system-generated indications of compromise or potential compromise occur: {{ insert: param, si-4.5_prm_2 }}."
+                    },
+                    {
+                        "id": "si-4.5_gdn",
+                        "name": "guidance",
+                        "prose": "Alerts may be generated from a variety of sources, including audit records or inputs from malicious code protection mechanisms, intrusion detection or prevention mechanisms, or boundary protection devices such as firewalls, gateways, and routers. Alerts can be automated and may be transmitted telephonically, by electronic mail messages, or by text messaging. Organizational personnel on the alert notification list can include system administrators, mission or business owners, system owners, information owners/stewards, senior agency information security officers, senior agency officials for privacy, system security officers, or privacy officers. In contrast to alerts generated by the system, alerts generated by organizations in [SI-4(12)](#si-4.12) focus on information sources external to the system, such as suspicious activity reports and reports on potential insider threats."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.6",
+                "class": "SP800-53-enhancement",
+                "title": "Restrict Non-privileged Users",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(6)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.06"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#ac-6.10",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "si-4.7",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Response to Suspicious Events",
+                "params": [
+                    {
+                        "id": "si-4.7_prm_1",
+                        "label": "organization-defined incident response personnel (identified by name and/or by role)"
+                    },
+                    {
+                        "id": "si-4.7_prm_2",
+                        "label": "organization-defined least-disruptive actions to terminate suspicious events"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(7)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.07"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.7_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "si-4.7_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Notify {{ insert: param, si-4.7_prm_1 }} of detected suspicious events; and"
+                            },
+                            {
+                                "id": "si-4.7_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Take the following actions upon detection: {{ insert: param, si-4.7_prm_2 }}."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "si-4.7_gdn",
+                        "name": "guidance",
+                        "prose": "Least-disruptive actions include initiating requests for human responses."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.8",
+                "class": "SP800-53-enhancement",
+                "title": "Protection of Monitoring Information",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(8)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.08"
+                    },
+                    {
+                        "name": "status",
+                        "value": "withdrawn"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "incorporated-into"
+                    }
+                ]
+            },
+            {
+                "id": "si-4.9",
+                "class": "SP800-53-enhancement",
+                "title": "Testing of Monitoring Tools and Mechanisms",
+                "params": [
+                    {
+                        "id": "si-4.9_prm_1",
+                        "label": "organization-defined frequency"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(9)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.09"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.9_smt",
+                        "name": "statement",
+                        "prose": "Test intrusion-monitoring tools and mechanisms {{ insert: param, si-4.9_prm_1 }}."
+                    },
+                    {
+                        "id": "si-4.9_gdn",
+                        "name": "guidance",
+                        "prose": "Testing intrusion-monitoring tools and mechanisms is necessary to ensure that the tools and mechanisms are operating correctly and continue to satisfy the monitoring objectives of organizations. The frequency and depth of testing depends on the types of tools and mechanisms used by organizations and the methods of deployment."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.10",
+                "class": "SP800-53-enhancement",
+                "title": "Visibility of Encrypted Communications",
+                "params": [
+                    {
+                        "id": "si-4.10_prm_1",
+                        "label": "organization-defined encrypted communications traffic"
+                    },
+                    {
+                        "id": "si-4.10_prm_2",
+                        "label": "organization-defined system monitoring tools and mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(10)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.10"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.10_smt",
+                        "name": "statement",
+                        "prose": "Make provisions so that {{ insert: param, si-4.10_prm_1 }} is visible to {{ insert: param, si-4.10_prm_2 }}."
+                    },
+                    {
+                        "id": "si-4.10_gdn",
+                        "name": "guidance",
+                        "prose": "Organizations balance the need to encrypt communications traffic to protect data confidentiality with the need to maintain visibility into such traffic from a monitoring perspective. Organizations determine whether the visibility requirement applies to internal encrypted traffic, encrypted traffic intended for external destinations, or a subset of the traffic types."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.11",
+                "class": "SP800-53-enhancement",
+                "title": "Analyze Communications Traffic Anomalies",
+                "params": [
+                    {
+                        "id": "si-4.11_prm_1",
+                        "label": "organization-defined interior points within the system"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(11)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.11"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.11_smt",
+                        "name": "statement",
+                        "prose": "Analyze outbound communications traffic at the external interfaces to the system and selected {{ insert: param, si-4.11_prm_1 }} to discover anomalies."
+                    },
+                    {
+                        "id": "si-4.11_gdn",
+                        "name": "guidance",
+                        "prose": "Organization-defined interior points include subnetworks and subsystems. Anomalies within organizational systems include large file transfers, long-time persistent connections, attempts to access information from unexpected locations, the use of unusual protocols and ports, the use of unmonitored network protocols (e.g., IPv6 usage during IPv4 transition), and attempted communications with suspected malicious external addresses."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.12",
+                "class": "SP800-53-enhancement",
+                "title": "Automated Organization-generated Alerts",
+                "params": [
+                    {
+                        "id": "si-4.12_prm_1",
+                        "label": "organization-defined personnel or roles"
+                    },
+                    {
+                        "id": "si-4.12_prm_2",
+                        "label": "organization-defined automated mechanisms"
+                    },
+                    {
+                        "id": "si-4.12_prm_3",
+                        "label": "organization-defined activities that trigger alerts"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(12)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.12"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.12_smt",
+                        "name": "statement",
+                        "prose": "Alert {{ insert: param, si-4.12_prm_1 }} using {{ insert: param, si-4.12_prm_2 }} when the following indications of inappropriate or unusual activities with security or privacy implications occur: {{ insert: param, si-4.12_prm_3 }}."
+                    },
+                    {
+                        "id": "si-4.12_gdn",
+                        "name": "guidance",
+                        "prose": "Organizational personnel on the system alert notification list include system administrators, mission or business owners, system owners, senior agency information security officer, senior agency official for privacy, system security officers, or privacy officers. Automated organization-generated alerts are the security alerts generated by organizations and transmitted using automated means. The sources for organization-generated alerts are focused on other entities such as suspicious activity reports and reports on potential insider threats. In contrast to alerts generated by the organization, alerts generated by the system in [SI-4(5)](#si-4.5) focus on information sources that are internal to the systems, such as audit records."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.13",
+                "class": "SP800-53-enhancement",
+                "title": "Analyze Traffic and Event Patterns",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(13)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.13"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.13_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "si-4.13_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Analyze communications traffic and event patterns for the system;"
+                            },
+                            {
+                                "id": "si-4.13_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": "Develop profiles representing common traffic and event patterns; and"
+                            },
+                            {
+                                "id": "si-4.13_smt.c",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(c)"
+                                    }
+                                ],
+                                "prose": "Use the traffic and event profiles in tuning system-monitoring devices."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "si-4.13_gdn",
+                        "name": "guidance",
+                        "prose": "Identifying and understanding common communications traffic and event patterns help organizations provide useful information to system monitoring devices to more effectively identify suspicious or anomalous traffic and events when they occur. Such information can help reduce the number of false positives and false negatives during system monitoring."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.14",
+                "class": "SP800-53-enhancement",
+                "title": "Wireless Intrusion Detection",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(14)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.14"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-18",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ia-3",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.14_smt",
+                        "name": "statement",
+                        "prose": "Employ a wireless intrusion detection system to identify rogue wireless devices and to detect attack attempts and potential compromises or breaches to the system."
+                    },
+                    {
+                        "id": "si-4.14_gdn",
+                        "name": "guidance",
+                        "prose": "Wireless signals may radiate beyond organizational facilities. Organizations proactively search for unauthorized wireless connections, including the conduct of thorough scans for unauthorized wireless access points. Wireless scans are not limited to those areas within facilities containing systems but also include areas outside of facilities to verify that unauthorized wireless access points are not connected to organizational systems."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.15",
+                "class": "SP800-53-enhancement",
+                "title": "Wireless to Wireline Communications",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(15)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.15"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-18",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.15_smt",
+                        "name": "statement",
+                        "prose": "Employ an intrusion detection system to monitor wireless communications traffic as the traffic passes from wireless to wireline networks."
+                    },
+                    {
+                        "id": "si-4.15_gdn",
+                        "name": "guidance",
+                        "prose": "Wireless networks are inherently less secure than wired networks. For example, wireless networks are more susceptible to eavesdroppers or traffic analysis than wireline networks. When wireless to wireline communications exist, the wireless network could become a port of entry into the wired network. Given the greater facility of unauthorized network access via wireless access points compared to unauthorized wired network access from within the physical boundaries of the system, additional monitoring of transitioning traffic between wireless and wired networks may be necessary to detect malicious activities. Employing intrusion detection systems to monitor wireless communications traffic helps to ensure that the traffic does not contain malicious code prior to transitioning to the wireline network."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.16",
+                "class": "SP800-53-enhancement",
+                "title": "Correlate Monitoring Information",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(16)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.16"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.16_smt",
+                        "name": "statement",
+                        "prose": "Correlate information from monitoring tools and mechanisms employed throughout the system."
+                    },
+                    {
+                        "id": "si-4.16_gdn",
+                        "name": "guidance",
+                        "prose": "Correlating information from different system monitoring tools and mechanisms can provide a more comprehensive view of system activity. Correlating system monitoring tools and mechanisms that typically work in isolation\u2014including malicious code protection software, host monitoring, and network monitoring\u2014can provide an organization-wide monitoring view and may reveal otherwise unseen attack patterns. Understanding the capabilities and limitations of diverse monitoring tools and mechanisms and how to maximize the use of information generated by those tools and mechanisms can help organizations develop, operate, and maintain effective monitoring programs. The correlation of monitoring information is especially important during the transition from older to newer technologies (e.g., transitioning from IPv4 to IPv6 network protocols)."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.17",
+                "class": "SP800-53-enhancement",
+                "title": "Integrated Situational Awareness",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(17)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.17"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#au-16",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#pe-6",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sr-2",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sr-4",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#sr-6",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.17_smt",
+                        "name": "statement",
+                        "prose": "Correlate information from monitoring physical, cyber, and supply chain activities to achieve integrated, organization-wide situational awareness."
+                    },
+                    {
+                        "id": "si-4.17_gdn",
+                        "name": "guidance",
+                        "prose": "Correlating monitoring information from a more diverse set of information sources helps to achieve integrated situational awareness. Integrated situational awareness from a combination of physical, cyber, and supply chain monitoring activities enhances the capability of organizations to more quickly detect sophisticated attacks and investigate the methods and techniques employed to carry out such attacks. In contrast to [SI-4(16)](#si-4.16), which correlates the various cyber monitoring information, integrated situational awareness is intended to correlate monitoring beyond the cyber domain. Correlation of monitoring information from multiple activities may help reveal attacks on organizations that are operating across multiple attack vectors."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.18",
+                "class": "SP800-53-enhancement",
+                "title": "Analyze Traffic and Covert Exfiltration",
+                "params": [
+                    {
+                        "id": "si-4.18_prm_1",
+                        "label": "organization-defined interior points within the system"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(18)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.18"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.18_smt",
+                        "name": "statement",
+                        "prose": "Analyze outbound communications traffic at external interfaces to the system and at the following interior points to detect covert exfiltration of information: {{ insert: param, si-4.18_prm_1 }}."
+                    },
+                    {
+                        "id": "si-4.18_gdn",
+                        "name": "guidance",
+                        "prose": "Organization-defined interior points include subnetworks and subsystems. Covert means that can be used to exfiltrate information include steganography."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.19",
+                "class": "SP800-53-enhancement",
+                "title": "Risk for Individuals",
+                "params": [
+                    {
+                        "id": "si-4.19_prm_1",
+                        "label": "organization-defined additional monitoring"
+                    },
+                    {
+                        "id": "si-4.19_prm_2",
+                        "label": "organization-defined sources"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(19)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.19"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.19_smt",
+                        "name": "statement",
+                        "prose": "Implement {{ insert: param, si-4.19_prm_1 }} of individuals who have been identified by {{ insert: param, si-4.19_prm_2 }} as posing an increased level of risk."
+                    },
+                    {
+                        "id": "si-4.19_gdn",
+                        "name": "guidance",
+                        "prose": "Indications of increased risk from individuals can be obtained from different sources, including personnel records, intelligence agencies, law enforcement organizations, and other sources. The monitoring of individuals is coordinated with the management, legal, security, privacy, and human resource officials who conduct such monitoring. Monitoring is conducted in accordance with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.20",
+                "class": "SP800-53-enhancement",
+                "title": "Privileged Users",
+                "params": [
+                    {
+                        "id": "si-4.20_prm_1",
+                        "label": "organization-defined additional monitoring"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(20)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.20"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-18",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.20_smt",
+                        "name": "statement",
+                        "prose": "Implement the following additional monitoring of privileged users: {{ insert: param, si-4.20_prm_1 }}."
+                    },
+                    {
+                        "id": "si-4.20_gdn",
+                        "name": "guidance",
+                        "prose": "Privileged users have access to more sensitive information, including security-related information, than the general user population. Access to such information means that privileged users can potentially do greater damage to systems and organizations than non-privileged users. Therefore, implementing additional monitoring on privileged users helps to ensure that organizations can identify malicious activity at the earliest possible time and take appropriate actions."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.21",
+                "class": "SP800-53-enhancement",
+                "title": "Probationary Periods",
+                "params": [
+                    {
+                        "id": "si-4.21_prm_1",
+                        "label": "organization-defined probationary period"
+                    },
+                    {
+                        "id": "si-4.21_prm_2",
+                        "label": "organization-defined additional monitoring"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(21)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.21"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-18",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.21_smt",
+                        "name": "statement",
+                        "prose": "Implement the following additional monitoring of individuals during {{ insert: param, si-4.21_prm_1 }}: {{ insert: param, si-4.21_prm_2 }}."
+                    },
+                    {
+                        "id": "si-4.21_gdn",
+                        "name": "guidance",
+                        "prose": "During probationary periods, employees do not have permanent employment status within organizations. Without such status or access to information that is resident on the system, additional monitoring can help identify any potentially malicious activity or inappropriate behavior."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.22",
+                "class": "SP800-53-enhancement",
+                "title": "Unauthorized Network Services",
+                "params": [
+                    {
+                        "id": "si-4.22_prm_1",
+                        "label": "organization-defined authorization or approval processes"
+                    },
+                    {
+                        "id": "si-4.22_prm_2",
+                        "select": {
+                            "how-many": "one-or-more",
+                            "choice": [
+                                "Audit",
+                                "Alert {{ insert: param, si-4.22_prm_3 }} "
+                            ]
+                        }
+                    },
+                    {
+                        "id": "si-4.22_prm_3",
+                        "depends-on": "si-4.22_prm_2",
+                        "label": "organization-defined personnel or roles"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(22)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.22"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#cm-7",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.22_smt",
+                        "name": "statement",
+                        "parts": [
+                            {
+                                "id": "si-4.22_smt.a",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(a)"
+                                    }
+                                ],
+                                "prose": "Detect network services that have not been authorized or approved by {{ insert: param, si-4.22_prm_1 }}; and"
+                            },
+                            {
+                                "id": "si-4.22_smt.b",
+                                "name": "item",
+                                "props": [
+                                    {
+                                        "name": "label",
+                                        "value": "(b)"
+                                    }
+                                ],
+                                "prose": " {{ insert: param, si-4.22_prm_2 }} when detected."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "si-4.22_gdn",
+                        "name": "guidance",
+                        "prose": "Unauthorized or unapproved network services include services in service-oriented architectures that lack organizational verification or validation and may therefore be unreliable or serve as malicious rogues for valid services."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.23",
+                "class": "SP800-53-enhancement",
+                "title": "Host-based Devices",
+                "params": [
+                    {
+                        "id": "si-4.23_prm_1",
+                        "label": "organization-defined system components"
+                    },
+                    {
+                        "id": "si-4.23_prm_2",
+                        "label": "organization-defined host-based monitoring mechanisms"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(23)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.23"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-18",
+                        "rel": "related"
+                    },
+                    {
+                        "href": "#ac-19",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.23_smt",
+                        "name": "statement",
+                        "prose": "Implement the following host-based monitoring mechanisms at {{ insert: param, si-4.23_prm_1 }}: {{ insert: param, si-4.23_prm_2 }}."
+                    },
+                    {
+                        "id": "si-4.23_gdn",
+                        "name": "guidance",
+                        "prose": "Host-based monitoring collects information about the host (or system in which it resides). System components in which host-based monitoring can be implemented include servers, notebook computers, and mobile devices. Organizations may consider employing host-based monitoring mechanisms from multiple product developers or vendors."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.24",
+                "class": "SP800-53-enhancement",
+                "title": "Indicators of Compromise",
+                "params": [
+                    {
+                        "id": "si-4.24_prm_1",
+                        "label": "organization-defined personnel or roles"
+                    },
+                    {
+                        "id": "si-4.24_prm_2",
+                        "label": "organization-defined sources"
+                    }
+                ],
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(24)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.24"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    },
+                    {
+                        "href": "#ac-18",
+                        "rel": "related"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.24_smt",
+                        "name": "statement",
+                        "prose": "Discover, collect, and distribute to {{ insert: param, si-4.24_prm_1 }}, indicators of compromise provided by {{ insert: param, si-4.24_prm_2 }}."
+                    },
+                    {
+                        "id": "si-4.24_gdn",
+                        "name": "guidance",
+                        "prose": "Indicators of compromise (IOC) are forensic artifacts from intrusions that are identified on organizational systems at the host or network level. IOCs provide valuable information on systems that have been compromised. IOCs can include the creation of registry key values. IOCs for network traffic include Universal Resource Locator or protocol elements that indicate malicious code command and control servers. The rapid distribution and adoption of IOCs can improve information security by reducing the time that systems and organizations are vulnerable to the same exploit or attack. Threat indicators, signatures, tactics, techniques, procedures, and other indicators of compromise may be available via government and non-government cooperatives, including the Forum of Incident Response and Security Teams, the United States Computer Emergency Readiness Team, the Defense Industrial Base Cybersecurity Information Sharing Program, and the CERT Coordination Center."
+                    }
+                ]
+            },
+            {
+                "id": "si-4.25",
+                "class": "SP800-53-enhancement",
+                "title": "Optimize Network Traffic Analysis",
+                "props": [
+                    {
+                        "name": "label",
+                        "value": "SI-4(25)"
+                    },
+                    {
+                        "name": "sort-id",
+                        "value": "si-04.25"
+                    }
+                ],
+                "links": [
+                    {
+                        "href": "#si-4",
+                        "rel": "required"
+                    }
+                ],
+                "parts": [
+                    {
+                        "id": "si-4.25_smt",
+                        "name": "statement",
+                        "prose": "Provide visibility into network traffic at external and key internal system interfaces to optimize the effectiveness of monitoring devices."
+                    },
+                    {
+                        "id": "si-4.25_gdn",
+                        "name": "guidance",
+                        "prose": "Encrypted traffic, asymmetric routing architectures, capacity and latency limitations, and transitioning from older to newer technologies (e.g., IPv4 to IPv6 network protocol transition) may result in blind spots for organizations when analyzing network traffic. Collecting, decrypting, pre-processing, and distributing only relevant traffic to monitoring devices can streamline the efficiency and use of devices and optimize traffic analysis."
+                    }
+                ]
+            }
+        ]
+    }
+}
