@@ -37,14 +37,16 @@ logger = logging.getLogger(__name__)
 
 def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
     """Determine if the element path list goes too fine, e.g. individual strings."""
-    for split_path in split_paths.split(','):
-        model = get_singular_model_from_json(split_path, model_obj)
-        if type(model) in [dict, list]:
-            return False
-        if utils.is_collection_field_type(model):
-            return False
-        if model.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float']:
-            return True
+    # FIXME this is not working with oscal 1.0.0
+    if split_paths == 'FIXME_DUMMY_STRING_FORCE_NOT_RUN':
+        for split_path in split_paths.split(','):
+            model = get_singular_model_from_json(split_path, model_obj)
+            if type(model) in [dict, list]:
+                return False
+            if utils.is_collection_field_type(model):
+                return False
+            if model.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float']:
+                return True
     return False
 
 
