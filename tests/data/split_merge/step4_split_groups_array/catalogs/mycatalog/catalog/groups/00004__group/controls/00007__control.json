@@ -190,7 +190,7 @@
                                         "value": "5."
                                     }
                                 ],
-                                "prose": "Includes the following information to achieve system component accountability: {{ cm-8_prm_1 }}; and"
+                                "prose": "Includes the following information to achieve system component accountability: {{ insert: param, cm-8_prm_1 }}; and"
                             }
                         ]
                     },
@@ -203,7 +203,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Review and update the system component inventory {{ cm-8_prm_2 }}."
+                        "prose": "Review and update the system component inventory {{ insert: param, cm-8_prm_2 }}."
                     }
                 ]
             },
@@ -281,7 +281,7 @@
                     {
                         "id": "cm-8.2_smt",
                         "name": "statement",
-                        "prose": "Maintain the currency, completeness, accuracy, and availability of the inventory of system components using {{ cm-8.2_prm_1 }}."
+                        "prose": "Maintain the currency, completeness, accuracy, and availability of the inventory of system components using {{ insert: param, cm-8.2_prm_1 }}."
                     },
                     {
                         "id": "cm-8.2_gdn",
@@ -310,7 +310,7 @@
                             "choice": [
                                 "disable network access by such components",
                                 "isolate the components",
-                                "notify {{ cm-8.3_prm_4 }} "
+                                "notify {{ insert: param, cm-8.3_prm_4 }} "
                             ]
                         }
                     },
@@ -386,7 +386,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Detect the presence of unauthorized hardware, software, and firmware components within the system using {{ cm-8.3_prm_1 }} {{ cm-8.3_prm_2 }}; and"
+                                "prose": "Detect the presence of unauthorized hardware, software, and firmware components within the system using {{ insert: param, cm-8.3_prm_1 }} {{ insert: param, cm-8.3_prm_2 }}; and"
                             },
                             {
                                 "id": "cm-8.3_smt.b",
@@ -397,7 +397,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Take the following actions when unauthorized components are detected: {{ cm-8.3_prm_3 }}."
+                                "prose": "Take the following actions when unauthorized components are detected: {{ insert: param, cm-8.3_prm_3 }}."
                             }
                         ]
                     },
@@ -449,7 +449,7 @@
                     {
                         "id": "cm-8.4_smt",
                         "name": "statement",
-                        "prose": "Include in the system component inventory information, a means for identifying by {{ cm-8.4_prm_1 }}, individuals responsible and accountable for administering those components."
+                        "prose": "Include in the system component inventory information, a means for identifying by {{ insert: param, cm-8.4_prm_1 }}, individuals responsible and accountable for administering those components."
                     },
                     {
                         "id": "cm-8.4_gdn",
@@ -579,7 +579,7 @@
                     {
                         "id": "cm-8.8_smt",
                         "name": "statement",
-                        "prose": "Support the tracking of system components by geographic location using {{ cm-8.8_prm_1 }}."
+                        "prose": "Support the tracking of system components by geographic location using {{ insert: param, cm-8.8_prm_1 }}."
                     },
                     {
                         "id": "cm-8.8_gdn",
@@ -612,34 +612,6 @@
                     {
                         "href": "#cm-8",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#110e26af-4765-49e1-8740-6750f83fcda1",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e7942589-e267-4a5a-a3d9-f39a7aae81f0",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#8306620b-1920-4d73-8b21-12008528595f",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#20db4e66-e257-450c-b2e4-2bb9a62a2c88",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#70402863-5078-43af-9a6c-e11b0f3ec370",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#996241f8-f692-42d5-91f1-ce8b752e39e6",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
@@ -667,7 +639,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Receive an acknowledgement from {{ cm-8.9_prm_1 }} of this assignment."
+                                "prose": "Receive an acknowledgement from {{ insert: param, cm-8.9_prm_1 }} of this assignment."
                             }
                         ]
                     },

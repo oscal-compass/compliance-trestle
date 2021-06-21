@@ -144,7 +144,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Enforce access restrictions using {{ cm-5.1_prm_1 }}; and"
+                                "prose": "Enforce access restrictions using {{ insert: param, cm-5.1_prm_1 }}; and"
                             },
                             {
                                 "id": "cm-5.1_smt.b",
@@ -212,7 +212,7 @@
                 "links": [
                     {
                         "href": "#cm-14",
-                        "rel": "incorporated-into"
+                        "rel": "moved-to"
                     }
                 ]
             },
@@ -258,7 +258,7 @@
                     {
                         "id": "cm-5.4_smt",
                         "name": "statement",
-                        "prose": "Enforce dual authorization for implementing changes to {{ cm-5.4_prm_1 }}."
+                        "prose": "Enforce dual authorization for implementing changes to {{ insert: param, cm-5.4_prm_1 }}."
                     },
                     {
                         "id": "cm-5.4_gdn",
@@ -322,7 +322,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Review and reevaluate privileges {{ cm-5.5_prm_1 }}."
+                                "prose": "Review and reevaluate privileges {{ insert: param, cm-5.5_prm_1 }}."
                             }
                         ]
                     },
@@ -392,14 +392,6 @@
                     {
                         "href": "#si-7",
                         "rel": "incorporated-into"
-                    },
-                    {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
-                        "rel": "reference"
                     }
                 ]
             }

@@ -13,9 +13,9 @@
                 "select": {
                     "how-many": "one-or-more",
                     "choice": [
-                        " {{ si-5_prm_3 }} ",
-                        " {{ si-5_prm_4 }} ",
-                        " {{ si-5_prm_5 }} "
+                        " {{ insert: param, si-5_prm_3 }} ",
+                        " {{ insert: param, si-5_prm_4 }} ",
+                        " {{ insert: param, si-5_prm_5 }} "
                     ]
                 }
             },
@@ -77,7 +77,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Receive system security alerts, advisories, and directives from {{ si-5_prm_1 }} on an ongoing basis;"
+                        "prose": "Receive system security alerts, advisories, and directives from {{ insert: param, si-5_prm_1 }} on an ongoing basis;"
                     },
                     {
                         "id": "si-5_smt.b",
@@ -99,7 +99,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Disseminate security alerts, advisories, and directives to: {{ si-5_prm_2 }}; and"
+                        "prose": "Disseminate security alerts, advisories, and directives to: {{ insert: param, si-5_prm_2 }}; and"
                     },
                     {
                         "id": "si-5_smt.d",
@@ -145,17 +145,13 @@
                     {
                         "href": "#si-5",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#155f941a-cba9-4afd-9ca6-5d040d697ba9",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "si-5.1_smt",
                         "name": "statement",
-                        "prose": "Broadcast security alert and advisory information throughout the organization using {{ si-5.1_prm_1 }}."
+                        "prose": "Broadcast security alert and advisory information throughout the organization using {{ insert: param, si-5.1_prm_1 }}."
                     },
                     {
                         "id": "si-5.1_gdn",

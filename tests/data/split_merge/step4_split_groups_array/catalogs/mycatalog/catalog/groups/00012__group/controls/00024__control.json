@@ -39,6 +39,10 @@
             {
                 "href": "#sa-8",
                 "rel": "related"
+            },
+            {
+                "href": "#si-12",
+                "rel": "related"
             }
         ],
         "parts": [
@@ -88,7 +92,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Review and update policies and procedures {{ pm-25_prm_1 }}."
+                        "prose": "Review and update policies and procedures {{ insert: param, pm-25_prm_1 }}."
                     }
                 ]
             },

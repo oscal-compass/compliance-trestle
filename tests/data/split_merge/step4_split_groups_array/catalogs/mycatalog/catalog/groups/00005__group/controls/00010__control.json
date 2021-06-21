@@ -37,7 +37,7 @@
             {
                 "id": "cp-11_smt",
                 "name": "statement",
-                "prose": "Provide the capability to employ {{ cp-11_prm_1 }} in support of maintaining continuity of operations."
+                "prose": "Provide the capability to employ {{ insert: param, cp-11_prm_1 }} in support of maintaining continuity of operations."
             },
             {
                 "id": "cp-11_gdn",

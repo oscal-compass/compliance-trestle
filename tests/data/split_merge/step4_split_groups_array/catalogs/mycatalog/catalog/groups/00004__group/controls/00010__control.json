@@ -87,7 +87,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Establish {{ cm-11_prm_1 }} governing the installation of software by users;"
+                        "prose": "Establish {{ insert: param, cm-11_prm_1 }} governing the installation of software by users;"
                     },
                     {
                         "id": "cm-11_smt.b",
@@ -98,7 +98,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Enforce software installation policies through the following methods: {{ cm-11_prm_2 }}; and"
+                        "prose": "Enforce software installation policies through the following methods: {{ insert: param, cm-11_prm_2 }}; and"
                     },
                     {
                         "id": "cm-11_smt.c",
@@ -109,14 +109,14 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Monitor policy compliance {{ cm-11_prm_3 }}."
+                        "prose": "Monitor policy compliance {{ insert: param, cm-11_prm_3 }}."
                     }
                 ]
             },
             {
                 "id": "cm-11_gdn",
                 "name": "guidance",
-                "prose": "If provided the necessary privileges, users can install software in organizational systems.\u00a0To maintain control over the software installed, organizations identify permitted and prohibited actions regarding software installation. Permitted software installations include updates and security patches to existing software and downloading new applications from organization-approved \"app stores.\" Prohibited software installations include software with unknown or suspect pedigrees or software that organizations consider potentially malicious. Policies selected for governing user-installed software are organization-developed or provided by some external entity. Policy enforcement methods can include procedural methods and automated methods."
+                "prose": "If provided the necessary privileges, users can install software in organizational systems. To maintain control over the software installed, organizations identify permitted and prohibited actions regarding software installation. Permitted software installations include updates and security patches to existing software and downloading new applications from organization-approved \"app stores.\" Prohibited software installations include software with unknown or suspect pedigrees or software that organizations consider potentially malicious. Policies selected for governing user-installed software are organization-developed or provided by some external entity. Policy enforcement methods can include procedural methods and automated methods."
             }
         ],
         "controls": [
@@ -216,7 +216,7 @@
                     {
                         "id": "cm-11.3_smt",
                         "name": "statement",
-                        "prose": "Enforce and monitor compliance with software installation policies using {{ cm-11.3_prm_1 }}."
+                        "prose": "Enforce and monitor compliance with software installation policies using {{ insert: param, cm-11.3_prm_1 }}."
                     },
                     {
                         "id": "cm-11.3_gdn",

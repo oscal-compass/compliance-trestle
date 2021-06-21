@@ -109,7 +109,7 @@
             {
                 "id": "ac-4_smt",
                 "name": "statement",
-                "prose": "Enforce approved authorizations for controlling the flow of information within the system and between connected systems based on {{ ac-4_prm_1 }}."
+                "prose": "Enforce approved authorizations for controlling the flow of information within the system and between connected systems based on {{ insert: param, ac-4_prm_1 }}."
             },
             {
                 "id": "ac-4_gdn",
@@ -156,7 +156,7 @@
                     {
                         "id": "ac-4.1_smt",
                         "name": "statement",
-                        "prose": "Use {{ ac-4.1_prm_1 }} associated with {{ ac-4.1_prm_2 }} to enforce {{ ac-4.1_prm_3 }} as a basis for flow control decisions."
+                        "prose": "Use {{ insert: param, ac-4.1_prm_1 }} associated with {{ insert: param, ac-4.1_prm_2 }} to enforce {{ insert: param, ac-4.1_prm_3 }} as a basis for flow control decisions."
                     },
                     {
                         "id": "ac-4.1_gdn",
@@ -199,7 +199,7 @@
                     {
                         "id": "ac-4.2_smt",
                         "name": "statement",
-                        "prose": "Use protected processing domains to enforce {{ ac-4.2_prm_1 }} as a basis for flow control decisions."
+                        "prose": "Use protected processing domains to enforce {{ insert: param, ac-4.2_prm_1 }} as a basis for flow control decisions."
                     },
                     {
                         "id": "ac-4.2_gdn",
@@ -242,7 +242,7 @@
                     {
                         "id": "ac-4.3_smt",
                         "name": "statement",
-                        "prose": "Enforce {{ ac-4.3_prm_1 }}."
+                        "prose": "Enforce {{ insert: param, ac-4.3_prm_1 }}."
                     },
                     {
                         "id": "ac-4.3_gdn",
@@ -268,7 +268,7 @@
                                 "decrypting the information",
                                 "blocking the flow of the encrypted information",
                                 "terminating communications sessions attempting to pass encrypted information",
-                                " {{ ac-4.4_prm_3 }} "
+                                " {{ insert: param, ac-4.4_prm_3 }} "
                             ]
                         }
                     },
@@ -302,7 +302,7 @@
                     {
                         "id": "ac-4.4_smt",
                         "name": "statement",
-                        "prose": "Prevent encrypted information from bypassing {{ ac-4.4_prm_1 }} by {{ ac-4.4_prm_2 }}."
+                        "prose": "Prevent encrypted information from bypassing {{ insert: param, ac-4.4_prm_1 }} by {{ insert: param, ac-4.4_prm_2 }}."
                     },
                     {
                         "id": "ac-4.4_gdn",
@@ -341,7 +341,7 @@
                     {
                         "id": "ac-4.5_smt",
                         "name": "statement",
-                        "prose": "Enforce {{ ac-4.5_prm_1 }} on embedding data types within other data types."
+                        "prose": "Enforce {{ insert: param, ac-4.5_prm_1 }} on embedding data types within other data types."
                     },
                     {
                         "id": "ac-4.5_gdn",
@@ -388,7 +388,7 @@
                     {
                         "id": "ac-4.6_smt",
                         "name": "statement",
-                        "prose": "Enforce information flow control based on {{ ac-4.6_prm_1 }}."
+                        "prose": "Enforce information flow control based on {{ insert: param, ac-4.6_prm_1 }}."
                     },
                     {
                         "id": "ac-4.6_gdn",
@@ -490,7 +490,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Enforce information flow control using {{ ac-4.8_prm_1 }} as a basis for flow control decisions for {{ ac-4.8_prm_2 }}; and"
+                                "prose": "Enforce information flow control using {{ insert: param, ac-4.8_prm_1 }} as a basis for flow control decisions for {{ insert: param, ac-4.8_prm_2 }}; and"
                             },
                             {
                                 "id": "ac-4.8_smt.b",
@@ -501,7 +501,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": " {{ ac-4.8_prm_3 }} data after a filter processing failure in accordance with {{ ac-4.8_prm_4 }}."
+                                "prose": " {{ insert: param, ac-4.8_prm_3 }} data after a filter processing failure in accordance with {{ insert: param, ac-4.8_prm_4 }}."
                             }
                         ]
                     },
@@ -546,7 +546,7 @@
                     {
                         "id": "ac-4.9_smt",
                         "name": "statement",
-                        "prose": "Enforce the use of human reviews for {{ ac-4.9_prm_1 }} under the following conditions: {{ ac-4.9_prm_2 }}."
+                        "prose": "Enforce the use of human reviews for {{ insert: param, ac-4.9_prm_1 }} under the following conditions: {{ insert: param, ac-4.9_prm_2 }}."
                     },
                     {
                         "id": "ac-4.9_gdn",
@@ -589,7 +589,7 @@
                     {
                         "id": "ac-4.10_smt",
                         "name": "statement",
-                        "prose": "Provide the capability for privileged administrators to enable and disable {{ ac-4.10_prm_1 }} under the following conditions: {{ ac-4.10_prm_2 }}."
+                        "prose": "Provide the capability for privileged administrators to enable and disable {{ insert: param, ac-4.10_prm_1 }} under the following conditions: {{ insert: param, ac-4.10_prm_2 }}."
                     },
                     {
                         "id": "ac-4.10_gdn",
@@ -628,7 +628,7 @@
                     {
                         "id": "ac-4.11_smt",
                         "name": "statement",
-                        "prose": "Provide the capability for privileged administrators to configure {{ ac-4.11_prm_1 }} to support different security or privacy policies."
+                        "prose": "Provide the capability for privileged administrators to configure {{ insert: param, ac-4.11_prm_1 }} to support different security or privacy policies."
                     },
                     {
                         "id": "ac-4.11_gdn",
@@ -667,7 +667,7 @@
                     {
                         "id": "ac-4.12_smt",
                         "name": "statement",
-                        "prose": "When transferring information between different security domains, use {{ ac-4.12_prm_1 }} to validate data essential for information flow decisions."
+                        "prose": "When transferring information between different security domains, use {{ insert: param, ac-4.12_prm_1 }} to validate data essential for information flow decisions."
                     },
                     {
                         "id": "ac-4.12_gdn",
@@ -706,7 +706,7 @@
                     {
                         "id": "ac-4.13_smt",
                         "name": "statement",
-                        "prose": "When transferring information between different security domains, decompose information into {{ ac-4.13_prm_1 }} for submission to policy enforcement mechanisms."
+                        "prose": "When transferring information between different security domains, decompose information into {{ insert: param, ac-4.13_prm_1 }} for submission to policy enforcement mechanisms."
                     },
                     {
                         "id": "ac-4.13_gdn",
@@ -745,7 +745,7 @@
                     {
                         "id": "ac-4.14_smt",
                         "name": "statement",
-                        "prose": "When transferring information between different security domains, implement {{ ac-4.14_prm_1 }} requiring fully enumerated formats that restrict data structure and content."
+                        "prose": "When transferring information between different security domains, implement {{ insert: param, ac-4.14_prm_1 }} requiring fully enumerated formats that restrict data structure and content."
                     },
                     {
                         "id": "ac-4.14_gdn",
@@ -792,7 +792,7 @@
                     {
                         "id": "ac-4.15_smt",
                         "name": "statement",
-                        "prose": "When transferring information between different security domains, examine the information for the presence of {{ ac-4.15_prm_1 }} and prohibit the transfer of such information in accordance with the {{ ac-4.15_prm_2 }}."
+                        "prose": "When transferring information between different security domains, examine the information for the presence of {{ insert: param, ac-4.15_prm_1 }} and prohibit the transfer of such information in accordance with the {{ insert: param, ac-4.15_prm_2 }}."
                     },
                     {
                         "id": "ac-4.15_gdn",
@@ -877,7 +877,7 @@
                     {
                         "id": "ac-4.17_smt",
                         "name": "statement",
-                        "prose": "Uniquely identify and authenticate source and destination points by {{ ac-4.17_prm_1 }} for information transfer."
+                        "prose": "Uniquely identify and authenticate source and destination points by {{ insert: param, ac-4.17_prm_1 }} for information transfer."
                     },
                     {
                         "id": "ac-4.17_gdn",
@@ -941,7 +941,7 @@
                     {
                         "id": "ac-4.19_smt",
                         "name": "statement",
-                        "prose": "When transferring information between different security domains, implement {{ ac-4.19_prm_1 }} on metadata."
+                        "prose": "When transferring information between different security domains, implement {{ insert: param, ac-4.19_prm_1 }} on metadata."
                     },
                     {
                         "id": "ac-4.19_gdn",
@@ -984,7 +984,7 @@
                     {
                         "id": "ac-4.20_smt",
                         "name": "statement",
-                        "prose": "Employ {{ ac-4.20_prm_1 }} to control the flow of {{ ac-4.20_prm_2 }} across security domains."
+                        "prose": "Employ {{ insert: param, ac-4.20_prm_1 }} to control the flow of {{ insert: param, ac-4.20_prm_2 }} across security domains."
                     },
                     {
                         "id": "ac-4.20_gdn",
@@ -1031,7 +1031,7 @@
                     {
                         "id": "ac-4.21_smt",
                         "name": "statement",
-                        "prose": "Separate information flows logically or physically using {{ ac-4.21_prm_1 }} to accomplish {{ ac-4.21_prm_2 }}."
+                        "prose": "Separate information flows logically or physically using {{ insert: param, ac-4.21_prm_1 }} to accomplish {{ insert: param, ac-4.21_prm_2 }}."
                     },
                     {
                         "id": "ac-4.21_gdn",
@@ -1103,7 +1103,7 @@
                     {
                         "id": "ac-4.23_smt",
                         "name": "statement",
-                        "prose": "When transferring information between different security domains, modify non-releasable information by implementing {{ ac-4.23_prm_1 }}."
+                        "prose": "When transferring information between different security domains, modify non-releasable information by implementing {{ insert: param, ac-4.23_prm_1 }}."
                     },
                     {
                         "id": "ac-4.23_gdn",
@@ -1189,7 +1189,7 @@
                     {
                         "id": "ac-4.25_smt",
                         "name": "statement",
-                        "prose": "When transferring information between different security domains, sanitize data to minimize {{ ac-4.25_prm_1 }} in accordance with {{ ac-4.25_prm_2 }}]."
+                        "prose": "When transferring information between different security domains, sanitize data to minimize {{ insert: param, ac-4.25_prm_1 }} in accordance with {{ insert: param, ac-4.25_prm_2 }}."
                     },
                     {
                         "id": "ac-4.25_gdn",
@@ -1361,7 +1361,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Content filtering actions occur in the correct order and comply with {{ ac-4.29_prm_1 }}."
+                                "prose": "Content filtering actions occur in the correct order and comply with {{ insert: param, ac-4.29_prm_1 }}."
                             }
                         ]
                     },
@@ -1456,22 +1456,6 @@
                     {
                         "href": "#ac-4",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#2956e175-f674-43f4-b1b9-e074ad9fc39c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#388a3aa2-5d85-4bad-b8a3-77db80d63c4f",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a2590922-82f3-4277-83c0-ca5bee06dba4",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

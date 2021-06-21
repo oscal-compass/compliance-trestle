@@ -211,7 +211,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Document attempts to obtain system, system component, or system service documentation when such documentation is either unavailable or nonexistent and take {{ sa-5_prm_1 }} in response; and"
+                        "prose": "Document attempts to obtain system, system component, or system service documentation when such documentation is either unavailable or nonexistent and take {{ insert: param, sa-5_prm_1 }} in response; and"
                     },
                     {
                         "id": "sa-5_smt.d",
@@ -222,7 +222,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Distribute documentation to {{ sa-5_prm_2 }}."
+                        "prose": "Distribute documentation to {{ insert: param, sa-5_prm_2 }}."
                     }
                 ]
             },
@@ -355,10 +355,6 @@
                     {
                         "href": "#sa-4.2",
                         "rel": "incorporated-into"
-                    },
-                    {
-                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
-                        "rel": "reference"
                     }
                 ]
             }

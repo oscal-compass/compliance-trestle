@@ -62,7 +62,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Record time stamps for audit records that meet {{ au-8_prm_1 }} and that use Coordinated Universal Time, have a fixed local time offset from Coordinated Universal Time, or that include the local time offset as part of the time stamp."
+                        "prose": "Record time stamps for audit records that meet {{ insert: param, au-8_prm_1 }} and that use Coordinated Universal Time, have a fixed local time offset from Coordinated Universal Time, or that include the local time offset as part of the time stamp."
                     }
                 ]
             },
@@ -94,7 +94,7 @@
                 "links": [
                     {
                         "href": "#sc-45.1",
-                        "rel": "incorporated-into"
+                        "rel": "moved-to"
                     }
                 ]
             },
@@ -119,7 +119,7 @@
                 "links": [
                     {
                         "href": "#sc-45.2",
-                        "rel": "incorporated-into"
+                        "rel": "moved-to"
                     }
                 ]
             }

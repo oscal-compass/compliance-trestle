@@ -114,7 +114,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Alert {{ au-9_prm_1 }} upon detection of unauthorized access, modification, or deletion of audit information."
+                        "prose": "Alert {{ insert: param, au-9_prm_1 }} upon detection of unauthorized access, modification, or deletion of audit information."
                     }
                 ]
             },
@@ -204,7 +204,7 @@
                     {
                         "id": "au-9.2_smt",
                         "name": "statement",
-                        "prose": "Store audit records {{ au-9.2_prm_1 }} in a repository that is part of a physically different system or system component than the system or component being audited."
+                        "prose": "Store audit records {{ insert: param, au-9.2_prm_1 }} in a repository that is part of a physically different system or system component than the system or component being audited."
                     },
                     {
                         "id": "au-9.2_gdn",
@@ -292,7 +292,7 @@
                     {
                         "id": "au-9.4_smt",
                         "name": "statement",
-                        "prose": "Authorize access to management of audit logging functionality to only {{ au-9.4_prm_1 }}."
+                        "prose": "Authorize access to management of audit logging functionality to only {{ insert: param, au-9.4_prm_1 }}."
                     },
                     {
                         "id": "au-9.4_gdn",
@@ -345,7 +345,7 @@
                     {
                         "id": "au-9.5_smt",
                         "name": "statement",
-                        "prose": "Enforce dual authorization for {{ au-9.5_prm_1 }} of {{ au-9.5_prm_2 }}."
+                        "prose": "Enforce dual authorization for {{ insert: param, au-9.5_prm_1 }} of {{ insert: param, au-9.5_prm_2 }}."
                     },
                     {
                         "id": "au-9.5_gdn",
@@ -384,7 +384,7 @@
                     {
                         "id": "au-9.6_smt",
                         "name": "statement",
-                        "prose": "Authorize read-only access to audit information to {{ au-9.6_prm_1 }}."
+                        "prose": "Authorize read-only access to audit information to {{ insert: param, au-9.6_prm_1 }}."
                     },
                     {
                         "id": "au-9.6_gdn",
@@ -411,18 +411,6 @@
                     {
                         "href": "#au-9",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#eea3c092-42ed-4382-a6f4-1adadef01b9d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
-                        "rel": "reference"
                     },
                     {
                         "href": "#au-4",

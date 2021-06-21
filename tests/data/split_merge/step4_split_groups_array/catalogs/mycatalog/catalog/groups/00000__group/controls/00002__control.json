@@ -295,12 +295,12 @@
                     {
                         "id": "ac-3.2_smt",
                         "name": "statement",
-                        "prose": "Enforce dual authorization for {{ ac-3.2_prm_1 }}."
+                        "prose": "Enforce dual authorization for {{ insert: param, ac-3.2_prm_1 }}."
                     },
                     {
                         "id": "ac-3.2_gdn",
                         "name": "guidance",
-                        "prose": "Dual authorization, also known as two-person control, reduces risk related to insider threats. Dual authorization mechanisms require the approval of two authorized individuals to execute. To reduce the risk of collusion, organizations consider rotating dual authorization duties to other individuals. Organizations consider the risk associated with implementing dual authorization mechanisms when immediate responses are necessary to ensure public and environmental safety."
+                        "prose": "Dual authorization, also known as two-person control, reduces risk related to insider threats. Dual authorization mechanisms require the approval of two authorized individuals to execute. To reduce the risk of collusion, organizations consider rotating dual authorization duties. Organizations consider the risk associated with implementing dual authorization mechanisms when immediate responses are necessary to ensure public and environmental safety."
                     }
                 ]
             },
@@ -346,7 +346,7 @@
                     {
                         "id": "ac-3.3_smt",
                         "name": "statement",
-                        "prose": "Enforce {{ ac-3.3_prm_1 }} over the set of covered subjects and objects specified in the policy, and where the policy:",
+                        "prose": "Enforce {{ insert: param, ac-3.3_prm_1 }} over the set of covered subjects and objects specified in the policy, and where the policy:",
                         "parts": [
                             {
                                 "id": "ac-3.3_smt.a",
@@ -436,7 +436,7 @@
                                         "value": "(c)"
                                     }
                                 ],
-                                "prose": "Specifies that {{ ac-3.3_prm_2 }} may explicitly be granted {{ ac-3.3_prm_3 }} such that they are not limited by any defined subset (or all) of the above constraints."
+                                "prose": "Specifies that {{ insert: param, ac-3.3_prm_2 }} may explicitly be granted {{ insert: param, ac-3.3_prm_3 }} such that they are not limited by any defined subset (or all) of the above constraints."
                             }
                         ]
                     },
@@ -477,7 +477,7 @@
                     {
                         "id": "ac-3.4_smt",
                         "name": "statement",
-                        "prose": "Enforce {{ ac-3.4_prm_1 }} over the set of covered subjects and objects specified in the policy, and where the policy specifies that a subject that has been granted access to information can do one or more of the following:",
+                        "prose": "Enforce {{ insert: param, ac-3.4_prm_1 }} over the set of covered subjects and objects specified in the policy, and where the policy specifies that a subject that has been granted access to information can do one or more of the following:",
                         "parts": [
                             {
                                 "id": "ac-3.4_smt.a",
@@ -581,7 +581,7 @@
                     {
                         "id": "ac-3.5_smt",
                         "name": "statement",
-                        "prose": "Prevent access to {{ ac-3.5_prm_1 }} except during secure, non-operable system states."
+                        "prose": "Prevent access to {{ insert: param, ac-3.5_prm_1 }} except during secure, non-operable system states."
                     },
                     {
                         "id": "ac-3.5_gdn",
@@ -649,7 +649,7 @@
                     {
                         "id": "ac-3.7_smt",
                         "name": "statement",
-                        "prose": "Enforce a role-based access control policy over defined subjects and objects and control access based upon {{ ac-3.7_prm_1 }}."
+                        "prose": "Enforce a role-based access control policy over defined subjects and objects and control access based upon {{ insert: param, ac-3.7_prm_1 }}."
                     },
                     {
                         "id": "ac-3.7_gdn",
@@ -688,7 +688,7 @@
                     {
                         "id": "ac-3.8_smt",
                         "name": "statement",
-                        "prose": "Enforce the revocation of access authorizations resulting from changes to the security attributes of subjects and objects based on {{ ac-3.8_prm_1 }}."
+                        "prose": "Enforce the revocation of access authorizations resulting from changes to the security attributes of subjects and objects based on {{ insert: param, ac-3.8_prm_1 }}."
                     },
                     {
                         "id": "ac-3.8_gdn",
@@ -766,7 +766,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "The receiving {{ ac-3.9_prm_1 }} provides {{ ac-3.9_prm_2 }}; and"
+                                "prose": "The receiving {{ insert: param, ac-3.9_prm_1 }} provides {{ insert: param, ac-3.9_prm_2 }}; and"
                             },
                             {
                                 "id": "ac-3.9_smt.b",
@@ -777,14 +777,14 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": " {{ ac-3.9_prm_3 }} are used to validate the appropriateness of the information designated for release."
+                                "prose": " {{ insert: param, ac-3.9_prm_3 }} are used to validate the appropriateness of the information designated for release."
                             }
                         ]
                     },
                     {
                         "id": "ac-3.9_gdn",
                         "name": "guidance",
-                        "prose": "Organizations can only directly protect information when it resides within the system. Additional controls may be needed to ensure that organizational information is adequately protected once it is transmitted outside of the system. In situations where the system is unable to determine the adequacy of the protections provided by external entities, as a mitigating control, organizations procedurally determine whether the external systems are providing adequate controls. The means used to determine the adequacy of controls provided by external systems include conducting periodic assessments (inspections/tests), establishing agreements between the organization and its counterpart organizations, or some other process. The means used by external entities to protect the information received need not be the same as those used by the organization, but the means employed are sufficient to provide consistent adjudication of the security and privacy policy to protect the information and individuals\u2019 privacy.\n\nControlled release of information requires systems to implement technical or procedural means to validate the information prior to releasing it to external systems. For example, if the system passes information to a system controlled by another organization, technical means are employed to validate that the security and privacy attributes associated with the exported information are appropriate for the receiving system. Alternatively, if the system passes information to a printer in organization-controlled space, procedural means can be employed to ensure that only authorized individuals gain access to the printer."
+                        "prose": "Organizations can only directly protect information when it resides within the system. Additional controls may be needed to ensure that organizational information is adequately protected once it is transmitted outside of the system. In situations where the system is unable to determine the adequacy of the protections provided by external entities, as a mitigation measure, organizations procedurally determine whether the external systems are providing adequate controls. The means used to determine the adequacy of controls provided by external systems include conducting periodic assessments (inspections/tests), establishing agreements between the organization and its counterpart organizations, or some other process. The means used by external entities to protect the information received need not be the same as those used by the organization, but the means employed are sufficient to provide consistent adjudication of the security and privacy policy to protect the information and individuals\u2019 privacy.\n\nControlled release of information requires systems to implement technical or procedural means to validate the information prior to releasing it to external systems. For example, if the system passes information to a system controlled by another organization, technical means are employed to validate that the security and privacy attributes associated with the exported information are appropriate for the receiving system. Alternatively, if the system passes information to a printer in organization-controlled space, procedural means can be employed to ensure that only authorized individuals gain access to the printer."
                     }
                 ]
             },
@@ -842,7 +842,7 @@
                     {
                         "id": "ac-3.10_smt",
                         "name": "statement",
-                        "prose": "Employ an audited override of automated access control mechanisms under {{ ac-3.10_prm_1 }} by {{ ac-3.10_prm_2 }}."
+                        "prose": "Employ an audited override of automated access control mechanisms under {{ insert: param, ac-3.10_prm_1 }} by {{ insert: param, ac-3.10_prm_2 }}."
                     },
                     {
                         "id": "ac-3.10_gdn",
@@ -897,7 +897,7 @@
                     {
                         "id": "ac-3.11_smt",
                         "name": "statement",
-                        "prose": "Restrict access to data repositories containing {{ ac-3.11_prm_1 }}."
+                        "prose": "Restrict access to data repositories containing {{ insert: param, ac-3.11_prm_1 }}."
                     },
                     {
                         "id": "ac-3.11_gdn",
@@ -950,7 +950,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Require applications to assert, as part of the installation process, the access needed to the following system applications and functions: {{ ac-3.12_prm_1 }};"
+                                "prose": "Require applications to assert, as part of the installation process, the access needed to the following system applications and functions: {{ insert: param, ac-3.12_prm_1 }};"
                             },
                             {
                                 "id": "ac-3.12_smt.b",
@@ -1013,7 +1013,7 @@
                     {
                         "id": "ac-3.13_smt",
                         "name": "statement",
-                        "prose": "Enforce attribute-based access control policy over defined subjects and objects and control access based upon {{ ac-3.13_prm_1 }}."
+                        "prose": "Enforce attribute-based access control policy over defined subjects and objects and control access based upon {{ insert: param, ac-3.13_prm_1 }}."
                     },
                     {
                         "id": "ac-3.13_gdn",
@@ -1066,13 +1066,17 @@
                     {
                         "href": "#pm-21",
                         "rel": "related"
+                    },
+                    {
+                        "href": "#pt-6",
+                        "rel": "related"
                     }
                 ],
                 "parts": [
                     {
                         "id": "ac-3.14_smt",
                         "name": "statement",
-                        "prose": "Provide {{ ac-3.14_prm_1 }} to enable individuals to have access to the following elements of their personally identifiable information: {{ ac-3.14_prm_2 }}."
+                        "prose": "Provide {{ insert: param, ac-3.14_prm_1 }} to enable individuals to have access to the following elements of their personally identifiable information: {{ insert: param, ac-3.14_prm_2 }}."
                     },
                     {
                         "id": "ac-3.14_gdn",
@@ -1111,38 +1115,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#110e26af-4765-49e1-8740-6750f83fcda1",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e7942589-e267-4a5a-a3d9-f39a7aae81f0",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#8306620b-1920-4d73-8b21-12008528595f",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#2956e175-f674-43f4-b1b9-e074ad9fc39c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#388a3aa2-5d85-4bad-b8a3-77db80d63c4f",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7f473f21-fdbf-4a6c-81a1-0ab95919609d",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#sc-2",
                         "rel": "related"
                     },
@@ -1169,7 +1141,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Enforce {{ ac-3.15_prm_1 }} over the set of covered subjects and objects specified in the policy; and"
+                                "prose": "Enforce {{ insert: param, ac-3.15_prm_1 }} over the set of covered subjects and objects specified in the policy; and"
                             },
                             {
                                 "id": "ac-3.15_smt.b",
@@ -1180,7 +1152,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Enforce {{ ac-3.15_prm_2 }} over the set of covered subjects and objects specified in the policy."
+                                "prose": "Enforce {{ insert: param, ac-3.15_prm_2 }} over the set of covered subjects and objects specified in the policy."
                             }
                         ]
                     },

@@ -22,7 +22,7 @@
                     "choice": [
                         "security and privacy plans",
                         "supply chain risk management plan",
-                        " {{ sr-3_prm_5 }} "
+                        " {{ insert: param, sr-3_prm_5 }} "
                     ]
                 }
             },
@@ -178,7 +178,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Establish a process or processes to identify and address weaknesses or deficiencies in the supply chain elements and processes of {{ sr-3_prm_1 }} in coordination with {{ sr-3_prm_2 }};"
+                        "prose": "Establish a process or processes to identify and address weaknesses or deficiencies in the supply chain elements and processes of {{ insert: param, sr-3_prm_1 }} in coordination with {{ insert: param, sr-3_prm_2 }};"
                     },
                     {
                         "id": "sr-3_smt.b",
@@ -189,7 +189,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Employ the following controls to protect against supply chain risks to the system, system component, or system service and to limit the harm or consequences from supply chain-related events: {{ sr-3_prm_3 }}; and"
+                        "prose": "Employ the following controls to protect against supply chain risks to the system, system component, or system service and to limit the harm or consequences from supply chain-related events: {{ insert: param, sr-3_prm_3 }}; and"
                     },
                     {
                         "id": "sr-3_smt.c",
@@ -200,7 +200,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Document the selected and implemented supply chain processes and controls in {{ sr-3_prm_4 }}."
+                        "prose": "Document the selected and implemented supply chain processes and controls in {{ insert: param, sr-3_prm_4 }}."
                     }
                 ]
             },
@@ -241,7 +241,7 @@
                     {
                         "id": "sr-3.1_smt",
                         "name": "statement",
-                        "prose": "Employ a diverse set of sources for the following system components and services: {{ sr-3.1_prm_1 }}."
+                        "prose": "Employ a diverse set of sources for the following system components and services: {{ insert: param, sr-3.1_prm_1 }}."
                     },
                     {
                         "id": "sr-3.1_gdn",
@@ -280,7 +280,7 @@
                     {
                         "id": "sr-3.2_smt",
                         "name": "statement",
-                        "prose": "Employ the following controls to limit harm from potential adversaries identifying and targeting the organizational supply chain: {{ sr-3.2_prm_1 }}."
+                        "prose": "Employ the following controls to limit harm from potential adversaries identifying and targeting the organizational supply chain: {{ insert: param, sr-3.2_prm_1 }}."
                     },
                     {
                         "id": "sr-3.2_gdn",
@@ -307,34 +307,6 @@
                     {
                         "href": "#sr-3",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#15a95e24-65b6-4686-bc18-90855a10457d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
-                        "rel": "reference"
                     },
                     {
                         "href": "#sr-5",

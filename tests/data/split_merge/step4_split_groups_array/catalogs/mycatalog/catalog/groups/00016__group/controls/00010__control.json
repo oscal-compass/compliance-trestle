@@ -124,7 +124,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Develop and implement a plan for ongoing security and privacy assessments;"
+                        "prose": "Develop and implement a plan for ongoing security and privacy control assessments;"
                     },
                     {
                         "id": "sa-11_smt.b",
@@ -135,7 +135,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Perform {{ sa-11_prm_1 }} testing/evaluation {{ sa-11_prm_2 }} at {{ sa-11_prm_3 }};"
+                        "prose": "Perform {{ insert: param, sa-11_prm_1 }} testing/evaluation {{ insert: param, sa-11_prm_2 }} at {{ insert: param, sa-11_prm_3 }};"
                     },
                     {
                         "id": "sa-11_smt.c",
@@ -277,7 +277,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Uses the following contextual information: {{ sa-11.2_prm_1 }};"
+                                "prose": "Uses the following contextual information: {{ insert: param, sa-11.2_prm_1 }};"
                             },
                             {
                                 "id": "sa-11.2_smt.b",
@@ -288,7 +288,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Employs the following tools and methods: {{ sa-11.2_prm_2 }};"
+                                "prose": "Employs the following tools and methods: {{ insert: param, sa-11.2_prm_2 }};"
                             },
                             {
                                 "id": "sa-11.2_smt.c",
@@ -299,7 +299,7 @@
                                         "value": "(c)"
                                     }
                                 ],
-                                "prose": "Conducts the modeling and analyses at the following level of rigor: {{ sa-11.2_prm_3 }}; and"
+                                "prose": "Conducts the modeling and analyses at the following level of rigor: {{ insert: param, sa-11.2_prm_3 }}; and"
                             },
                             {
                                 "id": "sa-11.2_smt.d",
@@ -310,7 +310,7 @@
                                         "value": "(d)"
                                     }
                                 ],
-                                "prose": "Produces evidence that meets the following acceptance criteria: {{ sa-11.2_prm_4 }}."
+                                "prose": "Produces evidence that meets the following acceptance criteria: {{ insert: param, sa-11.2_prm_4 }}."
                             }
                         ]
                     },
@@ -369,7 +369,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Require an independent agent satisfying {{ sa-11.3_prm_1 }} to verify the correct implementation of the developer security and privacy assessment plans and the evidence produced during testing and evaluation; and"
+                                "prose": "Require an independent agent satisfying {{ insert: param, sa-11.3_prm_1 }} to verify the correct implementation of the developer security and privacy assessment plans and the evidence produced during testing and evaluation; and"
                             },
                             {
                                 "id": "sa-11.3_smt.b",
@@ -425,7 +425,7 @@
                     {
                         "id": "sa-11.4_smt",
                         "name": "statement",
-                        "prose": "Require the developer of the system, system component, or system service to perform a manual code review of {{ sa-11.4_prm_1 }} using the following processes, procedures, and/or techniques: {{ sa-11.4_prm_2 }}."
+                        "prose": "Require the developer of the system, system component, or system service to perform a manual code review of {{ insert: param, sa-11.4_prm_1 }} using the following processes, procedures, and/or techniques: {{ insert: param, sa-11.4_prm_2 }}."
                     },
                     {
                         "id": "sa-11.4_gdn",
@@ -507,7 +507,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "At the following level of rigor: {{ sa-11.5_prm_1 }}; and"
+                                "prose": "At the following level of rigor: {{ insert: param, sa-11.5_prm_1 }}; and"
                             },
                             {
                                 "id": "sa-11.5_smt.b",
@@ -518,7 +518,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Under the following constraints: {{ sa-11.5_prm_2 }}."
+                                "prose": "Under the following constraints: {{ insert: param, sa-11.5_prm_2 }}."
                             }
                         ]
                     },
@@ -600,7 +600,7 @@
                     {
                         "id": "sa-11.7_smt",
                         "name": "statement",
-                        "prose": "Require the developer of the system, system component, or system service to verify that the scope of testing and evaluation provides complete coverage of the required controls at the following level of rigor: {{ sa-11.7_prm_1 }}."
+                        "prose": "Require the developer of the system, system component, or system service to verify that the scope of testing and evaluation provides complete coverage of the required controls at the following level of rigor: {{ insert: param, sa-11.7_prm_1 }}."
                     },
                     {
                         "id": "sa-11.7_gdn",
@@ -660,26 +660,6 @@
                     {
                         "href": "#sa-11",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#4452efc0-e79e-47b8-aa30-b54f3ef61c2f",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a21aef46-7330-48a0-b2e1-c5bb8b2dd11d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#708b94e1-3d5e-4b22-ab43-1c69f3a97e37",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

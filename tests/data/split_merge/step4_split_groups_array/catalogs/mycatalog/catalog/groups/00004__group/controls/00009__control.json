@@ -120,7 +120,7 @@
                     {
                         "id": "cm-10.1_smt",
                         "name": "statement",
-                        "prose": "Establish the following restrictions on the use of open-source software: {{ cm-10.1_prm_1 }}."
+                        "prose": "Establish the following restrictions on the use of open-source software: {{ insert: param, cm-10.1_prm_1 }}."
                     },
                     {
                         "id": "cm-10.1_gdn",

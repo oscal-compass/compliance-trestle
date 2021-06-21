@@ -64,7 +64,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Disable system access within {{ ps-4_prm_1 }};"
+                        "prose": "Disable system access within {{ insert: param, ps-4_prm_1 }};"
                     },
                     {
                         "id": "ps-4_smt.b",
@@ -86,7 +86,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Conduct exit interviews that include a discussion of {{ ps-4_prm_2 }};"
+                        "prose": "Conduct exit interviews that include a discussion of {{ insert: param, ps-4_prm_2 }};"
                     },
                     {
                         "id": "ps-4_smt.d",
@@ -189,7 +189,7 @@
                         "select": {
                             "how-many": "one-or-more",
                             "choice": [
-                                "notify {{ ps-4.2_prm_3 }} of individual termination actions",
+                                "notify {{ insert: param, ps-4.2_prm_3 }} of individual termination actions",
                                 "disable access to system resources"
                             ]
                         }
@@ -220,7 +220,7 @@
                     {
                         "id": "ps-4.2_smt",
                         "name": "statement",
-                        "prose": "Use {{ ps-4.2_prm_1 }} to {{ ps-4.2_prm_2 }}."
+                        "prose": "Use {{ insert: param, ps-4.2_prm_1 }} to {{ insert: param, ps-4.2_prm_2 }}."
                     },
                     {
                         "id": "ps-4.2_gdn",

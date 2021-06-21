@@ -43,7 +43,7 @@
             {
                 "id": "pe-11_smt",
                 "name": "statement",
-                "prose": "Provide an uninterruptible power supply to facilitate {{ pe-11_prm_1 }} in the event of a primary power source loss."
+                "prose": "Provide an uninterruptible power supply to facilitate {{ insert: param, pe-11_prm_1 }} in the event of a primary power source loss."
             },
             {
                 "id": "pe-11_gdn",
@@ -87,7 +87,7 @@
                     {
                         "id": "pe-11.1_smt",
                         "name": "statement",
-                        "prose": "Provide an alternate power supply for the system that is activated {{ pe-11.1_prm_1 }} and that can maintain minimally required operational capability in the event of an extended loss of the primary power source."
+                        "prose": "Provide an alternate power supply for the system that is activated {{ insert: param, pe-11.1_prm_1 }} and that can maintain minimally required operational capability in the event of an extended loss of the primary power source."
                     },
                     {
                         "id": "pe-11.1_gdn",
@@ -140,7 +140,7 @@
                     {
                         "id": "pe-11.2_smt",
                         "name": "statement",
-                        "prose": "Provide an alternate power supply for the system that is activated {{ pe-11.2_prm_1 }} and that is:",
+                        "prose": "Provide an alternate power supply for the system that is activated {{ insert: param, pe-11.2_prm_1 }} and that is:",
                         "parts": [
                             {
                                 "id": "pe-11.2_smt.a",
@@ -173,7 +173,7 @@
                                         "value": "(c)"
                                     }
                                 ],
-                                "prose": "Capable of maintaining {{ pe-11.2_prm_2 }} in the event of an extended loss of the primary power source."
+                                "prose": "Capable of maintaining {{ insert: param, pe-11.2_prm_2 }} in the event of an extended loss of the primary power source."
                             }
                         ]
                     },

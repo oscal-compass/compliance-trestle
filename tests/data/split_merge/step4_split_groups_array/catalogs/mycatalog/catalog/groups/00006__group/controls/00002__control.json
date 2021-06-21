@@ -80,7 +80,7 @@
             {
                 "id": "ia-3_smt",
                 "name": "statement",
-                "prose": "Uniquely identify and authenticate {{ ia-3_prm_1 }} before establishing a {{ ia-3_prm_2 }} connection."
+                "prose": "Uniquely identify and authenticate {{ insert: param, ia-3_prm_1 }} before establishing a {{ insert: param, ia-3_prm_2 }} connection."
             },
             {
                 "id": "ia-3_gdn",
@@ -142,7 +142,7 @@
                     {
                         "id": "ia-3.1_smt",
                         "name": "statement",
-                        "prose": "Authenticate {{ ia-3.1_prm_1 }} before establishing {{ ia-3.1_prm_2 }} connection using bidirectional authentication that is cryptographically based."
+                        "prose": "Authenticate {{ insert: param, ia-3.1_prm_1 }} before establishing {{ insert: param, ia-3.1_prm_2 }} connection using bidirectional authentication that is cryptographically based."
                     },
                     {
                         "id": "ia-3.1_gdn",
@@ -220,7 +220,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Where addresses are allocated dynamically, standardize dynamic address allocation lease information and the lease duration assigned to devices in accordance with {{ ia-3.3_prm_1 }}; and"
+                                "prose": "Where addresses are allocated dynamically, standardize dynamic address allocation lease information and the lease duration assigned to devices in accordance with {{ insert: param, ia-3.3_prm_1 }}; and"
                             },
                             {
                                 "id": "ia-3.3_smt.b",
@@ -284,7 +284,7 @@
                     {
                         "id": "ia-3.4_smt",
                         "name": "statement",
-                        "prose": "Handle device identification and authentication based on attestation by {{ ia-3.4_prm_1 }}."
+                        "prose": "Handle device identification and authentication based on attestation by {{ insert: param, ia-3.4_prm_1 }}."
                     },
                     {
                         "id": "ia-3.4_gdn",

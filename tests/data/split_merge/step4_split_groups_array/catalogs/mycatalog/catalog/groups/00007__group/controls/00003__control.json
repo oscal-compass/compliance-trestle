@@ -91,6 +91,10 @@
                 "rel": "related"
             },
             {
+                "href": "#ir-5",
+                "rel": "related"
+            },
+            {
                 "href": "#ir-6",
                 "rel": "related"
             },
@@ -223,7 +227,7 @@
                     {
                         "id": "ir-4.1_smt",
                         "name": "statement",
-                        "prose": "Support the incident handling process using {{ ir-4.1_prm_1 }}."
+                        "prose": "Support the incident handling process using {{ insert: param, ir-4.1_prm_1 }}."
                     },
                     {
                         "id": "ir-4.1_gdn",
@@ -278,7 +282,7 @@
                     {
                         "id": "ir-4.2_smt",
                         "name": "statement",
-                        "prose": "Include the following types of dynamic reconfiguration for {{ ir-4.2_prm_1 }} as part of the incident response capability: {{ ir-4.2_prm_2 }}."
+                        "prose": "Include the following types of dynamic reconfiguration for {{ insert: param, ir-4.2_prm_1 }} as part of the incident response capability: {{ insert: param, ir-4.2_prm_2 }}."
                     },
                     {
                         "id": "ir-4.2_gdn",
@@ -321,7 +325,7 @@
                     {
                         "id": "ir-4.3_smt",
                         "name": "statement",
-                        "prose": "Identify {{ ir-4.3_prm_1 }} and take the following actions in response to those incidents to ensure continuation of organizational mission and business functions: {{ ir-4.3_prm_2 }}."
+                        "prose": "Identify {{ insert: param, ir-4.3_prm_1 }} and take the following actions in response to those incidents to ensure continuation of organizational mission and business functions: {{ insert: param, ir-4.3_prm_2 }}."
                     },
                     {
                         "id": "ir-4.3_gdn",
@@ -393,7 +397,7 @@
                     {
                         "id": "ir-4.5_smt",
                         "name": "statement",
-                        "prose": "Implement a configurable capability to automatically disable the system if {{ ir-4.5_prm_1 }} are detected."
+                        "prose": "Implement a configurable capability to automatically disable the system if {{ insert: param, ir-4.5_prm_1 }} are detected."
                     },
                     {
                         "id": "ir-4.5_gdn",
@@ -465,7 +469,7 @@
                     {
                         "id": "ir-4.7_smt",
                         "name": "statement",
-                        "prose": "Coordinate an incident handling capability for insider threats that includes the following organizational entities {{ ir-4.7_prm_1 }}."
+                        "prose": "Coordinate an incident handling capability for insider threats that includes the following organizational entities {{ insert: param, ir-4.7_prm_1 }}."
                     },
                     {
                         "id": "ir-4.7_gdn",
@@ -516,7 +520,7 @@
                     {
                         "id": "ir-4.8_smt",
                         "name": "statement",
-                        "prose": "Coordinate with {{ ir-4.8_prm_1 }} to correlate and share {{ ir-4.8_prm_2 }} to achieve a cross-organization perspective on incident awareness and more effective incident responses."
+                        "prose": "Coordinate with {{ insert: param, ir-4.8_prm_1 }} to correlate and share {{ insert: param, ir-4.8_prm_2 }} to achieve a cross-organization perspective on incident awareness and more effective incident responses."
                     },
                     {
                         "id": "ir-4.8_gdn",
@@ -555,7 +559,7 @@
                     {
                         "id": "ir-4.9_smt",
                         "name": "statement",
-                        "prose": "Employ {{ ir-4.9_prm_1 }} to respond to incidents."
+                        "prose": "Employ {{ insert: param, ir-4.9_prm_1 }} to respond to incidents."
                     },
                     {
                         "id": "ir-4.9_gdn",
@@ -647,7 +651,7 @@
                     {
                         "id": "ir-4.11_smt",
                         "name": "statement",
-                        "prose": "Establish and maintain an integrated incident response team that can be deployed to any location identified by the organization in {{ ir-4.11_prm_1 }}."
+                        "prose": "Establish and maintain an integrated incident response team that can be deployed to any location identified by the organization in {{ insert: param, ir-4.11_prm_1 }}."
                     },
                     {
                         "id": "ir-4.11_gdn",
@@ -719,7 +723,7 @@
                     {
                         "id": "ir-4.13_smt",
                         "name": "statement",
-                        "prose": "Analyze anomalous or suspected adversarial behavior in or related to {{ ir-4.13_prm_1 }}."
+                        "prose": "Analyze anomalous or suspected adversarial behavior in or related to {{ insert: param, ir-4.13_prm_1 }}."
                     },
                     {
                         "id": "ir-4.13_gdn",
@@ -779,46 +783,6 @@
                     {
                         "href": "#ir-4",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#5f4705ac-8d17-438c-b23a-ac7f12362ae4",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#49b8aa2d-a88c-4bff-9f20-876ccb8f7dcb",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#cfdb1858-c473-46b3-89f9-a700308d0be2",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#10cf2fad-a216-41f9-bb1a-531b7e3119e3",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#9ef4b43c-42a4-4316-87dc-ffaf528bc05c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#61ccf0f4-d3e7-42db-9796-ce6cb1c85989",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#31ae65ab-3f26-46b7-9d64-f25a4dac5778",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#2be7b163-e50a-435c-8906-f1162f2a457a",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

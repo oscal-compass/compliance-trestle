@@ -147,7 +147,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Monitor and scan for vulnerabilities in the system and hosted applications {{ ra-5_prm_1 }} and when new vulnerabilities potentially affecting the system are identified and reported;"
+                        "prose": "Monitor and scan for vulnerabilities in the system and hosted applications {{ insert: param, ra-5_prm_1 }} and when new vulnerabilities potentially affecting the system are identified and reported;"
                     },
                     {
                         "id": "ra-5_smt.b",
@@ -215,7 +215,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Remediate legitimate vulnerabilities {{ ra-5_prm_2 }} in accordance with an organizational assessment of risk;"
+                        "prose": "Remediate legitimate vulnerabilities {{ insert: param, ra-5_prm_2 }} in accordance with an organizational assessment of risk;"
                     },
                     {
                         "id": "ra-5_smt.e",
@@ -226,7 +226,7 @@
                                 "value": "e."
                             }
                         ],
-                        "prose": "Share information obtained from the vulnerability monitoring process and control assessments with {{ ra-5_prm_3 }} to help eliminate similar vulnerabilities in other systems; and"
+                        "prose": "Share information obtained from the vulnerability monitoring process and control assessments with {{ insert: param, ra-5_prm_3 }} to help eliminate similar vulnerabilities in other systems; and"
                     },
                     {
                         "id": "ra-5_smt.f",
@@ -283,7 +283,7 @@
                         "select": {
                             "how-many": "one-or-more",
                             "choice": [
-                                " {{ ra-5.2_prm_2 }} ",
+                                " {{ insert: param, ra-5.2_prm_2 }} ",
                                 "prior to a new scan",
                                 "when new vulnerabilities are identified and reported"
                             ]
@@ -319,7 +319,7 @@
                     {
                         "id": "ra-5.2_smt",
                         "name": "statement",
-                        "prose": "Update the system vulnerabilities to be scanned {{ ra-5.2_prm_1 }}."
+                        "prose": "Update the system vulnerabilities to be scanned {{ insert: param, ra-5.2_prm_1 }}."
                     },
                     {
                         "id": "ra-5.2_gdn",
@@ -399,7 +399,7 @@
                     {
                         "id": "ra-5.4_smt",
                         "name": "statement",
-                        "prose": "Determine information about the system that is discoverable and take {{ ra-5.4_prm_1 }}."
+                        "prose": "Determine information about the system that is discoverable and take {{ insert: param, ra-5.4_prm_1 }}."
                     },
                     {
                         "id": "ra-5.4_gdn",
@@ -442,7 +442,7 @@
                     {
                         "id": "ra-5.5_smt",
                         "name": "statement",
-                        "prose": "Implement privileged access authorization to {{ ra-5.5_prm_1 }} for {{ ra-5.5_prm_2 }}."
+                        "prose": "Implement privileged access authorization to {{ insert: param, ra-5.5_prm_1 }} for {{ insert: param, ra-5.5_prm_2 }}."
                     },
                     {
                         "id": "ra-5.5_gdn",
@@ -481,7 +481,7 @@
                     {
                         "id": "ra-5.6_smt",
                         "name": "statement",
-                        "prose": "Compare the results of multiple vulnerability scans using {{ ra-5.6_prm_1 }}."
+                        "prose": "Compare the results of multiple vulnerability scans using {{ insert: param, ra-5.6_prm_1 }}."
                     },
                     {
                         "id": "ra-5.6_gdn",
@@ -557,7 +557,7 @@
                     {
                         "id": "ra-5.8_smt",
                         "name": "statement",
-                        "prose": "Review historic audit logs to determine if a vulnerability identified in a {{ ra-5.8_prm_1 }} has been previously exploited within an {{ ra-5.8_prm_2 }}."
+                        "prose": "Review historic audit logs to determine if a vulnerability identified in a {{ insert: param, ra-5.8_prm_1 }} has been previously exploited within an {{ insert: param, ra-5.8_prm_2 }}."
                     },
                     {
                         "id": "ra-5.8_gdn",
@@ -642,42 +642,6 @@
                     {
                         "href": "#ra-5",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#8df72805-2e5c-4731-a73e-81db0f0318d0",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#155f941a-cba9-4afd-9ca6-5d040d697ba9",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a21aef46-7330-48a0-b2e1-c5bb8b2dd11d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#4895b4cd-34c5-4667-bf8a-27d443c12047",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#122177fa-c4ed-485d-8345-3082c0fb9a06",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#8016d2ed-d30f-4416-9c45-0f42c7aa3232",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#aa5d04e0-6090-4e17-84d4-b9963d55fc2c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#d2ebec9b-f868-4ee1-a2bd-0b2282aed248",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#4c501da5-9d79-4cb6-ba80-97260e1ce327",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

@@ -129,7 +129,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Perform configuration management during system, component, or service {{ sa-10_prm_1 }};"
+                        "prose": "Perform configuration management during system, component, or service {{ insert: param, sa-10_prm_1 }};"
                     },
                     {
                         "id": "sa-10_smt.b",
@@ -140,7 +140,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Document, manage, and control the integrity of changes to {{ sa-10_prm_2 }};"
+                        "prose": "Document, manage, and control the integrity of changes to {{ insert: param, sa-10_prm_2 }};"
                     },
                     {
                         "id": "sa-10_smt.c",
@@ -173,7 +173,7 @@
                                 "value": "e."
                             }
                         ],
-                        "prose": "Track security flaws and flaw resolution within the system, component, or service and report findings to {{ sa-10_prm_3 }}."
+                        "prose": "Track security flaws and flaw resolution within the system, component, or service and report findings to {{ insert: param, sa-10_prm_3 }}."
                     }
                 ]
             },
@@ -228,7 +228,7 @@
             {
                 "id": "sa-10.2",
                 "class": "SP800-53-enhancement",
-                "title": "Alternative Configuration Management",
+                "title": "Alternative Configuration Management Processes",
                 "props": [
                     {
                         "name": "label",
@@ -422,33 +422,13 @@
                     {
                         "href": "#sa-10",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#eea3c092-42ed-4382-a6f4-1adadef01b9d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#20db4e66-e257-450c-b2e4-2bb9a62a2c88",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "sa-10.7_smt",
                         "name": "statement",
-                        "prose": "Require {{ sa-10.7_prm_1 }} to be included in the {{ sa-10.7_prm_2 }}."
+                        "prose": "Require {{ insert: param, sa-10.7_prm_1 }} to be included in the {{ insert: param, sa-10.7_prm_2 }}."
                     },
                     {
                         "id": "sa-10.7_gdn",

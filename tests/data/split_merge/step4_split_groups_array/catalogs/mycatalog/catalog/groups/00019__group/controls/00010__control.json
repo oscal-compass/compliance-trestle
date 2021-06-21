@@ -10,8 +10,8 @@
                     "how-many": "one-or-more",
                     "choice": [
                         "source of counterfeit component",
-                        " {{ sr-11_prm_2 }} ",
-                        " {{ sr-11_prm_3 }} "
+                        " {{ insert: param, sr-11_prm_2 }} ",
+                        " {{ insert: param, sr-11_prm_3 }} "
                     ]
                 }
             },
@@ -87,7 +87,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Report counterfeit system components to {{ sr-11_prm_1 }}."
+                        "prose": "Report counterfeit system components to {{ insert: param, sr-11_prm_1 }}."
                     }
                 ]
             },
@@ -132,7 +132,7 @@
                     {
                         "id": "sr-11.1_smt",
                         "name": "statement",
-                        "prose": "Train {{ sr-11.1_prm_1 }} to detect counterfeit system components (including hardware, software, and firmware)."
+                        "prose": "Train {{ insert: param, sr-11.1_prm_1 }} to detect counterfeit system components (including hardware, software, and firmware)."
                     },
                     {
                         "id": "sr-11.1_gdn",
@@ -187,7 +187,7 @@
                     {
                         "id": "sr-11.2_smt",
                         "name": "statement",
-                        "prose": "Maintain configuration control over the following system components awaiting service or repair and serviced or repaired components awaiting return to service: {{ sr-11.2_prm_1 }}."
+                        "prose": "Maintain configuration control over the following system components awaiting service or repair and serviced or repaired components awaiting return to service: {{ insert: param, sr-11.2_prm_1 }}."
                     },
                     {
                         "id": "sr-11.2_gdn",
@@ -222,10 +222,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#15a95e24-65b6-4686-bc18-90855a10457d",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#ra-5",
                         "rel": "related"
                     }
@@ -234,7 +230,7 @@
                     {
                         "id": "sr-11.3_smt",
                         "name": "statement",
-                        "prose": "Scan for counterfeit system components {{ sr-11.3_prm_1 }}."
+                        "prose": "Scan for counterfeit system components {{ insert: param, sr-11.3_prm_1 }}."
                     },
                     {
                         "id": "sr-11.3_gdn",

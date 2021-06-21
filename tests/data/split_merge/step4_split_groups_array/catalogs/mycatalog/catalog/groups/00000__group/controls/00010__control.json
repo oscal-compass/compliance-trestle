@@ -9,7 +9,7 @@
                 "select": {
                     "how-many": "one-or-more",
                     "choice": [
-                        "initiating a device lock after {{ ac-11_prm_2 }} of inactivity",
+                        "initiating a device lock after {{ insert: param, ac-11_prm_2 }} of inactivity",
                         "requiring the user to initiate a device lock before leaving the system unattended"
                     ]
                 }
@@ -62,7 +62,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Prevent further access to the system by {{ ac-11_prm_1 }}; and"
+                        "prose": "Prevent further access to the system by {{ insert: param, ac-11_prm_1 }}; and"
                     },
                     {
                         "id": "ac-11_smt.b",
@@ -113,7 +113,7 @@
                     {
                         "id": "ac-11.1_gdn",
                         "name": "guidance",
-                        "prose": "The pattern-hiding display can include static or dynamic images, such as patterns used with screen savers, photographic\u00a0images, solid colors, clock, battery life indicator, or a blank screen with the caveat that controlled unclassified information is not displayed."
+                        "prose": "The pattern-hiding display can include static or dynamic images, such as patterns used with screen savers, photographic images, solid colors, clock, battery life indicator, or a blank screen with the caveat that controlled unclassified information is not displayed."
                     }
                 ]
             }

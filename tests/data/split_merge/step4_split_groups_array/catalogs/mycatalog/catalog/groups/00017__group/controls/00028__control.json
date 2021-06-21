@@ -45,7 +45,7 @@
             {
                 "id": "sc-29_smt",
                 "name": "statement",
-                "prose": "Employ a diverse set of information technologies for the following system components in the implementation of the system: {{ sc-29_prm_1 }}."
+                "prose": "Employ a diverse set of information technologies for the following system components in the implementation of the system: {{ insert: param, sc-29_prm_1 }}."
             },
             {
                 "id": "sc-29_gdn",
@@ -84,7 +84,7 @@
                     {
                         "id": "sc-29.1_smt",
                         "name": "statement",
-                        "prose": "Employ virtualization techniques to support the deployment of a diversity of operating systems and applications that are changed {{ sc-29.1_prm_1 }}."
+                        "prose": "Employ virtualization techniques to support the deployment of a diversity of operating systems and applications that are changed {{ insert: param, sc-29.1_prm_1 }}."
                     },
                     {
                         "id": "sc-29.1_gdn",

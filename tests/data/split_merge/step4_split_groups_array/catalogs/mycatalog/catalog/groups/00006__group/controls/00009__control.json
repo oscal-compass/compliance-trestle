@@ -41,7 +41,7 @@
             {
                 "id": "ia-10_smt",
                 "name": "statement",
-                "prose": "Require individuals accessing the system to employ {{ ia-10_prm_1 }} under specific {{ ia-10_prm_2 }}."
+                "prose": "Require individuals accessing the system to employ {{ insert: param, ia-10_prm_1 }} under specific {{ insert: param, ia-10_prm_2 }}."
             },
             {
                 "id": "ia-10_gdn",

@@ -87,7 +87,6 @@ ARG_ITEM_SHORT = 'i'
 ARG_DESC_ITEM = 'Item used'
 
 VAL_MODE_DUPLICATES = 'duplicates'
-VAL_MODE_NCNAME = 'ncname'
 VAL_MODE_REFS = 'refs'
 VAL_MODE_ALL = 'all'
 VAL_MODE_OSCAL_VERSION = 'oscal_version'
@@ -103,8 +102,6 @@ HEADER_R_ESCAPE = '}'
 WEBSITE_ROOT = 'https://ibm.github.io/compliance-trestle'
 
 BUG_REPORT = 'https://github.com/IBM/compliance-trestle/issues/new/choose'
-
-NCNAME_REGEX = r'^[a-zA-Z_][\w.-]*$'
 
 # Sample objects
 SAMPLE_UUID_STR = 'A0000000-0000-4000-8000-000000000000'

@@ -10,7 +10,7 @@
                     "how-many": "one-or-more",
                     "choice": [
                         "at random",
-                        "at {{ sr-10_prm_2 }}, upon {{ sr-10_prm_3 }} "
+                        "at {{ insert: param, sr-10_prm_2 }}, upon {{ insert: param, sr-10_prm_3 }} "
                     ]
                 }
             },
@@ -85,7 +85,7 @@
             {
                 "id": "sr-10_smt",
                 "name": "statement",
-                "prose": "Inspect the following systems or system components {{ sr-10_prm_1 }} to detect tampering: {{ sr-10_prm_4 }}."
+                "prose": "Inspect the following systems or system components {{ insert: param, sr-10_prm_1 }} to detect tampering: {{ insert: param, sr-10_prm_4 }}."
             },
             {
                 "id": "sr-10_gdn",

@@ -9,7 +9,8 @@
                 "select": {
                     "how-many": "one-or-more",
                     "choice": [
-                        "design modification",
+                        "design",
+                        "modification",
                         "augmentation",
                         "reconfiguration"
                     ]
@@ -52,7 +53,7 @@
             {
                 "id": "sa-23_smt",
                 "name": "statement",
-                "prose": "Employ {{ sa-23_prm_1 }} on {{ sa-23_prm_2 }} supporting mission essential services or functions to increase the trustworthiness in those systems or components."
+                "prose": "Employ {{ insert: param, sa-23_prm_1 }} on {{ insert: param, sa-23_prm_2 }} supporting mission essential services or functions to increase the trustworthiness in those systems or components."
             },
             {
                 "id": "sa-23_gdn",

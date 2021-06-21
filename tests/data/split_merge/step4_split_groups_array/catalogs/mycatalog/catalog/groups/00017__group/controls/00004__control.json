@@ -72,7 +72,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": " {{ sc-5_prm_1 }} the effects of the following types of denial-of-service events: {{ sc-5_prm_2 }}; and"
+                        "prose": " {{ insert: param, sc-5_prm_1 }} the effects of the following types of denial-of-service events: {{ insert: param, sc-5_prm_2 }}; and"
                     },
                     {
                         "id": "sc-5_smt.b",
@@ -83,7 +83,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Employ the following controls to achieve the denial-of-service objective: {{ sc-5_prm_3 }}."
+                        "prose": "Employ the following controls to achieve the denial-of-service objective: {{ insert: param, sc-5_prm_3 }}."
                     }
                 ]
             },
@@ -124,7 +124,7 @@
                     {
                         "id": "sc-5.1_smt",
                         "name": "statement",
-                        "prose": "Restrict the ability of individuals to launch the following denial-of-service attacks against other systems: {{ sc-5.1_prm_1 }}."
+                        "prose": "Restrict the ability of individuals to launch the following denial-of-service attacks against other systems: {{ insert: param, sc-5.1_prm_1 }}."
                     },
                     {
                         "id": "sc-5.1_gdn",
@@ -196,10 +196,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#f5edfe51-d1f2-422e-9b27-5d0e90b49c72",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#ca-7",
                         "rel": "related"
                     },
@@ -222,7 +218,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Employ the following monitoring tools to detect indicators of denial-of-service attacks against, or launched from, the system: {{ sc-5.3_prm_1 }}; and"
+                                "prose": "Employ the following monitoring tools to detect indicators of denial-of-service attacks against, or launched from, the system: {{ insert: param, sc-5.3_prm_1 }}; and"
                             },
                             {
                                 "id": "sc-5.3_smt.b",
@@ -233,7 +229,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Monitor the following system resources to determine if sufficient resources exist to prevent effective denial-of-service attacks: {{ sc-5.3_prm_2 }}."
+                                "prose": "Monitor the following system resources to determine if sufficient resources exist to prevent effective denial-of-service attacks: {{ insert: param, sc-5.3_prm_2 }}."
                             }
                         ]
                     },

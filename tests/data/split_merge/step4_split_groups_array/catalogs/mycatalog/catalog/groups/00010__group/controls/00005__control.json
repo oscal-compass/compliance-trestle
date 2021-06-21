@@ -82,7 +82,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Review physical access logs {{ pe-6_prm_1 }} and upon occurrence of {{ pe-6_prm_2 }}; and"
+                        "prose": "Review physical access logs {{ insert: param, pe-6_prm_1 }} and upon occurrence of {{ insert: param, pe-6_prm_2 }}; and"
                     },
                     {
                         "id": "pe-6_smt.c",
@@ -179,7 +179,7 @@
                     {
                         "id": "pe-6.2_smt",
                         "name": "statement",
-                        "prose": "Recognize {{ pe-6.2_prm_1 }} and initiate {{ pe-6.2_prm_2 }} using {{ pe-6.2_prm_3 }}."
+                        "prose": "Recognize {{ insert: param, pe-6.2_prm_1 }} and initiate {{ insert: param, pe-6.2_prm_2 }} using {{ insert: param, pe-6.2_prm_3 }}."
                     },
                     {
                         "id": "pe-6.2_gdn",
@@ -236,7 +236,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Employ video surveillance of {{ pe-6.3_prm_1 }};"
+                                "prose": "Employ video surveillance of {{ insert: param, pe-6.3_prm_1 }};"
                             },
                             {
                                 "id": "pe-6.3_smt.b",
@@ -247,7 +247,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Review video recordings {{ pe-6.3_prm_2 }}; and"
+                                "prose": "Review video recordings {{ insert: param, pe-6.3_prm_2 }}; and"
                             },
                             {
                                 "id": "pe-6.3_smt.c",
@@ -258,7 +258,7 @@
                                         "value": "(c)"
                                     }
                                 ],
-                                "prose": "Retain video recordings for {{ pe-6.3_prm_3 }}."
+                                "prose": "Retain video recordings for {{ insert: param, pe-6.3_prm_3 }}."
                             }
                         ]
                     },
@@ -299,7 +299,7 @@
                     {
                         "id": "pe-6.4_smt",
                         "name": "statement",
-                        "prose": "Monitor physical access to the system in addition to the physical access monitoring of the facility at {{ pe-6.4_prm_1 }}."
+                        "prose": "Monitor physical access to the system in addition to the physical access monitoring of the facility at {{ insert: param, pe-6.4_prm_1 }}."
                     },
                     {
                         "id": "pe-6.4_gdn",

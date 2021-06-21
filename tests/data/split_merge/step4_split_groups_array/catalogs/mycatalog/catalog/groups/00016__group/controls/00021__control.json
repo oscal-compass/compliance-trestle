@@ -10,7 +10,7 @@
                     "how-many": "one-or-more",
                     "choice": [
                         "in-house support",
-                        " {{ sa-22_prm_2 }} "
+                        " {{ insert: param, sa-22_prm_2 }} "
                     ]
                 }
             },
@@ -65,7 +65,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Provide the following options for alternative sources for continued support for unsupported components {{ sa-22_prm_1 }}."
+                        "prose": "Provide the following options for alternative sources for continued support for unsupported components {{ insert: param, sa-22_prm_1 }}."
                     }
                 ]
             },

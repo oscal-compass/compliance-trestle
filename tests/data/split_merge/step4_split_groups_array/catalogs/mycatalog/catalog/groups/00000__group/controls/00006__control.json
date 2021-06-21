@@ -17,11 +17,11 @@
                 "select": {
                     "how-many": "one-or-more",
                     "choice": [
-                        "lock the account or node for an {{ ac-7_prm_4 }} ",
+                        "lock the account or node for an {{ insert: param, ac-7_prm_4 }} ",
                         "lock the account or node until released by an administrator",
-                        "delay next logon prompt per {{ ac-7_prm_5 }} ",
+                        "delay next logon prompt per {{ insert: param, ac-7_prm_5 }} ",
                         "notify system administrator",
-                        "take other {{ ac-7_prm_6 }} "
+                        "take other {{ insert: param, ac-7_prm_6 }} "
                     ]
                 }
             },
@@ -95,7 +95,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Enforce a limit of {{ ac-7_prm_1 }} consecutive invalid logon attempts by a user during a {{ ac-7_prm_2 }}; and"
+                        "prose": "Enforce a limit of {{ insert: param, ac-7_prm_1 }} consecutive invalid logon attempts by a user during a {{ insert: param, ac-7_prm_2 }}; and"
                     },
                     {
                         "id": "ac-7_smt.b",
@@ -106,7 +106,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Automatically {{ ac-7_prm_3 }} when the maximum number of unsuccessful attempts is exceeded."
+                        "prose": "Automatically {{ insert: param, ac-7_prm_3 }} when the maximum number of unsuccessful attempts is exceeded."
                     }
                 ]
             },
@@ -192,7 +192,7 @@
                     {
                         "id": "ac-7.2_smt",
                         "name": "statement",
-                        "prose": "Purge or wipe information from {{ ac-7.2_prm_1 }} based on {{ ac-7.2_prm_2 }} after {{ ac-7.2_prm_3 }} consecutive, unsuccessful device logon attempts."
+                        "prose": "Purge or wipe information from {{ insert: param, ac-7.2_prm_1 }} based on {{ insert: param, ac-7.2_prm_2 }} after {{ insert: param, ac-7.2_prm_3 }} consecutive, unsuccessful device logon attempts."
                     },
                     {
                         "id": "ac-7.2_gdn",
@@ -235,12 +235,12 @@
                     {
                         "id": "ac-7.3_smt",
                         "name": "statement",
-                        "prose": "Limit the number of unsuccessful biometric logon attempts to {{ ac-7.3_prm_1 }}."
+                        "prose": "Limit the number of unsuccessful biometric logon attempts to {{ insert: param, ac-7.3_prm_1 }}."
                     },
                     {
                         "id": "ac-7.3_gdn",
                         "name": "guidance",
-                        "prose": "\u00a0\u00a0Biometrics are probabilistic in nature. The ability to successfully authenticate can be impacted by many factors, including matching performance and presentation attack detection mechanisms. Organizations select the appropriate number of attempts for users based on organizationally-defined factors."
+                        "prose": "Biometrics are probabilistic in nature. The ability to successfully authenticate can be impacted by many factors, including matching performance and presentation attack detection mechanisms. Organizations select the appropriate number of attempts for users based on organizationally-defined factors."
                     }
                 ]
             },
@@ -278,14 +278,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#0f66be67-85e7-4ca6-bd19-39453e9f4394",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#ia-3",
                         "rel": "related"
                     }
@@ -304,7 +296,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Allow the use of {{ ac-7.4_prm_1 }} that are different from the primary authentication factors after the number of organization-defined consecutive invalid logon attempts have been exceeded; and"
+                                "prose": "Allow the use of {{ insert: param, ac-7.4_prm_1 }} that are different from the primary authentication factors after the number of organization-defined consecutive invalid logon attempts have been exceeded; and"
                             },
                             {
                                 "id": "ac-7.4_smt.b",
@@ -315,7 +307,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Enforce a limit of {{ ac-7.4_prm_2 }} consecutive invalid logon attempts through use of the alternative factors by a user during a {{ ac-7.4_prm_3 }}."
+                                "prose": "Enforce a limit of {{ insert: param, ac-7.4_prm_2 }} consecutive invalid logon attempts through use of the alternative factors by a user during a {{ insert: param, ac-7.4_prm_3 }}."
                             }
                         ]
                     },

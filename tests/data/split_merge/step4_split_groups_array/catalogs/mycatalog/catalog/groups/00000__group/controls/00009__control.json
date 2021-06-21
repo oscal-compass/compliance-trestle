@@ -33,7 +33,7 @@
             {
                 "id": "ac-10_smt",
                 "name": "statement",
-                "prose": "Limit the number of concurrent sessions for each {{ ac-10_prm_1 }} to {{ ac-10_prm_2 }}."
+                "prose": "Limit the number of concurrent sessions for each {{ insert: param, ac-10_prm_1 }} to {{ insert: param, ac-10_prm_2 }}."
             },
             {
                 "id": "ac-10_gdn",

@@ -63,7 +63,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Establish usage restrictions and implementation guidelines for the following system components: {{ sc-43_prm_1 }}; and"
+                        "prose": "Establish usage restrictions and implementation guidelines for the following system components: {{ insert: param, sc-43_prm_1 }}; and"
                     },
                     {
                         "id": "sc-43_smt.b",

@@ -109,7 +109,7 @@
                     {
                         "id": "sc-18.1_smt",
                         "name": "statement",
-                        "prose": "Identify {{ sc-18.1_prm_1 }} and take {{ sc-18.1_prm_2 }}."
+                        "prose": "Identify {{ insert: param, sc-18.1_prm_1 }} and take {{ insert: param, sc-18.1_prm_2 }}."
                     },
                     {
                         "id": "sc-18.1_gdn",
@@ -148,7 +148,7 @@
                     {
                         "id": "sc-18.2_smt",
                         "name": "statement",
-                        "prose": "Verify that the acquisition, development, and use of mobile code to be deployed in the system meets {{ sc-18.2_prm_1 }}."
+                        "prose": "Verify that the acquisition, development, and use of mobile code to be deployed in the system meets {{ insert: param, sc-18.2_prm_1 }}."
                     },
                     {
                         "id": "sc-18.2_gdn",
@@ -187,7 +187,7 @@
                     {
                         "id": "sc-18.3_smt",
                         "name": "statement",
-                        "prose": "Prevent the download and execution of {{ sc-18.3_prm_1 }}."
+                        "prose": "Prevent the download and execution of {{ insert: param, sc-18.3_prm_1 }}."
                     },
                     {
                         "id": "sc-18.3_gdn",
@@ -230,7 +230,7 @@
                     {
                         "id": "sc-18.4_smt",
                         "name": "statement",
-                        "prose": "Prevent the automatic execution of mobile code in {{ sc-18.4_prm_1 }} and enforce {{ sc-18.4_prm_2 }} prior to executing the code."
+                        "prose": "Prevent the automatic execution of mobile code in {{ insert: param, sc-18.4_prm_1 }} and enforce {{ insert: param, sc-18.4_prm_2 }} prior to executing the code."
                     },
                     {
                         "id": "sc-18.4_gdn",
@@ -257,10 +257,6 @@
                     {
                         "href": "#sc-18",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#f641309f-a3ad-48be-8c67-2b318648b2f5",
-                        "rel": "reference"
                     },
                     {
                         "href": "#sc-44",

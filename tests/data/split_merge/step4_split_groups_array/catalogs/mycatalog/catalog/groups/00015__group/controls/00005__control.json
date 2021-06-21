@@ -13,8 +13,8 @@
                 "select": {
                     "how-many": "one-or-more",
                     "choice": [
-                        " {{ ra-6_prm_3 }} ",
-                        "when the following events or indicators occur: {{ ra-6_prm_4 }} "
+                        " {{ insert: param, ra-6_prm_3 }} ",
+                        "when the following events or indicators occur: {{ insert: param, ra-6_prm_4 }} "
                     ]
                 }
             },
@@ -43,7 +43,7 @@
             {
                 "id": "ra-6_smt",
                 "name": "statement",
-                "prose": "Employ a technical surveillance countermeasures survey at {{ ra-6_prm_1 }} {{ ra-6_prm_2 }}."
+                "prose": "Employ a technical surveillance countermeasures survey at {{ insert: param, ra-6_prm_1 }} {{ insert: param, ra-6_prm_2 }}."
             },
             {
                 "id": "ra-6_gdn",

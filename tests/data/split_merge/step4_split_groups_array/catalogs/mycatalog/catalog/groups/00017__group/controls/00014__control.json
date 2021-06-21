@@ -43,7 +43,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Prohibit remote activation of collaborative computing devices and applications with the following exceptions: {{ sc-15_prm_1 }}; and"
+                        "prose": "Prohibit remote activation of collaborative computing devices and applications with the following exceptions: {{ insert: param, sc-15_prm_1 }}; and"
                     },
                     {
                         "id": "sc-15_smt.b",
@@ -101,7 +101,7 @@
                     {
                         "id": "sc-15.1_smt",
                         "name": "statement",
-                        "prose": "Provide {{ sc-15.1_prm_1 }} disconnect of collaborative computing devices in a manner that supports ease of use."
+                        "prose": "Provide {{ insert: param, sc-15.1_prm_1 }} disconnect of collaborative computing devices in a manner that supports ease of use."
                     },
                     {
                         "id": "sc-15.1_gdn",
@@ -169,7 +169,7 @@
                     {
                         "id": "sc-15.3_smt",
                         "name": "statement",
-                        "prose": "Disable or remove collaborative computing devices and applications from {{ sc-15.3_prm_1 }} in {{ sc-15.3_prm_2 }}."
+                        "prose": "Disable or remove collaborative computing devices and applications from {{ insert: param, sc-15.3_prm_1 }} in {{ insert: param, sc-15.3_prm_2 }}."
                     },
                     {
                         "id": "sc-15.3_gdn",
@@ -208,7 +208,7 @@
                     {
                         "id": "sc-15.4_smt",
                         "name": "statement",
-                        "prose": "Provide an explicit indication of current participants in {{ sc-15.4_prm_1 }}."
+                        "prose": "Provide an explicit indication of current participants in {{ insert: param, sc-15.4_prm_1 }}."
                     },
                     {
                         "id": "sc-15.4_gdn",

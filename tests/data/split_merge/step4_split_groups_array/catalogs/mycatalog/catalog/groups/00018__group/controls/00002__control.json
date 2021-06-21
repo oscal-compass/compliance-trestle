@@ -35,7 +35,7 @@
                     "choice": [
                         "block malicious code",
                         "quarantine malicious code",
-                        "take {{ si-3_prm_5 }} "
+                        "take {{ insert: param, si-3_prm_5 }} "
                     ]
                 }
             },
@@ -163,7 +163,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Implement {{ si-3_prm_1 }} malicious code protection mechanisms at system entry and exit points to detect and eradicate malicious code;"
+                        "prose": "Implement {{ insert: param, si-3_prm_1 }} malicious code protection mechanisms at system entry and exit points to detect and eradicate malicious code;"
                     },
                     {
                         "id": "si-3_smt.b",
@@ -196,7 +196,7 @@
                                         "value": "1."
                                     }
                                 ],
-                                "prose": "Perform periodic scans of the system {{ si-3_prm_2 }} and real-time scans of files from external sources at {{ si-3_prm_3 }} as the files are downloaded, opened, or executed in accordance with organizational policy; and"
+                                "prose": "Perform periodic scans of the system {{ insert: param, si-3_prm_2 }} and real-time scans of files from external sources at {{ insert: param, si-3_prm_3 }} as the files are downloaded, opened, or executed in accordance with organizational policy; and"
                             },
                             {
                                 "id": "si-3_smt.c.2",
@@ -207,7 +207,7 @@
                                         "value": "2."
                                     }
                                 ],
-                                "prose": " {{ si-3_prm_4 }}; and send alert to {{ si-3_prm_6 }} in response to malicious code detection; and"
+                                "prose": " {{ insert: param, si-3_prm_4 }}; and send alert to {{ insert: param, si-3_prm_6 }} in response to malicious code detection; and"
                             }
                         ]
                     },
@@ -420,7 +420,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Test malicious code protection mechanisms {{ si-3.6_prm_1 }} by introducing known benign code into the system; and"
+                                "prose": "Test malicious code protection mechanisms {{ insert: param, si-3.6_prm_1 }} by introducing known benign code into the system; and"
                             },
                             {
                                 "id": "si-3.6_smt.b",
@@ -534,7 +534,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Detect the following unauthorized operating system commands through the kernel application programming interface on {{ si-3.8_prm_1 }}: {{ si-3.8_prm_2 }}; and"
+                                "prose": "Detect the following unauthorized operating system commands through the kernel application programming interface on {{ insert: param, si-3.8_prm_1 }}: {{ insert: param, si-3.8_prm_2 }}; and"
                             },
                             {
                                 "id": "si-3.8_smt.b",
@@ -545,7 +545,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": " {{ si-3.8_prm_3 }}."
+                                "prose": " {{ insert: param, si-3.8_prm_3 }}."
                             }
                         ]
                     },
@@ -577,7 +577,7 @@
                 "links": [
                     {
                         "href": "#ac-17.10",
-                        "rel": "incorporated-into"
+                        "rel": "moved-to"
                     }
                 ]
             },
@@ -605,18 +605,6 @@
                     {
                         "href": "#si-3",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#3dd249b0-f57d-44ba-a03e-c3eab1b835ff",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#88660532-2dcf-442e-845c-03340ce48999",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#1c71b420-2bd9-4e52-9fc8-390f58b85b59",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
@@ -633,7 +621,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Employ the following tools and techniques to analyze the characteristics and behavior of malicious code: {{ si-3.10_prm_1 }}; and"
+                                "prose": "Employ the following tools and techniques to analyze the characteristics and behavior of malicious code: {{ insert: param, si-3.10_prm_1 }}; and"
                             },
                             {
                                 "id": "si-3.10_smt.b",

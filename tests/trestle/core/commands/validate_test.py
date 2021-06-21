@@ -31,7 +31,7 @@ from trestle import cli
 from trestle.core.generators import generate_sample_model
 from trestle.core.validator_factory import validator_factory
 from trestle.oscal.catalog import Catalog
-from trestle.oscal.common import PartyUuid, ResponsibleParty, Role, RoleId, SystemUser
+from trestle.oscal.common import PartyUuid, ResponsibleParty, Role
 
 test_data_dir = pathlib.Path('tests/data').resolve()
 
@@ -117,43 +117,6 @@ def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -
             cli.run()
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 1
-
-
-@pytest.mark.parametrize(
-    'name, mode, parent, new_role, code',
-    [
-        ('my_ap', '-f', False, 'role', 0), ('my_ap', '-n', False, 'role', 0), ('my_ap', '-f', True, 'role', 0),
-        ('my_ap', '-t', False, 'role', 0), ('my_ap', '-a', False, 'role', 0), ('foo', '-n', False, 'role', 1)
-    ]
-)
-def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathlib.Path) -> None:
-    """Test good and bad roleid cases."""
-    (tmp_trestle_dir / 'assessment-plans/my_ap').mkdir(exist_ok=True, parents=True)
-    role_ids = [RoleId(__root__='role1'), RoleId(__root__=new_role), RoleId(__root__='REPLACE_ME')]
-    system_user = SystemUser(uuid=str(uuid4()), role_ids=role_ids)
-    local_definitions = ap.LocalDefinitions(users=[system_user])
-    ap_obj = generate_sample_model(ap.AssessmentPlan)
-    ap_obj.local_definitions = local_definitions
-    ap_path = tmp_trestle_dir / 'assessment-plans/my_ap/assessment-plan.json'
-    ap_obj.oscal_write(ap_path)
-
-    if mode == '-f':
-        if not parent:
-            testcmd = f'trestle validate {mode} {ap_path} -m ncname'
-        else:
-            testcmd = f'trestle validate {mode} {ap_path.parent} -m ncname'
-    elif mode == '-n':
-        testcmd = f'trestle validate -t assessment-plan -n {name} -m ncname'
-    elif mode == '-t':
-        testcmd = 'trestle validate -t assessment-plan -m ncname'
-    else:
-        testcmd = 'trestle validate -a -m ncname'
-
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == code
 
 
 @pytest.mark.parametrize(

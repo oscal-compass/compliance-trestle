@@ -42,7 +42,7 @@
             {
                 "id": "sc-46_smt",
                 "name": "statement",
-                "prose": "Implement a policy enforcement mechanism {{ sc-46_prm_1 }} between the physical and/or network interfaces for the connecting security domains."
+                "prose": "Implement a policy enforcement mechanism {{ insert: param, sc-46_prm_1 }} between the physical and/or network interfaces for the connecting security domains."
             },
             {
                 "id": "sc-46_gdn",
