@@ -80,6 +80,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from pydantic import AnyUrl, EmailStr, Field, conint, constr
+
 from trestle.core.base_model import OscalBaseModel
 """
 
@@ -492,6 +493,18 @@ def refine_split(com, file_classes):
         else:
             new_com.append(c)
     return new_com, file_classes
+
+
+def find_in_classes(name, com, file_classes):
+    found = []
+    for c in com:
+        if name in c.name:
+            found.append(('com', name))
+    for stem in fstems:
+        for c in file_classes[stem]:
+            if name in c.name:
+                found.append((stem, name))
+    return found
         
 
 def split_classes(classes):
@@ -518,7 +531,6 @@ def split_classes(classes):
     return com, file_classes
 
 
-
 def reorder_classes(classes):
     """Reorder the classes to minimize needed forwards."""
     new_classes = []
@@ -526,7 +538,7 @@ def reorder_classes(classes):
         for line in c.lines:
             _ = c.add_all_refs(line)
         new_classes.append(c)
-    reordered, forward_refs = reorder(classes)
+    reordered, forward_refs = reorder(new_classes)
     return reordered, forward_refs
 
 
@@ -536,7 +548,7 @@ def write_oscal(classes, forward_refs, fstem):
         is_common = fstem == 'common'
 
         out_file.write(license_header)
-        out_file.write('\n\n')
+        out_file.write('\n')
         out_file.write(main_header)
 
         if not is_common:
@@ -568,16 +580,24 @@ def dump_classes_as_python(classes, stem, changes, com_names):
     for i, c in enumerate(classes):
         lines = []
         for line in c.lines:
-            for item in changes.items():
-                new_name = item[1]
-                # if not in common then need to add common. to common names
-                if stem != 'common' and new_name in com_names:
-                    tentative_name = 'common.' + new_name
-                    if tentative_name not in line:
-                        new_name = tentative_name
-                line = replace_token(line, item[0], new_name)
+            if 'title=' not in line and 'description=' not in line:
+                for item in changes.items():
+                    new_name = item[1]
+                    # if not in common then need to add common. to common names
+                    if stem != 'common' and new_name in com_names:
+                        tentative_name = 'common.' + new_name
+                        if tentative_name not in line:
+                            new_name = tentative_name
+                    line = replace_token(line, item[0], new_name)
             lines.append(line)
         classes[i].lines = lines
+
+        # class name may have been replaced by change - so update with new name
+        paren = lines[0].find('(')
+        class_name = classes[i].name
+        if paren > 0:
+            class_name = lines[0][len('class '): paren]
+        classes[i].name = class_name
     ordered, forward_refs = reorder_classes(classes)
     write_oscal(ordered, forward_refs, stem)
 

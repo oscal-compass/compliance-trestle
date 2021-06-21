@@ -14,7 +14,6 @@
 # limitations under the License.
 
 
-
 from __future__ import annotations
 
 from datetime import datetime
@@ -22,6 +21,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from pydantic import AnyUrl, EmailStr, Field, conint, constr
+
 from trestle.core.base_model import OscalBaseModel
 import trestle.oscal.common as common
 
@@ -49,7 +49,7 @@ class SystemComponentStatus(OscalBaseModel):
     state: State = Field(
         ...,
         description='An indication as to whether the objective is satisfied or not.',
-        title='Objective SystemComponentStatus State',
+        title='Objective Status State',
     )
     reason: Optional[
         constr(
@@ -58,7 +58,7 @@ class SystemComponentStatus(OscalBaseModel):
     ] = Field(
         None,
         description="The reason the objective was given it's status.",
-        title='Objective SystemComponentStatus Reason',
+        title='Objective Status Reason',
     )
     remarks: Optional[common.Remarks] = None
 
@@ -111,7 +111,7 @@ class FindingTarget(OscalBaseModel):
     type: common.Type1 = Field(
         ...,
         description='Identifies the type of the target.',
-        title='Finding Target common.Type',
+        title='Finding Target Type',
     )
     target_id: constr(
         regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -124,19 +124,19 @@ class FindingTarget(OscalBaseModel):
     title: Optional[str] = Field(
         None,
         description='The title for this objective status.',
-        title='Objective SystemComponentStatus Title',
+        title='Objective Status Title',
     )
     description: Optional[str] = Field(
         None,
         description="A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied.",
-        title='Objective SystemComponentStatus Description',
+        title='Objective Status Description',
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     status: SystemComponentStatus = Field(
         ...,
         description='A determination of if the objective is satisfied or not within a given system.',
-        title='Objective SystemComponentStatus',
+        title='Objective Status',
     )
     implementation_status: Optional[
         ImplementationStatus
@@ -205,7 +205,7 @@ class SystemComponent(OscalBaseModel):
     type: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description='A category describing the purpose of the component.',
-        title='Component common.Type',
+        title='Component Type',
     )
     title: str = Field(
         ...,
@@ -227,7 +227,7 @@ class SystemComponent(OscalBaseModel):
     status: Status1 = Field(
         ...,
         description='Describes the operational status of the system component.',
-        title='SystemComponentStatus',
+        title='Status',
     )
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
         None, alias='responsible-roles'
@@ -398,7 +398,7 @@ class Risk(OscalBaseModel):
     status: constr(
         regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
     ) = Field(
-        ..., description='Describes the status of the associated risk.', title='SystemComponentStatus'
+        ..., description='Describes the status of the associated risk.', title='Status'
     )
     origins: Optional[List[Origin]] = Field(None)
     threat_ids: Optional[List[common.ThreatId]] = Field(

@@ -14,7 +14,6 @@
 # limitations under the License.
 
 
-
 from __future__ import annotations
 
 from datetime import datetime
@@ -22,6 +21,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from pydantic import AnyUrl, EmailStr, Field, conint, constr
+
 from trestle.core.base_model import OscalBaseModel
 import trestle.oscal.common as common
 
@@ -270,7 +270,7 @@ class InformationTypeId(OscalBaseModel):
     __root__: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description='An identifier qualified by the given identification system used, such as NIST SP 800-60.',
-        title='Information common.Type Systematized Identifier',
+        title='Information Type Systematized Identifier',
     )
 
 
@@ -285,7 +285,7 @@ class SystemComponent(OscalBaseModel):
     type: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description='A category describing the purpose of the component.',
-        title='Component common.Type',
+        title='Component Type',
     )
     title: str = Field(
         ...,
@@ -307,7 +307,7 @@ class SystemComponent(OscalBaseModel):
     status: SystemComponentStatus = Field(
         ...,
         description='Describes the operational status of the system component.',
-        title='SystemComponentStatus',
+        title='Status',
     )
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
         None, alias='responsible-roles'
@@ -495,7 +495,7 @@ class Categorization(OscalBaseModel):
     system: AnyUrl = Field(
         ...,
         description='Specifies the information type identification system used.',
-        title='Information common.Type Identification System',
+        title='Information Type Identification System',
     )
     information_type_ids: Optional[List[InformationTypeId]] = Field(
         None, alias='information-type-ids'
@@ -510,7 +510,7 @@ class InformationType(OscalBaseModel):
     ] = Field(
         None,
         description='A globally unique identifier that can be used to reference this information type entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
-        title='Information common.Type Universally Unique Identifier',
+        title='Information Type Universally Unique Identifier',
     )
     title: str = Field(
         ...,
@@ -520,7 +520,7 @@ class InformationType(OscalBaseModel):
     description: str = Field(
         ...,
         description='A summary of how this information type is used within the system.',
-        title='Information common.Type Description',
+        title='Information Type Description',
     )
     categorizations: Optional[List[Categorization]] = Field(None)
     props: Optional[List[common.Property]] = Field(None)

@@ -14,7 +14,6 @@
 # limitations under the License.
 
 
-
 from __future__ import annotations
 
 from datetime import datetime
@@ -22,6 +21,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from pydantic import AnyUrl, EmailStr, Field, conint, constr
+
 from trestle.core.base_model import OscalBaseModel
 import trestle.oscal.common as common
 
@@ -267,60 +267,11 @@ class State1(Enum):
     not_satisfied = 'not-satisfied'
 
 
-class SystemComponent(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='The unique identifier for the component.',
-        title='Component Identifier',
-    )
-    type: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
-        description='A category describing the purpose of the component.',
-        title='Component common.Type',
-    )
-    title: str = Field(
-        ...,
-        description='A human readable name for the system component.',
-        title='Component Title',
-    )
-    description: str = Field(
-        ...,
-        description='A description of the component, including information about its function.',
-        title='Component Description',
-    )
-    purpose: Optional[str] = Field(
-        None,
-        description='A summary of the technological or business purpose of the component.',
-        title='Purpose',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    status: SystemComponentStatus = Field(
-        ...,
-        description='Describes the operational status of the system component.',
-        title='SystemComponentStatus',
-    )
-    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    protocols: Optional[List[common.Protocol]] = Field(
-        None
-    )
-    remarks: Optional[common.Remarks] = None
-
-
 class State(Enum):
     under_development = 'under-development'
     operational = 'operational'
     disposition = 'disposition'
     other = 'other'
-
-
-class SystemComponentStatus(OscalBaseModel):
-    state: State = Field(..., description='The operational status.', title='State')
-    remarks: Optional[common.Remarks] = None
 
 
 class Risk(OscalBaseModel):
@@ -347,7 +298,7 @@ class Risk(OscalBaseModel):
     status: constr(
         regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
     ) = Field(
-        ..., description='Describes the status of the associated risk.', title='SystemComponentStatus'
+        ..., description='Describes the status of the associated risk.', title='Status'
     )
     origins: Optional[List[Origin]] = Field(None)
     threat_ids: Optional[List[common.ThreatId]] = Field(
@@ -395,6 +346,110 @@ class ReviewedControls(OscalBaseModel):
     remarks: Optional[common.Remarks] = None
 
 
+class Status1(OscalBaseModel):
+    state: State1 = Field(
+        ...,
+        description='An indication as to whether the objective is satisfied or not.',
+        title='Objective Status State',
+    )
+    reason: Optional[
+        constr(
+            regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+        )
+    ] = Field(
+        None,
+        description="The reason the objective was given it's status.",
+        title='Objective Status Reason',
+    )
+    remarks: Optional[common.Remarks] = None
+
+
+class FindingTarget(OscalBaseModel):
+    type: common.Type1 = Field(
+        ...,
+        description='Identifies the type of the target.',
+        title='Finding Target Type',
+    )
+    target_id: constr(
+        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(
+        ...,
+        alias='target-id',
+        description='Identifies the specific target qualified by the type.',
+        title='Finding Target Identifier Reference',
+    )
+    title: Optional[str] = Field(
+        None,
+        description='The title for this objective status.',
+        title='Objective Status Title',
+    )
+    description: Optional[str] = Field(
+        None,
+        description="A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied.",
+        title='Objective Status Description',
+    )
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    status: Status1 = Field(
+        ...,
+        description='A determination of if the objective is satisfied or not within a given system.',
+        title='Objective Status',
+    )
+    implementation_status: Optional[
+        ImplementationStatus
+    ] = Field(None, alias='implementation-status')
+    remarks: Optional[common.Remarks] = None
+
+
+class SystemComponentStatus(OscalBaseModel):
+    state: State = Field(..., description='The operational status.', title='State')
+    remarks: Optional[common.Remarks] = None
+
+
+class SystemComponent(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='The unique identifier for the component.',
+        title='Component Identifier',
+    )
+    type: constr(regex=r'^\S(.*\S)?$') = Field(
+        ...,
+        description='A category describing the purpose of the component.',
+        title='Component Type',
+    )
+    title: str = Field(
+        ...,
+        description='A human readable name for the system component.',
+        title='Component Title',
+    )
+    description: str = Field(
+        ...,
+        description='A description of the component, including information about its function.',
+        title='Component Description',
+    )
+    purpose: Optional[str] = Field(
+        None,
+        description='A summary of the technological or business purpose of the component.',
+        title='Purpose',
+    )
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    status: SystemComponentStatus = Field(
+        ...,
+        description='Describes the operational status of the system component.',
+        title='Status',
+    )
+    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
+        None, alias='responsible-roles'
+    )
+    protocols: Optional[List[common.Protocol]] = Field(
+        None
+    )
+    remarks: Optional[common.Remarks] = None
+
+
 class AssessmentAssets(OscalBaseModel):
     components: Optional[List[SystemComponent]] = Field(
         None
@@ -438,61 +493,6 @@ class PlanOfActionAndMilestones(OscalBaseModel):
     risks: Optional[List[Risk]] = Field(None)
     poam_items: List[PoamItem] = Field(..., alias='poam-items')
     back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
-
-
-class Status1(OscalBaseModel):
-    state: State1 = Field(
-        ...,
-        description='An indication as to whether the objective is satisfied or not.',
-        title='Objective SystemComponentStatus State',
-    )
-    reason: Optional[
-        constr(
-            regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-        )
-    ] = Field(
-        None,
-        description="The reason the objective was given it's status.",
-        title='Objective SystemComponentStatus Reason',
-    )
-    remarks: Optional[common.Remarks] = None
-
-
-class FindingTarget(OscalBaseModel):
-    type: common.Type1 = Field(
-        ...,
-        description='Identifies the type of the target.',
-        title='Finding Target common.Type',
-    )
-    target_id: constr(
-        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        alias='target-id',
-        description='Identifies the specific target qualified by the type.',
-        title='Finding Target Identifier Reference',
-    )
-    title: Optional[str] = Field(
-        None,
-        description='The title for this objective status.',
-        title='Objective SystemComponentStatus Title',
-    )
-    description: Optional[str] = Field(
-        None,
-        description="A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied.",
-        title='Objective SystemComponentStatus Description',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    status: Status1 = Field(
-        ...,
-        description='A determination of if the objective is satisfied or not within a given system.',
-        title='Objective SystemComponentStatus',
-    )
-    implementation_status: Optional[
-        ImplementationStatus
-    ] = Field(None, alias='implementation-status')
-    remarks: Optional[common.Remarks] = None
 
 
 class Step(OscalBaseModel):

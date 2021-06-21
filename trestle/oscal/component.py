@@ -14,7 +14,6 @@
 # limitations under the License.
 
 
-
 from __future__ import annotations
 
 from datetime import datetime
@@ -22,6 +21,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 from pydantic import AnyUrl, EmailStr, Field, conint, constr
+
 from trestle.core.base_model import OscalBaseModel
 import trestle.oscal.common as common
 
@@ -126,7 +126,7 @@ class SystemComponent(OscalBaseModel):
     type: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description='A category describing the purpose of the component.',
-        title='Component common.Type',
+        title='Component Type',
     )
     title: str = Field(
         ...,
@@ -148,7 +148,7 @@ class SystemComponent(OscalBaseModel):
     status: SystemComponentStatus = Field(
         ...,
         description='Describes the operational status of the system component.',
-        title='SystemComponentStatus',
+        title='Status',
     )
     responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
         None, alias='responsible-roles'
@@ -205,7 +205,7 @@ class ControlImplementation(OscalBaseModel):
     source: str = Field(
         ...,
         description='A reference to an OSCAL catalog or profile providing the referenced control or subcontrol definition.',
-        title='common.Source common.Resource Reference',
+        title='Source Resource Reference',
     )
     description: str = Field(
         ...,
@@ -233,7 +233,7 @@ class DefinedComponent(OscalBaseModel):
     type: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description='A category describing the purpose of the component.',
-        title='Component common.Type',
+        title='Component Type',
     )
     title: str = Field(
         ...,
