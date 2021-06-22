@@ -21,9 +21,9 @@ from pathlib import Path
 from tests import test_utils
 
 from trestle.oscal.catalog import Catalog
-from trestle.oscal.common import ResponsibleParty, Role
+from trestle.oscal.common import Role
 from trestle.utils import fs
-from trestle.utils.load_distributed import _load_dict, _load_list, load_distributed
+from trestle.utils.load_distributed import _load_list, load_distributed
 
 
 def test_load_list(testdata_dir, tmp_trestle_dir):
@@ -78,39 +78,6 @@ def test_load_list_group(testdata_dir, tmp_trestle_dir):
     assert actual_groups == expected_groups
 
 
-def test_load_dict(testdata_dir, tmp_trestle_dir):
-    """Test loading of distributed dict."""
-    # prepare trestle project dir with the file
-    test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
-
-    test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
-
-    catalogs_dir = Path('catalogs/')
-    mycatalog_dir = catalogs_dir / 'mycatalog'
-    catalog_dir = mycatalog_dir / 'catalog'
-
-    # Copy files from test/data/split_merge/step4
-    shutil.rmtree(catalogs_dir)
-    shutil.copytree(test_data_source, catalogs_dir)
-
-    actual_model_type, actual_model_alias, actual_model_instance = _load_dict(
-        catalog_dir / 'metadata/responsible-parties')
-
-    expected_model_instance = {
-        'contact': ResponsibleParty.oscal_read(
-            catalog_dir / 'metadata/responsible-parties/contact__responsible-party.json'
-        ),
-        'creator': ResponsibleParty.oscal_read(
-            catalog_dir / 'metadata/responsible-parties/creator__responsible-party.json'
-        )
-    }
-    assert actual_model_instance == expected_model_instance
-    assert actual_model_alias == 'catalog.metadata.responsible-parties'
-
-    expected_model_type, _ = fs.get_contextual_model_type((catalog_dir / 'metadata/responsible-parties/').resolve())
-    assert actual_model_type.__fields__['__root__'].outer_type_ == expected_model_type
-
-
 def test_load_distributed(testdata_dir, tmp_trestle_dir):
     """Test massive distributed load, that includes recusive load, list and dict."""
     # prepare trestle project dir with the file
@@ -134,4 +101,5 @@ def test_load_distributed(testdata_dir, tmp_trestle_dir):
 
     assert actual_model_type == expected_model_type
     assert actual_model_alias == 'catalog'
+    expected_model_instance.metadata.last_modified = actual_model_instance.metadata.last_modified
     assert expected_model_instance == actual_model_instance
