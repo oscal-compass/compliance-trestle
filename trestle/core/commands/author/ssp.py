@@ -318,7 +318,7 @@ class SSPManager():
         needed_group_ids: Set[str] = set()
         needed_controls: List[ControlHandle] = []
         for control_id in control_ids:
-            control_handle = control_dict[control_id]
+            control_handle = control_dict[control_id.__root__]
             needed_group_ids.add(control_handle.group_id)
             needed_controls.append(control_handle)
 
@@ -327,7 +327,10 @@ class SSPManager():
             (md_path / group_id).mkdir(exist_ok=True)
 
         # assign values to class members for use when writing out the controls
-        self._param_dict = profile.modify.set_parameters
+        param_list = profile.modify.set_parameters
+        self._param_dict = {}
+        for param in param_list:
+            self._param_dict[param.param_id] = param
         self._alters = profile.modify.alters
         self._yaml_header = yaml_header
         self._sections = sections
@@ -355,12 +358,13 @@ class SSPManager():
                 by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
                 by_comp.description = text
                 statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
-                part_label = section.split(' ')[1].replace('.', '')
-                statement_label = f'{control_id}_smt.{part_label}'
-                statement.by_components = {statement_label: by_comp}
+                # the following may be needed with the 1.0.0 changes
+                # part_label = section.split(' ')[1].replace('.', '')  # noqa: E800
+                # statement_label = f'{control_id}_smt.{part_label}'   # noqa: E800
+                statement.by_components = [by_comp]
                 imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
                 imp_req.control_id = control_id
-                imp_req.statements = {statement_label: statement}
+                imp_req.statements = [statement]
                 imp_reqs.append(imp_req)
                 ii += 2
             ii += 1
