@@ -65,13 +65,19 @@ def generate_sample_value_by_type(
     elif safe_is_sub(type_, ConstrainedStr) or (hasattr(type_, '__name__') and 'ConstrainedStr' in type_.__name__):
         # This code here is messy. we need to meet a set of constraints. If we do
         # TODO: handle regex directly
-        if 'uuid' in field_name:
+        if 'uuid' == field_name:
             return str(uuid.uuid4())
         elif field_name == 'date_authorized':
             return str(date.today().isoformat())
         elif field_name == 'oscal_version':
             return OSCAL_VERSION
-        return const.SAMPLE_UUID_STR
+        elif 'uuid' in field_name:
+            return const.SAMPLE_UUID_STR
+        # Only case where are UUID is required but not in name.
+        elif field_name.rstrip('s') == 'member_of_organization':
+            return const.SAMPLE_UUID_STR
+        else:
+            return 'REPLACE_ME'
     elif hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__:
         # create an int value as close to the floor as possible does not test upper bound
         multiple = type_.multiple_of or 1  # default to every integer
