@@ -45,30 +45,30 @@ test_data_dir = pathlib.Path('tests/data').resolve()
 )
 def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> None:
     """Test successful validation runs."""
-    (tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
-    (tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
+    (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
+    (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
     shutil.copyfile(
-        test_data_dir / 'yaml/good_target.yaml',
-        tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model/target-definition.yaml'
+        test_data_dir / 'json/minimal_catalog.json',
+        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model/catalog.json'
     )
     shutil.copyfile(
-        test_data_dir / 'yaml/good_target.yaml',
-        tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model2/target-definition.yaml'
+        test_data_dir / 'json/minimal_catalog.json',
+        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2/catalog.json'
     )
 
-    model_def_file = tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / name / ('target-definition.yaml')
+    model_def_file = tmp_trestle_dir / test_utils.CATALOGS_DIR / ('my_test_model/catalog.json')
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {model_def_file} -m duplicates'
+            testcmd = f'trestle validate {mode} {model_def_file} -m all'
         else:
-            testcmd = f'trestle validate {mode} {model_def_file.parent} -m duplicates'
+            testcmd = f'trestle validate {mode} {model_def_file.parent} -m all'
     elif mode == '-n':
-        testcmd = f'trestle validate -t target-definition -n {name} -m duplicates'
+        testcmd = f'trestle validate -t catalog -n {name} -m all'
     elif mode == '-x':
-        testcmd = f'trestle validate -t target-definition -n {name}'
+        testcmd = f'trestle validate -t catalog -n {name}'
     else:
-        testcmd = 'trestle validate -a -m duplicates'
+        testcmd = 'trestle validate -a -m all'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -87,30 +87,30 @@ def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> 
 )
 def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> None:
     """Test failure modes of validation."""
-    (tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
-    (tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
+    (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
+    (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
     shutil.copyfile(
-        test_data_dir / 'yaml/bad_target_dup_uuid.yaml',
-        tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model/target-definition.yaml'
+        test_data_dir / 'json/minimal_catalog_bad_oscal_version.json',
+        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model/catalog.json'
     )
     shutil.copyfile(
-        test_data_dir / 'yaml/good_target.yaml',
-        tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model2/target-definition.yaml'
+        test_data_dir / 'json/minimal_catalog.json',
+        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2/catalog.json'
     )
 
-    model_def_file = tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / ('my_test_model/target-definition.yaml')
+    model_def_file = tmp_trestle_dir / test_utils.CATALOGS_DIR / ('my_test_model/catalog.json')
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {model_def_file} -m duplicates'
+            testcmd = f'trestle validate {mode} {model_def_file} -m all'
         else:
-            testcmd = f'trestle validate {mode} {model_def_file.parent} -m duplicates'
+            testcmd = f'trestle validate {mode} {model_def_file.parent} -m all'
     elif mode == '-n':
-        testcmd = f'trestle validate -t target-definition -n {name} -m duplicates'
+        testcmd = f'trestle validate -t catalog -n {name} -m all'
     elif mode == '-x':
-        testcmd = f'trestle validate -t target-definition -n {name}'
+        testcmd = f'trestle validate -t catalog -n {name}'
     else:
-        testcmd = 'trestle validate -a -m duplicates'
+        testcmd = 'trestle validate -a -m all'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
