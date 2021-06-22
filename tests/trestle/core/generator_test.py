@@ -54,7 +54,8 @@ def test_get_sample_value_by_type() -> None:
     assert gens.generate_sample_value_by_type(int, '') == 0
     assert gens.generate_sample_value_by_type(str, '') == 'REPLACE_ME'
     assert gens.generate_sample_value_by_type(float, '') == 0.0
-    assert gens.generate_sample_value_by_type(ConstrainedStr, '') == const.SAMPLE_UUID_STR
+    assert gens.generate_sample_value_by_type(ConstrainedStr, '') == 'REPLACE_ME'
+    assert gens.generate_sample_value_by_type(ConstrainedStr, 'oarty-uuid') == const.SAMPLE_UUID_STR
     uuid_ = gens.generate_sample_value_by_type(ConstrainedStr, 'uuid')
     assert gens.generate_sample_value_by_type(common.Type, '') == common.Type('person')
     assert is_valid_uuid(uuid_) and str(uuid_) != const.SAMPLE_UUID_STR
@@ -86,7 +87,7 @@ def test_generate_sample_model() -> None:
         'metadata': {
             'title': 'REPLACE_ME',
             'last-modified': '2020-10-21T06:52:10.387+00:00',
-            'version': 'A0000000-0000-4000-8000-000000000000',
+            'version': 'REPLACE_ME',
             'oscal-version': oscal.OSCAL_VERSION
         }
     }
@@ -105,7 +106,7 @@ def test_generate_sample_model() -> None:
     assert expected_ctlg == actual_ctlg
 
     # Test list type models
-    expected_role = common.Role(**{'id': const.SAMPLE_UUID_STR, 'title': 'REPLACE_ME'})
+    expected_role = common.Role(**{'id': 'REPLACE_ME', 'title': 'REPLACE_ME'})
     list_role = gens.generate_sample_model(List[common.Role])
     assert type(list_role) is list
     actual_role = list_role[0]
@@ -129,6 +130,7 @@ def test_get_all_sample_models() -> None:
         __import__(f'trestle.oscal.{name}')
         clsmembers = inspect.getmembers(sys.modules[f'trestle.oscal.{name}'], inspect.isclass)
         for _, oscal_cls in clsmembers:
+
             # This removes some enums and other objects.
             # add check that it is not OscalBaseModel
             if issubclass(oscal_cls, OscalBaseModel):
@@ -139,3 +141,8 @@ def test_gen_date_authorized() -> None:
     """Corner case test for debugging."""
     model = gens.generate_sample_model(ssp.DateAuthorized)
     assert model
+
+
+def test_gen_moo() -> None:
+    """Member of organisation is the one case where __root__ is a uuid constr."""
+    _ = gens.generate_sample_model(common.MemberOfOrganization)
