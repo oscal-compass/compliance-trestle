@@ -81,7 +81,6 @@ prefixes_to_strip = [
     'Common'
 ]
 
-
 license_header = (
     '# -*- mode:python; coding:utf-8 -*-\n'
     '# Copyright (c) 2020 IBM Corp. All rights reserved.\n'
@@ -114,6 +113,7 @@ from trestle.core.base_model import OscalBaseModel
 
 class RelOrder():
     """Capture relative location of each class in list to its refs and deps."""
+
     def __init__(self, max_index):
         """Initialize with size of list being reordered."""
         self.latest_dep = 0
@@ -122,6 +122,7 @@ class RelOrder():
 
 class ClassText():
     """Hold class text as named blocks with references to the added classes and capture its refs."""
+
     def __init__(self, first_line, parent_name):
         """Construct with first line of class definition and store the parent file name."""
         self.lines = [first_line.rstrip()]
@@ -548,6 +549,7 @@ def find_in_classes(name, file_classes):
                 found.append((item[0], c.name))
     return found
 
+
 def find_in_class_list(name, classes):
     # debugging utility
     found = []
@@ -555,7 +557,7 @@ def find_in_class_list(name, classes):
         if name in c.name:
             found.append((name, c.name))
     return found
-        
+
 
 def split_classes(classes):
     """Split into separate common and other files."""
@@ -645,7 +647,7 @@ def apply_changes_to_class_list(classes, changes):
         paren = lines[0].find('(')
         class_name = classes[i].name
         if paren > 0:
-            class_name = lines[0][len('class '): paren]
+            class_name = lines[0][len('class '):paren]
         classes[i].name = class_name
         # need to regenerate body since tokens changed
         classes[i].generate_body_text()
@@ -677,7 +679,7 @@ def apply_changes_to_classes(file_classes, changes, com_names):
             paren = lines[0].find('(')
             class_name = classes[i].name
             if paren > 0:
-                class_name = lines[0][len('class '): paren]
+                class_name = lines[0][len('class '):paren]
             classes[i].name = class_name
             classes[i].generate_body_text()
         file_classes[fc[0]] = classes

@@ -28,6 +28,7 @@ from trestle.tasks.base_task import TaskOutcome
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
 uuid_mock2 = Mock(return_value=uuid.UUID('46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e'))
 
+
 def test_osco_print_info(tmp_path):
     """Test print_info call."""
     config = configparser.ConfigParser()
@@ -38,6 +39,7 @@ def test_osco_print_info(tmp_path):
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.print_info()
     assert retval is None
+
 
 def test_osco_simulate(tmp_path):
     """Test simulate call."""
@@ -50,7 +52,8 @@ def test_osco_simulate(tmp_path):
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
     assert len(os.listdir(str(tmp_path))) == 0
-    
+
+
 def test_osco_simulate_compressed(tmp_path):
     """Test simulate call with compressed OSCO xml data."""
     config = configparser.ConfigParser()
@@ -62,13 +65,15 @@ def test_osco_simulate_compressed(tmp_path):
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
     assert len(os.listdir(str(tmp_path))) == 0
-    
+
+
 def test_osco_simulate_no_config(tmp_path):
     """Test simulate no config call."""
     tgt = osco_to_oscal.OscoToOscal(None)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_FAILURE
     assert len(os.listdir(str(tmp_path))) == 0
+
 
 def test_osco_simulate_no_overwrite(tmp_path):
     """Test simulate no overwrite call."""
@@ -88,6 +93,7 @@ def test_osco_simulate_no_overwrite(tmp_path):
     assert retval == TaskOutcome.SIM_FAILURE
     assert len(os.listdir(str(tmp_path))) == 1
 
+
 def test_osco_simulate_no_input_dir(tmp_path):
     """Test simulate with no input dir call."""
     config = configparser.ConfigParser()
@@ -101,6 +107,7 @@ def test_osco_simulate_no_input_dir(tmp_path):
     assert retval == TaskOutcome.SIM_FAILURE
     assert len(os.listdir(str(tmp_path))) == 0
 
+
 def test_osco_simulate_no_ouput_dir(tmp_path):
     """Test simulate with no output dir call."""
     config = configparser.ConfigParser()
@@ -112,7 +119,8 @@ def test_osco_simulate_no_ouput_dir(tmp_path):
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_FAILURE
     assert len(os.listdir(str(tmp_path))) == 0
-    
+
+
 def test_osco_simulate_input_fetcher(tmp_path):
     """Test simulate call OSCO fetcher json data."""
     config = configparser.ConfigParser()
@@ -124,7 +132,8 @@ def test_osco_simulate_input_fetcher(tmp_path):
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
     assert len(os.listdir(str(tmp_path))) == 0
-    
+
+
 @patch(target='uuid.uuid4', new=uuid_mock1)
 def test_osco_execute(tmp_path):
     """Test execute call."""
@@ -139,8 +148,11 @@ def test_osco_execute(tmp_path):
     assert retval == TaskOutcome.SUCCESS
     assert len(os.listdir(str(tmp_path))) == 1
     f_expected = pathlib.Path('tests/data/tasks/osco/output/') / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    f_produced = tmp_path  / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
+    f_produced = tmp_path / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
+    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [
+        row for row in open(f_expected, encoding=const.FILE_ENCODING)
+    ]
+
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
 def test_osco_execute_compressed(tmp_path):
@@ -155,10 +167,15 @@ def test_osco_execute_compressed(tmp_path):
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     assert len(os.listdir(str(tmp_path))) == 1
-    f_expected = pathlib.Path('tests/data/tasks/osco/output-compressed/') / 'ssg-rhel7-ds-cis-111.222.333.444-pod.oscal.json'
-    f_produced = tmp_path  / 'ssg-rhel7-ds-cis-111.222.333.444-pod.oscal.json'
-    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
-    
+    f_expected = pathlib.Path(
+        'tests/data/tasks/osco/output-compressed/'
+    ) / 'ssg-rhel7-ds-cis-111.222.333.444-pod.oscal.json'
+    f_produced = tmp_path / 'ssg-rhel7-ds-cis-111.222.333.444-pod.oscal.json'
+    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [
+        row for row in open(f_expected, encoding=const.FILE_ENCODING)
+    ]
+
+
 def test_osco_execute_no_config(tmp_path):
     """Test execute no config call."""
     tgt = osco_to_oscal.OscoToOscal(None)
@@ -166,14 +183,18 @@ def test_osco_execute_no_config(tmp_path):
     assert retval == TaskOutcome.FAILURE
     assert len(os.listdir(str(tmp_path))) == 0
 
+
 def xtest_osco_execute_no_overwrite(tmp_path):
     """Test execute no overwrite call."""
     execute_no_overwrite_part1(tmp_path)
     execute_no_overwrite_part2(tmp_path)
     f_expected = pathlib.Path('tests/data/tasks/osco/output/') / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    f_produced = tmp_path  / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
-    
+    f_produced = tmp_path / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
+    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [
+        row for row in open(f_expected, encoding=const.FILE_ENCODING)
+    ]
+
+
 @patch(target='uuid.uuid4', new=uuid_mock1)
 def execute_no_overwrite_part1(tmp_path):
     """Create expected output."""
@@ -186,6 +207,7 @@ def execute_no_overwrite_part1(tmp_path):
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
     assert len(os.listdir(str(tmp_path))) == 1
+
 
 @patch(target='uuid.uuid4', new=uuid_mock2)
 def execute_no_overwrite_part2(tmp_path):
@@ -200,6 +222,7 @@ def execute_no_overwrite_part2(tmp_path):
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
+
 def test_osco_execute_no_input_dir(tmp_path):
     """Test execute with no input dir call."""
     config = configparser.ConfigParser()
@@ -213,6 +236,7 @@ def test_osco_execute_no_input_dir(tmp_path):
     assert retval == TaskOutcome.FAILURE
     assert len(os.listdir(str(tmp_path))) == 0
 
+
 def test_osco_execute_no_ouput_dir(tmp_path):
     """Test execute with no output dir call."""
     config = configparser.ConfigParser()
@@ -224,7 +248,8 @@ def test_osco_execute_no_ouput_dir(tmp_path):
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
     assert len(os.listdir(str(tmp_path))) == 0
-    
+
+
 def test_osco_execute_bad_timestamp(tmp_path):
     """Test execute with bad timestamp."""
     config = configparser.ConfigParser()
@@ -236,7 +261,8 @@ def test_osco_execute_bad_timestamp(tmp_path):
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
     assert len(os.listdir(str(tmp_path))) == 0
-    
+
+
 @patch(target='uuid.uuid4', new=uuid_mock1)
 def test_osco_execute_input_fetcher(tmp_path):
     """Test execute call OSCO fetcher json data."""
@@ -253,5 +279,7 @@ def test_osco_execute_input_fetcher(tmp_path):
     assert len(list_dir) == 6
     for fn in list_dir:
         f_expected = opth / fn
-        f_produced = tmp_path  / fn
-        assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
+        f_produced = tmp_path / fn
+        assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [
+            row for row in open(f_expected, encoding=const.FILE_ENCODING)
+        ]

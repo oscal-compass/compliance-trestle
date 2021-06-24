@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 from __future__ import annotations
 
 from datetime import datetime
@@ -28,16 +27,15 @@ import trestle.oscal.common as common
 
 class SelectControlById(OscalBaseModel):
     control_id: constr(
-        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
     ) = Field(
         ...,
         alias='control-id',
         description='A reference to a control with a corresponding id value.',
         title='Control Identifier Reference',
     )
-    statement_ids: Optional[List[common.StatementId]] = Field(
-        None, alias='statement-ids'
-    )
+    statement_ids: Optional[List[common.StatementId]] = Field(None, alias='statement-ids')
 
 
 class State(Enum):
@@ -51,11 +49,10 @@ class Status(OscalBaseModel):
         description='An indication as to whether the objective is satisfied or not.',
         title='Objective Status State',
     )
-    reason: Optional[
-        constr(
-            regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-        )
-    ] = Field(
+    reason: Optional[constr(
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    )] = Field(
         None,
         description="The reason the objective was given it's status.",
         title='Objective Status Reason',
@@ -85,11 +82,13 @@ class Status1(OscalBaseModel):
 
 class SetParameter(OscalBaseModel):
     param_id: constr(
-        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
     ) = Field(
         ...,
         alias='param-id',
-        description="A reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
+        description=
+        "A reference to a parameter within a control, who's catalog has been imported into the current implementation context.",
         title='Parameter ID',
     )
     values: List[common.Value] = Field(...)
@@ -103,7 +102,8 @@ class FindingTarget(OscalBaseModel):
         title='Finding Target Type',
     )
     target_id: constr(
-        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
     ) = Field(
         ...,
         alias='target-id',
@@ -117,7 +117,8 @@ class FindingTarget(OscalBaseModel):
     )
     description: Optional[str] = Field(
         None,
-        description="A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied.",
+        description=
+        "A human-readable description of the assessor's conclusions regarding the degree to which an objective is satisfied.",
         title='Objective Status Description',
     )
     props: Optional[List[common.Property]] = Field(None)
@@ -127,20 +128,17 @@ class FindingTarget(OscalBaseModel):
         description='A determination of if the objective is satisfied or not within a given system.',
         title='Objective Status',
     )
-    implementation_status: Optional[
-        common.ImplementationStatus
-    ] = Field(None, alias='implementation-status')
+    implementation_status: Optional[common.ImplementationStatus] = Field(None, alias='implementation-status')
     remarks: Optional[common.Remarks] = None
 
 
 class SystemComponent(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='The unique identifier for the component.',
-        title='Component Identifier',
-    )
+    uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+                 ) = Field(
+                     ...,
+                     description='The unique identifier for the component.',
+                     title='Component Identifier',
+                 )
     type: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description='A category describing the purpose of the component.',
@@ -168,20 +166,14 @@ class SystemComponent(OscalBaseModel):
         description='Describes the operational status of the system component.',
         title='Status',
     )
-    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    protocols: Optional[List[common.Protocol]] = Field(
-        None
-    )
+    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
+    protocols: Optional[List[common.Protocol]] = Field(None)
     remarks: Optional[common.Remarks] = None
 
 
 class Origin(OscalBaseModel):
     actors: List[common.OriginActor] = Field(...)
-    related_tasks: Optional[List[common.RelatedTask]] = Field(
-        None, alias='related-tasks'
-    )
+    related_tasks: Optional[List[common.RelatedTask]] = Field(None, alias='related-tasks')
 
 
 class ImportAp(OscalBaseModel):
@@ -194,9 +186,7 @@ class ImportAp(OscalBaseModel):
 
 
 class Attestation(OscalBaseModel):
-    responsible_parties: Optional[List[common.ResponsibleParty]] = Field(
-        None, alias='responsible-parties'
-    )
+    responsible_parties: Optional[List[common.ResponsibleParty]] = Field(None, alias='responsible-parties')
     parts: List[common.AssessmentPart] = Field(...)
 
 
@@ -205,12 +195,11 @@ class Entry1(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies a risk log entry. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for this schedule across revisions of the document.',
+        description=
+        'Uniquely identifies a risk log entry. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for this schedule across revisions of the document.',
         title='Risk Log Entry Universally Unique Identifier',
     )
-    title: Optional[str] = Field(
-        None, description='The title for this risk log entry.', title='Title'
-    )
+    title: Optional[str] = Field(None, description='The title for this risk log entry.', title='Title')
     description: Optional[str] = Field(
         None,
         description='A human-readable description of what was done regarding the risk.',
@@ -223,20 +212,15 @@ class Entry1(OscalBaseModel):
     )
     end: Optional[datetime] = Field(
         None,
-        description='Identifies the end date and time of the event. If the event is a point in time, the start and end will be the same date and time.',
+        description=
+        'Identifies the end date and time of the event. If the event is a point in time, the start and end will be the same date and time.',
         title='End',
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    logged_by: Optional[List[common.LoggedBy]] = Field(
-        None, alias='logged-by'
-    )
-    status_change: Optional[common.RiskStatus] = Field(
-        None, alias='status-change'
-    )
-    related_responses: Optional[List[common.RelatedResponse]] = Field(
-        None, alias='related-responses'
-    )
+    logged_by: Optional[List[common.LoggedBy]] = Field(None, alias='logged-by')
+    status_change: Optional[common.RiskStatus] = Field(None, alias='status-change')
+    related_responses: Optional[List[common.RelatedResponse]] = Field(None, alias='related-responses')
     remarks: Optional[common.Remarks] = None
 
 
@@ -249,12 +233,11 @@ class Observation(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this observation. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given observation across revisions.',
+        description=
+        'Uniquely identifies this observation. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given observation across revisions.',
         title='Observation Universally Unique Identifier',
     )
-    title: Optional[str] = Field(
-        None, description='The title for this observation.', title='Observation Title'
-    )
+    title: Optional[str] = Field(None, description='The title for this observation.', title='Observation Title')
     description: str = Field(
         ...,
         description='A human-readable description of this assessment observation.',
@@ -264,15 +247,9 @@ class Observation(OscalBaseModel):
     links: Optional[List[common.Link]] = Field(None)
     methods: List[Method] = Field(...)
     types: Optional[List[common.Type2]] = Field(None)
-    origins: Optional[List[Origin]] = Field(
-        None
-    )
-    subjects: Optional[List[common.SubjectReference]] = Field(
-        None
-    )
-    relevant_evidence: Optional[List[common.RelevantEvidence]] = Field(
-        None, alias='relevant-evidence'
-    )
+    origins: Optional[List[Origin]] = Field(None)
+    subjects: Optional[List[common.SubjectReference]] = Field(None)
+    relevant_evidence: Optional[List[common.RelevantEvidence]] = Field(None, alias='relevant-evidence')
     collected: datetime = Field(
         ...,
         description='Date/time stamp identifying when the finding information was collected.',
@@ -280,7 +257,8 @@ class Observation(OscalBaseModel):
     )
     expires: Optional[datetime] = Field(
         None,
-        description='Date/time identifying when the finding information is out-of-date and no longer valid. Typically used with continuous assessment scenarios.',
+        description=
+        'Date/time identifying when the finding information is out-of-date and no longer valid. Typically used with continuous assessment scenarios.',
         title='expires field',
     )
     remarks: Optional[common.Remarks] = None
@@ -291,19 +269,20 @@ class Response(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this remediation. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given remediation across revisions.',
+        description=
+        'Uniquely identifies this remediation. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given remediation across revisions.',
         title='Remediation Universally Unique Identifier',
     )
     lifecycle: constr(
-        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
     ) = Field(
         ...,
-        description='Identifies whether this is a recommendation, such as from an assessor or tool, or an actual plan accepted by the system owner.',
+        description=
+        'Identifies whether this is a recommendation, such as from an assessor or tool, or an actual plan accepted by the system owner.',
         title='Remediation Intent',
     )
-    title: str = Field(
-        ..., description='The title for this response activity.', title='Response Title'
-    )
+    title: str = Field(..., description='The title for this response activity.', title='Response Title')
     description: str = Field(
         ...,
         description='A human-readable description of this response plan.',
@@ -311,12 +290,8 @@ class Response(OscalBaseModel):
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    origins: Optional[List[Origin]] = Field(
-        None
-    )
-    required_assets: Optional[List[common.RequiredAsset]] = Field(
-        None, alias='required-assets'
-    )
+    origins: Optional[List[Origin]] = Field(None)
+    required_assets: Optional[List[common.RequiredAsset]] = Field(None, alias='required-assets')
     tasks: Optional[List[common.Task]] = Field(None)
     remarks: Optional[common.Remarks] = None
 
@@ -329,12 +304,8 @@ class Characterization(OscalBaseModel):
 
 
 class AssessmentAssets(OscalBaseModel):
-    components: Optional[List[SystemComponent]] = Field(
-        None
-    )
-    assessment_platforms: List[common.AssessmentPlatform] = Field(
-        ..., alias='assessment-platforms'
-    )
+    components: Optional[List[SystemComponent]] = Field(None)
+    assessment_platforms: List[common.AssessmentPlatform] = Field(..., alias='assessment-platforms')
 
 
 class ControlSelection(OscalBaseModel):
@@ -351,12 +322,8 @@ class ControlSelection(OscalBaseModel):
         description='A key word to indicate all.',
         title='All',
     )
-    include_controls: Optional[
-        List[SelectControlById]
-    ] = Field(None, alias='include-controls')
-    exclude_controls: Optional[
-        List[SelectControlById]
-    ] = Field(None, alias='exclude-controls')
+    include_controls: Optional[List[SelectControlById]] = Field(None, alias='include-controls')
+    exclude_controls: Optional[List[SelectControlById]] = Field(None, alias='exclude-controls')
     remarks: Optional[common.Remarks] = None
 
 
@@ -365,13 +332,15 @@ class Risk(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this risk. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given risk across revisions.',
+        description=
+        'Uniquely identifies this risk. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given risk across revisions.',
         title='Risk Universally Unique Identifier',
     )
     title: str = Field(..., description='The title for this risk.', title='Risk Title')
     description: str = Field(
         ...,
-        description='A human-readable summary of the identified risk, to include a statement of how the risk impacts the system.',
+        description=
+        'A human-readable summary of the identified risk, to include a statement of how the risk impacts the system.',
         title='Risk Description',
     )
     statement: str = Field(
@@ -382,39 +351,26 @@ class Risk(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     status: constr(
-        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ..., description='Describes the status of the associated risk.', title='Status'
-    )
-    origins: Optional[List[Origin]] = Field(
-        None
-    )
-    threat_ids: Optional[List[common.ThreatId]] = Field(
-        None, alias='threat-ids'
-    )
-    characterizations: Optional[
-        List[Characterization]
-    ] = Field(None)
-    mitigating_factors: Optional[List[common.MitigatingFactor]] = Field(
-        None, alias='mitigating-factors'
-    )
+        regex=
+        r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(..., description='Describes the status of the associated risk.', title='Status')
+    origins: Optional[List[Origin]] = Field(None)
+    threat_ids: Optional[List[common.ThreatId]] = Field(None, alias='threat-ids')
+    characterizations: Optional[List[Characterization]] = Field(None)
+    mitigating_factors: Optional[List[common.MitigatingFactor]] = Field(None, alias='mitigating-factors')
     deadline: Optional[datetime] = Field(
         None,
         description='The date/time by which the risk must be resolved.',
         title='Risk Resolution Deadline',
     )
-    remediations: Optional[List[Response]] = Field(
-        None
-    )
+    remediations: Optional[List[Response]] = Field(None)
     risk_log: Optional[RiskLog] = Field(
         None,
         alias='risk-log',
         description='A log of all risk-related tasks taken.',
         title='Risk Log',
     )
-    related_observations: Optional[List[common.RelatedObservation1]] = Field(
-        None, alias='related-observations'
-    )
+    related_observations: Optional[List[common.RelatedObservation1]] = Field(None, alias='related-observations')
 
 
 class Finding(OscalBaseModel):
@@ -422,12 +378,11 @@ class Finding(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this finding. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given finding across revisions.',
+        description=
+        'Uniquely identifies this finding. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given finding across revisions.',
         title='Finding Universally Unique Identifier',
     )
-    title: str = Field(
-        ..., description='The title for this finding.', title='Finding Title'
-    )
+    title: str = Field(..., description='The title for this finding.', title='Finding Title')
     description: str = Field(
         ...,
         description='A human-readable description of this finding.',
@@ -435,42 +390,26 @@ class Finding(OscalBaseModel):
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    origins: Optional[List[Origin]] = Field(
-        None
-    )
+    origins: Optional[List[Origin]] = Field(None)
     target: FindingTarget
-    implementation_statement_uuid: Optional[
-        constr(
-            regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-        )
-    ] = Field(
+    implementation_statement_uuid: Optional[constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    )] = Field(
         None,
         alias='implementation-statement-uuid',
         description='Identifies the implementation statement in the SSP to which this finding is related.',
         title='Implementation Statement UUID',
     )
-    related_observations: Optional[List[common.RelatedObservation]] = Field(
-        None, alias='related-observations'
-    )
-    related_risks: Optional[List[common.RelatedRisk]] = Field(
-        None, alias='related-risks'
-    )
+    related_observations: Optional[List[common.RelatedObservation]] = Field(None, alias='related-observations')
+    related_risks: Optional[List[common.RelatedRisk]] = Field(None, alias='related-risks')
     remarks: Optional[common.Remarks] = None
 
 
 class LocalDefinitions1(OscalBaseModel):
-    components: Optional[List[SystemComponent]] = Field(
-        None
-    )
-    inventory_items: Optional[
-        List[common.InventoryItem]
-    ] = Field(None, alias='inventory-items')
-    users: Optional[List[common.SystemUser]] = Field(
-        None
-    )
-    assessment_assets: Optional[AssessmentAssets] = Field(
-        None, alias='assessment-assets'
-    )
+    components: Optional[List[SystemComponent]] = Field(None)
+    inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items')
+    users: Optional[List[common.SystemUser]] = Field(None)
+    assessment_assets: Optional[AssessmentAssets] = Field(None, alias='assessment-assets')
     tasks: Optional[List[common.Task]] = Field(None)
 
 
@@ -479,12 +418,11 @@ class Entry(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies an assessment event. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for this schedule across revisions of the document.',
+        description=
+        'Uniquely identifies an assessment event. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for this schedule across revisions of the document.',
         title='Assessment Log Entry Universally Unique Identifier',
     )
-    title: Optional[str] = Field(
-        None, description='The title for this event.', title='Action Title'
-    )
+    title: Optional[str] = Field(None, description='The title for this event.', title='Action Title')
     description: Optional[str] = Field(
         None,
         description='A human-readable description of this event.',
@@ -497,17 +435,14 @@ class Entry(OscalBaseModel):
     )
     end: Optional[datetime] = Field(
         None,
-        description='Identifies the end date and time of an event. If the event is a point in time, the start and end will be the same date and time.',
+        description=
+        'Identifies the end date and time of an event. If the event is a point in time, the start and end will be the same date and time.',
         title='End',
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    logged_by: Optional[List[common.LoggedBy]] = Field(
-        None, alias='logged-by'
-    )
-    related_tasks: Optional[List[common.RelatedTask]] = Field(
-        None, alias='related-tasks'
-    )
+    logged_by: Optional[List[common.LoggedBy]] = Field(None, alias='logged-by')
+    related_tasks: Optional[List[common.RelatedTask]] = Field(None, alias='related-tasks')
     remarks: Optional[common.Remarks] = None
 
 
@@ -519,9 +454,7 @@ class ReviewedControls(OscalBaseModel):
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    control_selections: List[ControlSelection] = Field(
-        ..., alias='control-selections'
-    )
+    control_selections: List[ControlSelection] = Field(..., alias='control-selections')
     control_objective_selections: Optional[List[common.ControlObjectiveSelection]] = Field(
         None, alias='control-objective-selections'
     )
@@ -537,12 +470,11 @@ class Result(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this set of results. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given set of results across revisions.',
+        description=
+        'Uniquely identifies this set of results. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. Once assigned, a UUID should be consistently used for a given set of results across revisions.',
         title='Results Universally Unique Identifier',
     )
-    title: str = Field(
-        ..., description='The title for this set of results.', title='Results Title'
-    )
+    title: str = Field(..., description='The title for this set of results.', title='Results Title')
     description: str = Field(
         ...,
         description='A human-readable description of this set of test results.',
@@ -555,7 +487,8 @@ class Result(OscalBaseModel):
     )
     end: Optional[datetime] = Field(
         None,
-        description='Date/time stamp identifying the end of the evidence collection reflected in these results. In a continuous motoring scenario, this may contain the same value as start if appropriate.',
+        description=
+        'Date/time stamp identifying the end of the evidence collection reflected in these results. In a continuous motoring scenario, this may contain the same value as start if appropriate.',
         title='end field',
     )
     prop: Optional[List[common.Property]] = Field(None)
@@ -563,12 +496,11 @@ class Result(OscalBaseModel):
     local_definitions: Optional[LocalDefinitions1] = Field(
         None,
         alias='local-definitions',
-        description='Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.',
+        description=
+        'Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.',
         title='Local Definitions',
     )
-    reviewed_controls: ReviewedControls = Field(
-        ..., alias='reviewed-controls'
-    )
+    reviewed_controls: ReviewedControls = Field(..., alias='reviewed-controls')
     attestations: Optional[List[Attestation]] = Field(None)
     assessment_log: Optional[AssessmentLog] = Field(
         None,
@@ -576,9 +508,7 @@ class Result(OscalBaseModel):
         description='A log of all assessment-related actions taken.',
         title='Assessment Log',
     )
-    observations: Optional[List[Observation]] = Field(
-        None
-    )
+    observations: Optional[List[Observation]] = Field(None)
     risks: Optional[List[Risk]] = Field(None)
     findings: Optional[List[Finding]] = Field(None)
     remarks: Optional[common.Remarks] = None
@@ -589,12 +519,11 @@ class Step(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies a step. This UUID may be referenced elsewhere in an OSCAL document when referring to this step. A UUID should be consistently used for a given test step across revisions of the document.',
+        description=
+        'Uniquely identifies a step. This UUID may be referenced elsewhere in an OSCAL document when referring to this step. A UUID should be consistently used for a given test step across revisions of the document.',
         title='Step Universally Unique Identifier',
     )
-    title: Optional[str] = Field(
-        None, description='The title for this step.', title='Step Title'
-    )
+    title: Optional[str] = Field(None, description='The title for this step.', title='Step Title')
     description: str = Field(
         ...,
         description='A human-readable description of this step.',
@@ -602,12 +531,8 @@ class Step(OscalBaseModel):
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    reviewed_controls: Optional[ReviewedControls] = Field(
-        None, alias='reviewed-controls'
-    )
-    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
+    reviewed_controls: Optional[ReviewedControls] = Field(None, alias='reviewed-controls')
+    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     remarks: Optional[common.Remarks] = None
 
 
@@ -616,7 +541,8 @@ class Activity(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this assessment activity. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for a given included activity across revisions of the document.',
+        description=
+        'Uniquely identifies this assessment activity. This UUID may be referenced elsewhere in an OSCAL document when referring to this information. A UUID should be consistently used for a given included activity across revisions of the document.',
         title='Assessment Activity Universally Unique Identifier',
     )
     title: Optional[str] = Field(
@@ -632,22 +558,14 @@ class Activity(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     steps: Optional[List[Step]] = Field(None)
-    related_controls: Optional[ReviewedControls] = Field(
-        None, alias='related-controls'
-    )
-    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
+    related_controls: Optional[ReviewedControls] = Field(None, alias='related-controls')
+    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(None, alias='responsible-roles')
     remarks: Optional[common.Remarks] = None
 
 
 class LocalDefinitions(OscalBaseModel):
-    objectives_and_methods: Optional[
-        List[common.LocalObjective]
-    ] = Field(None, alias='objectives-and-methods')
-    activities: Optional[List[Activity]] = Field(
-        None
-    )
+    objectives_and_methods: Optional[List[common.LocalObjective]] = Field(None, alias='objectives-and-methods')
+    activities: Optional[List[Activity]] = Field(None)
     remarks: Optional[common.Remarks] = None
 
 
@@ -656,7 +574,8 @@ class AssessmentResults(OscalBaseModel):
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
         ...,
-        description='Uniquely identifies this assessment results file. This UUID must be changed each time the content of the results changes.',
+        description=
+        'Uniquely identifies this assessment results file. This UUID must be changed each time the content of the results changes.',
         title='Assessment Results Universally Unique Identifier',
     )
     metadata: common.Metadata
@@ -664,13 +583,12 @@ class AssessmentResults(OscalBaseModel):
     local_definitions: Optional[LocalDefinitions] = Field(
         None,
         alias='local-definitions',
-        description='Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.',
+        description=
+        'Used to define data objects that are used in the assessment plan, that do not appear in the referenced SSP.',
         title='Local Definitions',
     )
     results: List[Result] = Field(...)
-    back_matter: Optional[common.BackMatter] = Field(
-        None, alias='back-matter'
-    )
+    back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
 
 
 class Model(OscalBaseModel):
