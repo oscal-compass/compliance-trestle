@@ -41,7 +41,7 @@
             {
                 "id": "sc-49_smt",
                 "name": "statement",
-                "prose": "Implement hardware-enforced separation and policy enforcement mechanisms between {{ sc-49_prm_1 }}."
+                "prose": "Implement hardware-enforced separation and policy enforcement mechanisms between {{ insert: param, sc-49_prm_1 }}."
             },
             {
                 "id": "sc-49_gdn",

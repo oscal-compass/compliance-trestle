@@ -137,7 +137,7 @@
             {
                 "id": "sa-8_smt",
                 "name": "statement",
-                "prose": "Apply the following systems security and privacy engineering principles in the specification, design, development, implementation, and modification of the system and system components: {{ sa-8_prm_1 }}."
+                "prose": "Apply the following systems security and privacy engineering principles in the specification, design, development, implementation, and modification of the system and system components: {{ insert: param, sa-8_prm_1 }}."
             },
             {
                 "id": "sa-8_gdn",
@@ -209,7 +209,7 @@
                     {
                         "id": "sa-8.2_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of least common mechanism in {{ sa-8.2_prm_1 }}."
+                        "prose": "Implement the security design principle of least common mechanism in {{ insert: param, sa-8.2_prm_1 }}."
                     },
                     {
                         "id": "sa-8.2_gdn",
@@ -256,7 +256,7 @@
                     {
                         "id": "sa-8.3_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principles of modularity and layering in {{ sa-8.3_prm_1 }}."
+                        "prose": "Implement the security design principles of modularity and layering in {{ insert: param, sa-8.3_prm_1 }}."
                     },
                     {
                         "id": "sa-8.3_gdn",
@@ -295,7 +295,7 @@
                     {
                         "id": "sa-8.4_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of partially ordered dependencies in {{ sa-8.4_prm_1 }}."
+                        "prose": "Implement the security design principle of partially ordered dependencies in {{ insert: param, sa-8.4_prm_1 }}."
                     },
                     {
                         "id": "sa-8.4_gdn",
@@ -338,7 +338,7 @@
                     {
                         "id": "sa-8.5_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of efficiently mediated access in {{ sa-8.5_prm_1 }}."
+                        "prose": "Implement the security design principle of efficiently mediated access in {{ insert: param, sa-8.5_prm_1 }}."
                     },
                     {
                         "id": "sa-8.5_gdn",
@@ -381,7 +381,7 @@
                     {
                         "id": "sa-8.6_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of minimized sharing in {{ sa-8.6_prm_1 }}."
+                        "prose": "Implement the security design principle of minimized sharing in {{ insert: param, sa-8.6_prm_1 }}."
                     },
                     {
                         "id": "sa-8.6_gdn",
@@ -420,7 +420,7 @@
                     {
                         "id": "sa-8.7_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of reduced complexity in {{ sa-8.7_prm_1 }}."
+                        "prose": "Implement the security design principle of reduced complexity in {{ insert: param, sa-8.7_prm_1 }}."
                     },
                     {
                         "id": "sa-8.7_gdn",
@@ -463,7 +463,7 @@
                     {
                         "id": "sa-8.8_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of secure evolvability in {{ sa-8.8_prm_1 }}."
+                        "prose": "Implement the security design principle of secure evolvability in {{ insert: param, sa-8.8_prm_1 }}."
                     },
                     {
                         "id": "sa-8.8_gdn",
@@ -502,7 +502,7 @@
                     {
                         "id": "sa-8.9_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of trusted components in {{ sa-8.9_prm_1 }}."
+                        "prose": "Implement the security design principle of trusted components in {{ insert: param, sa-8.9_prm_1 }}."
                     },
                     {
                         "id": "sa-8.9_gdn",
@@ -541,7 +541,7 @@
                     {
                         "id": "sa-8.10_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of hierarchical trust in {{ sa-8.10_prm_1 }}."
+                        "prose": "Implement the security design principle of hierarchical trust in {{ insert: param, sa-8.10_prm_1 }}."
                     },
                     {
                         "id": "sa-8.10_gdn",
@@ -580,7 +580,7 @@
                     {
                         "id": "sa-8.11_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of inverse modification threshold in {{ sa-8.11_prm_1 }}."
+                        "prose": "Implement the security design principle of inverse modification threshold in {{ insert: param, sa-8.11_prm_1 }}."
                     },
                     {
                         "id": "sa-8.11_gdn",
@@ -619,7 +619,7 @@
                     {
                         "id": "sa-8.12_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of hierarchical protection in {{ sa-8.12_prm_1 }}."
+                        "prose": "Implement the security design principle of hierarchical protection in {{ insert: param, sa-8.12_prm_1 }}."
                     },
                     {
                         "id": "sa-8.12_gdn",
@@ -658,7 +658,7 @@
                     {
                         "id": "sa-8.13_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of minimized security elements in {{ sa-8.13_prm_1 }}."
+                        "prose": "Implement the security design principle of minimized security elements in {{ insert: param, sa-8.13_prm_1 }}."
                     },
                     {
                         "id": "sa-8.13_gdn",
@@ -705,7 +705,7 @@
                     {
                         "id": "sa-8.14_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of least privilege in {{ sa-8.14_prm_1 }}."
+                        "prose": "Implement the security design principle of least privilege in {{ insert: param, sa-8.14_prm_1 }}."
                     },
                     {
                         "id": "sa-8.14_gdn",
@@ -748,7 +748,7 @@
                     {
                         "id": "sa-8.15_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of predicate permission in {{ sa-8.15_prm_1 }}."
+                        "prose": "Implement the security design principle of predicate permission in {{ insert: param, sa-8.15_prm_1 }}."
                     },
                     {
                         "id": "sa-8.15_gdn",
@@ -787,7 +787,7 @@
                     {
                         "id": "sa-8.16_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of self-reliant trustworthiness in {{ sa-8.16_prm_1 }}."
+                        "prose": "Implement the security design principle of self-reliant trustworthiness in {{ insert: param, sa-8.16_prm_1 }}."
                     },
                     {
                         "id": "sa-8.16_gdn",
@@ -826,7 +826,7 @@
                     {
                         "id": "sa-8.17_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of secure distributed composition in {{ sa-8.17_prm_1 }}."
+                        "prose": "Implement the security design principle of secure distributed composition in {{ insert: param, sa-8.17_prm_1 }}."
                     },
                     {
                         "id": "sa-8.17_gdn",
@@ -877,7 +877,7 @@
                     {
                         "id": "sa-8.18_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of trusted communications channels in {{ sa-8.18_prm_1 }}."
+                        "prose": "Implement the security design principle of trusted communications channels in {{ insert: param, sa-8.18_prm_1 }}."
                     },
                     {
                         "id": "sa-8.18_gdn",
@@ -920,7 +920,7 @@
                     {
                         "id": "sa-8.19_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of continuous protection in {{ sa-8.19_prm_1 }}."
+                        "prose": "Implement the security design principle of continuous protection in {{ insert: param, sa-8.19_prm_1 }}."
                     },
                     {
                         "id": "sa-8.19_gdn",
@@ -959,7 +959,7 @@
                     {
                         "id": "sa-8.20_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of secure metadata management in {{ sa-8.20_prm_1 }}."
+                        "prose": "Implement the security design principle of secure metadata management in {{ insert: param, sa-8.20_prm_1 }}."
                     },
                     {
                         "id": "sa-8.20_gdn",
@@ -1002,7 +1002,7 @@
                     {
                         "id": "sa-8.21_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of self-analysis in {{ sa-8.21_prm_1 }}."
+                        "prose": "Implement the security design principle of self-analysis in {{ insert: param, sa-8.21_prm_1 }}."
                     },
                     {
                         "id": "sa-8.21_gdn",
@@ -1077,7 +1077,7 @@
                     {
                         "id": "sa-8.22_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of accountability and traceability in {{ sa-8.22_prm_1 }}."
+                        "prose": "Implement the security design principle of accountability and traceability in {{ insert: param, sa-8.22_prm_1 }}."
                     },
                     {
                         "id": "sa-8.22_gdn",
@@ -1128,7 +1128,7 @@
                     {
                         "id": "sa-8.23_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of secure defaults in {{ sa-8.23_prm_1 }}."
+                        "prose": "Implement the security design principle of secure defaults in {{ insert: param, sa-8.23_prm_1 }}."
                     },
                     {
                         "id": "sa-8.23_gdn",
@@ -1191,7 +1191,7 @@
                     {
                         "id": "sa-8.24_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of secure failure and recovery in {{ sa-8.24_prm_1 }}."
+                        "prose": "Implement the security design principle of secure failure and recovery in {{ insert: param, sa-8.24_prm_1 }}."
                     },
                     {
                         "id": "sa-8.24_gdn",
@@ -1234,7 +1234,7 @@
                     {
                         "id": "sa-8.25_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of economic security in {{ sa-8.25_prm_1 }}."
+                        "prose": "Implement the security design principle of economic security in {{ insert: param, sa-8.25_prm_1 }}."
                     },
                     {
                         "id": "sa-8.25_gdn",
@@ -1289,7 +1289,7 @@
                     {
                         "id": "sa-8.26_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of performance security in {{ sa-8.26_prm_1 }}."
+                        "prose": "Implement the security design principle of performance security in {{ insert: param, sa-8.26_prm_1 }}."
                     },
                     {
                         "id": "sa-8.26_gdn",
@@ -1328,7 +1328,7 @@
                     {
                         "id": "sa-8.27_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of human factored security in {{ sa-8.27_prm_1 }}."
+                        "prose": "Implement the security design principle of human factored security in {{ insert: param, sa-8.27_prm_1 }}."
                     },
                     {
                         "id": "sa-8.27_gdn",
@@ -1367,7 +1367,7 @@
                     {
                         "id": "sa-8.28_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of acceptable security in {{ sa-8.28_prm_1 }}."
+                        "prose": "Implement the security design principle of acceptable security in {{ insert: param, sa-8.28_prm_1 }}."
                     },
                     {
                         "id": "sa-8.28_gdn",
@@ -1438,7 +1438,7 @@
                     {
                         "id": "sa-8.29_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of repeatable and documented procedures in {{ sa-8.29_prm_1 }}."
+                        "prose": "Implement the security design principle of repeatable and documented procedures in {{ insert: param, sa-8.29_prm_1 }}."
                     },
                     {
                         "id": "sa-8.29_gdn",
@@ -1477,7 +1477,7 @@
                     {
                         "id": "sa-8.30_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of procedural rigor in {{ sa-8.30_prm_1 }}."
+                        "prose": "Implement the security design principle of procedural rigor in {{ insert: param, sa-8.30_prm_1 }}."
                     },
                     {
                         "id": "sa-8.30_gdn",
@@ -1524,7 +1524,7 @@
                     {
                         "id": "sa-8.31_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of secure system modification in {{ sa-8.31_prm_1 }}."
+                        "prose": "Implement the security design principle of secure system modification in {{ insert: param, sa-8.31_prm_1 }}."
                     },
                     {
                         "id": "sa-8.31_gdn",
@@ -1575,7 +1575,7 @@
                     {
                         "id": "sa-8.32_smt",
                         "name": "statement",
-                        "prose": "Implement the security design principle of sufficient documentation in {{ sa-8.32_prm_1 }}."
+                        "prose": "Implement the security design principle of sufficient documentation in {{ insert: param, sa-8.32_prm_1 }}."
                     },
                     {
                         "id": "sa-8.32_gdn",
@@ -1610,46 +1610,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#599fb53d-5041-444e-a7fe-640d6d30ad05",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a21aef46-7330-48a0-b2e1-c5bb8b2dd11d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e72fde0b-6fc2-497e-a9db-d8fce5a11b8a",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#9be5d661-421f-41ad-854e-86f98b811891",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#98d415ca-7281-4064-9931-0c366637e324",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#pe-8",
                         "rel": "related"
                     },
@@ -1670,7 +1630,7 @@
                     {
                         "id": "sa-8.33_smt",
                         "name": "statement",
-                        "prose": "Implement the privacy principle of minimization using {{ sa-8.33_prm_1 }}."
+                        "prose": "Implement the privacy principle of minimization using {{ insert: param, sa-8.33_prm_1 }}."
                     },
                     {
                         "id": "sa-8.33_gdn",

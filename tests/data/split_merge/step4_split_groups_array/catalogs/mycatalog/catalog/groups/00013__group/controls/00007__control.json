@@ -25,86 +25,6 @@
         ],
         "links": [
             {
-                "href": "#ac-1",
-                "rel": "related"
-            },
-            {
-                "href": "#at-1",
-                "rel": "related"
-            },
-            {
-                "href": "#au-1",
-                "rel": "related"
-            },
-            {
-                "href": "#ca-1",
-                "rel": "related"
-            },
-            {
-                "href": "#cm-1",
-                "rel": "related"
-            },
-            {
-                "href": "#cp-1",
-                "rel": "related"
-            },
-            {
-                "href": "#ia-1",
-                "rel": "related"
-            },
-            {
-                "href": "#ir-1",
-                "rel": "related"
-            },
-            {
-                "href": "#ma-1",
-                "rel": "related"
-            },
-            {
-                "href": "#mp-1",
-                "rel": "related"
-            },
-            {
-                "href": "#pe-1",
-                "rel": "related"
-            },
-            {
-                "href": "#pl-1",
-                "rel": "related"
-            },
-            {
-                "href": "#pm-1",
-                "rel": "related"
-            },
-            {
-                "href": "#ps-1",
-                "rel": "related"
-            },
-            {
-                "href": "#pt-1",
-                "rel": "related"
-            },
-            {
-                "href": "#ra-1",
-                "rel": "related"
-            },
-            {
-                "href": "#sa-1",
-                "rel": "related"
-            },
-            {
-                "href": "#sc-1",
-                "rel": "related"
-            },
-            {
-                "href": "#si-1",
-                "rel": "related"
-            },
-            {
-                "href": "#sr-1",
-                "rel": "related"
-            },
-            {
                 "href": "#pl-4",
                 "rel": "related"
             },
@@ -146,7 +66,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Notify {{ ps-8_prm_1 }} within {{ ps-8_prm_2 }} when a formal employee sanctions process is initiated, identifying the individual sanctioned and the reason for the sanction."
+                        "prose": "Notify {{ insert: param, ps-8_prm_1 }} within {{ insert: param, ps-8_prm_2 }} when a formal employee sanctions process is initiated, identifying the individual sanctioned and the reason for the sanction."
                     }
                 ]
             },

@@ -20,7 +20,7 @@
         "links": [
             {
                 "href": "#sr-11",
-                "rel": "incorporated-into"
+                "rel": "moved-to"
             }
         ],
         "controls": [
@@ -45,7 +45,7 @@
                 "links": [
                     {
                         "href": "#sr-11.1",
-                        "rel": "incorporated-into"
+                        "rel": "moved-to"
                     }
                 ]
             },
@@ -70,7 +70,7 @@
                 "links": [
                     {
                         "href": "#sr-11.2",
-                        "rel": "incorporated-into"
+                        "rel": "moved-to"
                     }
                 ]
             },
@@ -95,7 +95,7 @@
                 "links": [
                     {
                         "href": "#sr-12",
-                        "rel": "incorporated-into"
+                        "rel": "moved-to"
                     }
                 ]
             },
@@ -120,7 +120,7 @@
                 "links": [
                     {
                         "href": "#sr-11.3",
-                        "rel": "incorporated-into"
+                        "rel": "moved-to"
                     }
                 ]
             }

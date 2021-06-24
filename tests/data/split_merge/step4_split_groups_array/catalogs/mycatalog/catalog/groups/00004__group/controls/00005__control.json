@@ -179,7 +179,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Establish and document configuration settings for components employed within the system that reflect the most restrictive mode consistent with operational requirements using {{ cm-6_prm_1 }};"
+                        "prose": "Establish and document configuration settings for components employed within the system that reflect the most restrictive mode consistent with operational requirements using {{ insert: param, cm-6_prm_1 }};"
                     },
                     {
                         "id": "cm-6_smt.b",
@@ -201,7 +201,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Identify, document, and approve any deviations from established configuration settings for {{ cm-6_prm_2 }} based on {{ cm-6_prm_3 }}; and"
+                        "prose": "Identify, document, and approve any deviations from established configuration settings for {{ insert: param, cm-6_prm_2 }} based on {{ insert: param, cm-6_prm_3 }}; and"
                     },
                     {
                         "id": "cm-6_smt.d",
@@ -261,7 +261,7 @@
                     {
                         "id": "cm-6.1_smt",
                         "name": "statement",
-                        "prose": "Manage, apply, and verify configuration settings for {{ cm-6.1_prm_1 }} using {{ cm-6.1_prm_2 }}."
+                        "prose": "Manage, apply, and verify configuration settings for {{ insert: param, cm-6.1_prm_1 }} using {{ insert: param, cm-6.1_prm_2 }}."
                     },
                     {
                         "id": "cm-6.1_gdn",
@@ -316,7 +316,7 @@
                     {
                         "id": "cm-6.2_smt",
                         "name": "statement",
-                        "prose": "Take the following actions in response to unauthorized changes to {{ cm-6.2_prm_1 }}: {{ cm-6.2_prm_2 }}."
+                        "prose": "Take the following actions in response to unauthorized changes to {{ insert: param, cm-6.2_prm_1 }}: {{ insert: param, cm-6.2_prm_2 }}."
                     },
                     {
                         "id": "cm-6.2_gdn",
@@ -372,30 +372,6 @@
                     {
                         "href": "#cm-4",
                         "rel": "incorporated-into"
-                    },
-                    {
-                        "href": "#4895b4cd-34c5-4667-bf8a-27d443c12047",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#8016d2ed-d30f-4416-9c45-0f42c7aa3232",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#20db4e66-e257-450c-b2e4-2bb9a62a2c88",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#98498928-3ca3-44b3-8b1e-f48685373087",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#d744d9a3-73eb-4085-b9ff-79e82e9e2d6e",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#aa66e14f-e7cb-4a37-99d2-07578dfd4608",
-                        "rel": "reference"
                     }
                 ]
             }

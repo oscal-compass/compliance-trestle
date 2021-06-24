@@ -155,7 +155,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Determine the {{ sc-13_prm_1 }}; and"
+                        "prose": "Determine the {{ insert: param, sc-13_prm_1 }}; and"
                     },
                     {
                         "id": "sc-13_smt.b",
@@ -166,7 +166,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Implement the following types of cryptography required for each specified cryptographic use: {{ sc-13_prm_2 }}."
+                        "prose": "Implement the following types of cryptography required for each specified cryptographic use: {{ insert: param, sc-13_prm_2 }}."
                     }
                 ]
             },
@@ -274,10 +274,6 @@
                     {
                         "href": "#sc-13",
                         "rel": "incorporated-into"
-                    },
-                    {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
                     }
                 ]
             }

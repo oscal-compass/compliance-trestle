@@ -57,7 +57,7 @@
             {
                 "id": "sc-30_smt",
                 "name": "statement",
-                "prose": "Employ the following concealment and misdirection techniques for {{ sc-30_prm_1 }} at {{ sc-30_prm_2 }} to confuse and mislead adversaries: {{ sc-30_prm_3 }}."
+                "prose": "Employ the following concealment and misdirection techniques for {{ insert: param, sc-30_prm_1 }} at {{ insert: param, sc-30_prm_2 }} to confuse and mislead adversaries: {{ insert: param, sc-30_prm_3 }}."
             },
             {
                 "id": "sc-30_gdn",
@@ -121,7 +121,7 @@
                     {
                         "id": "sc-30.2_smt",
                         "name": "statement",
-                        "prose": "Employ {{ sc-30.2_prm_1 }} to introduce randomness into organizational operations and assets."
+                        "prose": "Employ {{ insert: param, sc-30.2_prm_1 }} to introduce randomness into organizational operations and assets."
                     },
                     {
                         "id": "sc-30.2_gdn",
@@ -143,7 +143,7 @@
                         "id": "sc-30.3_prm_2",
                         "select": {
                             "choice": [
-                                " {{ sc-30.3_prm_3 }} ",
+                                " {{ insert: param, sc-30.3_prm_3 }} ",
                                 "at random time intervals"
                             ]
                         }
@@ -174,7 +174,7 @@
                     {
                         "id": "sc-30.3_smt",
                         "name": "statement",
-                        "prose": "Change the location of {{ sc-30.3_prm_1 }} {{ sc-30.3_prm_2 }}]."
+                        "prose": "Change the location of {{ insert: param, sc-30.3_prm_1 }} {{ insert: param, sc-30.3_prm_2 }}]."
                     },
                     {
                         "id": "sc-30.3_gdn",
@@ -207,17 +207,13 @@
                     {
                         "href": "#sc-30",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#sc-26",
-                        "rel": "related"
                     }
                 ],
                 "parts": [
                     {
                         "id": "sc-30.4_smt",
                         "name": "statement",
-                        "prose": "Employ realistic, but misleading information in {{ sc-30.4_prm_1 }} about its security state or posture."
+                        "prose": "Employ realistic, but misleading information in {{ insert: param, sc-30.4_prm_1 }} about its security state or posture."
                     },
                     {
                         "id": "sc-30.4_gdn",
@@ -260,7 +256,7 @@
                     {
                         "id": "sc-30.5_smt",
                         "name": "statement",
-                        "prose": "Employ the following techniques to hide or conceal {{ sc-30.5_prm_1 }}: {{ sc-30.5_prm_2 }}."
+                        "prose": "Employ the following techniques to hide or conceal {{ insert: param, sc-30.5_prm_1 }}: {{ insert: param, sc-30.5_prm_2 }}."
                     },
                     {
                         "id": "sc-30.5_gdn",

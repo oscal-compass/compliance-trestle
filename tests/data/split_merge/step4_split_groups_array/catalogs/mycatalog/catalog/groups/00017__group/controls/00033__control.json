@@ -41,7 +41,7 @@
             {
                 "id": "sc-34_smt",
                 "name": "statement",
-                "prose": "For {{ sc-34_prm_1 }}, load and execute:",
+                "prose": "For {{ insert: param, sc-34_prm_1 }}, load and execute:",
                 "parts": [
                     {
                         "id": "sc-34_smt.a",
@@ -63,7 +63,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "The following applications from hardware-enforced, read-only media: {{ sc-34_prm_2 }}."
+                        "prose": "The following applications from hardware-enforced, read-only media: {{ insert: param, sc-34_prm_2 }}."
                     }
                 ]
             },
@@ -112,7 +112,7 @@
                     {
                         "id": "sc-34.1_smt",
                         "name": "statement",
-                        "prose": "Employ {{ sc-34.1_prm_1 }} with no writeable storage that is persistent across component restart or power on/off."
+                        "prose": "Employ {{ insert: param, sc-34.1_prm_1 }} with no writeable storage that is persistent across component restart or power on/off."
                     },
                     {
                         "id": "sc-34.1_gdn",
@@ -207,7 +207,7 @@
                 "links": [
                     {
                         "href": "#sc-51",
-                        "rel": "incorporated-into"
+                        "rel": "moved-to"
                     }
                 ]
             }

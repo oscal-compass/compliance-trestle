@@ -74,7 +74,7 @@
             {
                 "id": "sc-32_smt",
                 "name": "statement",
-                "prose": "Partition the system into {{ sc-32_prm_1 }} residing in separate {{ sc-32_prm_2 }} domains or environments based on {{ sc-32_prm_3 }}."
+                "prose": "Partition the system into {{ insert: param, sc-32_prm_1 }} residing in separate {{ insert: param, sc-32_prm_2 }} domains or environments based on {{ insert: param, sc-32_prm_3 }}."
             },
             {
                 "id": "sc-32_gdn",
@@ -101,14 +101,6 @@
                     {
                         "href": "#sc-32",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#d4296805-2dca-4c63-a95f-eeccaa826aec",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

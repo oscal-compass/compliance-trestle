@@ -33,7 +33,7 @@
             {
                 "id": "sr-12_smt",
                 "name": "statement",
-                "prose": "Dispose of {{ sr-12_prm_1 }} using the following techniques and methods: {{ sr-12_prm_2 }}."
+                "prose": "Dispose of {{ insert: param, sr-12_prm_1 }} using the following techniques and methods: {{ insert: param, sr-12_prm_2 }}."
             },
             {
                 "id": "sr-12_gdn",

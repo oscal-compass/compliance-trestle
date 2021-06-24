@@ -67,7 +67,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Determine mean time to failure (MTTF) for the following system components in specific environments of operation: {{ si-13_prm_1 }}; and"
+                        "prose": "Determine mean time to failure (MTTF) for the following system components in specific environments of operation: {{ insert: param, si-13_prm_1 }}; and"
                     },
                     {
                         "id": "si-13_smt.b",
@@ -78,7 +78,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Provide substitute system components and a means to exchange active and standby components in accordance with the following criteria: {{ si-13_prm_2 }}."
+                        "prose": "Provide substitute system components and a means to exchange active and standby components in accordance with the following criteria: {{ insert: param, si-13_prm_2 }}."
                     }
                 ]
             },
@@ -119,7 +119,7 @@
                     {
                         "id": "si-13.1_smt",
                         "name": "statement",
-                        "prose": "Take system components out of service by transferring component responsibilities to substitute components no later than {{ si-13.1_prm_1 }} of mean time to failure."
+                        "prose": "Take system components out of service by transferring component responsibilities to substitute components no later than {{ insert: param, si-13.1_prm_1 }} of mean time to failure."
                     },
                     {
                         "id": "si-13.1_gdn",
@@ -183,7 +183,7 @@
                     {
                         "id": "si-13.3_smt",
                         "name": "statement",
-                        "prose": "Manually initiate transfers between active and standby system components when the use of the active component reaches {{ si-13.3_prm_1 }} of the mean time to failure."
+                        "prose": "Manually initiate transfers between active and standby system components when the use of the active component reaches {{ insert: param, si-13.3_prm_1 }} of the mean time to failure."
                     },
                     {
                         "id": "si-13.3_gdn",
@@ -204,11 +204,11 @@
                     {
                         "id": "si-13.4_prm_2",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
-                                "Activate {{ si-13.4_prm_3 }} ",
+                                "Activate {{ insert: param, si-13.4_prm_3 }} ",
                                 "Automatically shut down the system",
-                                " {{ si-13.4_prm_4 }} "
+                                " {{ insert: param, si-13.4_prm_4 }} "
                             ]
                         }
                     },
@@ -254,7 +254,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Ensure that the standby components are successfully and transparently installed within {{ si-13.4_prm_1 }}; and"
+                                "prose": "Ensure that the standby components are successfully and transparently installed within {{ insert: param, si-13.4_prm_1 }}; and"
                             },
                             {
                                 "id": "si-13.4_smt.b",
@@ -265,7 +265,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": " {{ si-13.4_prm_2 }}."
+                                "prose": " {{ insert: param, si-13.4_prm_2 }}."
                             }
                         ]
                     },
@@ -327,7 +327,7 @@
                     {
                         "id": "si-13.5_smt",
                         "name": "statement",
-                        "prose": "Provide {{ si-13.5_prm_1 }} {{ si-13.5_prm_2 }} for the system."
+                        "prose": "Provide {{ insert: param, si-13.5_prm_1 }} {{ insert: param, si-13.5_prm_2 }} for the system."
                     },
                     {
                         "id": "si-13.5_gdn",

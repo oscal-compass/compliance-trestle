@@ -217,7 +217,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Require {{ ac-2_prm_1 }} for group and role membership;"
+                        "prose": "Require {{ insert: param, ac-2_prm_1 }} for group and role membership;"
                     },
                     {
                         "id": "ac-2_smt.d",
@@ -261,7 +261,7 @@
                                         "value": "3."
                                     }
                                 ],
-                                "prose": "Access authorizations (i.e., privileges) and {{ ac-2_prm_2 }} for each account;"
+                                "prose": "Access authorizations (i.e., privileges) and {{ insert: param, ac-2_prm_2 }} for each account;"
                             }
                         ]
                     },
@@ -274,7 +274,7 @@
                                 "value": "e."
                             }
                         ],
-                        "prose": "Require approvals by {{ ac-2_prm_3 }} for requests to create accounts;"
+                        "prose": "Require approvals by {{ insert: param, ac-2_prm_3 }} for requests to create accounts;"
                     },
                     {
                         "id": "ac-2_smt.f",
@@ -285,7 +285,7 @@
                                 "value": "f."
                             }
                         ],
-                        "prose": "Create, enable, modify, disable, and remove accounts in accordance with {{ ac-2_prm_4 }};"
+                        "prose": "Create, enable, modify, disable, and remove accounts in accordance with {{ insert: param, ac-2_prm_4 }};"
                     },
                     {
                         "id": "ac-2_smt.g",
@@ -307,7 +307,7 @@
                                 "value": "h."
                             }
                         ],
-                        "prose": "Notify account managers and {{ ac-2_prm_5 }} within:",
+                        "prose": "Notify account managers and {{ insert: param, ac-2_prm_5 }} within:",
                         "parts": [
                             {
                                 "id": "ac-2_smt.h.1",
@@ -318,7 +318,7 @@
                                         "value": "1."
                                     }
                                 ],
-                                "prose": " {{ ac-2_prm_6 }} when accounts are no longer required;"
+                                "prose": " {{ insert: param, ac-2_prm_6 }} when accounts are no longer required;"
                             },
                             {
                                 "id": "ac-2_smt.h.2",
@@ -329,7 +329,7 @@
                                         "value": "2."
                                     }
                                 ],
-                                "prose": " {{ ac-2_prm_7 }} when users are terminated or transferred; and"
+                                "prose": " {{ insert: param, ac-2_prm_7 }} when users are terminated or transferred; and"
                             },
                             {
                                 "id": "ac-2_smt.h.3",
@@ -340,7 +340,7 @@
                                         "value": "3."
                                     }
                                 ],
-                                "prose": " {{ ac-2_prm_8 }} when system usage or need-to-know changes for an individual;"
+                                "prose": " {{ insert: param, ac-2_prm_8 }} when system usage or need-to-know changes for an individual;"
                             }
                         ]
                     },
@@ -386,7 +386,7 @@
                                         "value": "3."
                                     }
                                 ],
-                                "prose": " {{ ac-2_prm_9 }};"
+                                "prose": " {{ insert: param, ac-2_prm_9 }};"
                             }
                         ]
                     },
@@ -399,7 +399,7 @@
                                 "value": "j."
                             }
                         ],
-                        "prose": "Review accounts for compliance with account management requirements {{ ac-2_prm_10 }};"
+                        "prose": "Review accounts for compliance with account management requirements {{ insert: param, ac-2_prm_10 }};"
                     },
                     {
                         "id": "ac-2_smt.k",
@@ -462,7 +462,7 @@
                     {
                         "id": "ac-2.1_smt",
                         "name": "statement",
-                        "prose": "Support the management of system accounts using {{ ac-2.1_prm_1 }}."
+                        "prose": "Support the management of system accounts using {{ insert: param, ac-2.1_prm_1 }}."
                     },
                     {
                         "id": "ac-2.1_gdn",
@@ -510,7 +510,7 @@
                     {
                         "id": "ac-2.2_smt",
                         "name": "statement",
-                        "prose": "Automatically {{ ac-2.2_prm_1 }} temporary and emergency accounts after {{ ac-2.2_prm_2 }}."
+                        "prose": "Automatically {{ insert: param, ac-2.2_prm_1 }} temporary and emergency accounts after {{ insert: param, ac-2.2_prm_2 }}."
                     },
                     {
                         "id": "ac-2.2_gdn",
@@ -553,7 +553,7 @@
                     {
                         "id": "ac-2.3_smt",
                         "name": "statement",
-                        "prose": "Disable accounts within {{ ac-2.3_prm_1 }} when the accounts:",
+                        "prose": "Disable accounts within {{ insert: param, ac-2.3_prm_1 }} when the accounts:",
                         "parts": [
                             {
                                 "id": "ac-2.3_smt.a",
@@ -597,7 +597,7 @@
                                         "value": "(d)"
                                     }
                                 ],
-                                "prose": "Have been inactive for {{ ac-2.3_prm_2 }}."
+                                "prose": "Have been inactive for {{ insert: param, ac-2.3_prm_2 }}."
                             }
                         ]
                     },
@@ -683,7 +683,7 @@
                     {
                         "id": "ac-2.5_smt",
                         "name": "statement",
-                        "prose": "Require that users log out when {{ ac-2.5_prm_1 }}."
+                        "prose": "Require that users log out when {{ insert: param, ac-2.5_prm_1 }}."
                     },
                     {
                         "id": "ac-2.5_gdn",
@@ -726,7 +726,7 @@
                     {
                         "id": "ac-2.6_smt",
                         "name": "statement",
-                        "prose": "Implement {{ ac-2.6_prm_1 }}."
+                        "prose": "Implement {{ insert: param, ac-2.6_prm_1 }}."
                     },
                     {
                         "id": "ac-2.6_gdn",
@@ -780,7 +780,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Establish and administer privileged user accounts in accordance with {{ ac-2.7_prm_1 }};"
+                                "prose": "Establish and administer privileged user accounts in accordance with {{ insert: param, ac-2.7_prm_1 }};"
                             },
                             {
                                 "id": "ac-2.7_smt.b",
@@ -858,7 +858,7 @@
                     {
                         "id": "ac-2.8_smt",
                         "name": "statement",
-                        "prose": "Create, activate, manage, and deactivate {{ ac-2.8_prm_1 }} dynamically."
+                        "prose": "Create, activate, manage, and deactivate {{ insert: param, ac-2.8_prm_1 }} dynamically."
                     },
                     {
                         "id": "ac-2.8_gdn",
@@ -897,7 +897,7 @@
                     {
                         "id": "ac-2.9_smt",
                         "name": "statement",
-                        "prose": "Only permit the use of shared and group accounts that meet {{ ac-2.9_prm_1 }}."
+                        "prose": "Only permit the use of shared and group accounts that meet {{ insert: param, ac-2.9_prm_1 }}."
                     },
                     {
                         "id": "ac-2.9_gdn",
@@ -965,7 +965,7 @@
                     {
                         "id": "ac-2.11_smt",
                         "name": "statement",
-                        "prose": "Enforce {{ ac-2.11_prm_1 }} for {{ ac-2.11_prm_2 }}."
+                        "prose": "Enforce {{ insert: param, ac-2.11_prm_1 }} for {{ insert: param, ac-2.11_prm_2 }}."
                     },
                     {
                         "id": "ac-2.11_gdn",
@@ -1038,7 +1038,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Monitor system accounts for {{ ac-2.12_prm_1 }}; and"
+                                "prose": "Monitor system accounts for {{ insert: param, ac-2.12_prm_1 }}; and"
                             },
                             {
                                 "id": "ac-2.12_smt.b",
@@ -1049,7 +1049,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Report atypical usage of system accounts to {{ ac-2.12_prm_2 }}."
+                                "prose": "Report atypical usage of system accounts to {{ insert: param, ac-2.12_prm_2 }}."
                             }
                         ]
                     },
@@ -1090,18 +1090,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#2956e175-f674-43f4-b1b9-e074ad9fc39c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#388a3aa2-5d85-4bad-b8a3-77db80d63c4f",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#53df282b-8b3f-483a-bad1-6a8b8ac00114",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#au-6",
                         "rel": "related"
                     },
@@ -1114,7 +1102,7 @@
                     {
                         "id": "ac-2.13_smt",
                         "name": "statement",
-                        "prose": "Disable accounts of individuals within {{ ac-2.13_prm_1 }} of discovery of {{ ac-2.13_prm_2 }}."
+                        "prose": "Disable accounts of individuals within {{ insert: param, ac-2.13_prm_1 }} of discovery of {{ insert: param, ac-2.13_prm_2 }}."
                     },
                     {
                         "id": "ac-2.13_gdn",

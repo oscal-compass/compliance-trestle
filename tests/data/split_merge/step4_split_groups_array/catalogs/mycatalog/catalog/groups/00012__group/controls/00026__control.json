@@ -67,7 +67,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Develop {{ pm-27_prm_1 }} and disseminate to:",
+                        "prose": "Develop {{ insert: param, pm-27_prm_1 }} and disseminate to:",
                         "parts": [
                             {
                                 "id": "pm-27_smt.a.1",
@@ -78,7 +78,7 @@
                                         "value": "1."
                                     }
                                 ],
-                                "prose": " {{ pm-27_prm_2 }} to demonstrate accountability with statutory, regulatory, and policy privacy mandates; and"
+                                "prose": " {{ insert: param, pm-27_prm_2 }} to demonstrate accountability with statutory, regulatory, and policy privacy mandates; and"
                             },
                             {
                                 "id": "pm-27_smt.a.2",
@@ -89,7 +89,7 @@
                                         "value": "2."
                                     }
                                 ],
-                                "prose": " {{ pm-27_prm_3 }} and other personnel with responsibility for monitoring privacy program compliance; and"
+                                "prose": " {{ insert: param, pm-27_prm_3 }} and other personnel with responsibility for monitoring privacy program compliance; and"
                             }
                         ]
                     },
@@ -102,7 +102,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Review and update privacy reports {{ pm-27_prm_4 }}."
+                        "prose": "Review and update privacy reports {{ insert: param, pm-27_prm_4 }}."
                     }
                 ]
             },

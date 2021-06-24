@@ -67,7 +67,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Issue public key certificates under an {{ sc-17_prm_1 }} or obtain public key certificates from an approved service provider; and"
+                        "prose": "Issue public key certificates under an {{ insert: param, sc-17_prm_1 }} or obtain public key certificates from an approved service provider; and"
                     },
                     {
                         "id": "sc-17_smt.b",
@@ -85,7 +85,7 @@
             {
                 "id": "sc-17_gdn",
                 "name": "guidance",
-                "prose": "Public key infrastructure certificates are certificates with visibility external to organizational systems and certificates related to the internal operations of systems, such as application-specific time services. In cryptographic systems with a hierarchical structure, a trust anchor is an authoritative source (i.e., a certificate authority) for which trust is assumed and not derived. A root certificate for a PKI system is an example of a trust anchor. A trust store or certificate store maintains a list of trusted root certificates."
+                "prose": "Public key infrastructure (PKI) certificates are certificates with visibility external to organizational systems and certificates related to the internal operations of systems, such as application-specific time services. In cryptographic systems with a hierarchical structure, a trust anchor is an authoritative source (i.e., a certificate authority) for which trust is assumed and not derived. A root certificate for a PKI system is an example of a trust anchor. A trust store or certificate store maintains a list of trusted root certificates."
             }
         ]
     }

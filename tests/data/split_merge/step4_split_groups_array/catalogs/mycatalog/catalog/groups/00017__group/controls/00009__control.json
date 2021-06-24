@@ -33,7 +33,7 @@
             {
                 "id": "sc-10_smt",
                 "name": "statement",
-                "prose": "Terminate the network connection associated with a communications session at the end of the session or after {{ sc-10_prm_1 }} of inactivity."
+                "prose": "Terminate the network connection associated with a communications session at the end of the session or after {{ insert: param, sc-10_prm_1 }} of inactivity."
             },
             {
                 "id": "sc-10_gdn",

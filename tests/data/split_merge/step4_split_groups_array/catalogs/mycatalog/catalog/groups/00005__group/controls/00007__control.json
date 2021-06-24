@@ -53,7 +53,7 @@
             {
                 "id": "cp-8_smt",
                 "name": "statement",
-                "prose": "Establish alternate telecommunications services, including necessary agreements to permit the resumption of {{ cp-8_prm_1 }} for essential mission and business functions within {{ cp-8_prm_2 }} when the primary telecommunications capabilities are unavailable at either the primary or alternate processing or storage sites."
+                "prose": "Establish alternate telecommunications services, including necessary agreements to permit the resumption of {{ insert: param, cp-8_prm_1 }} for essential mission and business functions within {{ insert: param, cp-8_prm_2 }} when the primary telecommunications capabilities are unavailable at either the primary or alternate processing or storage sites."
             },
             {
                 "id": "cp-8_gdn",
@@ -254,7 +254,7 @@
                                         "value": "(c)"
                                     }
                                 ],
-                                "prose": "Obtain evidence of contingency testing and training by providers {{ cp-8.4_prm_1 }}."
+                                "prose": "Obtain evidence of contingency testing and training by providers {{ insert: param, cp-8.4_prm_1 }}."
                             }
                         ]
                     },
@@ -291,10 +291,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#bc39f179-c735-4da2-b7a7-b2b622119755",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#cp-3",
                         "rel": "related"
                     }
@@ -303,7 +299,7 @@
                     {
                         "id": "cp-8.5_smt",
                         "name": "statement",
-                        "prose": "Test alternate telecommunication services {{ cp-8.5_prm_1 }}."
+                        "prose": "Test alternate telecommunication services {{ insert: param, cp-8.5_prm_1 }}."
                     },
                     {
                         "id": "cp-8.5_gdn",

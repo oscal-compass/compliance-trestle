@@ -206,7 +206,7 @@
                     {
                         "id": "ia-12.3_smt",
                         "name": "statement",
-                        "prose": "Require that the presented identity evidence be validated and verified through {{ ia-12.3_prm_1 }}."
+                        "prose": "Require that the presented identity evidence be validated and verified through {{ insert: param, ia-12.3_prm_1 }}."
                     },
                     {
                         "id": "ia-12.3_gdn",
@@ -287,7 +287,7 @@
                     {
                         "id": "ia-12.5_smt",
                         "name": "statement",
-                        "prose": "Require that a {{ ia-12.5_prm_1 }} be delivered through an out-of-band channel to verify the users address (physical or digital) of record."
+                        "prose": "Require that a {{ insert: param, ia-12.5_prm_1 }} be delivered through an out-of-band channel to verify the users address (physical or digital) of record."
                     },
                     {
                         "id": "ia-12.5_gdn",
@@ -322,22 +322,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#9099ed2c-922a-493d-bcb4-d896192243ff",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#10963761-58fc-4b20-b3d6-b44a54daba03",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#ia-3",
                         "rel": "related"
                     },
@@ -358,7 +342,7 @@
                     {
                         "id": "ia-12.6_smt",
                         "name": "statement",
-                        "prose": "Accept externally-proofed identities at {{ ia-12.6_prm_1 }}."
+                        "prose": "Accept externally-proofed identities at {{ insert: param, ia-12.6_prm_1 }}."
                     },
                     {
                         "id": "ia-12.6_gdn",

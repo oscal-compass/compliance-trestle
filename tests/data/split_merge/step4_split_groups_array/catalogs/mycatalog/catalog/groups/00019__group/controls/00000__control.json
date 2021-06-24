@@ -11,11 +11,11 @@
             {
                 "id": "sr-1_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
-                        "organization-level",
-                        "mission/business process-level",
-                        "system-level"
+                        "Organization-level",
+                        "Mission/business process-level",
+                        "System-level"
                     ]
                 }
             },
@@ -61,6 +61,10 @@
             },
             {
                 "href": "#21caa535-1154-4369-ba7b-32c309fee0f7",
+                "rel": "reference"
+            },
+            {
+                "href": "#031cc4b7-9adf-4835-98f1-f1ca493519cf",
                 "rel": "reference"
             },
             {
@@ -114,7 +118,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Develop, document, and disseminate to {{ sr-1_prm_1 }}:",
+                        "prose": "Develop, document, and disseminate to {{ insert: param, sr-1_prm_1 }}:",
                         "parts": [
                             {
                                 "id": "sr-1_smt.a.1",
@@ -125,7 +129,7 @@
                                         "value": "1."
                                     }
                                 ],
-                                "prose": " {{ sr-1_prm_2 }} supply chain risk management policy that:",
+                                "prose": " {{ insert: param, sr-1_prm_2 }} supply chain risk management policy that:",
                                 "parts": [
                                     {
                                         "id": "sr-1_smt.a.1.a",
@@ -173,7 +177,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Designate an {{ sr-1_prm_3 }} to manage the development, documentation, and dissemination of the supply chain risk management policy and procedures; and"
+                        "prose": "Designate an {{ insert: param, sr-1_prm_3 }} to manage the development, documentation, and dissemination of the supply chain risk management policy and procedures; and"
                     },
                     {
                         "id": "sr-1_smt.c",
@@ -195,7 +199,7 @@
                                         "value": "1."
                                     }
                                 ],
-                                "prose": "Policy {{ sr-1_prm_4 }} and following {{ sr-1_prm_5 }}; and"
+                                "prose": "Policy {{ insert: param, sr-1_prm_4 }} and following {{ insert: param, sr-1_prm_5 }}; and"
                             },
                             {
                                 "id": "sr-1_smt.c.2",
@@ -206,7 +210,7 @@
                                         "value": "2."
                                     }
                                 ],
-                                "prose": "Procedures {{ sr-1_prm_6 }} and following {{ sr-1_prm_7 }}."
+                                "prose": "Procedures {{ insert: param, sr-1_prm_6 }} and following {{ insert: param, sr-1_prm_7 }}."
                             }
                         ]
                     }
@@ -215,7 +219,7 @@
             {
                 "id": "sr-1_gdn",
                 "name": "guidance",
-                "prose": "Supply chain risk management policy and procedures address the controls in the SR family as well as supply chain-related controls in other families that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. Policies and procedures contribute to security and privacy assurance. Therefore, it is important that security and privacy programs collaborate on the development of supply chain risk management policy and procedures. Security and privacy program policies and procedures at the organization level are preferable, in general, and may obviate the need for mission- or system-specific policies and procedures. The policy can be included as part of the general security and privacy policy or be represented by multiple policies that reflect the complex nature of organizations. Procedures can be established for security and privacy programs, for mission or business processes, and for systems, if needed. Procedures describe how the policies or controls are implemented and can be directed at the individual or role that is the object of the procedure. Procedures can be documented in system security and privacy plans or in one or more separate documents. Events that may precipitate an update to supply chain risk management policy and procedures include assessment or audit findings, security or privacy incidents, or changes in applicable laws, executive orders, directives, regulations, policies, standards, and guidelines. Simply restating controls does not constitute an organizational policy or procedure."
+                "prose": "Supply chain risk management policy and procedures address the controls in the SR family as well as supply chain-related controls in other families that are implemented within systems and organizations. The risk management strategy is an important factor in establishing such policies and procedures. Policies and procedures contribute to security and privacy assurance. Therefore, it is important that security and privacy programs collaborate on the development of supply chain risk management policy and procedures. Security and privacy program policies and procedures at the organization level are preferable, in general, and may obviate the need for mission- or system-specific policies and procedures. The policy can be included as part of the general security and privacy policy or be represented by multiple policies that reflect the complex nature of organizations. Procedures can be established for security and privacy programs, for mission or business processes, and for systems, if needed. Procedures describe how the policies or controls are implemented and can be directed at the individual or role that is the object of the procedure. Procedures can be documented in system security and privacy plans or in one or more separate documents. Events that may precipitate an update to supply chain risk management policy and procedures include assessment or audit findings, security incidents or breaches, or changes in applicable laws, executive orders, directives, regulations, policies, standards, and guidelines. Simply restating controls does not constitute an organizational policy or procedure."
             }
         ]
     }

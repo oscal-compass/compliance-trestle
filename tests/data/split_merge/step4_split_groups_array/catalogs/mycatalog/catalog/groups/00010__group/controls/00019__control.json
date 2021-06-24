@@ -45,7 +45,7 @@
             {
                 "id": "pe-20_smt",
                 "name": "statement",
-                "prose": "Employ {{ pe-20_prm_1 }} to track and monitor the location and movement of {{ pe-20_prm_2 }} within {{ pe-20_prm_3 }}."
+                "prose": "Employ {{ insert: param, pe-20_prm_1 }} to track and monitor the location and movement of {{ insert: param, pe-20_prm_2 }} within {{ insert: param, pe-20_prm_3 }}."
             },
             {
                 "id": "pe-20_gdn",

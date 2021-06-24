@@ -130,7 +130,7 @@ def sample_component_definition():
     def_comp1: DefinedComponent = gens.generate_sample_model(DefinedComponent)
     def_comp2: DefinedComponent = gens.generate_sample_model(DefinedComponent)
     comp_def: ComponentDefinition = gens.generate_sample_model(ComponentDefinition)
-    comp_def.components = {'comp1': def_comp1, 'comp2': def_comp2}
+    comp_def.components = [def_comp1, def_comp2]
     return comp_def
 
 

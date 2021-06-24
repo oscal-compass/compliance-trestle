@@ -95,7 +95,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Test the contingency plan for the system {{ cp-4_prm_1 }} using the following tests to determine the effectiveness of the plan and the readiness to execute the plan: {{ cp-4_prm_2 }}."
+                        "prose": "Test the contingency plan for the system {{ insert: param, cp-4_prm_1 }} using the following tests to determine the effectiveness of the plan and the readiness to execute the plan: {{ insert: param, cp-4_prm_2 }}."
                     },
                     {
                         "id": "cp-4_smt.b",
@@ -260,7 +260,7 @@
                     {
                         "id": "cp-4.3_smt",
                         "name": "statement",
-                        "prose": "Test the contingency plan using {{ cp-4.3_prm_1 }}."
+                        "prose": "Test the contingency plan using {{ insert: param, cp-4.3_prm_1 }}."
                     },
                     {
                         "id": "cp-4.3_gdn",
@@ -338,29 +338,13 @@
                     {
                         "href": "#cp-4",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#bc39f179-c735-4da2-b7a7-b2b622119755",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#53be2fcf-cfd1-4bcb-896b-9a3b65c22098",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#61ccf0f4-d3e7-42db-9796-ce6cb1c85989",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "cp-4.5_smt",
                         "name": "statement",
-                        "prose": "Employ {{ cp-4.5_prm_1 }} to {{ cp-4.5_prm_2 }} to disrupt and adversely affect the system or system component."
+                        "prose": "Employ {{ insert: param, cp-4.5_prm_1 }} to {{ insert: param, cp-4.5_prm_2 }} to disrupt and adversely affect the system or system component."
                     },
                     {
                         "id": "cp-4.5_gdn",

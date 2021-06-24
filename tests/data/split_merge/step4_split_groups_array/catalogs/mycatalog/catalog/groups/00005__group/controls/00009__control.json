@@ -65,7 +65,7 @@
             {
                 "id": "cp-10_smt",
                 "name": "statement",
-                "prose": "Provide for the recovery and reconstitution of the system to a known state within {{ cp-10_prm_1 }} after a disruption, compromise, or failure."
+                "prose": "Provide for the recovery and reconstitution of the system to a known state within {{ insert: param, cp-10_prm_1 }} after a disruption, compromise, or failure."
             },
             {
                 "id": "cp-10_gdn",
@@ -149,6 +149,13 @@
                         "name": "status",
                         "value": "withdrawn"
                     }
+                ],
+                "parts": [
+                    {
+                        "id": "cp-10.3_smt",
+                        "name": "statement",
+                        "prose": "Addressed through tailoring."
+                    }
                 ]
             },
             {
@@ -189,7 +196,7 @@
                     {
                         "id": "cp-10.4_smt",
                         "name": "statement",
-                        "prose": "Provide the capability to restore system components within {{ cp-10.4_prm_1 }} from configuration-controlled and integrity-protected information representing a known, operational state for the components."
+                        "prose": "Provide the capability to restore system components within {{ insert: param, cp-10.4_prm_1 }} from configuration-controlled and integrity-protected information representing a known, operational state for the components."
                     },
                     {
                         "id": "cp-10.4_gdn",
@@ -241,10 +248,6 @@
                     {
                         "href": "#cp-10",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#bc39f179-c735-4da2-b7a7-b2b622119755",
-                        "rel": "reference"
                     },
                     {
                         "href": "#ac-3",

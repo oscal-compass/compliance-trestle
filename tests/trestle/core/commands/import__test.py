@@ -47,16 +47,16 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
     profile_data.oscal_write(pathlib.Path(profile_file))
     # 2. Input file, target:
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    target_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
-    target_data = generators.generate_sample_model(trestle.oscal.target.TargetDefinition)
-    target_data.oscal_write(pathlib.Path(target_file))
+    catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
+    catalog_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)
+    catalog_data.oscal_write(pathlib.Path(catalog_file))
     # Test 1
     test_args = f'trestle import -f {profile_file} -o imported'.split()
     with patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
     # Test 2
-    test_args = f'trestle import -f {target_file} -o imported'.split()
+    test_args = f'trestle import -f {catalog_file} -o imported'.split()
     with patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
@@ -66,18 +66,27 @@ def test_import_profile_with_optional_added(tmp_trestle_dir: pathlib.Path) -> No
     """Create profile, add modify to it, and import."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     profile_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
+    # create generic profile
     profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
-    set_parameter = SetParameter(depends_on='my_depends')
-    modify = Modify(set_parameters={'my_param': set_parameter})
+    # create special parameter and add it to profile
+    set_parameter = SetParameter(param_id='my_param', depends_on='my_depends')
+    modify = Modify(set_parameters=[set_parameter])
     profile_data.modify = modify
+    # write it to place outside trestle directory
     profile_data.oscal_write(pathlib.Path(profile_file))
+    # now do actual import into trestle directory with name 'imported'
     test_args = f'trestle import -f {profile_file} -o imported'.split()
     with patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
+    # then do a direct read of it and confirm our parameter is there
     profile_path = tmp_trestle_dir / 'profiles/imported/profile.json'
     profile: Profile = Profile.oscal_read(profile_path)
-    assert (profile.modify.set_parameters['my_param'].depends_on == 'my_depends')
+    params = profile.modify.set_parameters
+    assert params
+    assert len(params) == 1
+    assert params[0].param_id == 'my_param'
+    assert params[0].depends_on == 'my_depends'
 
 
 @pytest.mark.parametrize('regen', [False, True])

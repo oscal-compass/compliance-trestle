@@ -49,7 +49,7 @@
             {
                 "id": "cp-12_smt",
                 "name": "statement",
-                "prose": "When {{ cp-12_prm_1 }} are detected, enter a safe mode of operation with {{ cp-12_prm_2 }}."
+                "prose": "When {{ insert: param, cp-12_prm_1 }} are detected, enter a safe mode of operation with {{ insert: param, cp-12_prm_2 }}."
             },
             {
                 "id": "cp-12_gdn",

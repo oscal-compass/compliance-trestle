@@ -37,7 +37,7 @@
             {
                 "id": "si-16_smt",
                 "name": "statement",
-                "prose": "Implement the following controls to protect the system memory from unauthorized code execution: {{ si-16_prm_1 }}."
+                "prose": "Implement the following controls to protect the system memory from unauthorized code execution: {{ insert: param, si-16_prm_1 }}."
             },
             {
                 "id": "si-16_gdn",

@@ -50,7 +50,7 @@
             {
                 "id": "ac-24_smt",
                 "name": "statement",
-                "prose": " {{ ac-24_prm_1 }} to ensure {{ ac-24_prm_2 }} are applied to each access request prior to access enforcement."
+                "prose": " {{ insert: param, ac-24_prm_1 }} to ensure {{ insert: param, ac-24_prm_2 }} are applied to each access request prior to access enforcement."
             },
             {
                 "id": "ac-24_gdn",
@@ -101,7 +101,7 @@
                     {
                         "id": "ac-24.1_smt",
                         "name": "statement",
-                        "prose": "Transmit {{ ac-24.1_prm_1 }} using {{ ac-24.1_prm_2 }} to {{ ac-24.1_prm_3 }} that enforce access control decisions."
+                        "prose": "Transmit {{ insert: param, ac-24.1_prm_1 }} using {{ insert: param, ac-24.1_prm_2 }} to {{ insert: param, ac-24.1_prm_3 }} that enforce access control decisions."
                     },
                     {
                         "id": "ac-24.1_gdn",
@@ -134,21 +134,13 @@
                     {
                         "href": "#ac-24",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#2956e175-f674-43f4-b1b9-e074ad9fc39c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#388a3aa2-5d85-4bad-b8a3-77db80d63c4f",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "ac-24.2_smt",
                         "name": "statement",
-                        "prose": "Enforce access control decisions based on {{ ac-24.2_prm_1 }} that do not include the identity of the user or process acting on behalf of the user."
+                        "prose": "Enforce access control decisions based on {{ insert: param, ac-24.2_prm_1 }} that do not include the identity of the user or process acting on behalf of the user."
                     },
                     {
                         "id": "ac-24.2_gdn",

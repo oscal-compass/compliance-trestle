@@ -81,7 +81,7 @@
             {
                 "id": "au-10_smt",
                 "name": "statement",
-                "prose": "Provide irrefutable evidence that an individual (or process acting on behalf of an individual) has performed {{ au-10_prm_1 }}."
+                "prose": "Provide irrefutable evidence that an individual (or process acting on behalf of an individual) has performed {{ insert: param, au-10_prm_1 }}."
             },
             {
                 "id": "au-10_gdn",
@@ -138,7 +138,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Bind the identity of the information producer with the information to {{ au-10.1_prm_1 }}; and"
+                                "prose": "Bind the identity of the information producer with the information to {{ insert: param, au-10.1_prm_1 }}; and"
                             },
                             {
                                 "id": "au-10.1_smt.b",
@@ -216,7 +216,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Validate the binding of the information producer identity to the information at {{ au-10.2_prm_1 }}; and"
+                                "prose": "Validate the binding of the information producer identity to the information at {{ insert: param, au-10.2_prm_1 }}; and"
                             },
                             {
                                 "id": "au-10.2_smt.b",
@@ -227,7 +227,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Perform {{ au-10.2_prm_2 }} in the event of a validation error."
+                                "prose": "Perform {{ insert: param, au-10.2_prm_2 }} in the event of a validation error."
                             }
                         ]
                     },
@@ -331,7 +331,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Validate the binding of the information reviewer identity to the information at the transfer or release points prior to release or transfer between {{ au-10.4_prm_1 }}; and"
+                                "prose": "Validate the binding of the information reviewer identity to the information at the transfer or release points prior to release or transfer between {{ insert: param, au-10.4_prm_1 }}; and"
                             },
                             {
                                 "id": "au-10.4_smt.b",
@@ -342,7 +342,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Perform {{ au-10.4_prm_2 }} in the event of a validation error."
+                                "prose": "Perform {{ insert: param, au-10.4_prm_2 }} in the event of a validation error."
                             }
                         ]
                     },
@@ -375,26 +375,6 @@
                     {
                         "href": "#si-7",
                         "rel": "incorporated-into"
-                    },
-                    {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#eea3c092-42ed-4382-a6f4-1adadef01b9d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#1c71b420-2bd9-4e52-9fc8-390f58b85b59",
-                        "rel": "reference"
                     }
                 ]
             }

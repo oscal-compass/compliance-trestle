@@ -45,7 +45,7 @@
             {
                 "id": "cm-14_smt",
                 "name": "statement",
-                "prose": "Prevent the installation of {{ cm-14_prm_1 }} without verification that the component has been digitally signed using a certificate that is recognized and approved by the organization."
+                "prose": "Prevent the installation of {{ insert: param, cm-14_prm_1 }} without verification that the component has been digitally signed using a certificate that is recognized and approved by the organization."
             },
             {
                 "id": "cm-14_gdn",

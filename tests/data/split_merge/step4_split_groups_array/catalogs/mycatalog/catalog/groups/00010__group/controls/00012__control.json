@@ -35,7 +35,7 @@
             {
                 "id": "pe-13.1",
                 "class": "SP800-53-enhancement",
-                "title": "Detection Systems \u2013 Automatic Activation and Notification",
+                "title": "Detection Systems \u2014 Automatic Activation and Notification",
                 "params": [
                     {
                         "id": "pe-13.1_prm_1",
@@ -66,7 +66,7 @@
                     {
                         "id": "pe-13.1_smt",
                         "name": "statement",
-                        "prose": "Employ fire detection systems that activate automatically and notify {{ pe-13.1_prm_1 }} and {{ pe-13.1_prm_2 }} in the event of a fire."
+                        "prose": "Employ fire detection systems that activate automatically and notify {{ insert: param, pe-13.1_prm_1 }} and {{ insert: param, pe-13.1_prm_2 }} in the event of a fire."
                     },
                     {
                         "id": "pe-13.1_gdn",
@@ -78,7 +78,7 @@
             {
                 "id": "pe-13.2",
                 "class": "SP800-53-enhancement",
-                "title": "Suppression Systems \u2013 Automatic Activation and Notification",
+                "title": "Suppression Systems \u2014 Automatic Activation and Notification",
                 "params": [
                     {
                         "id": "pe-13.2_prm_1",
@@ -119,7 +119,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Employ fire suppression systems that activate automatically and notify {{ pe-13.2_prm_1 }} and {{ pe-13.2_prm_2 }}; and"
+                                "prose": "Employ fire suppression systems that activate automatically and notify {{ insert: param, pe-13.2_prm_1 }} and {{ insert: param, pe-13.2_prm_2 }}; and"
                             },
                             {
                                 "id": "pe-13.2_smt.b",
@@ -200,7 +200,7 @@
                     {
                         "id": "pe-13.4_smt",
                         "name": "statement",
-                        "prose": "Ensure that the facility undergoes {{ pe-13.4_prm_1 }} fire protection inspections by authorized and qualified inspectors and identified deficiencies are resolved within {{ pe-13.4_prm_2 }}."
+                        "prose": "Ensure that the facility undergoes {{ insert: param, pe-13.4_prm_1 }} fire protection inspections by authorized and qualified inspectors and identified deficiencies are resolved within {{ insert: param, pe-13.4_prm_2 }}."
                     },
                     {
                         "id": "pe-13.4_gdn",

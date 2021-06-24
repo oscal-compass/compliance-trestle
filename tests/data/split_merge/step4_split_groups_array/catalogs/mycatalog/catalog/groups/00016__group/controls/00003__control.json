@@ -7,10 +7,10 @@
             {
                 "id": "sa-4_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "standardized contract language",
-                        " {{ sa-4_prm_2 }} "
+                        " {{ insert: param, sa-4_prm_2 }} "
                     ]
                 }
             },
@@ -49,6 +49,10 @@
             },
             {
                 "href": "#4452efc0-e79e-47b8-aa30-b54f3ef61c2f",
+                "rel": "reference"
+            },
+            {
+                "href": "#06ce9216-bd54-4054-a422-94f358b50a5d",
                 "rel": "reference"
             },
             {
@@ -172,7 +176,7 @@
             {
                 "id": "sa-4_smt",
                 "name": "statement",
-                "prose": "Include the following requirements, descriptions, and criteria, explicitly or by reference, using {{ sa-4_prm_1 }} in the acquisition contract for the system, system component, or system service:",
+                "prose": "Include the following requirements, descriptions, and criteria, explicitly or by reference, using {{ insert: param, sa-4_prm_1 }} in the acquisition contract for the system, system component, or system service:",
                 "parts": [
                     {
                         "id": "sa-4_smt.a",
@@ -323,13 +327,13 @@
                     {
                         "id": "sa-4.2_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "security-relevant external system interfaces",
                                 "high-level design",
                                 "low-level design",
                                 "source code or hardware schematics",
-                                " {{ sa-4.2_prm_2 }} "
+                                " {{ insert: param, sa-4.2_prm_2 }} "
                             ]
                         }
                     },
@@ -363,7 +367,7 @@
                     {
                         "id": "sa-4.2_smt",
                         "name": "statement",
-                        "prose": "Require the developer of the system, system component, or system service to provide design and implementation information for the controls that includes: {{ sa-4.2_prm_1 }} at {{ sa-4.2_prm_3 }}."
+                        "prose": "Require the developer of the system, system component, or system service to provide design and implementation information for the controls that includes: {{ insert: param, sa-4.2_prm_1 }} at {{ insert: param, sa-4.2_prm_3 }}."
                     },
                     {
                         "id": "sa-4.2_gdn",
@@ -383,13 +387,8 @@
                     },
                     {
                         "id": "sa-4.3_prm_2",
-                        "select": {
-                            "how-many": "one or more",
-                            "choice": [
-                                "systems security",
-                                "privacy<#:assign> engineering methods"
-                            ]
-                        }
+                        "label": "organization-defined [Selection (one or more): systems security; privacy] engineering methods",
+                        "remarks": "The inner parameter is a qualifier, which does not follow the model of a traditional parameterized value in OSCAL. As a result, this inner parameter is treated as text in this OSCAL catalog."
                     },
                     {
                         "id": "sa-4.3_prm_3",
@@ -427,7 +426,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": " {{ sa-4.3_prm_1 }};"
+                                "prose": " {{ insert: param, sa-4.3_prm_1 }};"
                             },
                             {
                                 "id": "sa-4.3_smt.b",
@@ -438,7 +437,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "<assign:#>organization-defined {{ sa-4.3_prm_2 }}; and"
+                                "prose": " {{ insert: param, sa-4.3_prm_2 }}; and"
                             },
                             {
                                 "id": "sa-4.3_smt.c",
@@ -449,7 +448,7 @@
                                         "value": "(c)"
                                     }
                                 ],
-                                "prose": " {{ sa-4.3_prm_3 }}."
+                                "prose": " {{ insert: param, sa-4.3_prm_3 }}."
                             }
                         ]
                     },
@@ -526,7 +525,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Deliver the system, component, or service with {{ sa-4.5_prm_1 }} implemented; and"
+                                "prose": "Deliver the system, component, or service with {{ insert: param, sa-4.5_prm_1 }} implemented; and"
                             },
                             {
                                 "id": "sa-4.5_smt.b",
@@ -765,7 +764,7 @@
             {
                 "id": "sa-4.10",
                 "class": "SP800-53-enhancement",
-                "title": "Use of Approved Piv Products",
+                "title": "Use of Approved PIV Products",
                 "props": [
                     {
                         "name": "label",
@@ -841,7 +840,7 @@
                     {
                         "id": "sa-4.11_smt",
                         "name": "statement",
-                        "prose": "Include {{ sa-4.11_prm_1 }} in the acquisition contract for the operation of a system of records on behalf of an organization to accomplish an organizational mission or function."
+                        "prose": "Include {{ insert: param, sa-4.11_prm_1 }} in the acquisition contract for the operation of a system of records on behalf of an organization to accomplish an organizational mission or function."
                     },
                     {
                         "id": "sa-4.11_gdn",
@@ -874,90 +873,6 @@
                     {
                         "href": "#sa-4",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#6afc1b04-c9d6-4023-adbc-f8fbe33a3c73",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#87087451-2af5-43d4-88c1-d66ad850f614",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#4452efc0-e79e-47b8-aa30-b54f3ef61c2f",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#77faf0bc-c394-44ad-9154-bbac3b79c8ad",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#4895b4cd-34c5-4667-bf8a-27d443c12047",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#858705be-3c1f-48aa-a328-0ce398d95ef0",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#067223d8-1ec7-45c5-b21b-c848da6de8fb",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#15dc76ff-b17a-4eeb-8948-8ea8de3ccc2c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e24b06cc-9129-4998-a76a-65c3d7a576ba",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#4b38e961-1125-4a5b-aa35-1d6c02846dad",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#604774da-9e1d-48eb-9c62-4e959dc80737",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#98d415ca-7281-4064-9931-0c366637e324",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#795aff72-3e6c-4b6b-a80a-b14d84b7f544",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#3d575737-98cb-459d-b41c-d7e82b73ad78",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
@@ -985,7 +900,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Require all data to be removed from the contractor\u2019s system and returned to the organization within {{ sa-4.12_prm_1 }}."
+                                "prose": "Require all data to be removed from the contractor\u2019s system and returned to the organization within {{ insert: param, sa-4.12_prm_1 }}."
                             }
                         ]
                     },

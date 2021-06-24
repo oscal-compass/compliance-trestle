@@ -130,18 +130,6 @@
                     {
                         "href": "#sc-20",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#fe209006-bfd4-4033-a79a-9fee1adaf372",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

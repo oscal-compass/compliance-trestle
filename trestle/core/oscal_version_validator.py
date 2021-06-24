@@ -38,13 +38,7 @@ class OSCALVersionValidator(Validator):
         returns:
             True (valid) if the OSCAL version in the model is supported.
         """
-        try:
-            oscal_version = model.metadata.oscal_version
-            if type(oscal_version) is not str:
-                oscal_version = oscal_version.__root__
-        except Exception as err:
-            logger.warn(f'Model has improper metadata or oscal version, error: {err}')
-            return False
+        oscal_version = model.metadata.oscal_version.__root__
         p = re.compile(OSCAL_VERSION_REGEX)
         matched = p.match(oscal_version)
         return matched is not None

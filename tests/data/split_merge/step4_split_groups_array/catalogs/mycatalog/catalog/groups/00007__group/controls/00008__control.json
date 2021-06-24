@@ -76,7 +76,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Assigning {{ ir-9_prm_1 }} with responsibility for responding to information spills;"
+                        "prose": "Assigning {{ insert: param, ir-9_prm_1 }} with responsibility for responding to information spills;"
                     },
                     {
                         "id": "ir-9_smt.b",
@@ -98,7 +98,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Alerting {{ ir-9_prm_2 }} of the information spill using a method of communication not associated with the spill;"
+                        "prose": "Alerting {{ insert: param, ir-9_prm_2 }} of the information spill using a method of communication not associated with the spill;"
                     },
                     {
                         "id": "ir-9_smt.d",
@@ -142,7 +142,7 @@
                                 "value": "g."
                             }
                         ],
-                        "prose": "Performing the following additional actions: {{ ir-9_prm_3 }}."
+                        "prose": "Performing the following additional actions: {{ insert: param, ir-9_prm_3 }}."
                     }
                 ]
             },
@@ -224,7 +224,7 @@
                     {
                         "id": "ir-9.2_smt",
                         "name": "statement",
-                        "prose": "Provide information spillage response training {{ ir-9.2_prm_1 }}."
+                        "prose": "Provide information spillage response training {{ insert: param, ir-9.2_prm_1 }}."
                     },
                     {
                         "id": "ir-9.2_gdn",
@@ -263,7 +263,7 @@
                     {
                         "id": "ir-9.3_smt",
                         "name": "statement",
-                        "prose": "Implement the following procedures to ensure that organizational personnel impacted by information spills can continue to carry out assigned tasks while contaminated systems are undergoing corrective actions: {{ ir-9.3_prm_1 }}."
+                        "prose": "Implement the following procedures to ensure that organizational personnel impacted by information spills can continue to carry out assigned tasks while contaminated systems are undergoing corrective actions: {{ insert: param, ir-9.3_prm_1 }}."
                     },
                     {
                         "id": "ir-9.3_gdn",
@@ -302,7 +302,7 @@
                     {
                         "id": "ir-9.4_smt",
                         "name": "statement",
-                        "prose": "Employ the following controls for personnel exposed to information not within assigned access authorizations: {{ ir-9.4_prm_1 }}."
+                        "prose": "Employ the following controls for personnel exposed to information not within assigned access authorizations: {{ insert: param, ir-9.4_prm_1 }}."
                     },
                     {
                         "id": "ir-9.4_gdn",

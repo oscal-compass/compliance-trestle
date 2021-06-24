@@ -148,7 +148,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Review the development process, standards, tools, tool options, and tool configurations {{ sa-15_prm_1 }} to determine if the process, standards, tools, tool options and tool configurations selected and employed can satisfy the following security and privacy requirements: {{ sa-15_prm_2 }}."
+                        "prose": "Review the development process, standards, tools, tool options, and tool configurations {{ insert: param, sa-15_prm_1 }} to determine if the process, standards, tools, tool options and tool configurations selected and employed can satisfy the following security and privacy requirements: {{ insert: param, sa-15_prm_2 }}."
                     }
                 ]
             },
@@ -167,10 +167,10 @@
                     {
                         "id": "sa-15.1_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
-                                " {{ sa-15.1_prm_2 }} ",
-                                " {{ sa-15.1_prm_3 }} ",
+                                " {{ insert: param, sa-15.1_prm_2 }} ",
+                                " {{ insert: param, sa-15.1_prm_3 }} ",
                                 "upon delivery"
                             ]
                         }
@@ -228,7 +228,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Provide evidence of meeting the quality metrics {{ sa-15.1_prm_1 }}."
+                                "prose": "Provide evidence of meeting the quality metrics {{ insert: param, sa-15.1_prm_1 }}."
                             }
                         ]
                     },
@@ -325,7 +325,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "At the following decision points in the system development life cycle: {{ sa-15.3_prm_1 }}; and"
+                                "prose": "At the following decision points in the system development life cycle: {{ insert: param, sa-15.3_prm_1 }}; and"
                             },
                             {
                                 "id": "sa-15.3_smt.b",
@@ -336,7 +336,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "At the following level of rigor: {{ sa-15.3_prm_2 }}."
+                                "prose": "At the following level of rigor: {{ insert: param, sa-15.3_prm_2 }}."
                             }
                         ]
                     },
@@ -418,7 +418,7 @@
                     {
                         "id": "sa-15.5_smt",
                         "name": "statement",
-                        "prose": "Require the developer of the system, system component, or system service to reduce attack surfaces to {{ sa-15.5_prm_1 }}."
+                        "prose": "Require the developer of the system, system component, or system service to reduce attack surfaces to {{ insert: param, sa-15.5_prm_1 }}."
                     },
                     {
                         "id": "sa-15.5_gdn",
@@ -506,7 +506,7 @@
                     {
                         "id": "sa-15.7_smt",
                         "name": "statement",
-                        "prose": "Require the developer of the system, system component, or system service {{ sa-15.7_prm_1 }} to:",
+                        "prose": "Require the developer of the system, system component, or system service {{ insert: param, sa-15.7_prm_1 }} to:",
                         "parts": [
                             {
                                 "id": "sa-15.7_smt.a",
@@ -517,7 +517,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Perform an automated vulnerability analysis using {{ sa-15.7_prm_2 }};"
+                                "prose": "Perform an automated vulnerability analysis using {{ insert: param, sa-15.7_prm_2 }};"
                             },
                             {
                                 "id": "sa-15.7_smt.b",
@@ -550,7 +550,7 @@
                                         "value": "(d)"
                                     }
                                 ],
-                                "prose": "Deliver the outputs of the tools and results of the analysis to {{ sa-15.7_prm_3 }}."
+                                "prose": "Deliver the outputs of the tools and results of the analysis to {{ insert: param, sa-15.7_prm_3 }}."
                             }
                         ]
                     },
@@ -711,14 +711,6 @@
                     {
                         "href": "#sa-15",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#d4296805-2dca-4c63-a95f-eeccaa826aec",
-                        "rel": "reference"
                     },
                     {
                         "href": "#pm-25",

@@ -79,7 +79,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Require personnel to report suspected incidents to the organizational incident response capability within {{ ir-6_prm_1 }}; and"
+                        "prose": "Require personnel to report suspected incidents to the organizational incident response capability within {{ insert: param, ir-6_prm_1 }}; and"
                     },
                     {
                         "id": "ir-6_smt.b",
@@ -90,7 +90,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Report incident information to {{ ir-6_prm_2 }}."
+                        "prose": "Report incident information to {{ insert: param, ir-6_prm_2 }}."
                     }
                 ]
             },
@@ -135,7 +135,7 @@
                     {
                         "id": "ir-6.1_smt",
                         "name": "statement",
-                        "prose": "Report incidents using {{ ir-6.1_prm_1 }}."
+                        "prose": "Report incidents using {{ insert: param, ir-6.1_prm_1 }}."
                     },
                     {
                         "id": "ir-6.1_gdn",
@@ -174,7 +174,7 @@
                     {
                         "id": "ir-6.2_smt",
                         "name": "statement",
-                        "prose": "Report system vulnerabilities associated with reported incidents to {{ ir-6.2_prm_1 }}."
+                        "prose": "Report system vulnerabilities associated with reported incidents to {{ insert: param, ir-6.2_prm_1 }}."
                     },
                     {
                         "id": "ir-6.2_gdn",
@@ -201,22 +201,6 @@
                     {
                         "href": "#ir-6",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#4ff10ed3-d8fe-4246-99e3-443045e27482",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#0f963c17-ab5a-432a-a867-91eac550309b",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#40b78258-c892-480e-9af8-77ac36648301",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#49b8aa2d-a88c-4bff-9f20-876ccb8f7dcb",
-                        "rel": "reference"
                     },
                     {
                         "href": "#sr-8",

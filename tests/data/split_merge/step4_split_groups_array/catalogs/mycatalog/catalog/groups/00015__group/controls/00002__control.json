@@ -10,7 +10,7 @@
                     "choice": [
                         "security and privacy plans",
                         "risk assessment report",
-                        " {{ ra-3_prm_2 }} "
+                        " {{ insert: param, ra-3_prm_2 }} "
                     ]
                 }
             },
@@ -140,6 +140,10 @@
                 "rel": "related"
             },
             {
+                "href": "#pt-2",
+                "rel": "related"
+            },
+            {
                 "href": "#pt-7",
                 "rel": "related"
             },
@@ -243,7 +247,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Document risk assessment results in {{ ra-3_prm_1 }};"
+                        "prose": "Document risk assessment results in {{ insert: param, ra-3_prm_1 }};"
                     },
                     {
                         "id": "ra-3_smt.d",
@@ -254,7 +258,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Review risk assessment results {{ ra-3_prm_3 }};"
+                        "prose": "Review risk assessment results {{ insert: param, ra-3_prm_3 }};"
                     },
                     {
                         "id": "ra-3_smt.e",
@@ -265,7 +269,7 @@
                                 "value": "e."
                             }
                         ],
-                        "prose": "Disseminate risk assessment results to {{ ra-3_prm_4 }}; and"
+                        "prose": "Disseminate risk assessment results to {{ insert: param, ra-3_prm_4 }}; and"
                     },
                     {
                         "id": "ra-3_smt.f",
@@ -276,7 +280,7 @@
                                 "value": "f."
                             }
                         ],
-                        "prose": "Update the risk assessment {{ ra-3_prm_5 }} or when there are significant changes to the system, its environment of operation, or other conditions that may impact the security or privacy state of the system."
+                        "prose": "Update the risk assessment {{ insert: param, ra-3_prm_5 }} or when there are significant changes to the system, its environment of operation, or other conditions that may impact the security or privacy state of the system."
                     }
                 ]
             },
@@ -351,7 +355,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Assess supply chain risks associated with {{ ra-3.1_prm_1 }}; and"
+                                "prose": "Assess supply chain risks associated with {{ insert: param, ra-3.1_prm_1 }}; and"
                             },
                             {
                                 "id": "ra-3.1_smt.b",
@@ -362,7 +366,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Update the supply chain risk assessment {{ ra-3.1_prm_2 }}, when there are significant changes to the relevant supply chain, or when changes to the system, environments of operation, or other conditions may necessitate a change in the supply chain."
+                                "prose": "Update the supply chain risk assessment {{ insert: param, ra-3.1_prm_2 }}, when there are significant changes to the relevant supply chain, or when changes to the system, environments of operation, or other conditions may necessitate a change in the supply chain."
                             }
                         ]
                     },
@@ -440,7 +444,7 @@
                     {
                         "id": "ra-3.3_smt",
                         "name": "statement",
-                        "prose": "Determine the current cyber threat environment on an ongoing basis using {{ ra-3.3_prm_1 }}."
+                        "prose": "Determine the current cyber threat environment on an ongoing basis using {{ insert: param, ra-3.3_prm_1 }}."
                     },
                     {
                         "id": "ra-3.3_gdn",
@@ -477,41 +481,13 @@
                     {
                         "href": "#ra-3",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#08b07465-dbdc-48d6-8a0b-37279602ac16",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#4c501da5-9d79-4cb6-ba80-97260e1ce327",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#98d415ca-7281-4064-9931-0c366637e324",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#38ff38f0-1366-4f50-a4c9-26a39aacee16",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "ra-3.4_smt",
                         "name": "statement",
-                        "prose": "Employ the following advanced automation and analytics capabilities to predict and identify risks to {{ ra-3.4_prm_1 }}: {{ ra-3.4_prm_2 }}."
+                        "prose": "Employ the following advanced automation and analytics capabilities to predict and identify risks to {{ insert: param, ra-3.4_prm_1 }}: {{ insert: param, ra-3.4_prm_2 }}."
                     },
                     {
                         "id": "ra-3.4_gdn",

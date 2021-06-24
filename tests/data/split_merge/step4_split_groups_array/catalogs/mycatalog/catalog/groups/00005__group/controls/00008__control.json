@@ -107,7 +107,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Conduct backups of user-level information contained in {{ cp-9_prm_1 }} {{ cp-9_prm_2 }};"
+                        "prose": "Conduct backups of user-level information contained in {{ insert: param, cp-9_prm_1 }} {{ insert: param, cp-9_prm_2 }};"
                     },
                     {
                         "id": "cp-9_smt.b",
@@ -118,7 +118,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Conduct backups of system-level information contained in the system {{ cp-9_prm_3 }};"
+                        "prose": "Conduct backups of system-level information contained in the system {{ insert: param, cp-9_prm_3 }};"
                     },
                     {
                         "id": "cp-9_smt.c",
@@ -129,7 +129,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Conduct backups of system documentation, including security- and privacy-related documentation {{ cp-9_prm_4 }}; and"
+                        "prose": "Conduct backups of system documentation, including security- and privacy-related documentation {{ insert: param, cp-9_prm_4 }}; and"
                     },
                     {
                         "id": "cp-9_smt.d",
@@ -185,7 +185,7 @@
                     {
                         "id": "cp-9.1_smt",
                         "name": "statement",
-                        "prose": "Test backup information {{ cp-9.1_prm_1 }} to verify media reliability and information integrity."
+                        "prose": "Test backup information {{ insert: param, cp-9.1_prm_1 }} to verify media reliability and information integrity."
                     },
                     {
                         "id": "cp-9.1_gdn",
@@ -273,7 +273,7 @@
                     {
                         "id": "cp-9.3_smt",
                         "name": "statement",
-                        "prose": "Store backup copies of {{ cp-9.3_prm_1 }} in a separate facility or in a fire rated container that is not collocated with the operational system."
+                        "prose": "Store backup copies of {{ insert: param, cp-9.3_prm_1 }} in a separate facility or in a fire rated container that is not collocated with the operational system."
                     },
                     {
                         "id": "cp-9.3_gdn",
@@ -353,7 +353,7 @@
                     {
                         "id": "cp-9.5_smt",
                         "name": "statement",
-                        "prose": "Transfer system backup information to the alternate storage site {{ cp-9.5_prm_1 }}."
+                        "prose": "Transfer system backup information to the alternate storage site {{ insert: param, cp-9.5_prm_1 }}."
                     },
                     {
                         "id": "cp-9.5_gdn",
@@ -402,7 +402,7 @@
             {
                 "id": "cp-9.7",
                 "class": "SP800-53-enhancement",
-                "title": "Dual Authorization",
+                "title": "Dual Authorization for Deletion or Destruction",
                 "params": [
                     {
                         "id": "cp-9.7_prm_1",
@@ -441,7 +441,7 @@
                     {
                         "id": "cp-9.7_smt",
                         "name": "statement",
-                        "prose": "Enforce dual authorization for the deletion or destruction of {{ cp-9.7_prm_1 }}."
+                        "prose": "Enforce dual authorization for the deletion or destruction of {{ insert: param, cp-9.7_prm_1 }}."
                     },
                     {
                         "id": "cp-9.7_gdn",
@@ -476,26 +476,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#bc39f179-c735-4da2-b7a7-b2b622119755",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#3653e316-8923-430e-8943-b3b2b2562fc6",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#2494df28-9049-4196-b233-540e7440993f",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#sc-12",
                         "rel": "related"
                     },
@@ -512,7 +492,7 @@
                     {
                         "id": "cp-9.8_smt",
                         "name": "statement",
-                        "prose": "Implement cryptographic mechanisms to prevent unauthorized disclosure and modification of {{ cp-9.8_prm_1 }}."
+                        "prose": "Implement cryptographic mechanisms to prevent unauthorized disclosure and modification of {{ insert: param, cp-9.8_prm_1 }}."
                     },
                     {
                         "id": "cp-9.8_gdn",

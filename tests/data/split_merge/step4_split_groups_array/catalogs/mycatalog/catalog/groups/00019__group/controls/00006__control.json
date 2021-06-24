@@ -49,7 +49,7 @@
             {
                 "id": "sr-7_smt",
                 "name": "statement",
-                "prose": "Employ the following Operations Security (OPSEC) controls to protect supply chain-related information for the system, system component, or system service: {{ sr-7_prm_1 }}."
+                "prose": "Employ the following Operations Security (OPSEC) controls to protect supply chain-related information for the system, system component, or system service: {{ insert: param, sr-7_prm_1 }}."
             },
             {
                 "id": "sr-7_gdn",
