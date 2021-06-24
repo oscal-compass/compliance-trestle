@@ -19,6 +19,8 @@ import sys
 from pathlib import Path
 from subprocess import CalledProcessError, check_call
 
+from oscal_normalize import normalize_files
+
 
 def load_git():
     """Load git submodule for oscal."""
@@ -46,7 +48,7 @@ def load_git():
 
 def generate_model(full_name, out_full_name):
     """Generate a single model with datamodel-codegen."""
-    print(f'generate python model and apply fix_any: {str(full_name)} -> {str(out_full_name)}')
+    print(f'generate python model with datamodel-codegen: {str(full_name)} -> {str(out_full_name)}')
     args = [
         'datamodel-codegen',
         '--disable-timestamp',
@@ -66,19 +68,6 @@ def generate_model(full_name, out_full_name):
         print(f'Error calling datamodel-codegen for file {full_name} error {error}')
 
 
-def fix_schema(source_file, dest_file):
-    "Fix recent changes to nist schema."
-    kill_list = ['oscal-ap-oscal-metadata-', 'oscal-ar-oscal-metadata-', 'oscal-catalog-oscal-metadata-', 'oscal-component-definition-oscal-metadata-',
-                 'oscal-poam-metadata-', 'oscal-profile-oscal-metadata-', 'oscal-ar-oscal-assessment-common-', 'oscal-ap-oscal-assessment-common-',
-                 'oscal-poam-oscal-assessment-common-', 'oscal-metadata-', 'oscal-ap-', 'oscal-ar-', 'oscal-catalog-', 'oscal-poam-', 'oscal-profile-', 'oscal-ssp-', 'oscal-component-definition-']
-    with open(source_file, 'r', encoding='utf8') as src:
-        with open(dest_file, 'w', encoding='utf8') as dst:
-            for l in src.readlines():
-                for k in kill_list:
-                    l = l.replace(k, '')
-                dst.write(l)
-
-
 def generate_models():
     """Generate all models including 3rd party."""
     print('generating models')
@@ -89,28 +78,23 @@ def generate_models():
     out_init = out_dir / '__init__.py'
     out_init.touch(exist_ok=True)
 
-    # ver_file = out_dir / 'b4_fix' / 'datamodel-codegen-version.txt'
-
-    # try:
-    #    check_call(f'datamodel-codegen --version >> {ver_file}'.split(), shell=True)
-    # except CalledProcessError as error:
-    #    print(f'Error calling datamodel-codegen for version: error {error}')
-
     in_dir = Path('nist-source/json/schema')
     for full_name in in_dir.glob('oscal_*_schema.json'):
-        fixed_name = tmp_dir / full_name.name
-        fix_schema(full_name, fixed_name)
         try:
-            obj = re.search('oscal_(.+?)_schema.json', str(fixed_name)).group(1)
+            obj = re.search('oscal_(.+?)_schema.json', str(full_name)).group(1)
         except AttributeError:
-            print(f'Warning: filename did not parse properly: {fixed_name}')
+            print(f'Warning: filename did not parse properly: {tmp_name}')
             obj = None
             continue
         oscal_name = obj.replace('-', '_')
         out_fname = oscal_name + '.py'
-        out_full_name = out_dir / out_fname
-        generate_model(fixed_name, out_full_name)
+        out_full_name = tmp_dir / out_fname
+        generate_model(full_name, out_full_name)
+    # all .py files are first generated into oscal/tmp to be normalized
+    # but target.py is not normalized so it goes directly into the oscal dir
     generate_model('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', out_dir / 'target.py')
+    print('Normalize all the generated .py files and create streamlined set without altering target.py')
+    normalize_files()
 
 
 def main():

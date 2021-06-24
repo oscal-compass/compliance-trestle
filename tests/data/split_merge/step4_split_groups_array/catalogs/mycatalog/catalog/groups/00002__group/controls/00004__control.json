@@ -79,7 +79,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Alert {{ au-5_prm_1 }} within {{ au-5_prm_2 }} in the event of an audit logging process failure; and"
+                        "prose": "Alert {{ insert: param, au-5_prm_1 }} within {{ insert: param, au-5_prm_2 }} in the event of an audit logging process failure; and"
                     },
                     {
                         "id": "au-5_smt.b",
@@ -90,7 +90,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Take the following additional actions: {{ au-5_prm_3 }}."
+                        "prose": "Take the following additional actions: {{ insert: param, au-5_prm_3 }}."
                     }
                 ]
             },
@@ -139,7 +139,7 @@
                     {
                         "id": "au-5.1_smt",
                         "name": "statement",
-                        "prose": "Provide a warning to {{ au-5.1_prm_1 }} within {{ au-5.1_prm_2 }} when allocated audit log storage volume reaches {{ au-5.1_prm_3 }} of repository maximum audit log storage capacity."
+                        "prose": "Provide a warning to {{ insert: param, au-5.1_prm_1 }} within {{ insert: param, au-5.1_prm_2 }} when allocated audit log storage volume reaches {{ insert: param, au-5.1_prm_3 }} of repository maximum audit log storage capacity."
                     },
                     {
                         "id": "au-5.1_gdn",
@@ -186,7 +186,7 @@
                     {
                         "id": "au-5.2_smt",
                         "name": "statement",
-                        "prose": "Provide an alert within {{ au-5.2_prm_1 }} to {{ au-5.2_prm_2 }} when the following audit failure events occur: {{ au-5.2_prm_3 }}."
+                        "prose": "Provide an alert within {{ insert: param, au-5.2_prm_1 }} to {{ insert: param, au-5.2_prm_2 }} when the following audit failure events occur: {{ insert: param, au-5.2_prm_3 }}."
                     },
                     {
                         "id": "au-5.2_gdn",
@@ -230,7 +230,7 @@
                     {
                         "id": "au-5.3_smt",
                         "name": "statement",
-                        "prose": "Enforce configurable network communications traffic volume thresholds reflecting limits on audit log storage capacity and {{ au-5.3_prm_1 }} network traffic above those thresholds."
+                        "prose": "Enforce configurable network communications traffic volume thresholds reflecting limits on audit log storage capacity and {{ insert: param, au-5.3_prm_1 }} network traffic above those thresholds."
                     },
                     {
                         "id": "au-5.3_gdn",
@@ -283,7 +283,7 @@
                     {
                         "id": "au-5.4_smt",
                         "name": "statement",
-                        "prose": "Invoke a {{ au-5.4_prm_1 }} in the event of {{ au-5.4_prm_2 }}, unless an alternate audit logging capability exists."
+                        "prose": "Invoke a {{ insert: param, au-5.4_prm_1 }} in the event of {{ insert: param, au-5.4_prm_2 }}, unless an alternate audit logging capability exists."
                     },
                     {
                         "id": "au-5.4_gdn",
@@ -326,7 +326,7 @@
                     {
                         "id": "au-5.5_smt",
                         "name": "statement",
-                        "prose": "Provide an alternate audit logging capability in the event of a failure in primary audit logging capability that implements {{ au-5.5_prm_1 }}."
+                        "prose": "Provide an alternate audit logging capability in the event of a failure in primary audit logging capability that implements {{ insert: param, au-5.5_prm_1 }}."
                     },
                     {
                         "id": "au-5.5_gdn",

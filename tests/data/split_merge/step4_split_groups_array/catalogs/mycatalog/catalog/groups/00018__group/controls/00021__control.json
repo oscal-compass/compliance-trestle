@@ -47,7 +47,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Identify the following alternative sources of information for {{ si-22_prm_1 }}: {{ si-22_prm_2 }}; and"
+                        "prose": "Identify the following alternative sources of information for {{ insert: param, si-22_prm_1 }}: {{ insert: param, si-22_prm_2 }}; and"
                     },
                     {
                         "id": "si-22_smt.b",
@@ -58,7 +58,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Use an alternative information source for the execution of essential functions or services on {{ si-22_prm_3 }} when the primary source of information is corrupted or unavailable."
+                        "prose": "Use an alternative information source for the execution of essential functions or services on {{ insert: param, si-22_prm_3 }} when the primary source of information is corrupted or unavailable."
                     }
                 ]
             },

@@ -11,7 +11,7 @@
             {
                 "id": "au-14_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "record",
                         "view",
@@ -91,7 +91,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Provide and implement the capability for {{ au-14_prm_1 }} to {{ au-14_prm_2 }} the content of a user session under {{ au-14_prm_3 }}; and"
+                        "prose": "Provide and implement the capability for {{ insert: param, au-14_prm_1 }} to {{ insert: param, au-14_prm_2 }} the content of a user session under {{ insert: param, au-14_prm_3 }}; and"
                     },
                     {
                         "id": "au-14_smt.b",

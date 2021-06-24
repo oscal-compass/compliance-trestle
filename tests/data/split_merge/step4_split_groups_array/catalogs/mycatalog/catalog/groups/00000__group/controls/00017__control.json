@@ -119,7 +119,7 @@
                     {
                         "id": "ac-18.1_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "users",
                                 "devices"
@@ -159,7 +159,7 @@
                     {
                         "id": "ac-18.1_smt",
                         "name": "statement",
-                        "prose": "Protect wireless access to the system using authentication of {{ ac-18.1_prm_1 }} and encryption."
+                        "prose": "Protect wireless access to the system using authentication of {{ insert: param, ac-18.1_prm_1 }} and encryption."
                     },
                     {
                         "id": "ac-18.1_gdn",
@@ -285,14 +285,6 @@
                     {
                         "href": "#ac-18",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#25e3e57b-dc2f-4934-af9b-050b020c6f0e",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#03fb73bc-1b12-4182-bd96-e5719254ea61",
-                        "rel": "reference"
                     },
                     {
                         "href": "#pe-19",

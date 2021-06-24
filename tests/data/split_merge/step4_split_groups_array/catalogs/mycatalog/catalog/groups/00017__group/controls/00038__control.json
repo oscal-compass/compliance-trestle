@@ -121,17 +121,13 @@
                     {
                         "href": "#sc-39",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "sc-39.2_smt",
                         "name": "statement",
-                        "prose": "Maintain a separate execution domain for each thread in {{ sc-39.2_prm_1 }}."
+                        "prose": "Maintain a separate execution domain for each thread in {{ insert: param, sc-39.2_prm_1 }}."
                     },
                     {
                         "id": "sc-39.2_gdn",

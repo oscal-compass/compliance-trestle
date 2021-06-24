@@ -23,6 +23,7 @@ from ruamel.yaml import YAML
 import trestle.core.const as const
 import trestle.core.validator_helper as validator_helper
 import trestle.oscal.catalog as catalog
+import trestle.oscal.common as common
 # import trestle.oscal.ssp as ssp  # noqa: E800
 import trestle.oscal.target as ostarget
 
@@ -60,7 +61,7 @@ def test_has_no_duplicate_values_pydantic() -> None:
     """Test presence of duplicate values in pydantic objects."""
     # test with pydantic catalog - only one instance of Metadata
     cat = catalog.Catalog.oscal_read(catalog_path)
-    assert validator_helper.has_no_duplicate_values_by_type(cat, catalog.Metadata)
+    assert validator_helper.has_no_duplicate_values_by_type(cat, common.Metadata)
 
     yaml_path = pathlib.Path('tests/data/yaml')
 

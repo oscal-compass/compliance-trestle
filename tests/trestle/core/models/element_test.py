@@ -23,6 +23,7 @@ from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath, get_singular_model_from_json
 from trestle.oscal import catalog
 from trestle.oscal import target
+from trestle.oscal.common import Metadata, Role
 
 
 def test_element_get_at(sample_target_def: target.TargetDefinition):
@@ -145,6 +146,6 @@ def test_element_str(sample_target_def):
 
 def test_get_singular_model_from_json():
     """Test get singular model from json."""
-    assert get_singular_model_from_json('catalog.metadata', catalog.Catalog) == catalog.Metadata
-    assert get_singular_model_from_json('catalog.metadata.roles.*', catalog.Catalog) == catalog.Role
+    assert get_singular_model_from_json('catalog.metadata', catalog.Catalog) == Metadata
+    assert get_singular_model_from_json('catalog.metadata.roles.*', catalog.Catalog) == Role
     assert get_singular_model_from_json('catalog.groups.*.controls.*.controls.*', catalog.Catalog) == catalog.Control

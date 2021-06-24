@@ -98,7 +98,7 @@
                                         "value": "1."
                                     }
                                 ],
-                                "prose": "Within {{ ir-2_prm_1 }} of assuming an incident response role or responsibility or acquiring system access;"
+                                "prose": "Within {{ insert: param, ir-2_prm_1 }} of assuming an incident response role or responsibility or acquiring system access;"
                             },
                             {
                                 "id": "ir-2_smt.a.2",
@@ -120,7 +120,7 @@
                                         "value": "3."
                                     }
                                 ],
-                                "prose": " {{ ir-2_prm_2 }} thereafter; and"
+                                "prose": " {{ insert: param, ir-2_prm_2 }} thereafter; and"
                             }
                         ]
                     },
@@ -133,14 +133,14 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Review and update incident response training content {{ ir-2_prm_3 }} and following {{ ir-2_prm_4 }}."
+                        "prose": "Review and update incident response training content {{ insert: param, ir-2_prm_3 }} and following {{ insert: param, ir-2_prm_4 }}."
                     }
                 ]
             },
             {
                 "id": "ir-2_gdn",
                 "name": "guidance",
-                "prose": "Incident response training is associated with the assigned roles and responsibilities of organizational personnel to ensure that the appropriate content and level of detail are included in such training. For example, users may only need to know who to call or how to recognize an incident; system administrators\u00a0may require\u00a0additional training on how to handle incidents; and incident responders may receive more specific training on forensics, data collection techniques, reporting, system recovery, and system restoration. Incident response training includes user training in identifying and reporting suspicious activities from external and internal sources. Incident response training for users may be provided as part of [AT-2](#at-2) or [AT-3](#at-3). Events that may precipitate an update to incident response training content include, but are not limited to, incident response plan testing or response to an actual incident (lessons learned), assessment or audit findings, or changes in applicable laws, executive orders, directives, regulations, policies, standards, and guidelines."
+                "prose": "Incident response training is associated with the assigned roles and responsibilities of organizational personnel to ensure that the appropriate content and level of detail are included in such training. For example, users may only need to know who to call or how to recognize an incident; system administrators may require additional training on how to handle incidents; and incident responders may receive more specific training on forensics, data collection techniques, reporting, system recovery, and system restoration. Incident response training includes user training in identifying and reporting suspicious activities from external and internal sources. Incident response training for users may be provided as part of [AT-2](#at-2) or [AT-3](#at-3). Events that may precipitate an update to incident response training content include, but are not limited to, incident response plan testing or response to an actual incident (lessons learned), assessment or audit findings, or changes in applicable laws, executive orders, directives, regulations, policies, standards, and guidelines."
             }
         ],
         "controls": [
@@ -173,7 +173,7 @@
                     {
                         "id": "ir-2.1_gdn",
                         "name": "guidance",
-                        "prose": "Organizations establish requirements for responding to incidents in incident response plans. Incorporating simulated events into incident response training helps to ensure that personnel understand their individual responsibilities and what specific actions to take in crisis situations. Incident response training includes tabletop exercises that simulate a breach. See [IR-2(3)](#ir-2.3)."
+                        "prose": "Organizations establish requirements for responding to incidents in incident response plans. Incorporating simulated events into incident response training helps to ensure that personnel understand their individual responsibilities and what specific actions to take in crisis situations."
                     }
                 ]
             },
@@ -207,7 +207,7 @@
                     {
                         "id": "ir-2.2_smt",
                         "name": "statement",
-                        "prose": "Provide an incident response training environment using {{ ir-2.2_prm_1 }}."
+                        "prose": "Provide an incident response training environment using {{ insert: param, ir-2.2_prm_1 }}."
                     },
                     {
                         "id": "ir-2.2_gdn",
@@ -234,14 +234,6 @@
                     {
                         "href": "#ir-2",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#5f4705ac-8d17-438c-b23a-ac7f12362ae4",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#511f6832-23ca-49a3-8c0f-ce493373cab8",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

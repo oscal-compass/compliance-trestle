@@ -138,7 +138,7 @@
                     {
                         "id": "si-8.2_smt",
                         "name": "statement",
-                        "prose": "Automatically update spam protection mechanisms {{ si-8.2_prm_1 }}."
+                        "prose": "Automatically update spam protection mechanisms {{ insert: param, si-8.2_prm_1 }}."
                     },
                     {
                         "id": "si-8.2_gdn",
@@ -165,14 +165,6 @@
                     {
                         "href": "#si-8",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#314e33cb-3681-4b50-a2a2-3fae9604accd",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#1c71b420-2bd9-4e52-9fc8-390f58b85b59",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

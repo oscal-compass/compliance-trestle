@@ -65,7 +65,7 @@
             {
                 "id": "ma-6_smt",
                 "name": "statement",
-                "prose": "Obtain maintenance support and/or spare parts for {{ ma-6_prm_1 }} within {{ ma-6_prm_2 }} of failure."
+                "prose": "Obtain maintenance support and/or spare parts for {{ insert: param, ma-6_prm_1 }} within {{ insert: param, ma-6_prm_2 }} of failure."
             },
             {
                 "id": "ma-6_gdn",
@@ -108,7 +108,7 @@
                     {
                         "id": "ma-6.1_smt",
                         "name": "statement",
-                        "prose": "Perform preventive maintenance on {{ ma-6.1_prm_1 }} at {{ ma-6.1_prm_2 }}."
+                        "prose": "Perform preventive maintenance on {{ insert: param, ma-6.1_prm_1 }} at {{ insert: param, ma-6.1_prm_2 }}."
                     },
                     {
                         "id": "ma-6.1_gdn",
@@ -151,7 +151,7 @@
                     {
                         "id": "ma-6.2_smt",
                         "name": "statement",
-                        "prose": "Perform predictive maintenance on {{ ma-6.2_prm_1 }} at {{ ma-6.2_prm_2 }}."
+                        "prose": "Perform predictive maintenance on {{ insert: param, ma-6.2_prm_1 }} at {{ insert: param, ma-6.2_prm_2 }}."
                     },
                     {
                         "id": "ma-6.2_gdn",
@@ -190,7 +190,7 @@
                     {
                         "id": "ma-6.3_smt",
                         "name": "statement",
-                        "prose": "Transfer predictive maintenance data to a maintenance management system using {{ ma-6.3_prm_1 }}."
+                        "prose": "Transfer predictive maintenance data to a maintenance management system using {{ insert: param, ma-6.3_prm_1 }}."
                     },
                     {
                         "id": "ma-6.3_gdn",

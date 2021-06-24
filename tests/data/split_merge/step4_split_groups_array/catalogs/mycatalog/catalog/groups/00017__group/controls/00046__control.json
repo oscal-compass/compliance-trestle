@@ -45,7 +45,7 @@
             {
                 "id": "sc-47_smt",
                 "name": "statement",
-                "prose": "Establish {{ sc-47_prm_1 }} for system operations organizational command and control."
+                "prose": "Establish {{ insert: param, sc-47_prm_1 }} for system operations organizational command and control."
             },
             {
                 "id": "sc-47_gdn",

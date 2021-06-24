@@ -41,7 +41,7 @@
             {
                 "id": "ac-23_smt",
                 "name": "statement",
-                "prose": "Employ {{ ac-23_prm_1 }} for {{ ac-23_prm_2 }} to detect and protect against unauthorized data mining."
+                "prose": "Employ {{ insert: param, ac-23_prm_1 }} for {{ insert: param, ac-23_prm_2 }} to detect and protect against unauthorized data mining."
             },
             {
                 "id": "ac-23_gdn",

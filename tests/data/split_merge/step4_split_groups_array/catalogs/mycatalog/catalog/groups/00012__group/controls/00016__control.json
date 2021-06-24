@@ -29,6 +29,10 @@
                 "rel": "reference"
             },
             {
+                "href": "#f26af0d0-6d72-4a9d-8ecd-01bc21fd4f0e",
+                "rel": "reference"
+            },
+            {
                 "href": "#c28ae9a8-1121-42a9-a85e-00cfcc9b9a94",
                 "rel": "reference"
             },
@@ -66,7 +70,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Review and update the policy and procedures {{ pm-17_prm_1 }}."
+                        "prose": "Review and update the policy and procedures {{ insert: param, pm-17_prm_1 }}."
                     }
                 ]
             },

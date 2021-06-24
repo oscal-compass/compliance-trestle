@@ -41,7 +41,7 @@
             {
                 "id": "si-21_smt",
                 "name": "statement",
-                "prose": "Refresh {{ si-21_prm_1 }} at {{ si-21_prm_2 }} or generate the information on demand and delete the information when no longer needed."
+                "prose": "Refresh {{ insert: param, si-21_prm_1 }} at {{ insert: param, si-21_prm_2 }} or generate the information on demand and delete the information when no longer needed."
             },
             {
                 "id": "si-21_gdn",

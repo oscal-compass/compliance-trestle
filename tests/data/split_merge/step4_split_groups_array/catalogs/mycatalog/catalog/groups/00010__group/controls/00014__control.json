@@ -70,7 +70,7 @@
                     {
                         "id": "pe-15.1_smt",
                         "name": "statement",
-                        "prose": "Detect the presence of water near the system and alert {{ pe-15.1_prm_1 }} using {{ pe-15.1_prm_2 }}."
+                        "prose": "Detect the presence of water near the system and alert {{ insert: param, pe-15.1_prm_1 }} using {{ insert: param, pe-15.1_prm_2 }}."
                     },
                     {
                         "id": "pe-15.1_gdn",

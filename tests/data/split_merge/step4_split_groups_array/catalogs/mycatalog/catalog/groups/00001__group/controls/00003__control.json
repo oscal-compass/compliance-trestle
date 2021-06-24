@@ -74,7 +74,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Retain individual training records for {{ at-4_prm_1 }}."
+                        "prose": "Retain individual training records for {{ insert: param, at-4_prm_1 }}."
                     }
                 ]
             },

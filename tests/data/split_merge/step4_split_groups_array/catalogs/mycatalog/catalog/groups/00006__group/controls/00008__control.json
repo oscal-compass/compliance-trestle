@@ -41,7 +41,7 @@
             {
                 "id": "ia-9_smt",
                 "name": "statement",
-                "prose": "Uniquely identify and authenticate {{ ia-9_prm_1 }} before establishing communications with devices, users, or other services or applications."
+                "prose": "Uniquely identify and authenticate {{ insert: param, ia-9_prm_1 }} before establishing communications with devices, users, or other services or applications."
             },
             {
                 "id": "ia-9_gdn",

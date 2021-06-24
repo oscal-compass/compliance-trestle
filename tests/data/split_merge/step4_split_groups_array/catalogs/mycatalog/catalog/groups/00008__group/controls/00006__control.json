@@ -41,7 +41,7 @@
             {
                 "id": "ma-7_smt",
                 "name": "statement",
-                "prose": "Restrict or prohibit field maintenance on {{ ma-7_prm_1 }} to {{ ma-7_prm_2 }}."
+                "prose": "Restrict or prohibit field maintenance on {{ insert: param, ma-7_prm_1 }} to {{ insert: param, ma-7_prm_2 }}."
             },
             {
                 "id": "ma-7_gdn",

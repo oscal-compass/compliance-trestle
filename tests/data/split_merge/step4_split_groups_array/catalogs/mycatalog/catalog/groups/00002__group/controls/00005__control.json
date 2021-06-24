@@ -171,7 +171,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Review and analyze system audit records {{ au-6_prm_1 }} for indications of {{ au-6_prm_2 }} and the potential impact of the inappropriate or unusual activity;"
+                        "prose": "Review and analyze system audit records {{ insert: param, au-6_prm_1 }} for indications of {{ insert: param, au-6_prm_2 }} and the potential impact of the inappropriate or unusual activity;"
                     },
                     {
                         "id": "au-6_smt.b",
@@ -182,7 +182,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Report findings to {{ au-6_prm_3 }}; and"
+                        "prose": "Report findings to {{ insert: param, au-6_prm_3 }}; and"
                     },
                     {
                         "id": "au-6_smt.c",
@@ -238,7 +238,7 @@
                     {
                         "id": "au-6.1_smt",
                         "name": "statement",
-                        "prose": "Integrate audit record review, analysis, and reporting processes using {{ au-6.1_prm_1 }}."
+                        "prose": "Integrate audit record review, analysis, and reporting processes using {{ insert: param, au-6.1_prm_1 }}."
                     },
                     {
                         "id": "au-6.1_gdn",
@@ -362,12 +362,12 @@
                     {
                         "id": "au-6.5_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "vulnerability scanning information",
                                 "performance data",
                                 "system monitoring information",
-                                " {{ au-6.5_prm_2 }} "
+                                " {{ insert: param, au-6.5_prm_2 }} "
                             ]
                         }
                     },
@@ -405,7 +405,7 @@
                     {
                         "id": "au-6.5_smt",
                         "name": "statement",
-                        "prose": "Integrate analysis of audit records with analysis of {{ au-6.5_prm_1 }} to further enhance the ability to identify inappropriate or unusual activity."
+                        "prose": "Integrate analysis of audit records with analysis of {{ insert: param, au-6.5_prm_1 }} to further enhance the ability to identify inappropriate or unusual activity."
                     },
                     {
                         "id": "au-6.5_gdn",
@@ -455,7 +455,7 @@
                     {
                         "id": "au-6.7_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "system process",
                                 "role",
@@ -484,7 +484,7 @@
                     {
                         "id": "au-6.7_smt",
                         "name": "statement",
-                        "prose": "Specify the permitted actions for each {{ au-6.7_prm_1 }} associated with the review, analysis, and reporting of audit record information."
+                        "prose": "Specify the permitted actions for each {{ insert: param, au-6.7_prm_1 }} associated with the review, analysis, and reporting of audit record information."
                     },
                     {
                         "id": "au-6.7_gdn",
@@ -601,14 +601,6 @@
                     {
                         "href": "#au-6",
                         "rel": "incorporated-into"
-                    },
-                    {
-                        "href": "#cfdb1858-c473-46b3-89f9-a700308d0be2",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#10cf2fad-a216-41f9-bb1a-531b7e3119e3",
-                        "rel": "reference"
                     }
                 ]
             }

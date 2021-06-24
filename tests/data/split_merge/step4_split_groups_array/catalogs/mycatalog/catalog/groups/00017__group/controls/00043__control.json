@@ -65,7 +65,7 @@
             {
                 "id": "sc-44_smt",
                 "name": "statement",
-                "prose": "Employ a detonation chamber capability within {{ sc-44_prm_1 }}."
+                "prose": "Employ a detonation chamber capability within {{ insert: param, sc-44_prm_1 }}."
             },
             {
                 "id": "sc-44_gdn",

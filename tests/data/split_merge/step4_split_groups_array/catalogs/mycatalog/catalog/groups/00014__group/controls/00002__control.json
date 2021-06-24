@@ -119,7 +119,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Identify and document the {{ pt-3_prm_1 }} for processing personally identifiable information;"
+                        "prose": "Identify and document the {{ insert: param, pt-3_prm_1 }} for processing personally identifiable information;"
                     },
                     {
                         "id": "pt-3_smt.b",
@@ -141,7 +141,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Restrict the {{ pt-3_prm_2 }} of personally identifiable information to only that which is compatible with the identified purpose(s); and"
+                        "prose": "Restrict the {{ insert: param, pt-3_prm_2 }} of personally identifiable information to only that which is compatible with the identified purpose(s); and"
                     },
                     {
                         "id": "pt-3_smt.d",
@@ -152,7 +152,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Monitor changes in processing personally identifiable information and implement {{ pt-3_prm_3 }} to ensure that any changes are made in accordance with {{ pt-3_prm_4 }}."
+                        "prose": "Monitor changes in processing personally identifiable information and implement {{ insert: param, pt-3_prm_3 }} to ensure that any changes are made in accordance with {{ insert: param, pt-3_prm_4 }}."
                     }
                 ]
             },
@@ -233,7 +233,7 @@
                     {
                         "id": "pt-3.1_smt",
                         "name": "statement",
-                        "prose": "Attach data tags containing the following purposes to {{ pt-3.1_prm_1 }}: {{ pt-3.1_prm_2 }}."
+                        "prose": "Attach data tags containing the following purposes to {{ insert: param, pt-3.1_prm_1 }}: {{ insert: param, pt-3.1_prm_2 }}."
                     },
                     {
                         "id": "pt-3.1_gdn",
@@ -266,18 +266,6 @@
                     {
                         "href": "#pt-3",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a2590922-82f3-4277-83c0-ca5bee06dba4",
-                        "rel": "reference"
                     },
                     {
                         "href": "#ca-6",
@@ -320,7 +308,7 @@
                     {
                         "id": "pt-3.2_smt",
                         "name": "statement",
-                        "prose": "Track processing purposes of personally identifiable information using {{ pt-3.2_prm_1 }}."
+                        "prose": "Track processing purposes of personally identifiable information using {{ insert: param, pt-3.2_prm_1 }}."
                     },
                     {
                         "id": "pt-3.2_gdn",

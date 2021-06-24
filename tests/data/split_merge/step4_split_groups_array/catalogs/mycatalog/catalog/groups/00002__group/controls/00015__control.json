@@ -49,7 +49,7 @@
             {
                 "id": "au-16_smt",
                 "name": "statement",
-                "prose": "Employ {{ au-16_prm_1 }} for coordinating {{ au-16_prm_2 }} among external organizations when audit information is transmitted across organizational boundaries."
+                "prose": "Employ {{ insert: param, au-16_prm_1 }} for coordinating {{ insert: param, au-16_prm_2 }} among external organizations when audit information is transmitted across organizational boundaries."
             },
             {
                 "id": "au-16_gdn",
@@ -149,7 +149,7 @@
                     {
                         "id": "au-16.2_smt",
                         "name": "statement",
-                        "prose": "Provide cross-organizational audit information to {{ au-16.2_prm_1 }} based on {{ au-16.2_prm_2 }}."
+                        "prose": "Provide cross-organizational audit information to {{ insert: param, au-16.2_prm_1 }} based on {{ insert: param, au-16.2_prm_2 }}."
                     },
                     {
                         "id": "au-16.2_gdn",
@@ -188,7 +188,7 @@
                     {
                         "id": "au-16.3_smt",
                         "name": "statement",
-                        "prose": "Implement {{ au-16.3_prm_1 }} to disassociate individuals from audit information transmitted across organizational boundaries."
+                        "prose": "Implement {{ insert: param, au-16.3_prm_1 }} to disassociate individuals from audit information transmitted across organizational boundaries."
                     },
                     {
                         "id": "au-16.3_gdn",

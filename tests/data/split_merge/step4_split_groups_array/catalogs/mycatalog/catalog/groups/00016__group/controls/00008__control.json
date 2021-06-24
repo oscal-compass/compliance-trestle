@@ -107,7 +107,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Require that providers of external system services comply with organizational security and privacy requirements and employ the following controls: {{ sa-9_prm_1 }};"
+                        "prose": "Require that providers of external system services comply with organizational security and privacy requirements and employ the following controls: {{ insert: param, sa-9_prm_1 }};"
                     },
                     {
                         "id": "sa-9_smt.b",
@@ -129,7 +129,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Employ the following processes, methods, and techniques to monitor control compliance by external service providers on an ongoing basis: {{ sa-9_prm_2 }}."
+                        "prose": "Employ the following processes, methods, and techniques to monitor control compliance by external service providers on an ongoing basis: {{ insert: param, sa-9_prm_2 }}."
                     }
                 ]
             },
@@ -203,7 +203,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Verify that the acquisition or outsourcing of dedicated information security services is approved by {{ sa-9.1_prm_1 }}."
+                                "prose": "Verify that the acquisition or outsourcing of dedicated information security services is approved by {{ insert: param, sa-9.1_prm_1 }}."
                             }
                         ]
                     },
@@ -252,7 +252,7 @@
                     {
                         "id": "sa-9.2_smt",
                         "name": "statement",
-                        "prose": "Require providers of the following external system services to identify the functions, ports, protocols, and other services required for the use of such services: {{ sa-9.2_prm_1 }}."
+                        "prose": "Require providers of the following external system services to identify the functions, ports, protocols, and other services required for the use of such services: {{ insert: param, sa-9.2_prm_1 }}."
                     },
                     {
                         "id": "sa-9.2_gdn",
@@ -295,7 +295,7 @@
                     {
                         "id": "sa-9.3_smt",
                         "name": "statement",
-                        "prose": "Establish, document, and maintain trust relationships with external service providers based on the following requirements, properties, factors, or conditions: {{ sa-9.3_prm_1 }}."
+                        "prose": "Establish, document, and maintain trust relationships with external service providers based on the following requirements, properties, factors, or conditions: {{ insert: param, sa-9.3_prm_1 }}."
                     },
                     {
                         "id": "sa-9.3_gdn",
@@ -338,7 +338,7 @@
                     {
                         "id": "sa-9.4_smt",
                         "name": "statement",
-                        "prose": "Take the following actions to verify that the interests of {{ sa-9.4_prm_1 }} are consistent with and reflect organizational interests: {{ sa-9.4_prm_2 }}."
+                        "prose": "Take the following actions to verify that the interests of {{ insert: param, sa-9.4_prm_1 }} are consistent with and reflect organizational interests: {{ insert: param, sa-9.4_prm_2 }}."
                     },
                     {
                         "id": "sa-9.4_gdn",
@@ -355,7 +355,7 @@
                     {
                         "id": "sa-9.5_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "information processing",
                                 "information or data",
@@ -400,12 +400,12 @@
                     {
                         "id": "sa-9.5_smt",
                         "name": "statement",
-                        "prose": "Restrict the location of {{ sa-9.5_prm_1 }} to {{ sa-9.5_prm_2 }} based on {{ sa-9.5_prm_3 }}."
+                        "prose": "Restrict the location of {{ insert: param, sa-9.5_prm_1 }} to {{ insert: param, sa-9.5_prm_2 }} based on {{ insert: param, sa-9.5_prm_3 }}."
                     },
                     {
                         "id": "sa-9.5_gdn",
                         "name": "guidance",
-                        "prose": "The location of information processing, information and data storage, or system services can have a direct impact on the ability of organizations to successfully execute their mission and business functions. The impact occurs when external providers control the location of processing, storage, or services. The criteria that external providers use for the selection of processing, storage, or service locations may be different from the criteria that organizations use. For example, organizations may desire that data or information storage locations be restricted to certain locations to help facilitate incident response activities in case of information security or privacy incidents. Incident response activities, including forensic analyses and after-the-fact investigations, may be adversely affected by the governing laws, policies, or protocols in the locations where processing and storage occur and/or the locations from which system services emanate."
+                        "prose": "The location of information processing, information and data storage, or system services can have a direct impact on the ability of organizations to successfully execute their mission and business functions. The impact occurs when external providers control the location of processing, storage, or services. The criteria that external providers use for the selection of processing, storage, or service locations may be different from the criteria that organizations use. For example, organizations may desire that data or information storage locations be restricted to certain locations to help facilitate incident response activities in case of information security incidents or breaches. Incident response activities, including forensic analyses and after-the-fact investigations, may be adversely affected by the governing laws, policies, or protocols in the locations where processing and storage occur and/or the locations from which system services emanate."
                     }
                 ]
             },
@@ -509,26 +509,6 @@
                     {
                         "href": "#sa-9",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#77faf0bc-c394-44ad-9154-bbac3b79c8ad",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e8e84963-14fc-4c3a-be05-b412a5d37cd2",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7dbd6d9f-29d6-4d1d-9766-f2d77ff3c849",
-                        "rel": "reference"
                     },
                     {
                         "href": "#sa-5",

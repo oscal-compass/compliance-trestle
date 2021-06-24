@@ -199,7 +199,7 @@
                                 "value": "f."
                             }
                         ],
-                        "prose": "Changing or refreshing authenticators {{ ia-5_prm_1 }} or when {{ ia-5_prm_2 }} occur;"
+                        "prose": "Changing or refreshing authenticators {{ insert: param, ia-5_prm_1 }} or when {{ insert: param, ia-5_prm_2 }} occur;"
                     },
                     {
                         "id": "ia-5_smt.g",
@@ -292,7 +292,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Maintain a list of commonly-used, expected, or compromised passwords and update the list {{ ia-5.1_prm_1 }} and when organizational passwords are suspected to have been compromised directly or indirectly;"
+                                "prose": "Maintain a list of commonly-used, expected, or compromised passwords and update the list {{ insert: param, ia-5.1_prm_1 }} and when organizational passwords are suspected to have been compromised directly or indirectly;"
                             },
                             {
                                 "id": "ia-5.1_smt.b",
@@ -369,7 +369,7 @@
                                         "value": "(h)"
                                     }
                                 ],
-                                "prose": "Enforce the following composition and complexity rules: {{ ia-5.1_prm_2 }}."
+                                "prose": "Enforce the following composition and complexity rules: {{ insert: param, ia-5.1_prm_2 }}."
                             }
                         ]
                     },
@@ -636,7 +636,7 @@
                     {
                         "id": "ia-5.7_smt",
                         "name": "statement",
-                        "prose": "Ensure that unencrypted static authenticators are not embedded in applications or\n\nother forms of static storage."
+                        "prose": "Ensure that unencrypted static authenticators are not embedded in applications or other forms of static storage."
                     },
                     {
                         "id": "ia-5.7_gdn",
@@ -679,7 +679,7 @@
                     {
                         "id": "ia-5.8_smt",
                         "name": "statement",
-                        "prose": "Implement {{ ia-5.8_prm_1 }} to manage the risk of compromise due to individuals having accounts on multiple systems."
+                        "prose": "Implement {{ insert: param, ia-5.8_prm_1 }} to manage the risk of compromise due to individuals having accounts on multiple systems."
                     },
                     {
                         "id": "ia-5.8_gdn",
@@ -726,7 +726,7 @@
                     {
                         "id": "ia-5.9_smt",
                         "name": "statement",
-                        "prose": "Use the following external organizations to federate credentials: {{ ia-5.9_prm_1 }}."
+                        "prose": "Use the following external organizations to federate credentials: {{ insert: param, ia-5.9_prm_1 }}."
                     },
                     {
                         "id": "ia-5.9_gdn",
@@ -773,7 +773,7 @@
                     {
                         "id": "ia-5.10_smt",
                         "name": "statement",
-                        "prose": "Bind identities and authenticators dynamically using the following rules: {{ ia-5.10_prm_1 }}."
+                        "prose": "Bind identities and authenticators dynamically using the following rules: {{ insert: param, ia-5.10_prm_1 }}."
                     },
                     {
                         "id": "ia-5.10_gdn",
@@ -845,7 +845,7 @@
                     {
                         "id": "ia-5.12_smt",
                         "name": "statement",
-                        "prose": "For biometric-based authentication, employ mechanisms that satisfy the following biometric quality requirements {{ ia-5.12_prm_1 }}."
+                        "prose": "For biometric-based authentication, employ mechanisms that satisfy the following biometric quality requirements {{ insert: param, ia-5.12_prm_1 }}."
                     },
                     {
                         "id": "ia-5.12_gdn",
@@ -884,7 +884,7 @@
                     {
                         "id": "ia-5.13_smt",
                         "name": "statement",
-                        "prose": "Prohibit the use of cached authenticators after {{ ia-5.13_prm_1 }}."
+                        "prose": "Prohibit the use of cached authenticators after {{ insert: param, ia-5.13_prm_1 }}."
                     },
                     {
                         "id": "ia-5.13_gdn",
@@ -896,7 +896,7 @@
             {
                 "id": "ia-5.14",
                 "class": "SP800-53-enhancement",
-                "title": "Managing Content of Pki Trust Stores",
+                "title": "Managing Content of PKI Trust Stores",
                 "props": [
                     {
                         "name": "label",
@@ -1010,7 +1010,7 @@
                     {
                         "id": "ia-5.16_smt",
                         "name": "statement",
-                        "prose": "Require that the issuance of {{ ia-5.16_prm_1 }} be conducted {{ ia-5.16_prm_2 }} before {{ ia-5.16_prm_3 }} with authorization by {{ ia-5.16_prm_4 }}."
+                        "prose": "Require that the issuance of {{ insert: param, ia-5.16_prm_1 }} be conducted {{ insert: param, ia-5.16_prm_2 }} before {{ insert: param, ia-5.16_prm_3 }} with authorization by {{ insert: param, ia-5.16_prm_4 }}."
                     },
                     {
                         "id": "ia-5.16_gdn",
@@ -1084,58 +1084,6 @@
                     {
                         "href": "#ia-5",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#eea3c092-42ed-4382-a6f4-1adadef01b9d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#858705be-3c1f-48aa-a328-0ce398d95ef0",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7af2e6ec-9f7e-4232-ad3f-09888eb0793a",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#828856bd-d7c4-427b-8b51-815517ec382d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#15dc76ff-b17a-4eeb-8948-8ea8de3ccc2c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#91701292-8bcd-4d2e-a5bd-59ab61e34b3c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#4f5f51ac-2b8d-4b90-a3c7-46f56e967617",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#604774da-9e1d-48eb-9c62-4e959dc80737",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#81aeb0a3-d0ee-4e44-b842-6bf28d2bd7f5",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
@@ -1152,7 +1100,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Employ {{ ia-5.18_prm_1 }} to generate and manage passwords; and"
+                                "prose": "Employ {{ insert: param, ia-5.18_prm_1 }} to generate and manage passwords; and"
                             },
                             {
                                 "id": "ia-5.18_smt.b",
@@ -1163,7 +1111,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Protect the passwords using {{ ia-5.18_prm_2 }}."
+                                "prose": "Protect the passwords using {{ insert: param, ia-5.18_prm_2 }}."
                             }
                         ]
                     },

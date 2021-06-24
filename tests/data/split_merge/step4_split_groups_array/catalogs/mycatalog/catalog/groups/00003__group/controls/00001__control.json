@@ -199,7 +199,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Assess the controls in the system and its environment of operation {{ ca-2_prm_1 }} to determine the extent to which the controls are implemented correctly, operating as intended, and producing the desired outcome with respect to meeting established security and privacy requirements;"
+                        "prose": "Assess the controls in the system and its environment of operation {{ insert: param, ca-2_prm_1 }} to determine the extent to which the controls are implemented correctly, operating as intended, and producing the desired outcome with respect to meeting established security and privacy requirements;"
                     },
                     {
                         "id": "ca-2_smt.e",
@@ -221,7 +221,7 @@
                                 "value": "f."
                             }
                         ],
-                        "prose": "Provide the results of the control assessment to {{ ca-2_prm_2 }}."
+                        "prose": "Provide the results of the control assessment to {{ insert: param, ca-2_prm_2 }}."
                     }
                 ]
             },
@@ -286,7 +286,7 @@
                     {
                         "id": "ca-2.2_prm_3",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "in-depth monitoring",
                                 "security instrumentation",
@@ -296,7 +296,7 @@
                                 "insider threat assessment",
                                 "performance and load testing",
                                 "data leakage or data loss assessment",
-                                " {{ ca-2.2_prm_4 }} "
+                                " {{ insert: param, ca-2.2_prm_4 }} "
                             ]
                         }
                     },
@@ -334,7 +334,7 @@
                     {
                         "id": "ca-2.2_smt",
                         "name": "statement",
-                        "prose": "Include as part of control assessments, {{ ca-2.2_prm_1 }}, {{ ca-2.2_prm_2 }}, {{ ca-2.2_prm_3 }}."
+                        "prose": "Include as part of control assessments, {{ insert: param, ca-2.2_prm_1 }}, {{ insert: param, ca-2.2_prm_2 }}, {{ insert: param, ca-2.2_prm_3 }}."
                     },
                     {
                         "id": "ca-2.2_gdn",
@@ -377,46 +377,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#30eb758a-2707-4bca-90ad-949a74d4eb16",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#cec037f3-8aba-4c97-84b4-4082f9e515d2",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a21aef46-7330-48a0-b2e1-c5bb8b2dd11d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#122177fa-c4ed-485d-8345-3082c0fb9a06",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#067223d8-1ec7-45c5-b21b-c848da6de8fb",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#bbac9fc2-df5b-4f2d-bf99-90d0ade45349",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#98d415ca-7281-4064-9931-0c366637e324",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#sa-4",
                         "rel": "related"
                     }
@@ -425,7 +385,7 @@
                     {
                         "id": "ca-2.3_smt",
                         "name": "statement",
-                        "prose": "Leverage the results of control assessments performed by {{ ca-2.3_prm_1 }} on {{ ca-2.3_prm_2 }} when the assessment meets {{ ca-2.3_prm_3 }}."
+                        "prose": "Leverage the results of control assessments performed by {{ insert: param, ca-2.3_prm_1 }} on {{ insert: param, ca-2.3_prm_2 }} when the assessment meets {{ insert: param, ca-2.3_prm_3 }}."
                     },
                     {
                         "id": "ca-2.3_gdn",

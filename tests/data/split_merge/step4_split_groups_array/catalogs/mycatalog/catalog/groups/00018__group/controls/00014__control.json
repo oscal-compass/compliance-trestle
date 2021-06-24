@@ -37,7 +37,7 @@
             {
                 "id": "si-15_smt",
                 "name": "statement",
-                "prose": "Validate information output from the following software programs and/or applications to ensure that the information is consistent with the expected content: {{ si-15_prm_1 }}."
+                "prose": "Validate information output from the following software programs and/or applications to ensure that the information is consistent with the expected content: {{ insert: param, si-15_prm_1 }}."
             },
             {
                 "id": "si-15_gdn",

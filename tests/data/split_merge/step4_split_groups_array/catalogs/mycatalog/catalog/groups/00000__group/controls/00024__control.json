@@ -57,7 +57,7 @@
             {
                 "id": "ac-25_smt",
                 "name": "statement",
-                "prose": "Implement a reference monitor for {{ ac-25_prm_1 }} that is tamperproof, always invoked, and small enough to be subject to analysis and testing, the completeness of which can be assured."
+                "prose": "Implement a reference monitor for {{ insert: param, ac-25_prm_1 }} that is tamperproof, always invoked, and small enough to be subject to analysis and testing, the completeness of which can be assured."
             },
             {
                 "id": "ac-25_gdn",

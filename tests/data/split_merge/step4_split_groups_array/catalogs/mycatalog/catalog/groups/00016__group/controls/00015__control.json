@@ -45,7 +45,7 @@
             {
                 "id": "sa-16_smt",
                 "name": "statement",
-                "prose": "Require the developer of the system, system component, or system service to provide the following training on the correct use and operation of the implemented security and privacy functions, controls, and/or mechanisms: {{ sa-16_prm_1 }}."
+                "prose": "Require the developer of the system, system component, or system service to provide the following training on the correct use and operation of the implemented security and privacy functions, controls, and/or mechanisms: {{ insert: param, sa-16_prm_1 }}."
             },
             {
                 "id": "sa-16_gdn",

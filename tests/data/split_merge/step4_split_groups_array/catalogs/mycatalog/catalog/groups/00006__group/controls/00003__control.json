@@ -128,7 +128,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Receiving authorization from {{ ia-4_prm_1 }} to assign an individual, group, role, service, or device identifier;"
+                        "prose": "Receiving authorization from {{ insert: param, ia-4_prm_1 }} to assign an individual, group, role, service, or device identifier;"
                     },
                     {
                         "id": "ia-4_smt.b",
@@ -161,7 +161,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Preventing reuse of identifiers for {{ ia-4_prm_2 }}."
+                        "prose": "Preventing reuse of identifiers for {{ insert: param, ia-4_prm_2 }}."
                     }
                 ]
             },
@@ -293,7 +293,7 @@
                     {
                         "id": "ia-4.4_smt",
                         "name": "statement",
-                        "prose": "Manage individual identifiers by uniquely identifying each individual as {{ ia-4.4_prm_1 }}."
+                        "prose": "Manage individual identifiers by uniquely identifying each individual as {{ insert: param, ia-4.4_prm_1 }}."
                     },
                     {
                         "id": "ia-4.4_gdn",
@@ -336,12 +336,12 @@
                     {
                         "id": "ia-4.5_smt",
                         "name": "statement",
-                        "prose": "Manage individual identifiers dynamically in accordance with {{ ia-4.5_prm_1 }}."
+                        "prose": "Manage individual identifiers dynamically in accordance with {{ insert: param, ia-4.5_prm_1 }}."
                     },
                     {
                         "id": "ia-4.5_gdn",
                         "name": "guidance",
-                        "prose": "\u00a0 In contrast to conventional approaches to identification that presume static accounts for preregistered users, many distributed systems establish identifiers at runtime for entities that were previously unknown.\u00a0When identifiers are established at runtime for previously unknown entities, organizations can anticipate and provision for the dynamic establishment of identifiers. Pre-established trust relationships and mechanisms with appropriate authorities to validate credentials and related identifiers are essential."
+                        "prose": "In contrast to conventional approaches to identification that presume static accounts for preregistered users, many distributed systems establish identifiers at runtime for entities that were previously unknown. When identifiers are established at runtime for previously unknown entities, organizations can anticipate and provision for the dynamic establishment of identifiers. Pre-established trust relationships and mechanisms with appropriate authorities to validate credentials and related identifiers are essential."
                     }
                 ]
             },
@@ -387,7 +387,7 @@
                     {
                         "id": "ia-4.6_smt",
                         "name": "statement",
-                        "prose": "Coordinate with the following external organizations for cross-organization management of identifiers: {{ ia-4.6_prm_1 }}."
+                        "prose": "Coordinate with the following external organizations for cross-organization management of identifiers: {{ insert: param, ia-4.6_prm_1 }}."
                     },
                     {
                         "id": "ia-4.6_gdn",
@@ -482,33 +482,13 @@
                     {
                         "href": "#ia-4",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#858705be-3c1f-48aa-a328-0ce398d95ef0",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7af2e6ec-9f7e-4232-ad3f-09888eb0793a",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#828856bd-d7c4-427b-8b51-815517ec382d",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "ia-4.9_smt",
                         "name": "statement",
-                        "prose": "Maintain the attributes for each uniquely identified individual, device, or service in {{ ia-4.9_prm_1 }}."
+                        "prose": "Maintain the attributes for each uniquely identified individual, device, or service in {{ insert: param, ia-4.9_prm_1 }}."
                     },
                     {
                         "id": "ia-4.9_gdn",

@@ -232,7 +232,7 @@
                                         "value": "7."
                                     }
                                 ],
-                                "prose": "Is reviewed and approved by {{ cp-2_prm_1 }};"
+                                "prose": "Is reviewed and approved by {{ insert: param, cp-2_prm_1 }};"
                             }
                         ]
                     },
@@ -245,7 +245,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Distribute copies of the contingency plan to {{ cp-2_prm_2 }};"
+                        "prose": "Distribute copies of the contingency plan to {{ insert: param, cp-2_prm_2 }};"
                     },
                     {
                         "id": "cp-2_smt.c",
@@ -267,7 +267,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Review the contingency plan for the system {{ cp-2_prm_3 }};"
+                        "prose": "Review the contingency plan for the system {{ insert: param, cp-2_prm_3 }};"
                     },
                     {
                         "id": "cp-2_smt.e",
@@ -289,7 +289,7 @@
                                 "value": "f."
                             }
                         ],
-                        "prose": "Communicate contingency plan changes to {{ cp-2_prm_4 }};"
+                        "prose": "Communicate contingency plan changes to {{ insert: param, cp-2_prm_4 }};"
                     },
                     {
                         "id": "cp-2_smt.g",
@@ -451,7 +451,7 @@
                     {
                         "id": "cp-2.3_smt",
                         "name": "statement",
-                        "prose": "Plan for the resumption of {{ cp-2.3_prm_1 }} mission and business functions within {{ cp-2.3_prm_2 }} of contingency plan activation."
+                        "prose": "Plan for the resumption of {{ insert: param, cp-2.3_prm_1 }} mission and business functions within {{ insert: param, cp-2.3_prm_2 }} of contingency plan activation."
                     },
                     {
                         "id": "cp-2.3_gdn",
@@ -520,7 +520,7 @@
                     {
                         "id": "cp-2.5_smt",
                         "name": "statement",
-                        "prose": "Plan for the continuance of {{ cp-2.5_prm_1 }} mission and business functions with minimal or no loss of operational continuity and sustains that continuity until full system restoration at primary processing and/or storage sites."
+                        "prose": "Plan for the continuance of {{ insert: param, cp-2.5_prm_1 }} mission and business functions with minimal or no loss of operational continuity and sustains that continuity until full system restoration at primary processing and/or storage sites."
                     },
                     {
                         "id": "cp-2.5_gdn",
@@ -564,7 +564,7 @@
                     {
                         "id": "cp-2.6_smt",
                         "name": "statement",
-                        "prose": "Plan for the transfer of {{ cp-2.6_prm_1 }} mission and business functions to alternate processing and/or storage sites with minimal or no loss of operational continuity and sustain that continuity through system restoration to primary processing and/or storage sites."
+                        "prose": "Plan for the transfer of {{ insert: param, cp-2.6_prm_1 }} mission and business functions to alternate processing and/or storage sites with minimal or no loss of operational continuity and sustain that continuity through system restoration to primary processing and/or storage sites."
                     },
                     {
                         "id": "cp-2.6_gdn",
@@ -641,14 +641,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#bc39f179-c735-4da2-b7a7-b2b622119755",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#d4296805-2dca-4c63-a95f-eeccaa826aec",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#cm-8",
                         "rel": "related"
                     },
@@ -661,7 +653,7 @@
                     {
                         "id": "cp-2.8_smt",
                         "name": "statement",
-                        "prose": "Identify critical system assets supporting {{ cp-2.8_prm_1 }} mission and business functions."
+                        "prose": "Identify critical system assets supporting {{ insert: param, cp-2.8_prm_1 }} mission and business functions."
                     },
                     {
                         "id": "cp-2.8_gdn",
