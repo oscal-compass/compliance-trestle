@@ -46,7 +46,7 @@
             {
                 "id": "sc-41_smt",
                 "name": "statement",
-                "prose": " {{ sc-41_prm_1 }} disable or remove {{ sc-41_prm_2 }} on the following systems or system components: {{ sc-41_prm_3 }}."
+                "prose": " {{ insert: param, sc-41_prm_1 }} disable or remove {{ insert: param, sc-41_prm_2 }} on the following systems or system components: {{ insert: param, sc-41_prm_3 }}."
             },
             {
                 "id": "sc-41_gdn",

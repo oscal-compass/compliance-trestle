@@ -73,15 +73,15 @@
                 "rel": "related"
             },
             {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
                 "href": "#ir-7",
                 "rel": "related"
             },
             {
                 "href": "#ir-9",
-                "rel": "related"
-            },
-            {
-                "href": "#ir-10",
                 "rel": "related"
             },
             {
@@ -147,7 +147,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Provide role-based security and privacy training to personnel with the following roles and responsibilities: {{ at-3_prm_1 }}:",
+                        "prose": "Provide role-based security and privacy training to personnel with the following roles and responsibilities: {{ insert: param, at-3_prm_1 }}:",
                         "parts": [
                             {
                                 "id": "at-3_smt.a.1",
@@ -158,7 +158,7 @@
                                         "value": "1."
                                     }
                                 ],
-                                "prose": "Before authorizing access to the system, information, or performing assigned duties, and {{ at-3_prm_2 }} thereafter; and"
+                                "prose": "Before authorizing access to the system, information, or performing assigned duties, and {{ insert: param, at-3_prm_2 }} thereafter; and"
                             },
                             {
                                 "id": "at-3_smt.a.2",
@@ -182,7 +182,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Update role-based training content {{ at-3_prm_3 }} and following {{ at-3_prm_4 }}; and"
+                        "prose": "Update role-based training content {{ insert: param, at-3_prm_3 }} and following {{ insert: param, at-3_prm_4 }}; and"
                     },
                     {
                         "id": "at-3_smt.c",
@@ -193,14 +193,14 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Incorporate lessons learned from internal or external security or privacy incidents into role-based training."
+                        "prose": "Incorporate lessons learned from internal or external security incidents or breaches into role-based training."
                     }
                 ]
             },
             {
                 "id": "at-3_gdn",
                 "name": "guidance",
-                "prose": "Organizations determine the content of training based on the assigned roles and responsibilities of individuals as well as the security and privacy requirements of organizations and the systems to which personnel have authorized access, including technical training specifically tailored for assigned duties. Roles that may require role-based training include senior leaders or management officials (e.g., head of agency/chief executive officer, chief information officer, senior accountable official for risk management, senior agency information security officer, senior agency official for privacy), system owners; authorizing officials; system security officers; privacy officers; acquisition and procurement officials; enterprise architects; systems engineers; software developers; systems security engineers; privacy engineers; system, network, and database administrators; auditors; personnel conducting configuration management activities; personnel performing verification and validation activities; personnel with access to system-level software; control assessors; personnel with contingency planning and incident response duties; personnel with privacy management responsibilities; and personnel with access to personally identifiable information.\n\nComprehensive role-based training addresses management, operational, and technical roles and responsibilities covering physical, personnel, and technical controls. Role-based training also includes policies, procedures, tools, methods, and artifacts for the security and privacy roles defined. Organizations provide the training necessary for individuals to fulfill their responsibilities related to operations and supply chain risk management within the context of organizational security and privacy programs. Role-based training also applies to contractors who provide services to federal agencies. Types of training include web-based and computer-based training, classroom-style training, and hands-on training (including micro-training). Updating role-based training on a regular basis helps to ensure that the content remains relevant and effective. Events that may precipitate an update to role-based training content include, but are not limited to, assessment or audit findings, security or privacy incidents, or changes in applicable laws, executive orders, directives, regulations, policies, standards, and guidelines."
+                "prose": "Organizations determine the content of training based on the assigned roles and responsibilities of individuals as well as the security and privacy requirements of organizations and the systems to which personnel have authorized access, including technical training specifically tailored for assigned duties. Roles that may require role-based training include senior leaders or management officials (e.g., head of agency/chief executive officer, chief information officer, senior accountable official for risk management, senior agency information security officer, senior agency official for privacy), system owners; authorizing officials; system security officers; privacy officers; acquisition and procurement officials; enterprise architects; systems engineers; software developers; systems security engineers; privacy engineers; system, network, and database administrators; auditors; personnel conducting configuration management activities; personnel performing verification and validation activities; personnel with access to system-level software; control assessors; personnel with contingency planning and incident response duties; personnel with privacy management responsibilities; and personnel with access to personally identifiable information.\n\nComprehensive role-based training addresses management, operational, and technical roles and responsibilities covering physical, personnel, and technical controls. Role-based training also includes policies, procedures, tools, methods, and artifacts for the security and privacy roles defined. Organizations provide the training necessary for individuals to fulfill their responsibilities related to operations and supply chain risk management within the context of organizational security and privacy programs. Role-based training also applies to contractors who provide services to federal agencies. Types of training include web-based and computer-based training, classroom-style training, and hands-on training (including micro-training). Updating role-based training on a regular basis helps to ensure that the content remains relevant and effective. Events that may precipitate an update to role-based training content include, but are not limited to, assessment or audit findings, security incidents or breaches, or changes in applicable laws, executive orders, directives, regulations, policies, standards, and guidelines."
             }
         ],
         "controls": [
@@ -258,7 +258,7 @@
                     {
                         "id": "at-3.1_smt",
                         "name": "statement",
-                        "prose": "Provide {{ at-3.1_prm_1 }} with initial and {{ at-3.1_prm_2 }} training in the employment and operation of environmental controls."
+                        "prose": "Provide {{ insert: param, at-3.1_prm_1 }} with initial and {{ insert: param, at-3.1_prm_2 }} training in the employment and operation of environmental controls."
                     },
                     {
                         "id": "at-3.1_gdn",
@@ -313,7 +313,7 @@
                     {
                         "id": "at-3.2_smt",
                         "name": "statement",
-                        "prose": "Provide {{ at-3.2_prm_1 }} with initial and {{ at-3.2_prm_2 }} training in the employment and operation of physical security controls."
+                        "prose": "Provide {{ insert: param, at-3.2_prm_1 }} with initial and {{ insert: param, at-3.2_prm_2 }} training in the employment and operation of physical security controls."
                     },
                     {
                         "id": "at-3.2_gdn",
@@ -376,7 +376,7 @@
                 "links": [
                     {
                         "href": "#at-2.4",
-                        "rel": "incorporated-into"
+                        "rel": "moved-to"
                     }
                 ]
             },
@@ -410,18 +410,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#511f6832-23ca-49a3-8c0f-ce493373cab8",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#276bd50a-7e58-48e5-a405-8c8cb91d7a5f",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#pt-2",
                         "rel": "related"
                     },
@@ -442,7 +430,7 @@
                     {
                         "id": "at-3.5_smt",
                         "name": "statement",
-                        "prose": "Provide {{ at-3.5_prm_1 }} with initial and {{ at-3.5_prm_2 }} training in the employment and operation of personally identifiable information processing and transparency controls."
+                        "prose": "Provide {{ insert: param, at-3.5_prm_1 }} with initial and {{ insert: param, at-3.5_prm_2 }} training in the employment and operation of personally identifiable information processing and transparency controls."
                     },
                     {
                         "id": "at-3.5_gdn",

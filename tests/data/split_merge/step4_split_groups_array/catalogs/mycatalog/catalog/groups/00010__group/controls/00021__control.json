@@ -45,7 +45,7 @@
             {
                 "id": "pe-22_smt",
                 "name": "statement",
-                "prose": "Mark {{ pe-22_prm_1 }} indicating the impact level or classification level of the information permitted to be processed, stored, or transmitted by the hardware component."
+                "prose": "Mark {{ insert: param, pe-22_prm_1 }} indicating the impact level or classification level of the information permitted to be processed, stored, or transmitted by the hardware component."
             },
             {
                 "id": "pe-22_gdn",

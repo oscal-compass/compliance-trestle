@@ -187,7 +187,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Identify the types of events that the system is capable of logging in support of the audit function: {{ au-2_prm_1 }};"
+                        "prose": "Identify the types of events that the system is capable of logging in support of the audit function: {{ insert: param, au-2_prm_1 }};"
                     },
                     {
                         "id": "au-2_smt.b",
@@ -209,7 +209,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Specify the following event types for logging within the system: {{ au-2_prm_2 }};"
+                        "prose": "Specify the following event types for logging within the system: {{ insert: param, au-2_prm_2 }};"
                     },
                     {
                         "id": "au-2_smt.d",
@@ -231,7 +231,7 @@
                                 "value": "e."
                             }
                         ],
-                        "prose": "Review and update the event types selected for logging {{ au-2_prm_3 }}."
+                        "prose": "Review and update the event types selected for logging {{ insert: param, au-2_prm_3 }}."
                     }
                 ]
             },
@@ -339,14 +339,6 @@
                     {
                         "href": "#ac-6.9",
                         "rel": "incorporated-into"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#5eee45d8-3313-4fdc-8d54-1742092bbdd6",
-                        "rel": "reference"
                     }
                 ]
             }

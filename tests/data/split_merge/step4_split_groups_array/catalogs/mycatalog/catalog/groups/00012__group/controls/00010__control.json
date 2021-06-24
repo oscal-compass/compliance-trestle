@@ -69,6 +69,10 @@
                 "rel": "related"
             },
             {
+                "href": "#ra-9",
+                "rel": "related"
+            },
+            {
                 "href": "#sa-2",
                 "rel": "related"
             }
@@ -109,7 +113,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Review and revise the mission and business processes {{ pm-11_prm_1 }}."
+                        "prose": "Review and revise the mission and business processes {{ insert: param, pm-11_prm_1 }}."
                     }
                 ]
             },

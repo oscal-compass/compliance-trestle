@@ -134,7 +134,7 @@
                     {
                         "id": "ac-6.1_smt",
                         "name": "statement",
-                        "prose": "Authorize access for {{ ac-6.1_prm_1 }} to:",
+                        "prose": "Authorize access for {{ insert: param, ac-6.1_prm_1 }} to:",
                         "parts": [
                             {
                                 "id": "ac-6.1_smt.a",
@@ -145,7 +145,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": " {{ ac-6.1_prm_2 }}; and"
+                                "prose": " {{ insert: param, ac-6.1_prm_2 }}; and"
                             },
                             {
                                 "id": "ac-6.1_smt.b",
@@ -156,7 +156,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": " {{ ac-6.1_prm_3 }}."
+                                "prose": " {{ insert: param, ac-6.1_prm_3 }}."
                             }
                         ]
                     },
@@ -213,7 +213,7 @@
                     {
                         "id": "ac-6.2_smt",
                         "name": "statement",
-                        "prose": "Require that users of system accounts (or roles) with access to {{ ac-6.2_prm_1 }} use non-privileged accounts or roles, when accessing nonsecurity functions."
+                        "prose": "Require that users of system accounts (or roles) with access to {{ insert: param, ac-6.2_prm_1 }} use non-privileged accounts or roles, when accessing nonsecurity functions."
                     },
                     {
                         "id": "ac-6.2_gdn",
@@ -268,7 +268,7 @@
                     {
                         "id": "ac-6.3_smt",
                         "name": "statement",
-                        "prose": "Authorize network access to {{ ac-6.3_prm_1 }} only for {{ ac-6.3_prm_2 }} and document the rationale for such access in the security plan for the system."
+                        "prose": "Authorize network access to {{ insert: param, ac-6.3_prm_1 }} only for {{ insert: param, ac-6.3_prm_2 }} and document the rationale for such access in the security plan for the system."
                     },
                     {
                         "id": "ac-6.3_gdn",
@@ -376,7 +376,7 @@
                     {
                         "id": "ac-6.5_smt",
                         "name": "statement",
-                        "prose": "Restrict privileged accounts on the system to {{ ac-6.5_prm_1 }}."
+                        "prose": "Restrict privileged accounts on the system to {{ insert: param, ac-6.5_prm_1 }}."
                     },
                     {
                         "id": "ac-6.5_gdn",
@@ -482,7 +482,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Review {{ ac-6.7_prm_1 }} the privileges assigned to {{ ac-6.7_prm_2 }} to validate the need for such privileges; and"
+                                "prose": "Review {{ insert: param, ac-6.7_prm_1 }} the privileges assigned to {{ insert: param, ac-6.7_prm_2 }} to validate the need for such privileges; and"
                             },
                             {
                                 "id": "ac-6.7_smt.b",
@@ -534,7 +534,7 @@
                     {
                         "id": "ac-6.8_smt",
                         "name": "statement",
-                        "prose": "Prevent the following software from executing at higher privilege levels than users executing the software: {{ ac-6.8_prm_1 }}."
+                        "prose": "Prevent the following software from executing at higher privilege levels than users executing the software: {{ insert: param, ac-6.8_prm_1 }}."
                     },
                     {
                         "id": "ac-6.8_gdn",

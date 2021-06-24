@@ -37,7 +37,7 @@
             {
                 "id": "sc-40_smt",
                 "name": "statement",
-                "prose": "Protect external and internal {{ sc-40_prm_1 }} from the following signal parameter attacks: {{ sc-40_prm_2 }}."
+                "prose": "Protect external and internal {{ insert: param, sc-40_prm_1 }} from the following signal parameter attacks: {{ insert: param, sc-40_prm_2 }}."
             },
             {
                 "id": "sc-40_gdn",
@@ -88,7 +88,7 @@
                     {
                         "id": "sc-40.1_smt",
                         "name": "statement",
-                        "prose": "Implement cryptographic mechanisms that achieve {{ sc-40.1_prm_1 }} against the effects of intentional electromagnetic interference."
+                        "prose": "Implement cryptographic mechanisms that achieve {{ insert: param, sc-40.1_prm_1 }} against the effects of intentional electromagnetic interference."
                     },
                     {
                         "id": "sc-40.1_gdn",
@@ -135,7 +135,7 @@
                     {
                         "id": "sc-40.2_smt",
                         "name": "statement",
-                        "prose": "Implement cryptographic mechanisms to reduce the detection potential of wireless links to {{ sc-40.2_prm_1 }}."
+                        "prose": "Implement cryptographic mechanisms to reduce the detection potential of wireless links to {{ insert: param, sc-40.2_prm_1 }}."
                     },
                     {
                         "id": "sc-40.2_gdn",
@@ -227,7 +227,7 @@
                     {
                         "id": "sc-40.4_smt",
                         "name": "statement",
-                        "prose": "Implement cryptographic mechanisms to prevent the identification of {{ sc-40.4_prm_1 }} by using the transmitter signal parameters."
+                        "prose": "Implement cryptographic mechanisms to prevent the identification of {{ insert: param, sc-40.4_prm_1 }} by using the transmitter signal parameters."
                     },
                     {
                         "id": "sc-40.4_gdn",

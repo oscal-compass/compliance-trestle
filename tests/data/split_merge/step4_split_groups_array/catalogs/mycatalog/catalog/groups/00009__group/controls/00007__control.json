@@ -47,7 +47,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Establish {{ mp-8_prm_1 }} that includes employing downgrading mechanisms with strength and integrity commensurate with the security category or classification of the information;"
+                        "prose": "Establish {{ insert: param, mp-8_prm_1 }} that includes employing downgrading mechanisms with strength and integrity commensurate with the security category or classification of the information;"
                     },
                     {
                         "id": "mp-8_smt.b",
@@ -69,7 +69,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Identify {{ mp-8_prm_2 }}; and"
+                        "prose": "Identify {{ insert: param, mp-8_prm_2 }}; and"
                     },
                     {
                         "id": "mp-8_smt.d",
@@ -154,7 +154,7 @@
                     {
                         "id": "mp-8.2_smt",
                         "name": "statement",
-                        "prose": "Test downgrading equipment and procedures {{ mp-8.2_prm_1 }} to ensure that downgrading actions are being achieved."
+                        "prose": "Test downgrading equipment and procedures {{ insert: param, mp-8.2_prm_1 }} to ensure that downgrading actions are being achieved."
                     },
                     {
                         "id": "mp-8.2_gdn",
@@ -214,14 +214,6 @@
                     {
                         "href": "#mp-8",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#91f992fb-f668-4c91-a50f-0f05b95ccee3",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#df9f87e9-71e7-4c74-9ac3-3cabd4e92f21",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

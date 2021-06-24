@@ -141,7 +141,7 @@
             {
                 "id": "sc-12_smt",
                 "name": "statement",
-                "prose": "Establish and manage cryptographic keys when cryptography is employed within the system in accordance with the following key management requirements: {{ sc-12_prm_1 }}."
+                "prose": "Establish and manage cryptographic keys when cryptography is employed within the system in accordance with the following key management requirements: {{ insert: param, sc-12_prm_1 }}."
             },
             {
                 "id": "sc-12_gdn",
@@ -218,7 +218,7 @@
                     {
                         "id": "sc-12.2_smt",
                         "name": "statement",
-                        "prose": "Produce, control, and distribute symmetric cryptographic keys using {{ sc-12.2_prm_1 }} key management technology and processes."
+                        "prose": "Produce, control, and distribute symmetric cryptographic keys using {{ insert: param, sc-12.2_prm_1 }} key management technology and processes."
                     },
                     {
                         "id": "sc-12.2_gdn",
@@ -265,7 +265,7 @@
                     {
                         "id": "sc-12.3_smt",
                         "name": "statement",
-                        "prose": "Produce, control, and distribute asymmetric cryptographic keys using {{ sc-12.3_prm_1 }}."
+                        "prose": "Produce, control, and distribute asymmetric cryptographic keys using {{ insert: param, sc-12.3_prm_1 }}."
                     },
                     {
                         "id": "sc-12.3_gdn",
@@ -277,7 +277,7 @@
             {
                 "id": "sc-12.4",
                 "class": "SP800-53-enhancement",
-                "title": "Pki Certificates",
+                "title": "PKI Certificates",
                 "props": [
                     {
                         "name": "label",
@@ -302,7 +302,7 @@
             {
                 "id": "sc-12.5",
                 "class": "SP800-53-enhancement",
-                "title": "Pki Certificates / Hardware Tokens",
+                "title": "PKI Certificates / Hardware Tokens",
                 "props": [
                     {
                         "name": "label",
@@ -342,46 +342,6 @@
                     {
                         "href": "#sc-12",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#20957dbb-6a1e-40a2-b38a-66f67d33ac2e",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#0d083d8a-5cc6-46f1-8d79-3081d42bcb75",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#eef62b16-c796-4554-955c-505824135b8a",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#110e26af-4765-49e1-8740-6750f83fcda1",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e7942589-e267-4a5a-a3d9-f39a7aae81f0",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#8306620b-1920-4d73-8b21-12008528595f",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#849b2358-683f-4d97-b111-1cc3d522ded5",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#3915a084-b87b-4f02-83d4-c369e746292f",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

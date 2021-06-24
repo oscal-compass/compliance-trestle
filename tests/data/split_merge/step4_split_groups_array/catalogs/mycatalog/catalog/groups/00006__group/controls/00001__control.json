@@ -201,7 +201,7 @@
                     {
                         "id": "ia-2.1_gdn",
                         "name": "guidance",
-                        "prose": "Multi-factor authentication requires the use of two or more different factors to achieve authentication. The authentication factors are defined as follows: something you know (e.g., a personal identification number [PIN]), something you have (e.g., a physical authenticator such as a cryptographic private key), or something you are (e.g., a biometric). Multi-factor authentication solutions that feature physical authenticators include hardware authenticators that provide time-based or challenge-response outputs and smart cards such as the U.S. Government Personal Identity Verification (PIV) card or the Department of Defense (DoD) Common Access Card. In addition to authenticating users at the system level (i.e., at logon), organizations may employ authentication mechanisms at the application level, at their discretion, to provide increased security. Regardless of the type of access (i.e., local, network, remote), privileged accounts are authenticated using multi-factor options appropriate for the level of risk. Organizations can add additional security measures, such as additional or more rigorous authentication mechanisms, for specific types of access."
+                        "prose": "Multi-factor authentication requires the use of two or more different factors to achieve authentication. The authentication factors are defined as follows: something you know (e.g., a personal identification number [PIN]), something you have (e.g., a physical authenticator such as a cryptographic private key), or something you are (e.g., a biometric). Multi-factor authentication solutions that feature physical authenticators include hardware authenticators that provide time-based or challenge-response outputs and smart cards such as the U.S. Government Personal Identity Verification (PIV) card or the Department of Defense (DoD) Common Access Card (CAC). In addition to authenticating users at the system level (i.e., at logon), organizations may employ authentication mechanisms at the application level, at their discretion, to provide increased security. Regardless of the type of access (i.e., local, network, remote), privileged accounts are authenticated using multi-factor options appropriate for the level of risk. Organizations can add additional security measures, such as additional or more rigorous authentication mechanisms, for specific types of access."
                     }
                 ]
             },
@@ -328,12 +328,12 @@
             {
                 "id": "ia-2.6",
                 "class": "SP800-53-enhancement",
-                "title": "Access to Accounts \u2014 Separate Device",
+                "title": "Access to Accounts \u2014separate Device",
                 "params": [
                     {
                         "id": "ia-2.6_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "local",
                                 "network",
@@ -344,7 +344,7 @@
                     {
                         "id": "ia-2.6_prm_2",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "privileged accounts",
                                 "non-privileged accounts"
@@ -380,7 +380,7 @@
                     {
                         "id": "ia-2.6_smt",
                         "name": "statement",
-                        "prose": "Implement multi-factor authentication for {{ ia-2.6_prm_1 }} access to {{ ia-2.6_prm_2 }} such that:",
+                        "prose": "Implement multi-factor authentication for {{ insert: param, ia-2.6_prm_1 }} access to {{ insert: param, ia-2.6_prm_2 }} such that:",
                         "parts": [
                             {
                                 "id": "ia-2.6_smt.a",
@@ -402,7 +402,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "The device meets {{ ia-2.6_prm_3 }}."
+                                "prose": "The device meets {{ insert: param, ia-2.6_prm_3 }}."
                             }
                         ]
                     },
@@ -416,7 +416,7 @@
             {
                 "id": "ia-2.7",
                 "class": "SP800-53-enhancement",
-                "title": "Access to Non-privileged Accounts \u2014 Separate Device",
+                "title": "Network Access to Non-privileged Accounts \u2014 Separate Device",
                 "props": [
                     {
                         "name": "label",
@@ -446,7 +446,7 @@
                     {
                         "id": "ia-2.8_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "privileged accounts",
                                 "non-privileged accounts"
@@ -474,7 +474,7 @@
                     {
                         "id": "ia-2.8_smt",
                         "name": "statement",
-                        "prose": "Implement replay-resistant authentication mechanisms for access to {{ ia-2.8_prm_1 }}."
+                        "prose": "Implement replay-resistant authentication mechanisms for access to {{ insert: param, ia-2.8_prm_1 }}."
                     },
                     {
                         "id": "ia-2.8_gdn",
@@ -538,7 +538,7 @@
                     {
                         "id": "ia-2.10_smt",
                         "name": "statement",
-                        "prose": "Provide a single sign-on capability for {{ ia-2.10_prm_1 }}."
+                        "prose": "Provide a single sign-on capability for {{ insert: param, ia-2.10_prm_1 }}."
                     },
                     {
                         "id": "ia-2.10_gdn",
@@ -575,7 +575,7 @@
             {
                 "id": "ia-2.12",
                 "class": "SP800-53-enhancement",
-                "title": "Acceptance of Piv Credentials",
+                "title": "Acceptance of PIV Credentials",
                 "props": [
                     {
                         "name": "label",
@@ -635,74 +635,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#858705be-3c1f-48aa-a328-0ce398d95ef0",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7af2e6ec-9f7e-4232-ad3f-09888eb0793a",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#828856bd-d7c4-427b-8b51-815517ec382d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#10963761-58fc-4b20-b3d6-b44a54daba03",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#d9e036ba-6eec-46a6-9340-b0bf1fea23b4",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e8552d48-cf41-40aa-8b06-f45f7fb4706c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#15dc76ff-b17a-4eeb-8948-8ea8de3ccc2c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#4b38e961-1125-4a5b-aa35-1d6c02846dad",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#91701292-8bcd-4d2e-a5bd-59ab61e34b3c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#4f5f51ac-2b8d-4b90-a3c7-46f56e967617",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#604774da-9e1d-48eb-9c62-4e959dc80737",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7f473f21-fdbf-4a6c-81a1-0ab95919609d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#3915a084-b87b-4f02-83d4-c369e746292f",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#ia-10",
                         "rel": "related"
                     },
@@ -719,7 +651,7 @@
                     {
                         "id": "ia-2.13_smt",
                         "name": "statement",
-                        "prose": "Implement the following out-of-band authentication mechanisms under {{ ia-2.13_prm_1 }}: {{ ia-2.13_prm_2 }}."
+                        "prose": "Implement the following out-of-band authentication mechanisms under {{ insert: param, ia-2.13_prm_1 }}: {{ insert: param, ia-2.13_prm_2 }}."
                     },
                     {
                         "id": "ia-2.13_gdn",

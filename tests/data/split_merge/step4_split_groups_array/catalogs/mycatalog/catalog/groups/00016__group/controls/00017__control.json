@@ -20,7 +20,7 @@
         "links": [
             {
                 "href": "#sr-9",
-                "rel": "incorporated-into"
+                "rel": "moved-to"
             }
         ],
         "controls": [
@@ -45,7 +45,7 @@
                 "links": [
                     {
                         "href": "#sr-9.1",
-                        "rel": "incorporated-into"
+                        "rel": "moved-to"
                     }
                 ]
             },
@@ -70,7 +70,7 @@
                 "links": [
                     {
                         "href": "#sr-10",
-                        "rel": "incorporated-into"
+                        "rel": "moved-to"
                     }
                 ]
             }

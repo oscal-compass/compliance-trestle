@@ -127,7 +127,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Physically control and securely store {{ mp-4_prm_1 }} within {{ mp-4_prm_2 }}; and"
+                        "prose": "Physically control and securely store {{ insert: param, mp-4_prm_1 }} within {{ insert: param, mp-4_prm_2 }}; and"
                     },
                     {
                         "id": "mp-4_smt.b",
@@ -200,38 +200,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#20957dbb-6a1e-40a2-b38a-66f67d33ac2e",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#0d083d8a-5cc6-46f1-8d79-3081d42bcb75",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#eef62b16-c796-4554-955c-505824135b8a",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#110e26af-4765-49e1-8740-6750f83fcda1",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e7942589-e267-4a5a-a3d9-f39a7aae81f0",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#8306620b-1920-4d73-8b21-12008528595f",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#22f2d4f0-4365-4e88-a30d-275c1f5473ea",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#ac-3",
                         "rel": "related"
                     },
@@ -260,7 +228,7 @@
                     {
                         "id": "mp-4.2_smt",
                         "name": "statement",
-                        "prose": "Restrict access to media storage areas and log access attempts and access granted using {{ mp-4.2_prm_1 }}."
+                        "prose": "Restrict access to media storage areas and log access attempts and access granted using {{ insert: param, mp-4.2_prm_1 }}."
                     },
                     {
                         "id": "mp-4.2_gdn",

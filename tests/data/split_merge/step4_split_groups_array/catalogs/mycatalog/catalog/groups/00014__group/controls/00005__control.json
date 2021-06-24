@@ -121,7 +121,7 @@
                     {
                         "id": "pt-6.1_smt",
                         "name": "statement",
-                        "prose": "Review all routine uses published in the system of records notice at {{ pt-6.1_prm_1 }} to ensure continued accuracy, and to ensure that routine uses continue to be compatible with the purpose for which the information was collected."
+                        "prose": "Review all routine uses published in the system of records notice at {{ insert: param, pt-6.1_prm_1 }} to ensure continued accuracy, and to ensure that routine uses continue to be compatible with the purpose for which the information was collected."
                     },
                     {
                         "id": "pt-6.1_gdn",
@@ -154,21 +154,13 @@
                     {
                         "href": "#pt-6",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#18e71fec-c6fd-475a-925a-5d8495cf8455",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#3671ff20-c17c-44d6-8a88-7de203fa74aa",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "pt-6.2_smt",
                         "name": "statement",
-                        "prose": "Review all Privacy Act exemptions claimed for the system of records at {{ pt-6.2_prm_1 }} to ensure they remain appropriate and necessary in accordance with law, that they have been promulgated as regulations, and that they are accurately described in the system of records notice."
+                        "prose": "Review all Privacy Act exemptions claimed for the system of records at {{ insert: param, pt-6.2_prm_1 }} to ensure they remain appropriate and necessary in accordance with law, that they have been promulgated as regulations, and that they are accurately described in the system of records notice."
                     },
                     {
                         "id": "pt-6.2_gdn",

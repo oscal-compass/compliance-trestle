@@ -83,7 +83,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Authorize internal connections of {{ ca-9_prm_1 }} to the system;"
+                        "prose": "Authorize internal connections of {{ insert: param, ca-9_prm_1 }} to the system;"
                     },
                     {
                         "id": "ca-9_smt.b",
@@ -105,7 +105,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Terminate internal system connections after {{ ca-9_prm_2 }}; and"
+                        "prose": "Terminate internal system connections after {{ insert: param, ca-9_prm_2 }}; and"
                     },
                     {
                         "id": "ca-9_smt.d",
@@ -116,7 +116,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Review {{ ca-9_prm_3 }} the continued need for each internal connection."
+                        "prose": "Review {{ insert: param, ca-9_prm_3 }} the continued need for each internal connection."
                     }
                 ]
             },
@@ -145,14 +145,6 @@
                     {
                         "href": "#ca-9",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#0f66be67-85e7-4ca6-bd19-39453e9f4394",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#4c501da5-9d79-4cb6-ba80-97260e1ce327",
-                        "rel": "reference"
                     },
                     {
                         "href": "#cm-6",

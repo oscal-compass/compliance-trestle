@@ -62,7 +62,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Review and update the CONOPS {{ pl-7_prm_1 }}."
+                        "prose": "Review and update the CONOPS {{ insert: param, pl-7_prm_1 }}."
                     }
                 ]
             },

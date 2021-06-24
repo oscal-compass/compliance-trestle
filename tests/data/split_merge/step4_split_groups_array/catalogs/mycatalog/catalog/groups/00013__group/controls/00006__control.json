@@ -128,7 +128,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Require external providers to notify {{ ps-7_prm_1 }} of any personnel transfers or terminations of external personnel who possess organizational credentials and/or badges, or who have system privileges within {{ ps-7_prm_2 }}; and"
+                        "prose": "Require external providers to notify {{ insert: param, ps-7_prm_1 }} of any personnel transfers or terminations of external personnel who possess organizational credentials and/or badges, or who have system privileges within {{ insert: param, ps-7_prm_2 }}; and"
                     },
                     {
                         "id": "ps-7_smt.e",

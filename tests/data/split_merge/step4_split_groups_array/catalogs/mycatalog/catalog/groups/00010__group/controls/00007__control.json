@@ -55,7 +55,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Maintain visitor access records to the facility where the system resides for {{ pe-8_prm_1 }};"
+                        "prose": "Maintain visitor access records to the facility where the system resides for {{ insert: param, pe-8_prm_1 }};"
                     },
                     {
                         "id": "pe-8_smt.b",
@@ -66,7 +66,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Review visitor access records {{ pe-8_prm_2 }}; and"
+                        "prose": "Review visitor access records {{ insert: param, pe-8_prm_2 }}; and"
                     },
                     {
                         "id": "pe-8_smt.c",
@@ -77,7 +77,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Report anomalies in visitor access records to {{ pe-8_prm_3 }}."
+                        "prose": "Report anomalies in visitor access records to {{ insert: param, pe-8_prm_3 }}."
                     }
                 ]
             },
@@ -118,7 +118,7 @@
                     {
                         "id": "pe-8.1_smt",
                         "name": "statement",
-                        "prose": "Maintain and review visitor access records using {{ pe-8.1_prm_1 }}."
+                        "prose": "Maintain and review visitor access records using {{ insert: param, pe-8.1_prm_1 }}."
                     },
                     {
                         "id": "pe-8.1_gdn",
@@ -190,7 +190,7 @@
                     {
                         "id": "pe-8.3_smt",
                         "name": "statement",
-                        "prose": "Limit personally identifiable information contained in visitor access records to the following elements identified in the privacy risk assessment: {{ pe-8.3_prm_1 }}."
+                        "prose": "Limit personally identifiable information contained in visitor access records to the following elements identified in the privacy risk assessment: {{ insert: param, pe-8.3_prm_1 }}."
                     },
                     {
                         "id": "pe-8.3_gdn",

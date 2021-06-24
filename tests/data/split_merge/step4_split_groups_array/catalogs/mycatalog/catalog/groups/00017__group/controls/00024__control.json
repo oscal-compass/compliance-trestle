@@ -33,7 +33,7 @@
             {
                 "id": "sc-25_smt",
                 "name": "statement",
-                "prose": "Employ minimal functionality and information storage on the following system components: {{ sc-25_prm_1 }}."
+                "prose": "Employ minimal functionality and information storage on the following system components: {{ insert: param, sc-25_prm_1 }}."
             },
             {
                 "id": "sc-25_gdn",

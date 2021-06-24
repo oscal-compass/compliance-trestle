@@ -99,7 +99,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Protect and control {{ mp-5_prm_1 }} during transport outside of controlled areas using {{ mp-5_prm_2 }};"
+                        "prose": "Protect and control {{ insert: param, mp-5_prm_1 }} during transport outside of controlled areas using {{ insert: param, mp-5_prm_2 }};"
                     },
                     {
                         "id": "mp-5_smt.b",
@@ -248,18 +248,6 @@
                     {
                         "href": "#sc-28.1",
                         "rel": "incorporated-into"
-                    },
-                    {
-                        "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e72fde0b-6fc2-497e-a9db-d8fce5a11b8a",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#9be5d661-421f-41ad-854e-86f98b811891",
-                        "rel": "reference"
                     }
                 ]
             }

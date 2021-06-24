@@ -21,17 +21,13 @@ import uuid
 from typing import Any, Dict, List, Union, ValuesView
 
 from trestle.oscal.assessment_results import ControlSelection
-from trestle.oscal.assessment_results import Finding
-from trestle.oscal.assessment_results import ImplementedComponent
-from trestle.oscal.assessment_results import InventoryItem
 from trestle.oscal.assessment_results import LocalDefinitions1
 from trestle.oscal.assessment_results import Observation
-from trestle.oscal.assessment_results import Property
 from trestle.oscal.assessment_results import Result
 from trestle.oscal.assessment_results import ReviewedControls
-from trestle.oscal.assessment_results import Status
-from trestle.oscal.assessment_results import SubjectReference
+from trestle.oscal.assessment_results import Status1
 from trestle.oscal.assessment_results import SystemComponent
+from trestle.oscal.common import ImplementedComponent, InventoryItem, Property, SubjectReference
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +37,6 @@ t_component_ref = str
 t_computer_name = str
 t_control = str
 t_control_selection = ControlSelection
-t_finding = Finding
 t_inventory = InventoryItem
 t_inventory_ref = str
 t_local_definitions = LocalDefinitions1
@@ -144,7 +139,7 @@ class ResultsMgr():
     @property
     def components(self) -> t_component_map:
         """OSCAL components."""
-        return self.component_map
+        return list(self.component_map.values())
 
     @property
     def inventory(self) -> ValuesView[InventoryItem]:
@@ -161,16 +156,6 @@ class ResultsMgr():
         """OSCAL control selections."""
         prop = []
         prop.append(ControlSelection())
-        return prop
-
-    @property
-    def findings(self) -> List[t_finding]:
-        """OSCAL findings."""
-        prop = []
-        uuid0 = '00000000-0000-4000-8000-000000000000'
-        control = 'No Finding.'
-        finding = Finding(uuid=uuid0, title=control, description=control)
-        prop.append(finding)
         return prop
 
     @property
@@ -197,7 +182,6 @@ class ResultsMgr():
             start=ResultsMgr.timestamp,
             end=ResultsMgr.timestamp,
             reviewed_controls=self.reviewed_controls,
-            findings=self.findings,
             local_definitions=self.local_definitions,
             observations=self.observations
         )
@@ -228,9 +212,13 @@ class ResultsMgr():
                     if component.description == component_description:
                         return
         component_ref = str(uuid.uuid4())
-        status = Status(state='operational')
+        status = Status1(state='operational')
         component = SystemComponent(
-            type=component_type, title=component_title, description=component_description, status=status
+            uuid=component_ref,
+            type=component_type,
+            title=component_title,
+            description=component_description,
+            status=status
         )
         self.component_map[component_ref] = component
 
@@ -256,16 +244,16 @@ class ResultsMgr():
         else:
             inventory = InventoryItem(uuid=str(uuid.uuid4()), description='inventory')
             props = []
-            props.append(Property(name='Computer Name', value=rule_use.computer_name, ns=self.ns))
+            props.append(Property(name='Computer_Name', value=rule_use.computer_name, ns=self.ns))
             props.append(
                 Property(
-                    name='Tanium Client IP Address',
+                    name='Tanium_Client_IP_Address',
                     value=rule_use.tanium_client_ip_address,
                     ns=self.ns,
                     class_='scc_inventory_item_id'
                 )
             )
-            props.append(Property(name='IP Address', value=rule_use.ip_address, ns=self.ns))
+            props.append(Property(name='IP_Address', value=rule_use.ip_address, ns=self.ns))
             props.append(Property(name='Count', value=rule_use.count, ns=self.ns))
             inventory.props = props
             inventory.implemented_components = [ImplementedComponent(component_uuid=self._get_component_ref(rule_use))]
@@ -279,26 +267,26 @@ class ResultsMgr():
             methods=['TEST-AUTOMATED'],
             collected=rule_use.collected
         )
-        subject_reference = SubjectReference(uuid_ref=self._get_inventory_ref(rule_use), type='inventory-item')
+        subject_reference = SubjectReference(subject_uuid=self._get_inventory_ref(rule_use), type='inventory-item')
         observation.subjects = [subject_reference]
         props = [
-            Property(name='Check ID', value=rule_use.check_id, ns=self.ns),
+            Property(name='Check_ID', value=rule_use.check_id, ns=self.ns),
             Property(
-                name='Check ID Benchmark',
+                name='Check_ID_Benchmark',
                 value=rule_use.check_id_benchmark,
                 ns=self.ns,
                 class_='scc_predefined_profile'
             ),
-            Property(name='Check ID Version', value=rule_use.check_id_version, ns=self.ns, class_='scc_check_version'),
+            Property(name='Check_ID_Version', value=rule_use.check_id_version, ns=self.ns, class_='scc_check_version'),
             Property(
-                name='Check ID Version',
+                name='Check_ID_Version',
                 value=rule_use.check_id_version,
                 ns=self.ns,
                 class_='scc_predefined_profile_version'
             ),
-            Property(name='Check ID Level', value=rule_use.check_id_level, ns=self.ns),
-            Property(name='Rule ID', value=rule_use.rule_id, ns=self.ns, class_='scc_goal_description'),
-            Property(name='Rule ID', value=rule_use.rule_id, ns=self.ns, class_='scc_check_name_id'),
+            Property(name='Check_ID_Level', value=rule_use.check_id_level, ns=self.ns),
+            Property(name='Rule_ID', value=rule_use.rule_id, ns=self.ns, class_='scc_goal_description'),
+            Property(name='Rule_ID', value=rule_use.rule_id, ns=self.ns, class_='scc_check_name_id'),
             Property(name='State', value=rule_use.state, ns=self.ns, class_='scc_result'),
             Property(name='Timestamp', value=rule_use.timestamp, ns=self.ns, class_='scc_timestamp'),
         ]
@@ -306,15 +294,10 @@ class ResultsMgr():
         self.observation_list.append(observation)
         rule_use.observation = observation
 
-    def _finding_extract(self, rule_use: RuleUse) -> None:
-        """Extract finding from Tanium row."""
-        pass
-
     def _process(self, rule_use: RuleUse) -> None:
         self._component_extract(rule_use)
         self._inventory_extract(rule_use)
         self._observation_extract(rule_use)
-        self._finding_extract(rule_use)
 
     def ingest(self, tanium_row: t_tanium_row) -> None:
         """Process one row of Tanium."""

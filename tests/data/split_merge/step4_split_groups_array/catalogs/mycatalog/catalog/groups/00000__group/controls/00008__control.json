@@ -109,7 +109,7 @@
                     {
                         "id": "ac-9.2_smt",
                         "name": "statement",
-                        "prose": "Notify the user, upon successful logon, of the number of {{ ac-9.2_prm_1 }} during {{ ac-9.2_prm_2 }}."
+                        "prose": "Notify the user, upon successful logon, of the number of {{ insert: param, ac-9.2_prm_1 }} during {{ insert: param, ac-9.2_prm_2 }}."
                     },
                     {
                         "id": "ac-9.2_gdn",
@@ -152,7 +152,7 @@
                     {
                         "id": "ac-9.3_smt",
                         "name": "statement",
-                        "prose": "Notify the user, upon successful logon, of changes to {{ ac-9.3_prm_1 }} during {{ ac-9.3_prm_2 }}."
+                        "prose": "Notify the user, upon successful logon, of changes to {{ insert: param, ac-9.3_prm_1 }} during {{ insert: param, ac-9.3_prm_2 }}."
                     },
                     {
                         "id": "ac-9.3_gdn",
@@ -191,7 +191,7 @@
                     {
                         "id": "ac-9.4_smt",
                         "name": "statement",
-                        "prose": "Notify the user, upon successful logon, of the following additional information: {{ ac-9.4_prm_1 }}."
+                        "prose": "Notify the user, upon successful logon, of the following additional information: {{ insert: param, ac-9.4_prm_1 }}."
                     },
                     {
                         "id": "ac-9.4_gdn",

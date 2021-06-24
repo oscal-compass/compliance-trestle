@@ -69,7 +69,7 @@
             {
                 "id": "pe-4_smt",
                 "name": "statement",
-                "prose": "Control physical access to {{ pe-4_prm_1 }} within organizational facilities using {{ pe-4_prm_2 }}."
+                "prose": "Control physical access to {{ insert: param, pe-4_prm_1 }} within organizational facilities using {{ insert: param, pe-4_prm_2 }}."
             },
             {
                 "id": "pe-4_gdn",

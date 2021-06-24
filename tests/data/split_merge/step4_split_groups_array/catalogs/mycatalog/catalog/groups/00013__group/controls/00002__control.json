@@ -118,7 +118,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Rescreen individuals in accordance with {{ ps-3_prm_1 }}."
+                        "prose": "Rescreen individuals in accordance with {{ insert: param, ps-3_prm_1 }}."
                     }
                 ]
             },
@@ -214,7 +214,7 @@
             {
                 "id": "ps-3.3",
                 "class": "SP800-53-enhancement",
-                "title": "Information with Special Protective Measures",
+                "title": "Information Requiring Special Protective Measures",
                 "params": [
                     {
                         "id": "ps-3.3_prm_1",
@@ -263,7 +263,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Satisfy {{ ps-3.3_prm_1 }}."
+                                "prose": "Satisfy {{ insert: param, ps-3.3_prm_1 }}."
                             }
                         ]
                     },
@@ -302,49 +302,13 @@
                     {
                         "href": "#ps-3",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#55b0c93a-5e48-457a-baa6-5ce81c239c49",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#0af071a6-cf8e-48ee-8c82-fe91efa20f94",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e72fde0b-6fc2-497e-a9db-d8fce5a11b8a",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#9be5d661-421f-41ad-854e-86f98b811891",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#858705be-3c1f-48aa-a328-0ce398d95ef0",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7af2e6ec-9f7e-4232-ad3f-09888eb0793a",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#828856bd-d7c4-427b-8b51-815517ec382d",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "ps-3.4_smt",
                         "name": "statement",
-                        "prose": "Verify that individuals accessing a system processing, storing, or transmitting {{ ps-3.4_prm_1 }} meet {{ ps-3.4_prm_2 }}."
+                        "prose": "Verify that individuals accessing a system processing, storing, or transmitting {{ insert: param, ps-3.4_prm_1 }} meet {{ insert: param, ps-3.4_prm_2 }}."
                     },
                     {
                         "id": "ps-3.4_gdn",

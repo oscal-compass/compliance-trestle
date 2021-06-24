@@ -41,7 +41,7 @@
             {
                 "id": "sc-16_smt",
                 "name": "statement",
-                "prose": "Associate {{ sc-16_prm_1 }} with information exchanged between systems and between system components."
+                "prose": "Associate {{ insert: param, sc-16_prm_1 }} with information exchanged between systems and between system components."
             },
             {
                 "id": "sc-16_gdn",
@@ -162,10 +162,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#ac-16",
                         "rel": "related"
                     },
@@ -182,7 +178,7 @@
                     {
                         "id": "sc-16.3_smt",
                         "name": "statement",
-                        "prose": "Implement {{ sc-16.3_prm_1 }} to bind security and privacy attributes to transmitted information."
+                        "prose": "Implement {{ insert: param, sc-16.3_prm_1 }} to bind security and privacy attributes to transmitted information."
                     },
                     {
                         "id": "sc-16.3_gdn",

@@ -82,7 +82,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Initiate {{ ps-5_prm_1 }} within {{ ps-5_prm_2 }};"
+                        "prose": "Initiate {{ insert: param, ps-5_prm_1 }} within {{ insert: param, ps-5_prm_2 }};"
                     },
                     {
                         "id": "ps-5_smt.c",
@@ -104,7 +104,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Notify {{ ps-5_prm_3 }} within {{ ps-5_prm_4 }}."
+                        "prose": "Notify {{ insert: param, ps-5_prm_3 }} within {{ insert: param, ps-5_prm_4 }}."
                     }
                 ]
             },

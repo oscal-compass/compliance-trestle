@@ -50,7 +50,7 @@ def _load_dict(filepath: Path) -> Tuple[Type[OscalBaseModel], str, Dict[str, Osc
     collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(filepath)
     for path in sorted(Path.iterdir(filepath)):
         model_type, model_alias, model_instance = load_distributed(path)
-        field_name = path.parts[-1].split('__')[0]
+        field_name = path.parts[-1].split('__')[0].split('.')[0]
         model_dict[field_name] = model_instance
 
     return collection_model_type, collection_model_alias, model_dict

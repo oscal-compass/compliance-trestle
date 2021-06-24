@@ -95,7 +95,7 @@
                     {
                         "id": "sc-4.2_smt",
                         "name": "statement",
-                        "prose": "Prevent unauthorized information transfer via shared resources in accordance with {{ sc-4.2_prm_1 }} when system processing explicitly switches between different information classification levels or security categories."
+                        "prose": "Prevent unauthorized information transfer via shared resources in accordance with {{ insert: param, sc-4.2_prm_1 }} when system processing explicitly switches between different information classification levels or security categories."
                     },
                     {
                         "id": "sc-4.2_gdn",

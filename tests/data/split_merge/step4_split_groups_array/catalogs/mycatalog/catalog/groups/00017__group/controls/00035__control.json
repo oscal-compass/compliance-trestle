@@ -54,7 +54,7 @@
             {
                 "id": "sc-36_smt",
                 "name": "statement",
-                "prose": "Distribute the following processing and storage components across multiple {{ sc-36_prm_1 }}: {{ sc-36_prm_2 }}."
+                "prose": "Distribute the following processing and storage components across multiple {{ insert: param, sc-36_prm_1 }}: {{ insert: param, sc-36_prm_2 }}."
             },
             {
                 "id": "sc-36_gdn",
@@ -111,7 +111,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Employ polling techniques to identify potential faults, errors, or compromises to the following processing and storage components: {{ sc-36.1_prm_1 }}; and"
+                                "prose": "Employ polling techniques to identify potential faults, errors, or compromises to the following processing and storage components: {{ insert: param, sc-36.1_prm_1 }}; and"
                             },
                             {
                                 "id": "sc-36.1_smt.b",
@@ -122,7 +122,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Take the following actions in response to identified faults, errors, or compromises: {{ sc-36.1_prm_2 }}."
+                                "prose": "Take the following actions in response to identified faults, errors, or compromises: {{ insert: param, sc-36.1_prm_2 }}."
                             }
                         ]
                     },
@@ -159,10 +159,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#61ccf0f4-d3e7-42db-9796-ce6cb1c85989",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#cp-9",
                         "rel": "related"
                     }
@@ -171,7 +167,7 @@
                     {
                         "id": "sc-36.2_smt",
                         "name": "statement",
-                        "prose": "Synchronize the following duplicate systems or system components: {{ sc-36.2_prm_1 }}."
+                        "prose": "Synchronize the following duplicate systems or system components: {{ insert: param, sc-36.2_prm_1 }}."
                     },
                     {
                         "id": "sc-36.2_gdn",

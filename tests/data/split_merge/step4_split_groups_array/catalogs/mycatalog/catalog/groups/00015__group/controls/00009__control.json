@@ -102,7 +102,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Employ the threat hunting capability {{ ra-10_prm_1 }}."
+                        "prose": "Employ the threat hunting capability {{ insert: param, ra-10_prm_1 }}."
                     }
                 ]
             },

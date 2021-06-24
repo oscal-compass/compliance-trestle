@@ -99,7 +99,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Identify and document {{ ac-5_prm_1 }}; and"
+                        "prose": "Identify and document {{ insert: param, ac-5_prm_1 }}; and"
                     },
                     {
                         "id": "ac-5_smt.b",

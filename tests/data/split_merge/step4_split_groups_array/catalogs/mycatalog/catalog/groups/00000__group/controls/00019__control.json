@@ -7,10 +7,10 @@
             {
                 "id": "ac-20_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
-                        "Establish {{ ac-20_prm_2 }} ",
-                        "Identify {{ ac-20_prm_3 }} "
+                        "Establish {{ insert: param, ac-20_prm_2 }} ",
+                        "Identify {{ insert: param, ac-20_prm_3 }} "
                     ]
                 }
             },
@@ -103,7 +103,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": " {{ ac-20_prm_1 }}, consistent with the trust relationships established with other organizations owning, operating, and/or maintaining external systems, allowing authorized individuals to:",
+                        "prose": " {{ insert: param, ac-20_prm_1 }}, consistent with the trust relationships established with other organizations owning, operating, and/or maintaining external systems, allowing authorized individuals to:",
                         "parts": [
                             {
                                 "id": "ac-20_smt.a.1",
@@ -138,14 +138,14 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Prohibit the use of {{ ac-20_prm_4 }}."
+                        "prose": "Prohibit the use of {{ insert: param, ac-20_prm_4 }}."
                     }
                 ]
             },
             {
                 "id": "ac-20_gdn",
                 "name": "guidance",
-                "prose": "External systems are systems that are used by but not part of organizational systems and for which the organization has no direct control over the implementation of required controls or the assessment of control effectiveness. External systems include personally owned systems, components, or devices; privately owned computing and communications devices in commercial or public facilities; systems owned or controlled by nonfederal organizations; systems managed by contractors; and federal information systems that are not owned by, operated by, or under the direct supervision or authority of the organization. External systems also include systems owned or operated by other components within the same organization and systems within the organization with different authorization boundaries. Organizations have the option to prohibit the use of any type of external system or prohibit the use of specified types of external systems, (e.g., prohibit the use of any external system that is not organizationally owned or prohibit the use of personally-owned systems).\n\nFor some external systems (i.e., systems operated by other organizations), the trust relationships that have been established between those organizations and the originating organization may be such that no explicit terms and conditions are required. Systems within these organizations may not be considered external. These situations occur when, for example, there are pre-existing information exchange agreements (either implicit or explicit) established between organizations or components or when such agreements are specified by applicable laws, executive orders, directives, regulations, policies, or standards. Authorized individuals include organizational personnel, contractors, or other individuals with authorized access to organizational systems and over which organizations have the authority to impose specific rules of behavior regarding system access. Restrictions that organizations impose on authorized individuals need not be uniform, as the restrictions may vary depending on trust relationships between organizations. Therefore, organizations may choose to impose different security restrictions on contractors than on state, local, or tribal governments.\n\nExternal systems used to access public interfaces to organizational systems are outside the scope of [AC-20](#ac-20). Organizations establish specific terms and conditions for the use of external systems in accordance with organizational security policies and procedures. At a minimum, terms and conditions address the specific types of applications that can be accessed on organizational systems from external systems and the highest security category of information that can be processed, stored, or transmitted on external systems. If the terms and conditions with the owners of the external systems cannot be established, organizations may impose restrictions on organizational personnel using those external systems."
+                "prose": "External systems are systems that are used by but not part of organizational systems, and for which the organization has no direct control over the implementation of required controls or the assessment of control effectiveness. External systems include personally owned systems, components, or devices; privately owned computing and communications devices in commercial or public facilities; systems owned or controlled by nonfederal organizations; systems managed by contractors; and federal information systems that are not owned by, operated by, or under the direct supervision or authority of the organization. External systems also include systems owned or operated by other components within the same organization and systems within the organization with different authorization boundaries. Organizations have the option to prohibit the use of any type of external system or prohibit the use of specified types of external systems, (e.g., prohibit the use of any external system that is not organizationally owned or prohibit the use of personally-owned systems).\n\nFor some external systems (i.e., systems operated by other organizations), the trust relationships that have been established between those organizations and the originating organization may be such that no explicit terms and conditions are required. Systems within these organizations may not be considered external. These situations occur when, for example, there are pre-existing information exchange agreements (either implicit or explicit) established between organizations or components or when such agreements are specified by applicable laws, executive orders, directives, regulations, policies, or standards. Authorized individuals include organizational personnel, contractors, or other individuals with authorized access to organizational systems and over which organizations have the authority to impose specific rules of behavior regarding system access. Restrictions that organizations impose on authorized individuals need not be uniform, as the restrictions may vary depending on trust relationships between organizations. Therefore, organizations may choose to impose different security restrictions on contractors than on state, local, or tribal governments.\n\nExternal systems used to access public interfaces to organizational systems are outside the scope of [AC-20](#ac-20). Organizations establish specific terms and conditions for the use of external systems in accordance with organizational security policies and procedures. At a minimum, terms and conditions address the specific types of applications that can be accessed on organizational systems from external systems and the highest security category of information that can be processed, stored, or transmitted on external systems. If the terms and conditions with the owners of the external systems cannot be established, organizations may impose restrictions on organizational personnel using those external systems."
             }
         ],
         "controls": [
@@ -248,7 +248,7 @@
                     {
                         "id": "ac-20.2_smt",
                         "name": "statement",
-                        "prose": "Restrict the use of organization-controlled portable storage devices by authorized individuals on external systems using {{ ac-20.2_prm_1 }}."
+                        "prose": "Restrict the use of organization-controlled portable storage devices by authorized individuals on external systems using {{ insert: param, ac-20.2_prm_1 }}."
                     },
                     {
                         "id": "ac-20.2_gdn",
@@ -287,12 +287,12 @@
                     {
                         "id": "ac-20.3_smt",
                         "name": "statement",
-                        "prose": "Restrict the use of non-organizationally owned systems or system components to process, store, or transmit organizational information using {{ ac-20.3_prm_1 }}."
+                        "prose": "Restrict the use of non-organizationally owned systems or system components to process, store, or transmit organizational information using {{ insert: param, ac-20.3_prm_1 }}."
                     },
                     {
                         "id": "ac-20.3_gdn",
                         "name": "guidance",
-                        "prose": "Non-organizationally owned systems or system components include systems or system components owned by other organizations as well as personally owned devices. There are potential risks to using non-organizationally owned systems or components. In some cases, the risk is sufficiently high as to prohibit such use (see AC-20(6)). In other cases, the use of such systems or system components may be allowed but restricted in some way. Restrictions include requiring the implementation of approved controls prior to authorizing the connection of non-organizationally owned systems and components; limiting access to types of information, services, or applications; using virtualization techniques to limit processing and storage activities to servers or system components provisioned by the organization; and agreeing to the terms and conditions for usage. Organizations consult with the Office of the General Counsel regarding legal issues associated with using personally owned devices, including requirements for conducting forensic analyses during investigations after an incident."
+                        "prose": "Non-organizationally owned systems or system components include systems or system components owned by other organizations as well as personally owned devices. There are potential risks to using non-organizationally owned systems or components. In some cases, the risk is sufficiently high as to prohibit such use (see [AC-20 b.](#ac-20_smt.b)). In other cases, the use of such systems or system components may be allowed but restricted in some way. Restrictions include requiring the implementation of approved controls prior to authorizing the connection of non-organizationally owned systems and components; limiting access to types of information, services, or applications; using virtualization techniques to limit processing and storage activities to servers or system components provisioned by the organization; and agreeing to the terms and conditions for usage. Organizations consult with the Office of the General Counsel regarding legal issues associated with using personally owned devices, including requirements for conducting forensic analyses during investigations after an incident."
                     }
                 ]
             },
@@ -326,7 +326,7 @@
                     {
                         "id": "ac-20.4_smt",
                         "name": "statement",
-                        "prose": "Prohibit the use of {{ ac-20.4_prm_1 }} in external systems."
+                        "prose": "Prohibit the use of {{ insert: param, ac-20.4_prm_1 }} in external systems."
                     },
                     {
                         "id": "ac-20.4_gdn",
@@ -353,18 +353,6 @@
                     {
                         "href": "#ac-20",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7dbd6d9f-29d6-4d1d-9766-f2d77ff3c849",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#f26af0d0-6d72-4a9d-8ecd-01bc21fd4f0e",
-                        "rel": "reference"
                     },
                     {
                         "href": "#mp-7",

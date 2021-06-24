@@ -49,7 +49,7 @@
             {
                 "id": "ia-11_smt",
                 "name": "statement",
-                "prose": "Require users to re-authenticate when {{ ia-11_prm_1 }}."
+                "prose": "Require users to re-authenticate when {{ insert: param, ia-11_prm_1 }}."
             },
             {
                 "id": "ia-11_gdn",

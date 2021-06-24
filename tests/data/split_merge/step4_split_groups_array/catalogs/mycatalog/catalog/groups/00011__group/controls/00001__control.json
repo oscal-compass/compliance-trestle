@@ -365,7 +365,7 @@
                                         "value": "14."
                                     }
                                 ],
-                                "prose": "Include security- and privacy-related activities affecting the system that require planning and coordination with {{ pl-2_prm_1 }}; and"
+                                "prose": "Include security- and privacy-related activities affecting the system that require planning and coordination with {{ insert: param, pl-2_prm_1 }}; and"
                             },
                             {
                                 "id": "pl-2_smt.a.15",
@@ -389,7 +389,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Distribute copies of the plans and communicate subsequent changes to the plans to {{ pl-2_prm_2 }};"
+                        "prose": "Distribute copies of the plans and communicate subsequent changes to the plans to {{ insert: param, pl-2_prm_2 }};"
                     },
                     {
                         "id": "pl-2_smt.c",
@@ -400,7 +400,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Review the plans {{ pl-2_prm_3 }};"
+                        "prose": "Review the plans {{ insert: param, pl-2_prm_3 }};"
                     },
                     {
                         "id": "pl-2_smt.d",
@@ -505,26 +505,6 @@
                     {
                         "href": "#pl-2",
                         "rel": "incorporated-into"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#30eb758a-2707-4bca-90ad-949a74d4eb16",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#61ccf0f4-d3e7-42db-9796-ce6cb1c85989",
-                        "rel": "reference"
                     }
                 ]
             }

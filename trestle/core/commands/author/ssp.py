@@ -23,6 +23,7 @@ from ruamel.yaml.error import YAMLError
 
 import trestle.core.generators as gens
 import trestle.oscal.catalog as cat
+import trestle.oscal.common as common
 import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 import trestle.utils.fs as fs
@@ -152,14 +153,14 @@ class SSPManager():
 
         return text
 
-    def _get_label(self, part: cat.Part) -> str:
+    def _get_label(self, part: common.Part) -> str:
         if part.props is not None:
             for prop in part.props:
                 if prop.name == 'label':
                     return prop.value.strip()
         return ''
 
-    def _get_part(self, control: cat.Control, part: cat.Part) -> List[Union[str, List[str]]]:
+    def _get_part(self, control: cat.Control, part: common.Part) -> List[Union[str, List[str]]]:
         items = []
         if part.prose is not None:
             fixed_prose = self._replace_params(part.prose, control, self._param_dict)
@@ -317,7 +318,7 @@ class SSPManager():
         needed_group_ids: Set[str] = set()
         needed_controls: List[ControlHandle] = []
         for control_id in control_ids:
-            control_handle = control_dict[control_id]
+            control_handle = control_dict[control_id.__root__]
             needed_group_ids.add(control_handle.group_id)
             needed_controls.append(control_handle)
 
@@ -326,7 +327,10 @@ class SSPManager():
             (md_path / group_id).mkdir(exist_ok=True)
 
         # assign values to class members for use when writing out the controls
-        self._param_dict = profile.modify.set_parameters
+        param_list = profile.modify.set_parameters
+        self._param_dict = {}
+        for param in param_list:
+            self._param_dict[param.param_id] = param
         self._alters = profile.modify.alters
         self._yaml_header = yaml_header
         self._sections = sections
@@ -354,12 +358,13 @@ class SSPManager():
                 by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
                 by_comp.description = text
                 statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
-                part_label = section.split(' ')[1].replace('.', '')
-                statement_label = f'{control_id}_smt.{part_label}'
-                statement.by_components = {statement_label: by_comp}
+                # the following may be needed with the 1.0.0 changes
+                # part_label = section.split(' ')[1].replace('.', '')  # noqa: E800
+                # statement_label = f'{control_id}_smt.{part_label}'   # noqa: E800
+                statement.by_components = [by_comp]
                 imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
                 imp_req.control_id = control_id
-                imp_req.statements = {statement_label: statement}
+                imp_req.statements = [statement]
                 imp_reqs.append(imp_req)
                 ii += 2
             ii += 1
