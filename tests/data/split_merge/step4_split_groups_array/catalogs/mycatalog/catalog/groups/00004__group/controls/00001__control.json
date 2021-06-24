@@ -145,7 +145,7 @@
                                         "value": "1."
                                     }
                                 ],
-                                "prose": " {{ cm-2_prm_1 }};"
+                                "prose": " {{ insert: param, cm-2_prm_1 }};"
                             },
                             {
                                 "id": "cm-2_smt.b.2",
@@ -156,7 +156,7 @@
                                         "value": "2."
                                     }
                                 ],
-                                "prose": "When required due to {{ cm-2_prm_2 }}; and"
+                                "prose": "When required due to {{ insert: param, cm-2_prm_2 }}; and"
                             },
                             {
                                 "id": "cm-2_smt.b.3",
@@ -247,7 +247,7 @@
                     {
                         "id": "cm-2.2_smt",
                         "name": "statement",
-                        "prose": "Maintain the currency, completeness, accuracy, and availability of the baseline configuration of the system using {{ cm-2.2_prm_1 }}."
+                        "prose": "Maintain the currency, completeness, accuracy, and availability of the baseline configuration of the system using {{ insert: param, cm-2.2_prm_1 }}."
                     },
                     {
                         "id": "cm-2.2_gdn",
@@ -286,7 +286,7 @@
                     {
                         "id": "cm-2.3_smt",
                         "name": "statement",
-                        "prose": "Retain {{ cm-2.3_prm_1 }} of previous versions of baseline configurations of the system to support rollback."
+                        "prose": "Retain {{ insert: param, cm-2.3_prm_1 }} of previous versions of baseline configurations of the system to support rollback."
                     },
                     {
                         "id": "cm-2.3_gdn",
@@ -424,14 +424,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#0f66be67-85e7-4ca6-bd19-39453e9f4394",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#20db4e66-e257-450c-b2e4-2bb9a62a2c88",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#mp-4",
                         "rel": "related"
                     },
@@ -454,7 +446,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Issue {{ cm-2.7_prm_1 }} with {{ cm-2.7_prm_2 }} to individuals traveling to locations that the organization deems to be of significant risk; and"
+                                "prose": "Issue {{ insert: param, cm-2.7_prm_1 }} with {{ insert: param, cm-2.7_prm_2 }} to individuals traveling to locations that the organization deems to be of significant risk; and"
                             },
                             {
                                 "id": "cm-2.7_smt.b",
@@ -465,7 +457,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Apply the following controls to the systems or components when the individuals return from travel: {{ cm-2.7_prm_3 }}."
+                                "prose": "Apply the following controls to the systems or components when the individuals return from travel: {{ insert: param, cm-2.7_prm_3 }}."
                             }
                         ]
                     },

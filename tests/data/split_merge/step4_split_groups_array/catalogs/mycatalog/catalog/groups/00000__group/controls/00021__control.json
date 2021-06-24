@@ -88,7 +88,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Review the content on the publicly accessible system for nonpublic information {{ ac-22_prm_1 }} and remove such information, if discovered."
+                        "prose": "Review the content on the publicly accessible system for nonpublic information {{ insert: param, ac-22_prm_1 }} and remove such information, if discovered."
                     }
                 ]
             },

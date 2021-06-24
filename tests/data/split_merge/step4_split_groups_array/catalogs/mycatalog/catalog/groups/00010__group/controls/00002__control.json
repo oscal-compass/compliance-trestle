@@ -11,9 +11,9 @@
             {
                 "id": "pe-3_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
-                        " {{ pe-3_prm_3 }} ",
+                        " {{ insert: param, pe-3_prm_3 }} ",
                         "guards"
                     ]
                 }
@@ -186,7 +186,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Enforce physical access authorizations at {{ pe-3_prm_1 }} by:",
+                        "prose": "Enforce physical access authorizations at {{ insert: param, pe-3_prm_1 }} by:",
                         "parts": [
                             {
                                 "id": "pe-3_smt.a.1",
@@ -208,7 +208,7 @@
                                         "value": "2."
                                     }
                                 ],
-                                "prose": "Controlling ingress and egress to the facility using {{ pe-3_prm_2 }};"
+                                "prose": "Controlling ingress and egress to the facility using {{ insert: param, pe-3_prm_2 }};"
                             }
                         ]
                     },
@@ -221,7 +221,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Maintain physical access audit logs for {{ pe-3_prm_4 }};"
+                        "prose": "Maintain physical access audit logs for {{ insert: param, pe-3_prm_4 }};"
                     },
                     {
                         "id": "pe-3_smt.c",
@@ -232,7 +232,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Control access to areas within the facility designated as publicly accessible by implementing the following controls: {{ pe-3_prm_5 }};"
+                        "prose": "Control access to areas within the facility designated as publicly accessible by implementing the following controls: {{ insert: param, pe-3_prm_5 }};"
                     },
                     {
                         "id": "pe-3_smt.d",
@@ -243,7 +243,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Escort visitors and control visitor activity {{ pe-3_prm_6 }};"
+                        "prose": "Escort visitors and control visitor activity {{ insert: param, pe-3_prm_6 }};"
                     },
                     {
                         "id": "pe-3_smt.e",
@@ -265,7 +265,7 @@
                                 "value": "f."
                             }
                         ],
-                        "prose": "Inventory {{ pe-3_prm_7 }} every {{ pe-3_prm_8 }}; and"
+                        "prose": "Inventory {{ insert: param, pe-3_prm_7 }} every {{ insert: param, pe-3_prm_8 }}; and"
                     },
                     {
                         "id": "pe-3_smt.g",
@@ -276,7 +276,7 @@
                                 "value": "g."
                             }
                         ],
-                        "prose": "Change combinations and keys {{ pe-3_prm_9 }} and/or when keys are lost, combinations are compromised, or when individuals possessing the keys or combinations are transferred or terminated."
+                        "prose": "Change combinations and keys {{ insert: param, pe-3_prm_9 }} and/or when keys are lost, combinations are compromised, or when individuals possessing the keys or combinations are transferred or terminated."
                     }
                 ]
             },
@@ -317,7 +317,7 @@
                     {
                         "id": "pe-3.1_smt",
                         "name": "statement",
-                        "prose": "Enforce physical access authorizations to the system in addition to the physical access controls for the facility at {{ pe-3.1_prm_1 }}."
+                        "prose": "Enforce physical access authorizations to the system in addition to the physical access controls for the facility at {{ insert: param, pe-3.1_prm_1 }}."
                     },
                     {
                         "id": "pe-3.1_gdn",
@@ -364,7 +364,7 @@
                     {
                         "id": "pe-3.2_smt",
                         "name": "statement",
-                        "prose": "Perform security checks {{ pe-3.2_prm_1 }} at the physical perimeter of the facility or system for exfiltration of information or removal of system components."
+                        "prose": "Perform security checks {{ insert: param, pe-3.2_prm_1 }} at the physical perimeter of the facility or system for exfiltration of information or removal of system components."
                     },
                     {
                         "id": "pe-3.2_gdn",
@@ -415,7 +415,7 @@
                     {
                         "id": "pe-3.3_smt",
                         "name": "statement",
-                        "prose": "Employ guards to control {{ pe-3.3_prm_1 }} to the facility where the system resides 24 hours per day, 7 days per week."
+                        "prose": "Employ guards to control {{ insert: param, pe-3.3_prm_1 }} to the facility where the system resides 24 hours per day, 7 days per week."
                     },
                     {
                         "id": "pe-3.3_gdn",
@@ -454,7 +454,7 @@
                     {
                         "id": "pe-3.4_smt",
                         "name": "statement",
-                        "prose": "Use lockable physical casings to protect {{ pe-3.4_prm_1 }} from unauthorized physical access."
+                        "prose": "Use lockable physical casings to protect {{ insert: param, pe-3.4_prm_1 }} from unauthorized physical access."
                     },
                     {
                         "id": "pe-3.4_gdn",
@@ -475,7 +475,7 @@
                     {
                         "id": "pe-3.5_prm_2",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "detect",
                                 "prevent"
@@ -519,7 +519,7 @@
                     {
                         "id": "pe-3.5_smt",
                         "name": "statement",
-                        "prose": "Employ {{ pe-3.5_prm_1 }} to {{ pe-3.5_prm_2 }} physical tampering or alteration of {{ pe-3.5_prm_3 }} within the system."
+                        "prose": "Employ {{ insert: param, pe-3.5_prm_1 }} to {{ insert: param, pe-3.5_prm_2 }} physical tampering or alteration of {{ insert: param, pe-3.5_prm_3 }} within the system."
                     },
                     {
                         "id": "pe-3.5_gdn",
@@ -610,38 +610,18 @@
                     {
                         "href": "#pe-3",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#858705be-3c1f-48aa-a328-0ce398d95ef0",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7af2e6ec-9f7e-4232-ad3f-09888eb0793a",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#828856bd-d7c4-427b-8b51-815517ec382d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#2100332a-16a5-4598-bacf-7261baea9711",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "pe-3.8_smt",
                         "name": "statement",
-                        "prose": "Employ access control vestibules at {{ pe-3.8_prm_1 }}."
+                        "prose": "Employ access control vestibules at {{ insert: param, pe-3.8_prm_1 }}."
                     },
                     {
                         "id": "pe-3.8_gdn",
                         "name": "guidance",
-                        "prose": "An access control vestibule, or mantrap, is part of a physical access control system that typically provides a space between two sets of interlocking doors. Mantraps are designed to prevent unauthorized individuals from following authorized individuals into facilities with controlled access. This activity, also known as piggybacking or tailgating, results in unauthorized access to the facility. Interlocking door controllers can be used to limit the number of individuals who enter controlled access points and to provide containment areas while authorization for physical access is verified. Interlocking door controllers can be fully automated (i.e., controlling the opening and closing of the doors) or partially automated (i.e., using security guards to control the number of individuals entering the containment area)."
+                        "prose": "An access control vestibule is part of a physical access control system that typically provides a space between two sets of interlocking doors. Vestibules are designed to prevent unauthorized individuals from following authorized individuals into facilities with controlled access. This activity, also known as piggybacking or tailgating, results in unauthorized access to the facility. Interlocking door controllers can be used to limit the number of individuals who enter controlled access points and to provide containment areas while authorization for physical access is verified. Interlocking door controllers can be fully automated (i.e., controlling the opening and closing of the doors) or partially automated (i.e., using security guards to control the number of individuals entering the containment area)."
                     }
                 ]
             }

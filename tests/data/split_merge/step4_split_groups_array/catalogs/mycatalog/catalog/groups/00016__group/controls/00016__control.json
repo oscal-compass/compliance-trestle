@@ -156,7 +156,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Produce, as an integral part of the development process, a formal policy model describing the {{ sa-17.1_prm_1 }} to be enforced; and"
+                                "prose": "Produce, as an integral part of the development process, a formal policy model describing the {{ insert: param, sa-17.1_prm_1 }} to be enforced; and"
                             },
                             {
                                 "id": "sa-17.1_smt.b",
@@ -430,7 +430,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Show via {{ sa-17.4_prm_1 }} that the descriptive top-level specification is consistent with the formal policy model;"
+                                "prose": "Show via {{ insert: param, sa-17.4_prm_1 }} that the descriptive top-level specification is consistent with the formal policy model;"
                             },
                             {
                                 "id": "sa-17.4_smt.c",
@@ -663,7 +663,7 @@
                     {
                         "id": "sa-17.8_smt",
                         "name": "statement",
-                        "prose": "Design {{ sa-17.8_prm_1 }} with coordinated behavior to implement the following capabilities: {{ sa-17.8_prm_2 }}."
+                        "prose": "Design {{ insert: param, sa-17.8_prm_1 }} with coordinated behavior to implement the following capabilities: {{ insert: param, sa-17.8_prm_2 }}."
                     },
                     {
                         "id": "sa-17.8_gdn",
@@ -696,25 +696,13 @@
                     {
                         "href": "#sa-17",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#87087451-2af5-43d4-88c1-d66ad850f614",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#4452efc0-e79e-47b8-aa30-b54f3ef61c2f",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "sa-17.9_smt",
                         "name": "statement",
-                        "prose": "Use different designs for {{ sa-17.9_prm_1 }} to satisfy a common set of requirements or to provide equivalent functionality."
+                        "prose": "Use different designs for {{ insert: param, sa-17.9_prm_1 }} to satisfy a common set of requirements or to provide equivalent functionality."
                     },
                     {
                         "id": "sa-17.9_gdn",

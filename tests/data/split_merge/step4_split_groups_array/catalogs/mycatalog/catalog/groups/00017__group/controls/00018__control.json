@@ -16,6 +16,13 @@
                 "name": "status",
                 "value": "withdrawn"
             }
+        ],
+        "parts": [
+            {
+                "id": "sc-19_smt",
+                "name": "statement",
+                "prose": "Technology-specific; addressed as any other technology or protocol."
+            }
         ]
     }
 }

@@ -3,6 +3,36 @@
 
 <!--next-version-placeholder-->
 
+## v0.18.1 (2021-06-17)
+### Fix
+* Small scale fixes to the author validation system. (#572) ([#573](https://github.com/IBM/compliance-trestle/issues/573)) ([`04e16cc`](https://github.com/IBM/compliance-trestle/commit/04e16ccd508607eadb2c0ab4db69fb324cf0e24c))
+
+## v0.18.0 (2021-06-17)
+### Feature
+* Allow explicit inclusion / exclusion of readme files in author workflows ([#570](https://github.com/IBM/compliance-trestle/issues/570)) ([`0ca1d20`](https://github.com/IBM/compliance-trestle/commit/0ca1d202fa4865acf20fb9156a9c13437350b16e))
+
+### Fix
+* Replace yaml library to ensure that errors are thrown / recognised on duplicate keys. ([#569](https://github.com/IBM/compliance-trestle/issues/569)) ([`9464420`](https://github.com/IBM/compliance-trestle/commit/9464420cb3bba1dc684051ff35e2d13e9a115203))
+
+## v0.17.0 (2021-06-09)
+### Feature
+* Ssp generation of markdown files for groups of controls ([#556](https://github.com/IBM/compliance-trestle/issues/556)) ([`1dcf139`](https://github.com/IBM/compliance-trestle/commit/1dcf1395469b20b32e67c02cc52ede15d5b35f4b))
+* Update `trestle md` to `trestle author` and introduce functionality for validating drawio metadata. ([#551](https://github.com/IBM/compliance-trestle/issues/551)) ([`2567e6c`](https://github.com/IBM/compliance-trestle/commit/2567e6c55039ce4b2db0d76fb4ae3c7495a26301))
+
+### Fix
+* Lint PR firing off dev ([#562](https://github.com/IBM/compliance-trestle/issues/562)) ([`81f44c6`](https://github.com/IBM/compliance-trestle/commit/81f44c628d687ab4f0d96b9c16d018459e9fc062))
+* [ImgBot] Optimize images ([#560](https://github.com/IBM/compliance-trestle/issues/560)) ([`62b870d`](https://github.com/IBM/compliance-trestle/commit/62b870d3d98bf2a67be2c7fc68b0cf9e8d4b7f07))
+* Allow for check suite to trigger a PR ([`5c95318`](https://github.com/IBM/compliance-trestle/commit/5c95318f8c43b6901d0992512e029d2aa584a73c))
+* Allow for check suite to trigger a PR ([`9bce041`](https://github.com/IBM/compliance-trestle/commit/9bce041a02326d9e148ada7271eda5dbda46e504))
+* Allow for test completion to trigger automerge correctly ([`dc6864f`](https://github.com/IBM/compliance-trestle/commit/dc6864f8a3bc03ec1f694d25dbeda19969507ab9))
+* Correct github expression path. ([`9ab4936`](https://github.com/IBM/compliance-trestle/commit/9ab4936dc0aef7d4b2bd445dd4d8f1e3a13c6f9b))
+* Ensrue automerge fires off correctly ([`d0f51b8`](https://github.com/IBM/compliance-trestle/commit/d0f51b841073d06269272f2e5f5a7f04bb07bc3a))
+* CICD refinements ([`a2d836b`](https://github.com/IBM/compliance-trestle/commit/a2d836bc8e29d6cbe16346ed4172e258546e1196))
+* Dump context in automerge workflow. ([`144a54f`](https://github.com/IBM/compliance-trestle/commit/144a54f8ef51252b4a4fec6117e85b388cd69b17))
+* Cleanup CIDC workflow to prevent admin rights pushing over checks. ([`56127e7`](https://github.com/IBM/compliance-trestle/commit/56127e733dc0539d36e3faf32be1c3be701da1d8))
+* Cleanup CIDC workflow to prevent admin rights pushing over checks. ([`a305ebb`](https://github.com/IBM/compliance-trestle/commit/a305ebb24c8595a0014afe1d6da5886400f1211b))
+* Cleanup CIDC workflow to prevent admin rights pushing over checks. ([`31e8cde`](https://github.com/IBM/compliance-trestle/commit/31e8cde6b68009372a7dcf9562dc6e420ecec6d2))
+
 ## v0.16.0 (2021-05-28)
 ### Feature
 * OSCO transformer conform to Results interface class. ([#532](https://github.com/IBM/compliance-trestle/issues/532)) ([`fc251b9`](https://github.com/IBM/compliance-trestle/commit/fc251b9e9c231de67fd214b16bdd7c2a6cb4d3c1))

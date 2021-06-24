@@ -33,6 +33,7 @@ t_filename = str
 t_results = Results
 t_osco_transformer = OscoTransformer
 
+
 class OscoToOscal(TaskBase):
     """
     Task to convert Osco report to OSCAL json.
@@ -56,27 +57,37 @@ class OscoToOscal(TaskBase):
         """Print the help string."""
         logger.info(f'Help information for {self.name} task.')
         logger.info('')
-        logger.info('Purpose: Transform Osco files into Open Security Controls Assessment Language (OSCAL) partial results files.')
+        logger.info(
+            'Purpose: Transform Osco files into Open Security Controls Assessment Language (OSCAL) partial results files.'
+        )
         logger.info('')
         logger.info('Configuration flags sit under [task.osco-to-oscal]:')
         logger.info('  input-dir = (required) the path of the input directory comprising Osco reports.')
-        logger.info('  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.')
+        logger.info(
+            '  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.'
+        )
         logger.info('  output-overwrite = (optional) true [default] or false; replace existing output when true.')
-        logger.info('  quiet = (optional) true or false [default]; display file creations and rules analysis when false.')
-        logger.info('  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Osco report is used if present, otherwise current time is used.')                                                       
+        logger.info(
+            '  quiet = (optional) true or false [default]; display file creations and rules analysis when false.'
+        )
+        logger.info(
+            '  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Osco report is used if present, otherwise current time is used.'
+        )
         logger.info('')
-        logger.info('Operation: A transformation is performed on one or more Osco input files to produce output in OSCAL partial results format.')
-        
+        logger.info(
+            'Operation: A transformation is performed on one or more Osco input files to produce output in OSCAL partial results format.'
+        )
+
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
         self._simulate = True
         return self._transform()
-        
+
     def execute(self) -> TaskOutcome:
         """Provide an actual outcome."""
         self._simulate = False
         return self._transform()
-    
+
     def _transform(self) -> TaskOutcome:
         """Perform transformation."""
         try:
@@ -87,7 +98,7 @@ class OscoToOscal(TaskBase):
             if self._simulate:
                 mode = 'simulated-'
             return TaskOutcome(mode + 'failure')
-            
+
     def _transform_work(self) -> TaskOutcome:
         """Transformation work steps: read input, process, write output, display analysis."""
         mode = ''
@@ -118,8 +129,8 @@ class OscoToOscal(TaskBase):
         # insure output dir exists
         opth.mkdir(exist_ok=True, parents=True)
         # process
-        for ifile in sorted(ipth.iterdir()):    
-            if ifile.suffix not in [ '.json', '.jsn', '.yaml', '.yml']:
+        for ifile in sorted(ipth.iterdir()):
+            if ifile.suffix not in ['.json', '.jsn', '.yaml', '.yml']:
                 continue
             blob = self._read_file(ifile)
             osco_transformer = OscoTransformer()
@@ -137,18 +148,18 @@ class OscoToOscal(TaskBase):
         """Read raw input file."""
         if not self._simulate:
             if self._verbose:
-                logger.info(f'input: {ifile}') 
-        with open(ifile) as fp:
+                logger.info(f'input: {ifile}')
+        with open(ifile, encoding=const.FILE_ENCODING) as fp:
             blob = fp.read()
         return blob
-        
+
     def _write_file(self, result: str, ofile: t_filename) -> None:
         """Write oscal results file."""
         if not self._simulate:
             if self._verbose:
                 logger.info(f'output: {ofile}')
             result.oscal_write(pathlib.Path(ofile))
-    
+
     def _show_analysis(self, osco_transformer: t_osco_transformer) -> None:
         """Show analysis."""
         if not self._simulate:
@@ -156,4 +167,3 @@ class OscoToOscal(TaskBase):
                 analysis = osco_transformer.analysis
                 for line in analysis:
                     logger.info(line)
-    

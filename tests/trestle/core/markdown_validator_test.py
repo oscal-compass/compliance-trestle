@@ -19,6 +19,7 @@ from typing import Any, Dict
 
 import pytest
 
+import trestle.core.const as const
 import trestle.core.err as err
 import trestle.core.markdown_validator as markdown_validator
 
@@ -28,8 +29,8 @@ def test_partition_ast() -> None:
     import mistune
     import pathlib
     import frontmatter
-    test_data = pathlib.Path('tests/data/md/test_3_md_hand_edited/decisions_000.md')
-    fm = frontmatter.loads(test_data.open('r').read())
+    test_data = pathlib.Path('tests/data/author/test_3_md_hand_edited/decisions_000.md')
+    fm = frontmatter.loads(test_data.open('r', encoding=const.FILE_ENCODING).read())
     content = fm.content
     mistune_ast_parser = mistune.create_markdown(renderer=mistune.AstRenderer())
     parse = mistune_ast_parser(content)
@@ -41,71 +42,71 @@ def test_partition_ast() -> None:
     'template_path, instance_path, status, header_validate, header_only_validate',
     [
         (
-            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/md/test_1_md_format/correct_instance.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/correct_instance.md'),
             True,
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/md/test_1_md_format/correct_instance_extra_features.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/correct_instance_extra_features.md'),
             True,
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_yaml_header_change.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/bad_instance_yaml_header_change.md'),
             False,
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_yaml_header_change.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/bad_instance_yaml_header_change.md'),
             True,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_reordered.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/bad_instance_reordered.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_missing_heading.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/bad_instance_missing_heading.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_missing_heading.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/bad_instance_missing_heading.md'),
             True,
             True,
             True
         ),
         (
-            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_heading_wrong_type.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/bad_instance_heading_wrong_type.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
-            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_bold_heading.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/bad_instance_bold_heading.md'),
             False,
             False,
             False
         ),
         (
-            pathlib.Path('tests/data/md/test_1_md_format/bad_instance_bold_heading.md'),
-            pathlib.Path('tests/data/md/test_1_md_format/template.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/bad_instance_bold_heading.md'),
+            pathlib.Path('tests/data/author/test_1_md_format/template.md'),
             False,
             False,
             False
@@ -127,8 +128,8 @@ def test_md_validator_pass(
 
 def test_md_by_hand() -> None:
     """Simpler test to enable debugging."""
-    template_path = pathlib.Path('tests/data/md/test_3_md_hand_edited/template.md')
-    instance_path = pathlib.Path('tests/data/md/test_3_md_hand_edited/decisions_000.md')
+    template_path = pathlib.Path('tests/data/author/test_3_md_hand_edited/template.md')
+    instance_path = pathlib.Path('tests/data/author/test_3_md_hand_edited/decisions_000.md')
     header_validate = False
     status = True
     md_validator = markdown_validator.MarkdownValidator(template_path, header_validate, False, 'Governed Document')
@@ -140,26 +141,26 @@ def test_md_by_hand() -> None:
     'template_path, instance_path, status, yaml_header_validate',
     [
         (
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/instance.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/instance.md'),
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/md/test_3_md_hand_edited/template.md'),
-            pathlib.Path('tests/data/md/test_3_md_hand_edited/decisions_000.md'),
+            pathlib.Path('tests/data/author/test_3_md_hand_edited/template.md'),
+            pathlib.Path('tests/data/author/test_3_md_hand_edited/decisions_000.md'),
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/md/test_3_md_hand_edited/template.md'),
-            pathlib.Path('tests/data/md/test_3_md_hand_edited/decisions_001.md'),
+            pathlib.Path('tests/data/author/test_3_md_hand_edited/template.md'),
+            pathlib.Path('tests/data/author/test_3_md_hand_edited/decisions_001.md'),
             True,
             False
         ),
         (
-            pathlib.Path('tests/data/md/test_3_md_hand_edited/template.md'),
-            pathlib.Path('tests/data/md/test_3_md_hand_edited/decisions_002.md'),
+            pathlib.Path('tests/data/author/test_3_md_hand_edited/template.md'),
+            pathlib.Path('tests/data/author/test_3_md_hand_edited/decisions_002.md'),
             True,
             False
         )
@@ -222,7 +223,31 @@ def test_bad_file_path(tmp_path: pathlib.Path):
             'hello': 1,
             'world': 2,
             'banana': 3,
-        }, False)
+        }, False),
+        (
+            {
+                'hello': 'A simple element', 'world': {
+                    'required_key': '1', 'another_required_key': '2'
+                }
+            }, {
+                'hello': 'A simple element', 'world': {
+                    'required_key': '1', 'another_required_key': '2'
+                }
+            },
+            True
+        ),
+        (
+            {
+                'hello': 'A simple element', 'world': {
+                    'required_key': '1', 'another_required_key': '2'
+                }
+            }, {
+                'hello': 'A simple element', 'world': {
+                    'required_key': 'there is a missing key',
+                }
+            },
+            False
+        )
     ]
 )
 def test_key_compare(template: Dict[str, Any], candidate: Dict[str, Any], expected_status):
@@ -235,38 +260,38 @@ def test_key_compare(template: Dict[str, Any], candidate: Dict[str, Any], expect
     'template_path, instance_path, status, governed_header',
     [
         (
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/instance.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/instance.md'),
             True,
             'Governed Document'
         ),
         (
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/instance.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/instance.md'),
             True,
             'Governed Document      '
         ),
         (
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/instance.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/instance.md'),
             False,
             'Governed Documeent'
         ),
         (
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/bad_heading_content_changed_header.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/bad_heading_content_changed_header.md'),
             False,
             'Governed Document'
         ),
         (
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/bad_heading_content_extra_lines.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/bad_heading_content_extra_lines.md'),
             False,
             'Governed Document'
         ),
         (
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/template.md'),
-            pathlib.Path('tests/data/md/test_2_md_with_md_header/wrong_heading_title.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/template.md'),
+            pathlib.Path('tests/data/author/test_2_md_with_md_header/wrong_heading_title.md'),
             False,
             'Governed Document'
         )
@@ -283,7 +308,7 @@ def test_validate_for_governed_header(
 
 def test_compare_tree_force_failure():
     """Test unhappy path of compare_tree by manipulating content."""
-    template_path = pathlib.Path('tests/data/md/test_1_md_format/template.md')
+    template_path = pathlib.Path('tests/data/author/test_1_md_format/template.md')
     header_validate = True
     md_validator = markdown_validator.MarkdownValidator(template_path, header_validate, False)
     ast_parse = markdown_validator.partition_ast(md_validator._template_parse)

@@ -49,7 +49,7 @@
             {
                 "id": "sc-48_smt",
                 "name": "statement",
-                "prose": "Relocate {{ sc-48_prm_1 }} to {{ sc-48_prm_2 }} under the following conditions or circumstances: {{ sc-48_prm_3 }}."
+                "prose": "Relocate {{ insert: param, sc-48_prm_1 }} to {{ insert: param, sc-48_prm_2 }} under the following conditions or circumstances: {{ insert: param, sc-48_prm_3 }}."
             },
             {
                 "id": "sc-48_gdn",
@@ -90,17 +90,13 @@
                     {
                         "href": "#sc-48",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#61ccf0f4-d3e7-42db-9796-ce6cb1c85989",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "sc-48.1_smt",
                         "name": "statement",
-                        "prose": "Dynamically relocate {{ sc-48.1_prm_1 }} to {{ sc-48.1_prm_2 }} under the following conditions or circumstances: {{ sc-48.1_prm_3 }}."
+                        "prose": "Dynamically relocate {{ insert: param, sc-48.1_prm_1 }} to {{ insert: param, sc-48.1_prm_2 }} under the following conditions or circumstances: {{ insert: param, sc-48.1_prm_3 }}."
                     },
                     {
                         "id": "sc-48.1_gdn",

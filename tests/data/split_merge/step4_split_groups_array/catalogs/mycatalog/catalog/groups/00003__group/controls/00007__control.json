@@ -49,7 +49,7 @@
             {
                 "id": "ca-8_smt",
                 "name": "statement",
-                "prose": "Conduct penetration testing {{ ca-8_prm_1 }} on {{ ca-8_prm_2 }}."
+                "prose": "Conduct penetration testing {{ insert: param, ca-8_prm_1 }} on {{ insert: param, ca-8_prm_2 }}."
             },
             {
                 "id": "ca-8_gdn",
@@ -125,7 +125,7 @@
                     {
                         "id": "ca-8.2_smt",
                         "name": "statement",
-                        "prose": "Employ the following red-team exercises to simulate attempts by adversaries to compromise organizational systems in accordance with applicable rules of engagement: {{ ca-8.2_prm_1 }}."
+                        "prose": "Employ the following red-team exercises to simulate attempts by adversaries to compromise organizational systems in accordance with applicable rules of engagement: {{ insert: param, ca-8.2_prm_1 }}."
                     },
                     {
                         "id": "ca-8.2_gdn",
@@ -181,7 +181,7 @@
                     {
                         "id": "ca-8.3_smt",
                         "name": "statement",
-                        "prose": "Employ a penetration testing process that includes {{ ca-8.3_prm_1 }} {{ ca-8.3_prm_2 }} attempts to bypass or circumvent controls associated with physical access points to the facility."
+                        "prose": "Employ a penetration testing process that includes {{ insert: param, ca-8.3_prm_1 }} {{ insert: param, ca-8.3_prm_2 }} attempts to bypass or circumvent controls associated with physical access points to the facility."
                     },
                     {
                         "id": "ca-8.3_gdn",

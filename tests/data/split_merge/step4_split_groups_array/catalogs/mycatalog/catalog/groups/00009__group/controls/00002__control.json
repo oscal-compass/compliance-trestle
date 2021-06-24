@@ -25,6 +25,10 @@
         ],
         "links": [
             {
+                "href": "#34a5571f-e252-4309-a8a1-2fdb2faefbcd",
+                "rel": "reference"
+            },
+            {
                 "href": "#91f992fb-f668-4c91-a50f-0f05b95ccee3",
                 "rel": "reference"
             },
@@ -78,7 +82,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Exempt {{ mp-3_prm_1 }} from marking if the media remain within {{ mp-3_prm_2 }}."
+                        "prose": "Exempt {{ insert: param, mp-3_prm_1 }} from marking if the media remain within {{ insert: param, mp-3_prm_2 }}."
                     }
                 ]
             },

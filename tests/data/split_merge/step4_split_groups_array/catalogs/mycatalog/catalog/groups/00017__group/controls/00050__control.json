@@ -37,7 +37,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Employ hardware-based, write-protect for {{ sc-51_prm_1 }}; and"
+                        "prose": "Employ hardware-based, write-protect for {{ insert: param, sc-51_prm_1 }}; and"
                     },
                     {
                         "id": "sc-51_smt.b",
@@ -48,7 +48,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Implement specific procedures for {{ sc-51_prm_2 }} to manually disable hardware write-protect for firmware modifications and re-enable the write-protect prior to returning to operational mode."
+                        "prose": "Implement specific procedures for {{ insert: param, sc-51_prm_2 }} to manually disable hardware write-protect for firmware modifications and re-enable the write-protect prior to returning to operational mode."
                     }
                 ]
             },

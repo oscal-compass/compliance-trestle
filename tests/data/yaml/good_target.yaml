@@ -1,7 +1,7 @@
 target-definition:
   metadata:
     last-modified: '2020-08-13T15:24:24.389+00:00'
-    oscal-version: 1.0.0-rc2
+    oscal-version: '1.0.0'
     parties:
     - name: International Business Machines
       type: organization
@@ -31,7 +31,7 @@ target-definition:
             value: xccdf_org.ssgproject.content_rule_api_server_insecure_bind_address
           - name: XCCDF_rule
             value: xccdf_org.ssgproject.content_rule_api_server_authorization_mode
-          uuid: 09dc3f43-8f52-46a3-9445-f7f2906cb946
+          uuid: 09dc3f43-8f52-46a3-9445-f7f2906ab946
         - control-id: IA-5
           description: IA-5
           props:
@@ -65,10 +65,10 @@ target-definition:
           ns: https://sample.com/TCE
           value: cis
         source: https://github.com/usnistgov/OSCAL/blob/v1.0.0-milestone3/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
-        uuid: daca7f77-a2eb-433c-aec2-999c185671dd
+        uuid: daca7f71-a2eb-433c-aec2-999c185671dd
       title: Red Hat OpenShift Kubernetes
       type: Software
-
+    56666738-0f9a-4e38-9aac-c0fad00a1822:
       description: RedHat Enterprise Linux 7.8
       target-control-implementations:
       - description: Compliance Operator SCAP guide for RedHat OpenShift Kubernetes
@@ -1933,4 +1933,4 @@ target-definition:
         uuid: daca7f77-a2eb-433c-aec2-999c185671dd
       title: RedHat Enterprise Linux 7.8
       type: Software
-  uuid: 56676738-0f9a-4e38-9aac-c0fad00a5821
+  uuid: 56676738-0f9a-4e38-9aac-c0fad00a2823

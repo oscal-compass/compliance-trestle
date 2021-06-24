@@ -134,7 +134,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Update the plan {{ pm-18_prm_1 }} and to address changes in federal privacy laws and policy and organizational changes and problems identified during plan implementation or privacy control assessments."
+                        "prose": "Update the plan {{ insert: param, pm-18_prm_1 }} and to address changes in federal privacy laws and policy and organizational changes and problems identified during plan implementation or privacy control assessments."
                     }
                 ]
             },

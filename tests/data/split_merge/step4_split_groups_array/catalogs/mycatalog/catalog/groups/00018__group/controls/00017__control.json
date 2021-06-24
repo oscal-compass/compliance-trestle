@@ -21,6 +21,10 @@
         ],
         "links": [
             {
+                "href": "#227063d4-431e-435f-9e8f-009b6dbc20f4",
+                "rel": "reference"
+            },
+            {
                 "href": "#c15bfc12-a61e-4ca5-bf35-fa9ce3ccb5d2",
                 "rel": "reference"
             },
@@ -34,6 +38,10 @@
             },
             {
                 "href": "#pm-24",
+                "rel": "related"
+            },
+            {
+                "href": "#pt-2",
                 "rel": "related"
             },
             {
@@ -55,7 +63,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Check the accuracy, relevance, timeliness, and completeness of personally identifiable information across the information life cycle {{ si-18_prm_1 }}; and"
+                        "prose": "Check the accuracy, relevance, timeliness, and completeness of personally identifiable information across the information life cycle {{ insert: param, si-18_prm_1 }}; and"
                     },
                     {
                         "id": "si-18_smt.b",
@@ -107,10 +115,6 @@
                         "rel": "related"
                     },
                     {
-                        "href": "#pm-22",
-                        "rel": "related"
-                    },
-                    {
                         "href": "#ra-8",
                         "rel": "related"
                     }
@@ -119,7 +123,7 @@
                     {
                         "id": "si-18.1_smt",
                         "name": "statement",
-                        "prose": "Correct or delete personally identifiable information that is inaccurate or outdated, incorrectly determined regarding impact, or incorrectly de-identified using {{ si-18.1_prm_1 }}."
+                        "prose": "Correct or delete personally identifiable information that is inaccurate or outdated, incorrectly determined regarding impact, or incorrectly de-identified using {{ insert: param, si-18.1_prm_1 }}."
                     },
                     {
                         "id": "si-18.1_gdn",
@@ -224,10 +228,6 @@
                     {
                         "href": "#si-18",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#pm-22",
-                        "rel": "related"
                     }
                 ],
                 "parts": [
@@ -267,21 +267,13 @@
                     {
                         "href": "#si-18",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#c15bfc12-a61e-4ca5-bf35-fa9ce3ccb5d2",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a2590922-82f3-4277-83c0-ca5bee06dba4",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "si-18.5_smt",
                         "name": "statement",
-                        "prose": "Notify {{ si-18.5_prm_1 }} and individuals that the personally identifiable information has been corrected or deleted."
+                        "prose": "Notify {{ insert: param, si-18.5_prm_1 }} and individuals that the personally identifiable information has been corrected or deleted."
                     },
                     {
                         "id": "si-18.5_gdn",

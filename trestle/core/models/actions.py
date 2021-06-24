@@ -20,6 +20,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import List, Optional
 
+import trestle.core.const as const
 from trestle.core.err import TrestleError
 from trestle.utils import fs, trash
 
@@ -194,7 +195,7 @@ class WriteFileAction(WriteAction):
         if not self._file_path.exists():
             raise TrestleError(f'File at {self._file_path} does not exist')
 
-        with open(self._file_path, 'a+') as writer:
+        with open(self._file_path, 'a+', encoding=const.FILE_ENCODING) as writer:
             if self._lastStreamPos < 0:
                 self._lastStreamPos = writer.tell()
             else:
@@ -208,7 +209,7 @@ class WriteFileAction(WriteAction):
         if not self._file_path.exists():
             raise TrestleError(f'File at {self._file_path} does not exist')
 
-        with open(self._file_path, 'a+') as writer:
+        with open(self._file_path, 'a+', encoding=const.FILE_ENCODING) as writer:
             self._writer = writer
             super().rollback()
 
@@ -277,7 +278,7 @@ class CreatePathAction(Action):
                     self._created_paths.append(cur_path)
                 elif self._clear_content:
                     # read file content for rollback
-                    with open(cur_path, 'r+') as fp:
+                    with open(cur_path, 'r+', encoding=const.FILE_ENCODING) as fp:
                         # read all content
                         self._old_file_content = fp.read()
 
@@ -313,7 +314,7 @@ class CreatePathAction(Action):
             # we should be here only if there were no path created and the sub_part already existed
             elif self._sub_path.is_file() and self._sub_path.exists() and self._clear_content is True:
                 if self._old_file_content is not None:
-                    with open(self._sub_path, 'w') as fp:
+                    with open(self._sub_path, 'w', encoding=const.FILE_ENCODING) as fp:
                         fp.write(self._old_file_content)
 
         self._mark_rollback()

@@ -7,11 +7,11 @@
             {
                 "id": "sr-8_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "notification of supply chain compromises",
                         "results of assessments or audits",
-                        " {{ sr-8_prm_2 }} "
+                        " {{ insert: param, sr-8_prm_2 }} "
                     ]
                 }
             },
@@ -77,7 +77,7 @@
             {
                 "id": "sr-8_smt",
                 "name": "statement",
-                "prose": "Establish agreements and procedures with entities involved in the supply chain for the system, system component, or system service for the {{ sr-8_prm_1 }}."
+                "prose": "Establish agreements and procedures with entities involved in the supply chain for the system, system component, or system service for the {{ insert: param, sr-8_prm_1 }}."
             },
             {
                 "id": "sr-8_gdn",

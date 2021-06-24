@@ -25,6 +25,7 @@ from xml.etree.ElementTree import Element
 import defusedxml.ElementTree
 
 import trestle.core.err as err
+import trestle.core.markdown_validator as markdown_validator
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +68,7 @@ class DrawIO(object):
             elif n_children == 1:
                 self.diagrams.append(list(diagram)[0])
             else:
-                err.TrestleError('Unhandled behaviour in drawio read.')
+                raise err.TrestleError('Unhandled behaviour in drawio read.')
 
     def _uncompress(self, compressed_text: str) -> Element:
         """
@@ -94,7 +95,7 @@ class DrawIO(object):
         md_list: List[Dict[str, str]] = []
         for diagram in self.diagrams:
             md_dict: Dict[str, str] = {}
-            # Drawio creates data within a root and then an object elemen type
+            # Drawio creates data within a root and then an object element type
             children = list(diagram)
             # Assert to test I believe this is always true (but for last resort handling)
             assert len(children) == 1
@@ -114,3 +115,48 @@ class DrawIO(object):
                 md_dict[key] = val
             md_list.append(md_dict)
         return md_list
+
+
+class DrawIOMetadataValidator():
+    """Validator to check whether drawio metadata meets validation expectations."""
+
+    def __init__(self, template_path: pathlib.Path, must_be_first_tab: bool = True) -> None:
+        """
+        Initialize drawio validator.
+
+        Args:
+            template_path: Path to a templated drawio file where metadata will be looked up on the first tab only.
+            must_be_first_tab: Whether to search the candidate file for a metadata across multiple tabs.
+        """
+        self.template_path = template_path
+        self.must_be_first_tab = must_be_first_tab
+        # Load metadat from template
+        template_drawio = DrawIO(self.template_path)
+        # Zero index as must be first tab
+        self.template_metadata = template_drawio.get_metadata()[0]
+
+    def validate(self, candidate: pathlib.Path) -> bool:
+        """
+        Run drawio validation against a candidate file.
+
+        Args:
+            candidate: The path to a candidate markdown file to be validated.
+
+        Returns:
+            Whether or not the validation passes.
+
+        Raises:
+            err.TrestleError: If a file IO / formatting error occurs.
+        """
+        logging.info(f'Validating drawio file {candidate} against template file {self.template_path}')
+        candidate_drawio = DrawIO(candidate)
+        drawio_metadata = candidate_drawio.get_metadata()
+
+        if self.must_be_first_tab:
+            return markdown_validator.MarkdownValidator.compare_keys(self.template_metadata, drawio_metadata[0])
+        else:
+            for md_tab in drawio_metadata:
+                status = markdown_validator.MarkdownValidator.compare_keys(self.template_metadata, md_tab)
+                if status:
+                    return status
+        return False

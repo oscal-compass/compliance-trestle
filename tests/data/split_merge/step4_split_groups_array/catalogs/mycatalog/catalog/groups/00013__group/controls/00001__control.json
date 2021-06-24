@@ -105,7 +105,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Review and update position risk designations {{ ps-2_prm_1 }}."
+                        "prose": "Review and update position risk designations {{ insert: param, ps-2_prm_1 }}."
                     }
                 ]
             },

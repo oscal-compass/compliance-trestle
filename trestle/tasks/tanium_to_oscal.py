@@ -33,6 +33,7 @@ t_filename = str
 t_results = Results
 t_tanium_transformer = TaniumTransformer
 
+
 class TaniumToOscal(TaskBase):
     """
     Task to convert Tanium report to OSCAL json.
@@ -56,27 +57,37 @@ class TaniumToOscal(TaskBase):
         """Print the help string."""
         logger.info(f'Help information for {self.name} task.')
         logger.info('')
-        logger.info('Purpose: Transform Tanium files into Open Security Controls Assessment Language (OSCAL) partial results files.')
+        logger.info(
+            'Purpose: Transform Tanium files into Open Security Controls Assessment Language (OSCAL) partial results files.'
+        )
         logger.info('')
         logger.info('Configuration flags sit under [task.tanium-to-oscal]:')
         logger.info('  input-dir = (required) the path of the input directory comprising Tanium reports.')
-        logger.info('  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.')
+        logger.info(
+            '  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.'
+        )
         logger.info('  output-overwrite = (optional) true [default] or false; replace existing output when true.')
-        logger.info('  quiet = (optional) true or false [default]; display file creations and rules analysis when false.')
-        logger.info('  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Tanium report is used if present, otherwise current time is used.')                                                       
+        logger.info(
+            '  quiet = (optional) true or false [default]; display file creations and rules analysis when false.'
+        )
+        logger.info(
+            '  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Tanium report is used if present, otherwise current time is used.'
+        )
         logger.info('')
-        logger.info('Operation: A transformation is performed on one or more Tanium input files to produce output in OSCAL partial results format.')
-        
+        logger.info(
+            'Operation: A transformation is performed on one or more Tanium input files to produce output in OSCAL partial results format.'
+        )
+
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
         self._simulate = True
         return self._transform()
-        
+
     def execute(self) -> TaskOutcome:
         """Provide an actual outcome."""
         self._simulate = False
         return self._transform()
-    
+
     def _transform(self) -> TaskOutcome:
         """Perform transformation."""
         try:
@@ -87,7 +98,7 @@ class TaniumToOscal(TaskBase):
             if self._simulate:
                 mode = 'simulated-'
             return TaskOutcome(mode + 'failure')
-            
+
     def _transform_work(self) -> TaskOutcome:
         """Transformation work steps: read input, process, write output, display analysis."""
         mode = ''
@@ -118,7 +129,7 @@ class TaniumToOscal(TaskBase):
         # insure output dir exists
         opth.mkdir(exist_ok=True, parents=True)
         # process
-        for ifile in sorted(ipth.iterdir()):    
+        for ifile in sorted(ipth.iterdir()):
             blob = self._read_file(ifile)
             tanium_transformer = TaniumTransformer()
             results = tanium_transformer.transform(blob)
@@ -135,18 +146,18 @@ class TaniumToOscal(TaskBase):
         """Read raw input file."""
         if not self._simulate:
             if self._verbose:
-                logger.info(f'input: {ifile}') 
-        with open(ifile, 'r') as fp:
+                logger.info(f'input: {ifile}')
+        with open(ifile, 'r', encoding=const.FILE_ENCODING) as fp:
             blob = fp.read()
         return blob
-        
+
     def _write_file(self, result: str, ofile: t_filename) -> None:
         """Write oscal results file."""
         if not self._simulate:
             if self._verbose:
                 logger.info(f'output: {ofile}')
             result.oscal_write(pathlib.Path(ofile))
-    
+
     def _show_analysis(self, tanium_transformer: t_tanium_transformer) -> None:
         """Show analysis."""
         if not self._simulate:
@@ -154,4 +165,3 @@ class TaniumToOscal(TaskBase):
                 analysis = tanium_transformer.analysis
                 for line in analysis:
                     logger.info(line)
-    

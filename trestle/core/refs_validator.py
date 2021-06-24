@@ -31,15 +31,19 @@ class RefsValidator(Validator):
         returns:
             True (valid) if the model's responsible parties match those found in roles.
         """
+        # FIXME oscal 1.0.0
         metadata = model.metadata
         roles_list_of_lists = find_values_by_name(metadata, 'roles')
         roles_list = [item.id for sublist in roles_list_of_lists for item in sublist]
         roles_set = set(roles_list)
-        responsible_parties_dict_list = find_values_by_name(metadata, 'responsible_parties')
-        parties = []
-        for d in responsible_parties_dict_list:
-            parties.extend(d.keys())
-        for party in parties:
+        responsible_parties_list = find_values_by_name(metadata, 'responsible_parties')
+        if not responsible_parties_list:
+            return True
+        responsible_parties = [item for sublist in responsible_parties_list for item in sublist]
+        party_roles = []
+        for r in responsible_parties:
+            party_roles.append(r.role_id)
+        for party in party_roles:
             if party not in roles_set:
                 return False
         return True

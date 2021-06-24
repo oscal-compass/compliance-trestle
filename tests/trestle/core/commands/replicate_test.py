@@ -81,6 +81,10 @@ def test_replicate_cmd(testdata_dir, tmp_trestle_dir, regen) -> None:
 
     assert rep_model_type == expected_model_type
     assert rep_model_alias == 'catalog'
+    # last modified should be different
+    assert expected_model_instance.metadata.last_modified != rep_model_instance.metadata.last_modified
+    # set last modified equal so that equality can pass
+    expected_model_instance.metadata.last_modified = rep_model_instance.metadata.last_modified
     assert (expected_model_instance == rep_model_instance) == (regen == '')
 
 
@@ -148,7 +152,7 @@ def test_replicate_load_file_failure(tmp_trestle_dir: Path) -> None:
     source_dir = Path('catalogs/bad_catalog')
     source_dir.mkdir(exist_ok=True)
     bad_file_path = source_dir / 'catalog.json'
-    bad_file = bad_file_path.open('w+', encoding='utf8')
+    bad_file = bad_file_path.open('w+', encoding=const.FILE_ENCODING)
     bad_file.write(sample_data)
     bad_file.close()
 

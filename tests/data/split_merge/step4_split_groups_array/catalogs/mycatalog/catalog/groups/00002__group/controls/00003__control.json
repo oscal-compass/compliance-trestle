@@ -61,7 +61,7 @@
             {
                 "id": "au-4_smt",
                 "name": "statement",
-                "prose": "Allocate audit log storage capacity to accommodate {{ au-4_prm_1 }}."
+                "prose": "Allocate audit log storage capacity to accommodate {{ insert: param, au-4_prm_1 }}."
             },
             {
                 "id": "au-4_gdn",
@@ -100,7 +100,7 @@
                     {
                         "id": "au-4.1_smt",
                         "name": "statement",
-                        "prose": "Transfer audit logs {{ au-4.1_prm_1 }} to a different system, system component, or media other than the system or system component conducting the logging."
+                        "prose": "Transfer audit logs {{ insert: param, au-4.1_prm_1 }} to a different system, system component, or media other than the system or system component conducting the logging."
                     },
                     {
                         "id": "au-4.1_gdn",

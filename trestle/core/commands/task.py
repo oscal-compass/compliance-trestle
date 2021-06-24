@@ -23,7 +23,7 @@ import pkgutil
 import sys
 from typing import Dict, Optional, Type
 
-import trestle.core.const
+import trestle.core.const as const
 import trestle.tasks
 import trestle.utils.log as log
 from trestle.core.commands.command_docs import CommandPlusDocs
@@ -69,7 +69,7 @@ class TaskCmd(CommandPlusDocs):
             # comment logger.error(f'Current working directory {pathlib.Path.cwd()} is not with a trestle project.')
             logger.error(f'Given directory: {trestle_root} is not a trestle project.')
             return 1
-        config_path = trestle_root / trestle.core.const.TRESTLE_CONFIG_DIR / trestle.core.const.TRESTLE_CONFIG_FILE
+        config_path = trestle_root / const.TRESTLE_CONFIG_DIR / const.TRESTLE_CONFIG_FILE
 
         if args.config:
             config_path = pathlib.Path(args.config)
@@ -77,7 +77,7 @@ class TaskCmd(CommandPlusDocs):
             logger.error(f'Config file at {config_path} does not exist.')
             return 1
         global_config = configparser.ConfigParser()
-        global_config.read_file(config_path.open('r'))
+        global_config.read_file(config_path.open('r', encoding=const.FILE_ENCODING))
         # run setup
         task_index = self._build_task_index()
 

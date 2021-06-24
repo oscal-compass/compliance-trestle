@@ -11,6 +11,7 @@ on:
 
 jobs:
   lint:
+    if: ${{ github.head_ref != 'develop' }}
     concurrency: 
       group: ${{ github.head_ref }}-${{ github.workflow }}
       cancel-in-progress: true
@@ -31,6 +32,8 @@ jobs:
             transformers
             docs
             cicd
+            author
+            cli
           # Configure that a scope must always be provided.
           requireScope: false
           # Configure additional validation for the subject based on a regex.

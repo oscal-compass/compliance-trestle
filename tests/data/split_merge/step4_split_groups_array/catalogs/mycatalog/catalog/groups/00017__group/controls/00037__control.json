@@ -69,7 +69,7 @@
             {
                 "id": "sc-38_smt",
                 "name": "statement",
-                "prose": "Employ the following operations security controls to protect key organizational information throughout the system development life cycle: {{ sc-38_prm_1 }}."
+                "prose": "Employ the following operations security controls to protect key organizational information throughout the system development life cycle: {{ insert: param, sc-38_prm_1 }}."
             },
             {
                 "id": "sc-38_gdn",

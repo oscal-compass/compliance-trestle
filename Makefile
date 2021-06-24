@@ -50,11 +50,14 @@ gen-oscal::
 docs-automation::
 	python ./scripts/website_automation.py
 
-docs-validate::
+docs-validate:: docs-automation
 	mkdocs build -c -s
 	rm -rf site
 
-
 docs-serve: docs-automation
 	mkdocs serve	
+
+# Something funky about these tests.
+# clean::
+# 	find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 

@@ -13,16 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Capabilities to allow the generation of various oscal objects."""
+import inspect
 import logging
 import math
 import uuid
 from datetime import date, datetime
 from enum import Enum
-from typing import Dict, List, Type, TypeVar, Union, cast
+from typing import Any, Dict, List, Type, TypeVar, Union, cast
 
 import pydantic.networks
 from pydantic import ConstrainedStr
 
+import trestle.core.const as const
 import trestle.core.err as err
 import trestle.core.utils as utils
 from trestle.core.base_model import OscalBaseModel
@@ -31,6 +33,12 @@ from trestle.oscal import OSCAL_VERSION
 logger = logging.getLogger(__name__)
 
 TG = TypeVar('TG', bound=OscalBaseModel)
+
+
+def safe_is_sub(sub: Any, parent: Any) -> bool:
+    """Is this a subclass of parent."""
+    is_class = inspect.isclass(sub)
+    return is_class and issubclass(sub, parent)
 
 
 def generate_sample_value_by_type(
@@ -54,7 +62,7 @@ def generate_sample_value_by_type(
         return 'REPLACE_ME'
     elif type_ is float:
         return 0.00
-    elif issubclass(type_, ConstrainedStr) or 'ConstrainedStr' in type_.__name__:
+    elif safe_is_sub(type_, ConstrainedStr) or (hasattr(type_, '__name__') and 'ConstrainedStr' in type_.__name__):
         # This code here is messy. we need to meet a set of constraints. If we do
         # TODO: handle regex directly
         if 'uuid' == field_name:
@@ -63,8 +71,14 @@ def generate_sample_value_by_type(
             return str(date.today().isoformat())
         elif field_name == 'oscal_version':
             return OSCAL_VERSION
-        return '00000000-0000-4000-8000-000000000000'
-    elif 'ConstrainedIntValue' in type_.__name__:
+        elif 'uuid' in field_name:
+            return const.SAMPLE_UUID_STR
+        # Only case where are UUID is required but not in name.
+        elif field_name.rstrip('s') == 'member_of_organization':
+            return const.SAMPLE_UUID_STR
+        else:
+            return 'REPLACE_ME'
+    elif hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__:
         # create an int value as close to the floor as possible does not test upper bound
         multiple = type_.multiple_of or 1  # default to every integer
         floor = type_.ge or type_.gt + 1 or 0  # default to 0
@@ -72,7 +86,7 @@ def generate_sample_value_by_type(
             return floor
         else:
             return (floor + 1) * multiple
-    elif issubclass(type_, Enum):
+    elif safe_is_sub(type_, Enum):
         # keys and values diverge due to hypens in oscal names
         return type_(list(type_.__members__.values())[0])
     elif type_ is pydantic.networks.EmailStr:
@@ -99,7 +113,7 @@ def generate_sample_model(model: Union[Type[TG], List[TG], Dict[str, TG]]) -> TG
 
     model_dict = {}
     # this block is needed to avoid situations where an inbuilt is inside a list / dict.
-    if issubclass(model, OscalBaseModel):
+    if safe_is_sub(model, OscalBaseModel):
         for field in model.__fields__:
             outer_type = model.__fields__[field].outer_type_
             # Check for unions. This is awkward due to allow support for python 3.7
@@ -108,14 +122,15 @@ def generate_sample_model(model: Union[Type[TG], List[TG], Dict[str, TG]]) -> TG
                 outer_type = outer_type.__args__[0]
             if model.__fields__[field].required:
                 """ FIXME: This type_ could be a List or a Dict """
-                if utils.is_collection_field_type(outer_type) or issubclass(outer_type, OscalBaseModel):
+                # FIXME could be ForwardRef('SystemComponentStatus')
+                if utils.is_collection_field_type(outer_type) or safe_is_sub(outer_type, OscalBaseModel):
                     model_dict[field] = generate_sample_model(outer_type)
                 else:
                     # Hacking here:
                     # Root models should ideally not exist, however, sometimes we are stuck with them.
                     # If that is the case we need sufficient information on the type in order to generate a model.
                     # E.g. we need the type of the container.
-                    if field == '__root__':
+                    if field == '__root__' and hasattr(model, '__name__'):
                         model_dict[field] = generate_sample_value_by_type(
                             outer_type, utils.classname_to_alias(model.__name__, 'field')
                         )

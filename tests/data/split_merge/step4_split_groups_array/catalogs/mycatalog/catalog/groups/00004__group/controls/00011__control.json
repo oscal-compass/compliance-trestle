@@ -111,7 +111,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Identify and document the location of {{ cm-12_prm_1 }} and the specific system components on which the information is processed and stored;"
+                        "prose": "Identify and document the location of {{ insert: param, cm-12_prm_1 }} and the specific system components on which the information is processed and stored;"
                     },
                     {
                         "id": "cm-12_smt.b",
@@ -172,25 +172,13 @@
                     {
                         "href": "#cm-12",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#e72fde0b-6fc2-497e-a9db-d8fce5a11b8a",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#9be5d661-421f-41ad-854e-86f98b811891",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "cm-12.1_smt",
                         "name": "statement",
-                        "prose": "Use automated tools to identify {{ cm-12.1_prm_1 }} on {{ cm-12.1_prm_2 }} to ensure controls are in place to protect organizational information and individual privacy."
+                        "prose": "Use automated tools to identify {{ insert: param, cm-12.1_prm_1 }} on {{ insert: param, cm-12.1_prm_2 }} to ensure controls are in place to protect organizational information and individual privacy."
                     },
                     {
                         "id": "cm-12.1_gdn",

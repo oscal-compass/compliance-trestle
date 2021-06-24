@@ -160,7 +160,7 @@
                     {
                         "id": "sc-23.3_smt",
                         "name": "statement",
-                        "prose": "Generate a unique session identifier for each session with {{ sc-23.3_prm_1 }} and recognize only session identifiers that are system-generated."
+                        "prose": "Generate a unique session identifier for each session with {{ insert: param, sc-23.3_prm_1 }} and recognize only session identifiers that are system-generated."
                     },
                     {
                         "id": "sc-23.3_gdn",
@@ -220,22 +220,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#7537638e-2837-407d-844b-40fb3fafdd99",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#d4d7c760-2907-403b-8b2a-767ca5370ecd",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a6b9907a-2a14-4bb4-a142-d4c73026a8b4",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#6bc4d137-aece-42a8-8081-9ecb1ebe9fb4",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#sc-12",
                         "rel": "related"
                     },
@@ -248,7 +232,7 @@
                     {
                         "id": "sc-23.5_smt",
                         "name": "statement",
-                        "prose": "Only allow the use of {{ sc-23.5_prm_1 }} for verification of the establishment of protected sessions."
+                        "prose": "Only allow the use of {{ insert: param, sc-23.5_prm_1 }} for verification of the establishment of protected sessions."
                     },
                     {
                         "id": "sc-23.5_gdn",

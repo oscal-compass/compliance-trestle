@@ -71,7 +71,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Monitor {{ au-13_prm_1 }} {{ au-13_prm_2 }} for evidence of unauthorized disclosure of organizational information; and"
+                        "prose": "Monitor {{ insert: param, au-13_prm_1 }} {{ insert: param, au-13_prm_2 }} for evidence of unauthorized disclosure of organizational information; and"
                     },
                     {
                         "id": "au-13_smt.b",
@@ -93,7 +93,7 @@
                                         "value": "1."
                                     }
                                 ],
-                                "prose": "Notify {{ au-13_prm_3 }}; and"
+                                "prose": "Notify {{ insert: param, au-13_prm_3 }}; and"
                             },
                             {
                                 "id": "au-13_smt.b.2",
@@ -104,7 +104,7 @@
                                         "value": "2."
                                     }
                                 ],
-                                "prose": "Take the following additional actions: {{ au-13_prm_4 }}."
+                                "prose": "Take the following additional actions: {{ insert: param, au-13_prm_4 }}."
                             }
                         ]
                     }
@@ -147,7 +147,7 @@
                     {
                         "id": "au-13.1_smt",
                         "name": "statement",
-                        "prose": "Monitor open-source information and information sites using {{ au-13.1_prm_1 }}."
+                        "prose": "Monitor open-source information and information sites using {{ insert: param, au-13.1_prm_1 }}."
                     },
                     {
                         "id": "au-13.1_gdn",
@@ -186,7 +186,7 @@
                     {
                         "id": "au-13.2_smt",
                         "name": "statement",
-                        "prose": "Review the list of open-source information sites being monitored {{ au-13.2_prm_1 }}."
+                        "prose": "Review the list of open-source information sites being monitored {{ insert: param, au-13.2_prm_1 }}."
                     },
                     {
                         "id": "au-13.2_gdn",
@@ -219,12 +219,12 @@
                     {
                         "id": "au-13.3_smt",
                         "name": "statement",
-                        "prose": "Employ discovery techniques, processes, and tools to\u00a0determine if external entities are replicating organizational information in an unauthorized manner."
+                        "prose": "Employ discovery techniques, processes, and tools to determine if external entities are replicating organizational information in an unauthorized manner."
                     },
                     {
                         "id": "au-13.3_gdn",
                         "name": "guidance",
-                        "prose": "The unauthorized use or replication of organizational information by external entities can cause adverse impacts on organizational operations and assets, including damage to reputation. Such activity can include the replication of an organizational website by an adversary or hostile threat actor who attempts to impersonate the web-hosting organization. Discovery tools, techniques, and processes used to determine if external\u00a0entities are replicating organizational\u00a0information in an unauthorized manner include scanning external websites, monitoring social media, and training staff to recognize the unauthorized use of\u00a0organizational information."
+                        "prose": "The unauthorized use or replication of organizational information by external entities can cause adverse impacts on organizational operations and assets, including damage to reputation. Such activity can include the replication of an organizational website by an adversary or hostile threat actor who attempts to impersonate the web-hosting organization. Discovery tools, techniques, and processes used to determine if external entities are replicating organizational information in an unauthorized manner include scanning external websites, monitoring social media, and training staff to recognize the unauthorized use of organizational information."
                     }
                 ]
             }

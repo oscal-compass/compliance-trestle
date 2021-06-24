@@ -141,10 +141,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#20db4e66-e257-450c-b2e4-2bb9a62a2c88",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#sa-11",
                         "rel": "related"
                     },

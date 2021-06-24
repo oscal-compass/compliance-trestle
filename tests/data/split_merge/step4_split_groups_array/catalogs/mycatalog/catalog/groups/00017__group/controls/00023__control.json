@@ -65,7 +65,7 @@
             {
                 "id": "sc-24_smt",
                 "name": "statement",
-                "prose": "Fail to a {{ sc-24_prm_1 }} for the following failures on the indicated components while preserving {{ sc-24_prm_2 }} in failure: {{ sc-24_prm_3 }}."
+                "prose": "Fail to a {{ insert: param, sc-24_prm_1 }} for the following failures on the indicated components while preserving {{ insert: param, sc-24_prm_2 }} in failure: {{ insert: param, sc-24_prm_3 }}."
             },
             {
                 "id": "sc-24_gdn",

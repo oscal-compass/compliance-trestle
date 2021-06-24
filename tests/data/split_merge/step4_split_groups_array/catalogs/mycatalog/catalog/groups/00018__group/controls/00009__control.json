@@ -29,7 +29,7 @@
             {
                 "id": "si-10_smt",
                 "name": "statement",
-                "prose": "Check the validity of the following information inputs: {{ si-10_prm_1 }}."
+                "prose": "Check the validity of the following information inputs: {{ insert: param, si-10_prm_1 }}."
             },
             {
                 "id": "si-10_gdn",
@@ -94,7 +94,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Provide a manual override capability for input validation of the following information inputs: {{ si-10.1_prm_1 }};"
+                                "prose": "Provide a manual override capability for input validation of the following information inputs: {{ insert: param, si-10.1_prm_1 }};"
                             },
                             {
                                 "id": "si-10.1_smt.b",
@@ -105,7 +105,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Restrict the use of the manual override capability to only {{ si-10.1_prm_2 }}; and"
+                                "prose": "Restrict the use of the manual override capability to only {{ insert: param, si-10.1_prm_2 }}; and"
                             },
                             {
                                 "id": "si-10.1_smt.c",
@@ -157,7 +157,7 @@
                     {
                         "id": "si-10.2_smt",
                         "name": "statement",
-                        "prose": "Review and resolve input validation errors within {{ si-10.2_prm_1 }}."
+                        "prose": "Review and resolve input validation errors within {{ insert: param, si-10.2_prm_1 }}."
                     },
                     {
                         "id": "si-10.2_gdn",
@@ -274,7 +274,7 @@
                     {
                         "id": "si-10.5_smt",
                         "name": "statement",
-                        "prose": "Restrict the use of information inputs to {{ si-10.5_prm_1 }} and/or {{ si-10.5_prm_2 }}."
+                        "prose": "Restrict the use of information inputs to {{ insert: param, si-10.5_prm_1 }} and/or {{ insert: param, si-10.5_prm_2 }}."
                     },
                     {
                         "id": "si-10.5_gdn",
@@ -301,10 +301,6 @@
                     {
                         "href": "#si-10",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
                     },
                     {
                         "href": "#ac-3",

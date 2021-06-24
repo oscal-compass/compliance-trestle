@@ -109,7 +109,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Is reviewed and approved by {{ cm-9_prm_1 }}; and"
+                        "prose": "Is reviewed and approved by {{ insert: param, cm-9_prm_1 }}; and"
                     },
                     {
                         "id": "cm-9_smt.e",
@@ -149,10 +149,6 @@
                     {
                         "href": "#cm-9",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#20db4e66-e257-450c-b2e4-2bb9a62a2c88",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

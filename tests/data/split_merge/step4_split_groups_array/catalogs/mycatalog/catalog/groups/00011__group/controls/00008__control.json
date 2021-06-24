@@ -41,7 +41,7 @@
             {
                 "id": "pl-9_smt",
                 "name": "statement",
-                "prose": "Centrally manage {{ pl-9_prm_1 }}."
+                "prose": "Centrally manage {{ insert: param, pl-9_prm_1 }}."
             },
             {
                 "id": "pl-9_gdn",

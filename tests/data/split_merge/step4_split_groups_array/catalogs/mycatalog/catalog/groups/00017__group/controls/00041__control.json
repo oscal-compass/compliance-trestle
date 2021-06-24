@@ -7,10 +7,10 @@
             {
                 "id": "sc-42_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
-                        "the use of devices possessing {{ sc-42_prm_2 }} in {{ sc-42_prm_3 }} ",
-                        "the remote activation of environmental sensing capabilities on organizational systems or system components with the following exceptions: {{ sc-42_prm_4 }} "
+                        "the use of devices possessing {{ insert: param, sc-42_prm_2 }} in {{ insert: param, sc-42_prm_3 }} ",
+                        "the remote activation of environmental sensing capabilities on organizational systems or system components with the following exceptions: {{ insert: param, sc-42_prm_4 }} "
                     ]
                 }
             },
@@ -31,7 +31,7 @@
             },
             {
                 "id": "sc-42_prm_5",
-                "label": "organization-defined class of users"
+                "label": "organization-defined group of users"
             }
         ],
         "props": [
@@ -72,7 +72,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Prohibit {{ sc-42_prm_1 }}; and"
+                        "prose": "Prohibit {{ insert: param, sc-42_prm_1 }}; and"
                     },
                     {
                         "id": "sc-42_smt.b",
@@ -83,7 +83,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Provide an explicit indication of sensor use to {{ sc-42_prm_5 }}."
+                        "prose": "Provide an explicit indication of sensor use to {{ insert: param, sc-42_prm_5 }}."
                     }
                 ]
             },
@@ -124,7 +124,7 @@
                     {
                         "id": "sc-42.1_smt",
                         "name": "statement",
-                        "prose": "Verify that the system is configured so that data or information collected by the {{ sc-42.1_prm_1 }} is only reported to authorized individuals or roles."
+                        "prose": "Verify that the system is configured so that data or information collected by the {{ insert: param, sc-42.1_prm_1 }} is only reported to authorized individuals or roles."
                     },
                     {
                         "id": "sc-42.1_gdn",
@@ -171,7 +171,7 @@
                     {
                         "id": "sc-42.2_smt",
                         "name": "statement",
-                        "prose": "Employ the following measures so that data or information collected by {{ sc-42.2_prm_1 }} is only used for authorized purposes: {{ sc-42.2_prm_2 }}."
+                        "prose": "Employ the following measures so that data or information collected by {{ insert: param, sc-42.2_prm_1 }} is only used for authorized purposes: {{ insert: param, sc-42.2_prm_2 }}."
                     },
                     {
                         "id": "sc-42.2_gdn",
@@ -251,7 +251,7 @@
                     {
                         "id": "sc-42.4_smt",
                         "name": "statement",
-                        "prose": "Employ the following measures to facilitate an individual\u2019s awareness that personally identifiable information is being collected by {{ sc-42.4_prm_1 }}: {{ sc-42.4_prm_2 }}."
+                        "prose": "Employ the following measures to facilitate an individual\u2019s awareness that personally identifiable information is being collected by {{ insert: param, sc-42.4_prm_1 }}: {{ insert: param, sc-42.4_prm_2 }}."
                     },
                     {
                         "id": "sc-42.4_gdn",
@@ -286,14 +286,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#0f66be67-85e7-4ca6-bd19-39453e9f4394",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#sa-8",
                         "rel": "related"
                     },
@@ -306,7 +298,7 @@
                     {
                         "id": "sc-42.5_smt",
                         "name": "statement",
-                        "prose": "Employ {{ sc-42.5_prm_1 }} that are configured to minimize the collection of information about individuals that is not needed."
+                        "prose": "Employ {{ insert: param, sc-42.5_prm_1 }} that are configured to minimize the collection of information about individuals that is not needed."
                     },
                     {
                         "id": "sc-42.5_gdn",

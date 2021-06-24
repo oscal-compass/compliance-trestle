@@ -23,14 +23,14 @@ from typing import Any, Dict, List, Optional, Tuple, Type, cast
 
 from pydantic import create_model
 
+from ruamel.yaml import YAML
+
 from trestle.core import const
 from trestle.core import err
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
-
-import yaml
 
 if os.name == 'nt':  # pragma: no cover
     import win32api
@@ -246,7 +246,8 @@ def load_file(file_name: pathlib.Path) -> Dict[str, Any]:
     content_type = FileContentType.to_content_type(file_name.suffix)
     with file_name.open('r', encoding=const.FILE_ENCODING) as f:
         if content_type == FileContentType.YAML:
-            return yaml.load(f, yaml.FullLoader)
+            yaml = YAML(typ='safe')
+            return yaml.load(f)
         elif content_type == FileContentType.JSON:
             return json.load(f)
 
@@ -444,3 +445,17 @@ def allowed_task_name(name: str) -> bool:
         logger.error('tasks name must not look like a file path (e.g. contain a suffix')
         return False
     return True
+
+
+def model_name_from_href_str(href: str) -> str:
+    """Find model name from href."""
+    model_name = href.split('/')[-1]
+    dot_pos = model_name.rfind('.')
+    if dot_pos >= 0:
+        model_name = model_name[:dot_pos]
+    return model_name
+
+
+def model_name_from_href_path(href: pathlib.Path) -> str:
+    """Find model name from path."""
+    return href.stem

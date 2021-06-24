@@ -129,7 +129,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Review the access list detailing authorized facility access by individuals {{ pe-2_prm_1 }}; and"
+                        "prose": "Review the access list detailing authorized facility access by individuals {{ insert: param, pe-2_prm_1 }}; and"
                     },
                     {
                         "id": "pe-2_smt.d",
@@ -238,7 +238,7 @@
                     {
                         "id": "pe-2.2_smt",
                         "name": "statement",
-                        "prose": "Require two forms of identification from the following forms of identification for visitor access to the facility where the system resides: {{ pe-2.2_prm_1 }}."
+                        "prose": "Require two forms of identification from the following forms of identification for visitor access to the facility where the system resides: {{ insert: param, pe-2.2_prm_1 }}."
                     },
                     {
                         "id": "pe-2.2_gdn",
@@ -255,12 +255,12 @@
                     {
                         "id": "pe-2.3_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "security clearances for all information contained within the system",
                                 "formal access authorizations for all information contained within the system",
                                 "need for access to all information contained within the system",
-                                " {{ pe-2.3_prm_2 }} "
+                                " {{ insert: param, pe-2.3_prm_2 }} "
                             ]
                         }
                     },
@@ -286,22 +286,6 @@
                         "rel": "required"
                     },
                     {
-                        "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#858705be-3c1f-48aa-a328-0ce398d95ef0",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7af2e6ec-9f7e-4232-ad3f-09888eb0793a",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#828856bd-d7c4-427b-8b51-815517ec382d",
-                        "rel": "reference"
-                    },
-                    {
                         "href": "#ps-2",
                         "rel": "related"
                     },
@@ -314,7 +298,7 @@
                     {
                         "id": "pe-2.3_smt",
                         "name": "statement",
-                        "prose": "Restrict unescorted access to the facility where the system resides to personnel with {{ pe-2.3_prm_1 }}."
+                        "prose": "Restrict unescorted access to the facility where the system resides to personnel with {{ insert: param, pe-2.3_prm_1 }}."
                     },
                     {
                         "id": "pe-2.3_gdn",

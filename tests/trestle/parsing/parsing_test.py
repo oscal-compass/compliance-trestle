@@ -20,44 +20,46 @@ import pathlib
 
 import pytest
 
-import trestle.oscal.target as ostarget
+from ruamel.yaml import YAML
+from ruamel.yaml.parser import ParserError
 
-import yaml
+import trestle.core.const as const
+import trestle.oscal.target as ostarget
 
 yaml_path = pathlib.Path('tests/data/yaml/')
 json_path = pathlib.Path('tests/data/json/')
-encoding = 'utf8'
-loader = yaml.Loader
+encoding = const.FILE_ENCODING
 
 
 def test_yaml_load() -> None:
     """Test yaml load."""
     # happy path
     read_file = (yaml_path / 'good_simple.yaml').open('r', encoding=encoding)
-    obj = yaml.load(read_file, Loader=loader)
+    yaml = YAML(typ='safe')
+    obj = yaml.load(read_file)
     assert obj is not None
 
     # unhappy path
-    with pytest.raises(yaml.parser.ParserError):
+    with pytest.raises(ParserError):
         read_file = (yaml_path / 'bad_simple.yaml').open('r', encoding=encoding)
-        obj = yaml.load(read_file, Loader=loader)
+        obj = yaml.load(read_file)
 
 
 def test_yaml_dump(tmp_path: pathlib.Path) -> None:
     """Test yaml load and dump."""
     target_name = 'good_target.yaml'
     tmp_path = pathlib.Path(tmp_path)
-
+    yaml = YAML(typ='safe')
     # happy path
     read_file = (yaml_path / target_name).open('r', encoding=encoding)
-    target = yaml.load(read_file, Loader=loader)
+    target = yaml.load(read_file)
     assert target is not None
 
     dump_name = tmp_path / target_name
     write_file = dump_name.open('w', encoding=encoding)
     yaml.dump(target, write_file)
     read_file = dump_name.open('r', encoding=encoding)
-    saved_target = yaml.load(read_file, Loader=loader)
+    saved_target = yaml.load(read_file)
     assert saved_target is not None
 
     assert saved_target == target

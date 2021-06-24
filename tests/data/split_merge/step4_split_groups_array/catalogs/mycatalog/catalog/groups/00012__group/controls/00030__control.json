@@ -49,6 +49,10 @@
                 "rel": "reference"
             },
             {
+                "href": "#62ea77ca-e450-4323-b210-e0d75390e785",
+                "rel": "reference"
+            },
+            {
                 "href": "#ac-2",
                 "rel": "related"
             },
@@ -264,7 +268,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Establishing the following organization-wide metrics to be monitored: {{ pm-31_prm_1 }};"
+                        "prose": "Establishing the following organization-wide metrics to be monitored: {{ insert: param, pm-31_prm_1 }};"
                     },
                     {
                         "id": "pm-31_smt.b",
@@ -275,7 +279,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Establishing {{ pm-31_prm_2 }} for monitoring and {{ pm-31_prm_3 }} for assessment of control effectiveness;"
+                        "prose": "Establishing {{ insert: param, pm-31_prm_2 }} for monitoring and {{ insert: param, pm-31_prm_3 }} for assessment of control effectiveness;"
                     },
                     {
                         "id": "pm-31_smt.c",
@@ -319,14 +323,14 @@
                                 "value": "f."
                             }
                         ],
-                        "prose": "Reporting the security and privacy status of organizational systems to {{ pm-31_prm_4 }} {{ pm-31_prm_5 }}."
+                        "prose": "Reporting the security and privacy status of organizational systems to {{ insert: param, pm-31_prm_4 }} {{ insert: param, pm-31_prm_5 }}."
                     }
                 ]
             },
             {
                 "id": "pm-31_gdn",
                 "name": "guidance",
-                "prose": "Continuous monitoring at the organization level facilitates ongoing awareness of the security and privacy posture across the organization to support organizational risk management decisions. The terms \"continuous\" and \"ongoing\" imply that organizations assess and monitor their controls and risks at a frequency sufficient to support risk-based decisions. Different types of controls may require different monitoring frequencies. The results of continuous monitoring guide and inform risk response actions by organizations. Continuous monitoring programs allow organizations to maintain the authorizations of systems and common controls in highly dynamic environments of operation with changing mission and business needs, threats, vulnerabilities, and technologies. Having access to security- and privacy-related information on a continuing basis through reports and dashboards gives organizational officials the capability to make effective, timely, and informed risk management decisions, including ongoing authorization decisions. To further facilitate security and privacy risk management, organizations consider aligning organization-defined monitoring metrics with organizational risk tolerance as defined in the risk management strategy. Monitoring requirements, including the need for monitoring, may be referenced in other controls and control enhancements such as, [AC-2g](#ac-2_smt.g), [AC-2(7)](#ac-2.7), [AC-2(12)(a)](#ac-2.12_smt.a), [AC-2(7)(b)](#ac-2.7_smt.b), [AC-2(7)(c)](#ac-2.7_smt.c), [AC-17(1)](#ac-17.1), [AT-4a](#at-4_smt.a), [AU-13](#au-13), [AU-13(1)](#au-13.1), [AU-13(2)](#au-13.2), [CA-7](#ca-7), [CM-3f](#cm-3_smt.f), [CM-6d](#cm-6_smt.d), [CM-11c](#cm-11_smt.c), [IR-5](#ir-5), [MA-2b](#ma-2_smt.b), [MA-3a](#ma-3_smt.a), [MA-4a](#ma-4_smt.a), [PE-3d](#pe-3_smt.d), [PE-6](#pe-6), [PE-14b](#pe-14_smt.b), [PE-16](#pe-16), [PE-20](#pe-20), [PM-6](#pm-6), [PM-23](#pm-23), [PS-7e](#ps-7_smt.e), [SA-9c](#sa-9_smt.c), [SC-5(3)(b)](#sc-5.3_smt.b), [SC-7a](#sc-7_smt.a), [SC-7(24)(b)](#sc-7.24_smt.b), SC-18c, [SC-43b](#sc-43_smt.b), [SI-4](#si-4)."
+                "prose": "Continuous monitoring at the organization level facilitates ongoing awareness of the security and privacy posture across the organization to support organizational risk management decisions. The terms \"continuous\" and \"ongoing\" imply that organizations assess and monitor their controls and risks at a frequency sufficient to support risk-based decisions. Different types of controls may require different monitoring frequencies. The results of continuous monitoring guide and inform risk response actions by organizations. Continuous monitoring programs allow organizations to maintain the authorizations of systems and common controls in highly dynamic environments of operation with changing mission and business needs, threats, vulnerabilities, and technologies. Having access to security- and privacy-related information on a continuing basis through reports and dashboards gives organizational officials the capability to make effective, timely, and informed risk management decisions, including ongoing authorization decisions. To further facilitate security and privacy risk management, organizations consider aligning organization-defined monitoring metrics with organizational risk tolerance as defined in the risk management strategy. Monitoring requirements, including the need for monitoring, may be referenced in other controls and control enhancements such as, [AC-2g](#ac-2_smt.g), [AC-2(7)](#ac-2.7), [AC-2(12)(a)](#ac-2.12_smt.a), [AC-2(7)(b)](#ac-2.7_smt.b), [AC-2(7)(c)](#ac-2.7_smt.c), [AC-17(1)](#ac-17.1), [AT-4a](#at-4_smt.a), [AU-13](#au-13), [AU-13(1)](#au-13.1), [AU-13(2)](#au-13.2), [CA-7](#ca-7), [CM-3f](#cm-3_smt.f), [CM-6d](#cm-6_smt.d), [CM-11c](#cm-11_smt.c), [IR-5](#ir-5), [MA-2b](#ma-2_smt.b), [MA-3a](#ma-3_smt.a), [MA-4a](#ma-4_smt.a), [PE-3d](#pe-3_smt.d), [PE-6](#pe-6), [PE-14b](#pe-14_smt.b), [PE-16](#pe-16), [PE-20](#pe-20), [PM-6](#pm-6), [PM-23](#pm-23), [PS-7e](#ps-7_smt.e), [SA-9c](#sa-9_smt.c), [SC-5(3)(b)](#sc-5.3_smt.b), [SC-7a](#sc-7_smt.a), [SC-7(24)(b)](#sc-7.24_smt.b), [SC-18b](#sc-18_smt.b), [SC-43b](#sc-43_smt.b), [SI-4](#si-4)."
             }
         ]
     }

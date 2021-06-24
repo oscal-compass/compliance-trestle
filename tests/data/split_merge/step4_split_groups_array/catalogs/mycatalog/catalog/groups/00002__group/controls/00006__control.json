@@ -134,7 +134,7 @@
                     {
                         "id": "au-7.1_smt",
                         "name": "statement",
-                        "prose": "Provide and implement the capability to process, sort, and search audit records for events of interest based on the following content: {{ au-7.1_prm_1 }}."
+                        "prose": "Provide and implement the capability to process, sort, and search audit records for events of interest based on the following content: {{ insert: param, au-7.1_prm_1 }}."
                     },
                     {
                         "id": "au-7.1_gdn",

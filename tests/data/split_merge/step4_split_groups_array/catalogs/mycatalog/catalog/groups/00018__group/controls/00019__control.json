@@ -37,7 +37,7 @@
             {
                 "id": "si-20_smt",
                 "name": "statement",
-                "prose": "Embed data or capabilities in the following systems or system components to determine if organizational data has been exfiltrated or improperly removed from the organization: {{ si-20_prm_1 }}."
+                "prose": "Embed data or capabilities in the following systems or system components to determine if organizational data has been exfiltrated or improperly removed from the organization: {{ insert: param, si-20_prm_1 }}."
             },
             {
                 "id": "si-20_gdn",

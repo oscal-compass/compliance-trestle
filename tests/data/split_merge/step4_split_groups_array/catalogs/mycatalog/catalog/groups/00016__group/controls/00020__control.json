@@ -57,7 +57,7 @@
             {
                 "id": "sa-21_smt",
                 "name": "statement",
-                "prose": "Require that the developer of {{ sa-21_prm_1 }}:",
+                "prose": "Require that the developer of {{ insert: param, sa-21_prm_1 }}:",
                 "parts": [
                     {
                         "id": "sa-21_smt.a",
@@ -68,7 +68,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Has appropriate access authorizations as determined by assigned {{ sa-21_prm_2 }}; and"
+                        "prose": "Has appropriate access authorizations as determined by assigned {{ insert: param, sa-21_prm_2 }}; and"
                     },
                     {
                         "id": "sa-21_smt.b",
@@ -79,7 +79,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Satisfies the following additional personnel screening criteria: {{ sa-21_prm_3 }}."
+                        "prose": "Satisfies the following additional personnel screening criteria: {{ insert: param, sa-21_prm_3 }}."
                     }
                 ]
             },

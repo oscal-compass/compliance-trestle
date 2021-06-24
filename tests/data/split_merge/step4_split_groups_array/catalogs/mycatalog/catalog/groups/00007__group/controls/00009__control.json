@@ -2,7 +2,7 @@
     "control": {
         "id": "ir-10",
         "class": "SP800-53",
-        "title": "Incident Analysis",
+        "title": "Integrated Information Security Analysis Team",
         "props": [
             {
                 "name": "label",
@@ -20,7 +20,7 @@
         "links": [
             {
                 "href": "#ir-4.11",
-                "rel": "incorporated-into"
+                "rel": "moved-to"
             }
         ]
     }

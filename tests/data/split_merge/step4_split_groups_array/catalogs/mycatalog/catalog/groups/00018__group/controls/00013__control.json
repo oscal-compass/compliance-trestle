@@ -11,10 +11,10 @@
             {
                 "id": "si-14_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "upon end of session of use",
-                        "periodically at {{ si-14_prm_3 }} "
+                        "periodically at {{ insert: param, si-14_prm_3 }} "
                     ]
                 }
             },
@@ -52,7 +52,7 @@
             {
                 "id": "si-14_smt",
                 "name": "statement",
-                "prose": "Implement non-persistent {{ si-14_prm_1 }} that are initiated in a known state and terminated {{ si-14_prm_2 }}."
+                "prose": "Implement non-persistent {{ insert: param, si-14_prm_1 }} that are initiated in a known state and terminated {{ insert: param, si-14_prm_2 }}."
             },
             {
                 "id": "si-14_gdn",
@@ -91,7 +91,7 @@
                     {
                         "id": "si-14.1_smt",
                         "name": "statement",
-                        "prose": "Obtain software and data employed during system component and service refreshes from the following trusted sources: {{ si-14.1_prm_1 }}."
+                        "prose": "Obtain software and data employed during system component and service refreshes from the following trusted sources: {{ insert: param, si-14.1_prm_1 }}."
                     },
                     {
                         "id": "si-14.1_gdn",
@@ -109,8 +109,8 @@
                         "id": "si-14.2_prm_1",
                         "select": {
                             "choice": [
-                                "Refresh {{ si-14.2_prm_2 }} {{ si-14.2_prm_3 }} ",
-                                "Generate {{ si-14.2_prm_4 }} on demand"
+                                "Refresh {{ insert: param, si-14.2_prm_2 }} {{ insert: param, si-14.2_prm_3 }} ",
+                                "Generate {{ insert: param, si-14.2_prm_4 }} on demand"
                             ]
                         }
                     },
@@ -160,7 +160,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": " {{ si-14.2_prm_1 }}; and"
+                                "prose": " {{ insert: param, si-14.2_prm_1 }}; and"
                             },
                             {
                                 "id": "si-14.2_smt.b",
@@ -221,7 +221,7 @@
                     {
                         "id": "si-14.3_smt",
                         "name": "statement",
-                        "prose": "Establish connections to the system on demand and terminate connections after {{ si-14.3_prm_1 }}."
+                        "prose": "Establish connections to the system on demand and terminate connections after {{ insert: param, si-14.3_prm_1 }}."
                     },
                     {
                         "id": "si-14.3_gdn",

@@ -28,6 +28,7 @@ import pytest
 from tests import test_utils
 
 import trestle.core.commands.import_ as importcmd
+import trestle.core.const as const
 import trestle.core.err as err
 import trestle.oscal
 from trestle.cli import Trestle
@@ -46,16 +47,16 @@ def test_import_cmd(tmp_trestle_dir: pathlib.Path) -> None:
     profile_data.oscal_write(pathlib.Path(profile_file))
     # 2. Input file, target:
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    target_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
-    target_data = generators.generate_sample_model(trestle.oscal.target.TargetDefinition)
-    target_data.oscal_write(pathlib.Path(target_file))
+    catalog_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
+    catalog_data = generators.generate_sample_model(trestle.oscal.catalog.Catalog)
+    catalog_data.oscal_write(pathlib.Path(catalog_file))
     # Test 1
     test_args = f'trestle import -f {profile_file} -o imported'.split()
     with patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
     # Test 2
-    test_args = f'trestle import -f {target_file} -o imported'.split()
+    test_args = f'trestle import -f {catalog_file} -o imported'.split()
     with patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
@@ -65,18 +66,27 @@ def test_import_profile_with_optional_added(tmp_trestle_dir: pathlib.Path) -> No
     """Create profile, add modify to it, and import."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     profile_file = f'{tmp_trestle_dir.parent}/{rand_str}.json'
+    # create generic profile
     profile_data = generators.generate_sample_model(trestle.oscal.profile.Profile)
-    set_parameter = SetParameter(depends_on='my_depends')
-    modify = Modify(set_parameters={'my_param': set_parameter})
+    # create special parameter and add it to profile
+    set_parameter = SetParameter(param_id='my_param', depends_on='my_depends')
+    modify = Modify(set_parameters=[set_parameter])
     profile_data.modify = modify
+    # write it to place outside trestle directory
     profile_data.oscal_write(pathlib.Path(profile_file))
+    # now do actual import into trestle directory with name 'imported'
     test_args = f'trestle import -f {profile_file} -o imported'.split()
     with patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 0
+    # then do a direct read of it and confirm our parameter is there
     profile_path = tmp_trestle_dir / 'profiles/imported/profile.json'
     profile: Profile = Profile.oscal_read(profile_path)
-    assert (profile.modify.set_parameters['my_param'].depends_on == 'my_depends')
+    params = profile.modify.set_parameters
+    assert params
+    assert len(params) == 1
+    assert params[0].param_id == 'my_param'
+    assert params[0].depends_on == 'my_depends'
 
 
 @pytest.mark.parametrize('regen', [False, True])
@@ -116,7 +126,7 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path) -> None:
     }
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     dup_file_name = f'{tmp_trestle_dir.parent}/dup-{rand_str}.json'
-    dup_file = pathlib.Path(dup_file_name).open('w+', encoding='utf8')
+    dup_file = pathlib.Path(dup_file_name).open('w+', encoding=const.FILE_ENCODING)
     dup_file.write(json.dumps(dup_cat))
     dup_file.close()
     j = importcmd.ImportCmd()
@@ -194,7 +204,7 @@ def test_import_bad_working_directory(tmp_path: pathlib.Path) -> None:
 
 def test_import_from_inside_trestle_project_is_bad(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for attempting import from a trestle project directory."""
-    sample_file = open('infile.json', 'w+')
+    sample_file = open('infile.json', 'w+', encoding=const.FILE_ENCODING)
     sample_file.write('{}')
     sample_file.close()
     args = argparse.Namespace(file='infile.json', output='catalog', verbose=True)
@@ -218,7 +228,7 @@ def test_import_load_file_failure(tmp_trestle_dir: pathlib.Path) -> None:
     # Create a file with bad json
     sample_data = '"star": {'
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    bad_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding='utf8')
+    bad_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding=const.FILE_ENCODING)
     bad_file.write(sample_data)
     bad_file.close()
     with patch('trestle.utils.fs.load_file') as load_file_mock:
@@ -250,7 +260,7 @@ def test_import_root_key_failure(tmp_trestle_dir: pathlib.Path) -> None:
     """Test root key is not found."""
     sample_data = {'id': '0000', 'title': 'nothing'}
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding='utf8')
+    sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding=const.FILE_ENCODING)
     sample_file.write(json.dumps(sample_data))
     sample_file.close()
     args = argparse.Namespace(file=sample_file.name, output='catalog', verbose=True)
@@ -263,7 +273,7 @@ def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model failures throw errors and exit badly."""
     sample_data = {'id': '0000'}
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding='utf8')
+    sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding=const.FILE_ENCODING)
     sample_file.write(json.dumps(sample_data))
     sample_file.close()
     with patch('trestle.core.parser.parse_file') as parse_file_mock:

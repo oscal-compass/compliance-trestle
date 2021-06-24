@@ -7,13 +7,13 @@
             {
                 "id": "pe-14_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "temperature",
                         "humidity",
                         "pressure",
                         "radiation",
-                        " {{ pe-14_prm_2 }} "
+                        " {{ insert: param, pe-14_prm_2 }} "
                     ]
                 }
             },
@@ -65,7 +65,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Maintain {{ pe-14_prm_1 }} levels within the facility where the system resides at {{ pe-14_prm_3 }}; and"
+                        "prose": "Maintain {{ insert: param, pe-14_prm_1 }} levels within the facility where the system resides at {{ insert: param, pe-14_prm_3 }}; and"
                     },
                     {
                         "id": "pe-14_smt.b",
@@ -76,7 +76,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Monitor environmental control levels {{ pe-14_prm_4 }}."
+                        "prose": "Monitor environmental control levels {{ insert: param, pe-14_prm_4 }}."
                     }
                 ]
             },
@@ -117,7 +117,7 @@
                     {
                         "id": "pe-14.1_smt",
                         "name": "statement",
-                        "prose": "Employ the following automatic environmental controls in the facility to prevent fluctuations potentially harmful to the system: {{ pe-14.1_prm_1 }}."
+                        "prose": "Employ the following automatic environmental controls in the facility to prevent fluctuations potentially harmful to the system: {{ insert: param, pe-14.1_prm_1 }}."
                     },
                     {
                         "id": "pe-14.1_gdn",
@@ -156,7 +156,7 @@
                     {
                         "id": "pe-14.2_smt",
                         "name": "statement",
-                        "prose": "Employ environmental control monitoring that provides an alarm or notification of changes potentially harmful to personnel or equipment to {{ pe-14.2_prm_1 }}."
+                        "prose": "Employ environmental control monitoring that provides an alarm or notification of changes potentially harmful to personnel or equipment to {{ insert: param, pe-14.2_prm_1 }}."
                     },
                     {
                         "id": "pe-14.2_gdn",
