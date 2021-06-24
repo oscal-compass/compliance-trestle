@@ -459,6 +459,17 @@ class PortRange(OscalBaseModel):
     )
 
 
+class ImplementationStatus(OscalBaseModel):
+    state: constr(
+        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(
+        ...,
+        description='Identifies the implementation status of the control or control objective.',
+        title='Implementation State',
+    )
+    remarks: Optional[Remarks] = None
+
+
 class FunctionPerformed(OscalBaseModel):
     __root__: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
@@ -982,9 +993,15 @@ class Parameter(OscalBaseModel):
         description='Describes the purpose and use of a parameter',
         title='Parameter Usage Description',
     )
-    constraints: Optional[List[ParameterConstraint]] = Field(None)
-    guidelines: Optional[List[ParameterGuideline]] = Field(None)
-    values: Optional[List[ParameterValue]] = Field(None)
+    constraints: Optional[List[ParameterConstraint]] = Field(
+        None
+    )
+    guidelines: Optional[List[ParameterGuideline]] = Field(
+        None
+    )
+    values: Optional[List[ParameterValue]] = Field(
+        None
+    )
     select: Optional[ParameterSelection] = None
     remarks: Optional[Remarks] = None
 
@@ -1025,9 +1042,9 @@ class AuthorizedPrivilege(OscalBaseModel):
         description="A summary of the privilege's purpose within the system.",
         title='Privilege Description',
     )
-    functions_performed: List[FunctionPerformed] = Field(
-        ..., alias='functions-performed'
-    )
+    functions_performed: List[
+        FunctionPerformed
+    ] = Field(..., alias='functions-performed')
 
 
 class ImplementedComponent(OscalBaseModel):
@@ -1298,12 +1315,12 @@ class AssessmentSubject(OscalBaseModel):
         description='A key word to indicate all.',
         title='All',
     )
-    include_subjects: Optional[List[SelectSubjectById]] = Field(
-        None, alias='include-subjects'
-    )
-    exclude_subjects: Optional[List[SelectSubjectById]] = Field(
-        None, alias='exclude-subjects'
-    )
+    include_subjects: Optional[
+        List[SelectSubjectById]
+    ] = Field(None, alias='include-subjects')
+    exclude_subjects: Optional[
+        List[SelectSubjectById]
+    ] = Field(None, alias='exclude-subjects')
     remarks: Optional[Remarks] = None
 
 
@@ -1316,7 +1333,9 @@ class IdentifiedSubject(OscalBaseModel):
         description='References a unique assessment subject placeholder defined by this task.',
         title='Assessment Subject Placeholder Universally Unique Identifier Reference',
     )
-    subjects: List[AssessmentSubject] = Field(...)
+    subjects: List[AssessmentSubject] = Field(
+        ...
+    )
 
 
 class RelatedTask(OscalBaseModel):
@@ -1436,7 +1455,9 @@ class AssociatedActivity(OscalBaseModel):
     responsible_roles: Optional[List[ResponsibleRole]] = Field(
         None, alias='responsible-roles'
     )
-    subjects: List[AssessmentSubject] = Field(...)
+    subjects: List[AssessmentSubject] = Field(
+        ...
+    )
     remarks: Optional[Remarks] = None
 
 

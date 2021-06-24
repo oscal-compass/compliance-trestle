@@ -49,7 +49,9 @@ class Control(OscalBaseModel):
         description='A name given to the control, which may be used by a tool for display and navigation.',
         title='Control Title',
     )
-    params: Optional[List[common.Parameter]] = Field(None)
+    params: Optional[List[common.Parameter]] = Field(
+        None
+    )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     parts: Optional[List[common.Part]] = Field(None)
@@ -81,7 +83,9 @@ class Group(OscalBaseModel):
         description='A name given to the group, which may be used by a tool for display and navigation.',
         title='Group Title',
     )
-    params: Optional[List[common.Parameter]] = Field(None)
+    params: Optional[List[common.Parameter]] = Field(
+        None
+    )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     parts: Optional[List[common.Part]] = Field(None)
@@ -98,10 +102,14 @@ class Catalog(OscalBaseModel):
         title='Catalog Universally Unique Identifier',
     )
     metadata: common.Metadata
-    params: Optional[List[common.Parameter]] = Field(None)
+    params: Optional[List[common.Parameter]] = Field(
+        None
+    )
     controls: Optional[List[Control]] = Field(None)
     groups: Optional[List[Group]] = Field(None)
-    back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
+    back_matter: Optional[common.BackMatter] = Field(
+        None, alias='back-matter'
+    )
 
 
 class Model(OscalBaseModel):

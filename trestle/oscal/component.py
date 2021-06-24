@@ -26,17 +26,6 @@ from trestle.core.base_model import OscalBaseModel
 import trestle.oscal.common as common
 
 
-class ImplementationStatus(OscalBaseModel):
-    state: constr(
-        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        description='Identifies the implementation status of the control or control objective.',
-        title='Implementation State',
-    )
-    remarks: Optional[common.Remarks] = None
-
-
 class SetParameter(OscalBaseModel):
     param_id: constr(
         regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -50,7 +39,9 @@ class SetParameter(OscalBaseModel):
     remarks: Optional[common.Remarks] = None
 
 
-class ImportComponentDefinition(OscalBaseModel):
+class ImportComponentDefinition(
+    OscalBaseModel
+):
     href: str = Field(
         ...,
         description='A link to a resource that defines a set of components and/or capabilities to import into this collection.',
@@ -58,7 +49,9 @@ class ImportComponentDefinition(OscalBaseModel):
     )
 
 
-class IncorporatesComponent(OscalBaseModel):
+class IncorporatesComponent(
+    OscalBaseModel
+):
     component_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -81,7 +74,7 @@ class State(Enum):
     other = 'other'
 
 
-class SystemComponentStatus(OscalBaseModel):
+class Status(OscalBaseModel):
     state: State = Field(..., description='The operational status.', title='State')
     remarks: Optional[common.Remarks] = None
 
@@ -107,11 +100,15 @@ class Statement(OscalBaseModel):
         description='A summary of how the containing control statement is implemented by the component or capability.',
         title='Statement Implementation Description',
     )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
+    props: Optional[List[common.Property]] = Field(
+        None
     )
+    links: Optional[List[common.Link]] = Field(
+        None
+    )
+    responsible_roles: Optional[
+        List[common.ResponsibleRole]
+    ] = Field(None, alias='responsible-roles')
     remarks: Optional[common.Remarks] = None
 
 
@@ -143,23 +140,29 @@ class SystemComponent(OscalBaseModel):
         description='A summary of the technological or business purpose of the component.',
         title='Purpose',
     )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    status: SystemComponentStatus = Field(
+    props: Optional[List[common.Property]] = Field(
+        None
+    )
+    links: Optional[List[common.Link]] = Field(
+        None
+    )
+    status: Status = Field(
         ...,
         description='Describes the operational status of the system component.',
         title='Status',
     )
-    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    protocols: Optional[List[common.Protocol]] = Field(
-        None
-    )
+    responsible_roles: Optional[
+        List[common.ResponsibleRole]
+    ] = Field(None, alias='responsible-roles')
+    protocols: Optional[
+        List[common.Protocol]
+    ] = Field(None)
     remarks: Optional[common.Remarks] = None
 
 
-class ImplementedRequirement(OscalBaseModel):
+class ImplementedRequirement(
+    OscalBaseModel
+):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -180,21 +183,27 @@ class ImplementedRequirement(OscalBaseModel):
         description='A description of how the specified control is implemented for the containing component or capability.',
         title='Control Implementation Description',
     )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    set_parameters: Optional[List[SetParameter]] = Field(
-        None, alias='set-parameters'
-    )
-    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    statements: Optional[List[Statement]] = Field(
+    props: Optional[List[common.Property]] = Field(
         None
     )
+    links: Optional[List[common.Link]] = Field(
+        None
+    )
+    set_parameters: Optional[
+        List[SetParameter]
+    ] = Field(None, alias='set-parameters')
+    responsible_roles: Optional[
+        List[common.ResponsibleRole]
+    ] = Field(None, alias='responsible-roles')
+    statements: Optional[
+        List[Statement]
+    ] = Field(None)
     remarks: Optional[common.Remarks] = None
 
 
-class ControlImplementation(OscalBaseModel):
+class ControlImplementation(
+    OscalBaseModel
+):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -212,11 +221,15 @@ class ControlImplementation(OscalBaseModel):
         description='A description of how the specified set of controls are implemented for the containing component or capability.',
         title='Control Implementation Description',
     )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    set_parameters: Optional[List[SetParameter]] = Field(
-        None, alias='set-parameters'
+    props: Optional[List[common.Property]] = Field(
+        None
     )
+    links: Optional[List[common.Link]] = Field(
+        None
+    )
+    set_parameters: Optional[
+        List[SetParameter]
+    ] = Field(None, alias='set-parameters')
     implemented_requirements: List[
         ImplementedRequirement
     ] = Field(..., alias='implemented-requirements')
@@ -250,14 +263,18 @@ class DefinedComponent(OscalBaseModel):
         description='A summary of the technological or business purpose of the component.',
         title='Purpose',
     )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    protocols: Optional[List[common.Protocol]] = Field(
+    props: Optional[List[common.Property]] = Field(
         None
     )
+    links: Optional[List[common.Link]] = Field(
+        None
+    )
+    responsible_roles: Optional[
+        List[common.ResponsibleRole]
+    ] = Field(None, alias='responsible-roles')
+    protocols: Optional[
+        List[common.Protocol]
+    ] = Field(None)
     control_implementations: Optional[
         List[ControlImplementation]
     ] = Field(None, alias='control-implementations')
@@ -280,8 +297,12 @@ class Capability(OscalBaseModel):
     description: str = Field(
         ..., description='A summary of the capability.', title='Capability Description'
     )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
+    props: Optional[List[common.Property]] = Field(
+        None
+    )
+    links: Optional[List[common.Link]] = Field(
+        None
+    )
     incorporates_components: Optional[
         List[IncorporatesComponent]
     ] = Field(None, alias='incorporates-components')
@@ -291,7 +312,9 @@ class Capability(OscalBaseModel):
     remarks: Optional[common.Remarks] = None
 
 
-class ComponentDefinition(OscalBaseModel):
+class ComponentDefinition(
+    OscalBaseModel
+):
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -303,13 +326,15 @@ class ComponentDefinition(OscalBaseModel):
     import_component_definitions: Optional[
         List[ImportComponentDefinition]
     ] = Field(None, alias='import-component-definitions')
-    components: Optional[List[DefinedComponent]] = Field(
-        None
+    components: Optional[
+        List[DefinedComponent]
+    ] = Field(None)
+    capabilities: Optional[
+        List[Capability]
+    ] = Field(None)
+    back_matter: Optional[common.BackMatter] = Field(
+        None, alias='back-matter'
     )
-    capabilities: Optional[List[Capability]] = Field(
-        None
-    )
-    back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
 
 
 class Model(OscalBaseModel):

@@ -33,17 +33,6 @@ class State1(Enum):
     other = 'other'
 
 
-class ImplementationStatus(OscalBaseModel):
-    state: constr(
-        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        description='Identifies the implementation status of the control or control objective.',
-        title='Implementation State',
-    )
-    remarks: Optional[common.Remarks] = None
-
-
 class SetParameter(OscalBaseModel):
     param_id: constr(
         regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -198,7 +187,7 @@ class ImportProfile(OscalBaseModel):
     remarks: Optional[common.Remarks] = None
 
 
-class SystemComponentStatus(OscalBaseModel):
+class Status(OscalBaseModel):
     state: State1 = Field(..., description='The operational status.', title='State')
     remarks: Optional[common.Remarks] = None
 
@@ -274,50 +263,6 @@ class InformationTypeId(OscalBaseModel):
     )
 
 
-class SystemComponent(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='The unique identifier for the component.',
-        title='Component Identifier',
-    )
-    type: constr(regex=r'^\S(.*\S)?$') = Field(
-        ...,
-        description='A category describing the purpose of the component.',
-        title='Component Type',
-    )
-    title: str = Field(
-        ...,
-        description='A human readable name for the system component.',
-        title='Component Title',
-    )
-    description: str = Field(
-        ...,
-        description='A description of the component, including information about its function.',
-        title='Component Description',
-    )
-    purpose: Optional[str] = Field(
-        None,
-        description='A summary of the technological or business purpose of the component.',
-        title='Purpose',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    status: SystemComponentStatus = Field(
-        ...,
-        description='Describes the operational status of the system component.',
-        title='Status',
-    )
-    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    protocols: Optional[List[common.Protocol]] = Field(
-        None
-    )
-    remarks: Optional[common.Remarks] = None
-
-
 class AuthorizationBoundary(OscalBaseModel):
     description: str = Field(
         ...,
@@ -370,11 +315,11 @@ class ByComponent(OscalBaseModel):
     )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    set_parameters: Optional[List[SetParameter]] = Field(
-        None, alias='set-parameters'
-    )
+    set_parameters: Optional[
+        List[SetParameter]
+    ] = Field(None, alias='set-parameters')
     implementation_status: Optional[
-        ImplementationStatus
+        common.ImplementationStatus
     ] = Field(None, alias='implementation-status')
     export: Optional[Export] = Field(
         None,
@@ -412,49 +357,151 @@ class LeveragedAuthorization(OscalBaseModel):
         description='A reference to the party that manages the leveraged system.',
         title='party-uuid field',
     )
-    date_authorized: DateAuthorized = Field(..., alias='date-authorized')
+    date_authorized: DateAuthorized = Field(
+        ..., alias='date-authorized'
+    )
     remarks: Optional[common.Remarks] = None
 
 
-class SystemImplementation(OscalBaseModel):
+class Categorization(OscalBaseModel):
+    system: AnyUrl = Field(
+        ...,
+        description='Specifies the information type identification system used.',
+        title='Information Type Identification System',
+    )
+    information_type_ids: Optional[List[InformationTypeId]] = Field(
+        None, alias='information-type-ids'
+    )
+
+
+class Statement(OscalBaseModel):
+    statement_id: constr(
+        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(
+        ...,
+        alias='statement-id',
+        description='A reference to a control statement by its identifier',
+        title='Control Statement Reference',
+    )
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A globally unique identifier that can be used to reference this control statement entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        title='Control Statement Reference Universally Unique Identifier',
+    )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
-    leveraged_authorizations: Optional[List[LeveragedAuthorization]] = Field(
-        None, alias='leveraged-authorizations'
+    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
+        None, alias='responsible-roles'
     )
-    users: List[common.SystemUser] = Field(...)
-    components: List[SystemComponent] = Field(...)
-    inventory_items: Optional[List[common.InventoryItem]] = Field(
-        None, alias='inventory-items'
+    by_components: Optional[List[ByComponent]] = Field(
+        None, alias='by-components'
     )
     remarks: Optional[common.Remarks] = None
 
 
-class DataFlow(OscalBaseModel):
+class ImplementedRequirement(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='A globally unique identifier that can be used to reference this control requirement entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
+        title='Control Requirement Universally Unique Identifier',
+    )
+    control_id: constr(
+        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
+    ) = Field(
+        ...,
+        alias='control-id',
+        description='A reference to a control with a corresponding id value.',
+        title='Control Identifier Reference',
+    )
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    set_parameters: Optional[
+        List[SetParameter]
+    ] = Field(None, alias='set-parameters')
+    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
+        None, alias='responsible-roles'
+    )
+    statements: Optional[List[Statement]] = Field(None)
+    by_components: Optional[List[ByComponent]] = Field(
+        None, alias='by-components'
+    )
+    remarks: Optional[common.Remarks] = None
+
+
+class ControlImplementation(OscalBaseModel):
     description: str = Field(
         ...,
-        description="A summary of the system's data flow.",
-        title='Data Flow Description',
+        description='A statement describing important things to know about how this set of control satisfaction documentation is approached.',
+        title='Control Implementation Description',
     )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    diagrams: Optional[List[Diagram]] = Field(None)
+    set_parameters: Optional[
+        List[SetParameter]
+    ] = Field(None, alias='set-parameters')
+    implemented_requirements: List[ImplementedRequirement] = Field(
+        ..., alias='implemented-requirements'
+    )
+
+
+class Status(OscalBaseModel):
+    state: State = Field(
+        ..., description='The current operating status.', title='State'
+    )
     remarks: Optional[common.Remarks] = None
 
 
-class NetworkArchitecture(OscalBaseModel):
+class SystemComponent(OscalBaseModel):
+    uuid: constr(
+        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
+    ) = Field(
+        ...,
+        description='The unique identifier for the component.',
+        title='Component Identifier',
+    )
+    type: constr(regex=r'^\S(.*\S)?$') = Field(
+        ...,
+        description='A category describing the purpose of the component.',
+        title='Component Type',
+    )
+    title: str = Field(
+        ...,
+        description='A human readable name for the system component.',
+        title='Component Title',
+    )
     description: str = Field(
         ...,
-        description="A summary of the system's network architecture.",
-        title='Network Architecture Description',
+        description='A description of the component, including information about its function.',
+        title='Component Description',
     )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    diagrams: Optional[List[Diagram]] = Field(None)
+    purpose: Optional[str] = Field(
+        None,
+        description='A summary of the technological or business purpose of the component.',
+        title='Purpose',
+    )
+    props: Optional[List[common.Property]] = Field(
+        None
+    )
+    links: Optional[List[common.Link]] = Field(
+        None
+    )
+    status: Status = Field(
+        ...,
+        description='Describes the operational status of the system component.',
+        title='Status',
+    )
+    responsible_roles: Optional[
+        List[common.ResponsibleRole]
+    ] = Field(None, alias='responsible-roles')
+    protocols: Optional[
+        List[common.Protocol]
+    ] = Field(None)
     remarks: Optional[common.Remarks] = None
 
 
-class AvailabilityImpact(OscalBaseModel):
+class ConfidentialityImpact(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     base: Base
@@ -474,7 +521,7 @@ class IntegrityImpact(OscalBaseModel):
     )
 
 
-class ConfidentialityImpact(OscalBaseModel):
+class AvailabilityImpact(OscalBaseModel):
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     base: Base
@@ -484,22 +531,44 @@ class ConfidentialityImpact(OscalBaseModel):
     )
 
 
-class SystemCharacteristicsStatus(OscalBaseModel):
-    state: State = Field(
-        ..., description='The current operating status.', title='State'
+class NetworkArchitecture(OscalBaseModel):
+    description: str = Field(
+        ...,
+        description="A summary of the system's network architecture.",
+        title='Network Architecture Description',
     )
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    diagrams: Optional[List[Diagram]] = Field(None)
     remarks: Optional[common.Remarks] = None
 
 
-class Categorization(OscalBaseModel):
-    system: AnyUrl = Field(
+class DataFlow(OscalBaseModel):
+    description: str = Field(
         ...,
-        description='Specifies the information type identification system used.',
-        title='Information Type Identification System',
+        description="A summary of the system's data flow.",
+        title='Data Flow Description',
     )
-    information_type_ids: Optional[List[InformationTypeId]] = Field(
-        None, alias='information-type-ids'
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    diagrams: Optional[List[Diagram]] = Field(None)
+    remarks: Optional[common.Remarks] = None
+
+
+class SystemImplementation(OscalBaseModel):
+    props: Optional[List[common.Property]] = Field(None)
+    links: Optional[List[common.Link]] = Field(None)
+    leveraged_authorizations: Optional[List[LeveragedAuthorization]] = Field(
+        None, alias='leveraged-authorizations'
     )
+    users: List[common.SystemUser] = Field(...)
+    components: List[SystemComponent] = Field(
+        ...
+    )
+    inventory_items: Optional[
+        List[common.InventoryItem]
+    ] = Field(None, alias='inventory-items')
+    remarks: Optional[common.Remarks] = None
 
 
 class InformationType(OscalBaseModel):
@@ -589,7 +658,7 @@ class SystemCharacteristics(OscalBaseModel):
     security_impact_level: SecurityImpactLevel = Field(
         ..., alias='security-impact-level'
     )
-    status: SystemCharacteristicsStatus
+    status: Status
     authorization_boundary: AuthorizationBoundary = Field(
         ..., alias='authorization-boundary'
     )
@@ -601,78 +670,6 @@ class SystemCharacteristics(OscalBaseModel):
         None, alias='responsible-parties'
     )
     remarks: Optional[common.Remarks] = None
-
-
-class Statement(OscalBaseModel):
-    statement_id: constr(
-        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        alias='statement-id',
-        description='A reference to a control statement by its identifier',
-        title='Control Statement Reference',
-    )
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A globally unique identifier that can be used to reference this control statement entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
-        title='Control Statement Reference Universally Unique Identifier',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    by_components: Optional[List[ByComponent]] = Field(
-        None, alias='by-components'
-    )
-    remarks: Optional[common.Remarks] = None
-
-
-class ImplementedRequirement(OscalBaseModel):
-    uuid: constr(
-        regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
-    ) = Field(
-        ...,
-        description='A globally unique identifier that can be used to reference this control requirement entry elsewhere in an OSCAL document. A UUID should be consistently used for a given resource across revisions of the document.',
-        title='Control Requirement Universally Unique Identifier',
-    )
-    control_id: constr(
-        regex=r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
-    ) = Field(
-        ...,
-        alias='control-id',
-        description='A reference to a control with a corresponding id value.',
-        title='Control Identifier Reference',
-    )
-    props: Optional[List[common.Property]] = Field(None)
-    links: Optional[List[common.Link]] = Field(None)
-    set_parameters: Optional[List[SetParameter]] = Field(
-        None, alias='set-parameters'
-    )
-    responsible_roles: Optional[List[common.ResponsibleRole]] = Field(
-        None, alias='responsible-roles'
-    )
-    statements: Optional[List[Statement]] = Field(None)
-    by_components: Optional[List[ByComponent]] = Field(
-        None, alias='by-components'
-    )
-    remarks: Optional[common.Remarks] = None
-
-
-class ControlImplementation(OscalBaseModel):
-    description: str = Field(
-        ...,
-        description='A statement describing important things to know about how this set of control satisfaction documentation is approached.',
-        title='Control Implementation Description',
-    )
-    set_parameters: Optional[List[SetParameter]] = Field(
-        None, alias='set-parameters'
-    )
-    implemented_requirements: List[ImplementedRequirement] = Field(
-        ..., alias='implemented-requirements'
-    )
 
 
 class SystemSecurityPlan(OscalBaseModel):
@@ -694,7 +691,9 @@ class SystemSecurityPlan(OscalBaseModel):
     control_implementation: ControlImplementation = Field(
         ..., alias='control-implementation'
     )
-    back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
+    back_matter: Optional[common.BackMatter] = Field(
+        None, alias='back-matter'
+    )
 
 
 class Model(OscalBaseModel):

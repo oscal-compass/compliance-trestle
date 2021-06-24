@@ -154,7 +154,9 @@ class Import(OscalBaseModel):
         description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.',
         title='Catalog or Profile Reference',
     )
-    include_all: Optional[IncludeAll] = Field(None, alias='include-all')
+    include_all: Optional[IncludeAll] = Field(
+        None, alias='include-all'
+    )
     include_controls: Optional[List[SelectControlById]] = Field(
         None, alias='include-controls'
     )
@@ -169,7 +171,9 @@ class InsertControls(OscalBaseModel):
         description='A designation of how a selection of controls in a profile is to be ordered.',
         title='Order',
     )
-    include_all: Optional[IncludeAll] = Field(None, alias='include-all')
+    include_all: Optional[IncludeAll] = Field(
+        None, alias='include-all'
+    )
     include_controls: Optional[List[SelectControlById]] = Field(
         None, alias='include-controls'
     )
@@ -203,7 +207,9 @@ class Group(OscalBaseModel):
         description='A name given to the group, which may be used by a tool for display and navigation.',
         title='Group Title',
     )
-    params: Optional[List[common.Parameter]] = Field(None)
+    params: Optional[List[common.Parameter]] = Field(
+        None
+    )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     parts: Optional[List[common.Part]] = Field(None)
@@ -254,9 +260,15 @@ class SetParameter(OscalBaseModel):
         description='Describes the purpose and use of a parameter',
         title='Parameter Usage Description',
     )
-    constraints: Optional[List[common.ParameterConstraint]] = Field(None)
-    guidelines: Optional[List[common.ParameterGuideline]] = Field(None)
-    values: Optional[List[common.ParameterValue]] = Field(None)
+    constraints: Optional[
+        List[common.ParameterConstraint]
+    ] = Field(None)
+    guidelines: Optional[
+        List[common.ParameterGuideline]
+    ] = Field(None)
+    values: Optional[List[common.ParameterValue]] = Field(
+        None
+    )
     select: Optional[common.ParameterSelection] = None
 
 
@@ -281,7 +293,9 @@ class Add(OscalBaseModel):
         description='A name given to the control, which may be used by a tool for display and navigation.',
         title='Title Change',
     )
-    params: Optional[List[common.Parameter]] = Field(None)
+    params: Optional[List[common.Parameter]] = Field(
+        None
+    )
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     parts: Optional[List[common.Part]] = Field(None)
@@ -334,7 +348,9 @@ class Profile(OscalBaseModel):
     imports: List[Import] = Field(...)
     merge: Optional[Merge] = None
     modify: Optional[Modify] = None
-    back_matter: Optional[common.BackMatter] = Field(None, alias='back-matter')
+    back_matter: Optional[common.BackMatter] = Field(
+        None, alias='back-matter'
+    )
 
 
 class Model(OscalBaseModel):
