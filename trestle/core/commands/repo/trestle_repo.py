@@ -50,7 +50,15 @@ class ManagedOSCAL:
 
     def read(self) -> OscalBaseModel:
         """Read OSCAL model from repository."""
-        pass
+        model_alias = classname_to_alias(self.model_type.__name__, 'json')
+        plural_path = fs.model_type_to_model_dir(model_alias)
+        desired_model_dir = self.root_dir / plural_path / self.model_name
+
+        if not desired_model_dir.exists() or not desired_model_dir.is_dir():
+            raise TrestleError(f'Model {self.model_name} does not exist.')
+
+        model = parser.parse_file(filepath, None)
+        return model
 
     def write(self, model: OscalBaseModel, preserve_split: bool) -> bool:
         """Write OSCAL model to repository."""
