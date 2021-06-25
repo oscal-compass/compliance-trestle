@@ -130,7 +130,7 @@ class OscoToOscal(TaskBase):
         opth.mkdir(exist_ok=True, parents=True)
         # process
         for ifile in sorted(ipth.iterdir()):
-            if ifile.suffix not in ['.json', '.jsn', '.yaml', '.yml']:
+            if ifile.suffix not in ['.json', '.jsn', '.yaml', '.yml', '.xml']:
                 continue
             blob = self._read_file(ifile)
             osco_transformer = OscoTransformer()
