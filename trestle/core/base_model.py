@@ -266,6 +266,7 @@ class OscalBaseModel(BaseModel):
             err.TrestleError: If a unknown file extension is provided.
         """
         content_type = FileContentType.to_content_type(path.suffix)
+        # Force unix line ending on Windows
         write_file = pathlib.Path(path).open('w', encoding=const.FILE_ENCODING, newline='\n')
         if content_type == FileContentType.YAML:
             yaml = YAML(typ='safe')
