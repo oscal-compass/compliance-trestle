@@ -15,6 +15,7 @@
 
 import os
 import pathlib
+from typing import List
 from unittest import mock
 
 import pytest
@@ -239,16 +240,14 @@ def test_get_contextual_model_type(tmp_path: pathlib.Path) -> None:
     assert fs.get_contextual_model_type(catalog_dir / 'back-matter.json') == (common.BackMatter, 'catalog.back-matter')
     assert fs.get_contextual_model_type(catalog_dir / 'metadata.yaml') == (common.Metadata, 'catalog.metadata')
     assert fs.get_contextual_model_type(metadata_dir) == (common.Metadata, 'catalog.metadata')
-    # The line below is no longer possible to execute in many situations due to the constrained lists
-    # assert fs.get_contextual_model_type(roles_dir) == (List[common.Role], 'catalog.metadata.roles') # noqa: E800
+    assert fs.get_contextual_model_type(roles_dir) == (List[common.Role], 'catalog.metadata.roles')
     (type_, element) = fs.get_contextual_model_type(roles_dir)
     assert cutils.get_origin(type_) == list
     assert element == 'catalog.metadata.roles'
     assert fs.get_contextual_model_type(roles_dir / '00000__role.json') == (common.Role, 'catalog.metadata.roles.role')
-    # Another FIXME due to constrained lists
-    # assert fs.get_contextual_model_type(rps_dir) == (  # noqa: E800
-    #     common.ResponsibleParty, 'catalog.metadata.responsible-parties' # noqa: E800
-    # )  # noqa: E800
+    model_type, full_alias = fs.get_contextual_model_type(rps_dir)
+    assert model_type == List[common.ResponsibleParty]
+    assert full_alias == 'catalog.metadata.responsible-parties'
     assert fs.get_contextual_model_type(
         rps_dir / 'creator__responsible-party.json'
     ) == (common.ResponsibleParty, 'catalog.metadata.responsible-parties.responsible-party')

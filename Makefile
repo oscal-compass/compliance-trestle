@@ -36,6 +36,9 @@ code-typing:
 test::
 	python -m pytest --cov trestle tests --cov-report=xml --exitfirst --random-order
 
+test-all::
+	python -m pytest --cov trestle tests --cov-report=xml --random-order
+
 test-verbose:
 	python -m pytest --cov trestle tests -vv --cov-report=term-missing --cov-report=html:cov_html
 

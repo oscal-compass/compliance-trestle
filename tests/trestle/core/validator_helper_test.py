@@ -71,12 +71,10 @@ def test_has_no_duplicate_values_pydantic() -> None:
 
 def test_regenerate_uuids_ssp() -> None:
     """Test regeneration of uuids with updated refs in ssp."""
-    # FIXME nist issue: https://github.com/usnistgov/oscal-content/issues/65
     orig_ssp = ssp.SystemSecurityPlan.oscal_read(ssp_path)
-    _, uuid_lut, n_refs_updated = validator_helper.regenerate_uuids(orig_ssp)
+    new_ssp, uuid_lut, n_refs_updated = validator_helper.regenerate_uuids(orig_ssp)
     assert len(uuid_lut.items()) == 36
     assert n_refs_updated == 23
-    pass
 
 
 def test_regenerate_uuids_catalog() -> None:
