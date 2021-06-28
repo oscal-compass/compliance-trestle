@@ -160,8 +160,8 @@ class SplitCmd(CommandPlusDocs):
         For example, element paths could have a list of paths as below for a `ComponentDefinition` model where
         the first path is the start of the chain.
 
-        For each of the sub model described by the first element path (e.g component-defintion.components.*) in the chain,
-        the subsequent paths (e.g component.control-implementations.*) will be applied recursively to retrieve
+        For each of the sub model described by the first element path (e.g component-defintion.components.*) in the
+        chain, the subsequent paths (e.g component.control-implementations.*) will be applied recursively to retrieve
         the sub-sub models:
         [
             'component-definition.componet.*',
@@ -319,7 +319,6 @@ class SplitCmd(CommandPlusDocs):
 
         It returns a plan for the operation
         """
-
         # initialize plan
         split_plan = Plan()
 

@@ -78,7 +78,8 @@ def test_element_path_get_preceding_path(sample_nist_component_def: component.Co
     assert ElementPath('component-definition.metadata').get_preceding_path() is None
     assert ElementPath('component-definition.metadata.parties.*'
                        ).get_preceding_path() == ElementPath('component-definition.metadata.parties')
-    assert ElementPath('component-definition.metadata.*').get_preceding_path() == ElementPath('component-definition.metadata')
+    assert ElementPath('component-definition.metadata.*'
+                       ).get_preceding_path() == ElementPath('component-definition.metadata')
 
     # element_path with parent path
     parent_path = ElementPath('component-definition.metadata')
@@ -142,10 +143,12 @@ def test_element_path_to_file_path():
 def test_element_path_to_root_path():
     """Test to file path method."""
     assert ElementPath('component-definition.metadata.title').to_root_path() == pathlib.Path('./component-definition')
-    assert ElementPath('component-definition.metadata.title').to_root_path(FileContentType.YAML
-                                                                        ) == pathlib.Path('./component-definition.yaml')
-    assert ElementPath('component-definition.metadata.title').to_root_path(FileContentType.JSON
-                                                                        ) == pathlib.Path('./component-definition.json')
+    assert ElementPath('component-definition.metadata.title').to_root_path(
+        FileContentType.YAML
+    ) == pathlib.Path('./component-definition.yaml')
+    assert ElementPath('component-definition.metadata.title').to_root_path(
+        FileContentType.JSON
+    ) == pathlib.Path('./component-definition.json')
 
     # error for invalid content type - 1
     with pytest.raises(TrestleError):

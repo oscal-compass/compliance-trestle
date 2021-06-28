@@ -40,7 +40,9 @@ def test_plan_execution(tmp_path, sample_nist_component_def: component.Component
     split_plan = Plan()
     split_plan.add_action(CreatePathAction(metadata_yaml))
     split_plan.add_action(
-        WriteFileAction(metadata_yaml, Element(sample_nist_component_def.metadata, 'component-definition'), content_type)
+        WriteFileAction(
+            metadata_yaml, Element(sample_nist_component_def.metadata, 'component-definition'), content_type
+        )
     )
     # Test stringing a plan
     stringed = str(split_plan)
@@ -53,8 +55,9 @@ def test_plan_execution(tmp_path, sample_nist_component_def: component.Component
         target_file: pathlib.Path = pathlib.Path.joinpath(targets_dir, f'component_{index}.yaml')
         target_files.append(target_file)
         split_plan.add_action(CreatePathAction(target_file))
-        split_plan.add_action(WriteFileAction(target_file, Element(sample_nist_component_def.components[index],
-                                                                   'target'), content_type))
+        split_plan.add_action(
+            WriteFileAction(target_file, Element(sample_nist_component_def.components[index], 'target'), content_type)
+        )
 
     # execute the plan
     split_plan.execute()

@@ -40,11 +40,16 @@ def test_element_get_at(sample_nist_component_def: component.ComponentDefinition
     assert element.get() == sample_nist_component_def
     assert element.get_at() == element.get()
     assert element.get_at(ElementPath('component-definition.metadata')) == sample_nist_component_def.metadata
-    assert element.get_at(ElementPath('component-definition.metadata.title')) == sample_nist_component_def.metadata.title
+    assert element.get_at(
+        ElementPath('component-definition.metadata.title')
+    ) == sample_nist_component_def.metadata.title
     assert element.get_at(ElementPath('component-definition.components')) == sample_nist_component_def.components
     assert element.get_at(ElementPath('component-definition.components.*')) == sample_nist_component_def.components
-    assert element.get_at(ElementPath('component-definition.metadata.parties.*')) == sample_nist_component_def.metadata.parties
-    assert element.get_at(ElementPath('component-definition.metadata.parties.0')) == sample_nist_component_def.metadata.parties[0]
+    assert element.get_at(
+        ElementPath('component-definition.metadata.parties.*')
+    ) == sample_nist_component_def.metadata.parties
+    assert element.get_at(ElementPath('component-definition.metadata.parties.0')
+                          ) == sample_nist_component_def.metadata.parties[0]
     assert element.get_at(ElementPath('component-definition.metadata.parties.0.uuid')
                           ) == sample_nist_component_def.metadata.parties[0].uuid
 

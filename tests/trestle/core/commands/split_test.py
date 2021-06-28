@@ -18,7 +18,6 @@ import argparse
 import os
 import pathlib
 import sys
-from typing import Dict
 from unittest.mock import patch
 
 import pytest
@@ -36,9 +35,8 @@ from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-
-from trestle.oscal import catalog as oscatalog, component
-from trestle.oscal import component, common
+from trestle.oscal import catalog as oscatalog
+from trestle.oscal import common, component
 from trestle.utils import trash
 
 
@@ -279,10 +277,11 @@ def test_split_run(
         assert component_def_dir.joinpath('component-definition.yaml').exists()
         assert component_def_dir.joinpath('component-definition/components').exists()
         assert component_def_dir.joinpath('component-definition/components').is_dir()
-
+        # FIXME: This is not doign anything.
         components: list = Element(sample_nist_component_def).get_at(ElementPath('component-definition.components.*'))
         for index in range(len(components)):
-            component_file = component_def_dir / f'component-definition/components/'
+            comp_fname = f'{str(index).zfill(const.FILE_DIGIT_PREFIX_LENGTH)}{const.IDX_SEP}defined-component.yaml'
+            component_file = component_def_dir / 'component-definition' / 'components' / comp_fname
             assert component_file.exists()
 
         assert trash.to_trash_file_path(component_def_file).exists()

@@ -72,7 +72,6 @@ class ProfileCmd(CommandPlusDocs):
         return ReplicateCmd.replicate_object(self.name, profile.Profile, args)
 
 
-
 class ComponentDefinitionCmd(CommandPlusDocs):
     """Replicate a component definition within the trestle directory structure."""
 

@@ -331,13 +331,12 @@ class OscalBaseModel(BaseModel):
 
         Returns:
             Opportunistic copy of the data into the new model type.
-
         """
         logger.debug('Copy to started')
-        # FIXME: This needs to be tested. Unsure of behavior.
         if self.__class__.__name__ == new_oscal_type.__name__:
-            logger.debug('Dict based copy too ')
-            return new_oscal_type.parse_obj(self.dict(exclude_none=True, by_alias=True))
+            logger.debug('Json based copy')
+            # Note: Json based oppportunistic copy
+            return new_oscal_type.parse_raw(self.json(exclude_none=True, by_alias=True))
 
         if ('__root__' in self.__fields__ and len(self.__fields__) == 1 and '__root__' in new_oscal_type.__fields__
                 and len(new_oscal_type.__fields__) == 1):
@@ -345,7 +344,7 @@ class OscalBaseModel(BaseModel):
             return new_oscal_type.parse_obj(self.__root__)
 
         # bad place here.
-        raise err.TrestleError('Provided inconsistent classes.')
+        raise err.TrestleError('Provided inconsistent classes to copy to methodology.')
 
     def copy_from(self, existing_oscal_object: 'OscalBaseModel') -> None:
         """

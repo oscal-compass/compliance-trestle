@@ -238,7 +238,7 @@ def test_copy_to() -> None:
     c_m = common.Metadata(
         **{
             'title': 'My simple catalog',
-            'last-modified': datetime.now(),
+            'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
             'oscal-version': trestle.oscal.OSCAL_VERSION
         }
@@ -259,16 +259,17 @@ def test_copy_to() -> None:
 
 
 def test_copy_components() -> None:
-    #FIXME:
-    # sys_component = ssp.SystemComponent(
-    #     uuid='A0000000-0000-4000-8000-000000000000',
-    #     type='Hello',
-    #     title='My title',
-    #     description='Hello world',
-    #     status=ssp.Status(state=ssp.State(ssp.State1('under-development')))
-    # )
-    # ap_component = sys_component.copy_to(ap.SystemComponent)
-    # assert sys_component.title == ap_component.title
+    """Test copying across similar but different objects."""
+    state_obj = ssp.State1('under-development')
+    sys_component = ssp.SystemComponent(
+        uuid='A0000000-0000-4000-8000-000000000000',
+        type='Hello',
+        title='My title',
+        description='Hello world',
+        status=ssp.Status(state=state_obj)
+    )
+    ap_component = sys_component.copy_to(ap.SystemComponent)
+    assert sys_component.title == ap_component.title
     pass
 
 

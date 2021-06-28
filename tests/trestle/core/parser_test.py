@@ -77,16 +77,11 @@ def test_to_full_model_name() -> None:
         model_name = parser.to_full_model_name(test['root_key'])
         assert model_name == test['expected']
 
-@pytest.mark.parametrize('model_name, expected',
-[(
-    f'{const.PACKAGE_OSCAL}.component.ComponentDefinition',
-    'ComponentDefinition'
-),
-(
-    None,
-    'ComponentDefinition'
 
-)])
+@pytest.mark.parametrize(
+    'model_name, expected',
+    [(f'{const.PACKAGE_OSCAL}.component.ComponentDefinition', 'ComponentDefinition'), (None, 'ComponentDefinition')]
+)
 def test_parse_file(model_name: str, expected: str) -> None:
     """Test parse_file."""
     file_name = 'good_component.yaml'
