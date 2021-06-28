@@ -15,6 +15,8 @@
 """Starting point for the Trestle CLI."""
 import logging
 
+import pathlib
+
 from trestle.core.commands.add import AddCmd
 from trestle.core.commands.assemble import AssembleCmd
 from trestle.core.commands.author.command import AuthorCmd
@@ -55,6 +57,8 @@ class Trestle(CommandPlusDocs):
 
     def _init_arguments(self) -> None:
         self.add_argument('-v', '--verbose', help='Display verbose output.', action='count', default=0)
+        self.add_argument('-tr', '--trestle-root', help='Path of trestle root dir', type=pathlib.Path,
+                          default=pathlib.Path.cwd())
 
 
 def run() -> None:

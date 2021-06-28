@@ -36,11 +36,6 @@ class CommandPlusDocs(Command):
         super(CommandPlusDocs, self).__init__(parser, parent, name, out, err)
         self.parser.description = self.__doc__
 
-    def _init_arguments(self):
-        self.add_argument(
-            '-tr', '--trestle-root', help='Path of trestle root dir', type=pathlib.Path, default=pathlib.Path.cwd()
-        )
-
     def _validate_arguments(self, args):
         # if the command is 'init' then don't validate the trestle-root as it will be initialized by init command
         logger.error(self.name)
