@@ -10,14 +10,7 @@
         "control-selections": [
           {}
         ]
-      },
-      "findings": [
-        {
-          "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-          "title": "",
-          "description": ""
-        }
-      ]
+      }
     }
   ]
 }

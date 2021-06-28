@@ -1,0 +1,956 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestResult xmlns="http://checklists.nist.gov/xccdf/1.2" id="xccdf_org.open-scap_testresult_xccdf_compliance.openshift.io_profile_roks" start-time="2021-06-14T01:00:29+00:00" end-time="2021-06-14T01:00:29+00:00" version="0.1.57" test-system="cpe:/a:redhat:openscap:1.3.4">
+          <benchmark href="/content/ssg-ocp4-ds.xml" id="xccdf_org.ssgproject.content_benchmark_OCP-4"/>
+          <title>OSCAP Scan Result</title>
+          <profile idref="xccdf_compliance.openshift.io_profile_roks"/>
+          <target>kube-c18ler8d06m877hrn7jg-roks8-default-00000319.iks.mycorp</target>
+          <target-facts>
+            <fact name="urn:xccdf:fact:identifier" type="string">chroot:///host</fact>
+            <fact name="urn:xccdf:fact:scanner:name" type="string">OpenSCAP</fact>
+            <fact name="urn:xccdf:fact:scanner:version" type="string">1.3.4</fact>
+          </target-facts>
+          <target-id-ref system="http://scap.nist.gov/schema/asset-identification/1.1" name="asset0" href=""/>
+          <platform idref="cpe:/o:redhat:openshift_container_platform_node:4"/>
+          <set-value idref="xccdf_org.ssgproject.content_value_ocp_data_root">/kubernetes-api-resources</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_api_min_request_timeout">3600</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_oauth_inactivity_timeout">600s</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_openshift_audit_profile">Default</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_event_record_qps">5</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_kube_authorization_mode">Webhook</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_kubelet_evictionhard_imagefs_available">5%</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_kubelet_evictionhard_imagefs_inodesfree">5%</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_kubelet_evictionhard_memory_available">100Mi</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_kubelet_evictionhard_nodefs_available">5%</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_kubelet_evictionhard_nodefs_inodesfree">5%</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_kubelet_evictionsoft_imagefs_available">10%</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_kubelet_evictionsoft_imagefs_inodesfree">10%</set-value>
+          <set-value idref="xccdf_org.ssgproject.cont
+t_value_var_kubelet_evictionsoft_memory_available">100Mi</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_kubelet_evictionsoft_nodefs_available">10%</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_kubelet_evictionsoft_nodefs_inodesfree">10%</set-value>
+          <set-value idref="xccdf_org.ssgproject.content_value_var_streaming_connection_timeouts">5m</set-value>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_integrity_exists" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83657-7</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_fips_mode_enabled" role="full" time="2021-06-14T01:00:29+00:00" severity="high" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84214-6</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_accounts_unique_service_account" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_controller_rotate_kubelet_server_certs" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83730-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_controller_terminated_pod_gc_threshhold" role="full" time="2021-06-14T01:00:29+00:00" severity="low" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_controller_use_service_account" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84208-8</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_controller_service_account_ca" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84244-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_controller_insecure_port_disabled" role="full" time="2021-06-14T01:00:29+00:00" severity="low" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83578-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_controller_service_account_private_key" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83526-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_controller_secure_port" role="full" time="2021-06-14T01:00:29+00:00" severity="low" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83861-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_tls_cert" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83779-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_auth_mode_node" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83889-6</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NodeRestriction" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83753-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_kubelet_certificate_authority" role="full" time="2021-06-14T01:00:29+00:00" severity="high" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84196-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_audit_log_forwarding_enabled" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84076-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_client_ca" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84284-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_tls_cipher_suites" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_service_account_lookup" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83370-7</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_anonymous_auth" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_SecurityContextDeny" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83586-8</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_audit_log_maxsize" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83607-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_ocp_api_server_audit_log_maxbackup" role="full" time="2021-06-14T01:00:29+00:00" severity="low" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83977-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_ocp_api_server_audit_log_maxsize" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83687-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysAdmit" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84148-6</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_insecure_bind_address" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83955-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_kubelet_client_cert" role="full" time="2021-06-14T01:00:29+00:00" severity="high" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84080-1</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_bind_address" role="full" time="2021-06-14T01:00:29+00:00" severity="low" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83646-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_etcd_key" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83546-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_Scc" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83602-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_api_priority_v1alpha1_flowschema_catch_all" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84002-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_request_timeout" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_ServiceAccount" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83791-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_encryption_provider_config" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83585-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_service_account_public_key" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83350-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_auth_mode_rbac" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84102-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_oauth_https_serving_cert" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_api_priority_gate_enabled" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83656-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_etcd_cert" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83876-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_basic_auth" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83936-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_auth_mode_no_aa" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84207-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_insecure_port" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83813-6</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_api_priority_flowschema_catch_all" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83522-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NamespaceLifecycle" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83854-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_audit_log_path" role="full" time="2021-06-14T01:00:29+00:00" severity="high" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84020-7</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_profiling_protected_by_rbac" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84212-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_https_for_kubelet_conn" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_tls_private_key" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84282-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_openshift_https_serving_cert" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_etcd_ca" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84216-1</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_audit_log_maxbackup" role="full" time="2021-06-14T01:00:29+00:00" severity="low" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83739-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_no_adm_ctrl_plugins_disabled" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83799-7</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysPullImages" role="full" time="2021-06-14T01:00:29+00:00" severity="high" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_token_auth" role="full" time="2021-06-14T01:00:29+00:00" severity="high" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83481-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_kubelet_client_key" role="full" time="2021-06-14T01:00:29+00:00" severity="high" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83591-8</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_api_server_encryption_provider_cipher" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_network_namespace" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83492-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_ipc_namespace" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84042-1</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_privilege_escalation" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83447-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_container_allowed_capabilities" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_scc_drop_container_capabilities" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_net_raw_capability" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_process_id_namespace" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_privileged_containers" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_scc_limit_root_containers" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_openshift_api_server_audit_log_path" role="full" time="2021-06-14T01:00:29+00:00" severity="high" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83547-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_classification_banner" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_ocp_allowed_registries_for_import" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_ocp_allowed_registries" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_secrets_consider_external_storage" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_secrets_no_environment_variables" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_oauth_inactivity_timeout" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83511-6</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84209-6</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_ocp_no_ldap_insecure" role="full" time="2021-06-14T01:00:29+00:00" severity="high" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83699-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_oauth_or_oauthclient_inactivity_timeout" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83702-1</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_idp_is_configured" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84088-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_oauthclient_inactivity_timeout" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84178-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_compliancesuite_exists" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83697-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_audit_profile_set" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83577-7</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_scheduler_port_is_zero" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_scheduler_no_bind_address" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83674-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_rbac_limit_cluster_admin" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_rbac_debug_role_protects_pprof" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84182-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_rbac_pod_creation_access" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_rbac_limit_secrets_access" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_rbac_wildcard_use" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_configure_network_policies_namespaces" role="full" time="2021-06-14T01:00:29+00:00" severity="high" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_routes_protected_by_tls" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84225-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_configure_network_policies" role="full" time="2021-06-14T01:00:29+00:00" severity="high" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_unique_ca" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notapplicable</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_peer_cert_file" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83847-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_peer_auto_tls" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84184-1</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_cert_file" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83553-8</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_peer_key_file" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83711-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_key_file" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83745-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_auto_tls" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84199-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_peer_client_cert_auth" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83465-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_etcd_client_cert_auth" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84077-7</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_worker_ca" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83440-8</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_kubelet_conf" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83470-5</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-file_permissions_kubelet_conf:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_kubelet_conf" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83976-1</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-file_owner_kubelet_conf:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_worker_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83409-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_worker_ca" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83495-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_proxy_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_worker_ca" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83493-7</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_proxy_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_kubelet_conf" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84233-6</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-file_groupowner_kubelet_conf:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_proxy_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84047-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_worker_service" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83455-6</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_worker_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83509-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_worker_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83408-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_worker_service" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84193-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_worker_service" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83975-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_configure_client_ca" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83724-5</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-kubelet_configure_client_ca:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_nodefs_inodesfree" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84123-9</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg-var_kubelet_evictionsoft_nodefs_inodesfree:var:1" value-id="xccdf_org.ssgproject.content_value_var_kubelet_evictionsoft_nodefs_inodesfree"/>
+              <check-content-ref name="oval:ssg-kubelet_eviction_thresholds_set_soft_nodefs_inodesfree:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_enable_cert_rotation" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>fail</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83838-3</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-kubelet_enable_cert_rotation:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_enable_protect_kernel_defaults" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>fail</result>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-kubelet_enable_protect_kernel_defaults:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_memory_available" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84135-3</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg-var_kubelet_evictionhard_memory_available:var:1" value-id="xccdf_org.ssgproject.content_value_var_kubelet_evictionhard_memory_available"/>
+              <check-content-ref name="oval:ssg-kubelet_eviction_thresholds_set_hard_memory_available:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cipher_suites_kubeapiserver_operator" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cipher_suites_openshiftapiserver_operator" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_enable_iptables_util_chains" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83775-7</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-kubelet_enable_iptables_util_chains:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_nodefs_available" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84119-7</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg-var_kubelet_evictionsoft_nodefs_available:var:1" value-id="xccdf_org.ssgproject.content_value_var_kubelet_evictionsoft_nodefs_available"/>
+              <check-content-ref name="oval:ssg-kubelet_eviction_thresholds_set_soft_nodefs_available:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_configure_tls_key" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_enable_server_cert_rotation" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83356-6</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-kubelet_enable_server_cert_rotation:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_disable_hostname_override" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-kubelet_disable_hostname_override:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cert" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83396-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_disable_readonly_port" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83427-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_memory_available" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84222-9</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg-var_kubelet_evictionsoft_memory_available:var:1" value-id="xccdf_org.ssgproject.content_value_var_kubelet_evictionsoft_memory_available"/>
+              <check-content-ref name="oval:ssg-kubelet_eviction_thresholds_set_soft_memory_available:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_anonymous_auth" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83815-1</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-kubelet_anonymous_auth:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_configure_event_creation" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83576-9</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-kubelet_configure_event_creation:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_authorization_mode" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83593-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cipher_suites_ingresscontroller" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_imagefs_available" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84127-0</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg-var_kubelet_evictionsoft_imagefs_available:var:1" value-id="xccdf_org.ssgproject.content_value_var_kubelet_evictionsoft_imagefs_available"/>
+              <check-content-ref name="oval:ssg-kubelet_eviction_thresholds_set_soft_imagefs_available:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_imagefs_available" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84144-5</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg-var_kubelet_evictionhard_imagefs_available:var:1" value-id="xccdf_org.ssgproject.content_value_var_kubelet_evictionhard_imagefs_available"/>
+              <check-content-ref name="oval:ssg-kubelet_eviction_thresholds_set_hard_imagefs_available:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_nodefs_available" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84138-7</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg-var_kubelet_evictionhard_nodefs_available:var:1" value-id="xccdf_org.ssgproject.content_value_var_kubelet_evictionhard_nodefs_available"/>
+              <check-content-ref name="oval:ssg-kubelet_eviction_thresholds_set_hard_nodefs_available:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_nodefs_inodesfree" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84141-1</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg-var_kubelet_evictionhard_nodefs_inodesfree:var:1" value-id="xccdf_org.ssgproject.content_value_var_kubelet_evictionhard_nodefs_inodesfree"/>
+              <check-content-ref name="oval:ssg-kubelet_eviction_thresholds_set_hard_nodefs_inodesfree:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_enable_client_cert_rotation" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83352-5</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-kubelet_enable_client_cert_rotation:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_imagefs_inodesfree" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84132-0</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg-var_kubelet_evictionsoft_imagefs_inodesfree:var:1" value-id="xccdf_org.ssgproject.content_value_var_kubelet_evictionsoft_imagefs_inodesfree"/>
+              <check-content-ref name="oval:ssg-kubelet_eviction_thresholds_set_soft_imagefs_inodesfree:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cipher_suites" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>fail</result>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-kubelet_configure_tls_cipher_suites:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_imagefs_inodesfree" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84147-8</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-export export-name="oval:ssg-var_kubelet_evictionhard_imagefs_inodesfree:var:1" value-id="xccdf_org.ssgproject.content_value_var_kubelet_evictionhard_imagefs_inodesfree"/>
+              <check-content-ref name="oval:ssg-kubelet_eviction_thresholds_set_hard_imagefs_inodesfree:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_kubelet_enable_streaming_connections" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84097-5</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-kubelet_enable_streaming_connections:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_general_namespaces_in_use" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_general_default_seccomp_profile" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_general_default_namespace_use" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_general_apply_scc" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_general_configure_imagepolicywebhook" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_etcd_pki_cert_files" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83898-7</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_etcd_data_files" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83816-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_ovs_conf_db_lock" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84202-1</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_etcd_member" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83664-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_ovs_vswitchd_pid" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84129-6</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_openshift_pki_cert_files" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83558-7</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_ovs_sys_id_conf" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83677-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_etcd_member" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83973-8</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83983-7</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_kube_controller_manager" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83795-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_kube_scheduler" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_master_admin_kubeconfigs" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84278-1</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_openvswitch" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_ovs_vswitchd_pid" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83710-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_scheduler_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83772-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_etcd_data_files" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83382-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_openshift_pki_cert_files" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83552-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_kube_scheduler" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83614-8</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_kube_scheduler" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83393-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_etcd_data_dir" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83354-1</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_openshift_sdn_cniserver_config" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83605-6</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_etcd_data_files" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84010-8</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_ovs_conf_db_lock" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84219-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_ovs_conf_db" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83489-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_cni_conf" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83460-6</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-file_owner_cni_conf:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_ovs_conf_db" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83788-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_perms_openshift_sdn_cniserver_config" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83927-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_var_lib_etcd" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_ovs_pid" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83630-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83530-6</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_scheduler_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84017-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_master_admin_kubeconfigs" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83719-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_etcd_data_dir" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83905-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_openvswitch" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_ovs_sys_id_conf" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83400-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_cni_conf" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83379-8</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-file_permissions_cni_conf:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_openshift_pki_key_files" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84172-6</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_ip_allocations" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84211-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_etcd_pki_cert_files" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83362-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_ovs_conf_db_lock" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83462-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84161-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_scheduler_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83471-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_ip_allocations" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84248-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_multus_conf" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83818-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_kube_controller_manager" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83953-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_scheduler" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84057-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_multus_conf" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83467-1</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_ovsdb_server_pid" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83806-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_var_lib_etcd" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_openvswitch" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_etcd_data_dir" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84013-2</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_ovs_pid" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83666-8</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_controller_manager_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83604-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_ovs_conf_db" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84226-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_openshift_pki_cert_files" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83922-5</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_controller_manager_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84095-9</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_etcd_pki_cert_files" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83890-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_etcd_member" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83988-6</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_openshift_pki_key_files" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83435-8</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_ovs_vswitchd_pid" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83888-8</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_ip_allocations" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83469-7</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_multus_conf" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83603-1</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_ovs_sys_id_conf" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84085-0</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_ovsdb_server_pid" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83679-1</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83372-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_master_admin_kubeconfigs" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84204-7</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_ovsdb_server_pid" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84166-8</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_permissions_openshift_pki_key_files" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83580-1</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_ovs_pid" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83937-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_openshift_sdn_cniserver_config" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83932-4</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_owner_controller_manager_kubeconfig" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>notselected</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-83904-3</ident>
+          </rule-result>
+          <rule-result idref="xccdf_org.ssgproject.content_rule_file_groupowner_cni_conf" role="full" time="2021-06-14T01:00:29+00:00" severity="medium" weight="1.000000">
+            <result>pass</result>
+            <ident system="https://nvd.nist.gov/cce/index.cfm">CCE-84025-6</ident>
+            <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">
+              <check-content-ref name="oval:ssg-file_groupowner_cni_conf:def:1" href="#oval0"/>
+            </check>
+          </rule-result>
+          <score system="urn:xccdf:scoring:default" maximum="100.000000">95.238098</score>
+        </TestResult>
+

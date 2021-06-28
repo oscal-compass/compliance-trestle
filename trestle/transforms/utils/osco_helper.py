@@ -45,7 +45,8 @@ t_inventory = InventoryItem
 t_inventory_ref = str
 t_local_definitions = LocalDefinitions1
 t_observation = Observation
-t_osco_json = Dict[str, Any]
+t_osco_data = Dict[str, Any]
+t_osco_xml = str
 t_result = Result
 t_target = str
 t_timestamp = str
@@ -62,9 +63,8 @@ class RuleUse():
 
     def __init__(
         self,
-        name: str,
-        node: str,
         target: str,
+        target_type: str,
         benchmark_href: str,
         benchmark_id: str,
         scanner_name: str,
@@ -77,9 +77,8 @@ class RuleUse():
         weight: str
     ) -> None:
         """Initialize given specified args."""
-        self.name = name
-        self.node = node
         self.target = target
+        self.target_type = target_type
         self.benchmark_href = benchmark_href
         self.benchmark_id = benchmark_id
         self.scanner_name = scanner_name
@@ -91,29 +90,16 @@ class RuleUse():
         self.severity = severity
         self.weight = weight
 
-    @property
-    def osco_type(self):
-        """OSCO type."""
-        return self.name.split('-')[1].upper()
-
 
 class ComplianceOperatorReport():
     """Represents one report of OSCO data."""
 
-    def __init__(self, osco_json: t_osco_json) -> None:
+    def __init__(self, osco_xml: t_osco_xml) -> None:
         """Initialize given specified args."""
-        self.osco_json = osco_json
-
-    def _get_name(self) -> str:
-        """Extract 'name' from the JSON."""
-        return self.osco_json['metadata']['name']
-
-    def _get_node(self) -> str:
-        """Extract 'node' from the JSON."""
-        return self.osco_json['metadata']['annotations']['openscap-scan-result/node']
+        self.osco_xml = osco_xml
 
     def _get_version(self, root: t_element) -> str:
-        """Extract 'version' from the XML."""
+        """Extract version from the XML."""
         value = None
         for key, val in root.attrib.items():
             if key == 'version':
@@ -122,7 +108,7 @@ class ComplianceOperatorReport():
         return value
 
     def _get_target(self, root: t_element) -> str:
-        """Extract 'target' from the XML."""
+        """Extract target from the XML."""
         value = None
         for lev1 in root:
             tag = _remove_namespace(lev1.tag)
@@ -131,8 +117,16 @@ class ComplianceOperatorReport():
                 break
         return value
 
+    def _get_target_type(self, root: t_element) -> str:
+        """Extract target_type from the XML."""
+        value = None
+        benchmark_href = self._get_benchmark_href(root)
+        if benchmark_href is not None:
+            value = benchmark_href.split('-')[1]
+        return value
+
     def _get_benchmark(self, root: t_element, kw) -> str:
-        """Extract benchmark kw value from the XML."""
+        """Extract benchmark from the XML."""
         value = None
         for lev1 in root:
             tag = _remove_namespace(lev1.tag)
@@ -142,15 +136,15 @@ class ComplianceOperatorReport():
         return value
 
     def _get_benchmark_href(self, root: t_element) -> str:
-        """Extract 'benchmark.href' from the XML."""
+        """Extract benchmark.href from the XML."""
         return self._get_benchmark(root, 'href')
 
     def _get_benchmark_id(self, root: t_element) -> str:
-        """Extract 'benchmark.id' from the XML."""
+        """Extract benchmark.id from the XML."""
         return self._get_benchmark(root, 'id')
 
     def _get_fact(self, lev1: t_element, kw: str) -> str:
-        """Extract 'fact' from the XML."""
+        """Extract fact from the XML."""
         value = None
         for lev2 in lev1:
             tag = _remove_namespace(lev2.tag)
@@ -162,7 +156,7 @@ class ComplianceOperatorReport():
         return value
 
     def _get_scanner_name(self, root: t_element) -> str:
-        """Extract 'scanner:name' from the XML."""
+        """Extract scanner:name from the XML."""
         value = None
         for lev1 in root:
             tag = _remove_namespace(lev1.tag)
@@ -172,7 +166,7 @@ class ComplianceOperatorReport():
         return value
 
     def _get_scanner_version(self, root: t_element) -> str:
-        """Extract 'scanner:version' from the XML."""
+        """Extract scanner:version from the XML."""
         value = None
         for lev1 in root:
             tag = _remove_namespace(lev1.tag)
@@ -182,7 +176,7 @@ class ComplianceOperatorReport():
         return value
 
     def _get_result(self, lev1: t_element) -> str:
-        """Extract 'result' from the XML."""
+        """Extract result from the XML."""
         value = None
         for lev2 in lev1:
             tag = _remove_namespace(lev2.tag)
@@ -193,12 +187,11 @@ class ComplianceOperatorReport():
 
     def _parse_xml(self) -> RuleUse:
         """Parse the stringified XML."""
-        name = self._get_name()
-        node = self._get_node()
-        results = self.osco_json['data']['results']
+        results = self.osco_xml
         root = ElementTree.fromstring(results)
         version = self._get_version(root)
         target = self._get_target(root)
+        target_type = self._get_target_type(root)
         benchmark_href = self._get_benchmark_href(root)
         benchmark_id = self._get_benchmark_id(root)
         scanner_name = self._get_scanner_name(root)
@@ -212,9 +205,8 @@ class ComplianceOperatorReport():
                 weight = lev1.get('weight')
                 result = self._get_result(lev1)
                 rule_use = RuleUse(
-                    name,
-                    node,
                     target,
+                    target_type,
                     benchmark_href,
                     benchmark_id,
                     scanner_name,
@@ -312,7 +304,7 @@ class ResultsMgr():
     def _component_extract(self, rule_use: RuleUse) -> None:
         """Extract component from RuleUse."""
         component_type = 'Service'
-        component_title = f'Red Hat OpenShift Kubernetes Service Compliance Operator for {rule_use.osco_type}'
+        component_title = f'Red Hat OpenShift Kubernetes Service Compliance Operator for {rule_use.target_type}'
         component_description = component_title
         for component_ref in self.component_map.keys():
             component = self.component_map[component_ref]
@@ -336,33 +328,26 @@ class ResultsMgr():
         uuid = None
         for component_ref in self.component_map.keys():
             component = self.component_map[component_ref]
-            if 'ocp' in rule_use.name:
-                if 'OCP' in component.title:
-                    uuid = component_ref
-                    break
-            elif 'rhel' in rule_use.name:
-                if 'RHEL' in component.title:
-                    uuid = component_ref
-                    break
+            if component.title.endswith(rule_use.target_type):
+                uuid = component_ref
         return uuid
 
     def _inventory_extract(self, rule_use: RuleUse) -> None:
         """Extract inventory from RuleUse."""
-        key = rule_use.target + ':' + rule_use.name
+        key = rule_use.target + ':' + rule_use.target_type
         if key in self.inventory_map.keys():
             return
         inventory = InventoryItem(uuid=str(uuid.uuid4()), description='inventory')
         props = []
-        props.append(Property(name='node', value=rule_use.node, ns=self.ns))
-        props.append(Property(name='name', value=rule_use.name, ns=self.ns))
         props.append(Property(name='target', value=rule_use.target, ns=self.ns, class_='scc_inventory_item_id'))
+        props.append(Property(name='target_type', value=rule_use.target_type, ns=self.ns))
         inventory.props = props
         inventory.implemented_components = [ImplementedComponent(component_uuid=self._get_component_ref(rule_use))]
         self.inventory_map[key] = inventory
 
     def _get_inventory_ref(self, rule_use: RuleUse) -> t_inventory_ref:
         """Get inventory reference for specified RuleUse."""
-        key = rule_use.target + ':' + rule_use.name
+        key = rule_use.target + ':' + rule_use.target_type
         return self.inventory_map[key].uuid
 
     def _observation_extract(self, rule_use: RuleUse) -> None:
@@ -398,23 +383,22 @@ class ResultsMgr():
             self._inventory_extract(rule_use)
             self._observation_extract(rule_use)
 
-    def ingest(self, osco_json: t_osco_json) -> None:
+    def ingest(self, osco_data: t_osco_data) -> None:
         """Process OSCO json."""
-        if 'kind' not in osco_json.keys():
+        if 'data' not in osco_data.keys():
             return
-        if 'ConfigMap' not in osco_json['kind']:
+        if 'results' not in osco_data['data']:
             return
-        if 'data' not in osco_json.keys():
-            return
-        if 'results' not in osco_json['data']:
-            return
-        results = osco_json['data']['results']
-        if results.startswith('<?xml'):
+        results = osco_data['data']['results']
+        self.ingest_xml(results)
+
+    def ingest_xml(self, osco_xml: t_osco_xml) -> None:
+        """Process OSCO xml."""
+        if osco_xml.startswith('<?xml'):
             pass
         else:
-            results = bz2.decompress(base64.b64decode(results))
-            osco_json['data']['results'] = results
-        co_report = ComplianceOperatorReport(osco_json)
+            osco_xml = bz2.decompress(base64.b64decode(osco_xml))
+        co_report = ComplianceOperatorReport(osco_xml)
         self._process(co_report)
 
 

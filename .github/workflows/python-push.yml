@@ -27,6 +27,9 @@ jobs:
         python-version: [3.7, 3.8, 3.9]
 
     steps:
+    - name: Don't mess with  line endings
+      run: |
+        git config --global core.autocrlf false
     - uses: actions/checkout@v2
       with:
         submodules: true
