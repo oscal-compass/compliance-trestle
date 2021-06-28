@@ -178,7 +178,7 @@ class ImportProfile(OscalBaseModel):
 
 
 class Status(OscalBaseModel):
-    state: State1 = Field(..., description='The operational status.', title='State')
+    state: State = Field(..., description='The operational status.', title='State')
     remarks: Optional[common.Remarks] = None
 
 

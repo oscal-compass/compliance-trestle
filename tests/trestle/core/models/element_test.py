@@ -21,73 +21,71 @@ import pytest
 
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath, get_singular_model_from_json
-from trestle.oscal import catalog
-from trestle.oscal import target
+from trestle.oscal import catalog, common, component
 from trestle.oscal.common import Metadata, Role
 
 
-def test_element_get_at(sample_target_def: target.TargetDefinition):
+def test_element_get_at(sample_nist_component_def: component.ComponentDefinition):
     """Test element get method."""
-    element = Element(sample_target_def)
+    element = Element(sample_nist_component_def)
 
     # field alias should succeed
     assert element.get_at(
-        ElementPath('target-definition.metadata.last-modified')
-    ) == sample_target_def.metadata.last_modified
+        ElementPath('component-definition.metadata.last-modified')
+    ) == sample_nist_component_def.metadata.last_modified
 
     # field name should fail
-    assert element.get_at(ElementPath('target-definition.metadata.last_modified')) is None
+    assert element.get_at(ElementPath('component-definition.metadata.last_modified')) is None
 
-    assert element.get() == sample_target_def
+    assert element.get() == sample_nist_component_def
     assert element.get_at() == element.get()
-    assert element.get_at(ElementPath('target-definition.metadata')) == sample_target_def.metadata
-    assert element.get_at(ElementPath('target-definition.metadata.title')) == sample_target_def.metadata.title
-    assert element.get_at(ElementPath('target-definition.targets')) == sample_target_def.targets
-    assert element.get_at(ElementPath('target-definition.targets.*')) == sample_target_def.targets
-    assert element.get_at(ElementPath('target-definition.metadata.parties.*')) == sample_target_def.metadata.parties
-    assert element.get_at(ElementPath('target-definition.metadata.parties.0')) == sample_target_def.metadata.parties[0]
-    assert element.get_at(ElementPath('target-definition.metadata.parties.0.uuid')
-                          ) == sample_target_def.metadata.parties[0].uuid
+    assert element.get_at(ElementPath('component-definition.metadata')) == sample_nist_component_def.metadata
+    assert element.get_at(ElementPath('component-definition.metadata.title')) == sample_nist_component_def.metadata.title
+    assert element.get_at(ElementPath('component-definition.components')) == sample_nist_component_def.components
+    assert element.get_at(ElementPath('component-definition.components.*')) == sample_nist_component_def.components
+    assert element.get_at(ElementPath('component-definition.metadata.parties.*')) == sample_nist_component_def.metadata.parties
+    assert element.get_at(ElementPath('component-definition.metadata.parties.0')) == sample_nist_component_def.metadata.parties[0]
+    assert element.get_at(ElementPath('component-definition.metadata.parties.0.uuid')
+                          ) == sample_nist_component_def.metadata.parties[0].uuid
 
-    for uuid in sample_target_def.targets:
-        path_str = f'target-definition.targets.{uuid}'
-        assert element.get_at(ElementPath(path_str)) == sample_target_def.targets[uuid]
+    # FIXME: NOT VALID WITH OSCAL 1.0.0
+    for index in range(len(sample_nist_component_def.components)):
+        path_str = f'component-definition.components.{index}'
+        assert element.get_at(ElementPath(path_str)) == sample_nist_component_def.components[index]
 
     # invalid indexing
-    assert element.get_at(ElementPath('target-definition.metadata.title.0')) is None
+    assert element.get_at(ElementPath('component-definition.metadata.title.0')) is None
 
     # invalid path with missing root model
     assert element.get_at(ElementPath('metadata.title')) is None
 
     # element_path with parent path
-    parent_path = ElementPath('target-definition.metadata')
-    element_path = ElementPath('metadta.parties.*', parent_path)
-    assert element.get_at(element_path) == sample_target_def.metadata.parties
+    parent_path = ElementPath('component-definition.metadata')
+    element_path = ElementPath('metadata.parties.*', parent_path)
+    assert element.get_at(element_path) == sample_nist_component_def.metadata.parties
 
     # element_path with parent path
-    parent_path = ElementPath('target-definition.targets.*')
-    element_path = ElementPath('target.target-control-implementations.*', parent_path)
-    targets = element.get_at(parent_path)
-    for key in targets:
-        target = targets[key]
-        target_element = Element(target)
-        assert target_element.get_at(element_path) == target.target_control_implementations
+    parent_path = ElementPath('component-definition.components.*')
+    element_path = ElementPath('component.control-implementations.*', parent_path)
+    component_list = element.get_at(parent_path)
+    for component_item in component_list:
+        component_element = Element(component_item)
+        assert component_element.get_at(element_path) == component_item.control_implementations
 
     # element_path in a list with parent path
-    parent_path = ElementPath('target-definition.targets.*')
-    element_path = ElementPath('target.target-control-implementations.0', parent_path)
-    targets = element.get_at(parent_path)
-    for key in targets:
-        target = targets[key]
-        target_element = Element(target)
-        assert target_element.get_at(element_path) == target.target_control_implementations[0]
+    parent_path = ElementPath('component-definition.components.*')
+    element_path = ElementPath('component.control-implementations.0', parent_path)
+    component_list = element.get_at(parent_path)
+    for component_item in component_list:
+        component_element = Element(component_item)
+        assert component_element.get_at(element_path) == component_item.control_implementations[0]
 
 
-def test_element_set_at(sample_target_def: target.TargetDefinition):
+def test_element_set_at(sample_nist_component_def: component.ComponentDefinition):
     """Test element get method."""
-    element = Element(sample_target_def)
+    element = Element(sample_nist_component_def)
 
-    metadata = target.Metadata(
+    metadata = common.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now(),
@@ -96,52 +94,52 @@ def test_element_set_at(sample_target_def: target.TargetDefinition):
         }
     )
 
-    parties: List[target.Party] = []
+    parties: List[common.Party] = []
     parties.append(
-        target.Party(**{
+        common.Party(**{
             'uuid': 'ff47836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST1', 'type': 'organization'
         })
     )
     parties.append(
-        target.Party(**{
+        common.Party(**{
             'uuid': 'ee88836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST2', 'type': 'organization'
         })
     )
 
-    assert element.set_at(ElementPath('target-definition.metadata'),
-                          metadata).get_at(ElementPath('target-definition.metadata')) == metadata
+    assert element.set_at(ElementPath('component-definition.metadata'),
+                          metadata).get_at(ElementPath('component-definition.metadata')) == metadata
 
-    assert element.set_at(ElementPath('target-definition.metadata.parties'),
-                          parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
+    assert element.set_at(ElementPath('component-definition.metadata.parties'),
+                          parties).get_at(ElementPath('component-definition.metadata.parties')) == parties
 
-    assert element.set_at(ElementPath('target-definition.metadata.parties.*'),
-                          parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
+    assert element.set_at(ElementPath('component-definition.metadata.parties.*'),
+                          parties).get_at(ElementPath('component-definition.metadata.parties')) == parties
 
     # unset
-    assert element.set_at(ElementPath('target-definition.metadata.parties'),
-                          None).get_at(ElementPath('target-definition.metadata.parties')) is None
+    assert element.set_at(ElementPath('component-definition.metadata.parties'),
+                          None).get_at(ElementPath('component-definition.metadata.parties')) is None
 
     # string element path
-    assert element.set_at('target-definition.metadata.parties',
-                          parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
+    assert element.set_at('component-definition.metadata.parties',
+                          parties).get_at(ElementPath('component-definition.metadata.parties')) == parties
 
     with pytest.raises(TrestleError):
-        assert element.set_at(ElementPath('target-definition.metadata'),
-                              parties).get_at(ElementPath('target-definition.metadata.parties')) == parties
+        assert element.set_at(ElementPath('component-definition.metadata'),
+                              parties).get_at(ElementPath('component-definition.metadata.parties')) == parties
 
     # wildcard requires it to be an OscalBaseModel or list
     with pytest.raises(TrestleError):
-        assert element.set_at(ElementPath('target-definition.metadata.parties.*'), 'INVALID')
+        assert element.set_at(ElementPath('component-definition.metadata.parties.*'), 'INVALID')
 
     # invalid attribute
     with pytest.raises(TrestleError):
-        assert element.set_at(ElementPath('target-definition.metadata.groups.*'), parties)
+        assert element.set_at(ElementPath('component-definition.metadata.groups.*'), parties)
 
 
-def test_element_str(sample_target_def):
+def test_element_str(sample_nist_component_def):
     """Test for magic method str."""
-    element = Element(sample_target_def)
-    assert str(element) == 'TargetDefinition'
+    element = Element(sample_nist_component_def)
+    assert str(element) == 'ComponentDefinition'
 
 
 def test_get_singular_model_from_json():

@@ -28,7 +28,6 @@ import trestle.oscal.component as component
 import trestle.oscal.poam as poam
 import trestle.oscal.profile as profile
 import trestle.oscal.ssp as ssp
-import trestle.oscal.target as target
 
 
 def load_good_catalog() -> catalog.Catalog:
@@ -130,7 +129,6 @@ def test_get_root_model() -> None:
     malias_to_mtype = {
         'catalog': catalog.Catalog,
         'profile': profile.Profile,
-        'target-definition': target.TargetDefinition,
         'component-definition': component.ComponentDefinition,
         'system-security-plan': ssp.SystemSecurityPlan,
         'assessment-plan': assessment_plan.AssessmentPlan,
@@ -182,8 +180,8 @@ def test_classname_to_alias() -> None:
 
 def test_snake_to_upper_camel() -> None:
     """Ensure Snake to upper camel behaves correctly."""
-    cammeled = mutils.snake_to_upper_camel('target_definition')
-    assert cammeled == 'TargetDefinition'
+    cammeled = mutils.snake_to_upper_camel('component_definition')
+    assert cammeled == 'ComponentDefinition'
     cammeled = mutils.snake_to_upper_camel('control')
     assert cammeled == 'Control'
     cammeled = mutils.snake_to_upper_camel('')
@@ -192,8 +190,8 @@ def test_snake_to_upper_camel() -> None:
 
 def test_camel_to_snake() -> None:
     """Ensure camel to snake behaves correctly."""
-    snaked = mutils.camel_to_snake('TargetDefinition')
-    assert snaked == 'target_definition'
+    snaked = mutils.camel_to_snake('ComponentDefinition')
+    assert snaked == 'component_definition'
     snaked = mutils.camel_to_snake('Control')
     assert snaked == 'control'
     snaked = mutils.camel_to_snake('')
@@ -202,11 +200,11 @@ def test_camel_to_snake() -> None:
 
 def test_alias_to_classname() -> None:
     """Test alias_to_classname function."""
-    assert mutils.alias_to_classname('target-definition', 'json') == 'TargetDefinition'
-    assert mutils.alias_to_classname('target_definition', 'field') == 'TargetDefinition'
+    assert mutils.alias_to_classname('component-definition', 'json') == 'ComponentDefinition'
+    assert mutils.alias_to_classname('component_definition', 'field') == 'ComponentDefinition'
 
     with pytest.raises(err.TrestleError):
-        assert mutils.alias_to_classname('target-definition', 'invalid') == 'TargetDefinition'
+        assert mutils.alias_to_classname('component-definition', 'invalid') == 'ComponentDefinition'
 
 
 def test_get_target_model() -> None:
