@@ -42,6 +42,12 @@ class CommandPlusDocs(Command):
         )
 
     def _validate_arguments(self, args):
+        # if the command is 'init' then don't validate the trestle-root as it will be initialized by init command
+        logger.error(self.name)
+        if self.name == 'init' or self.name == 'trestle':
+            return 0
+
+        # validate trestle-root is a valid trestle root directory
         root = fs.get_trestle_project_root(args.trestle_root)
         if root is None:
             logger.error(f'Given directory {args.trestle_root} is not in a valid trestle root directory')

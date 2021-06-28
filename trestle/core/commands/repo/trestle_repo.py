@@ -25,7 +25,6 @@ from typing import List, Type
 import trestle.core.commands.assemble as assemblecmd
 import trestle.core.commands.validate as validatecmd
 import trestle.core.const as const
-import trestle.oscal as oscal
 from trestle.core import parser
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
@@ -233,16 +232,16 @@ class Repository:
 
 
 if __name__ == '__main__':
-    repo_path = pathlib.Path('/Users/admin/trestle-test')
+    repo_path = pathlib.Path('/Users/admin/trestle-test1')
     repo = Repository(repo_path)
     filepath = pathlib.Path('/Users/admin/Downloads/NIST_SP-800-53_rev4_catalog.json')
     model = parser.parse_file(filepath, None)
     try:
-        # comment repo.import_model(model, 'NIST')
+        repo.import_model(model, 'NIST')
         # comment success = repo.validate_model(oscal.catalog.Catalog, 'NIST', 'all')
         # comment success = repo.assemble_model(oscal.catalog.Catalog, 'NIST')
-        models = repo.list_models(oscal.catalog.Catalog)
-        logger.info(models)
+        # comment models = repo.list_models(oscal.catalog.Catalog)
+        # comment print(models)
         # comment model = repo.get_model(oscal.catalog.Catalog, 'NIST')
         # comment print(model.root_dir, model.model_type, model.model_name)
         # comment success = repo.delete_model(oscal.catalog.Catalog, 'NIST')
