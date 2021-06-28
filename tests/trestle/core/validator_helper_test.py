@@ -74,8 +74,8 @@ def test_regenerate_uuids_ssp() -> None:
     # FIXME nist issue: https://github.com/usnistgov/oscal-content/issues/65
     orig_ssp = ssp.SystemSecurityPlan.oscal_read(ssp_path)
     _, uuid_lut, n_refs_updated = validator_helper.regenerate_uuids(orig_ssp)
-    assert len(uuid_lut.items()) == 36 
-    assert n_refs_updated == 9
+    assert len(uuid_lut.items()) == 36
+    assert n_refs_updated == 23
     pass
 
 

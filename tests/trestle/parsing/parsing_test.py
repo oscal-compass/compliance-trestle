@@ -53,11 +53,13 @@ def test_yaml_dump(tmp_path: pathlib.Path) -> None:
     # happy path
     read_file = (yaml_path / component_name).open('r', encoding=encoding)
     component_obj = yaml.load(read_file)
+    read_file.close()
     assert component_obj is not None
 
     dump_name = tmp_path / component_name
     write_file = dump_name.open('w', encoding=encoding)
     yaml.dump(component_obj, write_file)
+    write_file.close()
     read_file = dump_name.open('r', encoding=encoding)
     saved_component = yaml.load(read_file)
     assert saved_component is not None

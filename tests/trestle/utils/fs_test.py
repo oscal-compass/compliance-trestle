@@ -424,13 +424,13 @@ def test_get_singular_alias() -> None:
     with pytest.raises(TrestleError):
         fs.get_singular_alias(alias_path='component-definition.component.control-implementations')
     assert 'control-implementation' == fs.get_singular_alias(
-        alias_path='component-definition.components.*.target-control-implementations'
+        alias_path='component-definition.components.*.control-implementations'
     )
     assert 'control-implementation' == fs.get_singular_alias(
         alias_path='component-definition.components.0.control-implementations'
     )
     with pytest.raises(TrestleError):
-        fs.get_singular_alias(alias_path='component-definition.components.*.control-implementations')
+        fs.get_singular_alias(alias_path='component-definition.components.0')
 
     assert 'control' == fs.get_singular_alias(alias_path='catalog.groups.*.controls.*.controls')
 
@@ -567,7 +567,8 @@ def test_is_hidden_windows(tmp_path) -> None:
     'task_name, outcome',
     [
         ('hello', True), ('.trestle', False), ('task/name', True), ('.bad,', False), ('catalogs', False),
-        ('catalog', True), ('component-definitions', False), ('hello.world', False), ('component-definitions/hello', False)
+        ('catalog', True), ('component-definitions', False), ('hello.world', False),
+        ('component-definitions/hello', False)
     ]
 )
 def test_allowed_task_name(task_name: str, outcome: bool) -> None:
