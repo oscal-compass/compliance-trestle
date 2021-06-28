@@ -30,7 +30,7 @@ jobs:
     steps:
     - name: Don't mess with  line endings
       run: |
-        git config --system core.autocrlf false
+        git config core.autocrlf false
     - uses: actions/checkout@v2
       with:
         submodules: true
