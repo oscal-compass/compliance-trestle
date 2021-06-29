@@ -18,7 +18,6 @@ import argparse
 import os
 import pathlib
 import sys
-from typing import Dict
 from unittest.mock import patch
 
 import pytest
@@ -37,35 +36,34 @@ from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.oscal import catalog as oscatalog
-from trestle.oscal import component as ocomponent
-from trestle.oscal import target as ostarget
+from trestle.oscal import common, component
 from trestle.utils import trash
 
 
-def test_split_model(tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDefinition) -> None:
+def test_split_model(tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition) -> None:
     """Test for split_model method."""
     # Assume we are running a command like below
-    # trestle split -f target-definition.yaml -e target-definition.metadata
+    # trestle split -f component-definition.yaml -e component-definition.metadata
     content_type = FileContentType.YAML
 
     # prepare trestle project dir with the file
-    target_def_dir, target_def_file = test_utils.prepare_trestle_project_dir(
+    component_def_dir, component_def_file = test_utils.prepare_trestle_project_dir(
         tmp_path,
         content_type,
-        sample_target_def,
-        test_utils.TARGET_DEFS_DIR)
+        sample_nist_component_def,
+        test_utils.COMPONENT_DEF_DIR)
 
     # read the model from file
-    target_def = ostarget.TargetDefinition.oscal_read(target_def_file)
-    element = Element(target_def)
-    element_args = ['target-definition.metadata']
+    component_def = component.ComponentDefinition.oscal_read(component_def_file)
+    element = Element(component_def)
+    element_args = ['component-definition.metadata']
     element_paths = cmd_utils.parse_element_args(element_args)
 
     # extract values
-    metadata_file = target_def_dir / element_paths[0].to_file_path(content_type)
+    metadata_file = component_def_dir / element_paths[0].to_file_path(content_type)
     metadata = element.get_at(element_paths[0])
 
-    root_file = target_def_dir / element_paths[0].to_root_path(content_type)
+    root_file = component_def_dir / element_paths[0].to_root_path(content_type)
     remaining_root = element.get().stripped_instance(element_paths[0].get_element_name())
 
     # prepare the plan
@@ -75,11 +73,13 @@ def test_split_model(tmp_path: pathlib.Path, sample_target_def: ostarget.TargetD
     expected_plan.add_action(CreatePathAction(root_file, True))
     expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
 
-    split_plan = SplitCmd.split_model(target_def, element_paths, target_def_dir, content_type)
+    split_plan = SplitCmd.split_model(component_def, element_paths, component_def_dir, content_type)
     assert expected_plan == split_plan
 
 
-def test_split_chained_sub_models(tmp_path: pathlib.Path, sample_catalog: oscatalog.Catalog) -> None:
+def test_split_chained_sub_models(
+    tmp_path: pathlib.Path, sample_catalog: oscatalog.Catalog, keep_cwd: pathlib.Path
+) -> None:
     """Test for split_model method with chained sum models like catalog.metadata.parties.*."""
     # Assume we are running a command like below
     # trestle split -f catalog.json -e catalog.metadata.parties.*
@@ -132,28 +132,30 @@ def test_split_chained_sub_models(tmp_path: pathlib.Path, sample_catalog: oscata
     assert expected_plan == split_plan
 
 
-def test_subsequent_split_model(tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDefinition) -> None:
+def test_subsequent_split_model(
+    tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition, keep_cwd: pathlib.Path
+) -> None:
     """Test subsequent split of sub models."""
     # Assume we are running a command like below
-    # trestle split -f target-definition.yaml -e target-definition.metadata
+    # trestle split -f component-definition.yaml -e component-definition.metadata
 
     content_type = FileContentType.YAML
 
     # prepare trestle project dir with the file
-    target_def_dir, target_def_file = test_utils.prepare_trestle_project_dir(
+    component_def_dir, component_def_file = test_utils.prepare_trestle_project_dir(
         tmp_path,
         content_type,
-        sample_target_def,
-        test_utils.TARGET_DEFS_DIR)
+        sample_nist_component_def,
+        test_utils.COMPONENT_DEF_DIR)
 
-    # first split the target-def into metadata
-    target_def = ostarget.TargetDefinition.oscal_read(target_def_file)
-    element = Element(target_def, 'target-definition')
-    element_args = ['target-definition.metadata']
-    element_paths = test_utils.prepare_element_paths(target_def_dir, element_args)
-    metadata_file = target_def_dir / element_paths[0].to_file_path(content_type)
-    metadata: ostarget.Metadata = element.get_at(element_paths[0])
-    root_file = target_def_dir / element_paths[0].to_root_path(content_type)
+    # first split the component-def into metadata
+    component_def = component.ComponentDefinition.oscal_read(component_def_file)
+    element = Element(component_def, 'component-definition')
+    element_args = ['component-definition.metadata']
+    element_paths = test_utils.prepare_element_paths(component_def_dir, element_args)
+    metadata_file = component_def_dir / element_paths[0].to_file_path(content_type)
+    metadata: common.Metadata = element.get_at(element_paths[0])
+    root_file = component_def_dir / element_paths[0].to_root_path(content_type)
     metadata_field_alias = element_paths[0].get_element_name()
     stripped_root = element.get().stripped_instance(stripped_fields_aliases=[metadata_field_alias])
     root_wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
@@ -167,12 +169,12 @@ def test_subsequent_split_model(tmp_path: pathlib.Path, sample_target_def: ostar
 
     # now, prepare the expected plan to split metadta at parties
     second_plan = Plan()
-    metadata_file_dir = target_def_dir / element_paths[0].to_root_path()
-    metadata2 = ostarget.Metadata.oscal_read(metadata_file)
+    metadata_file_dir = component_def_dir / element_paths[0].to_root_path()
+    metadata2 = common.Metadata.oscal_read(metadata_file)
     element = Element(metadata2, metadata_field_alias)
 
     element_args = ['metadata.parties.*']
-    element_paths = test_utils.prepare_element_paths(target_def_dir, element_args)
+    element_paths = test_utils.prepare_element_paths(component_def_dir, element_args)
     parties_dir = metadata_file_dir / element_paths[0].to_file_path()
     for i, party in enumerate(element.get_at(element_paths[0])):
         prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
@@ -191,148 +193,156 @@ def test_subsequent_split_model(tmp_path: pathlib.Path, sample_target_def: ostar
     assert second_plan == split_plan
 
 
-def test_split_multi_level_dict(tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDefinition) -> None:
+def test_split_multi_level_dict(
+    tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition, keep_cwd
+) -> None:
     """Test for split_model method."""
     # Assume we are running a command like below
-    # trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*
+    # trestle split -f target.yaml -e component-definition.components.*.control-implementations.*
 
     content_type = FileContentType.YAML
 
     # prepare trestle project dir with the file
-    target_def_dir, target_def_file = test_utils.prepare_trestle_project_dir(
+    component_def_dir, component_def_file = test_utils.prepare_trestle_project_dir(
         tmp_path,
         content_type,
-        sample_target_def,
-        test_utils.TARGET_DEFS_DIR)
+        sample_nist_component_def,
+        test_utils.COMPONENT_DEF_DIR)
 
     file_ext = FileContentType.to_file_extension(content_type)
 
     # read the model from file
-    target_def: ostarget.TargetDefinition = ostarget.TargetDefinition.oscal_read(target_def_file)
-    element = Element(target_def)
-    element_args = ['target-definition.targets.*.target-control-implementations.*']
-    element_paths = test_utils.prepare_element_paths(target_def_dir, element_args)
+    component_def: component.ComponentDefinition = component.ComponentDefinition.oscal_read(component_def_file)
+    element = Element(component_def)
+    element_args = ['component-definition.components.*.control-implementations.*']
+    element_paths = test_utils.prepare_element_paths(component_def_dir, element_args)
 
     expected_plan = Plan()
 
     # extract values
-    targets: dict = element.get_at(element_paths[0])
-    targets_dir = target_def_dir / element_paths[0].to_file_path()
+    components: list = element.get_at(element_paths[0])
+    components_dir = component_def_dir / element_paths[0].to_file_path()
 
     # split every targets
-    for key in targets:
+    for index, comp_obj in enumerate(components):
+
         # individual target dir
-        target: ostarget.Target = targets[key]
-        target_element = Element(targets[key])
-        model_type = utils.classname_to_alias(type(target).__name__, 'json')
-        dir_prefix = key
-        target_dir_name = f'{dir_prefix}{const.IDX_SEP}{model_type}'
-        target_file = targets_dir / f'{target_dir_name}{file_ext}'
+
+        component_element = Element(comp_obj)
+        model_type = utils.classname_to_alias(type(comp_obj).__name__, 'json')
+        dir_prefix = str(index).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
+        component_dir_name = f'{dir_prefix}{const.IDX_SEP}{model_type}'
+        component_file = components_dir / f'{component_dir_name}{file_ext}'
 
         # target control impl dir for the target
-        target_ctrl_impls: dict = target_element.get_at(element_paths[1])
-        targets_ctrl_dir = targets_dir / element_paths[1].to_file_path(root_dir=target_dir_name)
+        component_ctrl_impls: list = component_element.get_at(element_paths[1])
+        component_ctrl_dir = components_dir / element_paths[1].to_file_path(root_dir=component_dir_name)
 
-        for i, target_ctrl_impl in enumerate(target_ctrl_impls):
-            model_type = utils.classname_to_alias(type(target_ctrl_impl).__name__, 'json')
+        for i, component_ctrl_impl in enumerate(component_ctrl_impls):
+            model_type = utils.classname_to_alias(type(component_ctrl_impl).__name__, 'json')
             file_prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
             file_name = f'{file_prefix}{const.IDX_SEP}{model_type}{file_ext}'
-            file_path = targets_ctrl_dir / file_name
+            file_path = component_ctrl_dir / file_name
             expected_plan.add_action(CreatePathAction(file_path))
-            expected_plan.add_action(WriteFileAction(file_path, Element(target_ctrl_impl), content_type))
+            expected_plan.add_action(WriteFileAction(file_path, Element(component_ctrl_impl), content_type))
 
         # write stripped target model
-        stripped_target = target.stripped_instance(stripped_fields_aliases=[element_paths[1].get_element_name()])
-        expected_plan.add_action(CreatePathAction(target_file))
-        expected_plan.add_action(WriteFileAction(target_file, Element(stripped_target), content_type))
+        stripped_target = comp_obj.stripped_instance(stripped_fields_aliases=[element_paths[1].get_element_name()])
+        expected_plan.add_action(CreatePathAction(component_file))
+        expected_plan.add_action(WriteFileAction(component_file, Element(stripped_target), content_type))
 
-    root_file = target_def_dir / f'target-definition{file_ext}'
+    root_file = component_def_dir / f'component-definition{file_ext}'
     remaining_root = element.get().stripped_instance(stripped_fields_aliases=[element_paths[0].get_element_name()])
     expected_plan.add_action(CreatePathAction(root_file, True))
     expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
 
-    split_plan = SplitCmd.split_model(target_def, element_paths, target_def_dir, content_type)
+    split_plan = SplitCmd.split_model(component_def, element_paths, component_def_dir, content_type)
     assert expected_plan == split_plan
 
 
 def test_split_run(
-    keep_cwd: pathlib.Path, tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDefinition
+    keep_cwd: pathlib.Path, tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition
 ) -> None:
     """Test split run."""
     # common variables
     owd = keep_cwd
-    target_def_dir: pathlib.Path = tmp_path / 'target-definitions' / 'mytarget'
-    target_def_file: pathlib.Path = target_def_dir / 'target-definition.yaml'
+    component_def_dir: pathlib.Path = tmp_path / 'component-definitions' / 'mytarget'
+    component_def_file: pathlib.Path = component_def_dir / 'component-definition.yaml'
     args = {}
     cmd = SplitCmd()
 
     # inner function for checking split files
     def check_split_files():
-        assert target_def_dir.joinpath('target-definition/metadata.yaml').exists()
-        assert target_def_dir.joinpath('target-definition.yaml').exists()
-        assert target_def_dir.joinpath('target-definition/targets').exists()
-        assert target_def_dir.joinpath('target-definition/targets').is_dir()
+        assert component_def_dir.joinpath('component-definition/metadata.yaml').exists()
+        assert component_def_dir.joinpath('component-definition.yaml').exists()
+        assert component_def_dir.joinpath('component-definition/components').exists()
+        assert component_def_dir.joinpath('component-definition/components').is_dir()
+        # FIXME: This is not doign anything.
+        components: list = Element(sample_nist_component_def).get_at(ElementPath('component-definition.components.*'))
+        for index in range(len(components)):
+            comp_fname = f'{str(index).zfill(const.FILE_DIGIT_PREFIX_LENGTH)}{const.IDX_SEP}defined-component.yaml'
+            component_file = component_def_dir / 'component-definition' / 'components' / comp_fname
+            assert component_file.exists()
 
-        targets: Dict = Element(sample_target_def).get_at(ElementPath('target-definition.targets.*'))
-        for uuid in targets:
-            target_file = target_def_dir / f'target-definition/targets/{uuid}{const.IDX_SEP}defined-target.yaml'
-            assert target_file.exists()
-
-        assert trash.to_trash_file_path(target_def_file).exists()
+        assert trash.to_trash_file_path(component_def_file).exists()
 
     # prepare trestle project dir with the file
-    def prepare_target_def_file() -> None:
+    def prepare_component_def_file() -> None:
         test_utils.ensure_trestle_config_dir(tmp_path)
-        target_def_dir.mkdir(exist_ok=True, parents=True)
-        sample_target_def.oscal_write(target_def_file)
+        component_def_dir.mkdir(exist_ok=True, parents=True)
+        sample_nist_component_def.oscal_write(component_def_file)
 
     # test
-    prepare_target_def_file()
+    prepare_component_def_file()
     args = argparse.Namespace(
-        file='target-definition.yaml', element='target-definition.targets.*,target-definition.metadata', verbose=0
+        file='component-definition.yaml',
+        element='component-definition.components.*,component-definition.metadata',
+        verbose=0
     )
 
-    os.chdir(target_def_dir)
+    os.chdir(component_def_dir)
     assert cmd._run(args) == 0
     os.chdir(owd)
     check_split_files()
 
     # clean before the next test
-    test_utils.clean_tmp_path(target_def_dir)
+    test_utils.clean_tmp_path(component_def_dir)
 
     # reverse order test
-    prepare_target_def_file()
+    prepare_component_def_file()
     args = argparse.Namespace(
-        file='target-definition.yaml', element='target-definition.metadata,target-definition.targets.*', verbose=0
+        file='component-definition.yaml',
+        element='component-definition.metadata,component-definition.components.*',
+        verbose=0
     )
-    os.chdir(target_def_dir)
+    os.chdir(component_def_dir)
     assert cmd._run(args) == 0
     os.chdir(owd)
     check_split_files()
 
 
 def test_split_run_failure(
-    keep_cwd: pathlib.Path, tmp_path: pathlib.Path, sample_target_def: ostarget.TargetDefinition
+    keep_cwd: pathlib.Path, tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition
 ) -> None:
     """Test split run failure."""
     # prepare trestle project dir with the file
-    target_def_dir: pathlib.Path = tmp_path / 'target-definitions' / 'mytarget'
-    target_def_file: pathlib.Path = target_def_dir / 'target-definition.yaml'
-    target_def_dir.mkdir(exist_ok=True, parents=True)
-    sample_target_def.oscal_write(target_def_file)
-    invalid_file = target_def_dir / 'invalid.file'
+    component_def_dir: pathlib.Path = tmp_path / 'component-definitions' / 'mytarget'
+    component_def_file: pathlib.Path = component_def_dir / 'component-definition.yaml'
+    component_def_dir.mkdir(exist_ok=True, parents=True)
+    sample_nist_component_def.oscal_write(component_def_file)
+    invalid_file = component_def_dir / 'invalid.file'
     invalid_file.touch()
 
-    os.chdir(target_def_dir)
+    os.chdir(component_def_dir)
 
     # not a trestle project
     testargs = [
         'trestle',
         'split',
         '-f',
-        'target-definition.yaml',
+        'component-definition.yaml',
         '-e',
-        'target-definition.metadata, target-definition.targets.*'
+        'component-definition.metadata, component-definition.components.*'
     ]
     with patch.object(sys, 'argv', testargs):
         with pytest.raises(TrestleError):
@@ -342,13 +352,18 @@ def test_split_run_failure(
     test_utils.ensure_trestle_config_dir(tmp_path)
 
     # no file specified
-    testargs = ['trestle', 'split', '-e', 'target-definition.metadata, target-definition.targets.*']
+    testargs = ['trestle', 'split', '-e', 'component-definition.metadata, component-definition.components.*']
     with patch.object(sys, 'argv', testargs):
         rc = Trestle().run()
         assert rc > 0
     # check with missing file
     testargs = [
-        'trestle', 'split', '-f', 'missing.yaml', '-e', 'target-definition.metadata, target-definition.targets.*'
+        'trestle',
+        'split',
+        '-f',
+        'missing.yaml',
+        '-e',
+        'component-definition.metadata, component-definition.components.*'
     ]
     with patch.object(sys, 'argv', testargs):
         rc = Trestle().run()
@@ -356,7 +371,12 @@ def test_split_run_failure(
 
     # check with incorrect file type
     testargs = [
-        'trestle', 'split', '-f', invalid_file.name, '-e', 'target-definition.metadata, target-definition.targets.*'
+        'trestle',
+        'split',
+        '-f',
+        invalid_file.name,
+        '-e',
+        'component-definition.metadata, component-definition.components.*'
     ]
     with patch.object(sys, 'argv', testargs):
         with pytest.raises(TrestleError):
@@ -419,7 +439,7 @@ def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.
 # FIXME this currently fails for the False case
 @pytest.mark.parametrize('direct', [True, False])
 def test_split_comp_def(
-    direct, tmp_trestle_dir, keep_cwd: pathlib.Path, sample_component_definition: ocomponent.ComponentDefinition
+    direct, tmp_trestle_dir, keep_cwd: pathlib.Path, sample_component_definition: component.ComponentDefinition
 ) -> None:
     """Test splitting of component definition and its dictionary."""
     my_comp_dir = tmp_trestle_dir / 'component-definitions/my_comp'

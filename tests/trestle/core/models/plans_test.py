@@ -23,15 +23,15 @@ from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.oscal import target
+from trestle.oscal import component
 
 
-def test_plan_execution(tmp_path, sample_target_def: target.TargetDefinition):
+def test_plan_execution(tmp_path, sample_nist_component_def: component.ComponentDefinition):
     """Test successful execution of a valid plan."""
     content_type = FileContentType.YAML
 
-    base_dir: pathlib.Path = pathlib.Path.joinpath(tmp_path, 'mytarget')
-    targets_dir: pathlib.Path = pathlib.Path.joinpath(base_dir, 'targets')
+    base_dir: pathlib.Path = pathlib.Path.joinpath(tmp_path, 'mycomponent')
+    targets_dir: pathlib.Path = pathlib.Path.joinpath(base_dir, 'components')
     metadata_yaml: pathlib.Path = pathlib.Path.joinpath(base_dir, 'metadata.yaml')
 
     test_utils.ensure_trestle_config_dir(base_dir)
@@ -40,18 +40,23 @@ def test_plan_execution(tmp_path, sample_target_def: target.TargetDefinition):
     split_plan = Plan()
     split_plan.add_action(CreatePathAction(metadata_yaml))
     split_plan.add_action(
-        WriteFileAction(metadata_yaml, Element(sample_target_def.metadata, 'target-definition'), content_type)
+        WriteFileAction(
+            metadata_yaml, Element(sample_nist_component_def.metadata, 'component-definition'), content_type
+        )
     )
     # Test stringing a plan
     stringed = str(split_plan)
     assert len(stringed) > 0
 
     target_files: List[pathlib.Path] = []
-    for tid, t in sample_target_def.targets.items():
-        target_file: pathlib.Path = pathlib.Path.joinpath(targets_dir, tid + '.yaml')
+    for index in range(len(sample_nist_component_def.components)):
+
+        target_file: pathlib.Path = pathlib.Path.joinpath(targets_dir, f'component_{index}.yaml')
         target_files.append(target_file)
         split_plan.add_action(CreatePathAction(target_file))
-        split_plan.add_action(WriteFileAction(target_file, Element(t, 'target'), content_type))
+        split_plan.add_action(
+            WriteFileAction(target_file, Element(sample_nist_component_def.components[index], 'target'), content_type)
+        )
 
     # execute the plan
     split_plan.execute()
