@@ -53,7 +53,6 @@ def test_element_get_at(sample_nist_component_def: component.ComponentDefinition
     assert element.get_at(ElementPath('component-definition.metadata.parties.0.uuid')
                           ) == sample_nist_component_def.metadata.parties[0].uuid
 
-    # FIXME: NOT VALID WITH OSCAL 1.0.0
     for index in range(len(sample_nist_component_def.components)):
         path_str = f'component-definition.components.{index}'
         assert element.get_at(ElementPath(path_str)) == sample_nist_component_def.components[index]
