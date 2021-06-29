@@ -36,7 +36,7 @@ def test_update_action(sample_nist_component_def):
         }
     )
 
-    sub_element_path = ElementPath('t-definition.metadata')
+    sub_element_path = ElementPath('component-definition.metadata')
     prev_metadata = element.get_at(sub_element_path)
 
     uac = UpdateAction(metadata, element, sub_element_path)

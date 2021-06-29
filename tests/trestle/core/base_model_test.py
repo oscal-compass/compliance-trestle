@@ -23,6 +23,7 @@ import pytest
 import tests.test_utils as test_utils
 
 import trestle.core.base_model as ospydantic
+import trestle.core.const as const
 import trestle.core.err as err
 import trestle.oscal
 import trestle.oscal.assessment_plan as ap
@@ -262,7 +263,7 @@ def test_copy_components() -> None:
     """Test copying across similar but different objects."""
     state_obj = ssp.State1('under-development')
     sys_component = ssp.SystemComponent(
-        uuid='A0000000-0000-4000-8000-000000000000',
+        uuid=const.SAMPLE_UUID_STR,
         type='Hello',
         title='My title',
         description='Hello world',

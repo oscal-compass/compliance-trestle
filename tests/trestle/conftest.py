@@ -85,7 +85,7 @@ def json_testdata_path() -> pathlib.Path:
 
 @pytest.fixture(scope='function')
 def sample_nist_component_def() -> ComponentDefinition:
-    """Return a rich component defintion object."""
+    """Return a rich component definition object, from the NIST content repository."""
     component_obj = ComponentDefinition.oscal_read(test_utils.NIST_SAMPLE_CD_JSON)
     return component_obj
 

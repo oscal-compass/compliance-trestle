@@ -49,7 +49,6 @@ def test_plan_execution(tmp_path, sample_nist_component_def: component.Component
     assert len(stringed) > 0
 
     target_files: List[pathlib.Path] = []
-    # FIXME: THis is a list not a dict.
     for index in range(len(sample_nist_component_def.components)):
 
         target_file: pathlib.Path = pathlib.Path.joinpath(targets_dir, f'component_{index}.yaml')
