@@ -448,7 +448,7 @@ class SSPManager():
         import_profile.href = 'REPLACE_ME'
         ssp.import_profile = import_profile
 
-        # write out the ssp
+        # write out the ssp as json
         ssp_dir = trestle_root / ('system-security-plans/' + ssp_name)
         ssp_dir.mkdir(exist_ok=True, parents=True)
         ssp.oscal_write(ssp_dir / 'system-security-plan.json')
