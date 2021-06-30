@@ -69,7 +69,7 @@ class MDWriter():
     def new_line(self, line: str) -> None:
         """Add a line of text to the output."""
         # prevent double empty lines
-        out_line = '' if self._is_blank(line) == '' else self._current_indent_space() + line
+        out_line = '' if self._is_blank(line) else self._current_indent_space() + line
         if self._prev_blank_line() and out_line == '':
             return
         self._add_line_raw(out_line)
