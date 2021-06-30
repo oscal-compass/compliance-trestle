@@ -33,7 +33,7 @@ class MDWriter():
         self._file_path = file_path
         self._lines = []
         self._indent_level = 0
-        self._indent_size = 4
+        self._indent_size = 2
         self._yaml_header = None
 
     def _current_indent_space(self):
@@ -42,7 +42,8 @@ class MDWriter():
         return ' ' * (self._indent_level * self._indent_size)
 
     def _add_line_raw(self, line: str) -> None:
-        self._lines.append(line)
+        out_line = '' if self._is_blank(line) else line
+        self._lines.append(out_line)
 
     def _add_indent_level(self, delta: int) -> None:
         self._indent_level += delta
@@ -59,30 +60,47 @@ class MDWriter():
         """Set the indent step size in spaces."""
         self._indent_size = size
 
+    def _is_blank(self, line: str) -> bool:
+        return line.strip() == ''
+
+    def _prev_blank_line(self) -> bool:
+        return len(self._lines) > 0 and self._is_blank(self._lines[-1])
+
     def new_line(self, line: str) -> None:
         """Add a line of text to the output."""
-        self._add_line_raw(self._current_indent_space() + line)
+        # prevent double empty lines
+        out_line = '' if self._is_blank(line) == '' else self._current_indent_space() + line
+        if self._prev_blank_line() and out_line == '':
+            return
+        self._add_line_raw(out_line)
 
     def new_paragraph(self):
         """Start a new paragraph."""
-        self._lines.append('')
+        self.new_line('')
 
     def new_header(self, level: int, title: str) -> None:
         """Add new header."""
+        # headers must be separated by blank lines
+        self.new_paragraph()
         self.new_line('#' * level + ' ' + title)
+        self.new_paragraph()
 
     def new_hr(self) -> None:
         """Add horizontal rule."""
+        self.new_paragraph()
         self.new_line('---')
+        self.new_paragraph()
 
     def new_list(self, list_: List[Any]) -> None:
         """Add a list to the markdown."""
+        # in general this is a list of lists
         # if string just write it out
         if isinstance(list_, str):
-            if self._indent_level <= 0:
+            if self._is_blank(list_):
                 self.new_paragraph()
-            self.new_line(list_)
-        # it is a list with more than one item
+            else:
+                self.new_line('- ' + list_)
+        # else it is a sublist so indent
         else:
             self._add_indent_level(1)
             self.new_paragraph()
@@ -100,7 +118,7 @@ class MDWriter():
                     yaml = YAML(typ='safe')
                     yaml.default_flow_style = False
                     yaml.dump(self._yaml_header, f)
-                    f.write('---\n\n')
+                    f.write('---\n')
 
                 f.write('\n'.join(self._lines))
         except IOError as e:

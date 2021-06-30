@@ -16,7 +16,7 @@
 import argparse
 import logging
 import pathlib
-from typing import Dict, List, Optional, Set, Union
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -153,6 +153,12 @@ class SSPManager():
 
         return text
 
+    def _wrap_label(self, label: str):
+        l_side = '['
+        r_side = ']'
+        wrapped = '' if label == '' else f'{l_side}{label}{r_side}'
+        return wrapped
+
     def _get_label(self, part: common.Part) -> str:
         if part.props is not None:
             for prop in part.props:
@@ -165,8 +171,9 @@ class SSPManager():
         if part.prose is not None:
             fixed_prose = self._replace_params(part.prose, control, self._param_dict)
             label = self._get_label(part)
-            pad = '' if label == '' else ' '
-            items.append(f'{label}{pad}{fixed_prose}')
+            wrapped_label = self._wrap_label(label)
+            pad = '' if wrapped_label == '' else ' '
+            items.append(f'{wrapped_label}{pad}{fixed_prose}')
         if part.parts is not None:
             sub_list = []
             for prt in part.parts:
@@ -207,7 +214,7 @@ class SSPManager():
         self._md_file.new_header(level=2, title='Control Description')
         self._md_file.set_indent_level(-1)
         self._add_parts(control_handle.control)
-        self._md_file.set_indent_level(0)
+        self._md_file.set_indent_level(-1)
 
     def _get_control_section(self, control: cat.Control, section: str) -> Optional[str]:
         for alter in self._alters:
@@ -223,13 +230,12 @@ class SSPManager():
     def _add_control_section(self, control: cat.Control, section_tuple: str) -> None:
         prose = self._get_control_section(control, section_tuple[0])
         if prose is not None:
-            self._md_file.new_paragraph()
             self._md_file.new_header(level=2, title=f'{control.id} Section {section_tuple[1]}')
-            self._md_file.new_paragraph()
             self._md_file.new_line(prose)
             self._md_file.new_paragraph()
 
     def _add_response(self, control: cat.Control) -> None:
+        self._md_file.new_hr()
         self._md_file.new_paragraph()
         self._md_file.new_header(level=2, title=f'{control.id} What is the solution and how is it implemented?')
 
@@ -237,14 +243,11 @@ class SSPManager():
             if part.parts is not None:
                 if part.name == 'statement':
                     for prt in part.parts:
-                        self._md_file.new_paragraph()
                         self._md_file.new_hr()
                         self._md_file.new_header(level=3, title=f'Part {self._get_label(prt)}')
-                        self._md_file.new_paragraph()
                         self._md_file.new_line('Add control implementation description here.')
                         self._md_file.new_paragraph()
         self._md_file.new_hr()
-        self._md_file.new_paragraph()
 
     def _write_control(
         self,
@@ -343,32 +346,66 @@ class SSPManager():
 
         return 0
 
-    def _get_implementations(self, control_file: pathlib.Path) -> List[ossp.ImplementedRequirement]:
+    def _get_label_prose(self, ii, tree) -> Tuple[int, str, str]:
+        # find the statement label and prose in each section of the control markdown parse tree
+        ntree = len(tree)
+        label = ''
+        prose = ''
+        while ii < ntree:
+            # look for thematic break followed by heading (Part...) and paragraph (Response statement)
+            if tree[ii]['type'] == 'thematic_break':
+                ii += 1
+                while ii < ntree and tree[ii]['type'] != 'heading':
+                    ii += 1
+                if ii >= ntree:
+                    break
+                if tree[ii]['type'] == 'heading':
+                    section: str = tree[ii]['children'][0]['text']
+                    if section.startswith('Part '):
+                        label = section.split(' ')[-1]
+                        ii += 1
+                        while ii < ntree and tree[ii]['type'] != 'paragraph':
+                            ii += 1
+                        if ii >= ntree:
+                            break
+                        prose = tree[ii]['children'][0]['text']
+                        break
+            ii += 1
+        if prose == '' or label == '':
+            ii = -1
+        return ii, label, prose
+
+    def _get_implementations(self, control_file: pathlib.Path,
+                             component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
+        # get implementation requirements associated with a given control and link them to the one component we created
         control_id = control_file.stem
         parse_tree = MarkdownValidator.load_markdown_parsetree(control_file)
         tree = parse_tree[0] if len(parse_tree) == 1 else parse_tree[1]
         imp_reqs: list[ossp.ImplementedRequirement] = []
         ii = 0
-        while ii < len(tree):
-            item = tree[ii]
-            if item['type'] == 'thematic_break':
-                section: str = tree[ii + 1]['children'][0]['text']
-                if not section.startswith('Part '):
-                    break
-                text = tree[ii + 2]['children'][0]['text']
-                by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
-                by_comp.description = text
-                statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
-                # the following may be needed with the 1.0.0 changes
-                # part_label = section.split(' ')[1].replace('.', '')  # noqa: E800
-                # statement_label = f'{control_id}_smt.{part_label}'   # noqa: E800
-                statement.by_components = [by_comp]
-                imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
-                imp_req.control_id = control_id
-                imp_req.statements = [statement]
-                imp_reqs.append(imp_req)
-                ii += 2
-            ii += 1
+
+        # keep moving down through the tree picking up labels and prose for the imp requirements
+        while True:
+            ii, part_label, prose = self._get_label_prose(ii, tree)
+            # break at end of file
+            if ii < 0:
+                break
+            # create a new by-component to hold this statement
+            by_comp: ossp.ByComponent = gens.generate_sample_model(ossp.ByComponent)
+            # link it to the one dummy component uuid
+            by_comp.component_uuid = component.uuid
+            # add the response prose to the description
+            by_comp.description = prose
+            # create a statement to hold the by-component and assign the statement id
+            statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
+            statement.statement_id = f'{control_id}_smt.{part_label}'
+            statement.by_components = [by_comp]
+            # create a new implemented requirement linked to the control id to hold the statement
+            imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
+            imp_req.control_id = control_id
+            imp_req.statements = [statement]
+            imp_reqs.append(imp_req)
+
         return imp_reqs
 
     def assemble_ssp(self, md_name, ssp_name) -> int:
@@ -377,22 +414,43 @@ class SSPManager():
         group_ids = []
         trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
         md_dir = trestle_root / md_name
+
         for gdir in md_dir.glob('*/'):
             group_ids.append(str(gdir.stem))
+
+        # generate the one dummy component that implementations will refer to in by_components
+        component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
+        component.description = 'Dummy component created by trestle'
+
+        # create system implementation to hold the dummy component
+        system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
+        system_imp.components = [component]
+
+        # create implementation requirements for each control, linked to the dummy component uuid
         imp_reqs: List[ossp.ImplementedRequirement] = []
         for group_id in group_ids:
             group_path = md_dir / group_id
             for control_file in group_path.glob('*.md'):
-                imp_reqs.extend(self._get_implementations(control_file))
+                imp_reqs.extend(self._get_implementations(control_file, component))
+
+        # create a control implementation to hold the implementation requirements
         control_imp: ossp.ControlImplementation = gens.generate_sample_model(ossp.ControlImplementation)
         control_imp.implemented_requirements = imp_reqs
         control_imp.description = 'This is the control implementation for the system.'
+
+        # create a sample ssp to hold all the parts
         ssp = gens.generate_sample_model(ossp.SystemSecurityPlan)
+
+        # insert the parts into the ssp
         ssp.control_implementation = control_imp
+        ssp.system_implementation = system_imp
         import_profile: ossp.ImportProfile = gens.generate_sample_model(ossp.ImportProfile)
         import_profile.href = 'REPLACE_ME'
         ssp.import_profile = import_profile
+
+        # write out the ssp
         ssp_dir = trestle_root / ('system-security-plans/' + ssp_name)
         ssp_dir.mkdir(exist_ok=True, parents=True)
         ssp.oscal_write(ssp_dir / 'system-security-plan.json')
+
         return 0
