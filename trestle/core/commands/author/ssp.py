@@ -81,7 +81,7 @@ class SSPGenerate(AuthorCommonCommand):
         _, _, catalog = load_distributed(pathlib.Path(f'catalogs/{cat_name}/catalog.json'))
 
         yaml_header: dict = {}
-        if 'yaml_header' in args:
+        if 'yaml_header' in args and args.yaml_header is not None:
             try:
                 logging.debug(f'Loading yaml header file {args.yaml_header}')
                 yaml = YAML(typ='safe')
@@ -137,11 +137,11 @@ class SSPManager():
 
     def __init__(self):
         """Initialize the class."""
-        self._param_dict: Dict[str, str] = None
+        self._param_dict: Dict[str, str] = {}
         self._md_file: MDWriter = None
-        self._alters: List[prof.Alter] = None
+        self._alters: List[prof.Alter] = []
         self._yaml_header: dict = None
-        self._sections: Dict[str, str] = None
+        self._sections: Dict[str, str] = {}
 
     def _replace_params(self, text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
         # replace params with assignments from the profile
@@ -187,14 +187,15 @@ class SSPManager():
 
     def _add_parts(self, control: cat.Control) -> None:
         items = []
-        for part in control.parts:
-            if part.name == 'statement':
-                items.append(self._get_part(control, part))
-        # unwrap the list if it is many levels deep
-        while not isinstance(items, str) and len(items) == 1:
-            items = items[0]
-        self._md_file.new_paragraph()
-        self._md_file.new_list(items)
+        if control.parts is not None:
+            for part in control.parts:
+                if part.name == 'statement':
+                    items.append(self._get_part(control, part))
+            # unwrap the list if it is many levels deep
+            while not isinstance(items, str) and len(items) == 1:
+                items = items[0]
+            self._md_file.new_paragraph()
+            self._md_file.new_list(items)
 
     def _get_controls(self, control_handle: ControlHandle,
                       control_dict: Dict[str, ControlHandle]) -> Dict[str, ControlHandle]:
@@ -310,16 +311,20 @@ class SSPManager():
 
         # build a convenience dictionary to access control handles by name
         control_dict: Dict[str, ControlHandle] = {}
-        for group in catalog.groups:
-            for control in group.controls:
-                control_handle = ControlHandle(group.id, group.title, control)
-                control_dict = self._get_controls(control_handle, control_dict)
+        if catalog.groups is not None:
+            for group in catalog.groups:
+                if group.controls is not None:
+                    for control in group.controls:
+                        control_handle = ControlHandle(group.id, group.title, control)
+                        control_dict = self._get_controls(control_handle, control_dict)
 
         # get list of control_ids needed by profile
         control_ids: List[str] = []
+        # no need to check since imports is required
         for _import in profile.imports:
-            for include_control in _import.include_controls:
-                control_ids.extend(include_control.with_ids)
+            if _import.include_controls is not None:
+                for include_control in _import.include_controls:
+                    control_ids.extend(include_control.with_ids)
 
         # get list of group id's and associated controls
         needed_group_ids: Set[str] = set()
@@ -334,11 +339,14 @@ class SSPManager():
             (md_path / group_id).mkdir(exist_ok=True)
 
         # assign values to class members for use when writing out the controls
-        param_list = profile.modify.set_parameters
-        self._param_dict = {}
-        for param in param_list:
-            self._param_dict[param.param_id] = param
-        self._alters = profile.modify.alters
+        if profile.modify is not None:
+            if profile.modify.set_parameters is not None:
+                param_list = profile.modify.set_parameters
+                self._param_dict = {}
+                for param in param_list:
+                    self._param_dict[param.param_id] = param
+            self._alters = profile.modify.alters
+
         if bool(yaml_header):
             self._yaml_header = yaml_header
         self._sections = sections
