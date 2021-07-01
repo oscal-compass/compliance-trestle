@@ -17,6 +17,8 @@
 
 import pathlib
 
+import pytest
+
 from ruamel.yaml import YAML
 
 from trestle.core import const
@@ -27,12 +29,12 @@ yaml_path = pathlib.Path('tests/data/yaml/')
 
 def test_parse_dict() -> None:
     """Test parse_dict."""
-    file_name = 'good_target.yaml'
+    file_name = 'good_component.yaml'
 
     with open(pathlib.Path.joinpath(yaml_path, file_name), 'r', encoding=const.FILE_ENCODING) as f:
         yaml = YAML(typ='safe')
         data = yaml.load(f)
-        target = parser.parse_dict(data['target-definition'], 'trestle.oscal.target.TargetDefinition')
+        target = parser.parse_dict(data['component-definition'], 'trestle.oscal.component.ComponentDefinition')
         assert target is not None
 
 
@@ -44,8 +46,8 @@ def test_to_class_name() -> None:
             'expected': 'Catalog',
         },
         {
-            'name': 'target-definition',
-            'expected': 'TargetDefinition',
+            'name': 'component-definition',
+            'expected': 'ComponentDefinition',
         },
     ]
 
@@ -60,8 +62,8 @@ def test_to_full_model_name() -> None:
             'root_key': 'catalog',
             'expected': f'{const.PACKAGE_OSCAL}.catalog.Catalog',
         }, {
-            'root_key': 'target-definition',
-            'expected': f'{const.PACKAGE_OSCAL}.target.TargetDefinition',
+            'root_key': 'component-definition',
+            'expected': f'{const.PACKAGE_OSCAL}.component.ComponentDefinition',
         }, {
             'root_key': 'system-security-plan',
             'expected': f'{const.PACKAGE_OSCAL}.ssp.SystemSecurityPlan',
@@ -76,19 +78,12 @@ def test_to_full_model_name() -> None:
         assert model_name == test['expected']
 
 
-def test_parse_file() -> None:
+@pytest.mark.parametrize(
+    'model_name, expected',
+    [(f'{const.PACKAGE_OSCAL}.component.ComponentDefinition', 'ComponentDefinition'), (None, 'ComponentDefinition')]
+)
+def test_parse_file(model_name: str, expected: str) -> None:
     """Test parse_file."""
-    file_name = 'good_target.yaml'
-
-    tests = [
-        {
-            'model_name': f'{const.PACKAGE_OSCAL}.target.TargetDefinition', 'expected': 'TargetDefinition'
-        }, {
-            'model_name': None, 'expected': 'TargetDefinition'
-        }
-    ]
-
-    for test in tests:
-        target = parser.parse_file(yaml_path / file_name, model_name=test['model_name'])
-
-        assert type(target).__name__ == test['expected']
+    file_name = 'good_component.yaml'
+    component_obj = parser.parse_file(yaml_path / file_name, model_name=test_to_full_model_name())
+    assert type(component_obj).__name__ == expected

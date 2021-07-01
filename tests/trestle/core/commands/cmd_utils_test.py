@@ -39,7 +39,7 @@ def test_parse_element_arg(tmp_path, keep_cwd):
     """Unit test parse a single element arg."""
     owd = keep_cwd
     with pytest.raises(TrestleError):
-        cmd_utils.parse_element_arg('target-definition', False)
+        cmd_utils.parse_element_arg('component-definition', False)
 
     with pytest.raises(TrestleError):
         cmd_utils.parse_element_arg('*.target', False)
@@ -51,7 +51,7 @@ def test_parse_element_arg(tmp_path, keep_cwd):
         cmd_utils.parse_element_arg('*', False)
 
     with pytest.raises(TrestleError):
-        cmd_utils.parse_element_arg('target-definition.targets.*.*', False)
+        cmd_utils.parse_element_arg('component-definition.components.*.*', False)
 
     element_arg = 'catalog.groups.*'
     expected_paths: List[ElementPath] = prepare_expected_element_paths(['catalog.groups.*'])
@@ -74,13 +74,13 @@ def test_parse_element_arg(tmp_path, keep_cwd):
     element_paths = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths
 
-    element_arg = 'target-definition.targets'
-    expected_paths = prepare_expected_element_paths(['target-definition.targets'])
+    element_arg = 'component-definition.components'
+    expected_paths = prepare_expected_element_paths(['component-definition.components'])
     element_paths = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths
 
-    element_arg = 'target-definition.targets.*'
-    expected_paths = prepare_expected_element_paths(['target-definition.targets.*'])
+    element_arg = 'component-definition.components.*'
+    expected_paths = prepare_expected_element_paths(['component-definition.components.*'])
     element_paths = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths
 
@@ -99,25 +99,25 @@ def test_parse_element_arg(tmp_path, keep_cwd):
     element_paths = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths
 
-    element_arg = 'target-definition.targets.*.target-control-implementations'
-    p1 = ElementPath('target-definition.targets.*')
-    p2 = ElementPath('defined-target.target-control-implementations', parent_path=p1)
+    element_arg = 'component-definition.components.*.control-implementations'
+    p1 = ElementPath('component-definition.components.*')
+    p2 = ElementPath('defined-component.control-implementations', parent_path=p1)
     expected_paths = [p1, p2]
     element_paths = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths
 
-    element_arg = 'target-definition.targets.*.target-control-implementations.*'
-    p1 = ElementPath('target-definition.targets.*')
-    p2 = ElementPath('defined-target.target-control-implementations.*', parent_path=p1)
+    element_arg = 'component-definition.components.*.control-implementations.*'
+    p1 = ElementPath('component-definition.components.*')
+    p2 = ElementPath('defined-component.control-implementations.*', parent_path=p1)
     expected_paths = [p1, p2]
     element_paths = cmd_utils.parse_element_arg(element_arg, False)
     assert expected_paths == element_paths
 
     # use contextual path for parsing path
     test_utils.ensure_trestle_config_dir(tmp_path)
-    target_def_dir = tmp_path / 'target-definitions/mytarget/'
-    target_def_dir.mkdir(exist_ok=True, parents=True)
-    os.chdir(target_def_dir)
+    comp_def_dir = tmp_path / 'component-definitions/mycomponent/'
+    comp_def_dir.mkdir(exist_ok=True, parents=True)
+    os.chdir(comp_def_dir)
     element_arg = 'metadata.parties.*'
     expected_paths: List[ElementPath] = prepare_expected_element_paths(['metadata.parties.*'])
     element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, True)

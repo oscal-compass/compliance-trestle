@@ -191,8 +191,8 @@ def test_clean_project_sub_path(tmp_path: pathlib.Path, rand_str: str) -> None:
 
 def test_load_file(tmp_path: pathlib.Path) -> None:
     """Test load file."""
-    json_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'sample-target-definition.json')
-    yaml_file_path = pathlib.Path.joinpath(test_utils.YAML_TEST_DATA_PATH, 'good_target.yaml')
+    json_file_path = test_utils.NIST_SAMPLE_CD_JSON
+    yaml_file_path = pathlib.Path.joinpath(test_utils.YAML_TEST_DATA_PATH, 'good_component.yaml')
 
     assert fs.load_file(json_file_path) is not None
     assert fs.load_file(yaml_file_path) is not None
@@ -421,15 +421,15 @@ def test_get_singular_alias() -> None:
     assert 'property' == fs.get_singular_alias(alias_path='catalog.metadata.props')
 
     with pytest.raises(TrestleError):
-        fs.get_singular_alias(alias_path='target-definition.targets.target-control-implementations')
-    assert 'target-control-implementation' == fs.get_singular_alias(
-        alias_path='target-definition.targets.*.target-control-implementations'
+        fs.get_singular_alias(alias_path='component-definition.component.control-implementations')
+    assert 'control-implementation' == fs.get_singular_alias(
+        alias_path='component-definition.components.*.control-implementations'
     )
-    assert 'target-control-implementation' == fs.get_singular_alias(
-        alias_path='target-definition.targets.8f95894c-5e6b-4e84-92d0-a730429f08fc.target-control-implementations'
+    assert 'control-implementation' == fs.get_singular_alias(
+        alias_path='component-definition.components.0.control-implementations'
     )
     with pytest.raises(TrestleError):
-        fs.get_singular_alias(alias_path='target-definitions.targets.*.target-control-implementations')
+        fs.get_singular_alias(alias_path='component-definition.components.0')
 
     assert 'control' == fs.get_singular_alias(alias_path='catalog.groups.*.controls.*.controls')
 
@@ -501,11 +501,11 @@ def test_get_models_of_type(tmp_trestle_dir) -> None:
     """Test fs.get_models_of_type()."""
     create_sample_catalog_project(tmp_trestle_dir)
     catalogs_dir = tmp_trestle_dir.resolve() / 'catalogs'
-    targets_dir = tmp_trestle_dir.resolve() / 'target-definitions'
+    components_dir = tmp_trestle_dir.resolve() / 'component-definitions'
     # mycatalog is already there
     (catalogs_dir / 'mycatalog2').mkdir()
     (catalogs_dir / '.myfile').touch()
-    (targets_dir / 'mytarget').mkdir()
+    (components_dir / 'my_component').mkdir()
     models = fs.get_models_of_type('catalog')
     assert len(models) == 2
     assert 'mycatalog' in models
@@ -514,7 +514,7 @@ def test_get_models_of_type(tmp_trestle_dir) -> None:
     assert len(all_models) == 3
     assert ('catalog', 'mycatalog') in all_models
     assert ('catalog', 'mycatalog2') in all_models
-    assert ('target-definition', 'mytarget') in all_models
+    assert ('component-definition', 'my_component') in all_models
     with pytest.raises(TrestleError):
         fs.get_models_of_type('foo')
 
@@ -566,7 +566,8 @@ def test_is_hidden_windows(tmp_path) -> None:
     'task_name, outcome',
     [
         ('hello', True), ('.trestle', False), ('task/name', True), ('.bad,', False), ('catalogs', False),
-        ('catalog', True), ('target-definitions', False), ('hello.world', False)
+        ('catalog', True), ('component-definitions', False), ('hello.world', False),
+        ('component-definitions/hello', False)
     ]
 )
 def test_allowed_task_name(task_name: str, outcome: bool) -> None:

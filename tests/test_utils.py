@@ -33,8 +33,11 @@ JSON_NIST_DATA_PATH = pathlib.Path('nist-content/nist.gov/SP800-53/rev5/json/').
 JSON_NIST_CATALOG_NAME = 'NIST_SP-800-53_rev5_catalog.json'
 JSON_NIST_PROFILE_NAME = 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
 
-TARGET_DEFS_DIR = 'target-definitions'
 CATALOGS_DIR = 'catalogs'
+COMPONENT_DEF_DIR = 'component-definitions'
+
+NIST_EXAMPLES = pathlib.Path('nist-content/examples')
+NIST_SAMPLE_CD_JSON = NIST_EXAMPLES / 'component-definition' / 'json' / 'example-component.json'
 
 
 def clean_tmp_path(tmp_path: pathlib.Path):

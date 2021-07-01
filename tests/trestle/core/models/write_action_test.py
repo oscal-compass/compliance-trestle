@@ -25,9 +25,9 @@ from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 
 
-def test_write_action_yaml(tmp_yaml_file, sample_target_def):
+def test_write_action_yaml(tmp_yaml_file, sample_nist_component_def):
     """Test write yaml action."""
-    element = Element(sample_target_def, 'target-definition')
+    element = Element(sample_nist_component_def, 'component-definition')
 
     with open(tmp_yaml_file, 'w+', encoding=const.FILE_ENCODING) as writer:
         wa = WriteAction(writer, element, FileContentType.YAML)
@@ -40,9 +40,9 @@ def test_write_action_yaml(tmp_yaml_file, sample_target_def):
     os.remove(tmp_yaml_file)
 
 
-def test_write_action_json(tmp_json_file, sample_target_def):
+def test_write_action_json(tmp_json_file, sample_nist_component_def):
     """Test write json action."""
-    element = Element(sample_target_def, 'target-definition')
+    element = Element(sample_nist_component_def, 'component-definition')
 
     with open(tmp_json_file, 'w+', encoding=const.FILE_ENCODING) as writer:
         wa = WriteAction(writer, element, FileContentType.JSON)
