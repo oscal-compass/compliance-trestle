@@ -58,8 +58,8 @@ class SSPGenerate(AuthorCommonCommand):
         self.add_argument('-o', '--output', help=output_help_str, required=True, type=str)
         verbose_help_str = 'Display verbose output'
         self.add_argument('-v', '--verbose', help=verbose_help_str, required=False, action='count', default=0)
-        yaml_help_str = 'Path to the yaml header file'
-        self.add_argument('-y', '--yaml-header', help=yaml_help_str, required=True, type=str)
+        yaml_help_str = 'Path to the optional yaml header file'
+        self.add_argument('-y', '--yaml-header', help=yaml_help_str, required=False, type=str)
         sections_help_str = 'Comma separated list of section:alias pairs for sections to output'
         self.add_argument('-s', '--sections', help=sections_help_str, required=False, type=str)
 
@@ -80,13 +80,16 @@ class SSPGenerate(AuthorCommonCommand):
 
         _, _, catalog = load_distributed(pathlib.Path(f'catalogs/{cat_name}/catalog.json'))
 
-        try:
-            logging.debug(f'Loading yaml header file {args.yaml_header}')
-            yaml = YAML(typ='safe')
-            yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
-        except YAMLError as e:
-            logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
-            return 1
+        yaml_header: dict = {}
+        if 'yaml_header' in args:
+            try:
+                logging.debug(f'Loading yaml header file {args.yaml_header}')
+                yaml = YAML(typ='safe')
+                yaml_header = yaml.load(pathlib.Path(args.yaml_header).open('r'))
+            except YAMLError as e:
+                logging.warning(f'YAML error loading yaml header for ssp generation: {e}')
+                return 1
+
         markdown_path = trestle_root / args.output
 
         sections = None
@@ -294,7 +297,7 @@ class SSPManager():
                 in the profile parts for the corresponding section, and the alias is the nicer
                 version to be printed out in the section header of the markdown.
             yaml_header: The dictionary corresponding to the desired contents of the yaml header at the
-                top of each markdown file.
+                top of each markdown file.  If the dict is empty no yaml header is included.
         Returns:
             0 on success, 1 otherwise
 
@@ -336,7 +339,8 @@ class SSPManager():
         for param in param_list:
             self._param_dict[param.param_id] = param
         self._alters = profile.modify.alters
-        self._yaml_header = yaml_header
+        if bool(yaml_header):
+            self._yaml_header = yaml_header
         self._sections = sections
 
         # write out the controls
