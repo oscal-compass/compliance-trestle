@@ -277,7 +277,6 @@ class ResultsMgr():
                 ns=self.ns,
                 class_='scc_predefined_profile'
             ),
-            Property(name='Check_ID_Version', value=rule_use.check_id_version, ns=self.ns, class_='scc_check_version'),
             Property(
                 name='Check_ID_Version',
                 value=rule_use.check_id_version,
