@@ -178,5 +178,6 @@ def test_oscal_version_validator(tmp_trestle_dir: pathlib.Path, sample_catalog_m
 
 def test_validate_direct(sample_catalog_minimal: Catalog) -> None:
     """Test a validator by invoking it directly without CLI."""
-    validator = validator_factory.get(const.VAL_MODE_ALL)
+    args = argparse.Namespace(mode=const.VAL_MODE_ALL)
+    validator = validator_factory.get(args)
     assert validator.model_is_valid(sample_catalog_minimal)

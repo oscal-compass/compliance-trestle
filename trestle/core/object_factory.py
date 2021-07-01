@@ -18,8 +18,6 @@
 import argparse
 from typing import Any, Dict, ValuesView
 
-from trestle.core.const import VAL_MODE_ALL
-
 
 class ObjectFactory:
     """Allow registration and creation of factory objects."""
@@ -39,7 +37,7 @@ class ObjectFactory:
 
     def get(self, args: argparse.Namespace) -> Any:
         """Create the object from the args."""
-        return self._objects.get(VAL_MODE_ALL)
+        return self._objects.get(args.mode)
 
     def get_all(self) -> ValuesView[Any]:
         """Get all registered objects."""
