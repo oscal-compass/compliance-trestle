@@ -1,0 +1,1934 @@
+component-definition:
+  metadata:
+    last-modified: '2020-08-13T15:24:24.389'
+    oscal-version: '1.0.0'
+    parties:
+    - name: International Business Machines
+      type: organization
+      uuid: ee47836c-877c-4007-bbf3-c9d9bd805000
+    title: Demo target definition for NIST profiles
+    version: '2020813'
+  components:
+    - uuid: '56666738-0f9a-4e38-9aac-c0fad00a5821'
+      description: RedHat OpenShift Kubernetes
+      control-implementations:
+      - description: Compliance Operator SCAP guide for RedHat OpenShift Kubernetes
+          Service for NIST 800-53. It includes optional configuration to use with
+          an instance of auditree.
+        implemented-requirements:
+        - control-id: 'SI-4'
+          description: SI-4
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kubelet_enable_server_cert_rotation
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_api_server_insecure_port
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kubelet_enable_streaming_connections
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_controller_bind_address
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_api_server_insecure_bind_address
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_api_server_authorization_mode
+          uuid: 09dc3f43-8f52-46a3-9445-f7f2906ab946
+        - control-id: 'IA-5'
+          description: IA-5
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_api_server_basic_auth
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_api_server_token_auth
+          uuid: 00f2f9fb-2256-4fed-9c0a-02f63fb332e6
+        links:
+        - href: https://quay.io/repository/complianceascode/ocp4
+          media-type: scap_org.open-scap_collection_from_xccdf_ssg-ocp4-xccdf-1.2.xml
+          text: Links can be used to store URIs but provide us a nice safe way to
+            parse things
+        props:
+        - name: implementation-type
+          value: enforce
+        - name: implementation-type
+          value: monitor
+        - name: system
+          value: TCE
+        - name: system
+          value: auditree
+        - class: auditree
+          name: fetcher
+          value: TBD
+        - name: configMap
+          ns: https://sample.com/TCE
+          value: ssg-ocp4-ds-cis
+        - name: xccdf_profile
+          ns: https://sample.com/TCE
+          value: cis
+        source: https://github.com/usnistgov/OSCAL/blob/v1.0.0-milestone3/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
+        uuid: daca7f71-a2eb-433c-aec2-999c185671dd
+      title: Red Hat OpenShift Kubernetes
+      type: Software
+    - uuid: '56666738-0f9a-4e38-9aac-c0fad00a1822'
+      description: RedHat Enterprise Linux 7.8
+      control-implementations:
+      - description: Compliance Operator SCAP guide for RedHat OpenShift Kubernetes
+          Service for NIST 800-53. It includes optional configuration to use with
+          an instance of auditree.
+        implemented-requirements:
+        - control-id: 'CM-6.a'
+          description: CM-6.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_grub2_password
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_grub2_cfg
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_grub2_cfg
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_grub2_cfg
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_iptables_installed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_rp_filter
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_secure_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_rp_filter
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_tcp_syncookies
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_wireless_disable_interfaces
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_sctp_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_dccp_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_rds_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_tipc_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_ipv6_option_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv6_conf_default_accept_ra
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv6_conf_default_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv6_conf_all_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv6_conf_all_accept_ra
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_udf_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_squashfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_autofs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_hfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_cramfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_freevxfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_hfsplus_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_vfat_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_jffs2_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_bios_enable_execution_restrictions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_install_PAE_kernel_on_x86-32
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_kernel_exec_shield
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_kernel_randomize_va_space
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_nosuid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_nosuid_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_noexec
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_nodev
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_noexec
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_nodev
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_nodev_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_noexec_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_nosuid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_unauthorized_suid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_unauthorized_sgid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_ungroupowned
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_dir_perms_world_writable_sticky_bits
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_etc_passwd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_etc_passwd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_etc_gshadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_etc_passwd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_etc_group
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_etc_gshadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_etc_group
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_etc_shadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_etc_shadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_etc_group
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_etc_gshadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_etc_shadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_no_files_unowned_by_user
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_unauthorized_world_writable
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_redhat_gpgkey_installed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_security_patches_up_to_date
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_aide_periodic_cron_checking
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_aide_installed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rpm_verify_permissions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_disable_prelink
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_partition_for_tmp
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_partition_for_var_log
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_partition_for_var
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_partition_for_home
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_partition_for_var_log_audit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_maximum_age_login_defs
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_warn_age_login_defs
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_minimum_age_login_defs
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_no_direct_root_logins
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_no_shelllogin_for_systemaccounts
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_account_disable_post_pw_expiration
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_passwords_pam_faillock_deny
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_passwords_pam_faillock_unlock_time
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_ocredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_minlen
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_lcredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_retry
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_ucredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_dcredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_set_password_hashing_algorithm_systemauth
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_umask_etc_bashrc
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_umask_etc_profile
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_tmout
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_require_singleuser_auth
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_grub2_audit_argument
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_open_by_handle_at
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_open
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_ftruncate
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_openat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_creat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_truncate
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_kernel_module_loading
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_gshadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_setxattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_lremovexattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fremovexattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_lchown
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_chown
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_lsetxattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fchmodat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_chmod
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fchownat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fchown
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_removexattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fsetxattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fchmod
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_group
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_mac_modification
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_opasswd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_clock_settime
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_stime
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_settimeofday
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_watch_localtime
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_adjtimex
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_passwd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_privileged_commands
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_media_export
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_networkconfig_modification
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_login_events_lastlog
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_login_events_faillock
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_session_events
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_shadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_immutable
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_unlink
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_renameat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_unlinkat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_rmdir
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_rename
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_sysadmin_actions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_admin_space_left_action
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_action_mail_acct
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_space_left_action
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_max_log_file_action
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_max_log_file
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_auditd_enabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_selinux_confinement_of_daemons
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rsyslog_enabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_logrotate_activated
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_files_permissions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_rsyslog_installed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_remote_loghost
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_accept_remote_messages_udp
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_nolisten
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_accept_remote_messages_tcp
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_nfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_vsftpd_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_tcp_wrappers_installed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_xinetd_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rlogin_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rexec_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rsh_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_no_rsh_trust_files
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_tftp_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_ypserv_removed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_telnet_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_postfix_network_listening_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_openldap-servers_removed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_avahi-daemon_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_cups_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_xwindows_runlevel_target
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_xorg-x11-server-common_removed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_sshd_config
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_do_not_permit_user_env
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_use_approved_macs
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_disable_host_auth
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_keepalive
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_rhosts
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_enable_warning_banner
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_limit_user_access
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_root_login
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_idle_timeout
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_idle_timeout
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_allow_only_protocol2
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_loglevel_info
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_empty_passwords
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_sshd_config
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_sshd_config
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_crontab
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_cron_hourly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_cron_weekly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_cron_hourly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_crontab
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_cron_d
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_cron_monthly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_cron_d
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_cron_weekly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_cron_daily
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_cron_daily
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_cron_daily
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_cron_monthly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_crontab
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_cron_hourly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_crond_enabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_cron_monthly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_cron_d
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_cron_weekly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_httpd_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_dhcpd_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_named_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rhnsd_disabled
+          uuid: 0a0e76c0-944f-405a-bb65-7f8e37b18deb
+        - control-id: 'AC-6.1'
+          description: AC-6.1
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_grub2_cfg
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_grub2_cfg
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_grub2_cfg
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_nosuid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_nosuid_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_noexec
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_nodev
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_noexec
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_nodev
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_nodev_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_noexec_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_nosuid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_unauthorized_suid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_unauthorized_sgid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_ungroupowned
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_dir_perms_world_writable_sticky_bits
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_etc_passwd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_etc_passwd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_etc_gshadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_etc_passwd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_etc_group
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_etc_gshadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_etc_group
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_etc_shadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_etc_shadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_etc_group
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_etc_gshadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_etc_shadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_no_files_unowned_by_user
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_unauthorized_world_writable
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_umask_etc_bashrc
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_umask_etc_profile
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_files_permissions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_sshd_config
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_sshd_config
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_sshd_config
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_crontab
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_cron_hourly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_cron_weekly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_cron_hourly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_crontab
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_cron_d
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_cron_monthly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_cron_d
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_cron_weekly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_cron_daily
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_cron_daily
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_cron_daily
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_cron_monthly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_crontab
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_cron_hourly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_cron_monthly
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_cron_d
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_cron_weekly
+          uuid: b0392b57-bfe0-4e4d-b845-476e1f95022b
+        - control-id: 'CM-7.a'
+          description: CM-7.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_icmp_echo_ignore_broadcasts
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_rp_filter
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_secure_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_rp_filter
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_log_martians
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_accept_source_route
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_accept_source_route
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_secure_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_icmp_ignore_bogus_error_responses
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_tcp_syncookies
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_log_martians
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_send_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_ip_forward
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_send_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_wireless_disable_interfaces
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_sctp_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_dccp_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_rds_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_tipc_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_ipv6_option_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv6_conf_default_accept_ra
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv6_conf_default_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv6_conf_all_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv6_conf_all_accept_ra
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_udf_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_squashfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_autofs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_hfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_cramfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_freevxfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_hfsplus_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_vfat_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_jffs2_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_nosuid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_nosuid_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_noexec
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_nodev
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_noexec
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_nodev
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_nodev_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_noexec_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_nosuid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_selinux_confinement_of_daemons
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_nolisten
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_nfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_vsftpd_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_xinetd_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rlogin_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rexec_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rsh_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_no_rsh_trust_files
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_tftp_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_ypserv_removed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_telnet_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_postfix_network_listening_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_openldap-servers_removed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_avahi-daemon_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_cups_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_xwindows_runlevel_target
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_xorg-x11-server-common_removed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_do_not_permit_user_env
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_disable_host_auth
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_rhosts
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_root_login
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_empty_passwords
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_httpd_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_dhcpd_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_named_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rhnsd_disabled
+          uuid: 51296dad-af1f-48aa-90e1-4c76a8347579
+        - control-id: 'CM-7.b'
+          description: CM-7.b
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_icmp_echo_ignore_broadcasts
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_rp_filter
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_secure_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_rp_filter
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_log_martians
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_accept_source_route
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_accept_source_route
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_secure_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_icmp_ignore_bogus_error_responses
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_tcp_syncookies
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_log_martians
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_send_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_ip_forward
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_send_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_wireless_disable_interfaces
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_sctp_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_dccp_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_rds_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_tipc_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_ipv6_option_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv6_conf_default_accept_ra
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv6_conf_default_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv6_conf_all_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv6_conf_all_accept_ra
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_udf_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_squashfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_autofs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_hfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_cramfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_freevxfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_hfsplus_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_vfat_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_kernel_module_jffs2_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_nosuid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_nosuid_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_noexec
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_nodev
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_noexec
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_nodev
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_nodev_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_noexec_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_nosuid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_selinux_confinement_of_daemons
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_nolisten
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_nfs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_vsftpd_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_xinetd_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rlogin_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rexec_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rsh_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_no_rsh_trust_files
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_tftp_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_ypserv_removed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_telnet_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_postfix_network_listening_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_openldap-servers_removed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_avahi-daemon_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_cups_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_xwindows_runlevel_target
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_xorg-x11-server-common_removed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_do_not_permit_user_env
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_disable_host_auth
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_rhosts
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_root_login
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_empty_passwords
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_httpd_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_dhcpd_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_named_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rhnsd_disabled
+          uuid: dcea70e9-16bf-4748-9ed6-867fe272cc32
+        - control-id: 'SC-5'
+          description: SC-5
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_icmp_echo_ignore_broadcasts
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_accept_source_route
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_secure_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_icmp_ignore_bogus_error_responses
+          uuid: 1cd8012d-cb77-4e72-b530-0a4be189c44b
+        - control-id: 'SC-7.a'
+          description: SC-7.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_rp_filter
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_secure_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_rp_filter
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_accept_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_accept_source_route
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_accept_source_route
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_secure_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_send_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_ip_forward
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_send_redirects
+          uuid: bf3f6051-cf7d-49db-a7c1-a1c271bbcd80
+        - control-id: 'SC-5.3.a'
+          description: SC-5.3.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_log_martians
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_tcp_syncookies
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_log_martians
+          uuid: 19e0ba00-651e-4530-b66d-605b1d307540
+        - control-id: 'SC-5CM-6.a'
+          description: SC-5CM-6.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_accept_source_route
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_all_send_redirects
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_ip_forward
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_conf_default_send_redirects
+          uuid: bb39cf13-3e58-43b8-a40a-51ab4fb4c3f5
+        - control-id: 'SC-5.1'
+          description: SC-5.1
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_tcp_syncookies
+          uuid: 2ad03e14-e525-4b5d-ad42-d94c60f64272
+        - control-id: 'SC-5.2'
+          description: SC-5.2
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_net_ipv4_tcp_syncookies
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_partition_for_tmp
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_partition_for_var_log
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_partition_for_var
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_partition_for_home
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_partition_for_var_log_audit
+          uuid: eecb35c0-0a39-4d68-86e0-e4ec65c04cdd
+        - control-id: 'AC-18.a'
+          description: AC-18.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_wireless_disable_interfaces
+          uuid: aaea84e1-6030-4226-a794-a41ea31d52a6
+        - control-id: 'AC-18.3'
+          description: AC-18.3
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_wireless_disable_interfaces
+          uuid: a2007b34-7e84-4aff-9b3e-ba1242db8d55
+        - control-id: 'MP-7'
+          description: MP-7
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_wireless_disable_interfaces
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_autofs_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_nosuid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_nosuid_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_noexec
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_nodev
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_noexec
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_nodev
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_nodev_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_noexec_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_nosuid
+          uuid: 58825069-e6bc-41f8-b9d1-7d8b638c5178
+        - control-id: 'SI-11.a'
+          description: SI-11.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_fs_suid_dumpable
+          uuid: 71454d26-4216-4479-aae1-31554d6e9760
+        - control-id: 'SI-11.b'
+          description: SI-11.b
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_fs_suid_dumpable
+          uuid: 9349d34c-fc60-4dd8-ac88-e304d9eeb654
+        - control-id: 'SC-39'
+          description: SC-39
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_bios_enable_execution_restrictions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_kernel_exec_shield
+          uuid: c94a026f-c30c-432e-bf18-1a96acd49051
+        - control-id: 'SC-30'
+          description: SC-30
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_kernel_randomize_va_space
+          uuid: bdcbda02-c79d-4d02-91da-0c50222dc9d3
+        - control-id: 'SC-30.2'
+          description: SC-30.2
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sysctl_kernel_randomize_va_space
+          uuid: d6ebf3eb-4681-4247-addf-9300b0786182
+        - control-id: 'AC-6'
+          description: AC-6
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_nosuid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_nosuid_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_noexec
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_nodev
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_noexec
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_dev_shm_nodev
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_nodev_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_noexec_removable_partitions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_mount_option_tmp_nosuid
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_no_shelllogin_for_systemaccounts
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_selinux_confinement_of_daemons
+          uuid: a1426f15-eb40-48a0-a86d-5e354cf91675
+        - control-id: 'CM-5.3'
+          description: CM-5.3
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_redhat_gpgkey_installed
+          uuid: fb5eaa43-3bf0-42db-90e3-1b88d68dadf5
+        - control-id: 'SI-7'
+          description: SI-7
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_redhat_gpgkey_installed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_aide_periodic_cron_checking
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rpm_verify_ownership
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rpm_verify_permissions
+          uuid: dbb3ae98-105b-4b45-90f4-38485159e45f
+        - control-id: 'SC-12'
+          description: SC-12
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_redhat_gpgkey_installed
+          uuid: 3d5e7944-22d2-470a-a033-db1135a86db8
+        - control-id: 'SC-12.3'
+          description: SC-12.3
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_redhat_gpgkey_installed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_use_approved_macs
+          uuid: 406662de-d2db-4810-be9e-4e30aa46d09c
+        - control-id: 'SA-12'
+          description: SA-12
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated
+          uuid: ba679f94-7d21-4ac2-a95f-a3c33c53a8a3
+        - control-id: 'SA-12.10'
+          description: SA-12.10
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated
+          uuid: 04648713-8857-4a68-821a-2fe2f9bb8e74
+        - control-id: 'CM-11.a'
+          description: CM-11.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated
+          uuid: 9b93c675-0ac5-4b04-abd1-9055fe127b86
+        - control-id: 'CM-11.b'
+          description: CM-11.b
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_ensure_gpgcheck_globally_activated
+          uuid: a9bf9707-6e1d-4d4f-96d0-009a3d0d574f
+        - control-id: 'SI-2.5'
+          description: SI-2.5
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_security_patches_up_to_date
+          uuid: 5f8a182d-3a83-4323-97cf-8cbfcdee3e9e
+        - control-id: 'SI-2.c'
+          description: SI-2.c
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_security_patches_up_to_date
+          uuid: c9de7135-e388-436c-8f13-7f9bbebadc75
+        - control-id: 'SI-7.1'
+          description: SI-7.1
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_aide_periodic_cron_checking
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rpm_verify_ownership
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rpm_verify_permissions
+          uuid: f8a6a941-ac57-453f-9823-ffafd4bb4025
+        - control-id: 'CM-6.d'
+          description: CM-6.d
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rpm_verify_ownership
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rpm_verify_permissions
+          uuid: c95b13af-84f1-434c-9b56-39d53207589c
+        - control-id: 'CM-6.c'
+          description: CM-6.c
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rpm_verify_ownership
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rpm_verify_permissions
+          uuid: b3aac6ba-c9b3-4f74-b4ab-b10c185f7151
+        - control-id: 'SI-7.6'
+          description: SI-7.6
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rpm_verify_ownership
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rpm_verify_permissions
+          uuid: 5b1b7aa6-ce23-4b5a-a340-f34eeefc0645
+        - control-id: 'AU-9.3'
+          description: AU-9.3
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rpm_verify_ownership
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rpm_verify_permissions
+          uuid: cb2abda9-7f27-4bf3-8f6c-23f698d4cfc0
+        - control-id: 'SC-13'
+          description: SC-13
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_disable_prelink
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_use_approved_macs
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_allow_only_protocol2
+          uuid: 5ca4ed7b-5437-49d9-8511-0d49cbc532c6
+        - control-id: 'AU-4'
+          description: AU-4
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_partition_for_var_log
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_partition_for_var_log_audit
+          uuid: b7dd735b-e4c3-4e22-9c38-defa63cc3ea1
+        - control-id: 'AC-8.a'
+          description: AC-8.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_dconf_gnome_banner_enabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_dconf_gnome_login_banner_text
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_banner_etc_issue
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_enable_warning_banner
+          uuid: 878730b6-f1d8-4040-9d7b-97a8039893ed
+        - control-id: 'AC-8.b'
+          description: AC-8.b
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_dconf_gnome_banner_enabled
+          uuid: c7b2f0eb-f126-41dc-991b-c7da7e40b805
+        - control-id: 'AC-8.c'
+          description: AC-8.c
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_dconf_gnome_banner_enabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_dconf_gnome_login_banner_text
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_banner_etc_issue
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_enable_warning_banner
+          uuid: 13dca933-35c8-4c25-94cd-d3bccf7ab828
+        - control-id: 'IA-5.f'
+          description: IA-5.f
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_maximum_age_login_defs
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_warn_age_login_defs
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_minimum_age_login_defs
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_unix_remember
+          uuid: d9f3e9e8-d7cd-4343-855e-fefd5ba16a0f
+        - control-id: 'IA-5.1.d'
+          description: IA-5.1.d
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_maximum_age_login_defs
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_warn_age_login_defs
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_minimum_age_login_defs
+          uuid: eb33f2cf-b4bc-496f-9143-6d56ae7c4a33
+        - control-id: 'IA-2'
+          description: IA-2
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_no_direct_root_logins
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_no_uid_except_zero
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_require_singleuser_auth
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_root_login
+          uuid: 4d07d02f-7f88-444f-8d09-e57c17d03421
+        - control-id: 'AC-6.5'
+          description: AC-6.5
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_no_uid_except_zero
+          uuid: 4b187cbf-69c5-4afc-8527-92b7496ab9e0
+        - control-id: 'IA-4.b'
+          description: IA-4.b
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_no_uid_except_zero
+          uuid: 1667653c-846e-47fa-9d09-4b0b03637583
+        - control-id: 'IA-4.e'
+          description: IA-4.e
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_account_disable_post_pw_expiration
+          uuid: 7a3088f9-8746-4b91-b058-2b3de0d64fb6
+        - control-id: 'AC-2.3'
+          description: AC-2.3
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_account_disable_post_pw_expiration
+          uuid: df333e31-c6ef-4ff1-ae37-eb780118987d
+        - control-id: 'AC-7.a'
+          description: AC-7.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_passwords_pam_faillock_deny
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_retry
+          uuid: cf73bc00-7def-47fe-bc89-5c8d21712e11
+        - control-id: 'IA-5.1.e'
+          description: IA-5.1.e
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_unix_remember
+          uuid: 63249353-a363-4df5-886b-8676067953b3
+        - control-id: 'AC-7.b'
+          description: AC-7.b
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_passwords_pam_faillock_unlock_time
+          uuid: 86bc63b4-2a42-4a61-9256-043870ffbf75
+        - control-id: 'IA-5.c'
+          description: IA-5.c
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_ocredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_minlen
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_lcredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_ucredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_dcredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_set_password_hashing_algorithm_systemauth
+          uuid: 59bea5f1-3585-4dcf-80d0-d11636bff444
+        - control-id: 'IA-5.1.a'
+          description: IA-5.1.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_ocredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_minlen
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_lcredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_ucredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_dcredit
+          uuid: 77987e1a-8cba-423f-a12a-810be72f8eb6
+        - control-id: 'IA-5.4'
+          description: IA-5.4
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_ocredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_minlen
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_lcredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_retry
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_ucredit
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_password_pam_dcredit
+          uuid: fc001009-c21a-46de-b0bf-c8c2ff43429d
+        - control-id: 'IA-5.1.c'
+          description: IA-5.1.c
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_set_password_hashing_algorithm_systemauth
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rlogin_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rexec_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rsh_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_package_ypserv_removed
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_telnet_disabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_allow_only_protocol2
+          uuid: 8fda49f3-a93e-4a02-a50f-e65c442519ae
+        - control-id: 'AC-12'
+          description: AC-12
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_tmout
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_keepalive
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_idle_timeout
+          uuid: afc63ae7-624d-4462-b67c-a1e06bd2fec0
+        - control-id: 'SC-10'
+          description: SC-10
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_tmout
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_keepalive
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_idle_timeout
+          uuid: 7ac0840d-2274-407d-9773-5bb87d035aa5
+        - control-id: 'AC-2.5'
+          description: AC-2.5
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_accounts_tmout
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_keepalive
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_idle_timeout
+          uuid: df00ae7b-8df6-460e-ab86-ce84a43cfdde
+        - control-id: 'AC-3'
+          description: AC-3
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_require_singleuser_auth
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_grub2_enable_selinux
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_selinux_policytype
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_selinux_state
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_disable_host_auth
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_limit_user_access
+          uuid: 5b2b94fc-30ae-4e08-96c0-e3abde82546c
+        - control-id: 'AC-17.1'
+          description: AC-17.1
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_grub2_audit_argument
+          uuid: 5b04afd8-f5e3-476f-87ed-8d80349f9a97
+        - control-id: 'AU-14.1'
+          description: AU-14.1
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_grub2_audit_argument
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_auditd_enabled
+          uuid: 60faa442-3787-4760-ad5b-c8cd82d596d5
+        - control-id: 'AU-10'
+          description: AU-10
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_grub2_audit_argument
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_auditd_enabled
+          uuid: 834f9943-6284-4ca0-8b68-e80c56dfdc3d
+        - control-id: 'IR-5.1'
+          description: IR-5.1
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_grub2_audit_argument
+          uuid: 72678855-b709-41f8-9faa-d5e1d53f9474
+        - control-id: 'AU-2.d'
+          description: AU-2.d
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_open_by_handle_at
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_open
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_ftruncate
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_openat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_creat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_truncate
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_kernel_module_loading
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_gshadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_setxattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_lremovexattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fremovexattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_lchown
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_chown
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_lsetxattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fchmodat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_chmod
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fchownat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fchown
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_removexattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fsetxattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fchmod
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_group
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_mac_modification
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_opasswd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_clock_settime
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_stime
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_settimeofday
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_watch_localtime
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_adjtimex
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_passwd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_privileged_commands
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_media_export
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_networkconfig_modification
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_login_events_lastlog
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_login_events_faillock
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_session_events
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_shadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_unlink
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_renameat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_unlinkat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_rmdir
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_rename
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_sysadmin_actions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_auditd_enabled
+          uuid: 145aa83c-4380-46c1-9dc9-f97bd84e294a
+        - control-id: 'AU-12.c'
+          description: AU-12.c
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_open_by_handle_at
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_open
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_ftruncate
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_openat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_creat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_unsuccessful_file_modification_truncate
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_kernel_module_loading
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_gshadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_setxattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_lremovexattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fremovexattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_lchown
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_chown
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_lsetxattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fchmodat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_chmod
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fchownat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fchown
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_removexattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fsetxattr
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_dac_modification_fchmod
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_group
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_mac_modification
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_opasswd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_clock_settime
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_stime
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_settimeofday
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_watch_localtime
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_adjtimex
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_passwd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_privileged_commands
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_media_export
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_networkconfig_modification
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_login_events_lastlog
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_login_events_faillock
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_session_events
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_shadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_unlink
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_renameat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_unlinkat
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_rmdir
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_file_deletion_events_rename
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_sysadmin_actions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_auditd_enabled
+          uuid: 50d3bf07-9c20-45e1-9a88-08742a6e3979
+        - control-id: 'AC-6.9'
+          description: AC-6.9
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_kernel_module_loading
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_gshadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_group
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_opasswd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_clock_settime
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_stime
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_settimeofday
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_watch_localtime
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_time_adjtimex
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_passwd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_privileged_commands
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_media_export
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_networkconfig_modification
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_login_events_lastlog
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_login_events_faillock
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_shadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_immutable
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_sysadmin_actions
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_auditd_enabled
+          uuid: 5f4fcd7c-a3c5-4a9a-a9d5-f3f1c1f20304
+        - control-id: AC-2.4
+          description: AC-2.4
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_gshadow
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_group
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_opasswd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_passwd
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_privileged_commands
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_usergroup_modification_shadow
+          uuid: f27b30f4-4bec-4491-82f8-bc762ad2fe88
+        - control-id: 'AC-2.7.b'
+          description: AC-2.7.b
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_audit_rules_sysadmin_actions
+          uuid: 2130f172-7609-4af9-8372-07d48fa4135f
+        - control-id: 'AU-5.b'
+          description: AU-5.b
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_admin_space_left_action
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_space_left_action
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_max_log_file_action
+          uuid: 1fbbaee8-5fdb-4052-a88b-8e3432c6fa5f
+        - control-id: 'AU-5.2'
+          description: AU-5.2
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_admin_space_left_action
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_action_mail_acct
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_space_left_action
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_max_log_file_action
+          uuid: 62c9439e-e16b-47b5-a7d0-9c08d49d4a04
+        - control-id: 'AU-5.1'
+          description: AU-5.1
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_admin_space_left_action
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_space_left_action
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_max_log_file_action
+          uuid: 76198efa-5144-41e0-8d38-e2d8299fda4c
+        - control-id: 'AU-5.4'
+          description: AU-5.4
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_admin_space_left_action
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_space_left_action
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_max_log_file_action
+          uuid: 914709e7-4475-4005-8b0d-bf3e35309cbb
+        - control-id: 'IA-5.1'
+          description: IA-5.1
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_action_mail_acct
+          uuid: d01eb78f-bd8a-41eb-b295-62cf62d4d528
+        - control-id: 'AU-5.a'
+          description: AU-5.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_action_mail_acct
+          uuid: aceabcfe-2d28-4ada-8ad2-5ac0a5635fbd
+        - control-id: 'AU-11'
+          description: AU-11
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_auditd_data_retention_max_log_file
+          uuid: a330026a-0636-45c5-a822-282a55977ada
+        - control-id: 'AC-2.g'
+          description: AC-2.g
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_auditd_enabled
+          uuid: 03ac5f7a-17d6-4731-86b1-585a4b32b6ba
+        - control-id: 'AU-3'
+          description: AU-3
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_auditd_enabled
+          uuid: 2b947743-3859-4d7c-b835-5e237d2feecf
+        - control-id: 'AC-3.3.a'
+          description: AC-3.3.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_grub2_enable_selinux
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_selinux_confinement_of_daemons
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_selinux_policytype
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_selinux_state
+          uuid: 1b7ad4fe-25b9-4835-a88d-32dcbf97dbc5
+        - control-id: 'AU-9'
+          description: AU-9
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_selinux_policytype
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_selinux_state
+          uuid: ad624f98-23be-49e6-824d-bb9bd1f5ac36
+        - control-id: 'SC-7.21'
+          description: SC-7.21
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_selinux_policytype
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_selinux_state
+          uuid: ef1e0bd9-4950-491c-91cd-25d77b5bfd13
+        - control-id: 'AU-4.1'
+          description: AU-4.1
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_service_rsyslog_enabled
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_remote_loghost
+          uuid: 5c9c688c-67ba-4293-9aa2-6cc5ff672461
+        - control-id: 'AU-9.2'
+          description: AU-9.2
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_remote_loghost
+          uuid: 0429f58a-c998-4e08-b003-492605fc77ef
+        - control-id: 'AU-6.3'
+          description: AU-6.3
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_accept_remote_messages_udp
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_accept_remote_messages_tcp
+          uuid: a2df220f-cd2a-4897-92ec-badf27c8441c
+        - control-id: 'AU-6.4'
+          description: AU-6.4
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_accept_remote_messages_udp
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_rsyslog_accept_remote_messages_tcp
+          uuid: 361ae559-0590-47c7-92d4-ab75fa2a23f6
+        - control-id: 'AC-17.a'
+          description: AC-17.a
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_permissions_sshd_config
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_do_not_permit_user_env
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_use_approved_macs
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_disable_host_auth
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_keepalive
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_rhosts
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_enable_warning_banner
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_root_login
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_idle_timeout
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_idle_timeout
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_allow_only_protocol2
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_set_loglevel_info
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_empty_passwords
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_groupowner_sshd_config
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_file_owner_sshd_config
+          uuid: 42364b25-bcfb-4789-9a0a-11ed78c6247e
+        - control-id: 'AC-17.2'
+          description: AC-17.2
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_use_approved_macs
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_allow_only_protocol2
+          uuid: 8691af7d-01db-4686-ac4b-9f5e8c250cc3
+        - control-id: 'MA-4.6'
+          description: MA-4.6
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_use_approved_macs
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_allow_only_protocol2
+          uuid: 5dbc8e43-5372-4143-82d7-ceae39e8e7cb
+        - control-id: 'SC-12.2'
+          description: SC-12.2
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_use_approved_macs
+          uuid: 601e35ca-5380-4a23-ba04-d8f98f65b9a0
+        - control-id: 'AC-6.2'
+          description: AC-6.2
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_root_login
+          uuid: 0ca5b47e-383b-4c8e-8409-5e1ee94647a1
+        - control-id: 'IA-2.5'
+          description: IA-2.5
+          props:
+          - name: XCCDF_rule
+            value: xccdf_org.ssgproject.content_rule_sshd_disable_root_login
+          uuid: 1616c508-926b-483d-a290-f8fb84bcd824
+        links:
+        - href: https://quay.io/repository/complianceascode/ocp4
+          media-type: scap_org.open-scap_collection_from_xccdf_ssg-ocp4-xccdf-1.2.xml
+          text: Links can be used to store URIs but provide us a nice safe way to
+            parse things
+        props:
+        - name: implementation-type
+          value: enforce
+        - name: implementation-type
+          value: monitor
+        - name: system
+          value: TCE
+        - name: system
+          value: auditree
+        - class: auditree
+          name: fetcher
+          value: TBD
+        - name: configMap
+          ns: https://sample.com/TCE
+          value: ssg-rhel7-ds-cis
+        - name: xccdf_profile
+          ns: https://sample.com/TCE
+          value: cis
+        source: https://github.com/usnistgov/OSCAL/blob/v1.0.0-milestone3/content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
+        uuid: daca7f77-a2eb-433c-aec2-999c185671dd
+      title: RedHat Enterprise Linux 7.8
+      type: Software
+  uuid: 56676738-0f9a-4e38-9aac-c0fad00a2823

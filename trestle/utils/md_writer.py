@@ -33,13 +33,13 @@ class MDWriter():
         self._file_path = file_path
         self._lines = []
         self._indent_level = 0
-        self._indent_size = 2
+        self._indent_size = 4
         self._yaml_header = None
 
     def _current_indent_space(self):
         if self._indent_level <= 0:
             return ''
-        return ' ' * (self._indent_level * self._indent_size + 2)
+        return ' ' * (self._indent_level * self._indent_size)
 
     def _add_line_raw(self, line: str) -> None:
         self._lines.append(line)
@@ -75,17 +75,19 @@ class MDWriter():
         """Add horizontal rule."""
         self.new_line('---')
 
-    def new_list(self, list_: List[Any], show=True) -> None:
+    def new_list(self, list_: List[Any]) -> None:
         """Add a list to the markdown."""
         # if string just write it out
         if isinstance(list_, str):
+            if self._indent_level <= 0:
+                self.new_paragraph()
             self.new_line(list_)
         # it is a list with more than one item
         else:
             self._add_indent_level(1)
             self.new_paragraph()
             for item in list_:
-                self.new_list(item, show)
+                self.new_list(item)
             self._add_indent_level(-1)
 
     def write_out(self) -> None:

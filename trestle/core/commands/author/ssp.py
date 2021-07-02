@@ -183,6 +183,7 @@ class SSPManager():
         # unwrap the list if it is many levels deep
         while not isinstance(items, str) and len(items) == 1:
             items = items[0]
+        self._md_file.new_paragraph()
         self._md_file.new_list(items)
 
     def _get_controls(self, control_handle: ControlHandle,
@@ -204,7 +205,7 @@ class SSPManager():
         title = f'{control_handle.control.id} - {control_handle.group_title} {control_handle.control.title}'
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title='Control Description')
-        self._md_file.set_indent_level(-2)
+        self._md_file.set_indent_level(-1)
         self._add_parts(control_handle.control)
         self._md_file.set_indent_level(0)
 

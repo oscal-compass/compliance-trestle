@@ -47,15 +47,7 @@ By building human managed artifacts into OSCAL, Trestle is not only able to vali
 
 `trestle` implicitly supports all OSCAL schemas for use within the object model. The development roadmap for `trestle` includes adding workflow around specific elements / objects that is opinionated.
 
-`trestle` supports OSCAL version `1.0.0-rc2` only at this stage. NIST, in pre-1.0.0 [continuously updating
-](https://github.com/usnistgov/OSCAL/issues/846) their current posture. Trestle will be periodically updating to meet NIST's baseline. On the formal release of OSCAL `1.0.0` the strategy for trestle will be revaluated.
-
-In addition to the core OSCAL objects, trestle supports the definition of a `target`. The `target` (and its container
-`target-definition`) is a generalization of the `component` model that is designed specifically to support configuration.
-
-`catalog` and `profile` objects can define parameters. However, by their nature the parameter definitions are at the
-regulatory level. The `trestle` team has seen a need for an object that can define parameters at the `control-implemenation`
-level, e.g. `component` is an implementation and `target` is the definition of capabilities of the component.
+`trestle` supports OSCAL version `1.0.0` only at this stage.
 
 ## Supported file formats for OSCAL objects.
 
@@ -77,9 +69,7 @@ Complete documentation, tutorials, and background on compliance can be found [he
 
 ## Development status
 
-Compliance trestle is currently alpha. The expectation is that in ongoing work there may be unnannounced changes that are breaking within the trestle codebase. If you are using trestle please contact us so we are aware your usecase.
-
-The underlying OSCAL schema is also currently changing. Until the formal release of OSCAL 1.0.0, the models in trestle will regularly update to track NIST's changes.
+Compliance trestle is currently beta. The expectation is that in ongoing work there may be un-announced changes that are breaking within the trestle codebase. With the release of NIST's version 1.0.0 of OSCAL we expect that these changes will be decreasing in size as trestle approaches a 1.0.0 release for itself.
 
 ## Contributing to Trestle
 

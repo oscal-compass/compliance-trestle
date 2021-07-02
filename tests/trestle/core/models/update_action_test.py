@@ -20,14 +20,14 @@ from typing import List
 
 from trestle.core.models.actions import UpdateAction
 from trestle.core.models.elements import Element, ElementPath
-from trestle.oscal import OSCAL_VERSION, target
+from trestle.oscal import OSCAL_VERSION, common
 
 
-def test_update_action(sample_target_def):
+def test_update_action(sample_nist_component_def):
     """Test update action."""
-    element = Element(sample_target_def)
+    element = Element(sample_nist_component_def)
 
-    metadata = target.Metadata(
+    metadata = common.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
@@ -36,7 +36,7 @@ def test_update_action(sample_target_def):
         }
     )
 
-    sub_element_path = ElementPath('target-definition.metadata')
+    sub_element_path = ElementPath('component-definition.metadata')
     prev_metadata = element.get_at(sub_element_path)
 
     uac = UpdateAction(metadata, element, sub_element_path)
@@ -52,23 +52,23 @@ def test_update_action(sample_target_def):
     assert element.get_at(sub_element_path) is not metadata
 
 
-def test_update_list_sub_element_action(sample_target_def):
+def test_update_list_sub_element_action(sample_nist_component_def):
     """Test setting a list."""
-    element = Element(sample_target_def)
+    element = Element(sample_nist_component_def)
 
-    parties: List[target.Party] = []
+    parties: List[common.Party] = []
     parties.append(
-        target.Party(**{
+        common.Party(**{
             'uuid': 'ff47836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST1', 'type': 'organization'
         })
     )
     parties.append(
-        target.Party(**{
+        common.Party(**{
             'uuid': 'ee88836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST2', 'type': 'organization'
         })
     )
 
-    sub_element_path = ElementPath('target-definition.metadata.parties.*')
+    sub_element_path = ElementPath('component-definition.metadata.parties.*')
     uac = UpdateAction(parties, element, sub_element_path)
     uac.execute()
 

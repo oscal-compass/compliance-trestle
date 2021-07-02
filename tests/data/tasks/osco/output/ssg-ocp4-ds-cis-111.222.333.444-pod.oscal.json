@@ -11,8 +11,8 @@
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
             "type": "Service",
-            "title": "Red Hat OpenShift Kubernetes Service Compliance Operator for OCP4",
-            "description": "Red Hat OpenShift Kubernetes Service Compliance Operator for OCP4",
+            "title": "Red Hat OpenShift Kubernetes Service Compliance Operator for ocp4",
+            "description": "Red Hat OpenShift Kubernetes Service Compliance Operator for ocp4",
             "status": {
               "state": "operational"
             }
@@ -24,20 +24,15 @@
             "description": "inventory",
             "props": [
               {
-                "name": "node",
-                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
-                "value": "111.222.333.444"
-              },
-              {
-                "name": "name",
-                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
-                "value": "ssg-ocp4-ds-cis-111.222.333.444-pod"
-              },
-              {
                 "name": "target",
                 "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
                 "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
                 "class": "scc_inventory_item_id"
+              },
+              {
+                "name": "target_type",
+                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
+                "value": "ocp4"
               }
             ],
             "implemented-components": [
