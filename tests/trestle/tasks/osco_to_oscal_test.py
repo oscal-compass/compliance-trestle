@@ -15,16 +15,15 @@
 """OSCO to OSCAL task tests."""
 
 import configparser
-import filecmp
 import os
 import pathlib
 import uuid
-from datetime import datetime
 from unittest.mock import Mock, patch
 
 import trestle.tasks.osco_to_oscal as osco_to_oscal
 import trestle.transforms.implementations.osco as osco
 from trestle.tasks.base_task import TaskOutcome
+from trestle.utils.fs import text_files_equal
 
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
 uuid_mock2 = Mock(return_value=uuid.UUID('46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e'))
@@ -167,7 +166,7 @@ def test_osco_execute(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = filecmp.cmp(f_expected, f_produced, shallow=False)
+        result = text_files_equal(f_expected, f_produced)
         assert (result)
 
 
@@ -190,7 +189,7 @@ def test_osco_execute_compressed(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = filecmp.cmp(f_expected, f_produced, shallow=False)
+        result = text_files_equal(f_expected, f_produced)
         assert (result)
 
 
@@ -227,7 +226,7 @@ def execute_no_overwrite_part1(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = filecmp.cmp(f_expected, f_produced, shallow=False)
+        result = text_files_equal(f_expected, f_produced)
         assert (result)
 
 
@@ -305,7 +304,7 @@ def test_osco_execute_input_fetcher(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = filecmp.cmp(f_expected, f_produced, shallow=False)
+        result = text_files_equal(f_expected, f_produced)
         assert (result)
 
 
@@ -328,7 +327,7 @@ def test_osco_execute_input_xml_rhel7(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = filecmp.cmp(f_expected, f_produced, shallow=False)
+        result = text_files_equal(f_expected, f_produced)
         assert (result)
 
 
@@ -351,7 +350,7 @@ def test_osco_execute_input_xml_ocp4(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = filecmp.cmp(f_expected, f_produced, shallow=False)
+        result = text_files_equal(f_expected, f_produced)
         assert (result)
 
 
@@ -374,5 +373,5 @@ def test_osco_execute_input_configmaps(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = filecmp.cmp(f_expected, f_produced, shallow=False)
+        result = text_files_equal(f_expected, f_produced)
         assert (result)
