@@ -231,7 +231,7 @@ The import subcommand can determine the type of the model that is to be imported
 
 Note that the import command will decompose the file according to the default decomposing rules already mentioned in the `trestle create` section. Similarly to `trestle create`, the user can increase the level of decomposition by using `trestle split` command.
 
-Finally, during the import process the file must pass the `validate --all` test described below for the command, `validate`.  If the file does not pass validation a warning will be given and the import will fail.
+Finally, during the import process the file must pass the `validate` test described below for the command, `validate`.  If the file does not pass validation a warning will be given describing the nature of the problem and the import will fail.
 
 ## `trestle replicate`
 
@@ -304,31 +304,32 @@ Trestle validate is designed to perform a function to ensure integrity of a set 
 a schema validation within a single file or as complex as ensuring the integrity of a 'stack' of OSCAL files including potentially
 remote system state.
 
-Trestle validate the form \`trestle validate -f FILE -i SPECIFIC_ITEM_OR_VALUE, --mode {duplicate or similar}
+Trestle validate the form \`trestle validate -f FILE -i SPECIFIC_ITEM_OR_VALUE
 
-Trestle can validate in different modes, and it can operate on one or more files specified in different ways.
+Trestle validates files according to a number of criteria, and it can operate on one or more files specified in different ways.
 
-and returns a non-zero return code on a validation failure. Mode is a list of validation modes that will be implemented as shown in the table below.
+`validate` returns a non-zero return code if there is any validation problem detected in a file.
+
+The current list of validation modes that get checked internally are:
 
 | Mode          | Purpose                                                                                                              |
-| ------------- | -------------------------------------------------------------------------------------------------------------------- |
-| duplicates    | Identify if duplicate uuid's are present: `trestle validate -f catalog.json --mode duplicates`                       |
-| oscal_version | Confirm that the oscal version of the file is supported: `trestle validate -f catalog.json --mode oscal_version`     |
-| refs          | Confirm that all references in responsible parties are found in rols: `trestle validate -f catalog.json --mode refs` |
-| ncname        | Confirm that all roleid's conform to the NCName format: `trestle validate -f catalog.json --mode ncname`             |
-| all           | Confirm that the file is valid with regard to all the above modes: `trestle validate -f catalog.json --mode all`     |
+| ------------- | ------------------------------------------------------------------------|
+| duplicates    | Identify if duplicate uuid's are present                                |
+| oscal_version | Confirm that the oscal version of the file is supported                 |
+| refs          | Confirm that all references in responsible parties are found in roles   |
+
 
 In addition to validating a single file you can validate all files of a given type with the `-t` option:
 
-`trestle validate -t catalog --mode duplicates`
+`trestle validate -t catalog`
 
 And you can validate all models with the `-a` option:
 
-`trestle validate -a --mode duplicates`
+`trestle validate -a`
 
 Finally, you can validate a model based on its name using the `-n` option, along with the type of the model:
 
-`trestle validata -t catalog -n my_catalog --mode refs`
+`trestle validata -t catalog -n my_catalog`
 
 Note that when you `Import` a file it will perform a full validation on it first, and if it does not pass validation the file cannot be imported.
 

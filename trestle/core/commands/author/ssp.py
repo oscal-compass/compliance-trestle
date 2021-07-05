@@ -16,6 +16,7 @@
 import argparse
 import logging
 import pathlib
+import string
 from typing import Dict, List, Optional, Set, Tuple, Union
 
 from ruamel.yaml import YAML
@@ -81,7 +82,7 @@ class SSPGenerate(AuthorCommonCommand):
         _, _, catalog = load_distributed(pathlib.Path(f'catalogs/{cat_name}/catalog.json'))
 
         yaml_header: dict = {}
-        if 'yaml_header' in args:
+        if 'yaml_header' in args and args.yaml_header is not None:
             try:
                 logging.debug(f'Loading yaml header file {args.yaml_header}')
                 yaml = YAML(typ='safe')
@@ -137,19 +138,36 @@ class SSPManager():
 
     def __init__(self):
         """Initialize the class."""
-        self._param_dict: Dict[str, str] = None
+        self._param_dict: Dict[str, str] = {}
         self._md_file: MDWriter = None
-        self._alters: List[prof.Alter] = None
+        self._alters: List[prof.Alter] = []
         self._yaml_header: dict = None
-        self._sections: Dict[str, str] = None
+        self._sections: Dict[str, str] = {}
 
     def _replace_params(self, text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
-        # replace params with assignments from the profile
+        # replace params with assignments from the profile or description info if value is not specified
         if control.params is not None:
             for param in control.params:
+                # set default if no information available for text
+                param_text = f'[{param.id} = no description available]'
                 set_param = param_dict.get(param.id, None)
+                # param value provided so just replace it
                 if set_param is not None:
-                    text = text.replace(param.id, str(set_param.values[0].__root__))
+                    values = [value.__root__ for value in set_param.values]
+                    param_text = values[0] if len(values) == 1 else f"[{', '.join(values)}]"
+                else:
+                    # if select present, use it
+                    if param.select is not None:
+                        param_text = f'{param.id} = '
+                        if param.select.how_many is not None:
+                            param_text += f'{param.select.how_many.value} '
+                        if param.select.choice is not None:
+                            param_text += str(param.select.choice)
+                        param_text = f'[{param_text}]'
+                    # else use the label
+                    if param.label is not None:
+                        param_text = f'[{param.id} = {param.label}]'
+                text = text.replace(param.id, param_text)
 
         # strip {{ }}
         text = text.replace(' {{', '').replace(' }}', '').replace('insert: param, ', '').strip()
@@ -187,14 +205,15 @@ class SSPManager():
 
     def _add_parts(self, control: cat.Control) -> None:
         items = []
-        for part in control.parts:
-            if part.name == 'statement':
-                items.append(self._get_part(control, part))
-        # unwrap the list if it is many levels deep
-        while not isinstance(items, str) and len(items) == 1:
-            items = items[0]
-        self._md_file.new_paragraph()
-        self._md_file.new_list(items)
+        if control.parts is not None:
+            for part in control.parts:
+                if part.name == 'statement':
+                    items.append(self._get_part(control, part))
+            # unwrap the list if it is many levels deep
+            while not isinstance(items, str) and len(items) == 1:
+                items = items[0]
+            self._md_file.new_paragraph()
+            self._md_file.new_list(items)
 
     def _get_controls(self, control_handle: ControlHandle,
                       control_dict: Dict[str, ControlHandle]) -> Dict[str, ControlHandle]:
@@ -248,7 +267,7 @@ class SSPManager():
                     for prt in part.parts:
                         self._md_file.new_hr()
                         self._md_file.new_header(level=3, title=f'Part {self._get_label(prt)}')
-                        self._md_file.new_line('Add control implementation description here.')
+                        self._md_file.new_line(f'Add control implementation description here for statement {prt.id}')
                         self._md_file.new_paragraph()
         self._md_file.new_hr()
 
@@ -310,16 +329,20 @@ class SSPManager():
 
         # build a convenience dictionary to access control handles by name
         control_dict: Dict[str, ControlHandle] = {}
-        for group in catalog.groups:
-            for control in group.controls:
-                control_handle = ControlHandle(group.id, group.title, control)
-                control_dict = self._get_controls(control_handle, control_dict)
+        if catalog.groups is not None:
+            for group in catalog.groups:
+                if group.controls is not None:
+                    for control in group.controls:
+                        control_handle = ControlHandle(group.id, group.title, control)
+                        control_dict = self._get_controls(control_handle, control_dict)
 
         # get list of control_ids needed by profile
         control_ids: List[str] = []
+        # no need to check since imports is required
         for _import in profile.imports:
-            for include_control in _import.include_controls:
-                control_ids.extend(include_control.with_ids)
+            if _import.include_controls is not None:
+                for include_control in _import.include_controls:
+                    control_ids.extend(include_control.with_ids)
 
         # get list of group id's and associated controls
         needed_group_ids: Set[str] = set()
@@ -334,11 +357,14 @@ class SSPManager():
             (md_path / group_id).mkdir(exist_ok=True)
 
         # assign values to class members for use when writing out the controls
-        param_list = profile.modify.set_parameters
-        self._param_dict = {}
-        for param in param_list:
-            self._param_dict[param.param_id] = param
-        self._alters = profile.modify.alters
+        if profile.modify is not None:
+            if profile.modify.set_parameters is not None:
+                param_list = profile.modify.set_parameters
+                self._param_dict = {}
+                for param in param_list:
+                    self._param_dict[param.param_id] = param
+            self._alters = profile.modify.alters
+
         if bool(yaml_header):
             self._yaml_header = yaml_header
         self._sections = sections
@@ -379,6 +405,15 @@ class SSPManager():
             ii = -1
         return ii, label, prose
 
+    def _strip_bad_chars(self, label):
+        # remove chars that would cause statement regex to fail.  Just letters and digits
+        allowed_chars = string.ascii_letters + string.digits
+        new_label = ''
+        for c in label:
+            if c in allowed_chars:
+                new_label += c
+        return new_label
+
     def _get_implementations(self, control_file: pathlib.Path,
                              component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
         # get implementation requirements associated with a given control and link them to the one component we created
@@ -402,7 +437,9 @@ class SSPManager():
             by_comp.description = prose
             # create a statement to hold the by-component and assign the statement id
             statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
-            statement.statement_id = f'{control_id}_smt.{part_label}'
+            # strip badchars from label
+            clean_label = self._strip_bad_chars(part_label)
+            statement.statement_id = f'{control_id}_smt.{clean_label}'
             statement.by_components = [by_comp]
             # create a new implemented requirement linked to the control id to hold the statement
             imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)
