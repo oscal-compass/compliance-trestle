@@ -16,6 +16,7 @@
 import argparse
 import logging
 import pathlib
+import string
 from typing import Dict, List, Optional, Set, Tuple, Union
 
 from ruamel.yaml import YAML
@@ -387,6 +388,15 @@ class SSPManager():
             ii = -1
         return ii, label, prose
 
+    def _strip_bad_chars(self, label):
+        # remove chars that would cause statement regex to fail.  Just letters and digits
+        allowed_chars = string.ascii_letters + string.digits
+        new_label = ''
+        for c in label:
+            if c in allowed_chars:
+                new_label += c
+        return new_label
+
     def _get_implementations(self, control_file: pathlib.Path,
                              component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
         # get implementation requirements associated with a given control and link them to the one component we created
@@ -410,7 +420,9 @@ class SSPManager():
             by_comp.description = prose
             # create a statement to hold the by-component and assign the statement id
             statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
-            statement.statement_id = f'{control_id}_smt.{part_label}'
+            # strip badchars from label
+            clean_label = self._strip_bad_chars(part_label)
+            statement.statement_id = f'{control_id}_smt.{clean_label}'
             statement.by_components = [by_comp]
             # create a new implemented requirement linked to the control id to hold the statement
             imp_req: ossp.ImplementedRequirement = gens.generate_sample_model(ossp.ImplementedRequirement)

@@ -35,7 +35,7 @@ def setup_for_ssp(include_header: bool, big_profile: bool) -> Tuple[argparse.Nam
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     cat_name = fs.model_name_from_href_path(cat_path)
     if big_profile:
-        prof_path = test_utils.JSON_NIST_DATA_PATH / 'NIST_SP-800-53_rev5_HIGH-baseline_profile.json'
+        prof_path = test_utils.JSON_NIST_DATA_PATH / 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
     else:
         prof_path = test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile.json'
     i = ImportCmd()
@@ -128,7 +128,7 @@ def test_ssp_generator_no_header(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp assemble."""
-    args, _, _ = setup_for_ssp(True, False)
+    args, _, _ = setup_for_ssp(True, True)
     # first create the markdown
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(args) == 0
