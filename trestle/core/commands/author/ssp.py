@@ -145,12 +145,29 @@ class SSPManager():
         self._sections: Dict[str, str] = {}
 
     def _replace_params(self, text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
-        # replace params with assignments from the profile
+        # replace params with assignments from the profile or description info if value is not specified
         if control.params is not None:
             for param in control.params:
+                # set default if no information available for text
+                param_text = f'[{param.id} = no description available]'
                 set_param = param_dict.get(param.id, None)
+                # param value provided so just replace it
                 if set_param is not None:
-                    text = text.replace(param.id, str(set_param.values[0].__root__))
+                    values = [value.__root__ for value in set_param.values]
+                    param_text = values[0] if len(values) == 1 else f"[{', '.join(values)}]"
+                else:
+                    # if select present, use it
+                    if param.select is not None:
+                        param_text = f'{param.id} = '
+                        if param.select.how_many is not None:
+                            param_text += f'{param.select.how_many.value} '
+                        if param.select.choice is not None:
+                            param_text += str(param.select.choice)
+                        param_text = f'[{param_text}]'
+                    # else use the label
+                    if param.label is not None:
+                        param_text = f'[{param.id} = {param.label}]'
+                text = text.replace(param.id, param_text)
 
         # strip {{ }}
         text = text.replace(' {{', '').replace(' }}', '').replace('insert: param, ', '').strip()
@@ -250,7 +267,7 @@ class SSPManager():
                     for prt in part.parts:
                         self._md_file.new_hr()
                         self._md_file.new_header(level=3, title=f'Part {self._get_label(prt)}')
-                        self._md_file.new_line('Add control implementation description here.')
+                        self._md_file.new_line(f'Add control implementation description here for statement {prt.id}')
                         self._md_file.new_paragraph()
         self._md_file.new_hr()
 
