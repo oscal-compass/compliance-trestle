@@ -30,11 +30,14 @@ prof_name = 'my_prof'
 ssp_name = 'my_ssp'
 
 
-def setup_for_ssp() -> Tuple[argparse.Namespace, str]:
+def setup_for_ssp(include_header: bool, big_profile: bool) -> Tuple[argparse.Namespace, str]:
     """Create the markdown ssp content from catalog and profile."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     cat_name = fs.model_name_from_href_path(cat_path)
-    prof_path = test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile.json'
+    if big_profile:
+        prof_path = test_utils.JSON_NIST_DATA_PATH / 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
+    else:
+        prof_path = test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile.json'
     i = ImportCmd()
     args = argparse.Namespace(file=str(cat_path), output=cat_name, verbose=True, regenerate=True)
     assert i._run(args) == 0
@@ -42,15 +45,18 @@ def setup_for_ssp() -> Tuple[argparse.Namespace, str]:
     assert i._run(args) == 0
     yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
     sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence'
-    args = argparse.Namespace(
-        profile=prof_name, output=ssp_name, verbose=True, sections=sections, yaml_header=str(yaml_path)
-    )
+    if include_header:
+        args = argparse.Namespace(
+            profile=prof_name, output=ssp_name, verbose=True, sections=sections, yaml_header=str(yaml_path)
+        )
+    else:
+        args = argparse.Namespace(profile=prof_name, output=ssp_name, verbose=True, sections=sections)
     return args, sections, yaml_path
 
 
-def test_ssp_generator(tmp_trestle_dir: pathlib.Path):
+def test_ssp_generator(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
-    args, sections, yaml_path = setup_for_ssp()
+    args, sections, yaml_path = setup_for_ssp(True, False)
     ssp_cmd = SSPGenerate()
     # run the command for happy path
     assert ssp_cmd._run(args) == 0
@@ -61,9 +67,9 @@ def test_ssp_generator(tmp_trestle_dir: pathlib.Path):
     assert ac_2.exists()
     assert ac_1.stat().st_size > 1000
     assert ac_2.stat().st_size > 2000
+
     with open(yaml_path, 'r', encoding='utf8') as f:
         yaml = YAML(typ='safe')
-
         expected_header = yaml.load(f)
     header, tree = MarkdownValidator.load_markdown_parsetree(ac_1)
     assert tree is not None
@@ -80,9 +86,49 @@ def test_ssp_generator(tmp_trestle_dir: pathlib.Path):
     assert ssp_cmd._run(args) == 1
 
 
-def test_ssp_assemble(tmp_trestle_dir: pathlib.Path):
+def test_ssp_generator_large_profile(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp generator with a large profile."""
+    args, sections, yaml_path = setup_for_ssp(True, True)
+    ssp_cmd = SSPGenerate()
+    # run the command for happy path
+    assert ssp_cmd._run(args) == 0
+    controls_dir = tmp_trestle_dir / ssp_name
+    ac_dir = controls_dir / 'ac'
+    ac_1 = ac_dir / 'ac-1.md'
+    ac_2 = ac_dir / 'ac-2.md'
+    assert ac_1.exists()
+    assert ac_2.exists()
+    assert ac_1.stat().st_size > 1000
+    assert ac_2.stat().st_size > 2000
+    n_expected_groups = 18
+    assert len(list(controls_dir.glob('*'))) == n_expected_groups
+
+
+def test_ssp_generator_no_header(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp generator with no yaml header."""
+    args, sections, yaml_path = setup_for_ssp(False, False)
+    ssp_cmd = SSPGenerate()
+    # run the command for happy path
+    assert ssp_cmd._run(args) == 0
+    ac_dir = tmp_trestle_dir / (ssp_name + '/ac')
+    ac_1 = ac_dir / 'ac-1.md'
+    ac_2 = ac_dir / 'ac-2.md'
+    assert ac_1.exists()
+    assert ac_2.exists()
+    assert ac_1.stat().st_size > 1000
+    assert ac_2.stat().st_size > 2000
+
+    header, tree = MarkdownValidator.load_markdown_parsetree(ac_1)
+    assert tree is not None
+    assert not header
+    header, tree = MarkdownValidator.load_markdown_parsetree(ac_1)
+    assert tree is not None
+    assert not header
+
+
+def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp assemble."""
-    args, _, _ = setup_for_ssp()
+    args, _, _ = setup_for_ssp(True, True)
     # first create the markdown
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(args) == 0
@@ -92,14 +138,14 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path):
     assert ssp_assemble._run(args) == 0
 
 
-def test_ssp_bad_name(tmp_trestle_dir: pathlib.Path):
+def test_ssp_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
     """Test bad output name."""
     args = argparse.Namespace(profile='my_prof', output='catalogs', verbose=True, yaml_header='dummy.yaml')
     ssp_cmd = SSPGenerate()
     assert ssp_cmd._run(args) == 1
 
 
-def test_ssp_bad_dir(tmp_path: pathlib.Path):
+def test_ssp_bad_dir(tmp_path: pathlib.Path) -> None:
     """Test ssp not in trestle project."""
     ssp_cmd = SSPGenerate()
     args = argparse.Namespace(profile='my_prof', output='my_ssp', verbose=True, yaml_header='dummy.yaml')

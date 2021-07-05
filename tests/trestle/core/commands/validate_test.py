@@ -60,15 +60,15 @@ def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> 
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {model_def_file} -m all'
+            testcmd = f'trestle validate {mode} {model_def_file}'
         else:
-            testcmd = f'trestle validate {mode} {model_def_file.parent} -m all'
+            testcmd = f'trestle validate {mode} {model_def_file.parent}'
     elif mode == '-n':
-        testcmd = f'trestle validate -t catalog -n {name} -m all'
+        testcmd = f'trestle validate -t catalog -n {name}'
     elif mode == '-x':
         testcmd = f'trestle validate -t catalog -n {name}'
     else:
-        testcmd = 'trestle validate -a -m all'
+        testcmd = 'trestle validate -a'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -102,15 +102,15 @@ def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {model_def_file} -m all'
+            testcmd = f'trestle validate {mode} {model_def_file}'
         else:
-            testcmd = f'trestle validate {mode} {model_def_file.parent} -m all'
+            testcmd = f'trestle validate {mode} {model_def_file.parent}'
     elif mode == '-n':
-        testcmd = f'trestle validate -t catalog -n {name} -m all'
+        testcmd = f'trestle validate -t catalog -n {name}'
     elif mode == '-x':
         testcmd = f'trestle validate -t catalog -n {name}'
     else:
-        testcmd = 'trestle validate -a -m all'
+        testcmd = 'trestle validate -a'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -143,15 +143,15 @@ def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir:
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {ap_path} -m refs'
+            testcmd = f'trestle validate {mode} {ap_path}'
         else:
-            testcmd = f'trestle validate {mode} {ap_path.parent} -m refs'
+            testcmd = f'trestle validate {mode} {ap_path.parent}'
     elif mode == '-n':
-        testcmd = f'trestle validate -t assessment-plan -n {name} -m refs'
+        testcmd = f'trestle validate -t assessment-plan -n {name}'
     elif mode == '-t':
-        testcmd = 'trestle validate -t assessment-plan -m refs'
+        testcmd = 'trestle validate -t assessment-plan'
     else:
-        testcmd = 'trestle validate -a -m refs'
+        testcmd = 'trestle validate -a'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -168,7 +168,7 @@ def test_oscal_version_validator(tmp_trestle_dir: pathlib.Path, sample_catalog_m
     mycat_dir = tmp_trestle_dir / 'catalogs/mycat'
     mycat_dir.mkdir()
     sample_catalog_minimal.oscal_write(mycat_dir / 'catalog.json')
-    testcmd = 'trestle validate -t catalog -m oscal_version'
+    testcmd = 'trestle validate -t catalog'
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()
