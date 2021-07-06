@@ -3,6 +3,18 @@
 
 <!--next-version-placeholder-->
 
+## v0.19.0 (2021-07-06)
+### Feature
+* Merge pull request #611 from IBM/develop ([`0e9a4c5`](https://github.com/IBM/compliance-trestle/commit/0e9a4c51f75470c202efa53b625e3181bd31254c))
+* Remove validate mode option and yaml_header optional in ssp-gen ([#607](https://github.com/IBM/compliance-trestle/issues/607)) ([`3a5e104`](https://github.com/IBM/compliance-trestle/commit/3a5e104d100feaad5334e8ee3231bdd6e93bbf82))
+* Restore oscal write to use windows newlines on windows ([#608](https://github.com/IBM/compliance-trestle/issues/608)) ([`b7d8345`](https://github.com/IBM/compliance-trestle/commit/b7d83458a233204b52e4271ee908392870992d5c))
+* Remove target model from trestle with OSCAL 1.0.0 release ([#595](https://github.com/IBM/compliance-trestle/issues/595)) ([`ececd37`](https://github.com/IBM/compliance-trestle/commit/ececd3792281b08bf26831acee1254bd24338815))
+
+### Fix
+* Remove incorrect scc_check_version in tanium transformer ([#591](https://github.com/IBM/compliance-trestle/issues/591)) ([`4c59eda`](https://github.com/IBM/compliance-trestle/commit/4c59edacfcacef2921711642776126a9b4e6a386))
+* Duplicate oscal classes and reordered.  oscal_write line ending ([#592](https://github.com/IBM/compliance-trestle/issues/592)) ([`ddaeece`](https://github.com/IBM/compliance-trestle/commit/ddaeecebbf884f7b96509e3c75d798f65472278a))
+* Ensure line endings do not change ([#593](https://github.com/IBM/compliance-trestle/issues/593)) ([`82fcab3`](https://github.com/IBM/compliance-trestle/commit/82fcab3ea5e4b06b6ff31a6e2749b30729cfd48d))
+
 ## v0.18.1 (2021-06-17)
 ### Fix
 * Small scale fixes to the author validation system. (#572) ([#573](https://github.com/IBM/compliance-trestle/issues/573)) ([`04e16cc`](https://github.com/IBM/compliance-trestle/commit/04e16ccd508607eadb2c0ab4db69fb324cf0e24c))
