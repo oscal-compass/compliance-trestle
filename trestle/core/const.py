@@ -25,7 +25,6 @@ TRESTLE_KEEP_FILE = '.keep'
 MODEL_TYPE_TO_MODEL_MODULE = {
     'catalogs': f'{PACKAGE_OSCAL}.catalog',
     'profiles': f'{PACKAGE_OSCAL}.profile',
-    'target-definitions': f'{PACKAGE_OSCAL}.target',
     'component-definitions': f'{PACKAGE_OSCAL}.component',
     'system-security-plans': f'{PACKAGE_OSCAL}.ssp',
     'assessment-plans': f'{PACKAGE_OSCAL}.assessment_plan',
@@ -35,7 +34,6 @@ MODEL_TYPE_TO_MODEL_MODULE = {
 MODEL_TYPE_TO_MODEL_DIR = {
     'catalog': 'catalogs',
     'profile': 'profiles',
-    'target-definition': 'target-definitions',
     'component-definition': 'component-definitions',
     'system-security-plan': 'system-security-plans',
     'assessment-plan': 'assessment-plans',
@@ -48,7 +46,6 @@ ALIAS_PATH_SEPARATOR: str = '.'
 MODEL_TYPE_LIST = [
     'catalog',
     'profile',
-    'target-definition',
     'component-definition',
     'system-security-plan',
     'assessment-plan',
@@ -87,7 +84,6 @@ ARG_ITEM_SHORT = 'i'
 ARG_DESC_ITEM = 'Item used'
 
 VAL_MODE_DUPLICATES = 'duplicates'
-VAL_MODE_NCNAME = 'ncname'
 VAL_MODE_REFS = 'refs'
 VAL_MODE_ALL = 'all'
 VAL_MODE_OSCAL_VERSION = 'oscal_version'
@@ -104,4 +100,5 @@ WEBSITE_ROOT = 'https://ibm.github.io/compliance-trestle'
 
 BUG_REPORT = 'https://github.com/IBM/compliance-trestle/issues/new/choose'
 
-NCNAME_REGEX = r'^[a-zA-Z_][\w.-]*$'
+# Sample objects
+SAMPLE_UUID_STR = 'A0000000-0000-4000-8000-000000000000'

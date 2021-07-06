@@ -37,7 +37,7 @@
             {
                 "id": "pe-21_smt",
                 "name": "statement",
-                "prose": "Employ {{ pe-21_prm_1 }} against electromagnetic pulse damage for {{ pe-21_prm_2 }}."
+                "prose": "Employ {{ insert: param, pe-21_prm_1 }} against electromagnetic pulse damage for {{ insert: param, pe-21_prm_2 }}."
             },
             {
                 "id": "pe-21_gdn",

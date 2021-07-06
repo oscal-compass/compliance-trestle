@@ -143,7 +143,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Provide the means to associate {{ ac-16_prm_1 }} with {{ ac-16_prm_2 }} for information in storage, in process, and/or in transmission;"
+                        "prose": "Provide the means to associate {{ insert: param, ac-16_prm_1 }} with {{ insert: param, ac-16_prm_2 }} for information in storage, in process, and/or in transmission;"
                     },
                     {
                         "id": "ac-16_smt.b",
@@ -165,7 +165,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Establish the following permitted security and privacy attributes from the attributes defined in [AC-16a](#ac-16_smt.a) for {{ ac-16_prm_3 }}: {{ ac-16_prm_4 }};"
+                        "prose": "Establish the following permitted security and privacy attributes from the attributes defined in [AC-16a](#ac-16_smt.a) for {{ insert: param, ac-16_prm_3 }}: {{ insert: param, ac-16_prm_4 }};"
                     },
                     {
                         "id": "ac-16_smt.d",
@@ -176,7 +176,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Determine the following permitted attribute values or ranges for each of the established attributes: {{ ac-16_prm_5 }};"
+                        "prose": "Determine the following permitted attribute values or ranges for each of the established attributes: {{ insert: param, ac-16_prm_5 }};"
                     },
                     {
                         "id": "ac-16_smt.e",
@@ -198,7 +198,7 @@
                                 "value": "f."
                             }
                         ],
-                        "prose": "Review {{ ac-16_prm_6 }} for applicability {{ ac-16_prm_7 }}."
+                        "prose": "Review {{ insert: param, ac-16_prm_6 }} for applicability {{ insert: param, ac-16_prm_7 }}."
                     }
                 ]
             },
@@ -243,7 +243,7 @@
                     {
                         "id": "ac-16.1_smt",
                         "name": "statement",
-                        "prose": "Dynamically associate security and privacy attributes with {{ ac-16.1_prm_1 }} in accordance with the following security and privacy policies as information is created and combined: {{ ac-16.1_prm_2 }}."
+                        "prose": "Dynamically associate security and privacy attributes with {{ insert: param, ac-16.1_prm_1 }} in accordance with the following security and privacy policies as information is created and combined: {{ insert: param, ac-16.1_prm_2 }}."
                     },
                     {
                         "id": "ac-16.1_gdn",
@@ -319,7 +319,7 @@
                     {
                         "id": "ac-16.3_smt",
                         "name": "statement",
-                        "prose": "Maintain the association and integrity of {{ ac-16.3_prm_1 }} to {{ ac-16.3_prm_2 }}."
+                        "prose": "Maintain the association and integrity of {{ insert: param, ac-16.3_prm_1 }} to {{ insert: param, ac-16.3_prm_2 }}."
                     },
                     {
                         "id": "ac-16.3_gdn",
@@ -362,7 +362,7 @@
                     {
                         "id": "ac-16.4_smt",
                         "name": "statement",
-                        "prose": "Provide the capability to associate {{ ac-16.4_prm_1 }} with {{ ac-16.4_prm_2 }} by authorized individuals (or processes acting on behalf of individuals)."
+                        "prose": "Provide the capability to associate {{ insert: param, ac-16.4_prm_1 }} with {{ insert: param, ac-16.4_prm_2 }} by authorized individuals (or processes acting on behalf of individuals)."
                     },
                     {
                         "id": "ac-16.4_gdn",
@@ -405,7 +405,7 @@
                     {
                         "id": "ac-16.5_smt",
                         "name": "statement",
-                        "prose": "Display security and privacy attributes in human-readable form on each object that the system transmits to output devices to identify {{ ac-16.5_prm_1 }} using {{ ac-16.5_prm_2 }}."
+                        "prose": "Display security and privacy attributes in human-readable form on each object that the system transmits to output devices to identify {{ insert: param, ac-16.5_prm_1 }} using {{ insert: param, ac-16.5_prm_2 }}."
                     },
                     {
                         "id": "ac-16.5_gdn",
@@ -452,7 +452,7 @@
                     {
                         "id": "ac-16.6_smt",
                         "name": "statement",
-                        "prose": "Require personnel to associate and maintain the association of {{ ac-16.6_prm_1 }} with {{ ac-16.6_prm_2 }} in accordance with {{ ac-16.6_prm_3 }}."
+                        "prose": "Require personnel to associate and maintain the association of {{ insert: param, ac-16.6_prm_1 }} with {{ insert: param, ac-16.6_prm_2 }} in accordance with {{ insert: param, ac-16.6_prm_3 }}."
                     },
                     {
                         "id": "ac-16.6_gdn",
@@ -532,12 +532,12 @@
                     {
                         "id": "ac-16.8_smt",
                         "name": "statement",
-                        "prose": "Implement {{ ac-16.8_prm_1 }} in associating security and privacy attributes to information."
+                        "prose": "Implement {{ insert: param, ac-16.8_prm_1 }} in associating security and privacy attributes to information."
                     },
                     {
                         "id": "ac-16.8_gdn",
                         "name": "guidance",
-                        "prose": "\u00a0 The association of security and privacy attributes to information within systems is important for conducting automated access enforcement and flow enforcement actions. The association of such attributes to information (i.e., binding) can be accomplished with technologies and techniques that provide different levels of assurance. For example, systems can cryptographically bind attributes to information using digital signatures that support cryptographic keys protected by hardware devices (sometimes known as hardware roots of trust)."
+                        "prose": "The association of security and privacy attributes to information within systems is important for conducting automated access enforcement and flow enforcement actions. The association of such attributes to information (i.e., binding) can be accomplished with technologies and techniques that provide different levels of assurance. For example, systems can cryptographically bind attributes to information using digital signatures that support cryptographic keys protected by hardware devices (sometimes known as hardware roots of trust)."
                     }
                 ]
             },
@@ -571,7 +571,7 @@
                     {
                         "id": "ac-16.9_smt",
                         "name": "statement",
-                        "prose": "Change security and privacy attributes associated with information only via regrading mechanisms validated using {{ ac-16.9_prm_1 }}."
+                        "prose": "Change security and privacy attributes associated with information only via regrading mechanisms validated using {{ insert: param, ac-16.9_prm_1 }}."
                     },
                     {
                         "id": "ac-16.9_gdn",
@@ -598,26 +598,6 @@
                     {
                         "href": "#ac-16",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#2956e175-f674-43f4-b1b9-e074ad9fc39c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#388a3aa2-5d85-4bad-b8a3-77db80d63c4f",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

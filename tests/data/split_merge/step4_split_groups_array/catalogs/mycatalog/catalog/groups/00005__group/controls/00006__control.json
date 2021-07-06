@@ -91,7 +91,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Establish an alternate processing site, including necessary agreements to permit the transfer and resumption of {{ cp-7_prm_1 }} for essential mission and business functions within {{ cp-7_prm_2 }} when the primary processing capabilities are unavailable;"
+                        "prose": "Establish an alternate processing site, including necessary agreements to permit the transfer and resumption of {{ insert: param, cp-7_prm_1 }} for essential mission and business functions within {{ insert: param, cp-7_prm_2 }} when the primary processing capabilities are unavailable;"
                     },
                     {
                         "id": "cp-7_smt.b",
@@ -319,10 +319,6 @@
                     {
                         "href": "#cp-7",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#bc39f179-c735-4da2-b7a7-b2b622119755",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

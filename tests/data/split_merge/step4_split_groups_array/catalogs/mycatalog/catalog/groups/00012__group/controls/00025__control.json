@@ -86,7 +86,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Tracking mechanisms to ensure all complaints received are reviewed and addressed within {{ pm-26_prm_1 }};"
+                        "prose": "Tracking mechanisms to ensure all complaints received are reviewed and addressed within {{ insert: param, pm-26_prm_1 }};"
                     },
                     {
                         "id": "pm-26_smt.d",
@@ -97,7 +97,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Acknowledgement of receipt of complaints, concerns, or questions from individuals within {{ pm-26_prm_2 }}; and"
+                        "prose": "Acknowledgement of receipt of complaints, concerns, or questions from individuals within {{ insert: param, pm-26_prm_2 }}; and"
                     },
                     {
                         "id": "pm-26_smt.e",
@@ -108,7 +108,7 @@
                                 "value": "e."
                             }
                         ],
-                        "prose": "Response to complaints, concerns, or questions from individuals within {{ pm-26_prm_3 }}."
+                        "prose": "Response to complaints, concerns, or questions from individuals within {{ insert: param, pm-26_prm_3 }}."
                     }
                 ]
             },

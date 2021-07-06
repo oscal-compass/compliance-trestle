@@ -33,7 +33,6 @@ from trestle.oscal import component
 from trestle.oscal import poam
 from trestle.oscal import profile
 from trestle.oscal import ssp
-from trestle.oscal import target
 from trestle.utils import fs
 from trestle.utils import log
 from trestle.utils.load_distributed import load_distributed
@@ -48,8 +47,7 @@ TLO = TypeVar(
     component.ComponentDefinition,
     poam.PlanOfActionAndMilestones,
     profile.Profile,
-    ssp.SystemSecurityPlan,
-    target.TargetDefinition
+    ssp.SystemSecurityPlan
 )
 
 
@@ -70,15 +68,6 @@ class ProfileCmd(CommandPlusDocs):
 
     def _run(self, args: argparse.Namespace) -> int:
         return AssembleCmd.assemble_model(self.name, profile.Profile, args)
-
-
-class TargetDefinitionCmd(CommandPlusDocs):
-    """Assemble a target definition."""
-
-    name = 'target-definition'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return AssembleCmd.assemble_model(self.name, target.TargetDefinition, args)
 
 
 class ComponentDefinitionCmd(CommandPlusDocs):
@@ -134,7 +123,6 @@ class AssembleCmd(CommandPlusDocs):
     subcommands = [
         CatalogCmd,
         ProfileCmd,
-        TargetDefinitionCmd,
         ComponentDefinitionCmd,
         SystemSecurityPlanCmd,
         AssessmentPlanCmd,

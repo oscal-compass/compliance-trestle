@@ -41,7 +41,7 @@
             {
                 "id": "cp-13_smt",
                 "name": "statement",
-                "prose": "Employ {{ cp-13_prm_1 }} for satisfying {{ cp-13_prm_2 }} when the primary means of implementing the security function is unavailable or compromised."
+                "prose": "Employ {{ insert: param, cp-13_prm_1 }} for satisfying {{ insert: param, cp-13_prm_2 }} when the primary means of implementing the security function is unavailable or compromised."
             },
             {
                 "id": "cp-13_gdn",

@@ -55,7 +55,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Determine and document the {{ pe-17_prm_1 }} allowed for use by employees;"
+                        "prose": "Determine and document the {{ insert: param, pe-17_prm_1 }} allowed for use by employees;"
                     },
                     {
                         "id": "pe-17_smt.b",
@@ -66,7 +66,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Employ the following controls at alternate work sites: {{ pe-17_prm_2 }};"
+                        "prose": "Employ the following controls at alternate work sites: {{ insert: param, pe-17_prm_2 }};"
                     },
                     {
                         "id": "pe-17_smt.c",

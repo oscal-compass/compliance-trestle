@@ -29,7 +29,7 @@
             {
                 "id": "sc-27_smt",
                 "name": "statement",
-                "prose": "Include within organizational systems the following platform independent applications: {{ sc-27_prm_1 }}."
+                "prose": "Include within organizational systems the following platform independent applications: {{ insert: param, sc-27_prm_1 }}."
             },
             {
                 "id": "sc-27_gdn",

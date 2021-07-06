@@ -75,7 +75,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Authorize and control {{ pe-16_prm_1 }} entering and exiting the facility; and"
+                        "prose": "Authorize and control {{ insert: param, pe-16_prm_1 }} entering and exiting the facility; and"
                     },
                     {
                         "id": "pe-16_smt.b",

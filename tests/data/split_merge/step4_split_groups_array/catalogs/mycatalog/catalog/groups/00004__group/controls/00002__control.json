@@ -15,10 +15,10 @@
             {
                 "id": "cm-3_prm_3",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
-                        " {{ cm-3_prm_4 }} ",
-                        "when {{ cm-3_prm_5 }} "
+                        " {{ insert: param, cm-3_prm_4 }} ",
+                        "when {{ insert: param, cm-3_prm_5 }} "
                     ]
                 }
             },
@@ -207,7 +207,7 @@
                                 "value": "e."
                             }
                         ],
-                        "prose": "Retain records of configuration-controlled changes to the system for {{ cm-3_prm_1 }};"
+                        "prose": "Retain records of configuration-controlled changes to the system for {{ insert: param, cm-3_prm_1 }};"
                     },
                     {
                         "id": "cm-3_smt.f",
@@ -229,7 +229,7 @@
                                 "value": "g."
                             }
                         ],
-                        "prose": "Coordinate and provide oversight for configuration change control activities through {{ cm-3_prm_2 }} that convenes {{ cm-3_prm_3 }}."
+                        "prose": "Coordinate and provide oversight for configuration change control activities through {{ insert: param, cm-3_prm_2 }} that convenes {{ insert: param, cm-3_prm_3 }}."
                     }
                 ]
             },
@@ -282,7 +282,7 @@
                     {
                         "id": "cm-3.1_smt",
                         "name": "statement",
-                        "prose": "Use {{ cm-3.1_prm_1 }} to:",
+                        "prose": "Use {{ insert: param, cm-3.1_prm_1 }} to:",
                         "parts": [
                             {
                                 "id": "cm-3.1_smt.a",
@@ -304,7 +304,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Notify {{ cm-3.1_prm_2 }} of proposed changes to the system and request change approval;"
+                                "prose": "Notify {{ insert: param, cm-3.1_prm_2 }} of proposed changes to the system and request change approval;"
                             },
                             {
                                 "id": "cm-3.1_smt.c",
@@ -315,7 +315,7 @@
                                         "value": "(c)"
                                     }
                                 ],
-                                "prose": "Highlight proposed changes to the system that have not been approved or disapproved within {{ cm-3.1_prm_3 }};"
+                                "prose": "Highlight proposed changes to the system that have not been approved or disapproved within {{ insert: param, cm-3.1_prm_3 }};"
                             },
                             {
                                 "id": "cm-3.1_smt.d",
@@ -348,7 +348,7 @@
                                         "value": "(f)"
                                     }
                                 ],
-                                "prose": "Notify {{ cm-3.1_prm_4 }} when approved changes to the system are completed."
+                                "prose": "Notify {{ insert: param, cm-3.1_prm_4 }} when approved changes to the system are completed."
                             }
                         ]
                     },
@@ -422,7 +422,7 @@
                     {
                         "id": "cm-3.3_smt",
                         "name": "statement",
-                        "prose": "Implement changes to the current system baseline and deploy the updated baseline across the installed base using {{ cm-3.3_prm_1 }}."
+                        "prose": "Implement changes to the current system baseline and deploy the updated baseline across the installed base using {{ insert: param, cm-3.3_prm_1 }}."
                     },
                     {
                         "id": "cm-3.3_gdn",
@@ -465,7 +465,7 @@
                     {
                         "id": "cm-3.4_smt",
                         "name": "statement",
-                        "prose": "Require {{ cm-3.4_prm_1 }} to be members of the {{ cm-3.4_prm_2 }}."
+                        "prose": "Require {{ insert: param, cm-3.4_prm_1 }} to be members of the {{ insert: param, cm-3.4_prm_2 }}."
                     },
                     {
                         "id": "cm-3.4_gdn",
@@ -504,7 +504,7 @@
                     {
                         "id": "cm-3.5_smt",
                         "name": "statement",
-                        "prose": "Implement the following security responses automatically if baseline configurations are changed in an unauthorized manner: {{ cm-3.5_prm_1 }}."
+                        "prose": "Implement the following security responses automatically if baseline configurations are changed in an unauthorized manner: {{ insert: param, cm-3.5_prm_1 }}."
                     },
                     {
                         "id": "cm-3.5_gdn",
@@ -547,7 +547,7 @@
                     {
                         "id": "cm-3.6_smt",
                         "name": "statement",
-                        "prose": "Ensure that cryptographic mechanisms used to provide the following controls are under configuration management: {{ cm-3.6_prm_1 }}."
+                        "prose": "Ensure that cryptographic mechanisms used to provide the following controls are under configuration management: {{ insert: param, cm-3.6_prm_1 }}."
                     },
                     {
                         "id": "cm-3.6_gdn",
@@ -602,7 +602,7 @@
                     {
                         "id": "cm-3.7_smt",
                         "name": "statement",
-                        "prose": "Review changes to the system {{ cm-3.7_prm_1 }} or when {{ cm-3.7_prm_2 }} to determine whether unauthorized changes have occurred."
+                        "prose": "Review changes to the system {{ insert: param, cm-3.7_prm_1 }} or when {{ insert: param, cm-3.7_prm_2 }} to determine whether unauthorized changes have occurred."
                     },
                     {
                         "id": "cm-3.7_gdn",
@@ -635,25 +635,13 @@
                     {
                         "href": "#cm-3",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#0f66be67-85e7-4ca6-bd19-39453e9f4394",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#20db4e66-e257-450c-b2e4-2bb9a62a2c88",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#98d415ca-7281-4064-9931-0c366637e324",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "cm-3.8_smt",
                         "name": "statement",
-                        "prose": "Prevent or restrict changes to the configuration of the system under the following circumstances: {{ cm-3.8_prm_1 }}."
+                        "prose": "Prevent or restrict changes to the configuration of the system under the following circumstances: {{ insert: param, cm-3.8_prm_1 }}."
                     },
                     {
                         "id": "cm-3.8_gdn",

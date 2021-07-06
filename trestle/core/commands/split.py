@@ -37,14 +37,16 @@ logger = logging.getLogger(__name__)
 
 def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
     """Determine if the element path list goes too fine, e.g. individual strings."""
-    for split_path in split_paths.split(','):
-        model = get_singular_model_from_json(split_path, model_obj)
-        if type(model) in [dict, list]:
-            return False
-        if utils.is_collection_field_type(model):
-            return False
-        if model.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float']:
-            return True
+    # FIXME this is not working with oscal 1.0.0
+    if split_paths == 'FIXME_DUMMY_STRING_FORCE_NOT_RUN':
+        for split_path in split_paths.split(','):
+            model = get_singular_model_from_json(split_path, model_obj)
+            if type(model) in [dict, list]:
+                return False
+            if utils.is_collection_field_type(model):
+                return False
+            if model.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float']:
+                return True
     return False
 
 
@@ -155,21 +157,21 @@ class SplitCmd(CommandPlusDocs):
 
         It returns the index where the chain of path ends.
 
-        For example, element paths could have a list of paths as below for a `TargetDefinition` model where
+        For example, element paths could have a list of paths as below for a `ComponentDefinition` model where
         the first path is the start of the chain.
 
-        For each of the sub model described by the first element path (e.g target-defintion.targets.*) in the chain,
-        the subsequent paths (e.g. target.target-control-implementations.*) will be applied recursively to retrieve
+        For each of the sub model described by the first element path (e.g component-defintion.components.*) in the
+        chain, the subsequent paths (e.g component.control-implementations.*) will be applied recursively to retrieve
         the sub-sub models:
         [
-            'target-definition.targets.*',
-            'target.target-control-implementations.*'
+            'component-definition.componet.*',
+            'component.control-implementations.*'
         ]
         for a command like below:
-           trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*
+           trestle split -f component.yaml -e component-definition.components.*.control-implementations.*
         """
         # assume we ran the command below:
-        # trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*
+        # trestle split -f component.yaml -e component-definition.components.*.control-implementations.*
 
         if split_plan is None:
             raise TrestleError('Split plan must have been initialized')
@@ -216,9 +218,6 @@ class SplitCmd(CommandPlusDocs):
         path_chain_end = cur_path_index
 
         # if wildcard is present in the element_path and the next path in the chain has current path as the parent,
-        # we need to split recursively and create separate file for each sub item
-        # for example, in the first round we get the `targets` using the path `target-definition.targets.*`
-        # so, now we need to split each of the target recursively. Note that target is an instance of dict
         # However, there can be other sub_model, which is of type list
         if is_parent and element_path.get_last() is not ElementPath.WILDCARD:
             # create dir for all sub model items
@@ -251,13 +250,13 @@ class SplitCmd(CommandPlusDocs):
                 sub_model_item = sub_model_items[key]
 
                 # recursively split the sub-model if there are more element paths to traverse
-                # e.g. split target.target-control-implementations.*
+                # e.g. split component.control-implementations.*
                 require_recursive_split = cur_path_index + 1 < len(element_paths) and element_paths[
                     cur_path_index + 1].get_parent() == element_path
 
                 if require_recursive_split:
                     # prepare individual directory for each sub-model
-                    # e.g. `targets/<UUID>__target/`
+                    # FIXME: check for redundant dict behaviour.
                     sub_root_file_name = cmd_utils.to_model_file_name(sub_model_item, prefix, content_type)
                     sub_model_plan = Plan()
 
@@ -320,11 +319,6 @@ class SplitCmd(CommandPlusDocs):
 
         It returns a plan for the operation
         """
-        # assume we ran the command below:
-        # trestle split -f target.yaml
-        #   -e 'target-definition.metadata,
-        #   target-definition.targets.*.target-control-implementations.*'
-
         # initialize plan
         split_plan = Plan()
 

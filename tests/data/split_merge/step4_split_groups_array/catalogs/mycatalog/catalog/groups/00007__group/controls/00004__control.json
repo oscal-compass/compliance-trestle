@@ -27,6 +27,14 @@
                 "rel": "related"
             },
             {
+                "href": "#ir-4",
+                "rel": "related"
+            },
+            {
+                "href": "#ir-6",
+                "rel": "related"
+            },
+            {
                 "href": "#ir-8",
                 "rel": "related"
             },
@@ -96,25 +104,13 @@
                     {
                         "href": "#ir-5",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#49b8aa2d-a88c-4bff-9f20-876ccb8f7dcb",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#au-7",
-                        "rel": "related"
-                    },
-                    {
-                        "href": "#ir-4",
-                        "rel": "related"
                     }
                 ],
                 "parts": [
                     {
                         "id": "ir-5.1_smt",
                         "name": "statement",
-                        "prose": "Track incidents and collect and analyze incident information using {{ ir-5.1_prm_1 }}."
+                        "prose": "Track incidents and collect and analyze incident information using {{ insert: param, ir-5.1_prm_1 }}."
                     },
                     {
                         "id": "ir-5.1_gdn",

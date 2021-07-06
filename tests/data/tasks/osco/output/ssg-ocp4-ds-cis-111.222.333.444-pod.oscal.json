@@ -7,36 +7,32 @@
       "start": "2021-02-24T19:31:13.000+00:00",
       "end": "2021-02-24T19:31:13.000+00:00",
       "local-definitions": {
-        "components": {
-          "56666738-0f9a-4e38-9aac-c0fad00a5821": {
+        "components": [
+          {
+            "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
             "type": "Service",
-            "title": "Red Hat OpenShift Kubernetes Service Compliance Operator for OCP4",
-            "description": "Red Hat OpenShift Kubernetes Service Compliance Operator for OCP4",
+            "title": "Red Hat OpenShift Kubernetes Service Compliance Operator for ocp4",
+            "description": "Red Hat OpenShift Kubernetes Service Compliance Operator for ocp4",
             "status": {
               "state": "operational"
             }
           }
-        },
+        ],
         "inventory-items": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
             "description": "inventory",
             "props": [
               {
-                "name": "node",
-                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
-                "value": "111.222.333.444"
-              },
-              {
-                "name": "name",
-                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
-                "value": "ssg-ocp4-ds-cis-111.222.333.444-pod"
-              },
-              {
                 "name": "target",
                 "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
                 "value": "kube-br7qsa3d0vceu2so1a90-roksopensca-default-0000026b.iks.mycorp",
                 "class": "scc_inventory_item_id"
+              },
+              {
+                "name": "target_type",
+                "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
+                "value": "ocp4"
               }
             ],
             "implemented-components": [
@@ -125,7 +121,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -203,7 +199,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -281,7 +277,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -359,7 +355,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -437,7 +433,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -515,7 +511,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -593,7 +589,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -671,7 +667,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -749,7 +745,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -827,7 +823,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -905,7 +901,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -983,7 +979,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -1061,7 +1057,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -1139,7 +1135,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -1217,7 +1213,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -1295,7 +1291,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -1373,7 +1369,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -1451,7 +1447,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -1529,7 +1525,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -1607,7 +1603,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -1685,7 +1681,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -1763,7 +1759,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -1841,7 +1837,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -1919,7 +1915,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -1997,7 +1993,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -2075,7 +2071,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -2153,7 +2149,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -2231,7 +2227,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -2309,7 +2305,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -2387,7 +2383,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -2465,7 +2461,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -2543,7 +2539,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -2621,7 +2617,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -2699,7 +2695,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -2777,7 +2773,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -2855,7 +2851,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -2933,7 +2929,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -3011,7 +3007,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -3089,7 +3085,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -3167,7 +3163,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -3245,7 +3241,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -3323,7 +3319,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -3401,7 +3397,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -3479,7 +3475,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -3557,7 +3553,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -3635,7 +3631,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -3713,7 +3709,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -3791,7 +3787,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -3869,7 +3865,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -3947,7 +3943,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -4025,7 +4021,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -4103,7 +4099,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -4181,7 +4177,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -4259,7 +4255,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -4337,7 +4333,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -4415,7 +4411,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -4493,7 +4489,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -4571,7 +4567,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -4649,7 +4645,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -4727,7 +4723,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -4805,7 +4801,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -4883,7 +4879,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -4961,7 +4957,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -5039,7 +5035,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -5117,7 +5113,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -5195,7 +5191,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -5273,7 +5269,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -5351,7 +5347,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -5429,7 +5425,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -5507,7 +5503,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -5585,7 +5581,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -5663,7 +5659,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -5741,7 +5737,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -5819,7 +5815,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -5897,7 +5893,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -5975,7 +5971,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -6053,7 +6049,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -6131,7 +6127,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -6209,7 +6205,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -6287,7 +6283,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -6365,7 +6361,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -6443,7 +6439,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -6521,7 +6517,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -6599,7 +6595,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -6677,7 +6673,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -6755,7 +6751,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -6833,7 +6829,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -6911,7 +6907,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -6989,7 +6985,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -7067,7 +7063,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -7145,7 +7141,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -7223,7 +7219,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -7301,7 +7297,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -7379,7 +7375,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -7457,7 +7453,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -7535,7 +7531,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -7613,7 +7609,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -7691,7 +7687,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -7769,7 +7765,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -7847,7 +7843,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -7925,7 +7921,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -8003,7 +7999,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -8081,7 +8077,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -8159,7 +8155,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -8237,7 +8233,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -8315,7 +8311,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -8393,7 +8389,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -8471,7 +8467,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -8549,7 +8545,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -8627,7 +8623,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -8705,7 +8701,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -8783,7 +8779,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -8861,7 +8857,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -8939,7 +8935,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -9017,7 +9013,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -9095,7 +9091,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -9173,7 +9169,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -9251,7 +9247,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -9329,7 +9325,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -9407,7 +9403,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -9485,7 +9481,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -9563,7 +9559,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -9641,7 +9637,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -9719,7 +9715,7 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
@@ -9797,18 +9793,11 @@
           ],
           "subjects": [
             {
-              "uuid-ref": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+              "subject-uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
               "type": "inventory-item"
             }
           ],
           "collected": "2021-02-24T19:31:13.000+00:00"
-        }
-      ],
-      "findings": [
-        {
-          "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-          "title": "",
-          "description": ""
         }
       ]
     }

@@ -37,7 +37,7 @@
             {
                 "id": "si-23_smt",
                 "name": "statement",
-                "prose": "Based on {{ si-23_prm_1 }}:",
+                "prose": "Based on {{ insert: param, si-23_prm_1 }}:",
                 "parts": [
                     {
                         "id": "si-23_smt.a",
@@ -48,7 +48,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Fragment the following information: {{ si-23_prm_2 }}; and"
+                        "prose": "Fragment the following information: {{ insert: param, si-23_prm_2 }}; and"
                     },
                     {
                         "id": "si-23_smt.b",
@@ -59,7 +59,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Distribute the fragmented information across the following systems or system components: {{ si-23_prm_3 }}."
+                        "prose": "Distribute the fragmented information across the following systems or system components: {{ insert: param, si-23_prm_3 }}."
                     }
                 ]
             },

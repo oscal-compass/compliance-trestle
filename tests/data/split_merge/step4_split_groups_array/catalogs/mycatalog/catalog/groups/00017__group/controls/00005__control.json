@@ -11,11 +11,11 @@
             {
                 "id": "sc-6_prm_2",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "priority",
                         "quota",
-                        " {{ sc-6_prm_3 }} "
+                        " {{ insert: param, sc-6_prm_3 }} "
                     ]
                 }
             },
@@ -53,7 +53,7 @@
             {
                 "id": "sc-6_smt",
                 "name": "statement",
-                "prose": "Protect the availability of resources by allocating {{ sc-6_prm_1 }} by {{ sc-6_prm_2 }}."
+                "prose": "Protect the availability of resources by allocating {{ insert: param, sc-6_prm_1 }} by {{ insert: param, sc-6_prm_2 }}."
             },
             {
                 "id": "sc-6_gdn",

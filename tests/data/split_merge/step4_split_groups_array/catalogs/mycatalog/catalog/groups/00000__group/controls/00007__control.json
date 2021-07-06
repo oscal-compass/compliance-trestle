@@ -51,7 +51,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Display {{ ac-8_prm_1 }} to users before granting access to the system that provides privacy and security notices consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines and state that:",
+                        "prose": "Display {{ insert: param, ac-8_prm_1 }} to users before granting access to the system that provides privacy and security notices consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines and state that:",
                         "parts": [
                             {
                                 "id": "ac-8_smt.a.1",
@@ -130,7 +130,7 @@
                                         "value": "1."
                                     }
                                 ],
-                                "prose": "Display system use information {{ ac-8_prm_2 }}, before granting further access to the publicly accessible system;"
+                                "prose": "Display system use information {{ insert: param, ac-8_prm_2 }}, before granting further access to the publicly accessible system;"
                             },
                             {
                                 "id": "ac-8_smt.c.2",

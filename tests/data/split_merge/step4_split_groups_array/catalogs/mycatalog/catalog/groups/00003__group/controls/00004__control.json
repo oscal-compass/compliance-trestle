@@ -82,7 +82,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Update existing plan of action and milestones {{ ca-5_prm_1 }} based on the findings from control assessments, independent audits or reviews, and continuous monitoring activities."
+                        "prose": "Update existing plan of action and milestones {{ insert: param, ca-5_prm_1 }} based on the findings from control assessments, independent audits or reviews, and continuous monitoring activities."
                     }
                 ]
             },
@@ -117,21 +117,13 @@
                     {
                         "href": "#ca-5",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#482e4c99-9dc4-41ad-bba8-0f3f0032c1f8",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "ca-5.1_smt",
                         "name": "statement",
-                        "prose": "Ensure the accuracy, currency, and availability of the plan of action and milestones for the system using {{ ca-5.1_prm_1 }}."
+                        "prose": "Ensure the accuracy, currency, and availability of the plan of action and milestones for the system using {{ insert: param, ca-5.1_prm_1 }}."
                     },
                     {
                         "id": "ca-5.1_gdn",

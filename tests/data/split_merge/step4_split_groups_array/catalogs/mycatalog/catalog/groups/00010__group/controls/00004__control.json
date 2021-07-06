@@ -45,7 +45,7 @@
             {
                 "id": "pe-5_smt",
                 "name": "statement",
-                "prose": "Control physical access to output from {{ pe-5_prm_1 }} to prevent unauthorized individuals from obtaining the output."
+                "prose": "Control physical access to output from {{ insert: param, pe-5_prm_1 }} to prevent unauthorized individuals from obtaining the output."
             },
             {
                 "id": "pe-5_gdn",
@@ -134,10 +134,6 @@
                     {
                         "href": "#pe-22",
                         "rel": "incorporated-into"
-                    },
-                    {
-                        "href": "#4c501da5-9d79-4cb6-ba80-97260e1ce327",
-                        "rel": "reference"
                     }
                 ]
             }

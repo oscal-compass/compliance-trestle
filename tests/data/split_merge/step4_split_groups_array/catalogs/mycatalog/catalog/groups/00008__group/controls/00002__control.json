@@ -58,7 +58,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Review previously approved system maintenance tools {{ ma-3_prm_1 }}."
+                        "prose": "Review previously approved system maintenance tools {{ insert: param, ma-3_prm_1 }}."
                     }
                 ]
             },
@@ -221,7 +221,7 @@
                                         "value": "(d)"
                                     }
                                 ],
-                                "prose": "Obtaining an exemption from {{ ma-3.3_prm_1 }} explicitly authorizing removal of the equipment from the facility."
+                                "prose": "Obtaining an exemption from {{ insert: param, ma-3.3_prm_1 }} explicitly authorizing removal of the equipment from the facility."
                             }
                         ]
                     },
@@ -336,10 +336,6 @@
                     {
                         "href": "#ma-3",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#a5b1d18d-e670-4586-9e6d-4a88b7ba3df6",
-                        "rel": "reference"
                     },
                     {
                         "href": "#ac-3",

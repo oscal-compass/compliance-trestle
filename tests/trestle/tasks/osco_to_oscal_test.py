@@ -20,238 +20,358 @@ import pathlib
 import uuid
 from unittest.mock import Mock, patch
 
-import trestle.core.const as const
 import trestle.tasks.osco_to_oscal as osco_to_oscal
 import trestle.transforms.implementations.osco as osco
 from trestle.tasks.base_task import TaskOutcome
+from trestle.utils.fs import text_files_equal
 
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
 uuid_mock2 = Mock(return_value=uuid.UUID('46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e'))
 
-def test_osco_print_info(tmpdir):
+
+def test_osco_print_info(tmp_path):
     """Test print_info call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
-    section['output-dir'] = str(tmpdir)
+    section['output-dir'] = str(tmp_path)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.print_info()
     assert retval is None
 
-def test_osco_simulate(tmpdir):
+
+def test_osco_simulate(tmp_path):
     """Test simulate call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
-    section['output-dir'] = str(tmpdir)
+    section['output-dir'] = str(tmp_path)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
-    assert len(os.listdir(str(tmpdir))) == 0
-    
-def test_osco_simulate_compressed(tmpdir):
+    assert len(os.listdir(str(tmp_path))) == 0
+
+
+def test_osco_simulate_compressed(tmp_path):
     """Test simulate call with compressed OSCO xml data."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal-compressed.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal-compressed.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
-    section['output-dir'] = str(tmpdir)
+    section['output-dir'] = str(tmp_path)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
-    assert len(os.listdir(str(tmpdir))) == 0
-    
-def test_osco_simulate_no_config(tmpdir):
+    assert len(os.listdir(str(tmp_path))) == 0
+
+
+def test_osco_simulate_no_config(tmp_path):
     """Test simulate no config call."""
     tgt = osco_to_oscal.OscoToOscal(None)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_FAILURE
-    assert len(os.listdir(str(tmpdir))) == 0
+    assert len(os.listdir(str(tmp_path))) == 0
 
-def test_osco_simulate_no_overwrite(tmpdir):
+
+def test_osco_simulate_no_overwrite(tmp_path):
     """Test simulate no overwrite call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
-    section['output-dir'] = str(tmpdir)
+    section['output-dir'] = str(tmp_path)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    assert len(os.listdir(str(tmpdir))) == 1
+    assert len(os.listdir(str(tmp_path))) == 1
     section['output-overwrite'] = 'false'
-    section['output-dir'] = str(tmpdir)
+    section['output-dir'] = str(tmp_path)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_FAILURE
-    assert len(os.listdir(str(tmpdir))) == 1
+    assert len(os.listdir(str(tmp_path))) == 1
 
-def test_osco_simulate_no_input_dir(tmpdir):
+
+def test_osco_simulate_no_input_dir(tmp_path):
     """Test simulate with no input dir call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal.config')
     config.read(config_path)
     config.remove_option('task.osco-to-oscal', 'input-dir')
     section = config['task.osco-to-oscal']
-    section['output-dir'] = str(tmpdir)
+    section['output-dir'] = str(tmp_path)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_FAILURE
-    assert len(os.listdir(str(tmpdir))) == 0
+    assert len(os.listdir(str(tmp_path))) == 0
 
-def test_osco_simulate_no_ouput_dir(tmpdir):
+
+def test_osco_simulate_no_ouput_dir(tmp_path):
     """Test simulate with no output dir call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal.config')
     config.read(config_path)
     config.remove_option('task.osco-to-oscal', 'output-dir')
     section = config['task.osco-to-oscal']
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_FAILURE
-    assert len(os.listdir(str(tmpdir))) == 0
-    
-def test_osco_simulate_input_fetcher(tmpdir):
+    assert len(os.listdir(str(tmp_path))) == 0
+
+
+def test_osco_simulate_input_fetcher(tmp_path):
     """Test simulate call OSCO fetcher json data."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal-fetcher.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal-fetcher.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
-    section['output-dir'] = str(tmpdir)
+    section['output-dir'] = str(tmp_path)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.simulate()
     assert retval == TaskOutcome.SIM_SUCCESS
-    assert len(os.listdir(str(tmpdir))) == 0
-    
+    assert len(os.listdir(str(tmp_path))) == 0
+
+
+def test_osco_simulate_input_bad_yaml(tmp_path):
+    """Test simulate call OSCO bad yaml data."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal-bad-yaml.config')
+    config.read(config_path)
+    section = config['task.osco-to-oscal']
+    section['output-dir'] = str(tmp_path)
+    tgt = osco_to_oscal.OscoToOscal(section)
+    retval = tgt.simulate()
+    assert retval == TaskOutcome.SIM_FAILURE
+    assert len(os.listdir(str(tmp_path))) == 0
+
+
 @patch(target='uuid.uuid4', new=uuid_mock1)
-def test_osco_execute(tmpdir):
+def test_osco_execute(tmp_path):
     """Test execute call."""
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
-    section['output-dir'] = str(tmpdir)
+    d_expected = pathlib.Path(section['output-dir'])
+    d_produced = tmp_path
+    section['output-dir'] = str(d_produced)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    assert len(os.listdir(str(tmpdir))) == 1
-    f_expected = pathlib.Path('tests/data/tasks/osco/output/') / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    f_produced = tmpdir  / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
+    list_dir = os.listdir(d_produced)
+    assert len(list_dir) == 1
+    for fn in list_dir:
+        f_expected = d_expected / fn
+        f_produced = d_produced / fn
+        result = text_files_equal(f_expected, f_produced)
+        assert (result)
+
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
-def test_osco_execute_compressed(tmpdir):
+def test_osco_execute_compressed(tmp_path):
     """Test execute call with compressed OSCO xml data."""
     osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal-compressed.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal-compressed.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
-    section['output-dir'] = str(tmpdir)
+    d_expected = pathlib.Path(section['output-dir'])
+    d_produced = tmp_path
+    section['output-dir'] = str(d_produced)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    assert len(os.listdir(str(tmpdir))) == 1
-    f_expected = pathlib.Path('tests/data/tasks/osco/output-compressed/') / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    f_produced = tmpdir  / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
-    
-def test_osco_execute_no_config(tmpdir):
+    list_dir = os.listdir(d_produced)
+    assert len(list_dir) == 1
+    for fn in list_dir:
+        f_expected = d_expected / fn
+        f_produced = d_produced / fn
+        result = text_files_equal(f_expected, f_produced)
+        assert (result)
+
+
+def test_osco_execute_no_config(tmp_path):
     """Test execute no config call."""
     tgt = osco_to_oscal.OscoToOscal(None)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
-    assert len(os.listdir(str(tmpdir))) == 0
+    assert len(os.listdir(str(tmp_path))) == 0
 
-def xtest_osco_execute_no_overwrite(tmpdir):
+
+def test_osco_execute_no_overwrite(tmp_path):
     """Test execute no overwrite call."""
-    execute_no_overwrite_part1(tmpdir)
-    execute_no_overwrite_part2(tmpdir)
-    f_expected = pathlib.Path('tests/data/tasks/osco/output/') / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    f_produced = tmpdir  / 'ssg-ocp4-ds-cis-111.222.333.444-pod.oscal.json'
-    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
-    
+    execute_no_overwrite_part1(tmp_path)
+    execute_no_overwrite_part2(tmp_path)
+
+
 @patch(target='uuid.uuid4', new=uuid_mock1)
-def execute_no_overwrite_part1(tmpdir):
+def execute_no_overwrite_part1(tmp_path):
     """Create expected output."""
+    osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
-    section['output-dir'] = str(tmpdir)
+    d_expected = pathlib.Path(section['output-dir'])
+    d_produced = tmp_path
+    section['output-dir'] = str(d_produced)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    assert len(os.listdir(str(tmpdir))) == 1
+    list_dir = os.listdir(d_produced)
+    assert len(list_dir) == 1
+    for fn in list_dir:
+        f_expected = d_expected / fn
+        f_produced = d_produced / fn
+        result = text_files_equal(f_expected, f_produced)
+        assert (result)
+
 
 @patch(target='uuid.uuid4', new=uuid_mock2)
-def execute_no_overwrite_part2(tmpdir):
+def execute_no_overwrite_part2(tmp_path):
     """Attempt to overwrite."""
+    osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
     section['output-overwrite'] = 'false'
-    section['output-dir'] = str(tmpdir)
+    section['output-dir'] = str(tmp_path)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
 
-def test_osco_execute_no_input_dir(tmpdir):
+
+def test_osco_execute_no_input_dir(tmp_path):
     """Test execute with no input dir call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal.config')
     config.read(config_path)
     config.remove_option('task.osco-to-oscal', 'input-dir')
     section = config['task.osco-to-oscal']
-    section['output-dir'] = str(tmpdir)
+    section['output-dir'] = str(tmp_path)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
-    assert len(os.listdir(str(tmpdir))) == 0
+    assert len(os.listdir(str(tmp_path))) == 0
 
-def test_osco_execute_no_ouput_dir(tmpdir):
+
+def test_osco_execute_no_ouput_dir(tmp_path):
     """Test execute with no output dir call."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal.config')
     config.read(config_path)
     config.remove_option('task.osco-to-oscal', 'output-dir')
     section = config['task.osco-to-oscal']
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
-    assert len(os.listdir(str(tmpdir))) == 0
-    
-def test_osco_execute_bad_timestamp(tmpdir):
+    assert len(os.listdir(str(tmp_path))) == 0
+
+
+def test_osco_execute_bad_timestamp(tmp_path):
     """Test execute with bad timestamp."""
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
     section['timestamp'] = str('bogus')
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.FAILURE
-    assert len(os.listdir(str(tmpdir))) == 0
-    
+    assert len(os.listdir(str(tmp_path))) == 0
+
+
 @patch(target='uuid.uuid4', new=uuid_mock1)
-def test_osco_execute_input_fetcher(tmpdir):
+def test_osco_execute_input_fetcher(tmp_path):
     """Test execute call OSCO fetcher json data."""
+    osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     config = configparser.ConfigParser()
-    config_path = pathlib.Path('tests/data/tasks/osco/demo-osco-to-oscal-fetcher.config')
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal-fetcher.config')
     config.read(config_path)
     section = config['task.osco-to-oscal']
-    section['output-dir'] = str(tmpdir)
+    d_expected = pathlib.Path(section['output-dir'])
+    d_produced = tmp_path
+    section['output-dir'] = str(d_produced)
     tgt = osco_to_oscal.OscoToOscal(section)
     retval = tgt.execute()
     assert retval == TaskOutcome.SUCCESS
-    opth = pathlib.Path(section['output-dir'])
-    list_dir = os.listdir(opth)
+    list_dir = os.listdir(d_produced)
     assert len(list_dir) == 6
     for fn in list_dir:
-        f_expected = opth / fn
-        f_produced = tmpdir  / fn
-        assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [row for row in open(f_expected, encoding=const.FILE_ENCODING)]
+        f_expected = d_expected / fn
+        f_produced = d_produced / fn
+        result = text_files_equal(f_expected, f_produced)
+        assert (result)
+
+
+@patch(target='uuid.uuid4', new=uuid_mock1)
+def test_osco_execute_input_xml_rhel7(tmp_path):
+    """Test execute call OSCO xml data."""
+    osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal-xml-rhel7.config')
+    config.read(config_path)
+    section = config['task.osco-to-oscal']
+    d_expected = pathlib.Path(section['output-dir'])
+    d_produced = tmp_path
+    section['output-dir'] = str(d_produced)
+    tgt = osco_to_oscal.OscoToOscal(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    list_dir = os.listdir(d_produced)
+    assert len(list_dir) == 1
+    for fn in list_dir:
+        f_expected = d_expected / fn
+        f_produced = d_produced / fn
+        result = text_files_equal(f_expected, f_produced)
+        assert (result)
+
+
+@patch(target='uuid.uuid4', new=uuid_mock1)
+def test_osco_execute_input_xml_ocp4(tmp_path):
+    """Test execute call OSCO xml data."""
+    osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal-xml-ocp4.config')
+    config.read(config_path)
+    section = config['task.osco-to-oscal']
+    d_expected = pathlib.Path(section['output-dir'])
+    d_produced = tmp_path
+    section['output-dir'] = str(d_produced)
+    tgt = osco_to_oscal.OscoToOscal(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    list_dir = os.listdir(d_produced)
+    assert len(list_dir) == 1
+    for fn in list_dir:
+        f_expected = d_expected / fn
+        f_produced = d_produced / fn
+        result = text_files_equal(f_expected, f_produced)
+        assert (result)
+
+
+@patch(target='uuid.uuid4', new=uuid_mock1)
+def test_osco_execute_input_configmaps(tmp_path):
+    """Test execute call OSCO configmaps data."""
+    osco.OscoTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/osco/test-osco-to-oscal-configmaps.config')
+    config.read(config_path)
+    section = config['task.osco-to-oscal']
+    d_expected = pathlib.Path(section['output-dir'])
+    d_produced = tmp_path
+    section['output-dir'] = str(d_produced)
+    tgt = osco_to_oscal.OscoToOscal(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    list_dir = os.listdir(d_produced)
+    assert len(list_dir) == 1
+    for fn in list_dir:
+        f_expected = d_expected / fn
+        f_produced = d_produced / fn
+        result = text_files_equal(f_expected, f_produced)
+        assert (result)

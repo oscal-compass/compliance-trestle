@@ -7,7 +7,7 @@
             {
                 "id": "sc-8_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "confidentiality",
                         "integrity"
@@ -123,7 +123,7 @@
             {
                 "id": "sc-8_smt",
                 "name": "statement",
-                "prose": "Protect the {{ sc-8_prm_1 }} of transmitted information."
+                "prose": "Protect the {{ insert: param, sc-8_prm_1 }} of transmitted information."
             },
             {
                 "id": "sc-8_gdn",
@@ -140,7 +140,7 @@
                     {
                         "id": "sc-8.1_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "prevent unauthorized disclosure of information",
                                 "detect changes to information"
@@ -176,7 +176,7 @@
                     {
                         "id": "sc-8.1_smt",
                         "name": "statement",
-                        "prose": "Implement cryptographic mechanisms to {{ sc-8.1_prm_1 }} during transmission."
+                        "prose": "Implement cryptographic mechanisms to {{ insert: param, sc-8.1_prm_1 }} during transmission."
                     },
                     {
                         "id": "sc-8.1_gdn",
@@ -193,7 +193,7 @@
                     {
                         "id": "sc-8.2_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "confidentiality",
                                 "integrity"
@@ -221,7 +221,7 @@
                     {
                         "id": "sc-8.2_smt",
                         "name": "statement",
-                        "prose": "Maintain the {{ sc-8.2_prm_1 }} of information during preparation for transmission and during reception."
+                        "prose": "Maintain the {{ insert: param, sc-8.2_prm_1 }} of information during preparation for transmission and during reception."
                     },
                     {
                         "id": "sc-8.2_gdn",
@@ -268,7 +268,7 @@
                     {
                         "id": "sc-8.3_smt",
                         "name": "statement",
-                        "prose": "Implement cryptographic mechanisms to protect message externals unless otherwise protected by {{ sc-8.3_prm_1 }}."
+                        "prose": "Implement cryptographic mechanisms to protect message externals unless otherwise protected by {{ insert: param, sc-8.3_prm_1 }}."
                     },
                     {
                         "id": "sc-8.3_gdn",
@@ -315,7 +315,7 @@
                     {
                         "id": "sc-8.4_smt",
                         "name": "statement",
-                        "prose": "Implement cryptographic mechanisms to conceal or randomize communication patterns unless otherwise protected by {{ sc-8.4_prm_1 }}."
+                        "prose": "Implement cryptographic mechanisms to conceal or randomize communication patterns unless otherwise protected by {{ insert: param, sc-8.4_prm_1 }}."
                     },
                     {
                         "id": "sc-8.4_gdn",
@@ -336,7 +336,7 @@
                     {
                         "id": "sc-8.5_prm_2",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "prevent unauthorized disclosure of information",
                                 "detect changes to information"
@@ -358,45 +358,13 @@
                     {
                         "href": "#sc-8",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#736d6310-e403-4b57-a79d-9967970c66d7",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7537638e-2837-407d-844b-40fb3fafdd99",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#d4d7c760-2907-403b-8b2a-767ca5370ecd",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#fe209006-bfd4-4033-a79a-9fee1adaf372",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#6bc4d137-aece-42a8-8081-9ecb1ebe9fb4",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#1c71b420-2bd9-4e52-9fc8-390f58b85b59",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#4c501da5-9d79-4cb6-ba80-97260e1ce327",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "sc-8.5_smt",
                         "name": "statement",
-                        "prose": "Implement {{ sc-8.5_prm_1 }} to {{ sc-8.5_prm_2 }} during transmission."
+                        "prose": "Implement {{ insert: param, sc-8.5_prm_1 }} to {{ insert: param, sc-8.5_prm_2 }} during transmission."
                     },
                     {
                         "id": "sc-8.5_gdn",

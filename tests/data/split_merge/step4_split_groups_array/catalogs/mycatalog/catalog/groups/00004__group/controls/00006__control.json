@@ -127,7 +127,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Configure the system to provide only {{ cm-7_prm_1 }}; and"
+                        "prose": "Configure the system to provide only {{ insert: param, cm-7_prm_1 }}; and"
                     },
                     {
                         "id": "cm-7_smt.b",
@@ -138,7 +138,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Prohibit or restrict the use of the following functions, ports, protocols, software, and/or services: {{ cm-7_prm_2 }}."
+                        "prose": "Prohibit or restrict the use of the following functions, ports, protocols, software, and/or services: {{ insert: param, cm-7_prm_2 }}."
                     }
                 ]
             },
@@ -197,7 +197,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Review the system {{ cm-7.1_prm_1 }} to identify unnecessary and/or nonsecure functions, ports, protocols, software, and services; and"
+                                "prose": "Review the system {{ insert: param, cm-7.1_prm_1 }} to identify unnecessary and/or nonsecure functions, ports, protocols, software, and services; and"
                             },
                             {
                                 "id": "cm-7.1_smt.b",
@@ -208,7 +208,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Disable or remove {{ cm-7.1_prm_2 }}."
+                                "prose": "Disable or remove {{ insert: param, cm-7.1_prm_2 }}."
                             }
                         ]
                     },
@@ -227,9 +227,9 @@
                     {
                         "id": "cm-7.2_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
-                                " {{ cm-7.2_prm_2 }} ",
+                                " {{ insert: param, cm-7.2_prm_2 }} ",
                                 "rules authorizing the terms and conditions of software program usage"
                             ]
                         }
@@ -280,7 +280,7 @@
                     {
                         "id": "cm-7.2_smt",
                         "name": "statement",
-                        "prose": "Prevent program execution in accordance with {{ cm-7.2_prm_1 }}."
+                        "prose": "Prevent program execution in accordance with {{ insert: param, cm-7.2_prm_1 }}."
                     },
                     {
                         "id": "cm-7.2_gdn",
@@ -319,7 +319,7 @@
                     {
                         "id": "cm-7.3_smt",
                         "name": "statement",
-                        "prose": "Ensure compliance with {{ cm-7.3_prm_1 }}."
+                        "prose": "Ensure compliance with {{ insert: param, cm-7.3_prm_1 }}."
                     },
                     {
                         "id": "cm-7.3_gdn",
@@ -331,7 +331,7 @@
             {
                 "id": "cm-7.4",
                 "class": "SP800-53-enhancement",
-                "title": "Unauthorized Software",
+                "title": "Unauthorized Software \u2014 Deny-by-exception",
                 "params": [
                     {
                         "id": "cm-7.4_prm_1",
@@ -392,7 +392,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Identify {{ cm-7.4_prm_1 }};"
+                                "prose": "Identify {{ insert: param, cm-7.4_prm_1 }};"
                             },
                             {
                                 "id": "cm-7.4_smt.b",
@@ -414,7 +414,7 @@
                                         "value": "(c)"
                                     }
                                 ],
-                                "prose": "Review and update the list of unauthorized software programs {{ cm-7.4_prm_2 }}."
+                                "prose": "Review and update the list of unauthorized software programs {{ insert: param, cm-7.4_prm_2 }}."
                             }
                         ]
                     },
@@ -428,7 +428,7 @@
             {
                 "id": "cm-7.5",
                 "class": "SP800-53-enhancement",
-                "title": "Authorized Software",
+                "title": "Authorized Software \u2014 Allow-by-exception",
                 "params": [
                     {
                         "id": "cm-7.5_prm_1",
@@ -505,7 +505,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Identify {{ cm-7.5_prm_1 }};"
+                                "prose": "Identify {{ insert: param, cm-7.5_prm_1 }};"
                             },
                             {
                                 "id": "cm-7.5_smt.b",
@@ -527,7 +527,7 @@
                                         "value": "(c)"
                                     }
                                 ],
-                                "prose": "Review and update the list of authorized software programs {{ cm-7.5_prm_2 }}."
+                                "prose": "Review and update the list of authorized software programs {{ insert: param, cm-7.5_prm_2 }}."
                             }
                         ]
                     },
@@ -576,7 +576,7 @@
                     {
                         "id": "cm-7.6_smt",
                         "name": "statement",
-                        "prose": "Require that the following user-installed software execute in a confined physical or virtual machine environment with limited privileges: {{ cm-7.6_prm_1 }}."
+                        "prose": "Require that the following user-installed software execute in a confined physical or virtual machine environment with limited privileges: {{ insert: param, cm-7.6_prm_1 }}."
                     },
                     {
                         "id": "cm-7.6_gdn",
@@ -623,7 +623,7 @@
                     {
                         "id": "cm-7.7_smt",
                         "name": "statement",
-                        "prose": "Allow execution of binary or machine-executable code only in confined physical or virtual machine environments and with the explicit approval of {{ cm-7.7_prm_1 }} when such code is:",
+                        "prose": "Allow execution of binary or machine-executable code only in confined physical or virtual machine environments and with the explicit approval of {{ insert: param, cm-7.7_prm_1 }} when such code is:",
                         "parts": [
                             {
                                 "id": "cm-7.7_smt.a",
@@ -748,26 +748,6 @@
                     {
                         "href": "#cm-7",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#678e3d6c-150b-4393-aec5-6e3481eb1e00",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#eea3c092-42ed-4382-a6f4-1adadef01b9d",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7c37a38d-21d7-40d8-bc3d-b5e27eac17e1",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a295ca19-8c75-4b4c-8800-98024732e181",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#38f39739-1ebd-43b1-8b8c-00f591d89ebd",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
@@ -784,7 +764,7 @@
                                         "value": "(a)"
                                     }
                                 ],
-                                "prose": "Identify {{ cm-7.9_prm_1 }};"
+                                "prose": "Identify {{ insert: param, cm-7.9_prm_1 }};"
                             },
                             {
                                 "id": "cm-7.9_smt.b",
@@ -806,7 +786,7 @@
                                         "value": "(c)"
                                     }
                                 ],
-                                "prose": "Review and update the list of authorized hardware components {{ cm-7.9_prm_2 }}."
+                                "prose": "Review and update the list of authorized hardware components {{ insert: param, cm-7.9_prm_2 }}."
                             }
                         ]
                     },

@@ -62,7 +62,7 @@
                     {
                         "id": "pe-9.1_smt",
                         "name": "statement",
-                        "prose": "Employ redundant power cabling paths that are physically separated by {{ pe-9.1_prm_1 }}."
+                        "prose": "Employ redundant power cabling paths that are physically separated by {{ insert: param, pe-9.1_prm_1 }}."
                     },
                     {
                         "id": "pe-9.1_gdn",
@@ -101,7 +101,7 @@
                     {
                         "id": "pe-9.2_smt",
                         "name": "statement",
-                        "prose": "Employ automatic voltage controls for {{ pe-9.2_prm_1 }}."
+                        "prose": "Employ automatic voltage controls for {{ insert: param, pe-9.2_prm_1 }}."
                     },
                     {
                         "id": "pe-9.2_gdn",

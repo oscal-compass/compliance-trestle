@@ -5,20 +5,21 @@
       "title": "Minimal Catalog",
       "last-modified": "2020-10-22T09:46:21.745+00:00",
       "version": "2.0",
-      "oscal-version": "1.0.0-rc2",
+      "oscal-version": "1.0.0",
       "roles": [
         {
-          "id": "organisation",
+          "id": "organization",
            "title": "a_role"
          }
       ],
-      "responsible-parties": {
-        "organisation": {
+      "responsible-parties": [
+        {
+          "role_id": "organization",
           "party-uuids": [
-            "00000000-0000-4000-8000-000000000000"
+            "A0000000-0000-4000-8000-000000000000"
           ]
         }
-      }
+      ]
     }
   }
 }

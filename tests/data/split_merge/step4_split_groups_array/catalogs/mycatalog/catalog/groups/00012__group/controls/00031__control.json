@@ -21,7 +21,11 @@
         ],
         "links": [
             {
-                "href": "#067223d8-1ec7-45c5-b21b-c848da6de8fb",
+                "href": "#e3cc0520-a366-4fc9-abc2-5272db7e3564",
+                "rel": "reference"
+            },
+            {
+                "href": "#61ccf0f4-d3e7-42db-9796-ce6cb1c85989",
                 "rel": "reference"
             },
             {
@@ -45,7 +49,7 @@
             {
                 "id": "pm-32_smt",
                 "name": "statement",
-                "prose": "Analyze {{ pm-32_prm_1 }} supporting mission essential services or functions to ensure that the information resources are being used consistent with their intended purpose."
+                "prose": "Analyze {{ insert: param, pm-32_prm_1 }} supporting mission essential services or functions to ensure that the information resources are being used consistent with their intended purpose."
             },
             {
                 "id": "pm-32_gdn",

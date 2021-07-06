@@ -26,9 +26,9 @@ from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 
 
-def test_write_file_action_yaml(tmp_yaml_file: pathlib.Path, sample_target_def):
+def test_write_file_action_yaml(tmp_yaml_file: pathlib.Path, sample_nist_component_def):
     """Test write yaml action."""
-    element = Element(sample_target_def, 'target-definition')
+    element = Element(sample_nist_component_def, 'component-definition')
 
     try:
         # string path should error
@@ -55,9 +55,9 @@ def test_write_file_action_yaml(tmp_yaml_file: pathlib.Path, sample_target_def):
     test_utils.verify_file_content(tmp_yaml_file, element.get())
 
 
-def test_write_file_rollback(tmp_yaml_file: pathlib.Path, sample_target_def):
+def test_write_file_rollback(tmp_yaml_file: pathlib.Path, sample_nist_component_def):
     """Test rollback."""
-    element = Element(sample_target_def, 'target-definition')
+    element = Element(sample_nist_component_def, 'component-definition')
     tmp_yaml_file.touch()
     wa = WriteFileAction(tmp_yaml_file, element, FileContentType.YAML)
     wa.execute()
@@ -74,7 +74,7 @@ def test_write_file_rollback(tmp_yaml_file: pathlib.Path, sample_target_def):
         assert read_file.tell() == 0
 
 
-def test_write_existing_file_rollback(tmp_yaml_file, sample_target_def):
+def test_write_existing_file_rollback(tmp_yaml_file, sample_nist_component_def):
     """Test rollback."""
     # add some content
     tmp_yaml_file.touch()
@@ -84,7 +84,7 @@ def test_write_existing_file_rollback(tmp_yaml_file, sample_target_def):
         current_pos = fp.tell()
 
     # write to the file
-    element = Element(sample_target_def, 'target-definition')
+    element = Element(sample_nist_component_def, 'component-definition')
     wa = WriteFileAction(tmp_yaml_file, element, FileContentType.YAML)
     wa.execute()
 

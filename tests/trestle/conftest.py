@@ -30,7 +30,6 @@ from trestle.cli import Trestle
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.component import ComponentDefinition, DefinedComponent
 from trestle.oscal.profile import Profile
-from trestle.oscal.target import TargetDefinition
 
 TEST_CONFIG: dict = {}
 
@@ -85,11 +84,10 @@ def json_testdata_path() -> pathlib.Path:
 
 
 @pytest.fixture(scope='function')
-def sample_target_def():
-    """Return a valid target definition object."""
-    file_path = pathlib.Path(test_utils.YAML_TEST_DATA_PATH) / 'good_target.yaml'
-    target_obj = TargetDefinition.oscal_read(file_path)
-    return target_obj
+def sample_nist_component_def() -> ComponentDefinition:
+    """Return a rich component definition object, from the NIST content repository."""
+    component_obj = ComponentDefinition.oscal_read(test_utils.NIST_SAMPLE_CD_JSON)
+    return component_obj
 
 
 @pytest.fixture(scope='function')
@@ -130,7 +128,7 @@ def sample_component_definition():
     def_comp1: DefinedComponent = gens.generate_sample_model(DefinedComponent)
     def_comp2: DefinedComponent = gens.generate_sample_model(DefinedComponent)
     comp_def: ComponentDefinition = gens.generate_sample_model(ComponentDefinition)
-    comp_def.components = {'comp1': def_comp1, 'comp2': def_comp2}
+    comp_def.components = [def_comp1, def_comp2]
     return comp_def
 
 

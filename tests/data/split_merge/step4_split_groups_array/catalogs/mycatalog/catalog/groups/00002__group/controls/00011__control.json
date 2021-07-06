@@ -115,7 +115,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Provide audit record generation capability for the event types the system is capable of auditing as defined in [AU-2a](#au-2_smt.a) on {{ au-12_prm_1 }};"
+                        "prose": "Provide audit record generation capability for the event types the system is capable of auditing as defined in [AU-2a](#au-2_smt.a) on {{ insert: param, au-12_prm_1 }};"
                     },
                     {
                         "id": "au-12_smt.b",
@@ -126,7 +126,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Allow {{ au-12_prm_2 }} to select the event types that are to be logged by specific components of the system; and"
+                        "prose": "Allow {{ insert: param, au-12_prm_2 }} to select the event types that are to be logged by specific components of the system; and"
                     },
                     {
                         "id": "au-12_smt.c",
@@ -190,7 +190,7 @@
                     {
                         "id": "au-12.1_smt",
                         "name": "statement",
-                        "prose": "Compile audit records from {{ au-12.1_prm_1 }} into a system-wide (logical or physical) audit trail that is time-correlated to within {{ au-12.1_prm_2 }}."
+                        "prose": "Compile audit records from {{ insert: param, au-12.1_prm_1 }} into a system-wide (logical or physical) audit trail that is time-correlated to within {{ insert: param, au-12.1_prm_2 }}."
                     },
                     {
                         "id": "au-12.1_gdn",
@@ -278,7 +278,7 @@
                     {
                         "id": "au-12.3_smt",
                         "name": "statement",
-                        "prose": "Provide and implement the capability for {{ au-12.3_prm_1 }} to change the logging to be performed on {{ au-12.3_prm_2 }} based on {{ au-12.3_prm_3 }} within {{ au-12.3_prm_4 }}."
+                        "prose": "Provide and implement the capability for {{ insert: param, au-12.3_prm_1 }} to change the logging to be performed on {{ insert: param, au-12.3_prm_2 }} based on {{ insert: param, au-12.3_prm_3 }} within {{ insert: param, au-12.3_prm_4 }}."
                     },
                     {
                         "id": "au-12.3_gdn",

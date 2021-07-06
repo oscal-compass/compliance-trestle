@@ -7,7 +7,7 @@
             {
                 "id": "sc-31_prm_1",
                 "select": {
-                    "how-many": "one or more",
+                    "how-many": "one-or-more",
                     "choice": [
                         "storage",
                         "timing"
@@ -57,7 +57,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Perform a covert channel analysis to identify those aspects of communications within the system that are potential avenues for covert {{ sc-31_prm_1 }} channels; and"
+                        "prose": "Perform a covert channel analysis to identify those aspects of communications within the system that are potential avenues for covert {{ insert: param, sc-31_prm_1 }} channels; and"
                     },
                     {
                         "id": "sc-31_smt.b",
@@ -120,7 +120,7 @@
                     {
                         "id": "sc-31.2_prm_1",
                         "select": {
-                            "how-many": "one or more",
+                            "how-many": "one-or-more",
                             "choice": [
                                 "storage",
                                 "timing"
@@ -152,7 +152,7 @@
                     {
                         "id": "sc-31.2_smt",
                         "name": "statement",
-                        "prose": "Reduce the maximum bandwidth for identified covert {{ sc-31.2_prm_1 }} channels to {{ sc-31.2_prm_2 }}."
+                        "prose": "Reduce the maximum bandwidth for identified covert {{ insert: param, sc-31.2_prm_1 }} channels to {{ insert: param, sc-31.2_prm_2 }}."
                     },
                     {
                         "id": "sc-31.2_gdn",
@@ -191,7 +191,7 @@
                     {
                         "id": "sc-31.3_smt",
                         "name": "statement",
-                        "prose": "Measure the bandwidth of {{ sc-31.3_prm_1 }} in the operational environment of the system."
+                        "prose": "Measure the bandwidth of {{ insert: param, sc-31.3_prm_1 }} in the operational environment of the system."
                     },
                     {
                         "id": "sc-31.3_gdn",

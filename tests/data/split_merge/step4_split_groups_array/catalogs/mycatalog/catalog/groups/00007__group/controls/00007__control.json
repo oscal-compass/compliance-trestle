@@ -206,7 +206,7 @@
                                         "value": "9."
                                     }
                                 ],
-                                "prose": "Is reviewed and approved by {{ ir-8_prm_1 }} {{ ir-8_prm_2 }}; and"
+                                "prose": "Is reviewed and approved by {{ insert: param, ir-8_prm_1 }} {{ insert: param, ir-8_prm_2 }}; and"
                             },
                             {
                                 "id": "ir-8_smt.a.10",
@@ -217,7 +217,7 @@
                                         "value": "10."
                                     }
                                 ],
-                                "prose": "Explicitly designates responsibility for incident response to {{ ir-8_prm_3 }}."
+                                "prose": "Explicitly designates responsibility for incident response to {{ insert: param, ir-8_prm_3 }}."
                             }
                         ]
                     },
@@ -230,7 +230,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Distribute copies of the incident response plan to {{ ir-8_prm_4 }};"
+                        "prose": "Distribute copies of the incident response plan to {{ insert: param, ir-8_prm_4 }};"
                     },
                     {
                         "id": "ir-8_smt.c",
@@ -252,7 +252,7 @@
                                 "value": "d."
                             }
                         ],
-                        "prose": "Communicate incident response plan changes to {{ ir-8_prm_5 }}; and"
+                        "prose": "Communicate incident response plan changes to {{ insert: param, ir-8_prm_5 }}; and"
                     },
                     {
                         "id": "ir-8_smt.e",
@@ -292,18 +292,6 @@
                     {
                         "href": "#ir-8",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#49b8aa2d-a88c-4bff-9f20-876ccb8f7dcb",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#5f4705ac-8d17-438c-b23a-ac7f12362ae4",
-                        "rel": "reference"
                     },
                     {
                         "href": "#pt-1",

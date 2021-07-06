@@ -43,7 +43,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": "Provide the capability of shutting off power to {{ pe-10_prm_1 }} in emergency situations;"
+                        "prose": "Provide the capability of shutting off power to {{ insert: param, pe-10_prm_1 }} in emergency situations;"
                     },
                     {
                         "id": "pe-10_smt.b",
@@ -54,7 +54,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Place emergency shutoff switches or devices in {{ pe-10_prm_2 }} to facilitate access for authorized personnel; and"
+                        "prose": "Place emergency shutoff switches or devices in {{ insert: param, pe-10_prm_2 }} to facilitate access for authorized personnel; and"
                     },
                     {
                         "id": "pe-10_smt.c",

@@ -47,7 +47,7 @@
             {
                 "id": "pe-19.1",
                 "class": "SP800-53-enhancement",
-                "title": "National Emissions and Tempest Policies and Procedures",
+                "title": "National Emissions Policies and Procedures",
                 "props": [
                     {
                         "name": "label",
@@ -62,10 +62,6 @@
                     {
                         "href": "#pe-19",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [

@@ -49,6 +49,10 @@
                 "rel": "related"
             },
             {
+                "href": "#pm-11",
+                "rel": "related"
+            },
+            {
                 "href": "#ra-2",
                 "rel": "related"
             },
@@ -73,7 +77,7 @@
             {
                 "id": "ra-9_smt",
                 "name": "statement",
-                "prose": "Identify critical system components and functions by performing a criticality analysis for {{ ra-9_prm_1 }} at {{ ra-9_prm_2 }}."
+                "prose": "Identify critical system components and functions by performing a criticality analysis for {{ insert: param, ra-9_prm_1 }} at {{ insert: param, ra-9_prm_2 }}."
             },
             {
                 "id": "ra-9_gdn",

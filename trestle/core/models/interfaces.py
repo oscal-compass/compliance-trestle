@@ -23,7 +23,6 @@ import trestle.oscal.component as o_component
 import trestle.oscal.poam as o_poam
 import trestle.oscal.profile as o_profile
 import trestle.oscal.ssp as o_ssp
-import trestle.oscal.target as o_target
 
 
 class OSCALAssembly(BaseModel):
@@ -40,7 +39,6 @@ class OSCALAssembly(BaseModel):
     profiles: Optional[Dict[str, o_profile.Profile]] = None
     catalogs: Optional[Dict[str, o_catalog.Catalog]] = None
     components: Optional[Dict[str, o_component.ComponentDefinition]] = None
-    targets: Optional[Dict[str, o_target.TargetDefinition]] = None
 
     class Config:
         """Pydantic config overrides."""

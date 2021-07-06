@@ -53,7 +53,7 @@
             {
                 "id": "sc-50_smt",
                 "name": "statement",
-                "prose": "Implement software-enforced separation and policy enforcement mechanisms between {{ sc-50_prm_1 }}."
+                "prose": "Implement software-enforced separation and policy enforcement mechanisms between {{ insert: param, sc-50_prm_1 }}."
             },
             {
                 "id": "sc-50_gdn",

@@ -119,7 +119,7 @@
             {
                 "id": "ia-8.1",
                 "class": "SP800-53-enhancement",
-                "title": "Acceptance of Piv Credentials from Other Agencies",
+                "title": "Acceptance of PIV Credentials from Other Agencies",
                 "props": [
                     {
                         "name": "label",
@@ -264,7 +264,7 @@
                     {
                         "id": "ia-8.4_smt",
                         "name": "statement",
-                        "prose": "Conform to the following profiles for identity management {{ ia-8.4_prm_1 }}."
+                        "prose": "Conform to the following profiles for identity management {{ insert: param, ia-8.4_prm_1 }}."
                     },
                     {
                         "id": "ia-8.4_gdn",
@@ -276,7 +276,7 @@
             {
                 "id": "ia-8.5",
                 "class": "SP800-53-enhancement",
-                "title": "Acceptance of Piv-i Credentials",
+                "title": "Acceptance of PIV-I Credentials",
                 "params": [
                     {
                         "id": "ia-8.5_prm_1",
@@ -303,12 +303,12 @@
                     {
                         "id": "ia-8.5_smt",
                         "name": "statement",
-                        "prose": "Accept and verify federated or PKI credentials that meet {{ ia-8.5_prm_1 }}."
+                        "prose": "Accept and verify federated or PKI credentials that meet {{ insert: param, ia-8.5_prm_1 }}."
                     },
                     {
                         "id": "ia-8.5_gdn",
                         "name": "guidance",
-                        "prose": "Acceptance of PIV-I credentials can be implemented by PIV, PIV-I, and other commercial or external identity providers. The acceptance and verification of Personal Identity Verification (PIV)-I-compliant credentials apply to both logical and physical access control systems. The acceptance and verification of PIV-I credentials address nonfederal issuers of identity cards that desire to interoperate with United States Government PIV systems and that can be trusted by Federal Government-relying parties. The X.509 certificate policy for the Federal Bridge Certification Authority (FBCA) addresses PIV-I requirements. The PIV-I card is commensurate with the PIV credentials as defined in cited references. PIV-I credentials are the credentials issued by a PIV-I provider whose PIV-I certificate policy maps to the Federal Bridge PIV-I Certificate Policy. A PIV-I provider is cross-certified with the FBCA (directly or through another PKI bridge) with policies that have been mapped and approved as meeting the requirements of the PIV-I policies defined in the FBCA certificate policy."
+                        "prose": "Acceptance of PIV-I credentials can be implemented by PIV, PIV-I, and other commercial or external identity providers. The acceptance and verification of PIV-I-compliant credentials apply to both logical and physical access control systems. The acceptance and verification of PIV-I credentials address nonfederal issuers of identity cards that desire to interoperate with United States Government PIV systems and that can be trusted by Federal Government-relying parties. The X.509 certificate policy for the Federal Bridge Certification Authority (FBCA) addresses PIV-I requirements. The PIV-I card is commensurate with the PIV credentials as defined in cited references. PIV-I credentials are the credentials issued by a PIV-I provider whose PIV-I certificate policy maps to the Federal Bridge PIV-I Certificate Policy. A PIV-I provider is cross-certified with the FBCA (directly or through another PKI bridge) with policies that have been mapped and approved as meeting the requirements of the PIV-I policies defined in the FBCA certificate policy."
                     }
                 ]
             },
@@ -336,41 +336,13 @@
                     {
                         "href": "#ia-8",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#27847491-5ce1-4f6a-a1e4-9e483782f0ef",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#a1555677-2b9d-4868-a97b-a1363aff32f5",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#7ba1d91c-3934-4d5a-8532-b32f864ad34c",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#737513fa-6758-403f-831d-5ddab5e23cb3",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#10963761-58fc-4b20-b3d6-b44a54daba03",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#2100332a-16a5-4598-bacf-7261baea9711",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#98d415ca-7281-4064-9931-0c366637e324",
-                        "rel": "reference"
                     }
                 ],
                 "parts": [
                     {
                         "id": "ia-8.6_smt",
                         "name": "statement",
-                        "prose": "Implement the following measures to disassociate user attributes or identifier assertion relationships among individuals, credential service providers, and relying parties: {{ ia-8.6_prm_1 }}."
+                        "prose": "Implement the following measures to disassociate user attributes or identifier assertion relationships among individuals, credential service providers, and relying parties: {{ insert: param, ia-8.6_prm_1 }}."
                     },
                     {
                         "id": "ia-8.6_gdn",

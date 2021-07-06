@@ -84,7 +84,7 @@
                                 "value": "a."
                             }
                         ],
-                        "prose": " {{ mp-7_prm_1 }} the use of {{ mp-7_prm_2 }} on {{ mp-7_prm_3 }} using {{ mp-7_prm_4 }}; and"
+                        "prose": " {{ insert: param, mp-7_prm_1 }} the use of {{ insert: param, mp-7_prm_2 }} on {{ insert: param, mp-7_prm_3 }} using {{ insert: param, mp-7_prm_4 }}; and"
                     },
                     {
                         "id": "mp-7_smt.b",
@@ -149,14 +149,6 @@
                     {
                         "href": "#mp-7",
                         "rel": "required"
-                    },
-                    {
-                        "href": "#628d22a1-6a11-4784-bc59-5cd9497b5445",
-                        "rel": "reference"
-                    },
-                    {
-                        "href": "#22f2d4f0-4365-4e88-a30d-275c1f5473ea",
-                        "rel": "reference"
                     },
                     {
                         "href": "#mp-6",

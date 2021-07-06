@@ -253,7 +253,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Review and update the risk management strategy {{ pm-9_prm_1 }} or as required, to address organizational changes."
+                        "prose": "Review and update the risk management strategy {{ insert: param, pm-9_prm_1 }} or as required, to address organizational changes."
                     }
                 ]
             },

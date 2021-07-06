@@ -29,28 +29,29 @@ from trestle.core.commands.add import AddCmd
 from trestle.core.models.actions import UpdateAction
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
-from trestle.oscal.catalog import BackMatter, Catalog
+from trestle.oscal.catalog import Catalog
+from trestle.oscal.common import BackMatter
 from trestle.utils.fs import get_stripped_contextual_model
 
 
 def test_run(tmp_trestle_dir: pathlib.Path):
     """Test _run for AddCmd."""
     original_catalog_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_missing_roles.json')
-    target_file_folder = tmp_trestle_dir / 'catalogs' / 'test_catalog'
-    target_file_location = target_file_folder / 'catalog.yml'
+    dest_file_folder = tmp_trestle_dir / 'catalogs' / 'test_catalog'
+    dest_file_location = dest_file_folder / 'catalog.yml'
     expected_catalog_path = pathlib.Path.joinpath(
         test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_roles_double_rp.json'
     )
     expected_catalog_roles2_rp = Catalog.oscal_read(expected_catalog_path)
 
-    target_file_folder.mkdir(parents=True)
-    Catalog.oscal_read(original_catalog_path).oscal_write(target_file_location)
+    dest_file_folder.mkdir(parents=True)
+    Catalog.oscal_read(original_catalog_path).oscal_write(dest_file_location)
 
     testargs = [
         'trestle',
         'add',
         '-f',
-        str(target_file_location),
+        str(dest_file_location),
         '-e',
         'catalog.metadata.roles, catalog.metadata.roles, catalog.metadata.responsible-parties'
     ]
@@ -58,7 +59,7 @@ def test_run(tmp_trestle_dir: pathlib.Path):
     with patch.object(sys, 'argv', testargs):
         assert Trestle().run() == 0
 
-    actual_catalog = Catalog.oscal_read(target_file_location)
+    actual_catalog = Catalog.oscal_read(dest_file_location)
     assert expected_catalog_roles2_rp == actual_catalog
 
 

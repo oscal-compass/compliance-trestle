@@ -6,7 +6,7 @@
         "params": [
             {
                 "id": "ac-12_prm_1",
-                "label": "organization-defined conditions, or trigger events requiring session disconnect"
+                "label": "organization-defined conditions or trigger events requiring session disconnect"
             }
         ],
         "props": [
@@ -37,7 +37,7 @@
             {
                 "id": "ac-12_smt",
                 "name": "statement",
-                "prose": "Automatically terminate a user session after {{ ac-12_prm_1 }}."
+                "prose": "Automatically terminate a user session after {{ insert: param, ac-12_prm_1 }}."
             },
             {
                 "id": "ac-12_gdn",
@@ -76,7 +76,7 @@
                     {
                         "id": "ac-12.1_smt",
                         "name": "statement",
-                        "prose": "Provide a logout capability for user-initiated communications sessions whenever authentication is used to gain access to {{ ac-12.1_prm_1 }}."
+                        "prose": "Provide a logout capability for user-initiated communications sessions whenever authentication is used to gain access to {{ insert: param, ac-12.1_prm_1 }}."
                     },
                     {
                         "id": "ac-12.1_gdn",
@@ -148,7 +148,7 @@
                     {
                         "id": "ac-12.3_smt",
                         "name": "statement",
-                        "prose": "Display an explicit message to users indicating that the session will end in {{ ac-12.3_prm_1 }}."
+                        "prose": "Display an explicit message to users indicating that the session will end in {{ insert: param, ac-12.3_prm_1 }}."
                     },
                     {
                         "id": "ac-12.3_gdn",

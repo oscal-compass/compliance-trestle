@@ -31,6 +31,7 @@ from trestle import cli
 from trestle.core.generators import generate_sample_model
 from trestle.core.validator_factory import validator_factory
 from trestle.oscal.catalog import Catalog
+from trestle.oscal.common import PartyUuid, ResponsibleParty, Role
 
 test_data_dir = pathlib.Path('tests/data').resolve()
 
@@ -44,30 +45,30 @@ test_data_dir = pathlib.Path('tests/data').resolve()
 )
 def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> None:
     """Test successful validation runs."""
-    (tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
-    (tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
+    (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
+    (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
     shutil.copyfile(
-        test_data_dir / 'yaml/good_target.yaml',
-        tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model/target-definition.yaml'
+        test_data_dir / 'json/minimal_catalog.json',
+        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model/catalog.json'
     )
     shutil.copyfile(
-        test_data_dir / 'yaml/good_target.yaml',
-        tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model2/target-definition.yaml'
+        test_data_dir / 'json/minimal_catalog.json',
+        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2/catalog.json'
     )
 
-    model_def_file = tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / name / ('target-definition.yaml')
+    model_def_file = tmp_trestle_dir / test_utils.CATALOGS_DIR / ('my_test_model/catalog.json')
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {model_def_file} -m duplicates'
+            testcmd = f'trestle validate {mode} {model_def_file}'
         else:
-            testcmd = f'trestle validate {mode} {model_def_file.parent} -m duplicates'
+            testcmd = f'trestle validate {mode} {model_def_file.parent}'
     elif mode == '-n':
-        testcmd = f'trestle validate -t target-definition -n {name} -m duplicates'
+        testcmd = f'trestle validate -t catalog -n {name}'
     elif mode == '-x':
-        testcmd = f'trestle validate -t target-definition -n {name}'
+        testcmd = f'trestle validate -t catalog -n {name}'
     else:
-        testcmd = 'trestle validate -a -m duplicates'
+        testcmd = 'trestle validate -a'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -86,75 +87,36 @@ def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> 
 )
 def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> None:
     """Test failure modes of validation."""
-    (tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
-    (tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
+    (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model').mkdir(exist_ok=True, parents=True)
+    (tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2').mkdir(exist_ok=True, parents=True)
     shutil.copyfile(
-        test_data_dir / 'yaml/bad_target_dup_uuid.yaml',
-        tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model/target-definition.yaml'
+        test_data_dir / 'json/minimal_catalog_bad_oscal_version.json',
+        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model/catalog.json'
     )
     shutil.copyfile(
-        test_data_dir / 'yaml/good_target.yaml',
-        tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / 'my_test_model2/target-definition.yaml'
+        test_data_dir / 'json/minimal_catalog.json',
+        tmp_trestle_dir / test_utils.CATALOGS_DIR / 'my_test_model2/catalog.json'
     )
 
-    model_def_file = tmp_trestle_dir / test_utils.TARGET_DEFS_DIR / ('my_test_model/target-definition.yaml')
+    model_def_file = tmp_trestle_dir / test_utils.CATALOGS_DIR / ('my_test_model/catalog.json')
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {model_def_file} -m duplicates'
+            testcmd = f'trestle validate {mode} {model_def_file}'
         else:
-            testcmd = f'trestle validate {mode} {model_def_file.parent} -m duplicates'
+            testcmd = f'trestle validate {mode} {model_def_file.parent}'
     elif mode == '-n':
-        testcmd = f'trestle validate -t target-definition -n {name} -m duplicates'
+        testcmd = f'trestle validate -t catalog -n {name}'
     elif mode == '-x':
-        testcmd = f'trestle validate -t target-definition -n {name}'
+        testcmd = f'trestle validate -t catalog -n {name}'
     else:
-        testcmd = 'trestle validate -a -m duplicates'
+        testcmd = 'trestle validate -a'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 1
-
-
-@pytest.mark.parametrize(
-    'name, mode, parent, new_role, code',
-    [
-        ('my_ap', '-f', False, 'role', 0), ('my_ap', '-n', False, 'role', 0), ('my_ap', '-f', True, 'role', 0),
-        ('my_ap', '-t', False, 'role', 0), ('my_ap', '-a', False, 'role', 0), ('my_ap', '-f', False, 'r:ole', 1),
-        ('my_ap', '-n', False, 'r:ole', 1), ('my_ap', '-f', True, 'r:ole', 1), ('my_ap', '-t', False, 'r:ole', 1),
-        ('my_ap', '-a', False, 'r:ole', 1), ('foo', '-n', False, 'role', 1)
-    ]
-)
-def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathlib.Path) -> None:
-    """Test good and bad roleid cases."""
-    (tmp_trestle_dir / 'assessment-plans/my_ap').mkdir(exist_ok=True, parents=True)
-    role_ids = [ap.RoleId(__root__='role1'), ap.RoleId(__root__=new_role), ap.RoleId(__root__='REPLACE_ME')]
-    system_user = ap.SystemUser(role_ids=role_ids)
-    local_definitions = ap.LocalDefinitions(users={'my_users': system_user})
-    ap_obj = generate_sample_model(ap.AssessmentPlan)
-    ap_obj.local_definitions = local_definitions
-    ap_path = tmp_trestle_dir / 'assessment-plans/my_ap/assessment-plan.json'
-    ap_obj.oscal_write(ap_path)
-
-    if mode == '-f':
-        if not parent:
-            testcmd = f'trestle validate {mode} {ap_path} -m ncname'
-        else:
-            testcmd = f'trestle validate {mode} {ap_path.parent} -m ncname'
-    elif mode == '-n':
-        testcmd = f'trestle validate -t assessment-plan -n {name} -m ncname'
-    elif mode == '-t':
-        testcmd = 'trestle validate -t assessment-plan -m ncname'
-    else:
-        testcmd = 'trestle validate -a -m ncname'
-
-    with patch.object(sys, 'argv', testcmd.split()):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            cli.run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code == code
 
 
 @pytest.mark.parametrize(
@@ -169,10 +131,10 @@ def test_roleid_cases(name, mode, parent, new_role, code, tmp_trestle_dir: pathl
 def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir: pathlib.Path) -> None:
     """Test validation of roles and references to them in responsible-parties."""
     (tmp_trestle_dir / 'assessment-plans/my_ap').mkdir(exist_ok=True, parents=True)
-    roles = [ap.Role(id='id1', title='title1'), ap.Role(id='id2', title='title2'), ap.Role(id='id3', title='title3')]
-    party1 = ap.ResponsibleParty(party_uuids=[ap.PartyUuid(__root__=str(uuid4()))])
-    party2 = ap.ResponsibleParty(party_uuids=[ap.PartyUuid(__root__=str(uuid4()))])
-    responsible_parties = {test_id: party1, 'id2': party2}
+    roles = [Role(id='id1', title='title1'), Role(id='id2', title='title2'), Role(id='id3', title='title3')]
+    party1 = ResponsibleParty(role_id=test_id, party_uuids=[PartyUuid(__root__=str(uuid4()))])
+    party2 = ResponsibleParty(role_id='id2', party_uuids=[PartyUuid(__root__=str(uuid4()))])
+    responsible_parties = [party1, party2]
     ap_obj = generate_sample_model(ap.AssessmentPlan)
     ap_obj.metadata.roles = roles
     ap_obj.metadata.responsible_parties = responsible_parties
@@ -181,15 +143,15 @@ def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir:
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {ap_path} -m refs'
+            testcmd = f'trestle validate {mode} {ap_path}'
         else:
-            testcmd = f'trestle validate {mode} {ap_path.parent} -m refs'
+            testcmd = f'trestle validate {mode} {ap_path.parent}'
     elif mode == '-n':
-        testcmd = f'trestle validate -t assessment-plan -n {name} -m refs'
+        testcmd = f'trestle validate -t assessment-plan -n {name}'
     elif mode == '-t':
-        testcmd = 'trestle validate -t assessment-plan -m refs'
+        testcmd = 'trestle validate -t assessment-plan'
     else:
-        testcmd = 'trestle validate -a -m refs'
+        testcmd = 'trestle validate -a'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -206,7 +168,7 @@ def test_oscal_version_validator(tmp_trestle_dir: pathlib.Path, sample_catalog_m
     mycat_dir = tmp_trestle_dir / 'catalogs/mycat'
     mycat_dir.mkdir()
     sample_catalog_minimal.oscal_write(mycat_dir / 'catalog.json')
-    testcmd = 'trestle validate -t catalog -m oscal_version'
+    testcmd = 'trestle validate -t catalog'
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()

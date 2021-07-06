@@ -120,7 +120,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Distribute the results of risk framing activities to {{ pm-28_prm_1 }}; and"
+                        "prose": "Distribute the results of risk framing activities to {{ insert: param, pm-28_prm_1 }}; and"
                     },
                     {
                         "id": "pm-28_smt.c",
@@ -131,7 +131,7 @@
                                 "value": "c."
                             }
                         ],
-                        "prose": "Review and update risk framing considerations {{ pm-28_prm_2 }}."
+                        "prose": "Review and update risk framing considerations {{ insert: param, pm-28_prm_2 }}."
                     }
                 ]
             },

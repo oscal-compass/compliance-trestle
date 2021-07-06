@@ -77,7 +77,7 @@
             {
                 "id": "pm-23_smt",
                 "name": "statement",
-                "prose": "Establish a Data Governance Body consisting of {{ pm-23_prm_1 }} with {{ pm-23_prm_2 }}."
+                "prose": "Establish a Data Governance Body consisting of {{ insert: param, pm-23_prm_1 }} with {{ insert: param, pm-23_prm_2 }}."
             },
             {
                 "id": "pm-23_gdn",

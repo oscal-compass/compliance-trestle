@@ -20,13 +20,17 @@ from uuid import uuid4
 
 import pytest
 
+import tests.test_utils as test_utils
+
 import trestle.core.base_model as ospydantic
+import trestle.core.const as const
 import trestle.core.err as err
 import trestle.oscal
+import trestle.oscal.assessment_plan as ap
 import trestle.oscal.catalog as oscatalog
+import trestle.oscal.common as common
 import trestle.oscal.component as component
-import trestle.oscal.poam as poam
-import trestle.oscal.target as ostarget
+import trestle.oscal.ssp as ssp
 from trestle.core.base_model import OscalBaseModel
 
 
@@ -38,7 +42,7 @@ def test_echo_tmp_path(tmp_path) -> None:
 
 def simple_catalog() -> oscatalog.Catalog:
     """Return a skeleton catalog with datetime.now()."""
-    m = oscatalog.Metadata(
+    m = common.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now(),
@@ -52,7 +56,7 @@ def simple_catalog() -> oscatalog.Catalog:
 
 def simple_catalog_utc() -> oscatalog.Catalog:
     """Return a skeleton catalog with datetime.now()."""
-    m = oscatalog.Metadata(
+    m = common.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(timezone.utc),
@@ -66,7 +70,7 @@ def simple_catalog_utc() -> oscatalog.Catalog:
 
 def simple_catalog_with_tz() -> oscatalog.Catalog:
     """Return a skeleton catalog with datetime.now()."""
-    m = oscatalog.Metadata(
+    m = common.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
@@ -128,7 +132,7 @@ def test_broken_tz() -> None:
 
     taz = BrokenTimezone()
 
-    m = oscatalog.Metadata(
+    m = common.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now(tz=taz),
@@ -188,21 +192,21 @@ def test_stripped_model_type_failure() -> None:
         assert a is not None
 
 
-def test_stripped_instance(sample_target_def: OscalBaseModel) -> None:
+def test_stripped_instance(sample_nist_component_def: OscalBaseModel) -> None:
     """Test stripped_instance method."""
-    assert hasattr(sample_target_def, 'metadata')
+    assert hasattr(sample_nist_component_def, 'metadata')
 
-    sc_instance = sample_target_def.stripped_instance(stripped_fields_aliases=['metadata'])
+    sc_instance = sample_nist_component_def.stripped_instance(stripped_fields_aliases=['metadata'])
     assert not hasattr(sc_instance, 'metadata')
 
-    sc_instance = sample_target_def.stripped_instance(stripped_fields=['metadata'])
+    sc_instance = sample_nist_component_def.stripped_instance(stripped_fields=['metadata'])
     assert not hasattr(sc_instance, 'metadata')
 
     with pytest.raises(err.TrestleError):
-        sc_instance = sample_target_def.stripped_instance(stripped_fields_aliases=['invalid'])
+        sc_instance = sample_nist_component_def.stripped_instance(stripped_fields_aliases=['invalid'])
 
-    if isinstance(sample_target_def, ostarget.TargetDefinition):
-        metadata = sample_target_def.metadata
+    if isinstance(sample_nist_component_def, component.ComponentDefinition):
+        metadata = sample_nist_component_def.metadata
         assert hasattr(metadata, 'last_modified')
 
         instance = metadata.stripped_instance(stripped_fields_aliases=['last-modified'])
@@ -232,32 +236,47 @@ def test_multiple_variable_strip() -> None:
 def test_copy_to() -> None:
     """Test the copy to functionality."""
     # Complex variable
-    c_m = oscatalog.Metadata(
+    c_m = common.Metadata(
         **{
             'title': 'My simple catalog',
-            'last-modified': datetime.now(),
+            'last-modified': datetime.now().astimezone(),
             'version': '0.0.0',
             'oscal-version': trestle.oscal.OSCAL_VERSION
         }
     )
 
-    target_metadata = c_m.copy_to(ostarget.Metadata)
+    target_metadata = c_m.copy_to(common.Metadata)
     assert (target_metadata.title == c_m.title)
     # Non matching object
     with pytest.raises(err.TrestleError):
-        c_m.copy_to(ostarget.DefinedTarget)
+        c_m.copy_to(component.DefinedComponent)
 
     # Testing of root fields. This is is subject to change.
     # component.Remarks (type str)
     # poam.RiskStatus (type str)
     # note the testing conduction
-    remark = component.Remarks(__root__='hello')
-    _ = remark.copy_to(poam.RiskStatus)
+    remark = common.Remarks(__root__='hello')
+    _ = remark.copy_to(common.RiskStatus)
+
+
+def test_copy_components() -> None:
+    """Test copying across similar but different objects."""
+    state_obj = ssp.State1('under-development')
+    sys_component = ssp.SystemComponent(
+        uuid=const.SAMPLE_UUID_STR,
+        type='Hello',
+        title='My title',
+        description='Hello world',
+        status=ssp.Status(state=state_obj)
+    )
+    ap_component = sys_component.copy_to(ap.SystemComponent)
+    assert sys_component.title == ap_component.title
+    pass
 
 
 def test_copy_from() -> None:
     """Test copy from function."""
-    m = oscatalog.Metadata(
+    m = common.Metadata(
         **{
             'title': 'My simple catalog',
             'last-modified': datetime.now().astimezone(),
@@ -267,7 +286,7 @@ def test_copy_from() -> None:
     )
     catalog = oscatalog.Catalog(metadata=m, uuid=str(uuid4()))
 
-    target_md = ostarget.Metadata(
+    target_md = common.Metadata(
         **{
             'title': 'My simple target_title',
             'last-modified': datetime.now().astimezone(),
@@ -282,46 +301,46 @@ def test_copy_from() -> None:
 
 def test_oscal_read() -> None:
     """Test ability to read and uwrap oscal object."""
-    path_target_definition = pathlib.Path('tests/data/json/sample-target-definition.json')
-    assert (path_target_definition.exists())
+    path_component_definition = pathlib.Path(test_utils.NIST_SAMPLE_CD_JSON)
+    assert (path_component_definition.exists())
 
-    target = ostarget.TargetDefinition.oscal_read(path_target_definition)
-    assert (len(str(target.metadata.title)) > 1)
+    cd = component.ComponentDefinition.oscal_read(path_component_definition)
+    assert (len(str(cd.metadata.title)) > 1)
 
 
 def test_oscal_write(tmp_path: pathlib.Path) -> None:
     """Test Oscal write by repetitive operations."""
-    path_target_definition = pathlib.Path('tests/data/json/sample-target-definition.json')
+    path_target_definition = pathlib.Path(test_utils.NIST_SAMPLE_CD_JSON)
     assert (path_target_definition.exists())
 
-    target = ostarget.TargetDefinition.oscal_read(path_target_definition)
+    component1 = component.ComponentDefinition.oscal_read(path_target_definition)
 
-    temp_td_json = pathlib.Path(tmp_path) / 'target_test.json'
-    target.oscal_write(temp_td_json)
+    temp_cd_json = pathlib.Path(tmp_path) / 'component_test.json'
+    component1.oscal_write(temp_cd_json)
 
-    target2 = ostarget.TargetDefinition.oscal_read(temp_td_json)
+    component2 = component.ComponentDefinition.oscal_read(temp_cd_json)
 
-    temp_td_yaml = pathlib.Path(tmp_path) / 'target_test.yaml'
-    target2.oscal_write(temp_td_yaml)
+    temp_cd_yaml = pathlib.Path(tmp_path) / 'component_test.yaml'
+    component2.oscal_write(temp_cd_yaml)
 
-    ostarget.TargetDefinition.oscal_read(temp_td_yaml)
+    component.ComponentDefinition.oscal_read(temp_cd_yaml)
     # test failure
     with pytest.raises(err.TrestleError):
-        target2.oscal_write(tmp_path / 'target.borked')
+        component2.oscal_write(tmp_path / 'target.borked')
 
 
-def test_get_field_value_by_alias(sample_target_def: ostarget.TargetDefinition) -> None:
+def test_get_field_value_by_alias(sample_nist_component_def: component.ComponentDefinition) -> None:
     """Test get attribute by alias method."""
-    assert sample_target_def.metadata.get_field_value_by_alias(
+    assert sample_nist_component_def.metadata.get_field_value_by_alias(
         'last-modified'
-    ) == sample_target_def.metadata.last_modified
-    assert sample_target_def.metadata.get_field_value_by_alias('last_modified') is None
+    ) == sample_nist_component_def.metadata.last_modified
+    assert sample_nist_component_def.metadata.get_field_value_by_alias('last_modified') is None
 
 
-def test_get_field_by_alias(sample_target_def: ostarget.TargetDefinition) -> None:
+def test_get_field_by_alias(sample_nist_component_def: component.ComponentDefinition) -> None:
     """Test get field for field alias."""
-    assert sample_target_def.metadata.get_field_by_alias('last-modified').name == 'last_modified'
-    assert sample_target_def.metadata.get_field_by_alias('last_modified') is None
+    assert sample_nist_component_def.metadata.get_field_by_alias('last-modified').name == 'last_modified'
+    assert sample_nist_component_def.metadata.get_field_by_alias('last_modified') is None
 
 
 def test_oscal_serialize_json() -> None:

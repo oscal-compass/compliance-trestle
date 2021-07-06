@@ -193,7 +193,7 @@
                                         "value": "(b)"
                                     }
                                 ],
-                                "prose": "Develop and implement {{ ma-5.1_prm_1 }} in the event a system component cannot be sanitized, removed, or disconnected from the system."
+                                "prose": "Develop and implement {{ insert: param, ma-5.1_prm_1 }} in the event a system component cannot be sanitized, removed, or disconnected from the system."
                             }
                         ]
                     },

@@ -41,7 +41,7 @@
             {
                 "id": "si-17_smt",
                 "name": "statement",
-                "prose": "Implement the indicated fail-safe procedures when the indicated failures occur: {{ si-17_prm_1 }}."
+                "prose": "Implement the indicated fail-safe procedures when the indicated failures occur: {{ insert: param, si-17_prm_1 }}."
             },
             {
                 "id": "si-17_gdn",

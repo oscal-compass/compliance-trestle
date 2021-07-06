@@ -90,7 +90,7 @@
                                 "value": "b."
                             }
                         ],
-                        "prose": "Review and update the access agreements {{ ps-6_prm_1 }}; and"
+                        "prose": "Review and update the access agreements {{ insert: param, ps-6_prm_1 }}; and"
                     },
                     {
                         "id": "ps-6_smt.c",
@@ -123,7 +123,7 @@
                                         "value": "2."
                                     }
                                 ],
-                                "prose": "Re-sign access agreements to maintain access to organizational systems when access agreements have been updated or {{ ps-6_prm_2 }}."
+                                "prose": "Re-sign access agreements to maintain access to organizational systems when access agreements have been updated or {{ insert: param, ps-6_prm_2 }}."
                             }
                         ]
                     }
