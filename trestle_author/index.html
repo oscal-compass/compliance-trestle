@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/trestle_author/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.8">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
     
     
       
@@ -1013,18 +1013,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.ncname_validator/" class="md-nav__link">
-        ncname_validator
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../api_reference/trestle.core.parser/" class="md-nav__link">
         parser
       </a>
@@ -1064,14 +1052,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12" type="checkbox" id="__nav_7_2_2_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11" type="checkbox" id="__nav_7_2_2_11" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_12">
+      <label class="md-nav__link" for="__nav_7_2_2_11">
         commands
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="commands" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_12">
+        <label class="md-nav__title" for="__nav_7_2_2_11">
           <span class="md-nav__icon md-icon"></span>
           commands
         </label>
@@ -1157,14 +1145,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12_7" type="checkbox" id="__nav_7_2_2_12_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11_7" type="checkbox" id="__nav_7_2_2_11_7" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_12_7">
+      <label class="md-nav__link" for="__nav_7_2_2_11_7">
         author
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="author" data-md-level="5">
-        <label class="md-nav__title" for="__nav_7_2_2_12_7">
+        <label class="md-nav__title" for="__nav_7_2_2_11_7">
           <span class="md-nav__icon md-icon"></span>
           author
         </label>
@@ -1454,14 +1442,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_20" type="checkbox" id="__nav_7_2_2_20" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_19" type="checkbox" id="__nav_7_2_2_19" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_20">
+      <label class="md-nav__link" for="__nav_7_2_2_19">
         remote
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_20">
+        <label class="md-nav__title" for="__nav_7_2_2_19">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -1640,8 +1628,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
-        assessment_results
+      <a href="../api_reference/trestle.oscal.common/" class="md-nav__link">
+        common
       </a>
     </li>
   
@@ -1652,8 +1640,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.oscal.target/" class="md-nav__link">
-        target
+      <a href="../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
       </a>
     </li>
   
@@ -2266,7 +2254,7 @@ trestle_root
 <h4 id="recursive-r-recurse_1">Recursive (<code>-r</code>, <code>--recurse</code>)<a class="headerlink" href="#recursive-r-recurse_1" title="Permanent link">¤</a></h4>
 <p>By default <code>author headers</code> only indexes a flat directory. The recursive option allows the discovery of sub directories.</p>
 <h2 id="trestle-author-ssp-generate"><code>trestle author ssp-generate</code><a class="headerlink" href="#trestle-author-ssp-generate" title="Permanent link">¤</a></h2>
-<p>The <code>ssp-generate</code> sub-command creates a partial ssp from a catalog, profile and yaml header file.  It can also assemble the markdown files
+<p>The <code>ssp-generate</code> sub-command creates a partial ssp from a catalog, profile and optional yaml header file.  It can also assemble the markdown files
 into a single json SSP file.  The catalog consists of a number of controls with parameters, and the profile specifies a subset of
 those controls along with corresponding parameter values.  This command merges the information from the two files and generates a
 directory containing a set of markdown files, one for each control in the profile.  Each markdown file has the yaml header embedded
@@ -2274,7 +2262,7 @@ at the start of the file.</p>
 <p>Example usage for creation of the markdown:</p>
 <p><code>trestle author ssp-generate -p my_prof -y /my_yaml_dir/header.yaml -s "ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence" -o my_ssp</code></p>
 <p>In this example the catalog and profile have previously been imported into the trestle project directory, making sure to import the
-catalog using the name specified in the import href of the profile.  Note that the path in the href is ignored.  The yaml
+catalog using the name specified in the import href of the profile.  Note that the path in the href is ignored.  The optional yaml
 header file can be anywhere in the file system.  In this case the two sections loaded are <code>ImplGuidance</code> and <code>ExpectedEvidence</code> -
 and their aliases are provided with full spacing and spelling so the section headers will have proper titles.  The output will be
 placed in the trestle subdirectory <code>my_ssp</code> with a subdirectory for each control group.</p>
@@ -2290,51 +2278,61 @@ responsible-roles:
 - Customer
 ---
 
+# ac-1 - Access Control Policy and Procedures
 
-# ac-1 - AC Access Control Policy and Procedures
 ## Control Description
 
-The organization:
+- [a.] Develop, document, and disseminate to all personell:
 
-a. Develops, documents, and disseminates to Assignment: organization-defined personnel or roles:
+  - [1.] A thorough access control policy that:
 
-    1. An access control policy that addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
-    2. Procedures to facilitate the implementation of the access control policy and associated access controls; and
+    - [(a)] Addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance; and
+    - [(b)] Is consistent with applicable laws, executive orders, directives, regulations, policies, standards, and guidelines; and
 
-b. Reviews and updates the current:
+  - [2.] Procedures to facilitate the implementation of the access control policy and the associated access controls;
 
-    1. Access control policy at least annually; and
-    2. Access control procedures at least annually.
+- [b.] Designate an officer to manage the development, documentation, and dissemination of the access control policy and procedures; and
+- [c.] Review and update the current access control:
 
+  - [1.] Policy weekly and following all meetings; and
+  - [2.] Procedures monthly and following conferences.
 
+---
 
 ## ac-1 What is the solution and how is it implemented?
 
 ---
+
 ### Part a.
 
 Add control implementation description here.
 
-
 ---
+
 ### Part b.
 
 Add control implementation description here.
 
 ---
 
+### Part c.
+
+Add control implementation description here.
+
+---
 
 ## ac-1 Section Implementation Guidance
 
-Perform the needed tasks.
+Do it carefully.
 
-## ac-1 Section Expected Evidence
+## ac-1 Section ExpectedEvidence
 
-Provide detailed logs.
+Detailed logs.
 </code></pre></div>
 
 </details>
 <p><br></p>
+<p>Each label in the ssp is wrapped in [] to indicate it comes directly from the label and is not generated by the markdown viewer.  Keep in mind that the actual label is the same but with the [] removed.</p>
 <p>Note that for each statement in the control description there is a corresponding response section in which to provide a detailed response for later inclusion in the final ssp as the control implementation.</p>
 <p>Also note that the optional final sections are provided, and labeled using the alias given at the command line.</p>
 <h2 id="trestle-author-ssp-generate_1"><code>trestle author ssp-generate</code><a class="headerlink" href="#trestle-author-ssp-generate_1" title="Permanent link">¤</a></h2>
@@ -2411,10 +2409,10 @@ Provide detailed logs.
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.b0710199.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.76f349be.min.js"></script>
+      <script src="../assets/javascripts/bundle.82b56eb2.min.js"></script>
       
     
   </body>

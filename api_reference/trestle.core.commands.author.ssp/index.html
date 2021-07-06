@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.author.ssp/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.8">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
     
     
       
@@ -803,18 +803,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.ncname_validator/" class="md-nav__link">
-        ncname_validator
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../trestle.core.parser/" class="md-nav__link">
         parser
       </a>
@@ -856,14 +844,14 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12" type="checkbox" id="__nav_7_2_2_12" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11" type="checkbox" id="__nav_7_2_2_11" checked>
       
-      <label class="md-nav__link" for="__nav_7_2_2_12">
+      <label class="md-nav__link" for="__nav_7_2_2_11">
         commands
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="commands" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_12">
+        <label class="md-nav__title" for="__nav_7_2_2_11">
           <span class="md-nav__icon md-icon"></span>
           commands
         </label>
@@ -951,14 +939,14 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12_7" type="checkbox" id="__nav_7_2_2_12_7" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11_7" type="checkbox" id="__nav_7_2_2_11_7" checked>
       
-      <label class="md-nav__link" for="__nav_7_2_2_12_7">
+      <label class="md-nav__link" for="__nav_7_2_2_11_7">
         author
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="author" data-md-level="5">
-        <label class="md-nav__title" for="__nav_7_2_2_12_7">
+        <label class="md-nav__title" for="__nav_7_2_2_11_7">
           <span class="md-nav__icon md-icon"></span>
           author
         </label>
@@ -1430,14 +1418,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_20" type="checkbox" id="__nav_7_2_2_20" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_19" type="checkbox" id="__nav_7_2_2_19" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_20">
+      <label class="md-nav__link" for="__nav_7_2_2_19">
         remote
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_20">
+        <label class="md-nav__title" for="__nav_7_2_2_19">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -1616,8 +1604,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.oscal.assessment_results/" class="md-nav__link">
-        assessment_results
+      <a href="../trestle.oscal.common/" class="md-nav__link">
+        common
       </a>
     </li>
   
@@ -1628,8 +1616,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.oscal.target/" class="md-nav__link">
-        target
+      <a href="../trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
       </a>
     </li>
   
@@ -2335,11 +2323,11 @@
           <summary>Source code in <code>trestle/core/commands/author/ssp.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Initialize the class.&quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_md_file</span><span class="p">:</span> <span class="n">MDWriter</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_alters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_alters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">prof</span><span class="o">.</span><span class="n">Alter</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_yaml_header</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 </code></pre></div>
         </details>
     </div>
@@ -2370,24 +2358,45 @@
     <span class="n">group_ids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">trestle_root</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">get_trestle_project_root</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">())</span>
     <span class="n">md_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">md_name</span>
+
     <span class="k">for</span> <span class="n">gdir</span> <span class="ow">in</span> <span class="n">md_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*/&#39;</span><span class="p">):</span>
         <span class="n">group_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">gdir</span><span class="o">.</span><span class="n">stem</span><span class="p">))</span>
+
+    <span class="c1"># generate the one dummy component that implementations will refer to in by_components</span>
+    <span class="n">component</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemComponent</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">ossp</span><span class="o">.</span><span class="n">SystemComponent</span><span class="p">)</span>
+    <span class="n">component</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Dummy component created by trestle&#39;</span>
+
+    <span class="c1"># create system implementation to hold the dummy component</span>
+    <span class="n">system_imp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">SystemImplementation</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">ossp</span><span class="o">.</span><span class="n">SystemImplementation</span><span class="p">)</span>
+    <span class="n">system_imp</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="p">[</span><span class="n">component</span><span class="p">]</span>
+
+    <span class="c1"># create implementation requirements for each control, linked to the dummy component uuid</span>
     <span class="n">imp_reqs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ossp</span><span class="o">.</span><span class="n">ImplementedRequirement</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="n">group_ids</span><span class="p">:</span>
         <span class="n">group_path</span> <span class="o">=</span> <span class="n">md_dir</span> <span class="o">/</span> <span class="n">group_id</span>
         <span class="k">for</span> <span class="n">control_file</span> <span class="ow">in</span> <span class="n">group_path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*.md&#39;</span><span class="p">):</span>
-            <span class="n">imp_reqs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_implementations</span><span class="p">(</span><span class="n">control_file</span><span class="p">))</span>
+            <span class="n">imp_reqs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_implementations</span><span class="p">(</span><span class="n">control_file</span><span class="p">,</span> <span class="n">component</span><span class="p">))</span>
+
+    <span class="c1"># create a control implementation to hold the implementation requirements</span>
     <span class="n">control_imp</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">ControlImplementation</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">ossp</span><span class="o">.</span><span class="n">ControlImplementation</span><span class="p">)</span>
     <span class="n">control_imp</span><span class="o">.</span><span class="n">implemented_requirements</span> <span class="o">=</span> <span class="n">imp_reqs</span>
     <span class="n">control_imp</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;This is the control implementation for the system.&#39;</span>
+
+    <span class="c1"># create a sample ssp to hold all the parts</span>
     <span class="n">ssp</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">ossp</span><span class="o">.</span><span class="n">SystemSecurityPlan</span><span class="p">)</span>
+
+    <span class="c1"># insert the parts into the ssp</span>
     <span class="n">ssp</span><span class="o">.</span><span class="n">control_implementation</span> <span class="o">=</span> <span class="n">control_imp</span>
+    <span class="n">ssp</span><span class="o">.</span><span class="n">system_implementation</span> <span class="o">=</span> <span class="n">system_imp</span>
     <span class="n">import_profile</span><span class="p">:</span> <span class="n">ossp</span><span class="o">.</span><span class="n">ImportProfile</span> <span class="o">=</span> <span class="n">gens</span><span class="o">.</span><span class="n">generate_sample_model</span><span class="p">(</span><span class="n">ossp</span><span class="o">.</span><span class="n">ImportProfile</span><span class="p">)</span>
     <span class="n">import_profile</span><span class="o">.</span><span class="n">href</span> <span class="o">=</span> <span class="s1">&#39;REPLACE_ME&#39;</span>
     <span class="n">ssp</span><span class="o">.</span><span class="n">import_profile</span> <span class="o">=</span> <span class="n">import_profile</span>
+
+    <span class="c1"># write out the ssp as json</span>
     <span class="n">ssp_dir</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="p">(</span><span class="s1">&#39;system-security-plans/&#39;</span> <span class="o">+</span> <span class="n">ssp_name</span><span class="p">)</span>
     <span class="n">ssp_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">ssp</span><span class="o">.</span><span class="n">oscal_write</span><span class="p">(</span><span class="n">ssp_dir</span> <span class="o">/</span> <span class="s1">&#39;system-security-plan.json&#39;</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="mi">0</span>
 </code></pre></div>
         </details>
@@ -2457,7 +2466,7 @@ version to be printed out in the section header of the markdown.</p></td>
         <td><code>yaml_header</code></td>
         <td><code>dict</code></td>
         <td><p>The dictionary corresponding to the desired contents of the yaml header at the
-top of each markdown file.</p></td>
+top of each markdown file.  If the dict is empty no yaml header is included.</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
@@ -2504,7 +2513,7 @@ top of each markdown file.</p></td>
 <span class="sd">            in the profile parts for the corresponding section, and the alias is the nicer</span>
 <span class="sd">            version to be printed out in the section header of the markdown.</span>
 <span class="sd">        yaml_header: The dictionary corresponding to the desired contents of the yaml header at the</span>
-<span class="sd">            top of each markdown file.</span>
+<span class="sd">            top of each markdown file.  If the dict is empty no yaml header is included.</span>
 <span class="sd">    Returns:</span>
 <span class="sd">        0 on success, 1 otherwise</span>
 
@@ -2517,22 +2526,26 @@ top of each markdown file.</p></td>
 
     <span class="c1"># build a convenience dictionary to access control handles by name</span>
     <span class="n">control_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ControlHandle</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
-            <span class="n">control_handle</span> <span class="o">=</span> <span class="n">ControlHandle</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">control</span><span class="p">)</span>
-            <span class="n">control_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_controls</span><span class="p">(</span><span class="n">control_handle</span><span class="p">,</span> <span class="n">control_dict</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">catalog</span><span class="o">.</span><span class="n">groups</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">controls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">control</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">controls</span><span class="p">:</span>
+                    <span class="n">control_handle</span> <span class="o">=</span> <span class="n">ControlHandle</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">control</span><span class="p">)</span>
+                    <span class="n">control_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_controls</span><span class="p">(</span><span class="n">control_handle</span><span class="p">,</span> <span class="n">control_dict</span><span class="p">)</span>
 
     <span class="c1"># get list of control_ids needed by profile</span>
     <span class="n">control_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># no need to check since imports is required</span>
     <span class="k">for</span> <span class="n">_import</span> <span class="ow">in</span> <span class="n">profile</span><span class="o">.</span><span class="n">imports</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">include_control</span> <span class="ow">in</span> <span class="n">_import</span><span class="o">.</span><span class="n">include_controls</span><span class="p">:</span>
-            <span class="n">control_ids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">include_control</span><span class="o">.</span><span class="n">with_ids</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_import</span><span class="o">.</span><span class="n">include_controls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">include_control</span> <span class="ow">in</span> <span class="n">_import</span><span class="o">.</span><span class="n">include_controls</span><span class="p">:</span>
+                <span class="n">control_ids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">include_control</span><span class="o">.</span><span class="n">with_ids</span><span class="p">)</span>
 
     <span class="c1"># get list of group id&#39;s and associated controls</span>
     <span class="n">needed_group_ids</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="n">needed_controls</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ControlHandle</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">control_id</span> <span class="ow">in</span> <span class="n">control_ids</span><span class="p">:</span>
-        <span class="n">control_handle</span> <span class="o">=</span> <span class="n">control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="p">]</span>
+        <span class="n">control_handle</span> <span class="o">=</span> <span class="n">control_dict</span><span class="p">[</span><span class="n">control_id</span><span class="o">.</span><span class="n">__root__</span><span class="p">]</span>
         <span class="n">needed_group_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">control_handle</span><span class="o">.</span><span class="n">group_id</span><span class="p">)</span>
         <span class="n">needed_controls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">control_handle</span><span class="p">)</span>
 
@@ -2541,9 +2554,16 @@ top of each markdown file.</p></td>
         <span class="p">(</span><span class="n">md_path</span> <span class="o">/</span> <span class="n">group_id</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># assign values to class members for use when writing out the controls</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">set_parameters</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_alters</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">alters</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_yaml_header</span> <span class="o">=</span> <span class="n">yaml_header</span>
+    <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">set_parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">param_list</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">set_parameters</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">param_list</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">param_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_alters</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">modify</span><span class="o">.</span><span class="n">alters</span>
+
+    <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">yaml_header</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_yaml_header</span> <span class="o">=</span> <span class="n">yaml_header</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span> <span class="o">=</span> <span class="n">sections</span>
 
     <span class="c1"># write out the controls</span>
@@ -2651,10 +2671,10 @@ top of each markdown file.</p></td>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.b0710199.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.76f349be.min.js"></script>
+      <script src="../../assets/javascripts/bundle.82b56eb2.min.js"></script>
       
     
   </body>

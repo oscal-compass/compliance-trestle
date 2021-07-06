@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/">
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.8">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
     
     
       
@@ -886,18 +886,6 @@
   
   
     <li class="md-nav__item">
-      <a href="api_reference/trestle.core.ncname_validator/" class="md-nav__link">
-        ncname_validator
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="api_reference/trestle.core.parser/" class="md-nav__link">
         parser
       </a>
@@ -937,14 +925,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12" type="checkbox" id="__nav_7_2_2_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11" type="checkbox" id="__nav_7_2_2_11" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_12">
+      <label class="md-nav__link" for="__nav_7_2_2_11">
         commands
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="commands" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_12">
+        <label class="md-nav__title" for="__nav_7_2_2_11">
           <span class="md-nav__icon md-icon"></span>
           commands
         </label>
@@ -1030,14 +1018,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12_7" type="checkbox" id="__nav_7_2_2_12_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11_7" type="checkbox" id="__nav_7_2_2_11_7" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_12_7">
+      <label class="md-nav__link" for="__nav_7_2_2_11_7">
         author
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="author" data-md-level="5">
-        <label class="md-nav__title" for="__nav_7_2_2_12_7">
+        <label class="md-nav__title" for="__nav_7_2_2_11_7">
           <span class="md-nav__icon md-icon"></span>
           author
         </label>
@@ -1327,14 +1315,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_20" type="checkbox" id="__nav_7_2_2_20" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_19" type="checkbox" id="__nav_7_2_2_19" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_20">
+      <label class="md-nav__link" for="__nav_7_2_2_19">
         remote
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_20">
+        <label class="md-nav__title" for="__nav_7_2_2_19">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -1513,8 +1501,8 @@
   
   
     <li class="md-nav__item">
-      <a href="api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
-        assessment_results
+      <a href="api_reference/trestle.oscal.common/" class="md-nav__link">
+        common
       </a>
     </li>
   
@@ -1525,8 +1513,8 @@
   
   
     <li class="md-nav__item">
-      <a href="api_reference/trestle.oscal.target/" class="md-nav__link">
-        target
+      <a href="api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
       </a>
     </li>
   
@@ -1895,13 +1883,7 @@
 <p>By building human managed artifacts into OSCAL, Trestle is not only able to validate the integrity of the artifacts that people generate - it also enables reuse and sharing of artifacts, and furthermore can provide suitable input into tools that automate operational compliance.</p>
 <h2 id="supported-oscal-elements-and-extensions">Supported OSCAL elements and extensions<a class="headerlink" href="#supported-oscal-elements-and-extensions" title="Permanent link">¤</a></h2>
 <p><code>trestle</code> implicitly supports all OSCAL schemas for use within the object model. The development roadmap for <code>trestle</code> includes adding workflow around specific elements / objects that is opinionated.</p>
-<p><code>trestle</code> supports OSCAL version <code>1.0.0-rc2</code> only at this stage. NIST, in pre-1.0.0 <a href="https://github.com/usnistgov/OSCAL/issues/846">continuously updating
-</a> their current posture. Trestle will be periodically updating to meet NIST's baseline. On the formal release of OSCAL <code>1.0.0</code> the strategy for trestle will be revaluated.</p>
-<p>In addition to the core OSCAL objects, trestle supports the definition of a <code>target</code>. The <code>target</code> (and its container
-<code>target-definition</code>) is a generalization of the <code>component</code> model that is designed specifically to support configuration.</p>
-<p><code>catalog</code> and <code>profile</code> objects can define parameters. However, by their nature the parameter definitions are at the
-regulatory level. The <code>trestle</code> team has seen a need for an object that can define parameters at the <code>control-implemenation</code>
-level, e.g. <code>component</code> is an implementation and <code>target</code> is the definition of capabilities of the component.</p>
+<p><code>trestle</code> supports OSCAL version <code>1.0.0</code> only at this stage.</p>
 <h2 id="supported-file-formats-for-oscal-objects">Supported file formats for OSCAL objects.<a class="headerlink" href="#supported-file-formats-for-oscal-objects" title="Permanent link">¤</a></h2>
 <p>OSCAL supports <code>xml</code>, <code>json</code> and <code>yaml</code> with their <a href="https://github.com/usnistgov/metaschema">metaschema</a> tooling. Trestle
 natively supports only <code>json</code> and <code>yaml</code> formats at this time.</p>
@@ -1911,13 +1893,12 @@ that full support will remain only for <code>json</code> and  <code>yaml</code>.
 <h2 id="python-codebase-easy-installation-via-pip">Python codebase, easy installation via pip<a class="headerlink" href="#python-codebase-easy-installation-via-pip" title="Permanent link">¤</a></h2>
 <p>Trestle runs on most all python platforms (e.g. Linux, Mac, Windows) and is available on PyPi so it is easily installed via pip.  It is under active development and new releases are made available regularly.</p>
 <h2 id="development-status">Development status<a class="headerlink" href="#development-status" title="Permanent link">¤</a></h2>
-<p>Compliance trestle is currently beta. The expectation is that in ongoing work there may be unannounced changes that are breaking within the trestle codebase. If you are using trestle please contact us so we are aware your use-case.</p>
-<p>The underlying OSCAL schema is also currently changing. Until the formal release of OSCAL 1.0.0, the models in trestle will regularly update to track NIST's changes.</p>
+<p>Compliance trestle is currently beta. The expectation is that in ongoing work there may be un-announced changes that are breaking within the trestle codebase. With the release of NIST's version 1.0.0 of OSCAL we expect that these changes will be decreasing in size as trestle approaches a 1.0.0 release for itself.</p>
 <h2 id="contributing-to-trestle">Contributing to Trestle<a class="headerlink" href="#contributing-to-trestle" title="Permanent link">¤</a></h2>
 <p>Our project welcomes external contributions. Please consult <a href="contributing/overview">contributing</a> to get started.</p>
 <h2 id="license-authors">License &amp; Authors<a class="headerlink" href="#license-authors" title="Permanent link">¤</a></h2>
 <p>If you would like to see the detailed LICENSE click <a href="LICENSE">here</a>.
-Consult <a href="https://github.com/IBM/compliance-trestle/graphs/contributors">contributors</a> for a list of authors and <a href="maintainers/">maintainers</a> for the core team.</p>
+Consult <a href="https://github.com/IBM/compliance-trestle/graphs/contributors">contributors</a> for a list of authors and <a href="https://github.com/IBM/compliance-trestle/blob/develop/MAINTAINERS.md">maintainers</a> for the core team.</p>
 <div class="highlight"><pre><span></span><code># Copyright (c) 2020 IBM Corp. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -1987,10 +1968,10 @@ Consult <a href="https://github.com/IBM/compliance-trestle/graphs/contributors">
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.b0710199.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.76f349be.min.js"></script>
+      <script src="assets/javascripts/bundle.82b56eb2.min.js"></script>
       
     
   </body>

@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.tasks.tanium_to_oscal/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.8">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
     
     
       
@@ -947,18 +947,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.ncname_validator/" class="md-nav__link">
-        ncname_validator
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../trestle.core.parser/" class="md-nav__link">
         parser
       </a>
@@ -998,14 +986,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12" type="checkbox" id="__nav_7_2_2_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11" type="checkbox" id="__nav_7_2_2_11" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_12">
+      <label class="md-nav__link" for="__nav_7_2_2_11">
         commands
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="commands" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_12">
+        <label class="md-nav__title" for="__nav_7_2_2_11">
           <span class="md-nav__icon md-icon"></span>
           commands
         </label>
@@ -1091,14 +1079,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12_7" type="checkbox" id="__nav_7_2_2_12_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11_7" type="checkbox" id="__nav_7_2_2_11_7" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_12_7">
+      <label class="md-nav__link" for="__nav_7_2_2_11_7">
         author
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="author" data-md-level="5">
-        <label class="md-nav__title" for="__nav_7_2_2_12_7">
+        <label class="md-nav__title" for="__nav_7_2_2_11_7">
           <span class="md-nav__icon md-icon"></span>
           author
         </label>
@@ -1388,14 +1376,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_20" type="checkbox" id="__nav_7_2_2_20" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_19" type="checkbox" id="__nav_7_2_2_19" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_20">
+      <label class="md-nav__link" for="__nav_7_2_2_19">
         remote
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_20">
+        <label class="md-nav__title" for="__nav_7_2_2_19">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -1574,8 +1562,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.oscal.assessment_results/" class="md-nav__link">
-        assessment_results
+      <a href="../trestle.oscal.common/" class="md-nav__link">
+        common
       </a>
     </li>
   
@@ -1586,8 +1574,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.oscal.target/" class="md-nav__link">
-        target
+      <a href="../trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
       </a>
     </li>
   
@@ -2243,16 +2231,26 @@
     <span class="sd">&quot;&quot;&quot;Print the help string.&quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Help information for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> task.&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Purpose: Transform Tanium files into Open Security Controls Assessment Language (OSCAL) partial results files.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s1">&#39;Purpose: Transform Tanium files into Open Security Controls Assessment Language (OSCAL) partial results files.&#39;</span>
+    <span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Configuration flags sit under [task.tanium-to-oscal]:&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  input-dir = (required) the path of the input directory comprising Tanium reports.&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s1">&#39;  output-dir = (required) the path of the output directory comprising synthesized OSCAL .json files.&#39;</span>
+    <span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  output-overwrite = (optional) true [default] or false; replace existing output when true.&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  quiet = (optional) true or false [default]; display file creations and rules analysis when false.&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as 2021-01-04T00:05:23+04:00 for example; if not specified then value for &quot;Timestamp&quot; key in the Tanium report is used if present, otherwise current time is used.&#39;</span><span class="p">)</span>                                                       
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s1">&#39;  quiet = (optional) true or false [default]; display file creations and rules analysis when false.&#39;</span>
+    <span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s1">&#39;  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as 2021-01-04T00:05:23+04:00 for example; if not specified then value for &quot;Timestamp&quot; key in the Tanium report is used if present, otherwise current time is used.&#39;</span>
+    <span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Operation: A transformation is performed on one or more Tanium input files to produce output in OSCAL partial results format.&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s1">&#39;Operation: A transformation is performed on one or more Tanium input files to produce output in OSCAL partial results format.&#39;</span>
+    <span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2380,10 +2378,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.b0710199.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.76f349be.min.js"></script>
+      <script src="../../assets/javascripts/bundle.82b56eb2.min.js"></script>
       
     
   </body>

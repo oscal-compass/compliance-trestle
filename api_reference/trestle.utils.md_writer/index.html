@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.utils.md_writer/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.8">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
     
     
       
@@ -801,18 +801,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.ncname_validator/" class="md-nav__link">
-        ncname_validator
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../trestle.core.parser/" class="md-nav__link">
         parser
       </a>
@@ -852,14 +840,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12" type="checkbox" id="__nav_7_2_2_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11" type="checkbox" id="__nav_7_2_2_11" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_12">
+      <label class="md-nav__link" for="__nav_7_2_2_11">
         commands
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="commands" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_12">
+        <label class="md-nav__title" for="__nav_7_2_2_11">
           <span class="md-nav__icon md-icon"></span>
           commands
         </label>
@@ -945,14 +933,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12_7" type="checkbox" id="__nav_7_2_2_12_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11_7" type="checkbox" id="__nav_7_2_2_11_7" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_12_7">
+      <label class="md-nav__link" for="__nav_7_2_2_11_7">
         author
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="author" data-md-level="5">
-        <label class="md-nav__title" for="__nav_7_2_2_12_7">
+        <label class="md-nav__title" for="__nav_7_2_2_11_7">
           <span class="md-nav__icon md-icon"></span>
           author
         </label>
@@ -1242,14 +1230,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_20" type="checkbox" id="__nav_7_2_2_20" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_19" type="checkbox" id="__nav_7_2_2_19" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_20">
+      <label class="md-nav__link" for="__nav_7_2_2_19">
         remote
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_20">
+        <label class="md-nav__title" for="__nav_7_2_2_19">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -1588,8 +1576,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.oscal.assessment_results/" class="md-nav__link">
-        assessment_results
+      <a href="../trestle.oscal.common/" class="md-nav__link">
+        common
       </a>
     </li>
   
@@ -1600,8 +1588,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.oscal.target/" class="md-nav__link">
-        target
+      <a href="../trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
       </a>
     </li>
   
@@ -2159,7 +2147,10 @@
           <summary>Source code in <code>trestle/utils/md_writer.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">new_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Add new header.&quot;&quot;&quot;</span>
+    <span class="c1"># headers must be separated by blank lines</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="s1">&#39;#&#39;</span> <span class="o">*</span> <span class="n">level</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">title</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
 </code></pre></div>
         </details>
     </div>
@@ -2186,7 +2177,9 @@
           <summary>Source code in <code>trestle/utils/md_writer.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">new_hr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Add horizontal rule.&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="s1">&#39;---&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
 </code></pre></div>
         </details>
     </div>
@@ -2213,7 +2206,11 @@
           <summary>Source code in <code>trestle/utils/md_writer.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">new_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Add a line of text to the output.&quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_add_line_raw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_indent_space</span><span class="p">()</span> <span class="o">+</span> <span class="n">line</span><span class="p">)</span>
+    <span class="c1"># prevent double empty lines</span>
+    <span class="n">out_line</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_blank</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_indent_space</span><span class="p">()</span> <span class="o">+</span> <span class="n">line</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prev_blank_line</span><span class="p">()</span> <span class="ow">and</span> <span class="n">out_line</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_add_line_raw</span><span class="p">(</span><span class="n">out_line</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2227,7 +2224,7 @@
 
 
 <h6 class="doc doc-heading" id="trestle.utils.md_writer.MDWriter.new_list">
-<code class="highlight language-python"><span class="n">new_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">new_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_</span><span class="p">)</span></code>
 
 
 <a class="headerlink" href="#trestle.utils.md_writer.MDWriter.new_list" title="Permanent link">¤</a></h6>
@@ -2238,17 +2235,21 @@
 
         <details class="quote">
           <summary>Source code in <code>trestle/utils/md_writer.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">new_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">new_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Add a list to the markdown.&quot;&quot;&quot;</span>
+    <span class="c1"># in general this is a list of lists</span>
     <span class="c1"># if string just write it out</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">list_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="n">list_</span><span class="p">)</span>
-    <span class="c1"># it is a list with more than one item</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_blank</span><span class="p">(</span><span class="n">list_</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="s1">&#39;- &#39;</span> <span class="o">+</span> <span class="n">list_</span><span class="p">)</span>
+    <span class="c1"># else it is a sublist so indent</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_indent_level</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">new_paragraph</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">list_</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">new_list</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">show</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">new_list</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_indent_level</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div>
         </details>
@@ -2276,7 +2277,7 @@
           <summary>Source code in <code>trestle/utils/md_writer.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">new_paragraph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Start a new paragraph.&quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">new_line</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2365,7 +2366,7 @@
                 <span class="n">yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="s1">&#39;safe&#39;</span><span class="p">)</span>
                 <span class="n">yaml</span><span class="o">.</span><span class="n">default_flow_style</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_yaml_header</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;---</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;---</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lines</span><span class="p">))</span>
     <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -2470,10 +2471,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.b0710199.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.76f349be.min.js"></script>
+      <script src="../../assets/javascripts/bundle.82b56eb2.min.js"></script>
       
     
   </body>

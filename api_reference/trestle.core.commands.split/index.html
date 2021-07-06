@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.split/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.8">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
     
     
       
@@ -803,18 +803,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.core.ncname_validator/" class="md-nav__link">
-        ncname_validator
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../trestle.core.parser/" class="md-nav__link">
         parser
       </a>
@@ -856,14 +844,14 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12" type="checkbox" id="__nav_7_2_2_12" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11" type="checkbox" id="__nav_7_2_2_11" checked>
       
-      <label class="md-nav__link" for="__nav_7_2_2_12">
+      <label class="md-nav__link" for="__nav_7_2_2_11">
         commands
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="commands" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_12">
+        <label class="md-nav__title" for="__nav_7_2_2_11">
           <span class="md-nav__icon md-icon"></span>
           commands
         </label>
@@ -949,14 +937,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12_7" type="checkbox" id="__nav_7_2_2_12_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11_7" type="checkbox" id="__nav_7_2_2_11_7" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_12_7">
+      <label class="md-nav__link" for="__nav_7_2_2_11_7">
         author
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="author" data-md-level="5">
-        <label class="md-nav__title" for="__nav_7_2_2_12_7">
+        <label class="md-nav__title" for="__nav_7_2_2_11_7">
           <span class="md-nav__icon md-icon"></span>
           author
         </label>
@@ -1382,14 +1370,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_20" type="checkbox" id="__nav_7_2_2_20" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_19" type="checkbox" id="__nav_7_2_2_19" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_20">
+      <label class="md-nav__link" for="__nav_7_2_2_19">
         remote
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_20">
+        <label class="md-nav__title" for="__nav_7_2_2_19">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -1568,8 +1556,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.oscal.assessment_results/" class="md-nav__link">
-        assessment_results
+      <a href="../trestle.oscal.common/" class="md-nav__link">
+        common
       </a>
     </li>
   
@@ -1580,8 +1568,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../trestle.oscal.target/" class="md-nav__link">
-        target
+      <a href="../trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
       </a>
     </li>
   
@@ -2132,11 +2120,6 @@
 
 <span class="sd">    It returns a plan for the operation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># assume we ran the command below:</span>
-    <span class="c1"># trestle split -f target.yaml</span>
-    <span class="c1">#   -e &#39;target-definition.metadata,</span>
-    <span class="c1">#   target-definition.targets.*.target-control-implementations.*&#39;</span>
-
     <span class="c1"># initialize plan</span>
     <span class="n">split_plan</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">()</span>
 
@@ -2202,17 +2185,17 @@
 <p>It assumes that a chain of element paths starts at the cur_path_index with the first path ending
 with a wildcard (*)</p>
 <p>It returns the index where the chain of path ends.</p>
-<p>For example, element paths could have a list of paths as below for a <code>TargetDefinition</code> model where
+<p>For example, element paths could have a list of paths as below for a <code>ComponentDefinition</code> model where
 the first path is the start of the chain.</p>
-<p>For each of the sub model described by the first element path (e.g target-defintion.targets.<em>) in the chain,
-the subsequent paths (e.g. target.target-control-implementations.</em>) will be applied recursively to retrieve
+<p>For each of the sub model described by the first element path (e.g component-defintion.components.<em>) in the
+chain, the subsequent paths (e.g component.control-implementations.</em>) will be applied recursively to retrieve
 the sub-sub models:
 [
-    'target-definition.targets.<em>',
-    'target.target-control-implementations.</em>'
+    'component-definition.componet.<em>',
+    'component.control-implementations.</em>'
 ]
 for a command like below:
-   trestle split -f target.yaml -e target-definition.targets.<em>.target-control-implementations.</em></p>
+   trestle split -f component.yaml -e component-definition.components.<em>.control-implementations.</em></p>
 
         <details class="quote">
           <summary>Source code in <code>trestle/core/commands/split.py</code></summary>
@@ -2235,21 +2218,21 @@ for a command like below:
 
 <span class="sd">    It returns the index where the chain of path ends.</span>
 
-<span class="sd">    For example, element paths could have a list of paths as below for a `TargetDefinition` model where</span>
+<span class="sd">    For example, element paths could have a list of paths as below for a `ComponentDefinition` model where</span>
 <span class="sd">    the first path is the start of the chain.</span>
 
-<span class="sd">    For each of the sub model described by the first element path (e.g target-defintion.targets.*) in the chain,</span>
-<span class="sd">    the subsequent paths (e.g. target.target-control-implementations.*) will be applied recursively to retrieve</span>
+<span class="sd">    For each of the sub model described by the first element path (e.g component-defintion.components.*) in the</span>
+<span class="sd">    chain, the subsequent paths (e.g component.control-implementations.*) will be applied recursively to retrieve</span>
 <span class="sd">    the sub-sub models:</span>
 <span class="sd">    [</span>
-<span class="sd">        &#39;target-definition.targets.*&#39;,</span>
-<span class="sd">        &#39;target.target-control-implementations.*&#39;</span>
+<span class="sd">        &#39;component-definition.componet.*&#39;,</span>
+<span class="sd">        &#39;component.control-implementations.*&#39;</span>
 <span class="sd">    ]</span>
 <span class="sd">    for a command like below:</span>
-<span class="sd">       trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*</span>
+<span class="sd">       trestle split -f component.yaml -e component-definition.components.*.control-implementations.*</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># assume we ran the command below:</span>
-    <span class="c1"># trestle split -f target.yaml -e target-definition.targets.*.target-control-implementations.*</span>
+    <span class="c1"># trestle split -f component.yaml -e component-definition.components.*.control-implementations.*</span>
 
     <span class="k">if</span> <span class="n">split_plan</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Split plan must have been initialized&#39;</span><span class="p">)</span>
@@ -2296,9 +2279,6 @@ for a command like below:
     <span class="n">path_chain_end</span> <span class="o">=</span> <span class="n">cur_path_index</span>
 
     <span class="c1"># if wildcard is present in the element_path and the next path in the chain has current path as the parent,</span>
-    <span class="c1"># we need to split recursively and create separate file for each sub item</span>
-    <span class="c1"># for example, in the first round we get the `targets` using the path `target-definition.targets.*`</span>
-    <span class="c1"># so, now we need to split each of the target recursively. Note that target is an instance of dict</span>
     <span class="c1"># However, there can be other sub_model, which is of type list</span>
     <span class="k">if</span> <span class="n">is_parent</span> <span class="ow">and</span> <span class="n">element_path</span><span class="o">.</span><span class="n">get_last</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">ElementPath</span><span class="o">.</span><span class="n">WILDCARD</span><span class="p">:</span>
         <span class="c1"># create dir for all sub model items</span>
@@ -2331,13 +2311,13 @@ for a command like below:
             <span class="n">sub_model_item</span> <span class="o">=</span> <span class="n">sub_model_items</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
             <span class="c1"># recursively split the sub-model if there are more element paths to traverse</span>
-            <span class="c1"># e.g. split target.target-control-implementations.*</span>
+            <span class="c1"># e.g. split component.control-implementations.*</span>
             <span class="n">require_recursive_split</span> <span class="o">=</span> <span class="n">cur_path_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">element_paths</span><span class="p">)</span> <span class="ow">and</span> <span class="n">element_paths</span><span class="p">[</span>
                 <span class="n">cur_path_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_parent</span><span class="p">()</span> <span class="o">==</span> <span class="n">element_path</span>
 
             <span class="k">if</span> <span class="n">require_recursive_split</span><span class="p">:</span>
                 <span class="c1"># prepare individual directory for each sub-model</span>
-                <span class="c1"># e.g. `targets/&lt;UUID&gt;__target/`</span>
+                <span class="c1"># FIXME: check for redundant dict behaviour.</span>
                 <span class="n">sub_root_file_name</span> <span class="o">=</span> <span class="n">cmd_utils</span><span class="o">.</span><span class="n">to_model_file_name</span><span class="p">(</span><span class="n">sub_model_item</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">content_type</span><span class="p">)</span>
                 <span class="n">sub_model_plan</span> <span class="o">=</span> <span class="n">Plan</span><span class="p">()</span>
 
@@ -2423,14 +2403,16 @@ for a command like below:
           <summary>Source code in <code>trestle/core/commands/split.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">split_is_too_fine</span><span class="p">(</span><span class="n">split_paths</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">model_obj</span><span class="p">:</span> <span class="n">OscalBaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Determine if the element path list goes too fine, e.g. individual strings.&quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">split_path</span> <span class="ow">in</span> <span class="n">split_paths</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
-        <span class="n">model</span> <span class="o">=</span> <span class="n">get_singular_model_from_json</span><span class="p">(</span><span class="n">split_path</span><span class="p">,</span> <span class="n">model_obj</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_collection_field_type</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;ConstrainedStrValue&#39;</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="s1">&#39;float&#39;</span><span class="p">]:</span>
-            <span class="k">return</span> <span class="kc">True</span>
+    <span class="c1"># FIXME this is not working with oscal 1.0.0</span>
+    <span class="k">if</span> <span class="n">split_paths</span> <span class="o">==</span> <span class="s1">&#39;FIXME_DUMMY_STRING_FORCE_NOT_RUN&#39;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">split_path</span> <span class="ow">in</span> <span class="n">split_paths</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">get_singular_model_from_json</span><span class="p">(</span><span class="n">split_path</span><span class="p">,</span> <span class="n">model_obj</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_collection_field_type</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;ConstrainedStrValue&#39;</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="s1">&#39;float&#39;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="kc">False</span>
 </code></pre></div>
         </details>
@@ -2520,10 +2502,10 @@ for a command like below:
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.b0710199.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.76f349be.min.js"></script>
+      <script src="../../assets/javascripts/bundle.82b56eb2.min.js"></script>
       
     
   </body>

@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/specifications/trestle-spec/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.8">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
     
     
       
@@ -797,18 +797,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference/trestle.core.ncname_validator/" class="md-nav__link">
-        ncname_validator
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../api_reference/trestle.core.parser/" class="md-nav__link">
         parser
       </a>
@@ -848,14 +836,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12" type="checkbox" id="__nav_7_2_2_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11" type="checkbox" id="__nav_7_2_2_11" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_12">
+      <label class="md-nav__link" for="__nav_7_2_2_11">
         commands
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="commands" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_12">
+        <label class="md-nav__title" for="__nav_7_2_2_11">
           <span class="md-nav__icon md-icon"></span>
           commands
         </label>
@@ -941,14 +929,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12_7" type="checkbox" id="__nav_7_2_2_12_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11_7" type="checkbox" id="__nav_7_2_2_11_7" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_12_7">
+      <label class="md-nav__link" for="__nav_7_2_2_11_7">
         author
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="author" data-md-level="5">
-        <label class="md-nav__title" for="__nav_7_2_2_12_7">
+        <label class="md-nav__title" for="__nav_7_2_2_11_7">
           <span class="md-nav__icon md-icon"></span>
           author
         </label>
@@ -1238,14 +1226,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_20" type="checkbox" id="__nav_7_2_2_20" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_19" type="checkbox" id="__nav_7_2_2_19" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_20">
+      <label class="md-nav__link" for="__nav_7_2_2_19">
         remote
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_20">
+        <label class="md-nav__title" for="__nav_7_2_2_19">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -1424,8 +1412,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
-        assessment_results
+      <a href="../../api_reference/trestle.oscal.common/" class="md-nav__link">
+        common
       </a>
     </li>
   
@@ -1436,8 +1424,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference/trestle.oscal.target/" class="md-nav__link">
-        target
+      <a href="../../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
       </a>
     </li>
   
@@ -1944,7 +1932,6 @@
 <li><strong>trestle model directory</strong>: directory representing the source folder for manipulating an OSCAL model in a trestle project. This type of directory is usually created by commands such as <code>trestle create</code> and <code>trestle import</code>. Examples of a trestle model directory named <code>mymodel</code> under different types of models are:</li>
 <li><code>$TRESTLE_BASEDIR/catalogs/mymodel</code></li>
 <li><code>$TRESTLE_BASEDIR/profiles/mymodel</code></li>
-<li><code>$TRESTLE_BASEDIR/target-definitions/mymodel</code></li>
 <li><code>$TRESTLE_BASEDIR/component-definitions/mymodel</code></li>
 <li><code>$TRESTLE_BASEDIR/system-security-plans/mymodel</code></li>
 <li><code>$TRESTLE_BASEDIR/assessment-plans/mymodel</code></li>
@@ -1961,14 +1948,12 @@
 ├── dist
 │   ├── catalogs
 │   ├── profiles
-│   ├── target-definitions
 │   ├── system-security-plans
 │   ├── assessment-plans
 │   ├── assessment-results
 │   └── plan-of-action-and-milestones
 ├── catalogs
 ├── profiles
-├── target-definitions
 ├── component-definitions
 ├── system-security-plans
 ├── assessment-plans
@@ -1976,7 +1961,7 @@
 └── plan-of-action-and-milestones
 </code></pre></div>
 <p><code>.trestle</code> directory is a special directory containing various trestle artefacts to help run various other commands.</p>
-<p><code>dist</code> directory will contain the merged or assembled version of the models located on the source model directories (at the project root level) which are: <code>catalogs</code>, <code>profiles</code>, <code>target-definitions</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> and <code>plan-of-action-and-milestones</code>.</p>
+<p><code>dist</code> directory will contain the merged or assembled version of the models located on the source model directories (at the project root level) which are: <code>catalogs</code>, <code>profiles</code>,  <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> and <code>plan-of-action-and-milestones</code>.</p>
 <p>Notice that trestle is a highly opinionated tool and, therefore, the names of the files and directories that are created by any of the <code>trestle</code> commands and subcommands MUST NOT be changed manually.</p>
 <h4 id="trestle-create"><code>trestle create</code><a class="headerlink" href="#trestle-create" title="Permanent link">¤</a></h4>
 <p>This command will create an initial directory structure for various OSCAL models including sample JSON files and subdirectories representing parts of the model. For example, <code>trestle create catalog -o nist800-53</code> will create a directory structure of a sample catalog like below.</p>
@@ -2009,7 +1994,6 @@ Every subdirectory in a trestle directory model should have a corresponding <cod
 <ul>
 <li><code>trestle create catalog</code>: creates a directory structure of a sample OSCAL catalog model under the <code>catalogs</code> folder. This folder can contain multiple catalogs.</li>
 <li><code>trestle create profile</code>: creates a directory structure of a sample OSCAL profile model under the <code>profiles</code> folder. This folder can contain multiple profiles.</li>
-<li><code>trestle create target-definition</code>: creates a directory structure of a sample target-definition model under the <code>target-definitions</code> folder. This folder can contain multiple target-definitions.</li>
 <li><code>trestle create component-definition</code>: creates a directory structure of a sample component-definition model under the <code>component-definitions</code> folder. This folder can contain multiple component-definitions.</li>
 <li><code>trestle create system-security-plan</code>: creates a directory structure of a sample system-security-plan model under the <code>system-security-plans</code> folder. This folder can contain multiple system-security-plans.</li>
 <li><code>trestle create assessment-plan</code>: creates a directory structure of a sample assessment-plan under the <code>assessment-plans</code> folder. This folder can contain multiple assessment-plans.</li>
@@ -2018,7 +2002,7 @@ Every subdirectory in a trestle directory model should have a corresponding <cod
 </ul>
 <p>The following options are supported:</p>
 <ul>
-<li><code>-o or --output</code>: specifies the name/alias of a model. It is used as the prefix for the output filename under the <code>dist</code> directory and for naming the source subdirectories under  <code>catalogs</code>, <code>profiles</code>, <code>target-definitions</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> or <code>plan-of-action-and-milestones</code>.</li>
+<li><code>-o or --output</code>: specifies the name/alias of a model. It is used as the prefix for the output filename under the <code>dist</code> directory and for naming the source subdirectories under  <code>catalogs</code>, <code>profiles</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> or <code>plan-of-action-and-milestones</code>.</li>
 </ul>
 <p>The user can edit the parts of the generated OSCAL model by modifying the sample content in those directories.</p>
 <p>The initial level of decomposition of each type of model varies according to the model type.
@@ -2070,7 +2054,8 @@ This default or reference decomposition behaviour can be changed by modifying th
 <li><code>profile.json</code> file has the content of the OSCAL profile.</li>
 </ul>
 <h4 id="target-definition-default-decomposition"><em>Target-definition default decomposition</em><a class="headerlink" href="#target-definition-default-decomposition" title="Permanent link">¤</a></h4>
-<p>For <code>target-definition</code>, the initial sample content is broken down as shown below:</p>
+<p><em>THIS IS LEGACY CONTENT TARGET DEFINITIONS NO LONGER EXIST</em>
+For <code>target-definition</code>, the initial sample content is broken down as shown below:</p>
 <div class="highlight"><pre><span></span><code>.
 ├── .trestle
 ├── dist
@@ -2439,10 +2424,10 @@ The following option is required:</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.b0710199.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.76f349be.min.js"></script>
+      <script src="../../assets/javascripts/bundle.82b56eb2.min.js"></script>
       
     
   </body>

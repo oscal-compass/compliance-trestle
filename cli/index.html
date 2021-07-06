@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/cli/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.8">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
     
     
       
@@ -943,18 +943,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.core.ncname_validator/" class="md-nav__link">
-        ncname_validator
-      </a>
-    </li>
-  
-
-          
-            
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../api_reference/trestle.core.parser/" class="md-nav__link">
         parser
       </a>
@@ -994,14 +982,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12" type="checkbox" id="__nav_7_2_2_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11" type="checkbox" id="__nav_7_2_2_11" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_12">
+      <label class="md-nav__link" for="__nav_7_2_2_11">
         commands
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="commands" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_12">
+        <label class="md-nav__title" for="__nav_7_2_2_11">
           <span class="md-nav__icon md-icon"></span>
           commands
         </label>
@@ -1087,14 +1075,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_12_7" type="checkbox" id="__nav_7_2_2_12_7" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_11_7" type="checkbox" id="__nav_7_2_2_11_7" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_12_7">
+      <label class="md-nav__link" for="__nav_7_2_2_11_7">
         author
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="author" data-md-level="5">
-        <label class="md-nav__title" for="__nav_7_2_2_12_7">
+        <label class="md-nav__title" for="__nav_7_2_2_11_7">
           <span class="md-nav__icon md-icon"></span>
           author
         </label>
@@ -1384,14 +1372,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_20" type="checkbox" id="__nav_7_2_2_20" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7_2_2_19" type="checkbox" id="__nav_7_2_2_19" >
       
-      <label class="md-nav__link" for="__nav_7_2_2_20">
+      <label class="md-nav__link" for="__nav_7_2_2_19">
         remote
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_7_2_2_20">
+        <label class="md-nav__title" for="__nav_7_2_2_19">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -1570,8 +1558,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
-        assessment_results
+      <a href="../api_reference/trestle.oscal.common/" class="md-nav__link">
+        common
       </a>
     </li>
   
@@ -1582,8 +1570,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../api_reference/trestle.oscal.target/" class="md-nav__link">
-        target
+      <a href="../api_reference/trestle.oscal.assessment_results/" class="md-nav__link">
+        assessment_results
       </a>
     </li>
   
@@ -1995,14 +1983,12 @@
 ├── dist
 │   ├── catalogs
 │   ├── profiles
-│   ├── target-definitions
 │   ├── system-security-plans
 │   ├── assessment-plans
 │   ├── assessment-results
 │   └── plan-of-action-and-milestones
 ├── catalogs
 ├── profiles
-├── target-definitions
 ├── component-definitions
 ├── system-security-plans
 ├── assessment-plans
@@ -2022,7 +2008,7 @@
     └── nist-800-53
         └── catalog.json
 </code></pre></div>
-<p><code>dist</code> directory will contain the assembled version of the models located on the source model directories (at the project root level) which are: <code>catalogs</code>, <code>profiles</code>, <code>target-definitions</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> and <code>plan-of-action-and-milestones</code>. The assumption is that each of the OSCAL files within this folder is ready to be read by external 3rd party tools.</p>
+<p><code>dist</code> directory will contain the assembled version of the models located on the source model directories (at the project root level) which are: <code>catalogs</code>, <code>profiles</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> and <code>plan-of-action-and-milestones</code>. The assumption is that each of the OSCAL files within this folder is ready to be read by external 3rd party tools.</p>
 <h3 id="support-for-subdivided-document-structures">Support for subdivided document structures<a class="headerlink" href="#support-for-subdivided-document-structures" title="Permanent link">¤</a></h3>
 <p>The files constructed by OSCAL can run into the tens of thousands of lines of yaml or formatted json. At this size the
 files become completely unmanageable for users. To combat this, trestle can <code>trestle split</code> a file into many smaller files and later merge those split files together.</p>
@@ -2065,14 +2051,12 @@ files become completely unmanageable for users. To combat this, trestle can <cod
 ├── dist
 │   ├── catalogs
 │   ├── profiles
-│   ├── target-definitions
 │   ├── system-security-plans
 │   ├── assessment-plans
 │   ├── assessment-results
 │   └── plan-of-action-and-milestones
 ├── catalogs
 ├── profiles
-├── target-definitions
 ├── component-definitions
 ├── system-security-plans
 ├── assessment-plans
@@ -2080,7 +2064,7 @@ files become completely unmanageable for users. To combat this, trestle can <cod
 └── plan-of-action-and-milestones
 </code></pre></div>
 <p><code>.trestle</code> directory is a special directory containing various trestle artefacts to help run various other commands.</p>
-<p><code>dist</code> directory will contain the merged or assembled version of the models located on the source model directories (at the project root level) which are: <code>catalogs</code>, <code>profiles</code>, <code>target-definitions</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> and <code>plan-of-action-and-milestones</code>.</p>
+<p><code>dist</code> directory will contain the merged or assembled version of the models located on the source model directories (at the project root level) which are: <code>catalogs</code>, <code>profiles</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> and <code>plan-of-action-and-milestones</code>.</p>
 <p>Notice that trestle is a highly opinionated tool and, therefore, the names of the files and directories that are created by any of the <code>trestle</code> commands and subcommands MUST NOT be changed manually.</p>
 <h2 id="trestle-create"><code>trestle create</code><a class="headerlink" href="#trestle-create" title="Permanent link">¤</a></h2>
 <p>This command will create an initial directory structure for various OSCAL models including sample JSON files and subdirectories representing parts of the model. For example, <code>trestle create catalog -o nist800-53</code> will create a directory structure of a sample catalog like below.</p>
@@ -2113,7 +2097,6 @@ Every subdirectory in a trestle directory model should have a corresponding <cod
 <ul>
 <li><code>trestle create catalog</code>: creates a directory structure of a sample OSCAL catalog model under the <code>catalogs</code> folder. This folder can contain multiple catalogs.</li>
 <li><code>trestle create profile</code>: creates a directory structure of a sample OSCAL profile model under the <code>profiles</code> folder. This folder can contain multiple profiles.</li>
-<li><code>trestle create target-definition</code>: creates a directory structure of a sample target-definition model under the <code>target-definitions</code> folder. This folder can contain multiple target-definitions.</li>
 <li><code>trestle create component-definition</code>: creates a directory structure of a sample component-definition model under the <code>component-definitions</code> folder. This folder can contain multiple component-definitions.</li>
 <li><code>trestle create system-security-plan</code>: creates a directory structure of a sample system-security-plan model under the <code>system-security-plans</code> folder. This folder can contain multiple system-security-plans.</li>
 <li><code>trestle create assessment-plan</code>: creates a directory structure of a sample assessment-plan under the <code>assessment-plans</code> folder. This folder can contain multiple assessment-plans.</li>
@@ -2122,7 +2105,7 @@ Every subdirectory in a trestle directory model should have a corresponding <cod
 </ul>
 <p>The following options are supported:</p>
 <ul>
-<li><code>-o or --output</code>: specifies the name/alias of a model. It is used as the prefix for the output filename under the <code>dist</code> directory and for naming the source subdirectories under  <code>catalogs</code>, <code>profiles</code>, <code>target-definitions</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> or <code>plan-of-action-and-milestones</code>.</li>
+<li><code>-o or --output</code>: specifies the name/alias of a model. It is used as the prefix for the output filename under the <code>dist</code> directory and for naming the source subdirectories under  <code>catalogs</code>, <code>profiles</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> or <code>plan-of-action-and-milestones</code>.</li>
 </ul>
 <p>The user can edit the parts of the generated OSCAL model by modifying the sample content in those directories.</p>
 <p>The initial level of decomposition of each type of model varies according to the model type.
@@ -2164,11 +2147,11 @@ This default or reference decomposition behaviour can be changed by modifying th
 <p>The following options are supported:</p>
 <ul>
 <li><code>-f or --file</code>: specifies the path of an existing OSCAL file.</li>
-<li><code>-o or --output</code>: specifies the name/alias of a model. It is used as the prefix for the output filename under the <code>dist</code> directory and for naming the source subdirectories under  <code>catalogs</code>, <code>profiles</code>, <code>target-definitions</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> or <code>plan-of-action-and-milestones</code>.</li>
+<li><code>-o or --output</code>: specifies the name/alias of a model. It is used as the prefix for the output filename under the <code>dist</code> directory and for naming the source subdirectories under  <code>catalogs</code>, <code>profiles</code>, <code>component-definitions</code>, <code>system-security-plans</code>, <code>assessment-plans</code>, <code>assessment-results</code> or <code>plan-of-action-and-milestones</code>.</li>
 </ul>
 <p>The import subcommand can determine the type of the model that is to be imported by the contents of the file.</p>
 <p>Note that the import command will decompose the file according to the default decomposing rules already mentioned in the <code>trestle create</code> section. Similarly to <code>trestle create</code>, the user can increase the level of decomposition by using <code>trestle split</code> command.</p>
-<p>Finally, during the import process the file must pass the <code>validate --all</code> test described below for the command, <code>validate</code>.  If the file does not pass validation a warning will be given and the import will fail.</p>
+<p>Finally, during the import process the file must pass the <code>validate</code> test described below for the command, <code>validate</code>.  If the file does not pass validation a warning will be given describing the nature of the problem and the import will fail.</p>
 <h2 id="trestle-replicate"><code>trestle replicate</code><a class="headerlink" href="#trestle-replicate" title="Permanent link">¤</a></h2>
 <p>This command allows users to replicate a certain OSCAL model (file and directory structure). For example <code>trestle replicate catalog -i cat1 -o cat11</code> will replicate the Catalog cat1 into <code>cat11</code> directory. It can also regenerate all the UUIDs as required.</p>
 <h2 id="trestle-split"><code>trestle split</code><a class="headerlink" href="#trestle-split" title="Permanent link">¤</a></h2>
@@ -2220,9 +2203,10 @@ The following option is required:</p>
 <p>Trestle validate is designed to perform a function to ensure integrity of a set of OSCAL files. This can be as simple as
 a schema validation within a single file or as complex as ensuring the integrity of a 'stack' of OSCAL files including potentially
 remote system state.</p>
-<p>Trestle validate the form `trestle validate -f FILE -i SPECIFIC_ITEM_OR_VALUE, --mode {duplicate or similar}</p>
-<p>Trestle can validate in different modes, and it can operate on one or more files specified in different ways.</p>
-<p>and returns a non-zero return code on a validation failure. Mode is a list of validation modes that will be implemented as shown in the table below.</p>
+<p>Trestle validate the form `trestle validate -f FILE -i SPECIFIC_ITEM_OR_VALUE</p>
+<p>Trestle validates files according to a number of criteria, and it can operate on one or more files specified in different ways.</p>
+<p><code>validate</code> returns a non-zero return code if there is any validation problem detected in a file.</p>
+<p>The current list of validation modes that get checked internally are:</p>
 <table>
 <thead>
 <tr>
@@ -2233,32 +2217,24 @@ remote system state.</p>
 <tbody>
 <tr>
 <td>duplicates</td>
-<td>Identify if duplicate uuid's are present: <code>trestle validate -f catalog.json --mode duplicates</code></td>
+<td>Identify if duplicate uuid's are present</td>
 </tr>
 <tr>
 <td>oscal_version</td>
-<td>Confirm that the oscal version of the file is supported: <code>trestle validate -f catalog.json --mode oscal_version</code></td>
+<td>Confirm that the oscal version of the file is supported</td>
 </tr>
 <tr>
 <td>refs</td>
-<td>Confirm that all references in responsible parties are found in rols: <code>trestle validate -f catalog.json --mode refs</code></td>
-</tr>
-<tr>
-<td>ncname</td>
-<td>Confirm that all roleid's conform to the NCName format: <code>trestle validate -f catalog.json --mode ncname</code></td>
-</tr>
-<tr>
-<td>all</td>
-<td>Confirm that the file is valid with regard to all the above modes: <code>trestle validate -f catalog.json --mode all</code></td>
+<td>Confirm that all references in responsible parties are found in roles</td>
 </tr>
 </tbody>
 </table>
 <p>In addition to validating a single file you can validate all files of a given type with the <code>-t</code> option:</p>
-<p><code>trestle validate -t catalog --mode duplicates</code></p>
+<p><code>trestle validate -t catalog</code></p>
 <p>And you can validate all models with the <code>-a</code> option:</p>
-<p><code>trestle validate -a --mode duplicates</code></p>
+<p><code>trestle validate -a</code></p>
 <p>Finally, you can validate a model based on its name using the <code>-n</code> option, along with the type of the model:</p>
-<p><code>trestle validata -t catalog -n my_catalog --mode refs</code></p>
+<p><code>trestle validata -t catalog -n my_catalog</code></p>
 <p>Note that when you <code>Import</code> a file it will perform a full validation on it first, and if it does not pass validation the file cannot be imported.</p>
 <h2 id="trestle-tasks"><code>trestle tasks</code><a class="headerlink" href="#trestle-tasks" title="Permanent link">¤</a></h2>
 <p>Open Shift Compliance Operator and Tanium are supported as 3rd party tools.</p>
@@ -2917,10 +2893,10 @@ Example output directory contents listing:
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.b0710199.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.76f349be.min.js"></script>
+      <script src="../assets/javascripts/bundle.82b56eb2.min.js"></script>
       
     
   </body>
