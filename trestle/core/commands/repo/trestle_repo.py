@@ -98,7 +98,7 @@ class ManagedOSCAL:
         import_plan.simulate()
         import_plan.execute()
 
-        logger.debug(f'Model {self.model_name} written to repository.')
+        logger.debug(f'Model {self.model_name} written to repository')
         return True
 
     def split(self, model_file: pathlib.Path, elements: List[str]) -> bool:
