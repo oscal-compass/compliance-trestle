@@ -34,7 +34,6 @@ from trestle.oscal import component
 from trestle.oscal import poam
 from trestle.oscal import profile
 from trestle.oscal import ssp
-from trestle.oscal import target
 from trestle.utils import fs
 from trestle.utils import log
 
@@ -49,7 +48,6 @@ TLO = TypeVar(
     poam.PlanOfActionAndMilestones,
     profile.Profile,
     ssp.SystemSecurityPlan,
-    target.TargetDefinition
 )
 
 
@@ -72,15 +70,6 @@ class ProfileCmd(CommandPlusDocs):
     def _run(self, args: argparse.Namespace) -> int:
         logger.info(f'Creating profile titled: {args.output}')
         return CreateCmd.create_object(self.name, profile.Profile, args)
-
-
-class TargetDefinitionCmd(CommandPlusDocs):
-    """Create a sample target definition."""
-
-    name = 'target-definition'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return CreateCmd.create_object(self.name, target.TargetDefinition, args)
 
 
 class ComponentDefinitionCmd(CommandPlusDocs):
@@ -136,7 +125,6 @@ class CreateCmd(CommandPlusDocs):
     subcommands = [
         CatalogCmd,
         ProfileCmd,
-        TargetDefinitionCmd,
         ComponentDefinitionCmd,
         SystemSecurityPlanCmd,
         AssessmentPlanCmd,

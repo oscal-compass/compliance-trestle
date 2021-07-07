@@ -90,10 +90,7 @@ def generate_models():
         out_fname = oscal_name + '.py'
         out_full_name = tmp_dir / out_fname
         generate_model(full_name, out_full_name)
-    # all .py files are first generated into oscal/tmp to be normalized
-    # but target.py is not normalized so it goes directly into the oscal dir
-    generate_model('3rd-party-schema-documents/IBM_target_schema_v1.0.0.json', out_dir / 'target.py')
-    print('Normalize all the generated .py files and create streamlined set without altering target.py')
+    # all .py files are first generated into oscal/tmp to be normalized'
     normalize_files()
 
 

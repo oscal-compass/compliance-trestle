@@ -254,12 +254,16 @@ def find_forward_refs(class_list, orders):
     return forward_refs
 
 
-def reorder(class_list):
+def reorder(fstem, class_list):
     """Reorder the class list based on the location of its refs and deps."""
     # build list of all class names defined in file
     all_class_names = []
     for c in class_list:
         all_class_names.append(c.name)
+
+    dups = set([x for x in all_class_names if all_class_names.count(x) > 1])
+    if len(dups) > 0:
+        print(f"ERROR Duplicate classes in {fstem}: {' '.join(dups)}")
 
     # find direct references for each class in list
     for n, c in enumerate(class_list):
@@ -397,6 +401,9 @@ def find_unique_classes(all_classes):
 def strip_prefixes(classes):
     """Strip prefixes from class names."""
     new_classes = []
+    # are we stripping all names in a file
+    full_file = len(classes) > 2
+    all_names = [c.name for c in classes]
     for c in classes:
         made_change = True
         # keep stripping til clean
@@ -404,6 +411,12 @@ def strip_prefixes(classes):
             made_change = False
             for prefix in prefixes_to_strip:
                 if c.strip_prefix(prefix):
+                    # if we generated a collision with existing name, append integer
+                    if full_file and c.name in all_names:
+                        ii = 1
+                        while f'c.name{ii}' in all_names:
+                            ii += 1
+                        c.name = f'{c.name}{ii}'
                     made_change = True
         new_classes.append(c)
     return new_classes
@@ -588,14 +601,15 @@ def split_classes(classes):
     return file_classes
 
 
-def reorder_classes(classes):
+def reorder_classes(fstem, classes):
     """Reorder the classes to minimize needed forwards."""
+    classes = sorted(classes, key=lambda c: c.name)
     new_classes = []
     for c in classes:
         for line in c.lines:
             _ = c.add_all_refs(line)
         new_classes.append(c)
-    reordered, forward_refs = reorder(new_classes)
+    reordered, forward_refs = reorder(fstem, new_classes)
     return reordered, forward_refs
 
 
@@ -688,9 +702,9 @@ def apply_changes_to_classes(file_classes, changes, com_names):
 
 def reorder_and_dump_as_python(file_classes):
     """Reorder the files and dump."""
-    for items in file_classes.items():
-        ordered, forward_refs = reorder_classes(items[1])
-        write_oscal(ordered, forward_refs, items[0])
+    for item in file_classes.items():
+        ordered, forward_refs = reorder_classes(item[0], item[1])
+        write_oscal(ordered, forward_refs, item[0])
 
 
 def find_full_changes(file_classes):

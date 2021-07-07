@@ -171,9 +171,7 @@ class ImportCmd(CommandPlusDocs):
             return 1
 
         # 7. Validate the imported file, rollback if unsuccessful:
-        args = argparse.Namespace(
-            file=desired_model_path, mode='all', verbose=args.verbose, trestle_root=args.trestle_root
-        )
+        args = argparse.Namespace(file=desired_model_path, verbose=args.verbose, trestle_root=args.trestle_root)
         rollback = False
         try:
             rc = validatecmd.ValidateCmd()._run(args)

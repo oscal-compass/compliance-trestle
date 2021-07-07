@@ -21,6 +21,7 @@ import logging
 import trestle.core.validator_factory as vfact
 import trestle.utils.log as log
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.const import VAL_MODE_ALL
 
 logger = logging.getLogger(__name__)
 
@@ -35,8 +36,11 @@ class ValidateCmd(CommandPlusDocs):
 
     def _run(self, args: argparse.Namespace) -> int:
         logger.debug('Entering trestle validate.')
+
         log.set_log_level_from_args(args)
-        validator = vfact.validator_factory.get(args)
+
+        mode_args = argparse.Namespace(mode=VAL_MODE_ALL)
+        validator = vfact.validator_factory.get(mode_args)
 
         try:
             return validator.validate(args)

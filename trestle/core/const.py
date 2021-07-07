@@ -25,7 +25,6 @@ TRESTLE_KEEP_FILE = '.keep'
 MODEL_TYPE_TO_MODEL_MODULE = {
     'catalogs': f'{PACKAGE_OSCAL}.catalog',
     'profiles': f'{PACKAGE_OSCAL}.profile',
-    'target-definitions': f'{PACKAGE_OSCAL}.target',
     'component-definitions': f'{PACKAGE_OSCAL}.component',
     'system-security-plans': f'{PACKAGE_OSCAL}.ssp',
     'assessment-plans': f'{PACKAGE_OSCAL}.assessment_plan',
@@ -35,7 +34,6 @@ MODEL_TYPE_TO_MODEL_MODULE = {
 MODEL_TYPE_TO_MODEL_DIR = {
     'catalog': 'catalogs',
     'profile': 'profiles',
-    'target-definition': 'target-definitions',
     'component-definition': 'component-definitions',
     'system-security-plan': 'system-security-plans',
     'assessment-plan': 'assessment-plans',
@@ -48,7 +46,6 @@ ALIAS_PATH_SEPARATOR: str = '.'
 MODEL_TYPE_LIST = [
     'catalog',
     'profile',
-    'target-definition',
     'component-definition',
     'system-security-plan',
     'assessment-plan',

@@ -19,26 +19,26 @@ from typing import List
 
 from trestle.core.models.actions import RemoveAction, UpdateAction
 from trestle.core.models.elements import Element, ElementPath
-from trestle.oscal import target
+from trestle.oscal import common, component
 
 
-def prepare_element(sample_target_def):
+def prepare_element(sample_nist_component_def: component.ComponentDefinition):
     """Prepare a target element for remove tests."""
-    element = Element(sample_target_def)
+    element = Element(sample_nist_component_def)
 
-    parties: List[target.Party] = []
+    parties: List[common.Party] = []
     parties.append(
-        target.Party(**{
+        common.Party(**{
             'uuid': 'ff47836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST1', 'type': 'organization'
         })
     )
     parties.append(
-        target.Party(**{
+        common.Party(**{
             'uuid': 'ee88836c-877c-4007-bbf3-c9d9bd805000', 'name': 'TEST2', 'type': 'organization'
         })
     )
 
-    sub_element_path = ElementPath('target-definition.metadata.parties.*')
+    sub_element_path = ElementPath('component-definition.metadata.parties.*')
     ac = UpdateAction(parties, element, sub_element_path)
     ac.execute()
 
@@ -47,10 +47,10 @@ def prepare_element(sample_target_def):
     return element
 
 
-def test_remove_action(sample_target_def):
+def test_remove_action(sample_nist_component_def):
     """Test remove action."""
-    element = prepare_element(sample_target_def)
-    sub_element_path = ElementPath('target-definition.metadata.parties')
+    element = prepare_element(sample_nist_component_def)
+    sub_element_path = ElementPath('component-definition.metadata.parties')
     prev_sub_element = element.get_at(sub_element_path)
 
     rac = RemoveAction(element, sub_element_path)

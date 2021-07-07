@@ -50,7 +50,6 @@ nav:
       - base_model: api_reference/trestle.core.base_model.md
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md
       - generators: api_reference/trestle.core.generators.md
-      - ncname_validator: api_reference/trestle.core.ncname_validator.md
       - parser: api_reference/trestle.core.parser.md
       - all_validator: api_reference/trestle.core.all_validator.md
       - utils: api_reference/trestle.core.utils.md
@@ -96,8 +95,8 @@ nav:
       - catalog: api_reference/trestle.oscal.catalog.md
       - poam: api_reference/trestle.oscal.poam.md
       - profile: api_reference/trestle.oscal.profile.md
+      - common: api_reference/trestle.oscal.common.md
       - assessment_results: api_reference/trestle.oscal.assessment_results.md
-      - target: api_reference/trestle.oscal.target.md
       - ssp: api_reference/trestle.oscal.ssp.md
       - component: api_reference/trestle.oscal.component.md
       - assessment_plan: api_reference/trestle.oscal.assessment_plan.md

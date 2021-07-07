@@ -26,14 +26,12 @@ The outline of the schema is below:
 ├── dist
 │   ├── catalogs
 │   ├── profiles
-│   ├── target-definitions
 │   ├── system-security-plans
 │   ├── assessment-plans
 │   ├── assessment-results
 │   └── plan-of-action-and-milestones
 ├── catalogs
 ├── profiles
-├── target-definitions
 ├── component-definitions
 ├── system-security-plans
 ├── assessment-plans
@@ -64,7 +62,7 @@ which appears, for a catalog a user decides is titled nist-800-53, as:
 
 ```
 
-`dist` directory will contain the assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`, `target-definitions`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`. The assumption is that each of the OSCAL files within this folder is ready to be read by external 3rd party tools.
+`dist` directory will contain the assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`. The assumption is that each of the OSCAL files within this folder is ready to be read by external 3rd party tools.
 
 ### Support for subdivided document structures
 
@@ -116,14 +114,12 @@ This command will create a trestle project in the current directory with the nec
 ├── dist
 │   ├── catalogs
 │   ├── profiles
-│   ├── target-definitions
 │   ├── system-security-plans
 │   ├── assessment-plans
 │   ├── assessment-results
 │   └── plan-of-action-and-milestones
 ├── catalogs
 ├── profiles
-├── target-definitions
 ├── component-definitions
 ├── system-security-plans
 ├── assessment-plans
@@ -133,7 +129,7 @@ This command will create a trestle project in the current directory with the nec
 
 `.trestle` directory is a special directory containing various trestle artefacts to help run various other commands.
 
-`dist` directory will contain the merged or assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`, `target-definitions`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`.
+`dist` directory will contain the merged or assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`.
 
 Notice that trestle is a highly opinionated tool and, therefore, the names of the files and directories that are created by any of the `trestle` commands and subcommands MUST NOT be changed manually.
 
@@ -173,7 +169,6 @@ The following subcommands are currently supported:
 
 - `trestle create catalog`: creates a directory structure of a sample OSCAL catalog model under the `catalogs` folder. This folder can contain multiple catalogs.
 - `trestle create profile`: creates a directory structure of a sample OSCAL profile model under the `profiles` folder. This folder can contain multiple profiles.
-- `trestle create target-definition`: creates a directory structure of a sample target-definition model under the `target-definitions` folder. This folder can contain multiple target-definitions.
 - `trestle create component-definition`: creates a directory structure of a sample component-definition model under the `component-definitions` folder. This folder can contain multiple component-definitions.
 - `trestle create system-security-plan`: creates a directory structure of a sample system-security-plan model under the `system-security-plans` folder. This folder can contain multiple system-security-plans.
 - `trestle create assessment-plan`: creates a directory structure of a sample assessment-plan under the `assessment-plans` folder. This folder can contain multiple assessment-plans.
@@ -182,7 +177,7 @@ The following subcommands are currently supported:
 
 The following options are supported:
 
-- `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `target-definitions`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
+- `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
 
 The user can edit the parts of the generated OSCAL model by modifying the sample content in those directories.
 
@@ -230,13 +225,13 @@ This command allows users to import existing OSCAL files so that they can be man
 The following options are supported:
 
 - `-f or --file`: specifies the path of an existing OSCAL file.
-- `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `target-definitions`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
+- `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
 
 The import subcommand can determine the type of the model that is to be imported by the contents of the file.
 
 Note that the import command will decompose the file according to the default decomposing rules already mentioned in the `trestle create` section. Similarly to `trestle create`, the user can increase the level of decomposition by using `trestle split` command.
 
-Finally, during the import process the file must pass the `validate --all` test described below for the command, `validate`.  If the file does not pass validation a warning will be given and the import will fail.
+Finally, during the import process the file must pass the `validate` test described below for the command, `validate`.  If the file does not pass validation a warning will be given describing the nature of the problem and the import will fail.
 
 ## `trestle replicate`
 
@@ -309,31 +304,32 @@ Trestle validate is designed to perform a function to ensure integrity of a set 
 a schema validation within a single file or as complex as ensuring the integrity of a 'stack' of OSCAL files including potentially
 remote system state.
 
-Trestle validate the form \`trestle validate -f FILE -i SPECIFIC_ITEM_OR_VALUE, --mode {duplicate or similar}
+Trestle validate the form \`trestle validate -f FILE -i SPECIFIC_ITEM_OR_VALUE
 
-Trestle can validate in different modes, and it can operate on one or more files specified in different ways.
+Trestle validates files according to a number of criteria, and it can operate on one or more files specified in different ways.
 
-and returns a non-zero return code on a validation failure. Mode is a list of validation modes that will be implemented as shown in the table below.
+`validate` returns a non-zero return code if there is any validation problem detected in a file.
+
+The current list of validation modes that get checked internally are:
 
 | Mode          | Purpose                                                                                                              |
-| ------------- | -------------------------------------------------------------------------------------------------------------------- |
-| duplicates    | Identify if duplicate uuid's are present: `trestle validate -f catalog.json --mode duplicates`                       |
-| oscal_version | Confirm that the oscal version of the file is supported: `trestle validate -f catalog.json --mode oscal_version`     |
-| refs          | Confirm that all references in responsible parties are found in rols: `trestle validate -f catalog.json --mode refs` |
-| ncname        | Confirm that all roleid's conform to the NCName format: `trestle validate -f catalog.json --mode ncname`             |
-| all           | Confirm that the file is valid with regard to all the above modes: `trestle validate -f catalog.json --mode all`     |
+| ------------- | ------------------------------------------------------------------------|
+| duplicates    | Identify if duplicate uuid's are present                                |
+| oscal_version | Confirm that the oscal version of the file is supported                 |
+| refs          | Confirm that all references in responsible parties are found in roles   |
+
 
 In addition to validating a single file you can validate all files of a given type with the `-t` option:
 
-`trestle validate -t catalog --mode duplicates`
+`trestle validate -t catalog`
 
 And you can validate all models with the `-a` option:
 
-`trestle validate -a --mode duplicates`
+`trestle validate -a`
 
 Finally, you can validate a model based on its name using the `-n` option, along with the type of the model:
 
-`trestle validata -t catalog -n my_catalog --mode refs`
+`trestle validata -t catalog -n my_catalog`
 
 Note that when you `Import` a file it will perform a full validation on it first, and if it does not pass validation the file cannot be imported.
 

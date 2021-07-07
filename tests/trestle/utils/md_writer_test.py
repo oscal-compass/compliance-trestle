@@ -50,26 +50,26 @@ b:
 c: 4
 ---
 
-
 ## Control description
 
-The organization
+- The organization
 
-a thing
+- a thing
 
-    1. thing
-    2. thing
+  - 1. thing
+  - 2. thing
 
-b thing
+- b thing
 
-c thing
+- c thing
 
-    1. things
-    2. things
+  - 1. things
+  - 2. things
 
-d thing
+- d thing
 
 ---
+
 my line
 """
 

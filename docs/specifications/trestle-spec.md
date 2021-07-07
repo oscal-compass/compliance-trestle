@@ -36,7 +36,6 @@ The scope of this document is to describe the purpose and expected behaviour of 
 - **trestle model directory**: directory representing the source folder for manipulating an OSCAL model in a trestle project. This type of directory is usually created by commands such as `trestle create` and `trestle import`. Examples of a trestle model directory named `mymodel` under different types of models are:
   - `$TRESTLE_BASEDIR/catalogs/mymodel`
   - `$TRESTLE_BASEDIR/profiles/mymodel`
-  - `$TRESTLE_BASEDIR/target-definitions/mymodel`
   - `$TRESTLE_BASEDIR/component-definitions/mymodel`
   - `$TRESTLE_BASEDIR/system-security-plans/mymodel`
   - `$TRESTLE_BASEDIR/assessment-plans/mymodel`
@@ -59,14 +58,12 @@ This command will create a trestle project in the current directory with necessa
 ├── dist
 │   ├── catalogs
 │   ├── profiles
-│   ├── target-definitions
 │   ├── system-security-plans
 │   ├── assessment-plans
 │   ├── assessment-results
 │   └── plan-of-action-and-milestones
 ├── catalogs
 ├── profiles
-├── target-definitions
 ├── component-definitions
 ├── system-security-plans
 ├── assessment-plans
@@ -76,7 +73,7 @@ This command will create a trestle project in the current directory with necessa
 
 `.trestle` directory is a special directory containing various trestle artefacts to help run various other commands.
 
-`dist` directory will contain the merged or assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`, `target-definitions`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`.
+`dist` directory will contain the merged or assembled version of the models located on the source model directories (at the project root level) which are: `catalogs`, `profiles`,  `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` and `plan-of-action-and-milestones`.
 
 Notice that trestle is a highly opinionated tool and, therefore, the names of the files and directories that are created by any of the `trestle` commands and subcommands MUST NOT be changed manually.
 
@@ -116,7 +113,6 @@ The following subcommands are currently supported:
 
 - `trestle create catalog`: creates a directory structure of a sample OSCAL catalog model under the `catalogs` folder. This folder can contain multiple catalogs.
 - `trestle create profile`: creates a directory structure of a sample OSCAL profile model under the `profiles` folder. This folder can contain multiple profiles.
-- `trestle create target-definition`: creates a directory structure of a sample target-definition model under the `target-definitions` folder. This folder can contain multiple target-definitions.
 - `trestle create component-definition`: creates a directory structure of a sample component-definition model under the `component-definitions` folder. This folder can contain multiple component-definitions.
 - `trestle create system-security-plan`: creates a directory structure of a sample system-security-plan model under the `system-security-plans` folder. This folder can contain multiple system-security-plans.
 - `trestle create assessment-plan`: creates a directory structure of a sample assessment-plan under the `assessment-plans` folder. This folder can contain multiple assessment-plans.
@@ -125,7 +121,7 @@ The following subcommands are currently supported:
 
 The following options are supported:
 
-- `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `target-definitions`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
+- `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
 
 The user can edit the parts of the generated OSCAL model by modifying the sample content in those directories.
 
@@ -186,6 +182,7 @@ For `profile`, the initial sample content is not broken down by default as shown
 
 #### *Target-definition default decomposition*
 
+*THIS IS LEGACY CONTENT TARGET DEFINITIONS NO LONGER EXIST*
 For `target-definition`, the initial sample content is broken down as shown below:
 
 ```

@@ -20,12 +20,14 @@ from uuid import uuid4
 
 from ruamel.yaml import YAML
 
+import tests.test_utils as test_utils
+
 import trestle.core.const as const
 import trestle.core.validator_helper as validator_helper
 import trestle.oscal.catalog as catalog
 import trestle.oscal.common as common
-# import trestle.oscal.ssp as ssp  # noqa: E800
-import trestle.oscal.target as ostarget
+import trestle.oscal.component as component
+import trestle.oscal.ssp as ssp
 
 catalog_path = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
 ssp_path = pathlib.Path('nist-content/src/examples/ssp/json/ssp-example.json')
@@ -37,24 +39,22 @@ def test_has_no_duplicate_values_generic() -> None:
     cat = catalog.Catalog.oscal_read(catalog_path)
     assert validator_helper.has_no_duplicate_values_generic(cat, 'uuid')
 
-    yaml_path = pathlib.Path('tests/data/yaml')
-
     # test with valid pydantic target
-    good_target_path = yaml_path / 'good_target.yaml'
-    good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
-    validator_helper.find_values_by_name(good_target, 'uuid')
-    assert validator_helper.has_no_duplicate_values_by_name(good_target, 'uuid')
+    good_component_path = test_utils.YAML_TEST_DATA_PATH / 'good_component.yaml'
+    good_component = component.ComponentDefinition.oscal_read(good_component_path)
+    validator_helper.find_values_by_name(good_component, 'uuid')
+    assert validator_helper.has_no_duplicate_values_by_name(good_component, 'uuid')
 
     # test with pydantic target containing duplicates
-    bad_target_path = yaml_path / 'bad_target_dup_uuid.yaml'
-    bad_target = ostarget.TargetDefinition.oscal_read(bad_target_path)
-    assert not validator_helper.has_no_duplicate_values_by_name(bad_target, 'uuid')
+    bad_component_path = test_utils.YAML_TEST_DATA_PATH / 'bad_component_dup_uuid.yaml'
+    bad_component = component.ComponentDefinition.oscal_read(bad_component_path)
+    assert not validator_helper.has_no_duplicate_values_by_name(bad_component, 'uuid')
 
     # test duplicates with raw yaml target, non-pydantic
-    read_file = bad_target_path.open('r', encoding=const.FILE_ENCODING)
+    read_file = bad_component_path.open('r', encoding=const.FILE_ENCODING)
     yaml = YAML(typ='safe')
-    bad_target_yaml = yaml.load(read_file)
-    assert not validator_helper.has_no_duplicate_values_generic(bad_target_yaml, 'uuid')
+    bad_component_yaml = yaml.load(read_file)
+    assert not validator_helper.has_no_duplicate_values_generic(bad_component_yaml, 'uuid')
 
 
 def test_has_no_duplicate_values_pydantic() -> None:
@@ -63,22 +63,18 @@ def test_has_no_duplicate_values_pydantic() -> None:
     cat = catalog.Catalog.oscal_read(catalog_path)
     assert validator_helper.has_no_duplicate_values_by_type(cat, common.Metadata)
 
-    yaml_path = pathlib.Path('tests/data/yaml')
-
     # test presence of many duplicate properties
-    good_target_path = yaml_path / 'good_target.yaml'
-    good_target = ostarget.TargetDefinition.oscal_read(good_target_path)
-    assert not validator_helper.has_no_duplicate_values_by_type(good_target, ostarget.Property)
+    good_component_path = test_utils.YAML_TEST_DATA_PATH / 'good_component.yaml'
+    good_component = component.ComponentDefinition.oscal_read(good_component_path)
+    assert not validator_helper.has_no_duplicate_values_by_type(good_component, common.Property)
 
 
 def test_regenerate_uuids_ssp() -> None:
     """Test regeneration of uuids with updated refs in ssp."""
-    # FIXME nist issue: https://github.com/usnistgov/oscal-content/issues/65
-    # orig_ssp = ssp.SystemSecurityPlan.oscal_read(ssp_path) # noqa: E800
-    # new_ssp, uuid_lut, n_refs_updated = validator_helper.regenerate_uuids(orig_ssp) # noqa: E800
-    # assert len(uuid_lut.items()) == 28 # noqa: E800
-    # assert n_refs_updated == 9 # noqa: E800
-    pass
+    orig_ssp = ssp.SystemSecurityPlan.oscal_read(ssp_path)
+    new_ssp, uuid_lut, n_refs_updated = validator_helper.regenerate_uuids(orig_ssp)
+    assert len(uuid_lut.items()) == 36
+    assert n_refs_updated == 23
 
 
 def test_regenerate_uuids_catalog() -> None:
