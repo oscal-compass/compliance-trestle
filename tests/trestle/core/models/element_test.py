@@ -151,3 +151,4 @@ def test_get_singular_model_from_json():
     assert get_singular_model_from_json('catalog.metadata', catalog.Catalog) == Metadata
     assert get_singular_model_from_json('catalog.metadata.roles.*', catalog.Catalog) == Role
     assert get_singular_model_from_json('catalog.groups.*.controls.*.controls.*', catalog.Catalog) == catalog.Control
+    assert get_singular_model_from_json('groups.*.controls.*', List[catalog.Group]) == catalog.Control

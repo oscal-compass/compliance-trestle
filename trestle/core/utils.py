@@ -157,8 +157,11 @@ def is_collection_field_type(field_type: Type[Any]) -> bool:
     Returns:
         Status if if it is a list or dict return type as used by oscal.
     """
+    if isinstance(field_type, list):
+        return True
     # Retrieves type from a type annotation
     origin_type = get_origin(field_type)
+    # dict in fact may not be possible
     if origin_type in [list, dict]:
         return True
     return False
@@ -175,6 +178,10 @@ def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, T
     Returns:
         The desired type.
     """
+    if isinstance(collection_field_type, list):
+        return type(collection_field_type[0])
+    if getattr(collection_field_type, '_name', None) == 'List':
+        return collection_field_type.__args__[0]
     try:
         # Pydantic special cases ust be dealt with here:
         if getattr(collection_field_type, '__name__', None) == 'ConstrainedListValue':
@@ -204,7 +211,7 @@ def get_target_model(element_path_parts: List[str], current_model: Type[BaseMode
                 # Return the model class inside the collection
                 # FIXME: From a typing perspective this is wrong.
                 current_model = get_inner_type(current_model)
-            else:
+            elif element_path_parts[index] != '*':
                 current_model = current_model.alias_to_field_map()[element_path_parts[index]].outer_type_
         return current_model
     except Exception as e:

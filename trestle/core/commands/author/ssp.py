@@ -17,7 +17,7 @@ import argparse
 import logging
 import pathlib
 import string
-from typing import Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -376,8 +376,8 @@ class SSPManager():
 
         return 0
 
-    def _get_label_prose(self, ii, tree) -> Tuple[int, str, str]:
-        # find the statement label and prose in each section of the control markdown parse tree
+    def _get_label_prose(self, ii: int, tree: List[Dict[str, Any]]) -> Tuple[int, str, str]:
+        """Find the statement label and prose in each section of the control markdown parse tree."""
         ntree = len(tree)
         label = ''
         prose = ''
@@ -405,7 +405,7 @@ class SSPManager():
             ii = -1
         return ii, label, prose
 
-    def _strip_bad_chars(self, label):
+    def _strip_bad_chars(self, label: str) -> str:
         # remove chars that would cause statement regex to fail.  Just letters and digits
         allowed_chars = string.ascii_letters + string.digits
         new_label = ''
@@ -419,7 +419,7 @@ class SSPManager():
         # get implementation requirements associated with a given control and link them to the one component we created
         control_id = control_file.stem
         parse_tree = MarkdownValidator.load_markdown_parsetree(control_file)
-        tree = parse_tree[0] if len(parse_tree) == 1 else parse_tree[1]
+        tree = parse_tree[1]
         imp_reqs: list[ossp.ImplementedRequirement] = []
         ii = 0
 

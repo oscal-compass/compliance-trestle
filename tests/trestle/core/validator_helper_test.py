@@ -107,3 +107,20 @@ def test_validations_on_dict() -> None:
     attrs = validator_helper.find_all_attribs_by_regex(fixed_dict, 'uuid')
     assert len(attrs) == 1
     assert attrs[0] == ('uuid', fixed_dict['uuid'])
+
+
+def test_find_in_dict() -> None:
+    """Test finding values in dict."""
+    my_dict = {'a': 'foo', 'b': 'bar', 'c': {'x': 1, 'y': 'hello'}}
+    result = validator_helper.find_values_by_type(my_dict, str)
+    assert result == ['foo', 'bar', 'hello']
+
+    ints = validator_helper.find_values_by_type(my_dict, int)
+    assert ints == [1]
+
+
+def test_find_by_name() -> None:
+    """Test finding by name in dict."""
+    my_dict = {'a': 'foo', 'b': 'bar', 'c': {'x': 1, 'a': 7, 'y': 'hello'}}
+    result = validator_helper.find_values_by_name(my_dict, 'a')
+    assert result == ['foo', 7]
