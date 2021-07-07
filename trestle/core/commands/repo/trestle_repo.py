@@ -27,7 +27,6 @@ import trestle.core.commands.merge as mergecmd
 import trestle.core.commands.split as splitcmd
 import trestle.core.commands.validate as validatecmd
 import trestle.core.const as const
-import trestle.oscal as oscal
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
@@ -187,11 +186,11 @@ class ManagedOSCAL:
         logger.debug(f'Model {self.model_name} merged successfully.')
         return success
 
-    def validate(self, mode: str = 'all') -> bool:
+    def validate(self) -> bool:
         """Validate OSCAL model in repository."""
         logger.debug(f'Validating model {self.model_name}.')
         repo = Repository(self.root_dir)
-        success = repo.validate_model(self.model_type, self.model_name, mode)
+        success = repo.validate_model(self.model_type, self.model_name)
         return success
 
 
@@ -206,7 +205,7 @@ class Repository:
 
     def import_model(self, model: OscalBaseModel, name: str, content_type='json') -> ManagedOSCAL:
         """Import OSCAL object into trestle repository."""
-        logger.debug(f'Importing model {name} of type {model.__class__}.')
+        logger.debug(f'Importing model {name} of type {model.__class__.__name__}.')
         model_alias = classname_to_alias(model.__class__.__name__, 'json')
 
         # Work out output directory and file
@@ -239,7 +238,7 @@ class Repository:
         success = False
         errmsg = ''
         try:
-            success = self.validate_model(model.__class__, name, 'all')
+            success = self.validate_model(model.__class__, name)
             if not success:
                 errmsg = f'Validation of model {name} did not pass'
                 logger.error(errmsg)
@@ -261,12 +260,12 @@ class Repository:
             raise TrestleError(errmsg)
 
         # all well; model was imported and validated successfully
-        logger.debug(f'Model {name} of type {model.__class__} imported successfully.')
+        logger.debug(f'Model {name} of type {model.__class__.__name__} imported successfully.')
         return ManagedOSCAL(self.root_dir, model.__class__, name)
 
     def list_models(self, model_type: Type[OscalBaseModel]) -> List[str]:
         """List models of a given type in trestle repository."""
-        logger.debug(f'Listing models of type {model.__class__}.')
+        logger.debug(f'Listing models of type {model_type.__name__}.')
         model_alias = classname_to_alias(model_type.__name__, 'json')
         models = fs.get_models_of_type(model_alias, self.root_dir)
 
@@ -274,7 +273,7 @@ class Repository:
 
     def get_model(self, model_type: Type[OscalBaseModel], name: str) -> ManagedOSCAL:
         """Get a specific OSCAL model from repository."""
-        logger.debug(f'Getting model {name} of type {model.__class__}.')
+        logger.debug(f'Getting model {name} of type {model_type.__name__}.')
         model_alias = classname_to_alias(model_type.__name__, 'json')
         plural_path = fs.model_type_to_model_dir(model_alias)
         desired_model_dir = self.root_dir / plural_path / name
@@ -287,7 +286,7 @@ class Repository:
 
     def delete_model(self, model_type: Type[OscalBaseModel], name: str) -> bool:
         """Delete an OSCAL model from repository."""
-        logger.debug(f'Deleting model {name} of type {model.__class__}.')
+        logger.debug(f'Deleting model {name} of type {model_type.__name__}.')
         model_alias = classname_to_alias(model_type.__name__, 'json')
         plural_path = fs.model_type_to_model_dir(model_alias)
         desired_model_dir = self.root_dir / plural_path / name
@@ -312,7 +311,7 @@ class Repository:
 
     def assemble_model(self, model_type: Type[OscalBaseModel], name: str, extension='json') -> bool:
         """Assemble an OSCAL model in repository and publish it to 'dist' directory."""
-        logger.debug(f'Assembling model {name} of type {model.__class__}.')
+        logger.debug(f'Assembling model {name} of type {model_type.__name__}.')
         success = False
 
         model_alias = classname_to_alias(model_type.__name__, 'json')
@@ -334,9 +333,9 @@ class Repository:
         logger.debug(f'Model {name} assembled successfully.')
         return success
 
-    def validate_model(self, model_type: Type[OscalBaseModel], name: str, mode: str) -> bool:
+    def validate_model(self, model_type: Type[OscalBaseModel], name: str) -> bool:
         """Validate an OSCAL model in repository."""
-        logger.debug(f'Validating model {name} of type {model.__class__}.')
+        logger.debug(f'Validating model {name} of type {model_type.__name__}.')
         success = False
 
         model_alias = classname_to_alias(model_type.__name__, 'json')
@@ -344,7 +343,7 @@ class Repository:
             verbose = True
         else:
             verbose = False
-        args = argparse.Namespace(type=model_alias, name=name, mode=mode, trestle_root=self.root_dir, verbose=verbose)
+        args = argparse.Namespace(type=model_alias, name=name, trestle_root=self.root_dir, verbose=verbose)
 
         try:
             ret = validatecmd.ValidateCmd()._run(args)
@@ -355,28 +354,3 @@ class Repository:
 
         logger.debug(f'Model {name} validated successfully.')
         return success
-
-
-if __name__ == '__main__':
-    repo_path = pathlib.Path('/Users/admin/trestle-test1')
-    repo = Repository(repo_path)
-    # comment filepath = pathlib.Path('/Users/admin/Downloads/NIST_SP-800-53_rev4_catalog.json')
-    # comment model = parser.parse_file(filepath, None)
-    try:
-        # comment model = repo.import_model(model, 'NIST')
-        # comment success = repo.validate_model(oscal.catalog.Catalog, 'NIST', 'all')
-        # comment success = repo.assemble_model(oscal.catalog.Catalog, 'NIST')
-        # comment models = repo.list_models(oscal.catalog.Catalog)
-        # comment print(models)
-        model = repo.get_model(oscal.catalog.Catalog, 'NIST')
-        # comment print(model.root_dir, model.model_name, model.model_alias, model.model_dir, model.filepath)
-        oscal_model = model.read()
-        # comment print('Model read')
-        success = model.write(oscal_model)
-        # comment success = model.validate()
-        # comment success = model.split(pathlib.Path('catalog.json'), ['catalog.metadata'])
-        # comment success = model.merge(['catalog.*'])
-        # comment success = repo.delete_model(oscal.catalog.Catalog, 'NIST')
-        # comment print(success)
-    except TrestleError as e:
-        logger.error(e)
