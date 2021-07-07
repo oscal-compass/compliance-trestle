@@ -19,7 +19,6 @@ Improves parsing until such a point as ILCLI is fixed.
 """
 
 import logging
-import pathlib
 
 from ilcli import Command
 
@@ -38,7 +37,6 @@ class CommandPlusDocs(Command):
 
     def _validate_arguments(self, args):
         # if the command is 'init' then don't validate the trestle-root as it will be initialized by init command
-        logger.error(self.name)
         if self.name == 'init' or self.name == 'trestle':
             return 0
 

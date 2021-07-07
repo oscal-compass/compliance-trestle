@@ -23,17 +23,20 @@ import shutil
 from typing import List, Type
 
 import trestle.core.commands.assemble as assemblecmd
+import trestle.core.commands.merge as mergecmd
+import trestle.core.commands.split as splitcmd
 import trestle.core.commands.validate as validatecmd
 import trestle.core.const as const
-from trestle.core import parser
+import trestle.oscal as oscal
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.core.models.actions import CreatePathAction, WriteFileAction
+from trestle.core.models.actions import CreatePathAction, RemovePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.core.utils import classname_to_alias
 from trestle.utils import fs
+from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
 
@@ -47,41 +50,149 @@ class ManagedOSCAL:
         self.model_type = model_type
         self.model_name = name
 
-    def read(self) -> OscalBaseModel:
-        """Read OSCAL model from repository."""
-        model_alias = classname_to_alias(self.model_type.__name__, 'json')
-        plural_path = fs.model_type_to_model_dir(model_alias)
-        desired_model_dir = self.root_dir / plural_path / self.model_name
+        # set model alais and dir
+        self.model_alias = classname_to_alias(self.model_type.__name__, 'json')
+        plural_path = fs.model_type_to_model_dir(self.model_alias)
+        self.model_dir = self.root_dir / plural_path / self.model_name
 
-        if not desired_model_dir.exists() or not desired_model_dir.is_dir():
+        if not self.model_dir.exists() or not self.model_dir.is_dir():
             raise TrestleError(f'Model {self.model_name} does not exist.')
 
-        model = parser.parse_file(filepath, None)
+        file_content_type = FileContentType.path_to_content_type(self.model_dir / self.model_alias)
+        if file_content_type == FileContentType.UNKNOWN:
+            raise TrestleError(f'Model {self.model_name} does not exist.')
+        self.file_content_type = file_content_type
+
+        filepath = pathlib.Path(
+            self.model_dir,
+            self.model_alias + FileContentType.path_to_file_extension(self.model_dir / self.model_alias)
+        )
+        if not filepath.exists():
+            raise TrestleError(f'File {filepath} for model {self.model_name} does not exist.')
+
+        self.filepath = filepath
+
+    def read(self) -> OscalBaseModel:
+        """Read OSCAL model from repository."""
+        logger.debug(f'Reading model {self.model_name}.')
+        _, _, model = load_distributed(self.filepath)
         return model
 
-    def write(self, model: OscalBaseModel, preserve_split: bool) -> bool:
+    def write(self, model: OscalBaseModel) -> bool:
         """Write OSCAL model to repository."""
-        pass
+        logger.debug(f'Writing model {self.model_name}.')
+        # split directory if the model was split
+        split_dir = pathlib.Path(self.model_dir, self.model_alias)
 
-    def split(self, elements: List[str]) -> bool:
-        """Split OSCAL model in repository."""
-        pass
+        # Prepare actions; delete split model dir if any, recreate model file, and write to filepath
+        top_element = Element(model)
+        remove_action = RemovePathAction(split_dir)
+        create_action = CreatePathAction(self.filepath, True)
+        write_action = WriteFileAction(self.filepath, top_element, self.file_content_type)
 
-    def merge(self, elements: List[str]) -> bool:
-        """Merge OSCAL model in repository."""
-        pass
+        # create a plan to create the directory and imported file.
+        import_plan = Plan()
+        import_plan.add_action(remove_action)
+        import_plan.add_action(create_action)
+        import_plan.add_action(write_action)
 
-    def add(self, element: str) -> bool:
-        """Add elements to OSCAL model in repository."""
-        pass
+        import_plan.simulate()
+        import_plan.execute()
 
-    def remove(self, element: str) -> bool:
-        """Remove elements from OSCAL model in repository."""
-        pass
+        logger.debug(f'Model {self.model_name} written to repository.')
+        return True
 
-    def validate(self, mode: str) -> bool:
+    def split(self, model_file: pathlib.Path, elements: List[str]) -> bool:
+        """Split the given OSCAL model file in repository.
+
+        Model file path should be relative to the main model directory, e.g., model dir is <trestle-root>/catalogs/NIST
+        then model file path can be 'catalog/metadata.json' if metadata is to be split.
+
+        Elements should be specified relative to model file, e.g., 'metadata.props.*'
+        """
+        logger.debug(f'Splitting model {self.model_name}, file {model_file}.')
+        # input model_file should be relative to the model dir
+        model_file_path = self.model_dir / model_file
+        if logger.getEffectiveLevel() <= logging.DEBUG:
+            verbose = True
+        else:
+            verbose = False
+
+        elems = ''
+        first = True
+        for elem in elements:
+            if first:
+                elems = elem
+                first = False
+            else:
+                elems = elems + ',' + elem
+        args = argparse.Namespace(trestle_root=self.root_dir, file=str(model_file_path), element=elems, verbose=verbose)
+
+        success = False
+        cwd = pathlib.Path.cwd()
+        try:
+            # change the cwd to model dir for split command
+            os.chdir(self.model_dir)
+            ret = splitcmd.SplitCmd()._run(args)
+            if ret == 0:
+                success = True
+        except Exception as e:
+            raise TrestleError(f'Error in splitting model: {e}')
+        finally:
+            os.chdir(cwd)  # revert back the cwd
+
+        logger.debug(f'Model {self.model_name}, file {model_file} splitted successfully.')
+        return success
+
+    def merge(self, elements: List[str], parent_model_dir: pathlib.Path = None) -> bool:
+        """Merge OSCAL elements in repository.
+
+        The parent_model_dir specifies the parent model direcotry in which to merge realtive to main model dir.
+        For example, if we have to merge 'metadata.*' into 'metadata' then parent_model_dir should be the 'catalog'
+        dir that contains the 'metadata.json' file or the 'metadata' directory
+        """
+        logger.debug(f'Merging model {self.model_name}, parent dir {parent_model_dir}.')
+        if logger.getEffectiveLevel() <= logging.DEBUG:
+            verbose = True
+        else:
+            verbose = False
+
+        elems = ''
+        first = True
+        for elem in elements:
+            if first:
+                elems = elem
+                first = False
+            else:
+                elems = elems + ',' + elem
+        args = argparse.Namespace(trestle_root=self.root_dir, element=elems, verbose=verbose)
+        if parent_model_dir is None:
+            change_dir = self.model_dir
+        else:
+            change_dir = self.model_dir / parent_model_dir
+
+        success = False
+        cwd = pathlib.Path.cwd()
+        try:
+            # change the cwd to parent model dir for merge command
+            os.chdir(change_dir)
+            ret = mergecmd.MergeCmd()._run(args)
+            if ret == 0:
+                success = True
+        except Exception as e:
+            raise TrestleError(f'Error in merging model: {e}')
+        finally:
+            os.chdir(cwd)  # revert back the cwd
+
+        logger.debug(f'Model {self.model_name} merged successfully.')
+        return success
+
+    def validate(self, mode: str = 'all') -> bool:
         """Validate OSCAL model in repository."""
-        pass
+        logger.debug(f'Validating model {self.model_name}.')
+        repo = Repository(self.root_dir)
+        success = repo.validate_model(self.model_type, self.model_name, mode)
+        return success
 
 
 class Repository:
@@ -106,6 +217,7 @@ class Repository:
         desired_model_path = desired_model_path.resolve()
 
         if desired_model_path.exists():
+            logger.error(f'OSCAL file to be created here: {desired_model_path} exists.')
             raise TrestleError(f'OSCAL file to be created here: {desired_model_path} exists.')
 
         content_type = FileContentType.to_content_type(pathlib.Path(desired_model_path).suffix)
@@ -130,7 +242,9 @@ class Repository:
             success = self.validate_model(model.__class__, name, 'all')
             if not success:
                 errmsg = f'Validation of model {name} did not pass'
+                logger.error(errmsg)
         except Exception as err:
+            logger.error(errmsg)
             errmsg = f'Import of model {name} failed. Validation failed with error: {err}'
 
         if not success:
@@ -147,10 +261,12 @@ class Repository:
             raise TrestleError(errmsg)
 
         # all well; model was imported and validated successfully
+        logger.debug(f'Model {name} of type {model.__class__} imported successfully.')
         return ManagedOSCAL(self.root_dir, model.__class__, name)
 
     def list_models(self, model_type: Type[OscalBaseModel]) -> List[str]:
         """List models of a given type in trestle repository."""
+        logger.debug(f'Listing models of type {model.__class__}.')
         model_alias = classname_to_alias(model_type.__name__, 'json')
         models = fs.get_models_of_type(model_alias, self.root_dir)
 
@@ -158,22 +274,26 @@ class Repository:
 
     def get_model(self, model_type: Type[OscalBaseModel], name: str) -> ManagedOSCAL:
         """Get a specific OSCAL model from repository."""
+        logger.debug(f'Getting model {name} of type {model.__class__}.')
         model_alias = classname_to_alias(model_type.__name__, 'json')
         plural_path = fs.model_type_to_model_dir(model_alias)
         desired_model_dir = self.root_dir / plural_path / name
 
         if not desired_model_dir.exists() or not desired_model_dir.is_dir():
+            logger.error(f'Model {name} does not exist.')
             raise TrestleError(f'Model {name} does not exist.')
 
         return ManagedOSCAL(self.root_dir, model_type, name)
 
     def delete_model(self, model_type: Type[OscalBaseModel], name: str) -> bool:
         """Delete an OSCAL model from repository."""
+        logger.debug(f'Deleting model {name} of type {model.__class__}.')
         model_alias = classname_to_alias(model_type.__name__, 'json')
         plural_path = fs.model_type_to_model_dir(model_alias)
         desired_model_dir = self.root_dir / plural_path / name
 
         if not desired_model_dir.exists() or not desired_model_dir.is_dir():
+            logger.error(f'Model {name} does not exist.')
             raise TrestleError(f'Model {name} does not exist.')
         shutil.rmtree(desired_model_dir)
 
@@ -184,12 +304,15 @@ class Repository:
             file_path = pathlib.Path(
                 dist_model_dir, name + FileContentType.path_to_file_extension(dist_model_dir / name)
             )
+            logger.debug(f'Deleting model {name} from dist directory.')
             os.remove(file_path)
 
+        logger.debug(f'Model {name} deleted successfully.')
         return True
 
     def assemble_model(self, model_type: Type[OscalBaseModel], name: str, extension='json') -> bool:
         """Assemble an OSCAL model in repository and publish it to 'dist' directory."""
+        logger.debug(f'Assembling model {name} of type {model.__class__}.')
         success = False
 
         model_alias = classname_to_alias(model_type.__name__, 'json')
@@ -208,10 +331,12 @@ class Repository:
         except Exception as e:
             raise TrestleError(f'Error in assembling model: {e}')
 
+        logger.debug(f'Model {name} assembled successfully.')
         return success
 
     def validate_model(self, model_type: Type[OscalBaseModel], name: str, mode: str) -> bool:
         """Validate an OSCAL model in repository."""
+        logger.debug(f'Validating model {name} of type {model.__class__}.')
         success = False
 
         model_alias = classname_to_alias(model_type.__name__, 'json')
@@ -228,22 +353,29 @@ class Repository:
         except Exception as e:
             raise TrestleError(f'Error in validating model: {e}')
 
+        logger.debug(f'Model {name} validated successfully.')
         return success
 
 
 if __name__ == '__main__':
     repo_path = pathlib.Path('/Users/admin/trestle-test1')
     repo = Repository(repo_path)
-    filepath = pathlib.Path('/Users/admin/Downloads/NIST_SP-800-53_rev4_catalog.json')
-    model = parser.parse_file(filepath, None)
+    # comment filepath = pathlib.Path('/Users/admin/Downloads/NIST_SP-800-53_rev4_catalog.json')
+    # comment model = parser.parse_file(filepath, None)
     try:
-        repo.import_model(model, 'NIST')
+        # comment model = repo.import_model(model, 'NIST')
         # comment success = repo.validate_model(oscal.catalog.Catalog, 'NIST', 'all')
         # comment success = repo.assemble_model(oscal.catalog.Catalog, 'NIST')
         # comment models = repo.list_models(oscal.catalog.Catalog)
         # comment print(models)
-        # comment model = repo.get_model(oscal.catalog.Catalog, 'NIST')
-        # comment print(model.root_dir, model.model_type, model.model_name)
+        model = repo.get_model(oscal.catalog.Catalog, 'NIST')
+        # comment print(model.root_dir, model.model_name, model.model_alias, model.model_dir, model.filepath)
+        oscal_model = model.read()
+        # comment print('Model read')
+        success = model.write(oscal_model)
+        # comment success = model.validate()
+        # comment success = model.split(pathlib.Path('catalog.json'), ['catalog.metadata'])
+        # comment success = model.merge(['catalog.*'])
         # comment success = repo.delete_model(oscal.catalog.Catalog, 'NIST')
         # comment print(success)
     except TrestleError as e:
