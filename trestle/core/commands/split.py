@@ -27,7 +27,7 @@ from trestle.core.commands import cmd_utils
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import Action, CreatePathAction, WriteFileAction
-from trestle.core.models.elements import Element, ElementPath, get_singular_model_from_json
+from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs, trash
@@ -37,16 +37,12 @@ logger = logging.getLogger(__name__)
 
 def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
     """Determine if the element path list goes too fine, e.g. individual strings."""
-    # FIXME this is not working with oscal 1.0.0
-    if split_paths == 'FIXME_DUMMY_STRING_FORCE_NOT_RUN':
-        for split_path in split_paths.split(','):
-            model = get_singular_model_from_json(split_path, model_obj)
-            if type(model) in [dict, list]:
-                return False
-            if utils.is_collection_field_type(model):
-                return False
-            if model.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float']:
-                return True
+    for split_path in split_paths.split(','):
+        model = utils.get_target_model(split_path.split('.'), type(model_obj))
+        if utils.is_collection_field_type(model):
+            return False
+        if model.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float']:
+            return True
     return False
 
 
@@ -106,9 +102,6 @@ class SplitCmd(CommandPlusDocs):
             model, element_paths, base_dir, content_type, root_file_name=args_raw[const.ARG_FILE]
         )
 
-        if split_plan is None:
-            return 1
-
         # Simulate the plan
         # if it fails, it would throw errors and get out of this command
         split_plan.simulate()
@@ -164,7 +157,7 @@ class SplitCmd(CommandPlusDocs):
         chain, the subsequent paths (e.g component.control-implementations.*) will be applied recursively to retrieve
         the sub-sub models:
         [
-            'component-definition.componet.*',
+            'component-definition.component.*',
             'component.control-implementations.*'
         ]
         for a command like below:
@@ -237,9 +230,6 @@ class SplitCmd(CommandPlusDocs):
                     # e.g. `groups/00000_groups/`
                     prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
                     sub_model_items[prefix] = sub_model_item
-            elif isinstance(sub_models, dict):
-                # prefix is the key of the dict
-                sub_model_items = sub_models
             else:
                 # unexpected sub model type for multi-level split with wildcard
                 raise TrestleError(f'Sub element at {element_path} is not of type list or dict for further split')
