@@ -143,19 +143,19 @@ def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
     return typing_extensions.get_origin(field_type) or getattr(field_type, '__origin__', None)
 
 
-def _get_model_field_info(field_type):
+def _get_model_field_info(field_type: Type[Any]) -> Union[Type[Any], str, Type[Any]]:
     """Need special handling for pydantic wrapped __root__ objects."""
     # oscal_read of roles.json yields pydantic.Roles model with __root__ containing list of Role
-    root = None
-    root_type = None
-    singular_type = None
-    if hasattr(field_type, '__fields__'):
+    root: Type[Any] = None
+    root_type: str = None
+    singular_type: Type[Any] = None
+    try:
         fields = field_type.__fields__
-        if '__root__' in fields:
-            root = fields['__root__']
-            singular_type = root.type_
-            if hasattr(root, 'outer_type_') and hasattr(root.outer_type_, '_name'):
-                root_type = root.outer_type_._name
+        root = fields['__root__']
+        singular_type = root.type_
+        root_type = root.outer_type_._name
+    except BaseException:
+        pass
     return root, root_type, singular_type
 
 
