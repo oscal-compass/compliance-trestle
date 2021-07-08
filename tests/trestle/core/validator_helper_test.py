@@ -94,18 +94,21 @@ def test_find_all_attribs_by_regex() -> None:
 
 def test_validations_on_dict() -> None:
     """Test regen of uuid in dict."""
-    my_uuid = str(uuid4())
-    my_dict = {'uuid': my_uuid, 'ref': my_uuid}
+    my_uuid1 = str(uuid4())
+    my_uuid2 = str(uuid4())
+    my_dict = {'uuid': my_uuid1, 'ref': my_uuid1, 'my_inner_dict': {'uuid': my_uuid2, 'ref': my_uuid2}}
     new_dict, lut = validator_helper.regenerate_uuids_in_place(my_dict, {})
     assert my_dict['uuid'] != new_dict['uuid']
-    assert len(lut) == 1
+    assert my_dict['my_inner_dict']['uuid'] != new_dict['my_inner_dict']['uuid']
+    assert len(lut) == 2
 
     fixed_dict, count = validator_helper.update_new_uuid_refs(new_dict, lut)
     assert fixed_dict['uuid'] == fixed_dict['ref']
-    assert count == 1
+    assert fixed_dict['my_inner_dict']['uuid'] == fixed_dict['my_inner_dict']['ref']
+    assert count == 2
 
     attrs = validator_helper.find_all_attribs_by_regex(fixed_dict, 'uuid')
-    assert len(attrs) == 1
+    assert len(attrs) == 2
     assert attrs[0] == ('uuid', fixed_dict['uuid'])
 
 

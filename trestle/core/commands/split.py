@@ -27,7 +27,7 @@ from trestle.core.commands import cmd_utils
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import Action, CreatePathAction, WriteFileAction
-from trestle.core.models.elements import Element, ElementPath, get_singular_model_from_json
+from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs, trash
@@ -37,11 +37,8 @@ logger = logging.getLogger(__name__)
 
 def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
     """Determine if the element path list goes too fine, e.g. individual strings."""
-    # FIXME this is not working with oscal 1.0.0
     for split_path in split_paths.split(','):
-        model = get_singular_model_from_json(split_path, model_obj)
-        if type(model) in [dict, list]:
-            return False
+        model = utils.get_target_model(split_path.split('.'), type(model_obj))
         if utils.is_collection_field_type(model):
             return False
         if model.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float']:

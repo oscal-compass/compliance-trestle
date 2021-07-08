@@ -15,6 +15,7 @@
 # limitations under the License.
 """Tests for models util module."""
 import pathlib
+from typing import List
 
 import pytest
 
@@ -236,3 +237,5 @@ def test_get_target_model() -> None:
 
     with pytest.raises(err.TrestleError):
         mutils.get_target_model(['catalog', 'metadata', 'bad_element'], catalog.Catalog)
+
+    assert mutils.get_target_model(['groups', '*', 'controls', '*'], List[catalog.Group]) == catalog.Control

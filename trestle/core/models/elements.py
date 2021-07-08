@@ -442,9 +442,3 @@ class Element:
             return False
 
         return self.get() == other.get()
-
-
-def get_singular_model_from_json(json_path: str, model_obj: OscalBaseModel):
-    """Get the singular model type represented by the full path with wildcards."""
-    singular_model = utils.get_target_model(json_path.split('.'), model_obj)
-    return singular_model
