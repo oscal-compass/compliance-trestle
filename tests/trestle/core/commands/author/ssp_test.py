@@ -17,6 +17,8 @@ import argparse
 import pathlib
 from typing import Tuple
 
+import pytest
+
 from ruamel.yaml import YAML
 
 from tests import test_utils
@@ -52,6 +54,23 @@ def setup_for_ssp(include_header: bool, big_profile: bool) -> Tuple[argparse.Nam
     else:
         args = argparse.Namespace(profile=prof_name, output=ssp_name, verbose=True, sections=sections)
     return args, sections, yaml_path
+
+
+def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> None:
+    """Insert response prose in for a statement of a control."""
+    control_dir = trestle_dir / ssp_name / statement_id.split('-')[0]
+    md_file = control_dir / (statement_id.split('_')[0] + '.md')
+
+    with open(md_file, 'r') as md:
+        lines = md.readlines()
+
+    with open(md_file, 'w') as md:
+        for line in lines:
+            # replace the 'Add control implementation' line with the new lines of prose
+            if line.find(statement_id) < 0:
+                md.write(line)
+            else:
+                md.write(prose + '\n')
 
 
 def test_ssp_generator(tmp_trestle_dir: pathlib.Path) -> None:
@@ -126,16 +145,31 @@ def test_ssp_generator_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     assert not header
 
 
-def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('use_tree', [False, True])
+def test_ssp_assemble(use_tree: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test ssp assemble."""
     args, _, _ = setup_for_ssp(True, True)
+
     # first create the markdown
     ssp_gen = SSPGenerate()
     assert ssp_gen._run(args) == 0
-    # then assemble it
-    ssp_assemble = SSPAssemble()
-    args = argparse.Namespace(markdown=ssp_name, output=ssp_name, verbose=True)
-    assert ssp_assemble._run(args) == 0
+
+    prose_a = 'Hello there\n  How are you\n line with more text\n\ndouble line'
+    prose_b = 'This is fun\nline with *bold* text'
+
+    # edit it a bit
+    insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a)
+    insert_prose(tmp_trestle_dir, 'ac-1_smt.b', prose_b)
+
+    # now assemble the edited controls into json ssp
+    # two different invocations modes are used so that use_tree can be overridden
+    if use_tree:
+        ssp_assemble = SSPAssemble()
+        args = argparse.Namespace(markdown=ssp_name, output=ssp_name, verbose=True)
+        assert ssp_assemble._run(args) == 0
+    else:
+        ssp_manager = SSPManager()
+        assert ssp_manager.assemble_ssp(ssp_name, ssp_name, use_tree) == 0
 
 
 def test_ssp_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
