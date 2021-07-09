@@ -22,7 +22,7 @@ from ruamel.yaml import YAML
 from tests import test_utils
 
 import trestle.utils.fs as fs
-from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate
+from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate, SSPManager
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.markdown_validator import MarkdownValidator
 
@@ -180,3 +180,23 @@ def test_ssp_bad_dir(tmp_path: pathlib.Path) -> None:
     ssp_cmd = SSPAssemble()
     args = argparse.Namespace(markdown='my_ssp', output='my_json_ssp', verbose=True, yaml_header='dummy.yaml')
     assert ssp_cmd._run(args) == 1
+
+
+def test_ssp_internals() -> None:
+    """Test unusual cases in ssp."""
+    tree = [
+        {
+            'type': 'thematic_break'
+        }, {
+            'type': 'foo'
+        }, {
+            'type': 'heading', 'children': [{
+                'text': 'Part a'
+            }]
+        }, {
+            'type': 'bar'
+        }
+    ]
+    ssp_manager = SSPManager()
+    result = ssp_manager._get_label_prose(0, tree)
+    assert result == (-1, 'a', '')

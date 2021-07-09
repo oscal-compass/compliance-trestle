@@ -42,8 +42,4 @@ class ValidateCmd(CommandPlusDocs):
         mode_args = argparse.Namespace(mode=VAL_MODE_ALL)
         validator = vfact.validator_factory.get(mode_args)
 
-        try:
-            return validator.validate(args)
-        except Exception as e:
-            logger.warning(f'Error in trestle validate: {e}')
-        return 1
+        return validator.validate(args)
