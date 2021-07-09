@@ -161,8 +161,15 @@ def test_ssp_assemble(use_tree: bool, tmp_trestle_dir: pathlib.Path) -> None:
     insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a)
     insert_prose(tmp_trestle_dir, 'ac-1_smt.b', prose_b)
 
-    ssp_manager = SSPManager()
-    assert ssp_manager.assemble_ssp(ssp_name, ssp_name, use_tree) == 0
+    # now assemble the edited controls into json ssp
+    # two different invocations modes are used so that use_tree can be overridden
+    if use_tree:
+        ssp_assemble = SSPAssemble()
+        args = argparse.Namespace(markdown=ssp_name, output=ssp_name, verbose=True)
+        assert ssp_assemble._run(args) == 0
+    else:
+        ssp_manager = SSPManager()
+        assert ssp_manager.assemble_ssp(ssp_name, ssp_name, use_tree) == 0
 
 
 def test_ssp_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
