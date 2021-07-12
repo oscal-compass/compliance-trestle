@@ -57,7 +57,7 @@ def test_split_model(tmp_path: pathlib.Path, sample_nist_component_def: componen
     component_def = component.ComponentDefinition.oscal_read(component_def_file)
     element = Element(component_def)
     element_args = ['component-definition.metadata']
-    element_paths = cmd_utils.parse_element_args(element_args)
+    element_paths = cmd_utils.parse_element_args(None, element_args)
 
     # extract values
     metadata_file = component_def_dir / element_paths[0].to_file_path(content_type)
@@ -429,7 +429,7 @@ def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.
     # invalid path for multi item sub-model
     p0 = ElementPath('catalog.uuid.*')  # uuid exists, but it is not a multi-item sub-model object
     p1 = ElementPath('uuid.metadata.*', p0)  # this is invalid but we just need a path with the p0 as the parent
-    element_paths = [p0, p1]
+    element_paths = [p1]
     with pytest.raises(TrestleError):
         SplitCmd.split_model_at_path_chain(
             sample_catalog, element_paths, catalog_dir, content_type, 0, split_plan, False
@@ -516,3 +516,19 @@ def test_split_workflow(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscata
     os.chdir(catalog_dir)
     args = argparse.Namespace(element='catalog.*', verbose=1)
     assert MergeCmd()._run(args) == 0
+
+
+def test_split_catalog_star(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog):
+    """Test split operations and final re-merge in workflow tutorial."""
+    # prepare trestle project dir with the file
+    catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
+        tmp_path,
+        FileContentType.JSON,
+        sample_catalog,
+        test_utils.CATALOGS_DIR)
+
+    os.chdir(catalog_dir)
+    args = argparse.Namespace(
+        file='catalog.json', element='catalog.*', verbose=1
+    )
+    assert SplitCmd()._run(args) == 0

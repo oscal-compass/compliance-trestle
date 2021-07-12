@@ -35,17 +35,6 @@ from trestle.utils import fs, trash
 logger = logging.getLogger(__name__)
 
 
-def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
-    """Determine if the element path list goes too fine, e.g. individual strings."""
-    for split_path in split_paths.split(','):
-        model = utils.get_target_model(split_path.split('.'), type(model_obj))
-        if utils.is_collection_field_type(model):
-            return False
-        if model.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float']:
-            return True
-    return False
-
-
 class SplitCmd(CommandPlusDocs):
     """Split subcomponents on a trestle model."""
 
@@ -91,12 +80,12 @@ class SplitCmd(CommandPlusDocs):
         # remove any quotes passed in as on windows platforms
         elements_clean = args_raw[const.ARG_ELEMENT].strip("'")
 
-        if split_is_too_fine(elements_clean, model):
+        if cmd_utils.split_is_too_fine(elements_clean, model):
             logger.warning('Cannot split the model to the level of uuids, strings, etc.')
             return 1
 
         logger.debug(f'split calling parse_element_args on {elements_clean}')
-        element_paths: List[ElementPath] = cmd_utils.parse_element_args(elements_clean.split(','))
+        element_paths: List[ElementPath] = cmd_utils.parse_element_args(model, elements_clean.split(','))
 
         split_plan = self.split_model(
             model, element_paths, base_dir, content_type, root_file_name=args_raw[const.ARG_FILE]
@@ -206,12 +195,15 @@ class SplitCmd(CommandPlusDocs):
         if sub_models is None:
             return cur_path_index
 
+        #if not isinstance(sub_models, OscalBaseModel):
+        #    raise TrestleError(f'Improper split path {element_path}')
+
         # assume cur_path_index is the end of the chain
         # value of this variable may change during recursive split of the sub-models below
         path_chain_end = cur_path_index
 
         # if wildcard is present in the element_path and the next path in the chain has current path as the parent,
-        # However, there can be other sub_model, which is of type list
+        # Then deal with case of list, or split of arbitrary oscalbasemodel
         if is_parent and element_path.get_last() is not ElementPath.WILDCARD:
             # create dir for all sub model items
             sub_models_dir = base_dir / element_path.to_root_path()
@@ -231,8 +223,15 @@ class SplitCmd(CommandPlusDocs):
                     prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
                     sub_model_items[prefix] = sub_model_item
             else:
-                # unexpected sub model type for multi-level split with wildcard
-                raise TrestleError(f'Sub element at {element_path} is not of type list or dict for further split')
+                # direct split of model as dict, e.g. catalog.*
+                # pull out the items that are OscalBaseModel and leave behind things like uuid
+                # raise TrestleError(f'Sub element at {element_path} is not of type list or dict for further split')                
+                # for key in model_obj.__fields__.keys():
+                #     obj = getattr(model_obj, key)
+                #     if isinstance(obj, OscalBaseModel):
+                #         sub_model_items[key] = obj
+                #         stripped_field_alias.append(utils.classname_to_alias(key, 'json'))
+                pass
 
             # process list sub model items
             for key in sub_model_items:
@@ -279,7 +278,9 @@ class SplitCmd(CommandPlusDocs):
         # Strip the root model and add a WriteAction for the updated model object in the plan
         if strip_root:
             stripped_field_alias.append(element_path.get_element_name())
-            stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
+
+            # if stripped_field_alias:
+            stripped_model = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
             # If it's an empty model after stripping the fields, don't create path and don't write
             if set(model_obj.__fields__.keys()) == set(stripped_field_alias):
                 return path_chain_end
@@ -290,8 +291,8 @@ class SplitCmd(CommandPlusDocs):
                 root_file = base_dir / element_path.to_root_path(content_type)
 
             split_plan.add_action(CreatePathAction(root_file))
-            wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
-            split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
+            wrapper_alias = utils.classname_to_alias(stripped_model.__class__.__name__, 'json')
+            split_plan.add_action(WriteFileAction(root_file, Element(stripped_model, wrapper_alias), content_type))
 
         # return the end of the current path chain
         return path_chain_end
@@ -322,7 +323,8 @@ class SplitCmd(CommandPlusDocs):
             if element_path.get_parent() is None and len(element_path.get()) > 1:
                 stripped_part = element_path.get()[1]
                 if stripped_part == ElementPath.WILDCARD:
-                    stripped_field_alias.append('__root__')
+                    if hasattr(model_obj, '__root__'):
+                        stripped_field_alias.append('__root__')
                 else:
                     stripped_field_alias.append(stripped_part)
 

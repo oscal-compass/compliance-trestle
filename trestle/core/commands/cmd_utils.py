@@ -29,7 +29,18 @@ def get_model(file_path: str) -> OscalBaseModel:
     raise NotImplementedError()
 
 
-def parse_element_args(element_args: List[str], contextual_mode: bool = True) -> List[ElementPath]:
+def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
+    """Determine if the element path list goes too fine, e.g. individual strings."""
+    for split_path in split_paths.split(','):
+        model = utils.get_target_model(split_path.split('.'), type(model_obj))
+        if utils.is_collection_field_type(model):
+            return False
+        if model.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float']:
+            return True
+    return False
+
+
+def parse_element_args(model: OscalBaseModel, element_args: List[str], contextual_mode: bool = True) -> List[ElementPath]:
     """Parse element args into a list of ElementPath.
 
     contextual_mode specifies if the path is a valid project model path or not. For example,
@@ -46,13 +57,13 @@ def parse_element_args(element_args: List[str], contextual_mode: bool = True) ->
 
     element_paths: List[ElementPath] = []
     for element_arg in element_args:
-        paths = parse_element_arg(element_arg, contextual_mode)
+        paths = parse_element_arg(model, element_arg, contextual_mode)
         element_paths.extend(paths)
 
     return element_paths
 
 
-def parse_element_arg(element_arg: str, contextual_mode: bool = True) -> List[ElementPath]:
+def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mode: bool = True) -> List[ElementPath]:
     """Parse an element arg string into a list of ElementPath.
 
     contextual_mode specifies if the path is a valid project model path or not. For example,
@@ -95,6 +106,11 @@ def parse_element_arg(element_arg: str, contextual_mode: bool = True) -> List[El
         if element_path.get_last() == ElementPath.WILDCARD:
             full_path_str = ElementPath.PATH_SEPARATOR.join(element_path.get_full_path_parts()[:-1])
             parent_model = fs.get_singular_alias(full_path_str, contextual_mode)
+            if full_path_str == parent_model:
+                for key in model_obj.__fields__.keys():
+                        new_path = full_path_str + '.' + utils.classname_to_alias(key, 'json')
+                        if not split_is_too_fine(new_path, model_obj):
+                            element_paths.append(ElementPath(new_path))
         else:
             parent_model = element_path.get_element_name()
 

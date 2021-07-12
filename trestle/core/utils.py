@@ -204,7 +204,7 @@ def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, T
         raise err.TrestleError('Model type is not a Dict or List') from e
 
 
-def get_target_model(element_path_parts: List[str], current_model: Type[BaseModel]) -> Type[BaseModel]:
+def get_target_model(element_path_parts: List[str], current_model_type: Type[BaseModel]) -> Type[BaseModel]:
     """Get the target model from the parts of a Element Path.
 
     Args:
@@ -216,12 +216,14 @@ def get_target_model(element_path_parts: List[str], current_model: Type[BaseMode
     # FIXME: Could be in oscal base model
     try:
         for index in range(1, len(element_path_parts)):
-            if is_collection_field_type(current_model):
+            if is_collection_field_type(current_model_type):
                 # Return the model class inside the collection
                 # FIXME: From a typing perspective this is wrong.
-                current_model = get_inner_type(current_model)
+                current_model_type = get_inner_type(current_model_type)
             else:
-                current_model = current_model.alias_to_field_map()[element_path_parts[index]].outer_type_
-        return current_model
+                if element_path_parts[index] == '*':
+                    return current_model_type
+                current_model_type = current_model_type.alias_to_field_map()[element_path_parts[index]].outer_type_
+        return current_model_type
     except Exception as e:
         raise err.TrestleError(f'Possibly bad element path. {str(e)}')

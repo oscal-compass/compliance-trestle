@@ -131,7 +131,7 @@ def test_parse_element_args():
     p1 = ElementPath('catalog.groups')
     p2 = ElementPath('catalog.controls')
     expected_paths: List[ElementPath] = [p0, p1, p2]
-    element_paths = cmd_utils.parse_element_args(element_args, False)
+    element_paths = cmd_utils.parse_element_args(None, element_args, False)
     assert expected_paths == element_paths
 
     # element args with wildcard
@@ -143,4 +143,4 @@ def test_parse_element_args():
     p4 = ElementPath('catalog.controls.*')
     p5 = ElementPath('control.controls.*', parent_path=p4)
     expected: List[ElementPath] = [p0, p1, p2, p3, p4, p5]
-    assert cmd_utils.parse_element_args(element_args, False) == expected
+    assert cmd_utils.parse_element_args(None, element_args, False) == expected
