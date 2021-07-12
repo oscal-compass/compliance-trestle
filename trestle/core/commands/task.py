@@ -28,6 +28,7 @@ import trestle.tasks
 import trestle.utils.log as log
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.tasks.base_task import TaskBase, TaskOutcome
+from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +66,7 @@ class TaskCmd(CommandPlusDocs):
         # Ensure trestle directory (must be true)
         # comment trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
-        if not trestle_root:
+        if not trestle_root or not fs.is_valid_project_root(args.trestle_root):
             # comment logger.error(f'Current working directory {pathlib.Path.cwd()} is not with a trestle project.')
             logger.error(f'Given directory: {trestle_root} is not a trestle project.')
             return 1

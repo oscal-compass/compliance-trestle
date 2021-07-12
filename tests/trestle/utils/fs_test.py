@@ -506,11 +506,11 @@ def test_get_models_of_type(tmp_trestle_dir) -> None:
     (catalogs_dir / 'mycatalog2').mkdir()
     (catalogs_dir / '.myfile').touch()
     (components_dir / 'my_component').mkdir()
-    models = fs.get_models_of_type('catalog')
+    models = fs.get_models_of_type('catalog', tmp_trestle_dir)
     assert len(models) == 2
     assert 'mycatalog' in models
     assert 'mycatalog2' in models
-    all_models = fs.get_all_models()
+    all_models = fs.get_all_models(tmp_trestle_dir)
     assert len(all_models) == 3
     assert ('catalog', 'mycatalog') in all_models
     assert ('catalog', 'mycatalog2') in all_models

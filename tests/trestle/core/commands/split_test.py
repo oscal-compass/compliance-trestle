@@ -24,6 +24,7 @@ import pytest
 
 from tests import test_utils
 
+import trestle.cli
 from trestle.cli import Trestle
 from trestle.core import const
 from trestle.core import utils
@@ -339,14 +340,17 @@ def test_split_run_failure(
     testargs = [
         'trestle',
         'split',
+        '-tr',
+        str(tmp_path),
         '-f',
         'component-definition.yaml',
         '-e',
         'component-definition.metadata, component-definition.components.*'
     ]
     with patch.object(sys, 'argv', testargs):
-        with pytest.raises(TrestleError):
-            Trestle().run()
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+        assert wrapped_error.value.code == 1
 
     # create trestle project
     test_utils.ensure_trestle_config_dir(tmp_path)
