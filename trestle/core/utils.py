@@ -140,8 +140,23 @@ def get_origin(field_type: Type[Any]) -> Optional[Type[Any]]:
     from various python versions.
     """
     # This executes a fallback that allows a list to be generated from a constrained list.
-    return typing_extensions.get_origin(field_type) or getattr(field_type, '__origin__',
-                                                               None) or type(getattr(field_type, '__root__', None))
+    return typing_extensions.get_origin(field_type) or getattr(field_type, '__origin__', None)
+
+
+def _get_model_field_info(field_type: Type[Any]) -> Union[Type[Any], str, Type[Any]]:
+    """Need special handling for pydantic wrapped __root__ objects."""
+    # oscal_read of roles.json yields pydantic.Roles model with __root__ containing list of Role
+    root: Type[Any] = None
+    root_type: str = None
+    singular_type: Type[Any] = None
+    try:
+        fields = field_type.__fields__
+        root = fields['__root__']
+        singular_type = root.type_
+        root_type = root.outer_type_._name
+    except BaseException:
+        pass
+    return root, root_type, singular_type
 
 
 # FIXME: Typing issues here
@@ -157,11 +172,14 @@ def is_collection_field_type(field_type: Type[Any]) -> bool:
     Returns:
         Status if if it is a list or dict return type as used by oscal.
     """
+    # first check if it is a pydantic __root__ object
+    _, root_type, _ = _get_model_field_info(field_type)
+    if root_type is not None:
+        return root_type in ['List', 'Dict']
     # Retrieves type from a type annotation
     origin_type = get_origin(field_type)
-    if origin_type in [list, dict]:
-        return True
-    return False
+    # dict in fact may not be possible
+    return origin_type in [list, dict]
 
 
 def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, TG]]]) -> Type[TG]:
@@ -176,12 +194,10 @@ def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, T
         The desired type.
     """
     try:
-        # Pydantic special cases ust be dealt with here:
-        if getattr(collection_field_type, '__name__', None) == 'ConstrainedListValue':
-            return collection_field_type.item_type  # type: ignore
-        root_obj = getattr(collection_field_type, '__root__', None)
-        if type(root_obj) in [dict, list]:
-            return root_obj
+        # Pydantic special cases must be dealt with here:
+        _, _, singular_type = _get_model_field_info(collection_field_type)
+        if singular_type is not None:
+            return singular_type
         return typing_extensions.get_args(collection_field_type)[-1]
     except Exception as e:
         logger.debug(e)

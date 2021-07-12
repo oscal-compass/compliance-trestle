@@ -43,3 +43,4 @@ repos:
       - mdformat-tables
       - mdformat-config
       - mdformat-frontmatter
+      - mdformat-gfm

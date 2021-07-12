@@ -440,7 +440,6 @@ def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.
         )
 
 
-# FIXME this currently fails for the False case
 @pytest.mark.parametrize('direct', [True, False])
 def test_split_comp_def(
     direct, tmp_trestle_dir, keep_cwd: pathlib.Path, sample_component_definition: component.ComponentDefinition
@@ -466,7 +465,7 @@ def test_split_comp_def(
     assert MergeCmd()._run(args) == 0
 
 
-def fixme_test_split_stop_at_string(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog):
+def test_split_stop_at_string(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog):
     """Test prevention of split at string level."""
     # prepare trestle project dir with the file
     catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
