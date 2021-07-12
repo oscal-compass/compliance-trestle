@@ -64,7 +64,7 @@ Import the file from the trestle root directory with
 trestle import -f MY_DOWNLOAD_DIRECTORY/catalog.json -o mycatalog
 ```
 
-*Here MY_DOWNLOAD_DIRECTORY corresponds to the directory in which you downloaded the catalog.json file.*  On Windows platforms you can use either a forward (/)or backward slash (\) in the path of the file you are importing.
+*Here MY_DOWNLOAD_DIRECTORY corresponds to the directory in which you downloaded the catalog.json file.*  On Windows platforms you can use either a forward (/)or backward slash (\\) in the path of the file you are importing.
 
 <br>
 <details>
