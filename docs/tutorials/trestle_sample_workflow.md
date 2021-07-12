@@ -16,6 +16,10 @@ The examples shown will work for linux and mac, but Windows will require the fol
 <li>use md instead of mkdir (unless you have mkdir installed)
 </ul>
 
+Commands are shown without prompts so they are easy to cut and paste, and responses by trestle are shown with >>> at the start of the line.  In actual usage the >>> would not appear.
+
+Be sure to include the quotes (' ') as shown in the examples, e.g. ```merge -e 'catalog.*'```
+
 In this tutorial you will see sections that contain dropdown that is revealed when you click on them.  Below is an example ("Like this").  Be sure to click on those sections to see their contents - and then close them if you like.
 
 <br>
@@ -37,10 +41,10 @@ here
 ## Step 1: Create a trestle workspace if you don't have one already
 
 ```
-> mkdir my_workspace
-> cd my_workspace
-> trestle init
-Initialized trestle project successfully in [user_path]/my_workspace
+mkdir my_workspace
+cd my_workspace
+trestle init
+>>> Initialized trestle project successfully in [user_path]/my_workspace
 ```
 
 ## Step 2: Import a catalog from the trestle sample data directory into your trestle workspace
@@ -53,7 +57,7 @@ If there are any errors the Import will fail and the file must be corrected.
 Import the file from the trestle root directory with
 
 ```
-> trestle import -f TRESTLE_ROOT/tests/data/split_merge/load_distributed/catalog.json -o mycatalog
+trestle import -f TRESTLE_ROOT/tests/data/split_merge/load_distributed/catalog.json -o mycatalog
 ```
 
 *Here TRESTLE_ROOT corresponds to the root of the trestle installation where you installed it!  Do not type TRESTLE_ROOT!*
@@ -120,8 +124,8 @@ The OSCAL schema specifies that a catalog must contain metadata, groups, and bac
 To begin splitting the file, first cd to the directory where `catalog.json` has been placed.
 
 ```
-> cd catalogs/mycatalog
-> trestle split -f ./catalog.json -e 'catalog.metadata,catalog.groups,catalog.back-matter'
+cd catalogs/mycatalog
+trestle split -f ./catalog.json -e 'catalog.metadata,catalog.groups,catalog.back-matter'
 ```
 
 Here the `-f` refers to the filename of the json catalog file, and `-e` refers to the comma-separated list of `elements` you would like to split from the file.  This list does not represent the full file contents of the source `catalog.json` file, so some contents will be left behind in a much smaller `catalog.json` file after the split.  The elements that were split off will be placed in separate json files next to the new and smaller `catalog.json` file.
@@ -148,13 +152,13 @@ Note there still remains a catalog.json file, but it is much smaller since the b
 Any split step can be reversed by a corresponding `merge` operation.  In this case we can go backwards with:
 
 ```
-> trestle merge -e 'catalog.metadata,catalog.groups,catalog.back-matter'
+trestle merge -e 'catalog.metadata,catalog.groups,catalog.back-matter'
 ```
 
 or simply
 
 ```
-> trestle merge -e 'catalog.*'
+trestle merge -e 'catalog.*'
 ```
 
 You can go back and forth splitting and merging, but for the next step please start with the above files split so that `metadata.json` can be further split.
@@ -162,8 +166,8 @@ You can go back and forth splitting and merging, but for the next step please st
 ## Step 4: Split the metadata into constituent files
 
 ```
-> cd catalog
-> trestle split -f ./metadata.json -e 'metadata.roles,metadata.parties,metadata.responsible-parties'
+cd catalog
+trestle split -f ./metadata.json -e 'metadata.roles,metadata.parties,metadata.responsible-parties'
 ```
 
 <br>
@@ -194,21 +198,21 @@ Again there remains a metadata.json file but it is smaller than the original.
 And this step can be reversed with the following:
 
 ```
-> trestle merge -e 'metadata.roles,metadata.parties,metadata.responsible-parties'
+trestle merge -e 'metadata.roles,metadata.parties,metadata.responsible-parties'
 ```
 
 or simply
 
 ```
-> trestle merge -e 'metadata.*'
+trestle merge -e 'metadata.*'
 ```
 
 ## Step 5: Split metadata further using wildcards
 
 ```
-> cd metadata
-> trestle split -f ./roles.json -e 'roles.*'
-> trestle split -f ./responsible-parties.json -e 'responsible-parties.*'
+cd metadata
+trestle split -f ./roles.json -e 'roles.*'
+trestle split -f ./responsible-parties.json -e 'responsible-parties.*'
 ```
 
 <br>
@@ -243,7 +247,7 @@ Note that the presence of wildcards caused new directories to be created contain
 This split can be reversed with
 
 ```
-> trestle merge -e 'roles.*,responsible-parties.*'
+trestle merge -e 'roles.*,responsible-parties.*'
 ```
 
 ## Step 6: Split groups and controls with two wildcards
@@ -251,8 +255,8 @@ This split can be reversed with
 This single command will split off *all* controls in *all* groups.  To do it you need to go back up into the catalog directory where the `groups.json` file is found:
 
 ```
-> cd ..
-> trestle split -f ./groups.json -e 'groups.*.controls.*'
+cd ..
+trestle split -f ./groups.json -e 'groups.*.controls.*'
 ```
 
 <br>
@@ -669,7 +673,7 @@ All 20 groups of controls have been split off, and each one has a corresponding 
 You can then reverse the split with
 
 ```
-> trestle merge -e 'groups.*'
+trestle merge -e 'groups.*'
 ```
 
 ## Step 7: Collapse the entire directory structure back into a single `catalog.json` file - possibly after modifying individual files
@@ -677,8 +681,8 @@ You can then reverse the split with
 You can collapse everything back to a single `catalog.json` file after first going up one directory to the mycatalog directory
 
 ```
-> cd ..
-> trestle merge -e 'catalog.*'
+cd ..
+trestle merge -e 'catalog.*'
 ```
 
 <br>
