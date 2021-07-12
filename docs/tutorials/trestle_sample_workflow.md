@@ -49,18 +49,22 @@ trestle init
 
 ## Step 2: Import a catalog from the trestle sample data directory into your trestle workspace
 
-Files should be placed in your trestle workspace using the command `import`, which will check the
+First download a catalog from the [NIST OSCAL github site](https://github.com/usnistgov/OSCAL).  The specific catalog is [NIST_SP-800-53_rev5_catalog.json](https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json)
+
+Save that file on your disk at a location of your choice outside of the trestle directory, and call it `catalog.json`.  The file is approximately 3 MB in size.
+
+Files should be pulled into your trestle workspace using the command `import`, which will check the
 validity of the file including the presence of any duplicate uuid's.  If the file is manually created
-please be sure it conforms with the current OSCAL schema and has no defined uuid's that are duplicates.
+please be sure it conforms with the current OSCAL schema (OSCAL version 1.0.0) and has no defined uuid's that are duplicates.
 If there are any errors the Import will fail and the file must be corrected.
 
 Import the file from the trestle root directory with
 
 ```
-trestle import -f TRESTLE_ROOT/tests/data/split_merge/load_distributed/catalog.json -o mycatalog
+trestle import -f MY_DOWNLOAD_DIRECTORY/catalog.json -o mycatalog
 ```
 
-*Here TRESTLE_ROOT corresponds to the root of the trestle installation where you installed it!  Do not type TRESTLE_ROOT!*
+*Here MY_DOWNLOAD_DIRECTORY corresponds to the directory in which you downloaded the catalog.json file.*  On Windows platforms you can use either a forward (/)or backward slash (\) in the path of the file you are importing.
 
 <br>
 <details>
@@ -111,7 +115,7 @@ my_workspace
 </details>
 <br>
 
-You will see that the directory now shows your catalog file in `my_workspace/catalogs/mycatalog/catalog.json`.  Note that the `.keep` files are simply to make sure git does not remove the directories - and can be ignored.  Also note that the json file itself is *singular* (catalog) while the directory above is plural (catalogs).  This convention is used throughout trestle because a given model directory like catalogs may contain several individual models - each of which is singular.
+You will see that the directory now shows your catalog file in `my_workspace/catalogs/mycatalog/catalog.json`.  Note that the `.keep` files are simply to make sure git does not remove the directories - and can be ignored.  Also note that the json file itself is *singular* (catalog) while the directory above is plural (catalogs).  This convention is used throughout trestle because a given model directory like catalogs may contain several individual models - each of which is singular.  The imported catalog file size may be larger than the original due to a change in formatting, but the contents should be the same.
 
 From here on in this tutorial we will just focus on the catalogs directory since the others are not directly involved.
 
