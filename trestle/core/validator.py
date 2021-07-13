@@ -52,7 +52,6 @@ class Validator(ABC):
 
     def validate(self, args: argparse.Namespace) -> int:
         """Perform the validation according to user options."""
-        # comment trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
 
         # validate by type - all of type or just specified by name

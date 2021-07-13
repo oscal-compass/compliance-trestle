@@ -102,7 +102,7 @@ def has_trestle_project_in_path(path: pathlib.Path) -> bool:
 def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBaseModel], str]:
     """Get the full contextual model class and full jsonpath for the alias based on the contextual path."""
     logger.debug(f'get contextual model type for input path {path}')
-    # FIXME: set default value of path to Path.cwd()
+
     if path is None:
         path = pathlib.Path.cwd()
     else:
@@ -361,12 +361,9 @@ def get_models_of_type(model_type: str, root: pathlib.Path) -> List[str]:
     if model_type not in const.MODEL_TYPE_LIST:
         raise err.TrestleError(f'Model type {model_type} is not supported')
     # search relative to project root
-    # comment trestle_root = get_trestle_project_root(pathlib.Path.cwd())
     trestle_root = get_trestle_project_root(root)
     if not trestle_root:
-        # comment logger.error(f'Current working directory {pathlib.Path.cwd()} is not within a trestle project.')
         logger.error(f'Given directory {root} is not within a trestle project.')
-        # comment raise err.TrestleError('Current working directory is not within a trestle project.')
         raise err.TrestleError('Given directory is not within a trestle project.')
 
     # contruct path to the model file name

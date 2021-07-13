@@ -142,17 +142,8 @@ class AssembleCmd(CommandPlusDocs):
         log.set_log_level_from_args(args)
         logger.info(f'Assembling models of type {model_alias}.')
 
-        # comment trestle_root = fs.get_trestle_project_root(Path.cwd())
-        # comment if not trestle_root:
-        # comment    logger.error(f'Current working directory {Path.cwd()} is not with a trestle project.')
-        # comment    return 1
-        # comment if not trestle_root == Path.cwd():
-        # comment    logger.error(f'Current working directory {Path.cwd()} is not the top level trestle project'
-        # comment                 + ' directory.')
-        # comment    return 1
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
         if not trestle_root or not fs.is_valid_project_root(args.trestle_root):
-            # comment logger.error(f'Current working directory {Path.cwd()} is not with a trestle project.')
             logger.error(f'Given directory {trestle_root} is not a trestle project.')
             return 1
 
@@ -170,7 +161,6 @@ class AssembleCmd(CommandPlusDocs):
 
         for model_name in model_names:
             # contruct path to the model file name
-            # comment root_model_dir = Path.cwd() / fs.model_type_to_model_dir(model_alias)
             root_model_dir = trestle_root / fs.model_type_to_model_dir(model_alias)
             try:
                 model_file_type = fs.get_contextual_file_type(root_model_dir / model_name)

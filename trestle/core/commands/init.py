@@ -37,7 +37,6 @@ class InitCmd(CommandPlusDocs):
     def _run(self, args: argparse.Namespace) -> int:
         """Create a trestle project in the current directory."""
         log.set_log_level_from_args(args)
-        # comment dir_path = os.getcwd()
         dir_path: pathlib.Path = args.trestle_root
         if not dir_path.exists() or not dir_path.is_dir():
             logger.error(f'Initialization failed. Given directory {dir_path} does not exist or is not a directory.')
