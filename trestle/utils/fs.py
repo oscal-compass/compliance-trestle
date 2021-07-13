@@ -155,7 +155,7 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
     existing files and folder, which fields should be stripped from the model type represented by the path passed in as
     a parameter.
     """
-    # FIXME: set default value of path to Path.cwd()
+    # Set default value of path to Path.cwd()
     if path is None:
         logger.debug('get_stripped_contextual_model based on cwd')
         path = pathlib.Path.cwd()
