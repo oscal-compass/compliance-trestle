@@ -209,7 +209,7 @@ def get_target_model(element_path_parts: List[str], current_model_type: Type[Bas
 
     Args:
         element_path_parts: Parts of an ElementPath as str and expressed in aliases
-        current_model: Parent model of the current element path
+        current_model_type: Parent model of the current element path
     Returns:
         The type of the model at the specified ElementPath of the input model.
     """
