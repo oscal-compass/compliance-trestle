@@ -155,7 +155,6 @@ class SplitCmd(CommandPlusDocs):
         for a command like below:
            trestle split -f component.yaml -e component-definition.components.*.control-implementations.*
         """
-
         if split_plan is None:
             raise TrestleError('Split plan must have been initialized')
 

@@ -36,7 +36,7 @@ def model_type_is_too_granular(model_type: Type[Any]) -> bool:
     if hasattr(model_type, '__fields__') and '__root__' in model_type.__fields__:
         return True
     if model_type.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float', 'datetime']:
-        return True        
+        return True
     return False
 
 
@@ -49,7 +49,9 @@ def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
     return False
 
 
-def parse_element_args(model: OscalBaseModel, element_args: List[str], contextual_mode: bool = True) -> List[ElementPath]:
+def parse_element_args(model: OscalBaseModel,
+                       element_args: List[str],
+                       contextual_mode: bool = True) -> List[ElementPath]:
     """Parse element args into a list of ElementPath.
 
     contextual_mode specifies if the path is a valid project model path or not. For example,
@@ -61,7 +63,6 @@ def parse_element_args(model: OscalBaseModel, element_args: List[str], contextua
 
     One option for caller to utilize this utility function: fs.is_valid_project_model_path(pathlib.Path.cwd())
     """
-
     element_paths: List[ElementPath] = []
     for element_arg in element_args:
         paths = parse_element_arg(model, element_arg, contextual_mode)
@@ -134,11 +135,13 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
                 if root is None or not isinstance(root, list):
                     # Cannot have parts beyond * if it isn't a list
                     if i < len(path_parts) - 1:
-                        raise TrestleError(f'Cannot split beyond * when the wildcard does not refer to a list.  Path: {element_arg}')
+                        raise TrestleError(
+                            f'Cannot split beyond * when the wildcard does not refer to a list.  Path: {element_arg}'
+                        )
                     for key in sub_model.__fields__.keys():
-                            new_path = full_path_str + '.' + utils.classname_to_alias(key, 'json')
-                            if not split_is_too_fine(new_path, model_obj):
-                                element_paths.append(ElementPath(new_path))
+                        new_path = full_path_str + '.' + utils.classname_to_alias(key, 'json')
+                        if not split_is_too_fine(new_path, model_obj):
+                            element_paths.append(ElementPath(new_path))
                     # Since wildcard is last in the chain when splitting an oscal model we are done
                     return element_paths
         else:

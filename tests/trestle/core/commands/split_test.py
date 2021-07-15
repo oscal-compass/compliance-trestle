@@ -397,12 +397,6 @@ def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.
     split_plan = Plan()
     element_paths = [ElementPath('catalog.metadata.parties.*')]
 
-    # long chain of path should error
-    #with pytest.raises(TrestleError):
-    #    SplitCmd.split_model_at_path_chain(
-    #        sample_catalog, element_paths, catalog_dir, content_type, 0, split_plan, False
-    #    )
-
     # no plan should error
     with pytest.raises(TrestleError):
         SplitCmd.split_model_at_path_chain(sample_catalog, element_paths, catalog_dir, content_type, 0, None, False)
@@ -522,7 +516,9 @@ def test_split_workflow(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscata
 
 
 @pytest.mark.parametrize('split_path', ['catalog.metadata.roles', 'catalog.*', 'catalog.metadata.*'])
-def test_split_catalog_star(split_path: str, tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog):
+def test_split_catalog_star(
+    split_path: str, tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog
+):
     """Test extended depth split operations and split of dicts."""
     # prepare trestle project dir with the file
     catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
@@ -532,7 +528,5 @@ def test_split_catalog_star(split_path: str, tmp_path: pathlib.Path, keep_cwd: p
         test_utils.CATALOGS_DIR)
 
     os.chdir(catalog_dir)
-    args = argparse.Namespace(
-        file='catalog.json', element=split_path, verbose=1
-    )
+    args = argparse.Namespace(file='catalog.json', element=split_path, verbose=1)
     assert SplitCmd()._run(args) == 0
