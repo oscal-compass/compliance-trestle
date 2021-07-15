@@ -68,7 +68,7 @@ def test_import_model_exists(tmp_trestle_dir: pathlib.Path) -> None:
     managed_oscal = repo.import_model(catalog_data, 'imported')
     assert managed_oscal.filepath.exists()
 
-    with pytest.raises(TrestleError, match=str(managed_oscal.filepath) + ' exists'):
+    with pytest.raises(TrestleError, match=r'OSCAL file .* exists'):
         repo.import_model(catalog_data, 'imported')
 
 
