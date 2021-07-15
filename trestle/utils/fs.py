@@ -276,8 +276,6 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
 
     path_parts = full_alias_path.split(const.ALIAS_PATH_SEPARATOR)
     logger.debug(f'path parts: {path_parts}')
-    if len(path_parts) < 2:
-        raise err.TrestleError('Invalid jsonpath.')
 
     model_types = []
 
@@ -292,6 +290,9 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
 
     if not found:
         raise err.TrestleError(f'{root_model_alias} is an invalid root model alias.')
+
+    if len(path_parts) == 1:
+        return root_model_alias
 
     model_type = model_types[0]
     # go through path parts skipping first one
@@ -316,8 +317,10 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
     last_alias = path_parts[-1]
     if last_alias == '*':
         last_alias = path_parts[-2]
+
+    # generic model and not list, so return itself fixme doc
     if not utils.is_collection_field_type(model_type):
-        raise err.TrestleError(f'Not a valid generic collection model: {model_type}')
+        return last_alias
 
     parent_model_type = model_types[-2]
     try:
