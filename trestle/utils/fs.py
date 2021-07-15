@@ -102,6 +102,7 @@ def has_trestle_project_in_path(path: pathlib.Path) -> bool:
 def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBaseModel], str]:
     """Get the full contextual model class and full jsonpath for the alias based on the contextual path."""
     logger.debug(f'get contextual model type for input path {path}')
+
     if path is None:
         path = pathlib.Path.cwd()
     else:
@@ -154,6 +155,7 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
     existing files and folder, which fields should be stripped from the model type represented by the path passed in as
     a parameter.
     """
+    # Set default value of path to Path.cwd()
     if path is None:
         logger.debug('get_stripped_contextual_model based on cwd')
         path = pathlib.Path.cwd()
@@ -357,15 +359,15 @@ def get_contextual_file_type(path: pathlib.Path) -> FileContentType:
     raise err.TrestleError('No files found in the project.')
 
 
-def get_models_of_type(model_type: str) -> List[str]:
+def get_models_of_type(model_type: str, root: pathlib.Path) -> List[str]:
     """Get list of model names for requested type in trestle directory."""
     if model_type not in const.MODEL_TYPE_LIST:
         raise err.TrestleError(f'Model type {model_type} is not supported')
     # search relative to project root
-    trestle_root = get_trestle_project_root(pathlib.Path.cwd())
+    trestle_root = get_trestle_project_root(root)
     if not trestle_root:
-        logger.error(f'Current working directory {pathlib.Path.cwd()} is not within a trestle project.')
-        raise err.TrestleError('Current working directory is not within a trestle project.')
+        logger.error(f'Given directory {root} is not within a trestle project.')
+        raise err.TrestleError('Given directory is not within a trestle project.')
 
     # contruct path to the model file name
     root_model_dir = trestle_root / model_type_to_model_dir(model_type)
@@ -376,11 +378,11 @@ def get_models_of_type(model_type: str) -> List[str]:
     return model_list
 
 
-def get_all_models() -> List[Tuple[str, str]]:
+def get_all_models(root: pathlib.Path) -> List[Tuple[str, str]]:
     """Get list of all models in trestle directory as tuples (model_type, model_name)."""
     full_list = []
     for model_type in const.MODEL_TYPE_LIST:
-        models = get_models_of_type(model_type)
+        models = get_models_of_type(model_type, root)
         for m in models:
             full_list.append((model_type, m))
     return full_list
