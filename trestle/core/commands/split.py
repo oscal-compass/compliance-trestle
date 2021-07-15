@@ -230,7 +230,7 @@ class SplitCmd(CommandPlusDocs):
 
                 if require_recursive_split:
                     # prepare individual directory for each sub-model
-                    # FIXME: check for redundant dict behaviour.
+                    # FIXME: check for redundant dict behaviour.  (may be out of date with 1.0.0)
                     sub_root_file_name = cmd_utils.to_model_file_name(sub_model_item, prefix, content_type)
                     sub_model_plan = Plan()
 
