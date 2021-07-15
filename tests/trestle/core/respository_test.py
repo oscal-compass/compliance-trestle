@@ -37,7 +37,7 @@ def test_repo_invalid_root(tmp_path: pathlib.Path) -> None:
 
 
 def test_import(tmp_trestle_dir: pathlib.Path) -> None:
-    """Happy path test."""
+    """Test import."""
     # Generate sample catalog model
     catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
 
