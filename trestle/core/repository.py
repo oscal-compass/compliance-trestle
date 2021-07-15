@@ -46,6 +46,8 @@ class ManagedOSCAL:
 
     def __init__(self, root_dir: pathlib.Path, model_type: Type[OscalBaseModel], name: str) -> None:
         """Initialize repository OSCAL model object."""
+        if not fs.is_valid_project_root(root_dir):
+            raise TrestleError(f'Provided root directory {str(root_dir)} is not a valid Trestle root directory.')
         self.root_dir = root_dir
         self.model_type = model_type
         self.model_name = name
@@ -59,19 +61,17 @@ class ManagedOSCAL:
         self.model_dir = self.root_dir / plural_path / self.model_name
 
         if not self.model_dir.exists() or not self.model_dir.is_dir():
-            raise TrestleError(f'Model {self.model_name} does not exist.')
+            raise TrestleError(f'Model dir {self.model_name} does not exist.')
 
         file_content_type = FileContentType.path_to_content_type(self.model_dir / self.model_alias)
         if file_content_type == FileContentType.UNKNOWN:
-            raise TrestleError(f'Model {self.model_name} does not exist.')
+            raise TrestleError(f'Model file for model {self.model_name} does not exist.')
         self.file_content_type = file_content_type
 
         filepath = pathlib.Path(
             self.model_dir,
             self.model_alias + FileContentType.path_to_file_extension(self.model_dir / self.model_alias)
         )
-        if not filepath.exists():
-            raise TrestleError(f'File {filepath} for model {self.model_name} does not exist.')
 
         self.filepath = filepath
 
@@ -120,6 +120,10 @@ class ManagedOSCAL:
         logger.debug(f'Splitting model {self.model_name}, file {model_file}.')
         # input model_file should be relative to the model dir
         model_file_path = self.model_dir / model_file
+        model_file_path = model_file_path.resolve()
+        file_parent = model_file_path.parent
+        filename = model_file_path.name
+
         if logger.getEffectiveLevel() <= logging.DEBUG:
             verbose = True
         else:
@@ -133,13 +137,13 @@ class ManagedOSCAL:
                 first = False
             else:
                 elems = elems + ',' + elem
-        args = argparse.Namespace(trestle_root=self.root_dir, file=str(model_file_path), element=elems, verbose=verbose)
+        args = argparse.Namespace(trestle_root=self.root_dir, file=filename, element=elems, verbose=verbose)
 
         success = False
         cwd = pathlib.Path.cwd()
         try:
             # change the cwd to model dir for split command
-            os.chdir(self.model_dir)
+            os.chdir(file_parent)
             ret = splitcmd.SplitCmd()._run(args)
             if ret == 0:
                 success = True
