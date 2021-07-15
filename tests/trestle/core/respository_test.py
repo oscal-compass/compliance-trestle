@@ -152,6 +152,8 @@ def test_delete(tmp_trestle_dir: pathlib.Path) -> None:
     catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
     repo = Repository(tmp_trestle_dir)
     repo.import_model(catalog_data, 'imported')
+    # created model is 'dist' folder also
+    repo.assemble_model(oscal.catalog.Catalog, 'imported')
     success = repo.delete_model(oscal.catalog.Catalog, 'imported')
     assert success
 
@@ -164,10 +166,10 @@ def test_delete_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
 
 
 def test_delete_model_not_exists(tmp_trestle_dir: pathlib.Path) -> None:
-    """Get model does not exists."""
+    """Delete model does not exists."""
     repo = Repository(tmp_trestle_dir)
     with pytest.raises(TrestleError, match='does not exist'):
-        repo.get_model(oscal.catalog.Catalog, 'anything')
+        repo.delete_model(oscal.catalog.Catalog, 'anything')
 
 
 def test_assemble(tmp_trestle_dir: pathlib.Path) -> None:
@@ -315,6 +317,24 @@ def test_managed_split(tmp_trestle_dir: pathlib.Path) -> None:
     assert pathlib.Path.cwd() == cwd
 
 
+def test_managed_split_multi(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test model split multiple ekemnets."""
+    # generate catalog data and import
+    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    repo = Repository(tmp_trestle_dir)
+    managed = repo.import_model(catalog_data, 'imported')
+
+    # store current working directory
+    cwd = pathlib.Path.cwd()
+
+    # test splitting
+    success = managed.split(pathlib.Path('catalog.json'), ['catalog.metadata', 'catalog.groups.*'])
+    assert success
+
+    # test cwd is restored after splitting
+    assert pathlib.Path.cwd() == cwd
+
+
 def test_managed_merge(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model merge."""
     # generate catalog data and import and split
@@ -326,7 +346,7 @@ def test_managed_merge(tmp_trestle_dir: pathlib.Path) -> None:
     success = managed.split(pathlib.Path('catalog.json'), ['catalog.metadata'])
     assert success
 
-    success = managed.split(pathlib.Path('catalog/metadata.json'), ['metadata.props'])
+    success = managed.split(pathlib.Path('catalog', 'metadata.json'), ['metadata.props'])
     assert success
 
     # store current working directory before merge

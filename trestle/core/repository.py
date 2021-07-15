@@ -72,8 +72,6 @@ class ManagedOSCAL:
             self.model_dir,
             self.model_alias + FileContentType.path_to_file_extension(self.model_dir / self.model_alias)
         )
-        if not filepath.exists():
-            raise TrestleError(f'File {filepath} for model {self.model_name} does not exist.')
 
         self.filepath = filepath
 
