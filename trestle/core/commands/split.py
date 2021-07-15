@@ -74,7 +74,6 @@ class SplitCmd(CommandPlusDocs):
 
         model_type, _ = fs.get_stripped_contextual_model(file_absolute_path)
 
-        # FIXME: Handle list/dicts
         model: OscalBaseModel = model_type.oscal_read(file_path)
 
         # remove any quotes passed in as on windows platforms
@@ -137,6 +136,10 @@ class SplitCmd(CommandPlusDocs):
         It assumes that a chain of element paths starts at the cur_path_index with the first path ending
         with a wildcard (*)
 
+        If the wildcard follows an element that is inherently a list of items, the list of items is extracted.
+        But if the wildcard follows a generic model than members of that model class found in the model will be
+        split off.  But only the non-trivial elements are removed, i.e. not str, int, datetime, etc.
+
         It returns the index where the chain of path ends.
 
         For example, element paths could have a list of paths as below for a `ComponentDefinition` model where
@@ -152,8 +155,6 @@ class SplitCmd(CommandPlusDocs):
         for a command like below:
            trestle split -f component.yaml -e component-definition.components.*.control-implementations.*
         """
-        # assume we ran the command below:
-        # trestle split -f component.yaml -e component-definition.components.*.control-implementations.*
 
         if split_plan is None:
             raise TrestleError('Split plan must have been initialized')
@@ -186,20 +187,12 @@ class SplitCmd(CommandPlusDocs):
         if path_parts[-1] == ElementPath.WILDCARD:
             path_parts = path_parts[:-1]
 
-        #if len(path_parts) > 2:
-        #    msg = 'Trestle supports split of first level children only, '
-        #    msg += f'found path "{element_path}" with level = {len(path_parts)}'
-        #    raise TrestleError(msg)
-
         if cmd_utils.split_is_too_fine('.'.join(path_parts), model_obj):
             raise TrestleError(f'Split is too fine at element {path_parts[-1]}')
 
         sub_models = element.get_at(element_path, False)  # we call sub_models as in plural, but it can be just one
         if sub_models is None:
             return cur_path_index
-
-        #if not isinstance(sub_models, OscalBaseModel):
-        #    raise TrestleError(f'Improper split path {element_path}')
 
         # assume cur_path_index is the end of the chain
         # value of this variable may change during recursive split of the sub-models below
@@ -225,18 +218,6 @@ class SplitCmd(CommandPlusDocs):
                     # e.g. `groups/00000_groups/`
                     prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
                     sub_model_items[prefix] = sub_model_item
-            else:
-                # direct split of model as dict, e.g. catalog.*
-                # pull out the items that are OscalBaseModel and leave behind things like uuid
-                # raise TrestleError(f'Sub element at {element_path} is not of type list or dict for further split')                
-                # for key in sub_models.__fields__.keys():
-                #     obj = sub_models.__fields__[key]
-                #     if not cmd_utils.model_object_is_too_granular(obj):
-                #         new_item = getattr(sub_models, key)
-                #         if new_item is not None:
-                #             sub_model_items[key] = new_item
-                #         # stripped_field_alias.append(utils.classname_to_alias(key, 'json'))
-                pass
 
             # process list sub model items
             for key in sub_model_items:
@@ -284,7 +265,6 @@ class SplitCmd(CommandPlusDocs):
         if strip_root:
             stripped_field_alias.append(element_path.get_element_name())
 
-            # if stripped_field_alias:
             stripped_model = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
             # If it's an empty model after stripping the fields, don't create path and don't write
             if set(model_obj.__fields__.keys()) == set(stripped_field_alias):

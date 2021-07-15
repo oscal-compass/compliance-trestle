@@ -40,17 +40,6 @@ def model_type_is_too_granular(model_type: Type[Any]) -> bool:
     return False
 
 
-def model_object_is_too_granular(model_obj: OscalBaseModel) -> bool:
-    """Is an object too fine to split."""
-    if hasattr(model_obj, '__fields__') and '__root__' in model_obj.__fields__:
-        return True
-    if hasattr(model_obj, 'type_') and hasattr(model_obj.type_, '__fields__') and '__root__' in model_obj.type_.__fields__:
-        return True
-    if hasattr(model_obj, 'outer_type_'):
-        return model_type_is_too_granular(model_obj.outer_type_)
-    return False
-
-
 def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
     """Determine if the element path list goes too fine, e.g. individual strings."""
     for split_path in split_paths.split(','):
@@ -72,8 +61,6 @@ def parse_element_args(model: OscalBaseModel, element_args: List[str], contextua
 
     One option for caller to utilize this utility function: fs.is_valid_project_model_path(pathlib.Path.cwd())
     """
-    if not isinstance(element_args, list):
-        raise TrestleError(f'Input element_paths must be a list, but found {element_args.__class__}')
 
     element_paths: List[ElementPath] = []
     for element_arg in element_args:
@@ -101,10 +88,16 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
     element_paths: List[ElementPath] = []
     element_arg = element_arg.strip()
 
+    if element_arg == '*':
+        raise TrestleError('Invalid element path containing only a single wildcard.')
+
+    if element_arg == '':
+        raise TrestleError('Invalid element path is empty string.')
+
     # search for wildcards and create paths with its parent path
     path_parts = element_arg.split(ElementPath.PATH_SEPARATOR)
-    if len(path_parts) <= 0:
-        raise TrestleError(f'Invalid element path "{element_arg}" without any path separator')
+    if len(path_parts) <= 1:
+        raise TrestleError(f'Invalid element path "{element_arg}" with only one element and no wildcard')
 
     sub_model = model_obj
 
@@ -134,20 +127,20 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
         if element_path.get_last() == ElementPath.WILDCARD:
             full_path_str = ElementPath.PATH_SEPARATOR.join(element_path.get_full_path_parts()[:-1])
             parent_model = fs.get_singular_alias(full_path_str, contextual_mode)
-            # Does wildcard mean we need to inspect the sub_model to determine what can be split off?
-            # If it has __root__ it may mean it contains a list of objects
-            if isinstance(sub_model, OscalBaseModel) and getattr(sub_model, '__root__', None) is None:
-                # Cannot have parts beyond * if it isn't a list
-                if i < len(path_parts) - 1:
-                    raise TrestleError(f'Cannot split beyond * when the wildcard does not refer to a list.  Path: {element_arg}')
-                # Wildcard is used to split available objects from the model, so do not add final element path including the wildcard
-                # Wildcards are only present on return from this call if they refer to lists
-                for key in sub_model.__fields__.keys():
-                        new_path = full_path_str + '.' + utils.classname_to_alias(key, 'json')
-                        if not split_is_too_fine(new_path, model_obj):
-                            element_paths.append(ElementPath(new_path))
-                # Since wildcard is last in the chain when splitting an oscal model we are done
-                return element_paths
+            # Does wildcard mean we need to inspect the sub_model to determine what can be split off from it?
+            # If it has __root__ it may mean it contains a list of objects and should be split as a list
+            if isinstance(sub_model, OscalBaseModel):
+                root = getattr(sub_model, '__root__', None)
+                if root is None or not isinstance(root, list):
+                    # Cannot have parts beyond * if it isn't a list
+                    if i < len(path_parts) - 1:
+                        raise TrestleError(f'Cannot split beyond * when the wildcard does not refer to a list.  Path: {element_arg}')
+                    for key in sub_model.__fields__.keys():
+                            new_path = full_path_str + '.' + utils.classname_to_alias(key, 'json')
+                            if not split_is_too_fine(new_path, model_obj):
+                                element_paths.append(ElementPath(new_path))
+                    # Since wildcard is last in the chain when splitting an oscal model we are done
+                    return element_paths
         else:
             parent_model = element_path.get_element_name()
 

@@ -151,3 +151,10 @@ def test_parse_element_args_split_model(element_arg, sample_catalog):
     """Test split of model with wildcard."""
     element_paths = cmd_utils.parse_element_arg(sample_catalog, element_arg, False)
     assert element_paths
+
+
+@pytest.mark.parametrize('element_arg', ['catalog.metadata.*.roles', 'catalog', '', '*'])
+def test_parse_element_arg_split_model_failures(element_arg, sample_catalog):
+    """Test failures split of model with wildcard."""
+    with pytest.raises(TrestleError):
+        cmd_utils.parse_element_arg(sample_catalog, element_arg, False)
