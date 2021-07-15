@@ -46,6 +46,8 @@ class ManagedOSCAL:
 
     def __init__(self, root_dir: pathlib.Path, model_type: Type[OscalBaseModel], name: str) -> None:
         """Initialize repository OSCAL model object."""
+        if not fs.is_valid_project_root(root_dir):
+            raise TrestleError(f'Provided root directory {str(root_dir)} is not a valid Trestle root directory.')
         self.root_dir = root_dir
         self.model_type = model_type
         self.model_name = name
@@ -59,11 +61,11 @@ class ManagedOSCAL:
         self.model_dir = self.root_dir / plural_path / self.model_name
 
         if not self.model_dir.exists() or not self.model_dir.is_dir():
-            raise TrestleError(f'Model {self.model_name} does not exist.')
+            raise TrestleError(f'Model dir {self.model_name} does not exist.')
 
         file_content_type = FileContentType.path_to_content_type(self.model_dir / self.model_alias)
         if file_content_type == FileContentType.UNKNOWN:
-            raise TrestleError(f'Model {self.model_name} does not exist.')
+            raise TrestleError(f'Model file for model {self.model_name} does not exist.')
         self.file_content_type = file_content_type
 
         filepath = pathlib.Path(
