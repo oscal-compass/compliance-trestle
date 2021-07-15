@@ -186,10 +186,13 @@ class SplitCmd(CommandPlusDocs):
         if path_parts[-1] == ElementPath.WILDCARD:
             path_parts = path_parts[:-1]
 
-        if len(path_parts) > 2:
-            msg = 'Trestle supports split of first level children only, '
-            msg += f'found path "{element_path}" with level = {len(path_parts)}'
-            raise TrestleError(msg)
+        #if len(path_parts) > 2:
+        #    msg = 'Trestle supports split of first level children only, '
+        #    msg += f'found path "{element_path}" with level = {len(path_parts)}'
+        #    raise TrestleError(msg)
+
+        if cmd_utils.split_is_too_fine('.'.join(path_parts), model_obj):
+            raise TrestleError(f'Split is too fine at element {path_parts[-1]}')
 
         sub_models = element.get_at(element_path, False)  # we call sub_models as in plural, but it can be just one
         if sub_models is None:
@@ -226,11 +229,13 @@ class SplitCmd(CommandPlusDocs):
                 # direct split of model as dict, e.g. catalog.*
                 # pull out the items that are OscalBaseModel and leave behind things like uuid
                 # raise TrestleError(f'Sub element at {element_path} is not of type list or dict for further split')                
-                # for key in model_obj.__fields__.keys():
-                #     obj = getattr(model_obj, key)
-                #     if isinstance(obj, OscalBaseModel):
-                #         sub_model_items[key] = obj
-                #         stripped_field_alias.append(utils.classname_to_alias(key, 'json'))
+                # for key in sub_models.__fields__.keys():
+                #     obj = sub_models.__fields__[key]
+                #     if not cmd_utils.model_object_is_too_granular(obj):
+                #         new_item = getattr(sub_models, key)
+                #         if new_item is not None:
+                #             sub_model_items[key] = new_item
+                #         # stripped_field_alias.append(utils.classname_to_alias(key, 'json'))
                 pass
 
             # process list sub model items
@@ -323,8 +328,7 @@ class SplitCmd(CommandPlusDocs):
             if element_path.get_parent() is None and len(element_path.get()) > 1:
                 stripped_part = element_path.get()[1]
                 if stripped_part == ElementPath.WILDCARD:
-                    if hasattr(model_obj, '__root__'):
-                        stripped_field_alias.append('__root__')
+                    stripped_field_alias.append('__root__')
                 else:
                     stripped_field_alias.append(stripped_part)
 

@@ -39,23 +39,23 @@ def test_parse_element_arg(tmp_path, keep_cwd):
     """Unit test parse a single element arg."""
     owd = keep_cwd
     with pytest.raises(TrestleError):
-        cmd_utils.parse_element_arg('component-definition', False)
+        cmd_utils.parse_element_arg(None, 'component-definition', False)
 
     with pytest.raises(TrestleError):
-        cmd_utils.parse_element_arg('*.target', False)
+        cmd_utils.parse_element_arg(None, '*.target', False)
 
     with pytest.raises(TrestleError):
-        cmd_utils.parse_element_arg('*.*', False)
+        cmd_utils.parse_element_arg(None, '*.*', False)
 
     with pytest.raises(TrestleError):
-        cmd_utils.parse_element_arg('*', False)
+        cmd_utils.parse_element_arg(None, '*', False)
 
     with pytest.raises(TrestleError):
-        cmd_utils.parse_element_arg('component-definition.components.*.*', False)
+        cmd_utils.parse_element_arg(None, 'component-definition.components.*.*', False)
 
     element_arg = 'catalog.groups.*'
     expected_paths: List[ElementPath] = prepare_expected_element_paths(['catalog.groups.*'])
-    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, False)
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(None, element_arg, False)
     assert expected_paths == element_paths
 
     # contextual path
@@ -65,23 +65,23 @@ def test_parse_element_arg(tmp_path, keep_cwd):
     os.chdir(catalog_split_dir)
     element_arg = 'groups.*'
     expected_paths = prepare_expected_element_paths(['groups.*'])
-    element_paths = cmd_utils.parse_element_arg(element_arg, True)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg, True)
     assert expected_paths == element_paths
     os.chdir(owd)
 
     element_arg = 'catalog.metadata.parties.*'
     expected_paths = prepare_expected_element_paths(['catalog.metadata', 'metadata.parties.*'])
-    element_paths = cmd_utils.parse_element_arg(element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
     assert expected_paths == element_paths
 
     element_arg = 'component-definition.components'
     expected_paths = prepare_expected_element_paths(['component-definition.components'])
-    element_paths = cmd_utils.parse_element_arg(element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
     assert expected_paths == element_paths
 
     element_arg = 'component-definition.components.*'
     expected_paths = prepare_expected_element_paths(['component-definition.components.*'])
-    element_paths = cmd_utils.parse_element_arg(element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
     assert expected_paths == element_paths
 
     element_arg = 'catalog.groups.*.controls.*.controls.*'
@@ -89,28 +89,28 @@ def test_parse_element_arg(tmp_path, keep_cwd):
     p2 = ElementPath('group.controls.*', parent_path=p1)
     p3 = ElementPath('control.controls.*', parent_path=p2)
     expected_paths = [p1, p2, p3]
-    element_paths = cmd_utils.parse_element_arg(element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
     assert expected_paths == element_paths
 
     element_arg = 'catalog.groups.*.controls'
     p1 = ElementPath('catalog.groups.*')
     p2 = ElementPath('group.controls', parent_path=p1)
     expected_paths = [p1, p2]
-    element_paths = cmd_utils.parse_element_arg(element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
     assert expected_paths == element_paths
 
     element_arg = 'component-definition.components.*.control-implementations'
     p1 = ElementPath('component-definition.components.*')
     p2 = ElementPath('defined-component.control-implementations', parent_path=p1)
     expected_paths = [p1, p2]
-    element_paths = cmd_utils.parse_element_arg(element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
     assert expected_paths == element_paths
 
     element_arg = 'component-definition.components.*.control-implementations.*'
     p1 = ElementPath('component-definition.components.*')
     p2 = ElementPath('defined-component.control-implementations.*', parent_path=p1)
     expected_paths = [p1, p2]
-    element_paths = cmd_utils.parse_element_arg(element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
     assert expected_paths == element_paths
 
     # use contextual path for parsing path
@@ -120,7 +120,7 @@ def test_parse_element_arg(tmp_path, keep_cwd):
     os.chdir(comp_def_dir)
     element_arg = 'metadata.parties.*'
     expected_paths: List[ElementPath] = prepare_expected_element_paths(['metadata.parties.*'])
-    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(element_arg, True)
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(None, element_arg, True)
     assert expected_paths == element_paths
 
 
@@ -144,3 +144,10 @@ def test_parse_element_args():
     p5 = ElementPath('control.controls.*', parent_path=p4)
     expected: List[ElementPath] = [p0, p1, p2, p3, p4, p5]
     assert cmd_utils.parse_element_args(None, element_args, False) == expected
+
+
+@pytest.mark.parametrize('element_arg', ['catalog.metadata.*', 'catalog.*'])
+def test_parse_element_args_split_model(element_arg, sample_catalog):
+    """Test split of model with wildcard."""
+    element_paths = cmd_utils.parse_element_arg(sample_catalog, element_arg, False)
+    assert element_paths

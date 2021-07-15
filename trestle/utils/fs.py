@@ -317,8 +317,11 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
     last_alias = path_parts[-1]
     if last_alias == '*':
         last_alias = path_parts[-2]
+
+    # generic model and not list, so return itself fixme doc
     if not utils.is_collection_field_type(model_type):
-        raise err.TrestleError(f'Not a valid generic collection model: {model_type}')
+        return last_alias
+        # raise err.TrestleError(f'Not a valid generic collection model: {model_type}')        
 
     parent_model_type = model_types[-2]
     try:
