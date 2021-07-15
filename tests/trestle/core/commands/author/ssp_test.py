@@ -186,7 +186,7 @@ def test_ssp_assemble(use_tree: bool, tmp_trestle_dir: pathlib.Path) -> None:
         assert ssp_assemble._run(args) == 0
     else:
         ssp_manager = SSPManager()
-        assert ssp_manager.assemble_ssp(ssp_name, ssp_name, use_tree) == 0
+        assert ssp_manager.assemble_ssp(ssp_name, ssp_name, True) == 0
 
 
 def test_ssp_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
