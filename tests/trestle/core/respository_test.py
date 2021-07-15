@@ -346,7 +346,7 @@ def test_managed_merge(tmp_trestle_dir: pathlib.Path) -> None:
     success = managed.split(pathlib.Path('catalog.json'), ['catalog.metadata'])
     assert success
 
-    success = managed.split(pathlib.Path('catalog', 'metadata.json'), ['metadata.props'])
+    success = managed.split(pathlib.Path('catalog/metadata.json'), ['metadata.props'])
     assert success
 
     # store current working directory before merge
