@@ -17,6 +17,8 @@ import pathlib
 
 import pytest
 
+from tests import test_utils
+
 import trestle.core.parser as parser
 import trestle.oscal as oscal
 from trestle.core import generators
@@ -302,7 +304,8 @@ def test_managed_write_invalid_top_model(tmp_trestle_dir: pathlib.Path) -> None:
 def test_managed_split(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model split."""
     # generate catalog data and import
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    filepath = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
+    catalog_data = parser.parse_file(filepath, None)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
 
@@ -312,9 +315,14 @@ def test_managed_split(tmp_trestle_dir: pathlib.Path) -> None:
     # test splitting
     success = managed.split(pathlib.Path('catalog.json'), ['catalog.metadata'])
     assert success
+    assert pathlib.Path(tmp_trestle_dir / 'catalogs' / 'imported' / 'catalog' / 'metadata.json').exists()
 
     # test cwd is restored after splitting
     assert pathlib.Path.cwd() == cwd
+
+    success = managed.split(pathlib.Path('catalog/metadata.json'), ['metadata.props'])
+    assert success
+    assert pathlib.Path(tmp_trestle_dir / 'catalogs' / 'imported' / 'catalog' / 'metadata' / 'props.json').exists()
 
 
 def test_managed_split_multi(tmp_trestle_dir: pathlib.Path) -> None:
@@ -338,16 +346,19 @@ def test_managed_split_multi(tmp_trestle_dir: pathlib.Path) -> None:
 def test_managed_merge(tmp_trestle_dir: pathlib.Path) -> None:
     """Test model merge."""
     # generate catalog data and import and split
-    catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
+    filepath = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
+    catalog_data = parser.parse_file(filepath, None)
     repo = Repository(tmp_trestle_dir)
     managed = repo.import_model(catalog_data, 'imported')
 
     # split should be success
     success = managed.split(pathlib.Path('catalog.json'), ['catalog.metadata'])
     assert success
+    assert pathlib.Path(tmp_trestle_dir / 'catalogs' / 'imported' / 'catalog' / 'metadata.json').exists()
 
     success = managed.split(pathlib.Path('catalog/metadata.json'), ['metadata.props'])
     assert success
+    assert pathlib.Path(tmp_trestle_dir / 'catalogs' / 'imported' / 'catalog' / 'metadata' / 'props.json').exists()
 
     # store current working directory before merge
     cwd = pathlib.Path.cwd()
@@ -355,8 +366,11 @@ def test_managed_merge(tmp_trestle_dir: pathlib.Path) -> None:
     # merge should be success
     success = managed.merge(['metadata.*'], pathlib.Path('catalog'))
     assert success
+    assert not pathlib.Path(tmp_trestle_dir / 'catalogs' / 'imported' / 'catalog' / 'metadata' / 'props.json').exists()
+
     success = managed.merge(['catalog.*'])
     assert success
+    assert not pathlib.Path(tmp_trestle_dir / 'catalogs' / 'imported' / 'catalog' / 'metadata.json').exists()
 
     # test cwd is restored after splitting
     assert pathlib.Path.cwd() == cwd

@@ -120,6 +120,10 @@ class ManagedOSCAL:
         logger.debug(f'Splitting model {self.model_name}, file {model_file}.')
         # input model_file should be relative to the model dir
         model_file_path = self.model_dir / model_file
+        model_file_path = model_file_path.resolve()
+        file_parent = model_file_path.parent
+        filename = model_file_path.name
+
         if logger.getEffectiveLevel() <= logging.DEBUG:
             verbose = True
         else:
@@ -133,13 +137,13 @@ class ManagedOSCAL:
                 first = False
             else:
                 elems = elems + ',' + elem
-        args = argparse.Namespace(trestle_root=self.root_dir, file=str(model_file_path), element=elems, verbose=verbose)
+        args = argparse.Namespace(trestle_root=self.root_dir, file=filename, element=elems, verbose=verbose)
 
         success = False
         cwd = pathlib.Path.cwd()
         try:
             # change the cwd to model dir for split command
-            os.chdir(self.model_dir)
+            os.chdir(file_parent)
             ret = splitcmd.SplitCmd()._run(args)
             if ret == 0:
                 success = True
