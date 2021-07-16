@@ -15,7 +15,7 @@
 
 import json
 import pathlib
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 
 from pydantic import Field, create_model
 from pydantic.error_wrappers import ValidationError
@@ -260,7 +260,7 @@ class Element:
 
     def get_at(self,
                element_path: ElementPath = None,
-               check_parent: bool = True) -> Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]:
+               check_parent: bool = True) -> Union[OscalBaseModel, List[OscalBaseModel]]:
         """Get the element at the specified element path.
 
         it will return the sub-model object at the path. Sub-model object
@@ -302,8 +302,6 @@ class Element:
                 else:
                     # index to a non list type should return None
                     return None
-            elif isinstance(elm, dict):
-                elm = elm.get(attr, None)
             else:
                 elm = elm.get_field_value_by_alias(attr)
 
@@ -444,9 +442,3 @@ class Element:
             return False
 
         return self.get() == other.get()
-
-
-def get_singular_model_from_json(json_path: str, model_obj: OscalBaseModel):
-    """Get the singular model type represented by the full path with wildcards."""
-    singular_model = utils.get_target_model(json_path.split('.'), model_obj)
-    return singular_model

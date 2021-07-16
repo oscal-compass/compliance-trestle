@@ -44,21 +44,41 @@ def test_arguments(tmp_trestle_dir: pathlib.Path) -> None:
     # should pass and print a list
     # also should work but same as above
     # NOTE: When passing arguments by hand like this - they are defined if missing and passed as None
-    args = argparse.Namespace(name='task', list=True, verbose=1, task=None, config=None, info=False)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, trestname='task', list=True, verbose=1, task=None, config=None, info=False
+    )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc == 0
 
     # Conflicting arguments: info an dlist
-    args = argparse.Namespace(name='task', list=True, verbose=1, task='stuff', config=None, info=True)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, name='task', list=True, verbose=1, task='stuff', config=None, info=True
+    )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc > 0
 
     # should not work - missing required arguments
-    args = argparse.Namespace(name='task', config='config_file.json', verbose=1, list=False, task=None, info=False)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name='task',
+        config='config_file.json',
+        verbose=1,
+        list=False,
+        task=None,
+        info=False
+    )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc > 0
     # Failure due to task not in task pool.
-    args = argparse.Namespace(name='task', list=False, verbose=1, task='this-is-not-a-task', config=False, info=False)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name='task',
+        list=False,
+        verbose=1,
+        task='this-is-not-a-task',
+        config=False,
+        info=False
+    )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc > 0
 
@@ -78,10 +98,14 @@ def test_load_default_config(tmp_trestle_dir: pathlib.Path) -> None:
     # Now good.
 
     # should print info.
-    args = argparse.Namespace(name='task', list=False, verbose=1, task='pass-fail', config=None, info=True)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, name='task', list=False, verbose=1, task='pass-fail', config=None, info=True
+    )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc == 0
-    args = argparse.Namespace(name='task', list=False, verbose=1, task='pass-fail', config=None, info=False)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, name='task', list=False, verbose=1, task='pass-fail', config=None, info=False
+    )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc == 0
     #
@@ -100,13 +124,25 @@ def test_load_custom_config(tmp_trestle_dir: pathlib.Path) -> None:
     config_object.write(config_path.open('w', encoding=const.FILE_ENCODING))
 
     args = argparse.Namespace(
-        name='task', list=False, verbose=1, task='pass-fail', config='config_file.json', info=True
+        trestle_root=tmp_trestle_dir,
+        name='task',
+        list=False,
+        verbose=1,
+        task='pass-fail',
+        config='config_file.json',
+        info=True
     )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc == 0
 
     args = argparse.Namespace(
-        name='task', list=False, verbose=1, task='pass-fail', config='config_file.json', info=False
+        trestle_root=tmp_trestle_dir,
+        name='task',
+        list=False,
+        verbose=1,
+        task='pass-fail',
+        config='config_file.json',
+        info=False
     )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc == 0
@@ -125,7 +161,13 @@ def test_task_cmd_not_trestle_dir(tmp_empty_cwd: pathlib.Path) -> None:
     config_object.write(config_path.open('w', encoding=const.FILE_ENCODING))
 
     args = argparse.Namespace(
-        name='task', list=False, verbose=1, task='pass-fail', config='config_file.json', info=True
+        trestle_root=tmp_empty_cwd,
+        name='task',
+        list=False,
+        verbose=1,
+        task='pass-fail',
+        config='config_file.json',
+        info=True
     )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc > 0
@@ -133,7 +175,15 @@ def test_task_cmd_not_trestle_dir(tmp_empty_cwd: pathlib.Path) -> None:
 
 def test_task_cmd_incorrect_config_path_when_passed(tmp_trestle_dir: pathlib.Path) -> None:
     """Test failure occurs cleanly when a passed config file is not a config file."""
-    args = argparse.Namespace(name='task', list=False, verbose=1, task='pass-fail', config='made_up.json', info=False)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir,
+        name='task',
+        list=False,
+        verbose=1,
+        task='pass-fail',
+        config='made_up.json',
+        info=False
+    )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc > 0
 
@@ -152,21 +202,27 @@ def test_pass_fail_respect_config(tmp_trestle_dir: pathlib.Path) -> None:
     config_object.write(config_path.open('w', encoding=const.FILE_ENCODING))
     # Now good.
 
-    args = argparse.Namespace(name='task', list=False, verbose=1, task='pass-fail', config=None, info=False)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, name='task', list=False, verbose=1, task='pass-fail', config=None, info=False
+    )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc > 0
 
     config_object['task.pass-fail']['execute_status'] = 'True'
     config_object['task.pass-fail']['simulate_status'] = 'False'
     config_object.write(config_path.open('w', encoding=const.FILE_ENCODING))
-    args = argparse.Namespace(name='task', list=False, verbose=1, task='pass-fail', config=None, info=False)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, name='task', list=False, verbose=1, task='pass-fail', config=None, info=False
+    )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc > 0
 
 
 def test_trestle_no_config(tmp_trestle_dir: pathlib.Path) -> None:
     """Warn but in this case fail when no config is provided."""
-    args = argparse.Namespace(name='task', list=False, verbose=1, task='pass-fail', config=None, info=False)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, name='task', list=False, verbose=1, task='pass-fail', config=None, info=False
+    )
     rc = taskcmd.TaskCmd()._run(args)
     assert rc == 1
 
@@ -186,6 +242,8 @@ def test_trestle_fail_on_task_exception(tmp_trestle_dir: pathlib.Path) -> None:
     # Now good.
     with mock.patch('trestle.tasks.base_task.PassFail.execute') as simulate_mock:
         simulate_mock.side_effect = err.TrestleError('stuff')
-        args = argparse.Namespace(name='task', list=False, verbose=1, task='pass-fail', config=None, info=False)
+        args = argparse.Namespace(
+            trestle_root=tmp_trestle_dir, name='task', list=False, verbose=1, task='pass-fail', config=None, info=False
+        )
         rc = taskcmd.TaskCmd()._run(args)
         assert rc > 0

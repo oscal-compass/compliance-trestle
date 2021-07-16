@@ -33,14 +33,12 @@ def find_values_by_name_generic(object_of_interest: Any, var_name: str) -> List[
     loe = []
     # looking for a dict or 2-element tuple containing specified variable name
     if type(object_of_interest) == dict:
-        for key, value in object_of_interest.items():
-            if (key == var_name) and value:
-                # found one so append its value to list
-                loe.append(value)
-            else:
-                new_list = find_values_by_name_generic(value, var_name)
-                if new_list:
-                    loe.extend(new_list)
+        if var_name in object_of_interest:
+            loe.append(object_of_interest[var_name])
+        for value in object_of_interest.values():
+            new_list = find_values_by_name_generic(value, var_name)
+            if new_list:
+                loe.extend(new_list)
     elif type(object_of_interest) == tuple and len(object_of_interest) == 2 and object_of_interest[0] == var_name:
         if object_of_interest[1]:
             loe.append(object_of_interest[1])
@@ -125,6 +123,8 @@ def find_values_by_name(object_of_interest: Any, name_of_interest: str) -> List[
         for item in object_of_interest:
             loe.extend(find_values_by_name(item, name_of_interest))
     elif type(object_of_interest) is dict:
+        if name_of_interest in object_of_interest:
+            loe.append(object_of_interest[name_of_interest])
         for item in object_of_interest.values():
             loe.extend(find_values_by_name(item, name_of_interest))
     return loe

@@ -72,7 +72,7 @@ def prepare_element_paths(base_dir, element_args) -> List[ElementPath]:
     """Prepare element paths for tests."""
     cur_dir = pathlib.Path.cwd()
     os.chdir(base_dir)
-    element_paths: List[ElementPath] = cmd_utils.parse_element_args(element_args, True)
+    element_paths: List[ElementPath] = cmd_utils.parse_element_args(None, element_args, True)
     os.chdir(cur_dir)
 
     return element_paths
