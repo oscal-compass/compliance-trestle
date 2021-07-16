@@ -444,6 +444,9 @@ def allowed_task_name(name: str) -> bool:
         # Does it look like a file
         logger.error('tasks name must not look like a file path (e.g. contain a suffix')
         return False
+    elif '__global__' in pathed_name.parts:
+        logger.error('Task name cannot contain __global__')
+        return False
     return True
 
 
