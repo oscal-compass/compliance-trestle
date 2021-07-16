@@ -138,6 +138,15 @@ import trestle.cli
             0,
             0
         ),
+        (
+            None,
+            pathlib.Path('author/headers/good_templates'),
+            pathlib.Path('author/headers/recursive_pass'),
+            False,
+            1,
+            1,
+            1
+        ),
     ]
 )
 def test_e2e(
@@ -243,6 +252,19 @@ def test_taskpath_is_a_file(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib
     task_dir.touch()
 
     with mock.patch.object(sys, 'argv', command_string_validate_content.split()):
+        with pytest.raises(SystemExit) as wrapped_error:
+            trestle.cli.run()
+        assert wrapped_error.type == SystemExit
+        assert wrapped_error.value.code == 1
+
+
+def test_taskpath_is_a_file_setup(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test that setup fails cleanly when taskpath is a file."""
+    task_name = 'tester'
+    command_string_setup = f'trestle author headers setup -tn {task_name}'
+    task_dir = tmp_trestle_dir / task_name
+    task_dir.open('w').write('hello')
+    with mock.patch.object(sys, 'argv', command_string_setup.split()):
         with pytest.raises(SystemExit) as wrapped_error:
             trestle.cli.run()
         assert wrapped_error.type == SystemExit
