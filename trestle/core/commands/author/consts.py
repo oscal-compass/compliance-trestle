@@ -42,6 +42,13 @@ readme_validate_folders_help = (
 # Governed heading - capability: To be removed
 gh_short = '-gh'
 gh_long = '--governed-heading'
-gh_help = """Governed heading: Heading where for each line is a superset of the template's content"""
+gh_help = "Governed heading: Heading where for each line is a superset of the template's content"
 
 reference_templates = {'md': 'template.md', 'drawio': 'template.drawio'}
+
+global_short = '-g'
+global_long = '--global'
+global_help = (
+    'Use a consistent template defined in .trestle/author/__global__,'
+    + 'if used without a task name applies to all files within the repository.'
+)

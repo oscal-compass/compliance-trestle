@@ -54,7 +54,7 @@ class Headers(AuthorCommonCommand):
             ]
         )
         self.add_argument(
-            author_const.task_name_short, author_const.task_name_long, help=tn_help_str, required=True, type=str
+            author_const.task_name_short, author_const.task_name_long, help=tn_help_str, type=str, default=None
         )
         self.add_argument(
             author_const.short_readme_validate,
@@ -63,10 +63,19 @@ class Headers(AuthorCommonCommand):
             action='store_true'
         )
 
+        self.add_argument(
+            author_const.global_short, author_const.global_long, help=author_const.global_help, action='store_true'
+        )
+
     def _run(self, args: argparse.Namespace) -> int:
         if self._initialize(args):
             return 1
         status = 1
+        # Handle conditional requirement of args.task_name
+        # global is special so we need to use get attribute.
+        if not self.global_ and not self.task_name:
+            logger.error('Task name (-tn) argument is required when global is not specified')
+            return status
         try:
             if args.mode == 'create-sample':
                 status = self.create_sample()
@@ -92,7 +101,8 @@ class Headers(AuthorCommonCommand):
     def setup(self) -> int:
         """Create template directory and templates."""
         # Step 1 - validation
-        if not self.task_path.exists():
+
+        if self.task_name and not self.task_path.exists():
             self.task_path.mkdir(exist_ok=True, parents=True)
         elif self.task_path.is_file():
             logger.error(f'Task path: {self.rel_dir(self.task_path)} is a file not a directory.')
@@ -168,16 +178,24 @@ class Headers(AuthorCommonCommand):
     def validate(self, recurse: bool, readme_validate: bool) -> int:
         """Run validation based on available templates."""
         template_lut = self._discover_templates()
-        if not self.task_path.is_dir():
-            logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
-        try:
-            valid = self._validate_dir(template_lut, self.task_path, recurse, readme_validate)
-            if valid:
-                return 0
-            else:
-                logger.info(f'validation failed on {self.rel_dir(self.task_path)}')
+        paths = []
+        if self.task_name:
+            if not self.task_path.is_dir():
+                logger.error(f'Task directory {self.rel_dir(self.task_path)} does not exist. Exiting validate.')
+            paths = [self.task_path]
+        else:
+            for path in self.trestle_root.iterdir():
+                if not fs.is_hidden():
+                    paths.append(path)
+
+        for path in paths:
+            try:
+                valid = self._validate_dir(template_lut, path, recurse, readme_validate)
+                if not valid:
+                    logger.info(f'validation failed on {self.rel_dir(path)}')
+                    return 1
+            except Exception as e:
+                logger.error(f'Error during header validation {e}')
+                logger.error('Aborting')
                 return 1
-        except Exception as e:
-            logger.error(f'Error during header validation {e}')
-            logger.error('Aborting')
-            return 1
+        return 0

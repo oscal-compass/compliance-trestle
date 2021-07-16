@@ -46,8 +46,14 @@ class AuthorCommonCommand(CommandPlusDocs):
             )
             return 1
         self.task_name = args.task_name
-        self.task_path = self.trestle_root / self.task_name
-        self.template_dir = self.trestle_root / const.TRESTLE_CONFIG_DIR / 'author' / self.task_name
+        if self.task_name:
+            self.task_path = self.trestle_root / self.task_name
+            self.template_dir = self.trestle_root / const.TRESTLE_CONFIG_DIR / 'author' / self.task_name
+
+        self.global_ = args.__getattribute__('global')
+        if self.global_:
+            self.template_dir = self.trestle_root / const.TRESTLE_CONFIG_DIR / 'author' / '__global__'
+
         return 0
 
     def rel_dir(self, path: pathlib.Path) -> str:
