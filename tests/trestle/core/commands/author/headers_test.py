@@ -27,13 +27,14 @@ import trestle.cli
 
 
 @pytest.mark.parametrize(
-    'task_name, template_path, content_path, setup_rc, template_validate_rc, validate_rc',
+    'task_name, template_path, content_path, global_, setup_rc, template_validate_rc, validate_rc',
     [
-        ('catalogs', pathlib.Path('irrelevant'), pathlib.Path('irrelevant_2'), 1, 1, 1),
+        ('catalogs', pathlib.Path('irrelevant'), pathlib.Path('irrelevant_2'), False, 1, 1, 1),
         (
             'test_tasks_1',
             pathlib.Path('author/headers/good_templates'),
             pathlib.Path('author/headers/meets_templates'),
+            False,
             0,
             0,
             0
@@ -42,6 +43,7 @@ import trestle.cli
             'test_tasks_2',
             pathlib.Path('author/headers/good_templates'),
             pathlib.Path('author/headers/recursive_pass'),
+            False,
             0,
             0,
             0
@@ -50,6 +52,7 @@ import trestle.cli
             'test_tasks_3',
             pathlib.Path('author/headers/bad_templates_drawio'),
             pathlib.Path('author/headers/recursive_pass'),
+            False,
             0,
             1,
             1
@@ -58,6 +61,7 @@ import trestle.cli
             'test_tasks_4',
             pathlib.Path('author/headers/bad_templates_wrong_names'),
             pathlib.Path('author/headers/recursive_pass'),
+            False,
             0,
             1,
             1
@@ -66,6 +70,7 @@ import trestle.cli
             'test_tasks_5',
             pathlib.Path('author/headers/good_templates'),
             pathlib.Path('author/headers/fails_validation_drawio'),
+            False,
             0,
             0,
             1
@@ -74,6 +79,7 @@ import trestle.cli
             'test_tasks_6',
             pathlib.Path('author/headers/good_templates'),
             pathlib.Path('author/headers/fails_validation_drawio_bad_file'),
+            False,
             0,
             0,
             1
@@ -82,6 +88,7 @@ import trestle.cli
             'test_tasks_7',
             pathlib.Path('author/headers/good_templates'),
             pathlib.Path('author/headers/fails_validation_md'),
+            False,
             0,
             0,
             1
@@ -90,6 +97,7 @@ import trestle.cli
             'test_tasks_8',
             pathlib.Path('author/headers/good_templates'),
             pathlib.Path('author/headers/fails_validation_md_bad_file'),
+            False,
             0,
             0,
             1
@@ -98,6 +106,7 @@ import trestle.cli
             'test_tasks_9',
             pathlib.Path('author/headers/good_templates'),
             pathlib.Path('author/headers/passes_with_extraneous_files'),
+            False,
             0,
             0,
             0
@@ -106,16 +115,36 @@ import trestle.cli
             'test_tasks_10',
             pathlib.Path('author/headers/bad_templates_md'),
             pathlib.Path('author/headers/passes_with_extraneous_files'),
+            False,
             0,
             1,
             1
-        )
+        ),
+        (
+            'test_tasks_11',
+            pathlib.Path('author/headers/good_templates'),
+            pathlib.Path('author/headers/recursive_pass'),
+            True,
+            0,
+            0,
+            0
+        ),
+        (
+            None,
+            pathlib.Path('author/headers/good_templates'),
+            pathlib.Path('author/headers/recursive_pass'),
+            True,
+            0,
+            0,
+            0
+        ),
     ]
 )
 def test_e2e(
     task_name: str,
     template_path: pathlib.Path,
     content_path: pathlib.Path,
+    global_: bool,
     setup_rc: int,
     template_validate_rc: int,
     validate_rc: int,
@@ -123,11 +152,27 @@ def test_e2e(
     tmp_trestle_dir: pathlib.Path
 ) -> None:
     """Run an E2E workflow with a number of test criteria."""
-    command_string_setup = f'trestle author headers setup -tn {task_name}'
-    command_string_create_sample = f'trestle author headers create-sample -tn {task_name}'
-    command_string_validate_template = f'trestle author headers template-validate -tn {task_name}'
-    command_string_validate_content = f'trestle author headers validate -tn {task_name} -r'
-    template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name
+    command_string_setup = 'trestle author headers setup'
+    command_string_create_sample = 'trestle author headers create-sample'
+    command_string_validate_template = 'trestle author headers template-validate'
+    command_string_validate_content = 'trestle author headers validate -r'
+    template_target_loc: pathlib.Path
+    if task_name:
+        tn_string = f' -tn {task_name}'
+        command_string_setup += tn_string
+        command_string_create_sample += tn_string
+        command_string_validate_template += tn_string
+        command_string_validate_content += tn_string
+        template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / task_name
+    else:
+        task_name = 'placeholder'
+    if global_:
+        global_str = ' --global'
+        command_string_setup += global_str
+        command_string_create_sample += global_str
+        command_string_validate_template += global_str
+        command_string_validate_content += global_str
+        template_target_loc = tmp_trestle_dir / '.trestle' / 'author' / '__global__'
     test_content_loc = tmp_trestle_dir / task_name / f'{uuid4()}'
     with mock.patch.object(sys, 'argv', command_string_setup.split()):
         with pytest.raises(SystemExit) as wrapped_error:

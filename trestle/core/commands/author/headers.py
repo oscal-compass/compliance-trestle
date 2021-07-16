@@ -104,7 +104,7 @@ class Headers(AuthorCommonCommand):
 
         if self.task_name and not self.task_path.exists():
             self.task_path.mkdir(exist_ok=True, parents=True)
-        elif self.task_path.is_file():
+        elif self.task_name and self.task_path.is_file():
             logger.error(f'Task path: {self.rel_dir(self.task_path)} is a file not a directory.')
             return 1
         if not self.template_dir.exists():
@@ -185,7 +185,7 @@ class Headers(AuthorCommonCommand):
             paths = [self.task_path]
         else:
             for path in self.trestle_root.iterdir():
-                if not fs.is_hidden():
+                if not fs.is_hidden(path):
                     paths.append(path)
 
         for path in paths:
