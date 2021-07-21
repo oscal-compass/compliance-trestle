@@ -1,0 +1,31 @@
+{
+  "catalog": {
+    "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
+    "metadata": {
+      "title": "Component Parameters",
+      "last-modified": "2021-07-19T14:03:03.000+00:00",
+      "version": "0.18.1",
+      "oscal-version": "1.0.0"
+    },
+    "params": [
+      {
+        "id": "source_code_scaning_vulnerability_threashhold",
+        "links": [
+          {
+            "href": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/TOOLCHAIN"
+          }
+        ],
+        "label": "Source code scaning vulnerability threashhold ",
+        "usage": "Nonsense",
+        "guidelines": [
+          {
+            "prose": "The first listed value option is set by default in the system unless set-parameter is used to satisfy a control requirements. Type String."
+          }
+        ],
+        "values": [
+          "low,medium,high,critical"
+        ]
+      }
+    ]
+  }
+}
