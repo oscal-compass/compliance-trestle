@@ -41,8 +41,8 @@ def test_parse_element_arg(tmp_path, keep_cwd):
     with pytest.raises(TrestleError):
         cmd_utils.parse_element_arg(None, 'component-definition', False)
 
-    with pytest.raises(TrestleError):
-        cmd_utils.parse_element_arg(None, '*.target', False)
+    # with pytest.raises(TrestleError):
+    #    cmd_utils.parse_element_arg(None, '*.target', False)
 
     with pytest.raises(TrestleError):
         cmd_utils.parse_element_arg(None, '*.*', False)
@@ -81,6 +81,11 @@ def test_parse_element_arg(tmp_path, keep_cwd):
 
     element_arg = 'component-definition.components.*'
     expected_paths = prepare_expected_element_paths(['component-definition.components.*'])
+    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
+    assert expected_paths == element_paths
+
+    element_arg = 'component-definition.metadata.roles'
+    expected_paths = prepare_expected_element_paths(['component-definition.metadata', 'metadata.roles'])
     element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
     assert expected_paths == element_paths
 
@@ -151,6 +156,21 @@ def test_parse_element_args_split_model(element_arg, sample_catalog):
     """Test split of model with wildcard."""
     element_paths = cmd_utils.parse_element_arg(sample_catalog, element_arg, False)
     assert element_paths
+
+
+@pytest.mark.parametrize('element_arg', [
+    ('component-definition.foo', []),
+    ('component-definition.*', [['component-definition', 'components'], ['component-definition', 'metadata']]),
+    ('component-definition.components', [['component-definition', 'components']]),
+    ('component-definition.components.*', [['component-definition', 'components', '*']]),
+    ('component-definition.components.*.roles', [['component-definition', 'components', '*'], ['defined-component', 'roles']])
+    ])
+def test_parse_element_args_split_compdef(element_arg, sample_component_definition):
+    """Test split of model with wildcard."""
+    element_paths = cmd_utils.parse_element_arg(sample_component_definition, element_arg[0], False)
+    assert len(element_paths) == len(element_arg[1])
+    for ii in range(len(element_paths)):
+        assert element_paths[ii]._path in element_arg[1]
 
 
 @pytest.mark.parametrize('element_arg', ['catalog.metadata.*.roles', 'catalog', '', '*'])

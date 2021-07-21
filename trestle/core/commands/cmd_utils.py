@@ -68,7 +68,29 @@ def parse_element_args(model: OscalBaseModel,
         paths = parse_element_arg(model, element_arg, contextual_mode)
         element_paths.extend(paths)
 
-    return element_paths
+    new_paths: List[ElementPath] = []
+    links: set((str, str)) = set()
+    for path in element_paths:
+        path_parts = path.get_full_path_parts()
+        for i in range(len(path_parts)-2):
+            if path_parts[i] != '*' and path_parts[i+1] != '*' and path_parts[i+2] != '*':
+                links.add((path_parts[i], path_parts[i+1]))
+
+    for link in links:
+        found = False
+        for path in element_paths:
+            path_parts = path.get_full_path_parts()
+            if len(path_parts) == 2 and path_parts[0] == link[0] and path_parts[1] == link[1]:
+                found = True
+                break
+        if not found:
+            new_path = ElementPath(link[0] + '.' + link[1])
+            new_path.missing_link = True
+            new_paths.append(new_path)
+    
+    new_paths.extend(element_paths)
+
+    return new_paths
 
 
 def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mode: bool = True) -> List[ElementPath]:
@@ -101,12 +123,15 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
         raise TrestleError(f'Invalid element path "{element_arg}" with only one element and no wildcard')
 
     sub_model = model_obj
+    parsing_model = model_obj is not None
 
     prev_element_path = None
     parent_model = path_parts[0]
     i = 1
     while i < len(path_parts):
         p = path_parts[i]
+
+        # if hit wildcard create element path up to this point
         if p == ElementPath.WILDCARD and len(element_paths) > 0:
             # append wildcard to the latest element path
             latest_path = element_paths.pop()
@@ -116,9 +141,21 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
             latest_path_str = ElementPath.PATH_SEPARATOR.join([latest_path.to_string(), p])
             element_path = ElementPath(latest_path_str, latest_path.get_parent())
         else:
-            # create and append elment_path
+            # create and append element_path
+            # at this point sub_model may be a list of items
+            # new element path is needed only if any of the items contains the desired part
             if p != ElementPath.WILDCARD:
-                sub_model = getattr(sub_model, p, None)
+                if isinstance(sub_model, list):
+                    for item in sub_model:
+                        # go into the list and find one with requested part
+                        sub_item = getattr(item, p, None)
+                        if sub_item is not None:
+                            sub_model = sub_item
+                            break
+                else:
+                    sub_model = getattr(sub_model, p, None)
+            if parsing_model and sub_model is None:
+                return element_paths
             p = ElementPath.PATH_SEPARATOR.join([parent_model, p])
             element_path = ElementPath(p, parent_path=prev_element_path)
 
@@ -139,6 +176,9 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
                             f'Cannot split beyond * when the wildcard does not refer to a list.  Path: {element_arg}'
                         )
                     for key in sub_model.__fields__.keys():
+                        # only create element path is item is present in the sub_model
+                        if getattr(sub_model, key, None) is None:
+                            continue
                         new_path = full_path_str + '.' + utils.classname_to_alias(key, 'json')
                         if not split_is_too_fine(new_path, model_obj):
                             element_paths.append(ElementPath(new_path))

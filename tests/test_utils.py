@@ -15,13 +15,19 @@
 # limitations under the License.
 """Test utils module."""
 
+import argparse
 import os
 import pathlib
+import sys
 from typing import List
+from unittest.mock import patch
 
+from trestle.cli import Trestle
 from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands import cmd_utils
+from trestle.core.commands.import_ import ImportCmd
+from trestle.core.commands.init import InitCmd
 from trestle.core.models.elements import ElementPath
 from trestle.core.models.file_content_type import FileContentType
 
@@ -93,6 +99,33 @@ def prepare_trestle_project_dir(
     model_obj.oscal_write(model_def_file)
 
     return models_full_path, model_def_file
+
+
+def create_trestle_project_with_model(top_dir: pathlib.Path, model_obj: OscalBaseModel, model_name: str) -> pathlib.Path:
+    """Create initialized trestle project and import the model into it."""
+    cur_dir = pathlib.Path.cwd()
+
+    # create subdirectory for trestle project
+    trestle_root = top_dir / 'my_trestle'
+    trestle_root.mkdir()
+    os.chdir(trestle_root)
+
+    testargs = ['trestle', 'init']
+    with patch.object(sys, 'argv', testargs):
+        Trestle().run()
+
+    # place model object in top directory outside trestle project
+    # so it can be imported
+    tmp_model_path = top_dir / (model_name + '.json')
+    model_obj.oscal_write(tmp_model_path)
+
+    i = ImportCmd()
+    args = argparse.Namespace(
+        trestle_root=trestle_root, file=str(tmp_model_path), output=model_name, verbose=False, regenerate=False
+    )
+    assert i._run(args) == 0
+    os.chdir(cur_dir)
+    return trestle_root
 
 
 def list_unordered_equal(list1, list2):
