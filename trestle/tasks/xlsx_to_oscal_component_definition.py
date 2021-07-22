@@ -111,7 +111,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
         logger.info('')
         logger.info('Configuration flags sit under [task.xlsx-to-oscal-component-definition]:')
         logger.info(
-            '  catalog-file      = (required) the path of the OSCAL catalog file, for example NIST Special Publication 800-53 Revision 4.'
+            '  catalog-file      = (required) the path of the OSCAL catalog file, for example '
+            + self._get_catalog_title() + '.'
         )
         logger.info(
             '  spread-sheet-file = (required) the path of the spread sheet file, containing data for production of component definition.'
@@ -354,10 +355,9 @@ class XlsxToOscalComponentDefinition(TaskBase):
             # control implementations
             control_implementation = ControlImplementation(
                 uuid=str(uuid.uuid4()),
-                source=
-                'https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json',
-                description=component_name
-                + ' implemented controls for NIST 800-53. It includes assessment asset configuration for CICD."',
+                source=self._get_catalog_url(),
+                description=component_name + ' implemented controls for ' + self._get_catalog_title()
+                + '. It includes assessment asset configuration for CICD."',
                 implemented_requirements=implemented_requirements,
             )
             if defined_component.control_implementations is None:
@@ -366,7 +366,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 defined_component.control_implementations.append(control_implementation)
         # create OSCAL ComponentDefinition
         metadata = Metadata(
-            title='Component definition for NIST profiles',
+            title='Component definition for ' + self._get_catalog_title() + ' profiles',
             last_modified=self._timestamp,
             oscal_version=OSCAL_VERSION,
             version=__version__,
@@ -443,6 +443,18 @@ class XlsxToOscalComponentDefinition(TaskBase):
         """Get namespace from config."""
         value = self._config.get('namespace')
         logger.debug(f'namespace: {value}')
+        return value
+
+    def _get_catalog_url(self) -> str:
+        """Get catalog url from config."""
+        value = self._config.get('catalog-url')
+        logger.debug(f'catalog-url: {value}')
+        return value
+
+    def _get_catalog_title(self) -> str:
+        """Get catalog title from config."""
+        value = self._config.get('catalog-title')
+        logger.debug(f'catalog-title: {value}')
         return value
 
     def _row_generator(self, work_sheet: t_work_sheet) -> t_row:

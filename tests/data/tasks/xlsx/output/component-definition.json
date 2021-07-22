@@ -2,7 +2,7 @@
   "component-definition": {
     "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
     "metadata": {
-      "title": "Component definition for NIST profiles",
+      "title": "Component definition for NIST Special Publication 800-53 Revision 4 profiles",
       "last-modified": "2021-07-19T14:03:03.000+00:00",
       "version": "0.20.0",
       "oscal-version": "1.0.0",
@@ -71,8 +71,8 @@
         "control-implementations": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
-            "description": "SYSTEM implemented controls for NIST 800-53. It includes assessment asset configuration for CICD.\"",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
+            "description": "SYSTEM implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -128,8 +128,8 @@
         "control-implementations": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
-            "description": "CLOUDANT implemented controls for NIST 800-53. It includes assessment asset configuration for CICD.\"",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
+            "description": "CLOUDANT implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -335,8 +335,8 @@
           },
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
-            "description": "CLOUDANT implemented controls for NIST 800-53. It includes assessment asset configuration for CICD.\"",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
+            "description": "CLOUDANT implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -550,8 +550,8 @@
         "control-implementations": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
-            "description": "CIS implemented controls for NIST 800-53. It includes assessment asset configuration for CICD.\"",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
+            "description": "CIS implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -775,8 +775,8 @@
         "control-implementations": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
-            "description": "IKS  implemented controls for NIST 800-53. It includes assessment asset configuration for CICD.\"",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
+            "description": "IKS  implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1040,8 +1040,8 @@
         "control-implementations": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
-            "description": "VPC implemented controls for NIST 800-53. It includes assessment asset configuration for CICD.\"",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
+            "description": "VPC implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1223,8 +1223,8 @@
         "control-implementations": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
-            "description": "IKS implemented controls for NIST 800-53. It includes assessment asset configuration for CICD.\"",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
+            "description": "IKS implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1469,8 +1469,8 @@
         "control-implementations": [
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
-            "description": "TOOLCHAIN implemented controls for NIST 800-53. It includes assessment asset configuration for CICD.\"",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
+            "description": "TOOLCHAIN implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
@@ -1690,8 +1690,8 @@
           },
           {
             "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
-            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
-            "description": "TOOLCHAIN implemented controls for NIST 800-53. It includes assessment asset configuration for CICD.\"",
+            "source": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json",
+            "description": "TOOLCHAIN implemented controls for NIST Special Publication 800-53 Revision 4. It includes assessment asset configuration for CICD.\"",
             "implemented-requirements": [
               {
                 "uuid": "56666738-0f9a-4e38-9aac-c0fad00a5821",
