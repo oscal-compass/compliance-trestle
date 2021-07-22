@@ -27,27 +27,12 @@ from trestle.core.commands import cmd_utils
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import Action, CreatePathAction, WriteFileAction
-from trestle.core.models.elements import Element, ElementPath, get_singular_model_from_json
+from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
 from trestle.utils import fs, trash
 
 logger = logging.getLogger(__name__)
-
-
-def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
-    """Determine if the element path list goes too fine, e.g. individual strings."""
-    # FIXME this is not working with oscal 1.0.0
-    if split_paths == 'FIXME_DUMMY_STRING_FORCE_NOT_RUN':
-        for split_path in split_paths.split(','):
-            model = get_singular_model_from_json(split_path, model_obj)
-            if type(model) in [dict, list]:
-                return False
-            if utils.is_collection_field_type(model):
-                return False
-            if model.__name__ in ['str', 'ConstrainedStrValue', 'int', 'float']:
-                return True
-    return False
 
 
 class SplitCmd(CommandPlusDocs):
@@ -89,25 +74,21 @@ class SplitCmd(CommandPlusDocs):
 
         model_type, _ = fs.get_stripped_contextual_model(file_absolute_path)
 
-        # FIXME: Handle list/dicts
         model: OscalBaseModel = model_type.oscal_read(file_path)
 
         # remove any quotes passed in as on windows platforms
         elements_clean = args_raw[const.ARG_ELEMENT].strip("'")
 
-        if split_is_too_fine(elements_clean, model):
+        if cmd_utils.split_is_too_fine(elements_clean, model):
             logger.warning('Cannot split the model to the level of uuids, strings, etc.')
             return 1
 
         logger.debug(f'split calling parse_element_args on {elements_clean}')
-        element_paths: List[ElementPath] = cmd_utils.parse_element_args(elements_clean.split(','))
+        element_paths: List[ElementPath] = cmd_utils.parse_element_args(model, elements_clean.split(','))
 
         split_plan = self.split_model(
             model, element_paths, base_dir, content_type, root_file_name=args_raw[const.ARG_FILE]
         )
-
-        if split_plan is None:
-            return 1
 
         # Simulate the plan
         # if it fails, it would throw errors and get out of this command
@@ -155,6 +136,10 @@ class SplitCmd(CommandPlusDocs):
         It assumes that a chain of element paths starts at the cur_path_index with the first path ending
         with a wildcard (*)
 
+        If the wildcard follows an element that is inherently a list of items, the list of items is extracted.
+        But if the wildcard follows a generic model than members of that model class found in the model will be
+        split off.  But only the non-trivial elements are removed, i.e. not str, int, datetime, etc.
+
         It returns the index where the chain of path ends.
 
         For example, element paths could have a list of paths as below for a `ComponentDefinition` model where
@@ -164,15 +149,12 @@ class SplitCmd(CommandPlusDocs):
         chain, the subsequent paths (e.g component.control-implementations.*) will be applied recursively to retrieve
         the sub-sub models:
         [
-            'component-definition.componet.*',
+            'component-definition.component.*',
             'component.control-implementations.*'
         ]
         for a command like below:
            trestle split -f component.yaml -e component-definition.components.*.control-implementations.*
         """
-        # assume we ran the command below:
-        # trestle split -f component.yaml -e component-definition.components.*.control-implementations.*
-
         if split_plan is None:
             raise TrestleError('Split plan must have been initialized')
 
@@ -204,10 +186,8 @@ class SplitCmd(CommandPlusDocs):
         if path_parts[-1] == ElementPath.WILDCARD:
             path_parts = path_parts[:-1]
 
-        if len(path_parts) > 2:
-            msg = 'Trestle supports split of first level children only, '
-            msg += f'found path "{element_path}" with level = {len(path_parts)}'
-            raise TrestleError(msg)
+        if cmd_utils.split_is_too_fine('.'.join(path_parts), model_obj):
+            raise TrestleError(f'Split is too fine at element {path_parts[-1]}')
 
         sub_models = element.get_at(element_path, False)  # we call sub_models as in plural, but it can be just one
         if sub_models is None:
@@ -218,7 +198,7 @@ class SplitCmd(CommandPlusDocs):
         path_chain_end = cur_path_index
 
         # if wildcard is present in the element_path and the next path in the chain has current path as the parent,
-        # However, there can be other sub_model, which is of type list
+        # Then deal with case of list, or split of arbitrary oscalbasemodel
         if is_parent and element_path.get_last() is not ElementPath.WILDCARD:
             # create dir for all sub model items
             sub_models_dir = base_dir / element_path.to_root_path()
@@ -237,12 +217,6 @@ class SplitCmd(CommandPlusDocs):
                     # e.g. `groups/00000_groups/`
                     prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
                     sub_model_items[prefix] = sub_model_item
-            elif isinstance(sub_models, dict):
-                # prefix is the key of the dict
-                sub_model_items = sub_models
-            else:
-                # unexpected sub model type for multi-level split with wildcard
-                raise TrestleError(f'Sub element at {element_path} is not of type list or dict for further split')
 
             # process list sub model items
             for key in sub_model_items:
@@ -256,7 +230,7 @@ class SplitCmd(CommandPlusDocs):
 
                 if require_recursive_split:
                     # prepare individual directory for each sub-model
-                    # FIXME: check for redundant dict behaviour.
+                    # FIXME: check for redundant dict behaviour.  (may be out of date with 1.0.0)
                     sub_root_file_name = cmd_utils.to_model_file_name(sub_model_item, prefix, content_type)
                     sub_model_plan = Plan()
 
@@ -289,7 +263,8 @@ class SplitCmd(CommandPlusDocs):
         # Strip the root model and add a WriteAction for the updated model object in the plan
         if strip_root:
             stripped_field_alias.append(element_path.get_element_name())
-            stripped_root = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
+
+            stripped_model = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
             # If it's an empty model after stripping the fields, don't create path and don't write
             if set(model_obj.__fields__.keys()) == set(stripped_field_alias):
                 return path_chain_end
@@ -300,8 +275,8 @@ class SplitCmd(CommandPlusDocs):
                 root_file = base_dir / element_path.to_root_path(content_type)
 
             split_plan.add_action(CreatePathAction(root_file))
-            wrapper_alias = utils.classname_to_alias(stripped_root.__class__.__name__, 'json')
-            split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
+            wrapper_alias = utils.classname_to_alias(stripped_model.__class__.__name__, 'json')
+            split_plan.add_action(WriteFileAction(root_file, Element(stripped_model, wrapper_alias), content_type))
 
         # return the end of the current path chain
         return path_chain_end

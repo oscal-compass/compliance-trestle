@@ -102,6 +102,7 @@ def has_trestle_project_in_path(path: pathlib.Path) -> bool:
 def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBaseModel], str]:
     """Get the full contextual model class and full jsonpath for the alias based on the contextual path."""
     logger.debug(f'get contextual model type for input path {path}')
+
     if path is None:
         path = pathlib.Path.cwd()
     else:
@@ -154,6 +155,7 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
     existing files and folder, which fields should be stripped from the model type represented by the path passed in as
     a parameter.
     """
+    # Set default value of path to Path.cwd()
     if path is None:
         logger.debug('get_stripped_contextual_model based on cwd')
         path = pathlib.Path.cwd()
@@ -274,8 +276,6 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
 
     path_parts = full_alias_path.split(const.ALIAS_PATH_SEPARATOR)
     logger.debug(f'path parts: {path_parts}')
-    if len(path_parts) < 2:
-        raise err.TrestleError('Invalid jsonpath.')
 
     model_types = []
 
@@ -290,6 +290,9 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
 
     if not found:
         raise err.TrestleError(f'{root_model_alias} is an invalid root model alias.')
+
+    if len(path_parts) == 1:
+        return root_model_alias
 
     model_type = model_types[0]
     # go through path parts skipping first one
@@ -314,8 +317,10 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
     last_alias = path_parts[-1]
     if last_alias == '*':
         last_alias = path_parts[-2]
+
+    # generic model and not list, so return itself fixme doc
     if not utils.is_collection_field_type(model_type):
-        raise err.TrestleError(f'Not a valid generic collection model: {model_type}')
+        return last_alias
 
     parent_model_type = model_types[-2]
     try:
@@ -354,15 +359,15 @@ def get_contextual_file_type(path: pathlib.Path) -> FileContentType:
     raise err.TrestleError('No files found in the project.')
 
 
-def get_models_of_type(model_type: str) -> List[str]:
+def get_models_of_type(model_type: str, root: pathlib.Path) -> List[str]:
     """Get list of model names for requested type in trestle directory."""
     if model_type not in const.MODEL_TYPE_LIST:
         raise err.TrestleError(f'Model type {model_type} is not supported')
     # search relative to project root
-    trestle_root = get_trestle_project_root(pathlib.Path.cwd())
+    trestle_root = get_trestle_project_root(root)
     if not trestle_root:
-        logger.error(f'Current working directory {pathlib.Path.cwd()} is not within a trestle project.')
-        raise err.TrestleError('Current working directory is not within a trestle project.')
+        logger.error(f'Given directory {root} is not within a trestle project.')
+        raise err.TrestleError('Given directory is not within a trestle project.')
 
     # contruct path to the model file name
     root_model_dir = trestle_root / model_type_to_model_dir(model_type)
@@ -373,11 +378,11 @@ def get_models_of_type(model_type: str) -> List[str]:
     return model_list
 
 
-def get_all_models() -> List[Tuple[str, str]]:
+def get_all_models(root: pathlib.Path) -> List[Tuple[str, str]]:
     """Get list of all models in trestle directory as tuples (model_type, model_name)."""
     full_list = []
     for model_type in const.MODEL_TYPE_LIST:
-        models = get_models_of_type(model_type)
+        models = get_models_of_type(model_type, root)
         for m in models:
             full_list.append((model_type, m))
     return full_list
@@ -439,6 +444,9 @@ def allowed_task_name(name: str) -> bool:
         # Does it look like a file
         logger.error('tasks name must not look like a file path (e.g. contain a suffix')
         return False
+    elif '__global__' in pathed_name.parts:
+        logger.error('Task name cannot contain __global__')
+        return False
     return True
 
 
@@ -454,3 +462,22 @@ def model_name_from_href_str(href: str) -> str:
 def model_name_from_href_path(href: pathlib.Path) -> str:
     """Find model name from path."""
     return href.stem
+
+
+def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
+    """Determine if files are equal, ignoring newline style."""
+    try:
+        with open(path_a, 'r') as file_a:
+            with open(path_b, 'r') as file_b:
+                lines_a = file_a.readlines()
+                lines_b = file_b.readlines()
+                nlines = len(lines_a)
+                if nlines != len(lines_b):
+                    return False
+                for ii in range(nlines):
+                    if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
+                        return False
+    except Exception as e:
+        logger.warn(f'Exception comparing file {path_a} to {path_b}.  Return as False. {e}')
+        return False
+    return True

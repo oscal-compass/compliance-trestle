@@ -29,9 +29,11 @@ import trestle.core.const as const
 import trestle.oscal.assessment_plan as ap
 from trestle import cli
 from trestle.core.generators import generate_sample_model
+from trestle.core.validator import Validator
 from trestle.core.validator_factory import validator_factory
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.common import PartyUuid, ResponsibleParty, Role
+from trestle.oscal.component import ComponentDefinition, ControlImplementation
 
 test_data_dir = pathlib.Path('tests/data').resolve()
 
@@ -60,15 +62,15 @@ def test_validation_happy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -> 
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {model_def_file} -m all'
+            testcmd = f'trestle validate {mode} {model_def_file}'
         else:
-            testcmd = f'trestle validate {mode} {model_def_file.parent} -m all'
+            testcmd = f'trestle validate {mode} {model_def_file.parent}'
     elif mode == '-n':
-        testcmd = f'trestle validate -t catalog -n {name} -m all'
+        testcmd = f'trestle validate -t catalog -n {name}'
     elif mode == '-x':
         testcmd = f'trestle validate -t catalog -n {name}'
     else:
-        testcmd = 'trestle validate -a -m all'
+        testcmd = 'trestle validate -a'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -102,15 +104,15 @@ def test_validation_unhappy(name, mode, parent, tmp_trestle_dir: pathlib.Path) -
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {model_def_file} -m all'
+            testcmd = f'trestle validate {mode} {model_def_file}'
         else:
-            testcmd = f'trestle validate {mode} {model_def_file.parent} -m all'
+            testcmd = f'trestle validate {mode} {model_def_file.parent}'
     elif mode == '-n':
-        testcmd = f'trestle validate -t catalog -n {name} -m all'
+        testcmd = f'trestle validate -t catalog -n {name}'
     elif mode == '-x':
         testcmd = f'trestle validate -t catalog -n {name}'
     else:
-        testcmd = 'trestle validate -a -m all'
+        testcmd = 'trestle validate -a'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -143,15 +145,15 @@ def test_role_refs_validator(name, mode, parent, test_id, code, tmp_trestle_dir:
 
     if mode == '-f':
         if not parent:
-            testcmd = f'trestle validate {mode} {ap_path} -m refs'
+            testcmd = f'trestle validate {mode} {ap_path}'
         else:
-            testcmd = f'trestle validate {mode} {ap_path.parent} -m refs'
+            testcmd = f'trestle validate {mode} {ap_path.parent}'
     elif mode == '-n':
-        testcmd = f'trestle validate -t assessment-plan -n {name} -m refs'
+        testcmd = f'trestle validate -t assessment-plan -n {name}'
     elif mode == '-t':
-        testcmd = 'trestle validate -t assessment-plan -m refs'
+        testcmd = 'trestle validate -t assessment-plan'
     else:
-        testcmd = 'trestle validate -a -m refs'
+        testcmd = 'trestle validate -a'
 
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
@@ -168,7 +170,7 @@ def test_oscal_version_validator(tmp_trestle_dir: pathlib.Path, sample_catalog_m
     mycat_dir = tmp_trestle_dir / 'catalogs/mycat'
     mycat_dir.mkdir()
     sample_catalog_minimal.oscal_write(mycat_dir / 'catalog.json')
-    testcmd = 'trestle validate -t catalog -m oscal_version'
+    testcmd = 'trestle validate -t catalog'
     with patch.object(sys, 'argv', testcmd.split()):
         with pytest.raises(SystemExit) as pytest_wrapped_e:
             cli.run()
@@ -179,5 +181,32 @@ def test_oscal_version_validator(tmp_trestle_dir: pathlib.Path, sample_catalog_m
 def test_validate_direct(sample_catalog_minimal: Catalog) -> None:
     """Test a validator by invoking it directly without CLI."""
     args = argparse.Namespace(mode=const.VAL_MODE_ALL)
-    validator = validator_factory.get(args)
+    validator: Validator = validator_factory.get(args)
     assert validator.model_is_valid(sample_catalog_minimal)
+
+
+def test_validate_dup_uuids(sample_component_definition: ComponentDefinition) -> None:
+    """Test validation of comp def with duplicate uuids."""
+    args = argparse.Namespace(mode=const.VAL_MODE_ALL)
+    validator = validator_factory.get(args)
+
+    # confirm the comp_def is valid
+    assert validator.model_is_valid(sample_component_definition)
+
+    # force two components to have same uuid and confirm invalid
+    sample_component_definition.components[1].uuid = sample_component_definition.components[0].uuid
+    assert not validator.model_is_valid(sample_component_definition)
+
+    # restore uuid to unique value and confirm it is valid again
+    sample_component_definition.components[1].uuid = str(uuid4())
+    assert validator.model_is_valid(sample_component_definition)
+
+    # add a control implementation to one of the components and confirm valid
+    control_imp: ControlImplementation = generate_sample_model(ControlImplementation)
+    sample_component_definition.components[1].control_implementations = [control_imp]
+    assert validator.model_is_valid(sample_component_definition)
+
+    # force the control implementation to have same uuid as the first component and confirm invalid
+    sample_component_definition.components[1].control_implementations[0].uuid = sample_component_definition.components[
+        0].uuid
+    assert not validator.model_is_valid(sample_component_definition)

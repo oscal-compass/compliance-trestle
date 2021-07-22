@@ -18,7 +18,13 @@
 Improves parsing until such a point as ILCLI is fixed.
 """
 
+import logging
+
 from ilcli import Command
+
+from trestle.utils import fs
+
+logger = logging.getLogger(__name__)
 
 
 class CommandPlusDocs(Command):
@@ -28,3 +34,17 @@ class CommandPlusDocs(Command):
         """Override default ILCLI behaviour to include class documentation in command help description."""
         super(CommandPlusDocs, self).__init__(parser, parent, name, out, err)
         self.parser.description = self.__doc__
+
+    def _validate_arguments(self, args):
+        # if the command is 'init' then don't validate the trestle-root as it will be initialized by init command
+        if self.name in ['init', 'trestle', 'version']:
+            return 0
+
+        # validate trestle-root is a valid trestle root directory
+        root = fs.get_trestle_project_root(args.trestle_root)
+        if root is None:
+            logger.error(f'Given directory {args.trestle_root} is not in a valid trestle root directory')
+            return 1
+        else:
+            args.trestle_root = root
+            return 0

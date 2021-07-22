@@ -66,10 +66,9 @@ class ImportCmd(CommandPlusDocs):
             return 1
 
         # 1.2 Bad working directory if not running from current working directory
-        cwd = pathlib.Path.cwd()
-        trestle_root = fs.get_trestle_project_root(cwd)
-        if trestle_root is None:
-            logger.error(f'Current working directory: {cwd} is not within a trestle project.')
+        trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
+        if not trestle_root or not fs.is_valid_project_root(args.trestle_root):
+            logger.error(f'Given directory: {trestle_root} is not a trestle project.')
             return 1
 
         # 2. Importing a file that is already inside a trestle-initialized dir is bad
@@ -169,7 +168,7 @@ class ImportCmd(CommandPlusDocs):
             return 1
 
         # 7. Validate the imported file, rollback if unsuccessful:
-        args = argparse.Namespace(file=desired_model_path, mode='all', verbose=args.verbose)
+        args = argparse.Namespace(file=desired_model_path, verbose=args.verbose, trestle_root=args.trestle_root)
         rollback = False
         try:
             rc = validatecmd.ValidateCmd()._run(args)

@@ -91,7 +91,9 @@ def test_assemble_execution_failure(testdata_dir: pathlib.Path, tmp_trestle_dir:
     with mock.patch('trestle.core.models.plans.Plan.simulate') as simulate_mock:
         simulate_mock.side_effect = err.TrestleError('simulation error')
         rc = AssembleCmd().assemble_model(
-            'catalog', Catalog, argparse.Namespace(name='mycatalog', extension='json', verbose=1)
+            'catalog',
+            Catalog,
+            argparse.Namespace(trestle_root=tmp_trestle_dir, name='mycatalog', extension='json', verbose=1)
         )
         assert rc == 1
 

@@ -29,7 +29,7 @@ uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821')
 uuid_mock2 = Mock(return_value=uuid.UUID('46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e'))
 
 
-def test_print_info(tmp_path):
+def test_tanium_print_info(tmp_path):
     """Test print_info call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
@@ -41,7 +41,7 @@ def test_print_info(tmp_path):
     assert retval is None
 
 
-def test_simulate(tmp_path):
+def test_tanium_simulate(tmp_path):
     """Test simulate call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
@@ -54,7 +54,7 @@ def test_simulate(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-def test_simulate_no_config(tmp_path):
+def test_tanium_simulate_no_config(tmp_path):
     """Test simulate no config call."""
     tgt = tanium_to_oscal.TaniumToOscal(None)
     retval = tgt.simulate()
@@ -62,7 +62,7 @@ def test_simulate_no_config(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-def test_simulate_no_overwrite(tmp_path):
+def test_tanium_simulate_no_overwrite(tmp_path):
     """Test simulate no overwrite call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
@@ -81,7 +81,7 @@ def test_simulate_no_overwrite(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 1
 
 
-def test_simulate_no_input_dir(tmp_path):
+def test_tanium_simulate_no_input_dir(tmp_path):
     """Test simulate with no input dir call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
@@ -95,7 +95,7 @@ def test_simulate_no_input_dir(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-def test_simulate_no_ouput_dir(tmp_path):
+def test_tanium_simulate_no_ouput_dir(tmp_path):
     """Test simulate with no output dir call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
@@ -108,7 +108,7 @@ def test_simulate_no_ouput_dir(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-def test_simulate_bad_input_file(tmp_path):
+def test_tanium_simulate_bad_input_file(tmp_path):
     """Test simulate with bad input file call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
@@ -124,7 +124,7 @@ def test_simulate_bad_input_file(tmp_path):
 
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
-def test_execute(tmp_path):
+def test_tanium_execute(tmp_path):
     """Test execute call."""
     tanium.TaniumTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     assert tanium.TaniumTransformer.get_timestamp() == '2021-02-24T19:31:13+00:00'
@@ -144,7 +144,7 @@ def test_execute(tmp_path):
     ]
 
 
-def test_execute_no_config(tmp_path):
+def test_tanium_execute_no_config(tmp_path):
     """Test execute no config call."""
     tgt = tanium_to_oscal.TaniumToOscal(None)
     retval = tgt.execute()
@@ -152,7 +152,7 @@ def test_execute_no_config(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-def test_execute_no_overwrite_dir(tmp_path):
+def test_tanium_execute_no_overwrite_dir(tmp_path):
     """Test execute no overwrite directory call."""
     tanium.TaniumTransformer.set_timestamp('2021-02-24T19:31:13+00:00')
     execute_no_overwrite_dir_part1(tmp_path)
@@ -192,7 +192,7 @@ def execute_no_overwrite_dir_part2(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
-def test_execute_no_input_dir(tmp_path):
+def test_tanium_execute_no_input_dir(tmp_path):
     """Test execute with no input dir call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
@@ -206,7 +206,7 @@ def test_execute_no_input_dir(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-def test_execute_no_ouput_dir(tmp_path):
+def test_tanium_execute_no_ouput_dir(tmp_path):
     """Test execute with no output dir call."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
@@ -219,7 +219,7 @@ def test_execute_no_ouput_dir(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 0
 
 
-def test_execute_bad_timestamp(tmp_path):
+def test_tanium_execute_bad_timestamp(tmp_path):
     """Test execute with bad timestamp."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/tanium/demo-tanium-to-oscal.config')
@@ -233,7 +233,7 @@ def test_execute_bad_timestamp(tmp_path):
 
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
-def test_execute_override_timestamp(tmp_path):
+def test_tanium_execute_override_timestamp(tmp_path):
     """Test execute override timestamp call."""
     tanium.TaniumTransformer.set_timestamp('2020-02-24T19:31:13+00:00')
     assert tanium.TaniumTransformer.get_timestamp() == '2020-02-24T19:31:13+00:00'

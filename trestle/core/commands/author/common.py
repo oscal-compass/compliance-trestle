@@ -40,14 +40,23 @@ class AuthorCommonCommand(CommandPlusDocs):
         if not self.trestle_root:
             logger.error(f'Current working directory {pathlib.Path.cwd()} is not within a trestle project.')
             return 1
-        if not fs.allowed_task_name(args.task_name):
-            logger.error(
-                f'Task name {args.task_name} is invalid as it interferes with OSCAL and trestle reserved names.'
-            )
-            return 1
+
         self.task_name = args.task_name
-        self.task_path = self.trestle_root / self.task_name
-        self.template_dir = self.trestle_root / const.TRESTLE_CONFIG_DIR / 'author' / self.task_name
+        if self.task_name:
+            self.task_path = self.trestle_root / self.task_name
+            self.template_dir = self.trestle_root / const.TRESTLE_CONFIG_DIR / 'author' / self.task_name
+            if not fs.allowed_task_name(self.task_name):
+                logger.error(
+                    f'Task name {self.task_name} is invalid as it interferes with OSCAL and trestle reserved names.'
+                )
+                return 1
+        try:
+            self.global_ = args.__getattribute__('global')
+        except AttributeError:
+            self.global_ = None
+        if self.global_:
+            self.template_dir = self.trestle_root / const.TRESTLE_CONFIG_DIR / 'author' / '__global__'
+
         return 0
 
     def rel_dir(self, path: pathlib.Path) -> str:
