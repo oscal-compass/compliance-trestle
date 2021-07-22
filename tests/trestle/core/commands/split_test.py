@@ -467,8 +467,7 @@ def test_split_comp_def(
     assert MergeCmd()._run(args) == 0
 
     new_model = component.ComponentDefinition.oscal_read(compdef_file)
-    new_model.metadata.last_modified = original_model.metadata.last_modified
-    assert new_model == original_model
+    assert test_utils.models_are_equivalent(new_model, original_model)
 
 
 def test_split_stop_at_string(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog):
@@ -576,6 +575,31 @@ def test_split_deep(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.
     args = argparse.Namespace(file='catalog.json', element='catalog.groups.*.controls.*.controls.*', verbose=1)
     assert SplitCmd()._run(args) == 0
 
+    args = argparse.Namespace(element='catalog.*', verbose=1)
+    assert MergeCmd()._run(args) == 0
+
+    new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)
+    assert test_utils.models_are_equivalent(orig_model, new_model)
+
+
+def test_split_relative_path(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog):
+    """Test split with relative path."""
+    # prepare trestle project dir with the file
+    cat_name = 'mycat'
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name)
+
+    orig_model: oscatalog.Catalog = sample_catalog
+
+    os.chdir(trestle_root)
+    catalog_dir = trestle_root / 'catalogs' / cat_name
+    catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
+
+    args = argparse.Namespace(file='catalogs/mycat/catalog.json', element='catalog.metadata', verbose=1)
+    assert SplitCmd()._run(args) == 0
+
+    # merge receives an element path not a file path
+    # so need to chdir to where the file is
+    os.chdir(catalog_dir)
     args = argparse.Namespace(element='catalog.*', verbose=1)
     assert MergeCmd()._run(args) == 0
 

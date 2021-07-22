@@ -38,6 +38,9 @@ logger = logging.getLogger(__name__)
 class AliasTracker():
     """Convenience class to track writing out of models."""
 
+    # This tracks the parts that need to be split from each element
+    # and makes sure it is written out once
+
     def __init__(self, alias: str):
         """Initialize the class."""
         self.aliases: List[str] = [alias]
@@ -84,11 +87,12 @@ class SplitCmd(CommandPlusDocs):
         logger.debug('Entering trestle split.')
         # get the Model
         args_raw = args.__dict__
-        if args_raw[const.ARG_FILE] is None:
+        raw_file_name = args_raw[const.ARG_FILE]
+        if raw_file_name is None:
             logger.error(f'Argument "-{const.ARG_FILE_SHORT}" is required')
             return 1
 
-        file_path = pathlib.Path(args_raw[const.ARG_FILE]).resolve()
+        file_path = pathlib.Path(raw_file_name).resolve()
         if not file_path.exists():
             logger.error(f'File {file_path} does not exist.')
             return 1
@@ -117,9 +121,10 @@ class SplitCmd(CommandPlusDocs):
         # analyze the split tree and determine which aliases should be stripped from each file
         aliases_to_strip = self.find_aliases_to_strip(element_paths)
 
-        split_plan = self.split_model(
-            model, element_paths, base_dir, content_type, args_raw[const.ARG_FILE], aliases_to_strip
-        )
+        # need the file name relative to the base directory
+        file_name_no_path = str(file_path.name)
+
+        split_plan = self.split_model(model, element_paths, base_dir, content_type, file_name_no_path, aliases_to_strip)
 
         # Simulate the plan
         # if it fails, it would throw errors and get out of this command
@@ -214,7 +219,7 @@ class SplitCmd(CommandPlusDocs):
         # catalog.json will have the root_dir name as catalog
         root_dir = ''
         if root_file_name != '':
-            root_dir = pathlib.Path(root_file_name).stem
+            root_dir = str(pathlib.Path(root_file_name).with_suffix(''))
 
         sub_models = element.get_at(element_path, False)  # we call sub_models as in plural, but it can be just one
 

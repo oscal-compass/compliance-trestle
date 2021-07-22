@@ -181,3 +181,9 @@ def test_parse_element_arg_split_model_failures(element_arg, sample_catalog):
     """Test failures split of model with wildcard."""
     with pytest.raises(TrestleError):
         cmd_utils.parse_element_arg(sample_catalog, element_arg, False)
+
+
+def test_get_model() -> None:
+    """Test get model."""
+    with pytest.raises(NotImplementedError):
+        cmd_utils.get_model('foo')

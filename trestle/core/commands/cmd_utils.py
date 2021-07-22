@@ -172,8 +172,9 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
         element_paths.append(element_path)
         i += 1
 
+    # this should not be possible
     if len(element_paths) <= 0:
-        raise TrestleError(f'Invalid element path "{element_arg}" without any path separator')
+        raise TrestleError(f'Invalid element path "{element_arg}" resulted in no items to split')
 
     return element_paths
 
