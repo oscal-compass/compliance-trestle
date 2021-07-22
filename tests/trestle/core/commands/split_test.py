@@ -320,7 +320,7 @@ def test_split_run(
     check_split_files()
 
 
-def test_split_run_failure(
+def test_split_run_failures(
     keep_cwd: pathlib.Path, tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition
 ) -> None:
     """Test split run failure."""
@@ -453,14 +453,6 @@ def test_split_comp_def(
             file='component-definition.json', element='component-definition.components.*.props', verbose=1
         )
         assert SplitCmd()._run(args) == 0
-    elif mode == 3:
-        args = argparse.Namespace(
-            file='component-definition.json', element='component-definition.components', verbose=1
-        )
-        assert SplitCmd()._run(args) == 0
-        os.chdir('component-definition')
-        args = argparse.Namespace(file='components.json', element='components.*', verbose=1)
-        assert SplitCmd()._run(args) == 0
 
     os.chdir(compdef_dir)
     args = argparse.Namespace(element='component-definition.*', verbose=1)
@@ -485,7 +477,7 @@ def test_split_stop_at_string(tmp_path, keep_cwd: pathlib.Path, sample_catalog: 
     assert SplitCmd()._run(args) == 1
 
 
-def test_split_workflow(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog):
+def test_split_tutorial_workflow(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog):
     """Test split operations and final re-merge in workflow tutorial."""
     # prepare trestle project dir with the file
     cat_name = 'mycat'
