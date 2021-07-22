@@ -17,7 +17,7 @@
 import argparse
 import logging
 import pathlib
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import trestle.utils.log as log
 from trestle.core import const
@@ -74,11 +74,13 @@ class SplitCmd(CommandPlusDocs):
             f'-{const.ARG_FILE_SHORT}',
             f'--{const.ARG_FILE}',
             help=const.ARG_DESC_FILE + ' to split.',
+            required=False
         )
         self.add_argument(
             f'-{const.ARG_ELEMENT_SHORT}',
             f'--{const.ARG_ELEMENT}',
             help=const.ARG_DESC_ELEMENT + ' to split.',
+            required=False
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -87,55 +89,86 @@ class SplitCmd(CommandPlusDocs):
         logger.debug('Entering trestle split.')
         # get the Model
         args_raw = args.__dict__
-        raw_file_name = args_raw[const.ARG_FILE]
-        if raw_file_name is None:
-            logger.error(f'Argument "-{const.ARG_FILE_SHORT}" is required')
-            return 1
-
-        file_path = pathlib.Path(raw_file_name).resolve()
-        if not file_path.exists():
-            logger.error(f'File {file_path} does not exist.')
-            return 1
-        content_type = FileContentType.to_content_type(file_path.suffix)
-
-        # find the base directory of the file
-        file_absolute_path = pathlib.Path(file_path)
-        base_dir = file_absolute_path.parent
-
-        model_type, _ = fs.get_stripped_contextual_model(file_absolute_path)
-
-        model: OscalBaseModel = model_type.oscal_read(file_path)
 
         # remove any quotes passed in as on windows platforms
         elements_clean: str = args_raw[const.ARG_ELEMENT].strip("'")
 
-        if cmd_utils.split_is_too_fine(elements_clean, model):
-            logger.warning('Cannot split the model to the level of uuids, strings, etc.')
-            return 1
+        file_path_list: List[Tuple[str, str]]
 
-        # use the model itself to resolve any wildcards and create list of element paths
-        logger.debug(f'split calling parse_element_args on {elements_clean}')
-        # use contextual mode to parse
-        element_paths: List[ElementPath] = cmd_utils.parse_element_args(model, elements_clean.split(','))
+        if const.ARG_FILE in args_raw:
+            file_path_list.append(args_raw[const.ARG_FILE], elements_clean)
+        else:
+            # cwd must be in the model directory
+            # if element name starts with module then use it as absolute path
+            # else it must refer to item in current directory
+            trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
+            if trestle_root is None:
+                logger.warning('If file is not provided for split then cwd must be in a trestle project.')
+                return 1
 
-        # analyze the split tree and determine which aliases should be stripped from each file
-        aliases_to_strip = self.find_aliases_to_strip(element_paths)
+            # determine the file needed for each split path
+            element_paths = elements_clean.split(',')
+            for path in element_paths:
+                try:
+                    file_path = ElementPath(path).get_preceding_path().to_file_path(FileContentType.JSON, str(trestle_root))
+                except TrestleError as e:
+                    logger.warning(f'Cannot determine file path from element path {path} {e}')
+                    return 1
+                file_path_list.append((file_path, path))
 
-        # need the file name relative to the base directory
-        file_name_no_path = str(file_path.name)
+        # match paths to corresponding files
+        file_path_dict: Dict[str, str] = {}
+        for file_path in file_path_list:
+            key = file_path[0]
+            path = file_path[1]
+            if key not in file_path_dict:
+                file_path_dict[key] = path
+            else:
+                current_path = file_path_dict[key]
+                file_path_dict[key] = f'{current_path},{path}'
 
-        split_plan = self.split_model(model, element_paths, base_dir, content_type, file_name_no_path, aliases_to_strip)
+        for raw_file_name, element_path in file_path_dict:
+            file_path = pathlib.Path(raw_file_name).resolve()
+            if not file_path.exists():
+                logger.error(f'File {file_path} does not exist.')
+                return 1
+            content_type = FileContentType.to_content_type(file_path.suffix)
 
-        # Simulate the plan
-        # if it fails, it would throw errors and get out of this command
-        split_plan.simulate()
+            # find the base directory of the file
+            file_absolute_path = pathlib.Path(file_path)
+            base_dir = file_absolute_path.parent
 
-        # If we are here then simulation passed
-        # so move the original file to the trash
-        trash.store(file_path, True)
+            model_type, _ = fs.get_stripped_contextual_model(file_absolute_path)
 
-        # execute the plan
-        split_plan.execute()
+            model: OscalBaseModel = model_type.oscal_read(file_path)
+
+            if cmd_utils.split_is_too_fine(element_path, model):
+                logger.warning('Cannot split the model to the level of uuids, strings, etc.')
+                return 1
+
+            # use the model itself to resolve any wildcards and create list of element paths
+            logger.debug(f'split calling parse_element_args on {element_path}')
+            # use contextual mode to parse
+            element_paths: List[ElementPath] = cmd_utils.parse_element_args(model, element_path.split(','))
+
+            # analyze the split tree and determine which aliases should be stripped from each file
+            aliases_to_strip = self.find_aliases_to_strip(element_paths)
+
+            # need the file name relative to the base directory
+            file_name_no_path = str(file_path.name)
+
+            split_plan = self.split_model(model, element_paths, base_dir, content_type, file_name_no_path, aliases_to_strip)
+
+            # Simulate the plan
+            # if it fails, it would throw errors and get out of this command
+            split_plan.simulate()
+
+            # If we are here then simulation passed
+            # so move the original file to the trash
+            trash.store(file_path, True)
+
+            # execute the plan
+            split_plan.execute()
         return 0
 
     @classmethod
