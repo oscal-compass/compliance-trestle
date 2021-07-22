@@ -15,7 +15,6 @@
 """XLSX to OSCAL component-definition task tests."""
 
 import configparser
-import filecmp
 import os
 import pathlib
 import uuid
