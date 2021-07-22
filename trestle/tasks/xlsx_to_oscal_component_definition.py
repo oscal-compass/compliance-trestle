@@ -119,8 +119,10 @@ class XlsxToOscalComponentDefinition(TaskBase):
         logger.info('  work-sheet-name   = (required) the name of the work sheet in the spread sheet file.')
         logger.info('                      column "a" contains goal ID.')
         logger.info('                      column "b" contains goal text.')
+        logger.info('                      column "ac-ai" contains controls.')
+        logger.info('                      column "am" contains component name.')
         logger.info('                      column "an" contains goal name.')
-        logger.info('                      column "ar" contains parameter name and description.')
+        logger.info('                      column "ar" contains parameter name and description, separated by newline.')
         logger.info('                      column "as" contains parameter values.')
         logger.info(
             '  output-dir        = (required) the path of the output directory comprising synthesized OSCAL .json files.'
