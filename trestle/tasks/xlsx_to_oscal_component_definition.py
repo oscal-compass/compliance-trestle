@@ -208,7 +208,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         party_uuid_02 = str(uuid.uuid4())
         party_uuid_03 = str(uuid.uuid4())
         parties = [
-            Party(uuid=party_uuid_01, type='organization', name='International Business Machines', remarks='IBM'),
+            Party(uuid=party_uuid_01, type='organization', name=self._get_org_name(), remarks=self._get_org_remarks()),
             Party(
                 uuid=party_uuid_02,
                 type='organization',
@@ -248,7 +248,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
             controls = self._get_controls(work_sheet, row)
             if len(controls.keys()) == 0:
                 continue
-            scc_check_name_id = str(goal_name_id) + '_check'
             # component
             component_name = self._get_component_name(work_sheet, row)
             if component_name not in component_names:
@@ -276,7 +275,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
                     logger.info(f'row={row} edited {parameter_name} to remove whitespace')
                 values = self._get_parameter_values(work_sheet, row)
                 guidelines = self._get_guidelines(values)
-                href = 'http://ibm.github.io/compliance-trestle/schemas/oscal/cd/' + component_name.replace(' ', '%20')
+                href = self._get_namespace() + '/' + component_name.replace(' ', '%20')
                 parameter_helper = ParameterHelper(
                     values=values,
                     id_=parameter_name,
@@ -294,16 +293,16 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 control_uuid = self._get_control_uuid(control)
                 prop1 = Property(
                     name='goal_name_id',
-                    class_='scc_goal_name_id',
+                    class_=self._get_class_for_property_name('goal_name_id'),
                     value=goal_name_id,
-                    ns='http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud',
+                    ns=self._get_namespace(),
                     remarks=Remarks(__root__=str(goal_remarks))
                 )
                 prop2 = Property(
                     name='goal_version',
-                    class_='scc_goal_version',
+                    class_=self._get_class_for_property_name('goal_version'),
                     value=self._get_goal_version(),
-                    ns='http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud',
+                    ns=self._get_namespace(),
                     remarks=Remarks(__root__=str(goal_name_id))
                 )
                 props = [prop1, prop2]
@@ -357,8 +356,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 uuid=str(uuid.uuid4()),
                 source=
                 'https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json',
-                description=component_name +
-                ' implemented controls for NIST 800-53. It includes assessment asset configuration for CICD (and tbd runtime SCC)."',
+                description=component_name
+                + ' implemented controls for NIST 800-53. It includes assessment asset configuration for CICD."',
                 implemented_requirements=implemented_requirements,
             )
             if defined_component.control_implementations is None:
@@ -412,6 +411,39 @@ class XlsxToOscalComponentDefinition(TaskBase):
             )
         #</hack>
         return TaskOutcome('success')
+
+    def _get_org_name(self) -> str:
+        """Get org-name from config."""
+        value = self._config.get('org-name')
+        logger.debug(f'org-name: {value}')
+        return value
+
+    def _get_org_remarks(self) -> str:
+        """Get org-remarks from config."""
+        value = self._config.get('org-remarks')
+        logger.debug(f'org-remarks: {value}')
+        return value
+
+    def _get_class_for_property_name(self, property_name) -> str:
+        """Get class for property-name from config."""
+        value = None
+        data = self._config.get('property-name-to-class')
+        if data is not None:
+            for item in data.split(','):
+                item = item.strip()
+                parts = item.split(':')
+                if len(parts) == 2:
+                    if parts[0] == property_name:
+                        value = parts[1]
+                        break
+        logger.debug(f'property-name-to-class: {property_name} -> {value}')
+        return value
+
+    def _get_namespace(self) -> str:
+        """Get namespace from config."""
+        value = self._config.get('namespace')
+        logger.debug(f'namespace: {value}')
+        return value
 
     def _row_generator(self, work_sheet: t_work_sheet) -> t_row:
         """Generate rows until goal_id is None."""
@@ -496,9 +528,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
                     control = control.lower()
                     # skip bogus control made up if dashes only
                     if len(control.replace('-', '')) == 0:
-
-                        logger.info(f'{row}!!!!!!!!!!!!')
-
                         continue
                     if control not in value.keys():
                         value[control] = statements

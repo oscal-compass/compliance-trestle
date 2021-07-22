@@ -12,7 +12,7 @@
         "id": "source_code_scaning_vulnerability_threashhold",
         "links": [
           {
-            "href": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/TOOLCHAIN"
+            "href": "http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud/TOOLCHAIN"
           }
         ],
         "label": "Source code scaning vulnerability threashhold ",
