@@ -71,7 +71,7 @@ def test_xlsx_execute(tmp_path):
     assert d_expected != d_produced
     for fn in list_dir:
         f_expected = d_expected / fn
-        f_produced = d_produced / fn       
+        f_produced = d_produced / fn
         result = filecmp.cmp(f_expected, f_produced, shallow=False)
         assert (result)
 

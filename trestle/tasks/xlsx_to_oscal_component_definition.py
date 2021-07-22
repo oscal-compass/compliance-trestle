@@ -494,9 +494,9 @@ class XlsxToOscalComponentDefinition(TaskBase):
                     control = control.lower()
                     # skip bogus control made up if dashes only
                     if len(control.replace('-', '')) == 0:
-                        
+
                         logger.info(f'{row}!!!!!!!!!!!!')
-                        
+
                         continue
                     if control not in value.keys():
                         value[control] = statements

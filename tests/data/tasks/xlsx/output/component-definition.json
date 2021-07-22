@@ -4,7 +4,7 @@
     "metadata": {
       "title": "Component definition for NIST profiles",
       "last-modified": "2021-07-19T14:03:03.000+00:00",
-      "version": "0.18.1",
+      "version": "0.20.0",
       "oscal-version": "1.0.0",
       "roles": [
         {
