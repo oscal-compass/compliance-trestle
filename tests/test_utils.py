@@ -27,7 +27,6 @@ from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands import cmd_utils
 from trestle.core.commands.import_ import ImportCmd
-from trestle.core.commands.init import InitCmd
 from trestle.core.models.elements import ElementPath
 from trestle.core.models.file_content_type import FileContentType
 
@@ -101,7 +100,9 @@ def prepare_trestle_project_dir(
     return models_full_path, model_def_file
 
 
-def create_trestle_project_with_model(top_dir: pathlib.Path, model_obj: OscalBaseModel, model_name: str) -> pathlib.Path:
+def create_trestle_project_with_model(
+    top_dir: pathlib.Path, model_obj: OscalBaseModel, model_name: str
+) -> pathlib.Path:
     """Create initialized trestle project and import the model into it."""
     cur_dir = pathlib.Path.cwd()
 
@@ -137,3 +138,10 @@ def list_unordered_equal(list1, list2):
     except ValueError:
         return False
     return not list1
+
+
+def models_are_equivalent(model_a: OscalBaseModel, model_b: OscalBaseModel) -> bool:
+    """Test if models are equivalent except for last modified."""
+    # this will change the second model as a side-effect
+    model_b.metadata.last_modified = model_a.metadata.last_modified
+    return model_a == model_b

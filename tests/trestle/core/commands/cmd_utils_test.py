@@ -41,9 +41,6 @@ def test_parse_element_arg(tmp_path, keep_cwd):
     with pytest.raises(TrestleError):
         cmd_utils.parse_element_arg(None, 'component-definition', False)
 
-    # with pytest.raises(TrestleError):
-    #    cmd_utils.parse_element_arg(None, '*.target', False)
-
     with pytest.raises(TrestleError):
         cmd_utils.parse_element_arg(None, '*.*', False)
 
@@ -158,13 +155,19 @@ def test_parse_element_args_split_model(element_arg, sample_catalog):
     assert element_paths
 
 
-@pytest.mark.parametrize('element_arg', [
-    ('component-definition.foo', []),
-    ('component-definition.*', [['component-definition', 'components'], ['component-definition', 'metadata']]),
-    ('component-definition.components', [['component-definition', 'components']]),
-    ('component-definition.components.*', [['component-definition', 'components', '*']]),
-    ('component-definition.components.*.roles', [['component-definition', 'components', '*'], ['defined-component', 'roles']])
-    ])
+@pytest.mark.parametrize(
+    'element_arg',
+    [
+        ('component-definition.foo', []),
+        ('component-definition.*', [['component-definition', 'components'], ['component-definition', 'metadata']]),
+        ('component-definition.components', [['component-definition', 'components']]),
+        ('component-definition.components.*', [['component-definition', 'components', '*']]),
+        (
+            'component-definition.components.*.roles',
+            [['component-definition', 'components', '*'], ['defined-component', 'roles']]
+        )
+    ]
+)
 def test_parse_element_args_split_compdef(element_arg, sample_component_definition):
     """Test split of model with wildcard."""
     element_paths = cmd_utils.parse_element_arg(sample_component_definition, element_arg[0], False)

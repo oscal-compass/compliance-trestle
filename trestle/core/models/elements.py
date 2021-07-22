@@ -53,7 +53,6 @@ class ElementPath:
         # Initialize private variables for lazy processing and caching
         self._element_name: Optional[str] = None
         self._preceding_path: Optional['ElementPath'] = None
-        self.missing_link = False
 
     def _parse(self, element_path: str) -> List[str]:
         """Parse the element path and validate."""
@@ -240,20 +239,17 @@ class Element:
         """Set the list of aliases to strip during split."""
         self._aliases_to_strip.append(alias)
 
-    
     def get_aliases_to_strip(self) -> List[str]:
         """Get the list of aliases to strip."""
         return self._aliases_to_strip
 
-
     def need_to_write(self) -> bool:
-        """Does this need to be written out or has it already happened."""
+        """Write the model out."""
         return not self._written_out
 
     def mark_written(self) -> None:
         """Mark this element as written."""
         self._written_out = True
-
 
     def _get_singular_classname(self) -> str:
         """Get the inner class name for list or dict objects."""

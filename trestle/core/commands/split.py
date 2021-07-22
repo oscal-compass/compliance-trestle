@@ -37,28 +37,25 @@ logger = logging.getLogger(__name__)
 
 class AliasTracker():
     """Convenience class to track writing out of models."""
+
     def __init__(self, alias: str):
         """Initialize the class."""
         self.aliases: List[str] = [alias]
         self.written = False
-
 
     def add_alias(self, alias: str):
         """Add alias."""
         if alias not in self.aliases:
             self.aliases.append(alias)
 
-
     def get_aliases(self) -> List[str]:
-        """Get the list of aliases"""
+        """Get the list of aliases."""
         return self.aliases
 
-
     def needs_writing(self) -> bool:
-        """Does this model need to be written."""
+        """Need to write the model."""
         return not self.written
 
-    
     def mark_written(self) -> None:
         """Mark this model as written."""
         self.written = True
@@ -207,13 +204,10 @@ class SplitCmd(CommandPlusDocs):
 
         # get the sub_model specified by the element_path of this round
         element_path = element_paths[cur_path_index]
-        
+
         # does the next element_path point back at me
         is_parent = cur_path_index + 1 < len(element_paths) and element_paths[cur_path_index
                                                                               + 1].get_parent() == element_path
-
-        # if element_path.missing_link:
-        #    strip_root = True
 
         # root dir name for sub models dir
         # 00000__group.json will have the root_dir name as 00000__group for sub models of group
@@ -222,17 +216,7 @@ class SplitCmd(CommandPlusDocs):
         if root_file_name != '':
             root_dir = pathlib.Path(root_file_name).stem
 
-        # exclude wildcard from path_parts
-        #path_parts = element_path.get()
-        #if path_parts[-1] == ElementPath.WILDCARD:
-        #    path_parts = path_parts[:-1]
-
-        # if cmd_utils.split_is_too_fine('.'.join(path_parts), model_obj):
-        #    raise TrestleError(f'Split is too fine at element {path_parts[-1]}')
-
         sub_models = element.get_at(element_path, False)  # we call sub_models as in plural, but it can be just one
-        # if sub_models is None:
-        #    return cur_path_index
 
         # assume cur_path_index is the end of the chain
         # value of this variable may change during recursive split of the sub-models below
@@ -245,7 +229,15 @@ class SplitCmd(CommandPlusDocs):
             sub_models_dir = base_dir / element_path.to_root_path()
             sub_model_plan = Plan()
             path_chain_end = cls.split_model_at_path_chain(
-                sub_models, element_paths, sub_models_dir, content_type, cur_path_index + 1, sub_model_plan, True, '', aliases_to_strip
+                sub_models,
+                element_paths,
+                sub_models_dir,
+                content_type,
+                cur_path_index + 1,
+                sub_model_plan,
+                True,
+                '',
+                aliases_to_strip
             )
             sub_model_actions = sub_model_plan.get_actions()
             split_plan.add_actions(sub_model_actions)
@@ -299,11 +291,12 @@ class SplitCmd(CommandPlusDocs):
         else:
             # the chain of path ends at the current index.
             # so no recursive call. Let's just write the sub model to the file and get out
-            sub_model_file = base_dir / element_path.to_file_path(content_type, root_dir=root_dir)
-            split_plan.add_action(CreatePathAction(sub_model_file))
-            split_plan.add_action(
-                WriteFileAction(sub_model_file, Element(sub_models, element_path.get_element_name()), content_type)
-            )
+            if sub_models is not None:
+                sub_model_file = base_dir / element_path.to_file_path(content_type, root_dir=root_dir)
+                split_plan.add_action(CreatePathAction(sub_model_file))
+                split_plan.add_action(
+                    WriteFileAction(sub_model_file, Element(sub_models, element_path.get_element_name()), content_type)
+                )
 
         # Strip the root model and add a WriteAction for the updated model object in the plan
         if strip_root:
@@ -373,7 +366,15 @@ class SplitCmd(CommandPlusDocs):
 
             # split model at the path chain
             cur_path_index = cls.split_model_at_path_chain(
-                model_obj, element_paths, base_dir, content_type, cur_path_index, split_plan, False, root_file_name, aliases_to_strip
+                model_obj,
+                element_paths,
+                base_dir,
+                content_type,
+                cur_path_index,
+                split_plan,
+                False,
+                root_file_name,
+                aliases_to_strip
             )
 
             cur_path_index += 1
@@ -393,9 +394,11 @@ class SplitCmd(CommandPlusDocs):
 
         return split_plan
 
-
     def find_aliases_to_strip(self, element_paths: List[ElementPath]) -> Dict[str, AliasTracker]:
         """Find list of aliases that need to be stripped as each element written out."""
+        # A given path may be present in several split actions
+        # Need to determine all parts stripped at each node in order to strip them all and
+        # write the stripped model only once
         tracker_map: Dict[str, AliasTracker] = {}
         for element_path in element_paths:
             path = element_path.get_full()

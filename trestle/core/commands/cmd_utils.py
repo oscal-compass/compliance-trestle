@@ -54,6 +54,10 @@ def parse_element_args(model: OscalBaseModel,
                        contextual_mode: bool = True) -> List[ElementPath]:
     """Parse element args into a list of ElementPath.
 
+    The element paths are either simple links of two elements, or two elements followed by *.
+    The * represents either a list of the items in that element, or a splitting of that element into its parts.
+    The only parts split off are the non-trivial ones determined by the granularity check.
+
     contextual_mode specifies if the path is a valid project model path or not. For example,
     if we are processing a metadata.parties.*, we need to know which metadata we are processing. If we pass
     contextual_mode=true, we can infer the root model by inspecting the file directory
@@ -61,60 +65,23 @@ def parse_element_args(model: OscalBaseModel,
     If contextual_mode=False, then the path must include the full path, e.g. catalog.metadata.parties.* instead of just
     metadata.parties.*
 
-    One option for caller to utilize this utility function: fs.is_valid_project_model_path(pathlib.Path.cwd())
-    """
+    When the * represents splitting a model rather than a list, the model is inspected for what parts are available,
+    and for each new part two element paths are created, one for the parent to the current element, and another from
+    the current element to the child.
 
+    A path may have multiple *'s, but only the final one can represent splitting a model.
+    """
     # collect all paths
     element_paths: List[ElementPath] = []
     for element_arg in element_args:
         paths = parse_element_arg(model, element_arg, contextual_mode)
         element_paths.extend(paths)
 
-    # find missing links to make sure all files are written out with proper stripping
-    # first build list of all link pairs that don't involve wildcard
-    new_paths: List[ElementPath] = []
-    links: set((str, str)) = set()
-    for path in element_paths:
-        path_parts = path.get_full_path_parts()
-        for i in range(len(path_parts)-2):
-            if path_parts[i] != '*' and path_parts[i+1] != '*' and path_parts[i+2] != '*':
-                links.add((path_parts[i], path_parts[i+1]))
-
-    # build list of links that aren't already explicitly in the paths
-    for link in links:
-        found = False
-        for path in element_paths:
-            path_parts = path.get_full_path_parts()
-            if len(path_parts) == 2 and path_parts[0] == link[0] and path_parts[1] == link[1]:
-                found = True
-                break
-        if not found:
-            new_path = ElementPath(link[0] + '.' + link[1])
-            new_path.missing_link = True
-            new_paths.append(new_path)
-
-    # now insert the links into the paths with connection to parent
-    
-    # new_paths.extend(element_paths)
-
     return element_paths
 
 
 def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mode: bool = True) -> List[ElementPath]:
-    """Parse an element arg string into a list of ElementPath.
-
-    contextual_mode specifies if the path is a valid project model path or not. For example,
-    if we are processing a metadata.parties.*, we need to know which metadata we are processing. If we pass
-    contextual_mode=True, we can infer the root model by inspecting the file directory
-
-    If contextual_mode=False, then the path must include the full path, e.g. catalog.metadata.parties.* instead of just
-    metadata.parties.*
-
-    One option for caller to utilize this utility function: fs.is_valid_project_model_path(pathlib.Path.cwd())
-
-    Originally this function did not allow wildcards for model objects rather than lists.  This was changed by passing
-    in the model object and allowing inspection of its parts so the needed element paths can be created on the fly.
-    """
+    """Parse an element arg string into a list of ElementPath."""
     element_paths: List[ElementPath] = []
     element_arg = element_arg.strip()
 
@@ -168,7 +135,7 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
             element_path = ElementPath(p, parent_path=prev_element_path)
 
         # If the path has wildcard and there are more parts later,
-        # Get the parent model for the alias path
+        # get the parent model for the alias path
         # If path has wildcard and it does not refer to a list, then there can be nothing after *
         if element_path.get_last() == ElementPath.WILDCARD:
             full_path_str = ElementPath.PATH_SEPARATOR.join(element_path.get_full_path_parts()[:-1])
@@ -190,6 +157,8 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
                         new_alias = utils.classname_to_alias(key, 'json')
                         new_path = full_path_str + '.' + new_alias
                         if not split_is_too_fine(new_path, model_obj):
+                            # to add parts of an element, need to add two links
+                            # prev_element_path may be None, for example catalog.*
                             if prev_element_path is not None:
                                 element_paths.append(prev_element_path)
                             element_paths.append(ElementPath(parent_model + '.' + new_alias, latest_path))
