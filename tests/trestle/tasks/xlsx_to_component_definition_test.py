@@ -23,6 +23,7 @@ from unittest.mock import Mock, patch
 
 import trestle.tasks.xlsx_to_oscal_component_definition as xlsx_to_oscal_component_definition
 from trestle.tasks.base_task import TaskOutcome
+from trestle.utils.fs import text_files_equal
 
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
 
@@ -72,7 +73,7 @@ def test_xlsx_execute(tmp_path):
     for fn in list_dir:
         f_expected = d_expected / fn
         f_produced = d_produced / fn
-        result = filecmp.cmp(f_expected, f_produced, shallow=False)
+        result = text_files_equal(f_expected, f_produced)
         assert (result)
 
 
