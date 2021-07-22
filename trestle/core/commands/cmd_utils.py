@@ -63,11 +63,15 @@ def parse_element_args(model: OscalBaseModel,
 
     One option for caller to utilize this utility function: fs.is_valid_project_model_path(pathlib.Path.cwd())
     """
+
+    # collect all paths
     element_paths: List[ElementPath] = []
     for element_arg in element_args:
         paths = parse_element_arg(model, element_arg, contextual_mode)
         element_paths.extend(paths)
 
+    # find missing links to make sure all files are written out with proper stripping
+    # first build list of all link pairs that don't involve wildcard
     new_paths: List[ElementPath] = []
     links: set((str, str)) = set()
     for path in element_paths:
@@ -76,6 +80,7 @@ def parse_element_args(model: OscalBaseModel,
             if path_parts[i] != '*' and path_parts[i+1] != '*' and path_parts[i+2] != '*':
                 links.add((path_parts[i], path_parts[i+1]))
 
+    # build list of links that aren't already explicitly in the paths
     for link in links:
         found = False
         for path in element_paths:
@@ -87,10 +92,12 @@ def parse_element_args(model: OscalBaseModel,
             new_path = ElementPath(link[0] + '.' + link[1])
             new_path.missing_link = True
             new_paths.append(new_path)
-    
-    new_paths.extend(element_paths)
 
-    return new_paths
+    # now insert the links into the paths with connection to parent
+    
+    # new_paths.extend(element_paths)
+
+    return element_paths
 
 
 def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mode: bool = True) -> List[ElementPath]:
@@ -126,6 +133,7 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
     parsing_model = model_obj is not None
 
     prev_element_path = None
+    latest_path = None
     parent_model = path_parts[0]
     i = 1
     while i < len(path_parts):
@@ -179,9 +187,12 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
                         # only create element path is item is present in the sub_model
                         if getattr(sub_model, key, None) is None:
                             continue
-                        new_path = full_path_str + '.' + utils.classname_to_alias(key, 'json')
+                        new_alias = utils.classname_to_alias(key, 'json')
+                        new_path = full_path_str + '.' + new_alias
                         if not split_is_too_fine(new_path, model_obj):
-                            element_paths.append(ElementPath(new_path))
+                            if prev_element_path is not None:
+                                element_paths.append(prev_element_path)
+                            element_paths.append(ElementPath(parent_model + '.' + new_alias, latest_path))
                     # Since wildcard is last in the chain when splitting an oscal model we are done
                     return element_paths
         else:
