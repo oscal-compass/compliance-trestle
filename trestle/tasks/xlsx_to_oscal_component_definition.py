@@ -20,18 +20,15 @@ import datetime
 import logging
 import json
 import pathlib
-import string
 import traceback
 import uuid
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from openpyxl import load_workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
 from trestle import __version__
-from trestle.core import const
 from trestle.oscal import OSCAL_VERSION
-from trestle.oscal.catalog import Catalog
 from trestle.oscal.common import Metadata
 from trestle.oscal.common import Party
 from trestle.oscal.common import Property
@@ -177,7 +174,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         ofile = opth / oname
         if not self._overwrite and pathlib.Path(ofile).exists():
             logger.error(f'output: {ofile} already exists')
-            return TaskOutcome(mode + 'failure')
+            return TaskOutcome('failure')
         # initialize
         defined_components = []
         # load the .xlsx contents
@@ -244,7 +241,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
         # process each row of spread sheet
         for row in self._row_generator(work_sheet):
             # quit when first row with no goal_id encountered
-            goal_id = self._get_goal_id(work_sheet, row)
             goal_name_id = self._get_goal_name_id(work_sheet, row)
             controls = self._get_controls(work_sheet, row)
             if len(controls.keys()) == 0:
