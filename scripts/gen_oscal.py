@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Script to generate python models from oscal using datamodel-code-generator."""
+import logging
 import re
 import sys
 from pathlib import Path
@@ -21,10 +22,14 @@ from subprocess import CalledProcessError, check_call
 
 from oscal_normalize import normalize_files
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.addHandler(logging.StreamHandler())
+
 
 def load_git():
     """Load git submodule for oscal."""
-    print('git add and update oscal modules')
+    logger.info('git add and update oscal modules')
     try:
         check_call('git submodule add https://github.com/usnistgov/OSCAL.git nist-source'.split())
     except CalledProcessError:
@@ -39,16 +44,16 @@ def load_git():
     try:
         check_call('git submodule update --init'.split())
     except CalledProcessError as error:
-        print(f'Error updating the oscal git submodule {error}')
+        logger.error(f'Error updating the oscal git submodule {error}')
     try:
         check_call('git submodule update --remote --merge'.split())
     except CalledProcessError as error:
-        print(f'Error updating the oscal git submodule {error}')
+        logger.error(f'Error updating the oscal git submodule {error}')
 
 
 def generate_model(full_name, out_full_name):
     """Generate a single model with datamodel-codegen."""
-    print(f'generate python model with datamodel-codegen: {str(full_name)} -> {str(out_full_name)}')
+    logger.info(f'generate python model with datamodel-codegen: {str(full_name)} -> {str(out_full_name)}')
     args = [
         'datamodel-codegen',
         '--disable-timestamp',
@@ -65,12 +70,12 @@ def generate_model(full_name, out_full_name):
     try:
         check_call(args)
     except CalledProcessError as error:
-        print(f'Error calling datamodel-codegen for file {full_name} error {error}')
+        logger.error(f'Error calling datamodel-codegen for file {full_name} error {error}')
 
 
 def generate_models():
     """Generate all models including 3rd party."""
-    print('generating models')
+    logger.info('generating models')
     out_dir = Path('trestle/oscal')
     out_dir.mkdir(exist_ok=True, parents=True)
     tmp_dir = out_dir / 'tmp'
@@ -83,7 +88,7 @@ def generate_models():
         try:
             obj = re.search('oscal_(.+?)_schema.json', str(full_name)).group(1)
         except AttributeError:
-            print(f'Warning: filename did not parse properly: {tmp_name}')
+            logger.error(f'Warning: filename did not parse properly: {full_name}')
             obj = None
             continue
         oscal_name = obj.replace('-', '_')
@@ -98,7 +103,7 @@ def main():
     """Load git and generate models."""
     load_git()
     generate_models()
-    print('DONE')
+    logger.info('DONE')
 
 
 if __name__ == '__main__':

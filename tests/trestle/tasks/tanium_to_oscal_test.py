@@ -139,9 +139,7 @@ def test_tanium_execute(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 1
     f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.json'
     f_produced = tmp_path / 'Tanium.oscal.json'
-    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [
-        row for row in open(f_expected, encoding=const.FILE_ENCODING)
-    ]
+    assert list(open(f_produced, encoding=const.FILE_ENCODING)) == list(open(f_expected, encoding=const.FILE_ENCODING))
 
 
 def test_tanium_execute_no_config(tmp_path):
@@ -159,9 +157,7 @@ def test_tanium_execute_no_overwrite_dir(tmp_path):
     execute_no_overwrite_dir_part2(tmp_path)
     f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.json'
     f_produced = tmp_path / 'Tanium.oscal.json'
-    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [
-        row for row in open(f_expected, encoding=const.FILE_ENCODING)
-    ]
+    assert list(open(f_produced, encoding=const.FILE_ENCODING)) == list(open(f_expected, encoding=const.FILE_ENCODING))
 
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
@@ -248,6 +244,4 @@ def test_tanium_execute_override_timestamp(tmp_path):
     assert len(os.listdir(str(tmp_path))) == 1
     f_expected = pathlib.Path('tests/data/tasks/tanium/output/') / 'Tanium.oscal.2020.json'
     f_produced = tmp_path / 'Tanium.oscal.json'
-    assert [row for row in open(f_produced, encoding=const.FILE_ENCODING)] == [
-        row for row in open(f_expected, encoding=const.FILE_ENCODING)
-    ]
+    assert list(open(f_produced, encoding=const.FILE_ENCODING)) == list(open(f_expected, encoding=const.FILE_ENCODING))
