@@ -17,6 +17,7 @@
 
 import logging
 import pathlib
+
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.catalog import Control
 

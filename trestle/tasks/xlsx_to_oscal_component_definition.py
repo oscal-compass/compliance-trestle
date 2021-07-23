@@ -12,13 +12,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from mypyc.primitives import str_ops
 """OSCAL transformation tasks."""
 
 import configparser
 import datetime
 import logging
-import json
 import pathlib
 import traceback
 import uuid
@@ -102,28 +100,24 @@ class XlsxToOscalComponentDefinition(TaskBase):
         """Print the help string."""
         logger.info(f'Help information for {self.name} task.')
         logger.info('')
-        logger.info(
-            'Purpose: From spread sheet and catalog produce Open Security Controls Assessment Language (OSCAL) component definition file.'
-        )
+        logger.info('Purpose: From spread sheet and catalog produce OSCAL component definition file.')
         logger.info('')
         logger.info('Configuration flags sit under [task.xlsx-to-oscal-component-definition]:')
         logger.info(
             '  catalog-file      = (required) the path of the OSCAL catalog file, for example '
             + self._get_catalog_title() + '.'
         )
-        logger.info(
-            '  spread-sheet-file = (required) the path of the spread sheet file, containing data for production of component definition.'
-        )
+        logger.info('  spread-sheet-file = (required) the path of the spread sheet file.')
         logger.info('  work-sheet-name   = (required) the name of the work sheet in the spread sheet file.')
         logger.info('                      column "a" contains goal ID.')
         logger.info('                      column "b" contains goal text.')
         logger.info('                      column "ac-ai" contains controls.')
         logger.info('                      column "am" contains component name.')
         logger.info('                      column "an" contains goal name.')
-        logger.info('                      column "ar" contains parameter name and description, separated by newline.')
+        logger.info('                      column "ar" contains parameter name + description, separated by newline.')
         logger.info('                      column "as" contains parameter values.')
         logger.info(
-            '  output-dir        = (required) the path of the output directory comprising synthesized OSCAL .json files.'
+            '  output-dir        = (required) the path of the output directory for synthesized OSCAL .json files.'
         )
         logger.info('  output-overwrite  = (optional) true [default] or false; replace existing output when true.')
 
@@ -141,23 +135,23 @@ class XlsxToOscalComponentDefinition(TaskBase):
 
     def _execute(self) -> TaskOutcome:
         if not self._config:
-            logger.error(f'config missing')
+            logger.error('config missing')
             return TaskOutcome('failure')
         # process config
         catalog_file = self._config.get('catalog-file')
         if catalog_file is None:
-            logger.error(f'config missing "catalog-file"')
+            logger.error('config missing "catalog-file"')
             return TaskOutcome('failure')
         catalog_helper = CatalogHelper(catalog_file)
         if not catalog_helper.exists():
-            logger.error(f'"catalog-file" not found')
+            logger.error('"catalog-file" not found')
             return TaskOutcome('failure')
         spread_sheet = self._config.get('spread-sheet-file')
         if spread_sheet is None:
-            logger.error(f'config missing "spread-sheet"')
+            logger.error('config missing "spread-sheet"')
             return TaskOutcome('failure')
         if not pathlib.Path(spread_sheet).exists():
-            logger.error(f'"spread-sheet" not found')
+            logger.error('"spread-sheet" not found')
             return TaskOutcome('failure')
         odir = self._config.get('output-dir')
         opth = pathlib.Path(odir)
@@ -181,7 +175,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         wb = load_workbook(spread_sheet)
         sheet_name = self._config.get('work-sheet-name')
         if sheet_name is None:
-            logger.error(f'config missing "work-sheet-name"')
+            logger.error('config missing "work-sheet-name"')
             return TaskOutcome('failure')
         work_sheet = wb[sheet_name]
         component_names = []
@@ -373,7 +367,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         component_definition = ComponentDefinition(
             uuid=str(uuid.uuid4()),
             metadata=metadata,
-            components=defined_components,  #params=parameters,
+            components=defined_components,
         )
         # write OSCAL ComponentDefinition to file
         if self._verbose:
@@ -405,7 +399,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 ofile=tfile,
                 verbose=self._verbose,
             )
-        #</hack>
+        # </hack>
         return TaskOutcome('success')
 
     def _get_org_name(self) -> str:
@@ -486,7 +480,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
         return value
 
     def _get_controls(self, work_sheet: t_work_sheet, row: t_row) -> t_controls:
-        """Produce dict of controls mapped to statements
+        """Produce dict of controls mapped to statements.
+
         Example: {'au-2': ['(a)', '(d)'], 'au-12': [], 'si-4': ['(a)', '(b)', '(c)']}
         """
         value = {}
@@ -576,8 +571,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
 
     def _get_parameter_value_default(self, work_sheet: t_work_sheet, row: t_row) -> t_parameter_value:
         """Get parameter_value_default from work_sheet."""
-        name = None
-        description = None
         col = 'as'
         value = work_sheet[col + str(row)].value
         if value is not None:
@@ -586,8 +579,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
 
     def _get_parameter_values(self, work_sheet: t_work_sheet, row: t_row) -> t_parameter_values:
         """Get parameter_values from work_sheet."""
-        name = None
-        description = None
         col = 'as'
         value = work_sheet[col + str(row)].value
         if value is None:
@@ -601,8 +592,10 @@ class XlsxToOscalComponentDefinition(TaskBase):
 
     def _get_guidelines(self, values: t_values) -> t_guidelines:
         """Get guidelines based on values."""
-        type = self._get_type(values)
-        value = f'The first listed value option is set by default in the system unless set-parameter is used to satisfy a control requirements. Type {type}.'
+        type_ = self._get_type(values)
+        value = 'The first listed value option is set by default in the system '
+        value += 'unless set-parameter is used to satisfy a control requirements. '
+        value += f'Type {type_}.'
         return value
 
     def _get_type(self, values: t_values) -> t_type:
