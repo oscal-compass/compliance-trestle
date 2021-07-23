@@ -611,10 +611,16 @@ def test_no_file_given(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatal
     catalog_dir = trestle_root / 'catalogs' / cat_name
     catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
 
-    os.chdir(catalog_dir)
+    # no file given and cwd not in trestle directory should fail
+    os.chdir(tmp_path)
     args = argparse.Namespace(element='catalog.groups', verbose=1)
+    assert SplitCmd()._run(args) == 1
+
+    os.chdir(catalog_dir)
+    args = argparse.Namespace(element='catalog.groups,catalog.metadata', verbose=1)
     assert SplitCmd()._run(args) == 0
     assert (catalog_dir / 'catalog/groups.json').exists()
+    assert (catalog_dir / 'catalog/metadata.json').exists()
 
     os.chdir('./catalog')
     args = argparse.Namespace(element='groups.*', verbose=1)

@@ -278,24 +278,6 @@ class Element:
             wrapper_alias = utils.classname_to_alias(class_name, 'json')
 
         self._wrapper_alias: str = wrapper_alias
-        self._aliases_to_strip = []
-        self._written_out = False
-
-    def add_alias_to_strip(self, alias: str) -> None:
-        """Set the list of aliases to strip during split."""
-        self._aliases_to_strip.append(alias)
-
-    def get_aliases_to_strip(self) -> List[str]:
-        """Get the list of aliases to strip."""
-        return self._aliases_to_strip
-
-    def need_to_write(self) -> bool:
-        """Write the model out."""
-        return not self._written_out
-
-    def mark_written(self) -> None:
-        """Mark this element as written."""
-        self._written_out = True
 
     def _get_singular_classname(self) -> str:
         """Get the inner class name for list or dict objects."""
