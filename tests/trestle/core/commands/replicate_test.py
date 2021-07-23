@@ -106,14 +106,16 @@ def test_replicate_cmd_failures(testdata_dir, tmp_trestle_dir) -> None:
     # now create pre-existing replica to force error
     rep_file.touch()
 
-    test_args = f'trestle replicate catalog -n {source_name} -o {rep_name}'.split()
+    test_args = f'trestle replicate catalog -n {source_name} -o {rep_name} -tr {tmp_trestle_dir}'.split()
     with mock.patch.object(sys, 'argv', test_args):
         rc = Trestle().run()
         assert rc == 1
 
     shutil.rmtree(catalogs_dir / rep_name, ignore_errors=True)
 
-    args = argparse.Namespace(name=source_name, output=rep_name, verbose=False, regenerate=False)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, name=source_name, output=rep_name, verbose=False, regenerate=False
+    )
 
     # Force PermissionError:
     with mock.patch('trestle.core.commands.replicate.load_distributed') as load_distributed_mock:
@@ -166,7 +168,7 @@ def test_replicate_file_system(tmp_trestle_dir: Path) -> None:
     """Test model load failures."""
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
 
-    args = argparse.Namespace(name='foo', output='bar', verbose=False)
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, name='foo', output='bar', verbose=False)
     with mock.patch('trestle.core.commands.replicate.fs.get_trestle_project_root') as get_root_mock:
         get_root_mock.side_effect = [None]
         rc = ReplicateCmd.replicate_object('catalog', Catalog, args)

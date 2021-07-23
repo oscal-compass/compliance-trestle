@@ -18,7 +18,6 @@
 import argparse
 import logging
 from datetime import datetime
-from pathlib import Path
 from typing import Type, TypeVar
 
 import trestle.oscal
@@ -143,9 +142,9 @@ class CreateCmd(CommandPlusDocs):
     def create_object(cls, model_alias: str, object_type: Type[TLO], args: argparse.Namespace) -> int:
         """Create a top level OSCAL object within the trestle directory, leveraging functionality in add."""
         log.set_log_level_from_args(args)
-        trestle_root = fs.get_trestle_project_root(Path.cwd())
-        if not trestle_root:
-            logger.error(f'Current working directory {Path.cwd()} is not with a trestle project.')
+        trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
+        if not trestle_root or not fs.is_valid_project_root(args.trestle_root):
+            logger.error(f'Given directory {trestle_root} is not a trestle project.')
             return 1
         plural_path = fs.model_type_to_model_dir(model_alias)
 

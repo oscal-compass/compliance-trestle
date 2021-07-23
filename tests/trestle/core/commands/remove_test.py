@@ -275,7 +275,16 @@ def test_run(tmp_path, sample_catalog_missing_roles):
         test_utils.CATALOGS_DIR
     )
 
-    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata.responsible-parties']
+    testargs = [
+        'trestle',
+        'remove',
+        '-tr',
+        str(tmp_path),
+        '-f',
+        str(catalog_def_file),
+        '-e',
+        'catalog.metadata.responsible-parties'
+    ]
 
     with patch.object(sys, 'argv', testargs):
         assert Trestle().run() == 0
@@ -299,6 +308,8 @@ def test_run(tmp_path, sample_catalog_missing_roles):
     testargs = [
         'trestle',
         'remove',
+        '-tr',
+        str(tmp_path),
         '-f',
         str(catalog_def_file_2),
         '-e',

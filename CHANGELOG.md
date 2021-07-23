@@ -3,6 +3,19 @@
 
 <!--next-version-placeholder-->
 
+## v0.20.0 (2021-07-16)
+### Feature
+* Adding a global option to trestle author headers. ([#628](https://github.com/IBM/compliance-trestle/issues/628)) ([`16f0265`](https://github.com/IBM/compliance-trestle/commit/16f0265b1296066a203a5f844d89fd642a00fdb6))
+* Repository APIs to allow developer a consistent interface to a trestle repo. ([#583](https://github.com/IBM/compliance-trestle/issues/583)) ([`7bfabc5`](https://github.com/IBM/compliance-trestle/commit/7bfabc5a9e078cbfb6b190d3ccb7f06942d9ea37))
+
+### Fix
+* Added test cases for Repository code ([#625](https://github.com/IBM/compliance-trestle/issues/625)) ([`c3f8a33`](https://github.com/IBM/compliance-trestle/commit/c3f8a339bb66ea4723c9b1fa7b7ef30edf275cb5))
+* Split catalog star, enable split of model with wildcard ([#626](https://github.com/IBM/compliance-trestle/issues/626)) ([`d17389e`](https://github.com/IBM/compliance-trestle/commit/d17389e824ce8f33f2a091cd541622fb40513a37))
+* Tutorial tweaks ([#623](https://github.com/IBM/compliance-trestle/issues/623)) ([`3ab018d`](https://github.com/IBM/compliance-trestle/commit/3ab018d6dd63ae4ee98d90daca9b5580687ac8ae))
+* Add gfm support for mdformat ([#620](https://github.com/IBM/compliance-trestle/issues/620)) ([`f67a74c`](https://github.com/IBM/compliance-trestle/commit/f67a74c63aedd1cabdb6fcfd8f5be99b25886949))
+* Ssp assemble prose, all extraction of general prose for responses ([#618](https://github.com/IBM/compliance-trestle/issues/618)) ([`06e8627`](https://github.com/IBM/compliance-trestle/commit/06e862705bbf3880678324ba29e4be54e54322e6))
+* Boost coverage fix split_too_fine ([#615](https://github.com/IBM/compliance-trestle/issues/615)) ([`891227b`](https://github.com/IBM/compliance-trestle/commit/891227b9899b38f7ce609f8b4b715740cb9a84f7))
+
 ## v0.19.0 (2021-07-06)
 ### Feature
 * Merge pull request #611 from IBM/develop ([`0e9a4c5`](https://github.com/IBM/compliance-trestle/commit/0e9a4c51f75470c202efa53b625e3181bd31254c))

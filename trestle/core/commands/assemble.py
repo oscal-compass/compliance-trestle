@@ -17,7 +17,6 @@
 
 import argparse
 import logging
-from pathlib import Path
 from typing import Type, TypeVar
 
 from trestle.core import const
@@ -142,12 +141,10 @@ class AssembleCmd(CommandPlusDocs):
         """Assemble a top level OSCAL model within the trestle dist directory."""
         log.set_log_level_from_args(args)
         logger.info(f'Assembling models of type {model_alias}.')
-        trestle_root = fs.get_trestle_project_root(Path.cwd())
-        if not trestle_root:
-            logger.error(f'Current working directory {Path.cwd()} is not with a trestle project.')
-            return 1
-        if not trestle_root == Path.cwd():
-            logger.error(f'Current working directory {Path.cwd()} is not the top level trestle project directory.')
+
+        trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
+        if not trestle_root or not fs.is_valid_project_root(args.trestle_root):
+            logger.error(f'Given directory {trestle_root} is not a trestle project.')
             return 1
 
         model_names = []
@@ -155,7 +152,7 @@ class AssembleCmd(CommandPlusDocs):
             model_names = [args.name]
             logger.info(f'Assembling single model of type {model_alias}: {args.name}.')
         else:
-            model_names = fs.get_models_of_type(model_alias)
+            model_names = fs.get_models_of_type(model_alias, trestle_root)
             nmodels = len(model_names)
             logger.info(f'Assembling {nmodels} found models of type {model_alias}.')
         if len(model_names) == 0:
@@ -164,7 +161,7 @@ class AssembleCmd(CommandPlusDocs):
 
         for model_name in model_names:
             # contruct path to the model file name
-            root_model_dir = Path.cwd() / fs.model_type_to_model_dir(model_alias)
+            root_model_dir = trestle_root / fs.model_type_to_model_dir(model_alias)
             try:
                 model_file_type = fs.get_contextual_file_type(root_model_dir / model_name)
             except Exception as e:
