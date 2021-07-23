@@ -16,10 +16,9 @@
 
 import configparser
 import logging
-import json
 import pathlib
 import traceback
-from typing import Any, Dict, List, Optional
+from typing import Optional
 
 from trestle.core import const
 from trestle.tasks.base_task import TaskBase
@@ -58,7 +57,8 @@ class OscoToOscal(TaskBase):
         logger.info(f'Help information for {self.name} task.')
         logger.info('')
         logger.info(
-            'Purpose: Transform Osco files into Open Security Controls Assessment Language (OSCAL) partial results files.'
+            'Purpose: Transform Osco files into Open Security Controls Assessment Language (OSCAL) '
+            + 'partial results files.'
         )
         logger.info('')
         logger.info('Configuration flags sit under [task.osco-to-oscal]:')
@@ -71,11 +71,14 @@ class OscoToOscal(TaskBase):
             '  quiet = (optional) true or false [default]; display file creations and rules analysis when false.'
         )
         logger.info(
-            '  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Osco report is used if present, otherwise current time is used.'
+            '  timestamp = (optional) timestamp for the Observations in ISO 8601 format, such as '
+            + ' 2021-01-04T00:05:23+04:00 for example; if not specified then value for "Timestamp" key in the Osco '
+            + ' report is used if present, otherwise current time is used.'
         )
         logger.info('')
         logger.info(
-            'Operation: A transformation is performed on one or more Osco input files to produce output in OSCAL partial results format.'
+            'Operation: A transformation is performed on one or more Osco input files to produce output in OSCAL '
+            + 'partial results format.'
         )
 
     def simulate(self) -> TaskOutcome:
@@ -100,17 +103,21 @@ class OscoToOscal(TaskBase):
             return TaskOutcome(mode + 'failure')
 
     def _transform_work(self) -> TaskOutcome:
-        """Transformation work steps: read input, process, write output, display analysis."""
+        """
+        Perform transformation work steps.
+
+        Work steps: read input, process, write output, display analysis
+        """
         mode = ''
         if self._simulate:
             mode = 'simulated-'
         if not self._config:
-            logger.error(f'config missing')
+            logger.error('config missing')
             return TaskOutcome(mode + 'failure')
         # process config
         idir = self._config.get('input-dir')
         if idir is None:
-            logger.error(f'config missing "input-dir"')
+            logger.error('config missing "input-dir"')
             return TaskOutcome(mode + 'failure')
         ipth = pathlib.Path(idir)
         odir = self._config.get('output-dir')
@@ -123,8 +130,8 @@ class OscoToOscal(TaskBase):
         if timestamp is not None:
             try:
                 OscoTransformer.set_timestamp(timestamp)
-            except Exception as e:
-                logger.error(f'config invalid "timestamp"')
+            except Exception:
+                logger.error('config invalid "timestamp"')
                 return TaskOutcome(mode + 'failure')
         # insure output dir exists
         opth.mkdir(exist_ok=True, parents=True)
