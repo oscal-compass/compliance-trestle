@@ -48,6 +48,7 @@ def find_values_by_name_generic(object_of_interest: Any, var_name: str) -> List[
             o_iter = iter(object_of_interest)
         except Exception:
             # it is not a dict and not iterable
+            logger.warning('We really should not be here.')
             pass
         else:
             next_item = next(o_iter, None)
@@ -84,6 +85,7 @@ def find_values_by_type(object_of_interest: Any, type_of_interest: Type[TG]) -> 
             o_iter = iter(object_of_interest)
         except Exception:
             # it is not a dict and not iterable
+            logger.debug('we should not be here')
             pass
         else:
             next_item = next(o_iter, None)
