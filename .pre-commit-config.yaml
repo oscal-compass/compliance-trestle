@@ -32,7 +32,7 @@ repos:
             pep8-naming,
           ]
         files: "^(tests|scripts)"
-        exclude: "(oscal|third_party)"
+        exclude: "(oscal/|third_party)"
         stages: [commit]
       - id: flake8
         args: [--extend-ignore, "P1,C812,C813,C814,C815,C816,W503,W605", "--illegal-import-packages=filecmp"]
@@ -59,7 +59,7 @@ repos:
             dlint  
           ]
         files: "^(trestle)"
-        exclude: "(oscal)"
+        exclude: "(oscal/)"
         stages: [commit]
   - repo: https://github.com/executablebooks/mdformat
     rev: 0.7.7
