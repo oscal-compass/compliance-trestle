@@ -171,7 +171,7 @@ def test_make_relative():
     """Test make relative path."""
     p = ElementPath('catalog.groups')
     path = pathlib.Path('catalog/groups/controls')
-    assert p.make_relative(path) == False
+    assert not p.make_relative(path)
 
     path = pathlib.Path('profiles/controls')
-    assert p.make_relative(path) == False
+    assert not p.make_relative(path)
