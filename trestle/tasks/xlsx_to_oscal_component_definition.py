@@ -625,7 +625,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             for value in values.split(','):
                 int(value)
             retval = True
-        except:
+        except Exception:
             retval = False
         return retval
 
@@ -635,7 +635,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             for value in values.split(','):
                 float(value)
             retval = True
-        except:
+        except Exception:
             retval = False
         return retval
 
