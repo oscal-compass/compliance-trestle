@@ -71,10 +71,7 @@ class SplitCmd(CommandPlusDocs):
 
     def _init_arguments(self) -> None:
         self.add_argument(
-            f'-{const.ARG_FILE_SHORT}',
-            f'--{const.ARG_FILE}',
-            help=const.ARG_DESC_FILE + ' to split.',
-            required=False
+            f'-{const.ARG_FILE_SHORT}', f'--{const.ARG_FILE}', help=const.ARG_DESC_FILE + ' to split.', required=False
         )
         self.add_argument(
             f'-{const.ARG_ELEMENT_SHORT}',
@@ -93,30 +90,34 @@ class SplitCmd(CommandPlusDocs):
         # remove any quotes passed in as on windows platforms
         elements_clean: str = args_raw[const.ARG_ELEMENT].strip("'")
 
-        file_path_list: List[Tuple[str, str]]
+        file_path_list: List[Tuple[str, str]] = []
 
-        if const.ARG_FILE in args_raw:
-            file_path_list.append(args_raw[const.ARG_FILE], elements_clean)
+        if const.ARG_FILE in args_raw and args_raw[const.ARG_FILE] is not None:
+            file_path_list.append((args_raw[const.ARG_FILE], elements_clean))
         else:
-            # cwd must be in the model directory
-            # if element name starts with module then use it as absolute path
-            # else it must refer to item in current directory
-            trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
-            if trestle_root is None:
-                logger.warning('If file is not provided for split then cwd must be in a trestle project.')
+            # cwd must be in the model directory if file to split is not specified
+            # find top directory for this model based on trestle root and cwd
+            model_dir = fs.get_project_model_path(pathlib.Path.cwd())
+            if model_dir is None:
+                logger.warning('Current directory must be within a model directory if file is not specified')
                 return 1
+
+            content_type: FileContentType = FileContentType.dir_to_content_type(model_dir)
 
             # determine the file needed for each split path
             element_paths = elements_clean.split(',')
             for path in element_paths:
-                try:
-                    file_path = ElementPath(path).get_preceding_path().to_file_path(FileContentType.JSON, str(trestle_root))
-                except TrestleError as e:
-                    logger.warning(f'Cannot determine file path from element path {path} {e}')
+                element_path = ElementPath(path)
+                # if element path is relative use directory context to determine absolute path
+                element_path.make_absolute(model_dir)
+                file_path = element_path.find_last_file_in_path(content_type, model_dir)
+                # now make the element path relative to the model file to be loaded
+                if file_path is None or not element_path.make_relative(file_path.relative_to(model_dir)):
+                    logger.warning(f'Unable to match element path with files in model directory {element_path}')
                     return 1
-                file_path_list.append((file_path, path))
+                file_path_list.append((file_path, element_path.to_string()))
 
-        # match paths to corresponding files
+        # match paths to corresponding files since several paths may be split from the same file
         file_path_dict: Dict[str, str] = {}
         for file_path in file_path_list:
             key = file_path[0]
@@ -127,7 +128,7 @@ class SplitCmd(CommandPlusDocs):
                 current_path = file_path_dict[key]
                 file_path_dict[key] = f'{current_path},{path}'
 
-        for raw_file_name, element_path in file_path_dict:
+        for raw_file_name, element_path in file_path_dict.items():
             file_path = pathlib.Path(raw_file_name).resolve()
             if not file_path.exists():
                 logger.error(f'File {file_path} does not exist.')
@@ -157,7 +158,9 @@ class SplitCmd(CommandPlusDocs):
             # need the file name relative to the base directory
             file_name_no_path = str(file_path.name)
 
-            split_plan = self.split_model(model, element_paths, base_dir, content_type, file_name_no_path, aliases_to_strip)
+            split_plan = self.split_model(
+                model, element_paths, base_dir, content_type, file_name_no_path, aliases_to_strip
+            )
 
             # Simulate the plan
             # if it fails, it would throw errors and get out of this command

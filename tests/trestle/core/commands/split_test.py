@@ -353,11 +353,12 @@ def test_split_run_failures(
     # create trestle project
     test_utils.ensure_trestle_config_dir(tmp_path)
 
-    # no file specified
-    testargs = ['trestle', 'split', '-e', 'component-definition.metadata, component-definition.components.*']
+    # no file specified and garbage element
+    testargs = ['trestle', 'split', '-e', 'foo.bar']
     with patch.object(sys, 'argv', testargs):
         rc = Trestle().run()
         assert rc > 0
+
     # check with missing file
     testargs = [
         'trestle',
@@ -614,8 +615,13 @@ def test_no_file_given(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatal
     args = argparse.Namespace(element='catalog.metadata', verbose=1)
     assert SplitCmd()._run(args) == 0
 
-    # merge receives an element path not a file path
-    # so need to chdir to where the file is
+    os.chdir('./catalog')
+
+    args = argparse.Namespace(element='metadata.roles', verbose=1)
+    assert SplitCmd()._run(args) == 0
+
+    assert (catalog_dir / 'catalog/metadata/roles.json').exists()
+
     os.chdir(catalog_dir)
     args = argparse.Namespace(element='catalog.*', verbose=1)
     assert MergeCmd()._run(args) == 0

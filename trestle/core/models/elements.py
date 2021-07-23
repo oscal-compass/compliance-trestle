@@ -149,6 +149,52 @@ class ElementPath:
 
         return self._preceding_path
 
+    def find_last_file_in_path(self, content_type: FileContentType, model_dir: pathlib.Path) -> pathlib.Path:
+        """Find the last (nearest) existing file in the element path leading to this element."""
+        # model dir is the top level dir for this model, e.g. catalogs/mycat
+        path = model_dir
+        extension = FileContentType.to_file_extension(content_type)
+        good_model: pathlib.Path = None
+        for element in self._path:
+            if element == '*':
+                break
+            model_file = (path / element).with_suffix(extension)
+            if not model_file.exists():
+                break
+            path = path / element
+            good_model = model_file
+        return good_model
+
+    def make_absolute(self, model_dir: pathlib.Path):
+        """Make the parts absolute from the top model dir."""
+        # Match the current relative path to the model directory and current directory
+        # If it is an absolute path already this is trivial
+        # But if it is a relative path it must be relative to current directory in the model
+
+        # if first element is a model type it is already absolute
+        if self._path[0] not in const.MODEL_TYPE_LIST:
+            cwd = pathlib.Path.cwd()
+            rel_path = list(cwd.relative_to(model_dir).parts)
+            rel_path.extend(self._path)
+            self._path = rel_path
+
+    def make_relative(self, model_relative_path: pathlib.Path) -> bool:
+        """Make the parts relative to the model path."""
+        # The element path should currently be absolute
+        # The model relative path should be relative to the top leve of the model
+        # Change the element path to be relative to the model being loaded
+        rel_path_parts = model_relative_path.parts[:-1]
+        n_rel_parts = len(rel_path_parts)
+        if n_rel_parts >= len(self._path):
+            return False
+        # confirm the leading parts match
+        for ii in range(n_rel_parts):
+            if rel_path_parts[ii] != self._path[ii]:
+                return False
+        # chop off the leading parts of the absolute element path
+        self._path = self._path[n_rel_parts:]
+        return True
+
     def to_file_path(self, content_type: FileContentType = None, root_dir: str = '') -> pathlib.Path:
         """Convert to a file or directory path for the element path.
 
