@@ -19,7 +19,7 @@ import bz2
 import logging
 import uuid
 from typing import Any, Dict, List, ValuesView
-from xml.etree.ElementTree import Element
+from xml.etree.ElementTree import Element  # noqa: S405 - used for typing only
 
 from defusedxml import ElementTree
 
@@ -188,7 +188,7 @@ class ComplianceOperatorReport():
     def _parse_xml(self) -> RuleUse:
         """Parse the stringified XML."""
         results = self.osco_xml
-        root = ElementTree.fromstring(results)
+        root = ElementTree.fromstring(results, forbid_dtd=True)
         version = self._get_version(root)
         target = self._get_target(root)
         target_type = self._get_target_type(root)

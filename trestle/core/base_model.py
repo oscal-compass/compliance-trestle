@@ -368,8 +368,6 @@ class OscalBaseModel(BaseModel):
 
         """
         recast_object = existing_oscal_object.copy_to(self.__class__)
-        # This is a sanity check
-        assert (self.__class__ == recast_object.__class__)
         for raw_field in self.__dict__.keys():
             self.__dict__[raw_field] = recast_object.__dict__[raw_field]
 

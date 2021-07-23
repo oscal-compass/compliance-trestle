@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Script to normalize oscal after significant changes with version 1.0.0
+Script to normalize oscal after significant changes with version 1.0.0.
 
 It then reorders the classes so there are minimal forwards required.
 This script is normally called by gen_oscal.py when models are generated.
@@ -179,6 +179,7 @@ class ClassText():
 
     @staticmethod
     def generate_all_body_text(classes):
+        """Get teh body of all classses into text."""
         new_classes = []
         for c in classes:
             c.generate_body_text()
@@ -261,9 +262,9 @@ def reorder(fstem, class_list):
     for c in class_list:
         all_class_names.append(c.name)
 
-    dups = set([x for x in all_class_names if all_class_names.count(x) > 1])
+    dups = {x for x in all_class_names if all_class_names.count(x) > 1}
     if len(dups) > 0:
-        print(f"ERROR Duplicate classes in {fstem}: {' '.join(dups)}")
+        logger.error(f'ERROR Duplicate classes in {fstem}: {" ".join(dups)}')
 
     # find direct references for each class in list
     for n, c in enumerate(class_list):
@@ -343,10 +344,10 @@ def load_classes(fstem):
                     p = re.compile(r'.*Optional\[Union\[([^,]+),.*List\[Any\]')
                     refs = p.findall(r)
                     if len(refs) == 1:
-                        print(f'Replaced Any with {refs[0]} in {fstem}')
+                        logger.info(f'Replaced Any with {refs[0]} in {fstem}')
                         r_orig = r
                         r = r.replace('List[Any]', f'List[{refs[0]}]')
-                        print(f'{r_orig} -> {r}')
+                        logger.info(f'{r_orig} -> {r}')
                     class_text.add_line(r.rstrip())
 
     all_classes.append(class_text)  # don't forget final class
@@ -491,7 +492,7 @@ def is_common(cls):
     return True
 
 
-def list_to_file_classes(classes):
+def _list_to_file_classes(classes):
     file_classes = {}
     for stem in fstems:
         file_classes[stem] = []
@@ -502,7 +503,7 @@ def list_to_file_classes(classes):
     return file_classes
 
 
-def file_classes_to_list(file_classes, exclude_common):
+def _file_classes_to_list(file_classes, exclude_common):
     classes = []
     for item in file_classes.items():
         if item[0] == 'common' and exclude_common:
@@ -553,7 +554,7 @@ def refine_split(file_classes):
     return file_classes
 
 
-def find_in_classes(name, file_classes):
+def _find_in_classes(name, file_classes):
     # debugging utility
     found = []
     for item in file_classes.items():
@@ -563,7 +564,7 @@ def find_in_classes(name, file_classes):
     return found
 
 
-def find_in_class_list(name, classes):
+def _find_in_class_list(name, classes):
     # debugging utility
     found = []
     for c in classes:
@@ -739,7 +740,7 @@ def strip_file(classes):
     return apply_changes_to_class_list(classes, changes)
 
 
-def strip_all_files(file_classes):
+def _strip_all_files(file_classes):
     for item in file_classes.items():
         stem = item[0]
         if item[0] != 'common':
@@ -758,19 +759,20 @@ def update_refs_per_file(classes):
 
 
 def normalize_files():
+    """Clean up classes to minimise cross reference."""
     all_classes = load_all_classes()
 
     # kill the min_items immediately
     uc = kill_min_items(all_classes)
 
     # organize in a dict with filename as key
-    file_classes = list_to_file_classes(all_classes)
+    file_classes = _list_to_file_classes(all_classes)
 
     # strip all names and bodies
-    file_classes = strip_all_files(file_classes)
+    file_classes = _strip_all_files(file_classes)
 
     # convert dict to single list of classes with expected duplicates
-    uc = file_classes_to_list(file_classes, True)
+    uc = _file_classes_to_list(file_classes, True)
 
     # find all unique classes based on body text
     uc = find_unique_classes(uc)

@@ -20,7 +20,7 @@ import pathlib
 import zlib
 from typing import Dict, List
 from urllib.parse import unquote
-from xml.etree.ElementTree import Element
+from xml.etree.ElementTree import Element  # noqa: S405 - For typing purposes only
 
 import defusedxml.ElementTree
 
@@ -49,7 +49,7 @@ class DrawIO(object):
             logger.error(f'Candidate drawio file {str(self.file_path)} does not exist or is a directory')
             raise err.TrestleError(f'Candidate drawio file {str(self.file_path)} does not exist or is a directory')
         try:
-            raw_xml = defusedxml.ElementTree.parse(self.file_path)
+            raw_xml = defusedxml.ElementTree.parse(self.file_path, forbid_dtd=True)
         except Exception as e:
             logger.error(f'Exception loading Element tree from file: {e}')
             raise err.TrestleError(f'Exception loading Element tree from file: {e}')
@@ -83,7 +83,7 @@ class DrawIO(object):
         # Assume b64 encode
         decoded = base64.b64decode(compressed_text)
         clean_text = unquote(zlib.decompress(decoded, -15).decode('utf8'))
-        element = defusedxml.ElementTree.fromstring(clean_text)
+        element = defusedxml.ElementTree.fromstring(clean_text, forbid_dtd=True)
         if not element.tag == 'mxGraphModel':
             raise err.TrestleError('Unknown data structure within a compressed drawio file.')
         return element
@@ -97,15 +97,12 @@ class DrawIO(object):
             md_dict: Dict[str, str] = {}
             # Drawio creates data within a root and then an object element type
             children = list(diagram)
-            # Assert to test I believe this is always true (but for last resort handling)
-            assert len(children) == 1
             root_obj = children[0]
             md_objects = root_obj.findall('object')
             # Should always be true - to test presumptions.
             if len(md_objects) == 0:
                 md_list.append(md_dict)
                 continue
-            assert len(md_objects) == 1
             items = md_objects[0].items()
             for item in items:
                 key = item[0]
