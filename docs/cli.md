@@ -243,11 +243,15 @@ This command allows users to further decompose a trestle model into additional s
 
 The following options are currently supported:
 
-- `-f or --file`: this option specifies the file path of the json/yaml file containing the elements that will be split.
-- `-e or --elements`: specifies the model subcomponent element(s) (JSON/YAML property path) that is/are going to be split. Multiple elements can be specified at once using a comma-separated value. If the element is of JSON/YAML type array list and you want trestle to create a separate subcomponent file per array item, the element needs to be suffixed with `.*`. If the suffix is not specified, split will place all array items in only one separate subcomponent file. If the element is a collection of JSON Schema additionalProperties and you want trestle to create a separate subcomponent file per additionalProperties item, the element also needs to be suffixed with `.*`. Similarly, not adding the suffix will place all additionalProperties items in only one separate subcomponent file.
+- `-f or --file`: this is optional and specifies the file path of the json/yaml file containing the elements that will be split.
+- `-e or --elements`: specifies the model subcomponent element(s) (JSON/YAML property path) that is/are going to be split. Multiple elements can be specified at once using a comma-separated value, e.g `-e 'catalog.metadata,catalog.groups'`.  Make sure to include the quotes that enclose the comma-separated paths.
 
-In the near future, `trestle split` should be smart enough to figure out which json/yaml files contain the elemenets you want to split. In that case, the `-f` option would be deprecated and only the `-e` option will be required. In order to determine which elements the user can split at the level the command is being executed, the following command can be used:
-`trestle split -l` which would be the same as `trestle split --list-available-elements`
+If the element is of JSON/YAML type array list and you want trestle to create a separate subcomponent file per array item, the element needs to be suffixed with `.*`, e.g. `-e catalog.groups.*`. If the suffix is not specified, split will place all array items in only one separate subcomponent file, e.g. `groups.json`.
+
+If you just want to split a file into all its constituent parts and the file does not contain a simple list of objects, you can still use `*` and the file will be split into all its non-trivial elements.  Thus if you split a catalog with `-e catalog.*` the result will be a new directory, `catalog`, containing files representing the large items, `back-matter.json, groups.json and metadata.json`, but there will still be a `catalog.json` file containing just the catalog's `uuid`.  Small items such as strings and dates cannot be split off and will remain in the original model file that is being split.
+
+If the `-f or --file` option is not specified, the file to split will be determined from the elements specified, in the context of the current working directory.  The current directory must be
+within a specific model (e.g. `catalog` or `profile`), and the element paths must either be absolute (e.g. `catalog.metadata.roles`) or relative to the current working directory.  For example, if you are in `catalogs/mycat/catalog/groups` and you want to split the file `00000__group.json`, you must use `-f` to specify the filename, and the element path can either be absolute, as `catalog.group.*`, or you can set the current working directory to where the file is and use element path `group.*`.  This makes it easier to specify splits when deep in a directory structure.
 
 ## `trestle merge`
 

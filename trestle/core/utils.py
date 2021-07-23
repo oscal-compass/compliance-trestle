@@ -92,6 +92,9 @@ def classname_to_alias(classname: str, mode: str) -> str:
     suffix = classname.split('.')[-1]
 
     if mode == 'json':
+        # things like class_ should just be class
+        if suffix[-1] == '_':
+            suffix = suffix[:-1]
         return camel_to_dash(suffix).rstrip('1234567890')
     elif mode == 'field':
         return camel_to_snake(suffix).rstrip('1234567890')

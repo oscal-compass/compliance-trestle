@@ -610,17 +610,20 @@ def test_no_file_given(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatal
 
     catalog_dir = trestle_root / 'catalogs' / cat_name
     catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
-    os.chdir(catalog_dir)
 
-    args = argparse.Namespace(element='catalog.metadata', verbose=1)
+    os.chdir(catalog_dir)
+    args = argparse.Namespace(element='catalog.groups', verbose=1)
     assert SplitCmd()._run(args) == 0
+    assert (catalog_dir / 'catalog/groups.json').exists()
 
     os.chdir('./catalog')
-
-    args = argparse.Namespace(element='metadata.roles', verbose=1)
+    args = argparse.Namespace(element='groups.*', verbose=1)
     assert SplitCmd()._run(args) == 0
+    assert (catalog_dir / 'catalog/groups/00000__group.json').exists()
 
-    assert (catalog_dir / 'catalog/metadata/roles.json').exists()
+    os.chdir('./groups')
+    args = argparse.Namespace(file='00000__group.json', element='group.*', verbose=1)
+    assert SplitCmd()._run(args) == 0
 
     os.chdir(catalog_dir)
     args = argparse.Namespace(element='catalog.*', verbose=1)
