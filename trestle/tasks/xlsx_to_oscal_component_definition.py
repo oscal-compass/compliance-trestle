@@ -142,8 +142,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
         if catalog_file is None:
             logger.error('config missing "catalog-file"')
             return TaskOutcome('failure')
-        catalog_helper = CatalogHelper(catalog_file)
-        if not catalog_helper.exists():
+        self.catalog_helper = CatalogHelper(catalog_file)
+        if not self.catalog_helper.exists():
             logger.error('"catalog-file" not found')
             return TaskOutcome('failure')
         spread_sheet = self._config.get('spread-sheet-file')
@@ -170,7 +170,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
             logger.error(f'output: {ofile} already exists')
             return TaskOutcome('failure')
         # initialize
-        defined_components = []
+        self.component_names = []
+        self.defined_components = []
         # load the .xlsx contents
         wb = load_workbook(spread_sheet)
         sheet_name = self._config.get('work-sheet-name')
@@ -178,60 +179,21 @@ class XlsxToOscalComponentDefinition(TaskBase):
             logger.error('config missing "work-sheet-name"')
             return TaskOutcome('failure')
         work_sheet = wb[sheet_name]
-        component_names = []
-        parameters = {}
-        parameter_helper = None
+        self.parameters = {}
+        self.parameter_helper = None
         # accumulators
         self.rows_missing_goal_name_id = []
         self.rows_missing_controls = []
         self.rows_missing_parameters = []
         self.rows_missing_parameters_values = []
-        # roles
-        roles = [
-            Role(id='prepared-by', title='Indicates the organization that created this content.'),
-            Role(id='prepared-for', title='Indicates the organization for which this content was created..'),
-            Role(
-                id='content-approver',
-                title='Indicates the organization responsible for all content represented in the "document".'
-            ),
-        ]
-        # parties
+        # roles, responsible_roles, parties, responsible parties
         party_uuid_01 = str(uuid.uuid4())
         party_uuid_02 = str(uuid.uuid4())
         party_uuid_03 = str(uuid.uuid4())
-        parties = [
-            Party(uuid=party_uuid_01, type='organization', name=self._get_org_name(), remarks=self._get_org_remarks()),
-            Party(
-                uuid=party_uuid_02,
-                type='organization',
-                name='Customer',
-                remarks='organization to be customized at account creation only for their Component Definition'
-            ),
-            Party(
-                uuid=party_uuid_03,
-                type='organization',
-                name='ISV',
-                remarks='organization to be customized at ISV subscription only for their Component Definition'
-            ),
-        ]
-        # responsible parties
-        prepared_by = ResponsibleParty(role_id='prepared-by', party_uuids=[party_uuid_01])
-        prepared_for = ResponsibleParty(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
-        content_approver = ResponsibleParty(role_id='content-approver', party_uuids=[party_uuid_01])
-        responsible_parties = [
-            prepared_by,
-            prepared_for,
-            content_approver,
-        ]
-        # responsible-roles
-        role_prepared_by = ResponsibleRole(role_id='prepared-by', party_uuids=[party_uuid_01])
-        role_prepared_for = ResponsibleRole(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
-        role_content_approver = ResponsibleRole(role_id='content-approver', party_uuids=[party_uuid_01])
-        responsible_roles = [
-            role_prepared_by,
-            role_prepared_for,
-            role_content_approver,
-        ]
+        roles = self._build_roles()
+        responsible_roles = self._build_responsible_roles(party_uuid_01, party_uuid_02, party_uuid_03)
+        parties = self._build_parties(party_uuid_01, party_uuid_02, party_uuid_03)
+        responsible_parties = self._build_responsible_parties(party_uuid_01, party_uuid_02, party_uuid_03)
         # process each row of spread sheet
         for row in self._row_generator(work_sheet):
             # quit when first row with no goal_id encountered
@@ -241,114 +203,22 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 continue
             # component
             component_name = self._get_component_name(work_sheet, row)
-            if component_name not in component_names:
-                component_names.append(component_name)
-                component_title = component_name
-                component_description = component_name
-                defined_component = DefinedComponent(
-                    uuid=str(uuid.uuid4()),
-                    description=component_description,
-                    title=component_title,
-                    type='Service',
-                )
-                defined_components.append(defined_component)
-            else:
-                for defined_component in defined_components:
-                    if component_name == defined_component.title:
-                        break
+            defined_component = self._get_defined_component(component_name)
             # parameter
             parameter_name, parameter_description = self._get_parameter_name_and_description(work_sheet, row)
-            usage = self._get_parameter_usage(work_sheet, row)
-            if parameter_name is not None:
-                parameter_name = parameter_name.strip()
-                if ' ' in parameter_name:
-                    parameter_name = parameter_name.replace(' ', '_')
-                    logger.info(f'row={row} edited {parameter_name} to remove whitespace')
-                values = self._get_parameter_values(work_sheet, row)
-                guidelines = self._get_guidelines(values)
-                href = self._get_namespace() + '/' + component_name.replace(' ', '%20')
-                parameter_helper = ParameterHelper(
-                    values=values,
-                    id_=parameter_name,
-                    label=parameter_description,
-                    href=href,
-                    usage=usage,
-                    guidelines=guidelines,
-                )
-                parameters[str(uuid.uuid4())] = parameter_helper.get_parameter()
+            self._add_parameter(row, work_sheet, component_name, parameter_name, parameter_description)
             # implemented requirements
-            implemented_requirements = []
-            goal_remarks = self._get_goal_remarks(work_sheet, row)
-            parameter_value_default = self._get_parameter_value_default(work_sheet, row)
-            for control in controls.keys():
-                control_uuid = self._get_control_uuid(control)
-                prop1 = Property(
-                    name='goal_name_id',
-                    class_=self._get_class_for_property_name('goal_name_id'),
-                    value=goal_name_id,
-                    ns=self._get_namespace(),
-                    remarks=Remarks(__root__=str(goal_remarks))
-                )
-                prop2 = Property(
-                    name='goal_version',
-                    class_=self._get_class_for_property_name('goal_version'),
-                    value=self._get_goal_version(),
-                    ns=self._get_namespace(),
-                    remarks=Remarks(__root__=str(goal_name_id))
-                )
-                props = [prop1, prop2]
-                control_id, status = catalog_helper.find_control_id(control)
-                if control_id is None:
-                    logger.info(f'row {row} control {control} not found in catalog')
-                    control_id = control
-                # implemented_requirement
-                implemented_requirement = ImplementedRequirement(
-                    uuid=control_uuid,
-                    description=control,
-                    props=props,
-                    control_id=control_id,
-                    responsible_roles=responsible_roles,
-                )
-                # statements
-                control_statements = controls[control]
-                if len(control_statements) > 0:
-                    statements = []
-                    for control_statement in control_statements:
-                        statement_id = control + control_statement
-                        if any(i in control for i in '()'):
-                            control = control.replace('(', '_')
-                            control = control.replace(')', '')
-                            logger.info(f'row {row} control {control} edited to remove parentheses')
-                        statement = Statement(
-                            statement_id=control,
-                            uuid=str(uuid.uuid4()),
-                            description=f'{component_name} implements {statement_id}'
-                        )
-                        statements.append(statement)
-                    implemented_requirement.statements = statements
-                # set_parameters
-                if parameter_name is None:
-                    if row not in self.rows_missing_parameters:
-                        self.rows_missing_parameters.append(row)
-                else:
-                    parameter_name = parameter_name.replace(' ', '_')
-                    if parameter_value_default is None:
-                        if row not in self.rows_missing_parameters_values:
-                            self.rows_missing_parameters_values.append(row)
-                    else:
-                        values = [parameter_value_default]
-                        set_parameter = SetParameter(param_id=parameter_name, values=values)
-                        set_parameters = [set_parameter]
-                        implemented_requirement.set_parameters = set_parameters
-                # implemented_requirements
-                implemented_requirements.append(implemented_requirement)
+            self.implemented_requirements = []
+            self._add_implemented_requirements(
+                row, work_sheet, controls, component_name, parameter_name, responsible_roles, goal_name_id
+            )
             # control implementations
             control_implementation = ControlImplementation(
                 uuid=str(uuid.uuid4()),
                 source=self._get_catalog_url(),
                 description=component_name + ' implemented controls for ' + self._get_catalog_title()
                 + '. It includes assessment asset configuration for CICD."',
-                implemented_requirements=implemented_requirements,
+                implemented_requirements=self.implemented_requirements,
             )
             if defined_component.control_implementations is None:
                 defined_component.control_implementations = [control_implementation]
@@ -367,13 +237,197 @@ class XlsxToOscalComponentDefinition(TaskBase):
         component_definition = ComponentDefinition(
             uuid=str(uuid.uuid4()),
             metadata=metadata,
-            components=defined_components,
+            components=self.defined_components,
         )
         # write OSCAL ComponentDefinition to file
         if self._verbose:
             logger.info(f'output: {ofile}')
         component_definition.oscal_write(pathlib.Path(ofile))
         # issues
+        self._report_issues()
+        # <hack>
+        # create a catalog containing the parameters,
+        # since parameters are not supported in OSCAL 1.0.0 component definition
+        self._write_catalog()
+        # </hack>
+        return TaskOutcome('success')
+
+    def _add_implemented_requirements(
+        self, row, work_sheet, controls, component_name, parameter_name, responsible_roles, goal_name_id
+    ) -> None:
+        """Add implemented requirements."""
+        goal_remarks = self._get_goal_remarks(work_sheet, row)
+        parameter_value_default = self._get_parameter_value_default(work_sheet, row)
+        for control in controls.keys():
+            control_uuid = self._get_control_uuid(control)
+            prop1 = Property(
+                name='goal_name_id',
+                class_=self._get_class_for_property_name('goal_name_id'),
+                value=goal_name_id,
+                ns=self._get_namespace(),
+                remarks=Remarks(__root__=str(goal_remarks))
+            )
+            prop2 = Property(
+                name='goal_version',
+                class_=self._get_class_for_property_name('goal_version'),
+                value=self._get_goal_version(),
+                ns=self._get_namespace(),
+                remarks=Remarks(__root__=str(goal_name_id))
+            )
+            props = [prop1, prop2]
+            control_id, status = self.catalog_helper.find_control_id(control)
+            if control_id is None:
+                logger.info(f'row {row} control {control} not found in catalog')
+                control_id = control
+            # implemented_requirement
+            implemented_requirement = ImplementedRequirement(
+                uuid=control_uuid,
+                description=control,
+                props=props,
+                control_id=control_id,
+                responsible_roles=responsible_roles,
+            )
+            # add statements
+            self._add_statements(row, control, controls, component_name, implemented_requirement)
+            # add set_parameter
+            self._add_set_parameter(row, parameter_name, parameter_value_default, implemented_requirement)
+            # implemented_requirements
+            self.implemented_requirements.append(implemented_requirement)
+
+    def _add_parameter(self, row, work_sheet, component_name, parameter_name, parameter_description) -> None:
+        """Add_parameter."""
+        usage = self._get_parameter_usage(work_sheet, row)
+        if parameter_name is not None:
+            parameter_name = parameter_name.strip()
+            if ' ' in parameter_name:
+                parameter_name = parameter_name.replace(' ', '_')
+                logger.info(f'row={row} edited {parameter_name} to remove whitespace')
+            values = self._get_parameter_values(work_sheet, row)
+            guidelines = self._get_guidelines(values)
+            href = self._get_namespace() + '/' + component_name.replace(' ', '%20')
+            self.parameter_helper = ParameterHelper(
+                values=values,
+                id_=parameter_name,
+                label=parameter_description,
+                href=href,
+                usage=usage,
+                guidelines=guidelines,
+            )
+            self.parameters[str(uuid.uuid4())] = self.parameter_helper.get_parameter()
+
+    def _add_statements(self, row, control, controls, component_name, implemented_requirement) -> None:
+        """Add statements."""
+        control_statements = controls[control]
+        if len(control_statements) > 0:
+            statements = []
+            for control_statement in control_statements:
+                statement_id = control + control_statement
+                if any(i in control for i in '()'):
+                    control = control.replace('(', '_')
+                    control = control.replace(')', '')
+                    logger.info(f'row {row} control {control} edited to remove parentheses')
+                statement = Statement(
+                    statement_id=control,
+                    uuid=str(uuid.uuid4()),
+                    description=f'{component_name} implements {statement_id}'
+                )
+                statements.append(statement)
+            implemented_requirement.statements = statements
+
+    def _add_set_parameter(self, row, parameter_name, parameter_value_default, implemented_requirement) -> None:
+        """Add set parameter."""
+        if parameter_name is None:
+            if row not in self.rows_missing_parameters:
+                self.rows_missing_parameters.append(row)
+        else:
+            parameter_name = parameter_name.replace(' ', '_')
+            if parameter_value_default is None:
+                if row not in self.rows_missing_parameters_values:
+                    self.rows_missing_parameters_values.append(row)
+            else:
+                values = [parameter_value_default]
+                set_parameter = SetParameter(param_id=parameter_name, values=values)
+                set_parameters = [set_parameter]
+                implemented_requirement.set_parameters = set_parameters
+
+    def _get_defined_component(self, component_name):
+        """Get defined component."""
+        if component_name not in self.component_names:
+            # create new component
+            self.component_names.append(component_name)
+            component_title = component_name
+            component_description = component_name
+            defined_component = DefinedComponent(
+                uuid=str(uuid.uuid4()),
+                description=component_description,
+                title=component_title,
+                type='Service',
+            )
+            self.defined_components.append(defined_component)
+        else:
+            # find existing component
+            for defined_component in self.defined_components:
+                if component_name == defined_component.title:
+                    break
+        return defined_component
+
+    def _build_roles(self):
+        """Build roles."""
+        value = [
+            Role(id='prepared-by', title='Indicates the organization that created this content.'),
+            Role(id='prepared-for', title='Indicates the organization for which this content was created..'),
+            Role(
+                id='content-approver',
+                title='Indicates the organization responsible for all content represented in the "document".'
+            ),
+        ]
+        return value
+
+    def _build_responsible_roles(self, party_uuid_01, party_uuid_02, party_uuid_03):
+        """Build responsible roles."""
+        role_prepared_by = ResponsibleRole(role_id='prepared-by', party_uuids=[party_uuid_01])
+        role_prepared_for = ResponsibleRole(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
+        role_content_approver = ResponsibleRole(role_id='content-approver', party_uuids=[party_uuid_01])
+        value = [
+            role_prepared_by,
+            role_prepared_for,
+            role_content_approver,
+        ]
+        return value
+
+    def _build_parties(self, party_uuid_01, party_uuid_02, party_uuid_03):
+        """Build parties."""
+        value = [
+            Party(uuid=party_uuid_01, type='organization', name=self._get_org_name(), remarks=self._get_org_remarks()),
+            Party(
+                uuid=party_uuid_02,
+                type='organization',
+                name='Customer',
+                remarks='organization to be customized at account creation only for their Component Definition'
+            ),
+            Party(
+                uuid=party_uuid_03,
+                type='organization',
+                name='ISV',
+                remarks='organization to be customized at ISV subscription only for their Component Definition'
+            ),
+        ]
+        return value
+
+    def _build_responsible_parties(self, party_uuid_01, party_uuid_02, party_uuid_03):
+        """Build responsible parties."""
+        prepared_by = ResponsibleParty(role_id='prepared-by', party_uuids=[party_uuid_01])
+        prepared_for = ResponsibleParty(role_id='prepared-for', party_uuids=[party_uuid_02, party_uuid_03])
+        content_approver = ResponsibleParty(role_id='content-approver', party_uuids=[party_uuid_01])
+        value = [
+            prepared_by,
+            prepared_for,
+            content_approver,
+        ]
+        return value
+
+    def _report_issues(self):
+        """Report issues."""
         if len(self.rows_missing_goal_name_id) > 0:
             logger.info(f'rows missing goal_name_id: {self.rows_missing_goal_name_id}')
         if len(self.rows_missing_controls) > 0:
@@ -382,25 +436,23 @@ class XlsxToOscalComponentDefinition(TaskBase):
             logger.info(f'rows missing parameters: {self.rows_missing_parameters}')
         if len(self.rows_missing_parameters_values) > 0:
             logger.info(f'rows missing parameters values: {self.rows_missing_parameters_values}')
-        # <hack>
-        # create a catalog containing the parameters,
-        # since parameters are not supported in OSCAL 1.0.0 component definition
-        if parameter_helper is not None:
+
+    def _write_catalog(self):
+        """Create a catalog containing the parameters."""
+        if self.parameter_helper is not None:
             tdir = self._config.get('output-dir')
             tdir = tdir.replace('component-definitions', 'catalogs')
             tpth = pathlib.Path(tdir)
             tname = 'catalog.json'
             tfile = tpth / tname
-            parameter_helper.write_parameters_catalog(
-                parameters=parameters,
+            self.parameter_helper.write_parameters_catalog(
+                parameters=self.parameters,
                 timestamp=self._timestamp,
                 oscal_version=OSCAL_VERSION,
                 version=__version__,
                 ofile=tfile,
                 verbose=self._verbose,
             )
-        # </hack>
-        return TaskOutcome('success')
 
     def _get_org_name(self) -> str:
         """Get org-name from config."""
@@ -564,8 +616,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 parameter_parts = combined_values
             if len(parameter_parts) != 2:
                 raise RuntimeError(f'row {row} col {col} unable to parse')
-            name = parameter_parts[1]
-            description = parameter_parts[0]
+            name = parameter_parts[1].strip()
+            description = parameter_parts[0].strip()
         value = name, description
         return value
 
