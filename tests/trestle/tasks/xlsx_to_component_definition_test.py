@@ -77,7 +77,7 @@ def test_xlsx_execute(tmp_path):
 
 
 def test_xlsx_execute_bogus_spread_sheet(tmp_path):
-    """Test execute call with bogus spread sheet."""
+    """Test execute call bogus spread sheet."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-component-definition.config')
     config.read(config_path)
@@ -90,7 +90,7 @@ def test_xlsx_execute_bogus_spread_sheet(tmp_path):
 
 
 def test_xlsx_execute_bogus_config(tmp_path):
-    """Test execute call with bogus config."""
+    """Test execute call bogus config."""
     section = None
     tgt = xlsx_to_oscal_component_definition.XlsxToOscalComponentDefinition(section)
     retval = tgt.execute()
@@ -98,7 +98,7 @@ def test_xlsx_execute_bogus_config(tmp_path):
 
 
 def test_xlsx_execute_missing_spread_sheet(tmp_path):
-    """Test execute call with missing spread sheet."""
+    """Test execute call missing spread sheet."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-component-definition.config')
     config.read(config_path)
@@ -138,8 +138,34 @@ def test_xlsx_execute_bad_entry(tmp_path):
     assert retval == TaskOutcome.FAILURE
 
 
+def test_xlsx_execute_missing_column_heading(tmp_path):
+    """Test execute call missing column heading."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-component-definition.config')
+    config.read(config_path)
+    section = config['task.xlsx-to-oscal-component-definition']
+    section['output-dir'] = str(tmp_path)
+    section['spread-sheet-file'] = 'tests/data/spread-sheet/missing_column_heading.xlsx'
+    tgt = xlsx_to_oscal_component_definition.XlsxToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
+def test_xlsx_execute_duplicate_column_heading(tmp_path):
+    """Test execute call duplicate column heading."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-component-definition.config')
+    config.read(config_path)
+    section = config['task.xlsx-to-oscal-component-definition']
+    section['output-dir'] = str(tmp_path)
+    section['spread-sheet-file'] = 'tests/data/spread-sheet/duplicate_column_heading.xlsx'
+    tgt = xlsx_to_oscal_component_definition.XlsxToOscalComponentDefinition(section)
+    retval = tgt.execute()
+    assert retval == TaskOutcome.FAILURE
+
+
 def test_xlsx_execute_missing_resource_title(tmp_path):
-    """Test execute call bad entry."""
+    """Test execute call missing resource title."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-component-definition.config')
     config.read(config_path)
@@ -152,7 +178,7 @@ def test_xlsx_execute_missing_resource_title(tmp_path):
 
 
 def test_xlsx_execute_catalog_missing(tmp_path):
-    """Test execute missing catalog call."""
+    """Test execute call missing catalog."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-component-definition.config')
     config.read(config_path)
@@ -165,7 +191,7 @@ def test_xlsx_execute_catalog_missing(tmp_path):
 
 
 def test_xlsx_execute_catalog_not_found(tmp_path):
-    """Test execute not found catalog call."""
+    """Test execute call catalog not found."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-component-definition.config')
     config.read(config_path)
@@ -178,7 +204,7 @@ def test_xlsx_execute_catalog_not_found(tmp_path):
 
 
 def test_xlsx_execute_spread_sheet_missing(tmp_path):
-    """Test execute missing spread_sheet call."""
+    """Test execute call spread sheet missing."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-component-definition.config')
     config.read(config_path)
@@ -191,7 +217,7 @@ def test_xlsx_execute_spread_sheet_missing(tmp_path):
 
 
 def test_xlsx_execute_spread_sheet_not_found(tmp_path):
-    """Test execute not found spread sheet call."""
+    """Test execute call spread sheet not found."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-component-definition.config')
     config.read(config_path)
@@ -204,7 +230,7 @@ def test_xlsx_execute_spread_sheet_not_found(tmp_path):
 
 
 def test_xlsx_execute_work_sheet_name_missing(tmp_path):
-    """Test execute missing work sheet name call."""
+    """Test execute call work sheet name missing."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/xlsx/test-xlsx-to-component-definition.config')
     config.read(config_path)

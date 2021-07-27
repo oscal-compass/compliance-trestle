@@ -20,9 +20,11 @@ import logging
 import pathlib
 import traceback
 import uuid
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from openpyxl import load_workbook
+from openpyxl.cell.cell import MergedCell
+from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
 from trestle import __version__
@@ -103,23 +105,36 @@ class XlsxToOscalComponentDefinition(TaskBase):
         logger.info('Purpose: From spread sheet and catalog produce OSCAL component definition file.')
         logger.info('')
         logger.info('Configuration flags sit under [task.xlsx-to-oscal-component-definition]:')
-        logger.info(
-            '  catalog-file      = (required) the path of the OSCAL catalog file, for example '
-            + self._get_catalog_title() + '.'
-        )
-        logger.info('  spread-sheet-file = (required) the path of the spread sheet file.')
-        logger.info('  work-sheet-name   = (required) the name of the work sheet in the spread sheet file.')
-        logger.info('                      column "a" contains goal ID.')
-        logger.info('                      column "b" contains goal text.')
-        logger.info('                      column "ac-ai" contains controls.')
-        logger.info('                      column "am" contains component name.')
-        logger.info('                      column "an" contains goal name.')
-        logger.info('                      column "ar" contains parameter name + description, separated by newline.')
-        logger.info('                      column "as" contains parameter values.')
-        logger.info(
-            '  output-dir        = (required) the path of the output directory for synthesized OSCAL .json files.'
-        )
-        logger.info('  output-overwrite  = (optional) true [default] or false; replace existing output when true.')
+        text1 = '  catalog-file      = '
+        text2 = '(required) the path of the OSCAL catalog file, for example ' + self._get_catalog_title() + '.'
+        logger.info(text1 + text2)
+        text1 = '  spread-sheet-file = '
+        text2 = '(required) the path of the spread sheet file.'
+        logger.info(text1 + text2)
+        text1 = '  work-sheet-name   = '
+        text2 = '(required) the name of the work sheet in the spread sheet file.'
+        logger.info(text1 + text2)
+        text1 = '                      '
+        text2 = 'column "ControlId" contains goal ID.'
+        logger.info(text1 + text2)
+        text2 = 'column "ControlText" contains goal text.'
+        logger.info(text1 + text2)
+        text2 = 'columns "NIST Mappings" contain controls.'
+        logger.info(text1 + text2)
+        text2 = 'column "ResourceTitle" contains component name.'
+        logger.info(text1 + text2)
+        text2 = 'column "goal_name_id" contains goal name.'
+        logger.info(text1 + text2)
+        text2 = 'column "Parameter [optional parameter]" contains parameter name + description, separated by newline.'
+        logger.info(text1 + text2)
+        text2 = 'column "Values [alternatives]" contains parameter values.'
+        logger.info(text1 + text2)
+        text1 = '  output-dir        = '
+        text2 = '(required) the path of the output directory for synthesized OSCAL .json files.'
+        logger.info(text1 + text2)
+        text1 = '  output-overwrite  = '
+        text2 = '(optional) true [default] or false; replace existing output when true.'
+        logger.info(text1 + text2)
 
     def simulate(self) -> TaskOutcome:
         """Provide a simulated outcome."""
@@ -172,6 +187,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
         # initialize
         self.component_names = []
         self.defined_components = []
+        self.parameters = {}
+        self.parameter_helper = None
         # load the .xlsx contents
         wb = load_workbook(spread_sheet)
         sheet_name = self._config.get('work-sheet-name')
@@ -179,8 +196,8 @@ class XlsxToOscalComponentDefinition(TaskBase):
             logger.error('config missing "work-sheet-name"')
             return TaskOutcome('failure')
         work_sheet = wb[sheet_name]
-        self.parameters = {}
-        self.parameter_helper = None
+        # map column headings to column letters
+        self._map_columns(work_sheet)
         # accumulators
         self.rows_missing_goal_name_id = []
         self.rows_missing_controls = []
@@ -251,6 +268,89 @@ class XlsxToOscalComponentDefinition(TaskBase):
         self._write_catalog()
         # </hack>
         return TaskOutcome('success')
+
+    def _map_columns(self, work_sheet) -> None:
+        """Map columns."""
+        self.map_name_to_letters = {}
+        columns = work_sheet.max_column
+        for column in range(1, columns + 1):
+            cell_value = self._cell_value(work_sheet, 1, column)
+            # equal
+            if self._fuzzy_equal('ControlId', cell_value):
+                self._add_column('ControlId', column, 1)
+            elif self._fuzzy_equal('ControlText', cell_value):
+                self._add_column('ControlText', column, 1)
+            elif self._fuzzy_equal('ResourceCategory', cell_value):
+                self._add_column('ResourceCategory', column, 1)
+            elif self._fuzzy_equal('Version', cell_value):
+                self._add_column('Version', column, 1)
+            elif self._fuzzy_equal('goal_name_id', cell_value):
+                self._add_column('goal_name_id', column, 1)
+            # in
+            elif self._fuzzy_in('NIST Mappings', cell_value):
+                self._add_column('NIST Mappings', column, 0)
+            elif self._fuzzy_in('ResourceTitle', cell_value):
+                self._add_column('ResourceTitle', column, 1)
+            # in and in
+            if self._fuzzy_in('Parameter', cell_value) and self._fuzzy_in('[optional parameter]', cell_value):
+                self._add_column('ParameterName', column, 1)
+            if self._fuzzy_in('Values', cell_value) and self._fuzzy_in('[alternatives]', cell_value):
+                self._add_column('ParameterValues', column, 1)
+        for name in ['ControlId',
+                     'ControlText',
+                     'ResourceCategory',
+                     'Version',
+                     'goal_name_id',
+                     'NIST Mappings',
+                     'ResourceTitle',
+                     'ParameterName',
+                     'ParameterValues']:
+            if name not in self.map_name_to_letters.keys():
+                raise RuntimeError(f'missing column {name}')
+
+    def _add_column(self, name, column, limit):
+        """Add column."""
+        if name not in self.map_name_to_letters:
+            self.map_name_to_letters[name] = []
+        if limit > 0:
+            if len(self.map_name_to_letters[name]) == limit:
+                raise RuntimeError(f'duplicate column {name} {get_column_letter(column)}')
+        self.map_name_to_letters[name].append(get_column_letter(column))
+
+    def _get_column_letter(self, name):
+        """Get column letter."""
+        value = self.map_name_to_letters[name]
+        if len(value) == 1:
+            value = value[0]
+        return value
+
+    def _fuzzy_equal(self, v1, v2) -> bool:
+        """Fuzzy equal."""
+        if v1 is None or v2 is None:
+            value = False
+        else:
+            value = v1.lower().replace(' ', '') == v2.lower().replace(' ', '')
+        return value
+
+    def _fuzzy_in(self, v1, v2) -> bool:
+        """Fuzzy in."""
+        if v1 is None or v2 is None:
+            value = False
+        else:
+            value = v1.lower().replace(' ', '') in v2.lower().replace(' ', '')
+        return value
+
+    def _cell_value(self, work_sheet, row, col) -> Any:
+        """Get value for cell, adjusting for merged cells."""
+        cell = work_sheet.cell(row, col)
+        retval = cell.value
+        if isinstance(cell, MergedCell):
+            # cell is merged
+            for mc_range in work_sheet.merged_cells.ranges:
+                coord = get_column_letter(col) + str(row)
+                if coord in mc_range:
+                    retval = mc_range.start_cell.value
+        return retval
 
     def _add_implemented_requirements(
         self, row, work_sheet, controls, component_name, parameter_name, responsible_roles, goal_name_id
@@ -519,13 +619,13 @@ class XlsxToOscalComponentDefinition(TaskBase):
 
     def _get_goal_id(self, work_sheet: t_work_sheet, row: t_row) -> t_goal_id:
         """Get goal_id from work_sheet."""
-        col = 'a'
+        col = self._get_column_letter('ControlId')
         value = work_sheet[col + str(row)].value
         return value
 
     def _get_goal_text(self, work_sheet: t_work_sheet, row: t_row) -> t_goal_text:
         """Get goal_text from work_sheet."""
-        col = 'b'
+        col = self._get_column_letter('ControlText')
         goal_text = work_sheet[col + str(row)].value
         # normalize & tokenize
         value = goal_text.replace('\t', ' ')
@@ -537,7 +637,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         Example: {'au-2': ['(a)', '(d)'], 'au-12': [], 'si-4': ['(a)', '(b)', '(c)']}
         """
         value = {}
-        for col in ['ac', 'ad', 'ae', 'af', 'ag', 'ah', 'ai']:
+        for col in self._get_column_letter('NIST Mappings'):
             control = work_sheet[col + str(row)].value
             if control is not None:
                 # remove blanks
@@ -593,7 +693,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
 
     def _get_goal_name_id(self, work_sheet: t_work_sheet, row: t_row) -> t_goal_name_id:
         """Get goal_name_id from work_sheet."""
-        col = 'an'
+        col = self._get_column_letter('goal_name_id')
         value = work_sheet[col + str(row)].value
         if value is None:
             self.rows_missing_goal_name_id.append(row)
@@ -605,7 +705,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         """Get parameter_name and description from work_sheet."""
         name = None
         description = None
-        col = 'ar'
+        col = self._get_column_letter('ParameterName')
         combined_values = work_sheet[col + str(row)].value
         if combined_values is not None:
             if '\n' in combined_values:
@@ -623,7 +723,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
 
     def _get_parameter_value_default(self, work_sheet: t_work_sheet, row: t_row) -> t_parameter_value:
         """Get parameter_value_default from work_sheet."""
-        col = 'as'
+        col = self._get_column_letter('ParameterValues')
         value = work_sheet[col + str(row)].value
         if value is not None:
             value = str(value).split(',')[0].strip()
@@ -631,7 +731,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
 
     def _get_parameter_values(self, work_sheet: t_work_sheet, row: t_row) -> t_parameter_values:
         """Get parameter_values from work_sheet."""
-        col = 'as'
+        col = self._get_column_letter('ParameterValues')
         value = work_sheet[col + str(row)].value
         if value is None:
             logger.info(f'row {row} col {col} missing value')
@@ -705,7 +805,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
 
     def _get_component_name(self, work_sheet: t_work_sheet, row: t_row) -> t_component_name:
         """Get component_name from work_sheet."""
-        col = 'am'
+        col = self._get_column_letter('ResourceTitle')
         value = work_sheet[col + str(row)].value
         if value is None:
             raise RuntimeError(f'row {row} col {col} missing component name')
