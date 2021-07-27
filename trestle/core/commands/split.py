@@ -159,7 +159,7 @@ class SplitCmd(CommandPlusDocs):
         split_command = SplitCmd()
 
         for raw_file_name, element_path in file_path_dict.items():
-            file_path = pathlib.Path(raw_file_name).resolve()
+            file_path = pathlib.Path(effective_cwd / raw_file_name).resolve()
             if not file_path.exists():
                 logger.error(f'File {file_path} does not exist.')
                 return 1

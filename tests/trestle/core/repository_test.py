@@ -326,7 +326,7 @@ def test_managed_split(tmp_trestle_dir: pathlib.Path) -> None:
 
 
 def test_managed_split_multi(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test model split multiple ekemnets."""
+    """Test model split multiple elements."""
     # generate catalog data and import
     catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
     repo = Repository(tmp_trestle_dir)

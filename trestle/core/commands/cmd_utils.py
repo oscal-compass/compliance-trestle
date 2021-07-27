@@ -94,7 +94,7 @@ def parse_chain(
     path_parts: List[str],
     element_paths: List[ElementPath],
     contextual_mode: bool
-) -> None:
+) -> List[ElementPath]:
     """Parse the model chain starting from the beginning.
 
     Args:
@@ -104,7 +104,7 @@ def parse_chain(
         contextual_mode: True if element context is derived from file directory
 
     Returns:
-        None - effect of routine is additions to element_paths passed in
+        List of ElementPath
     """
     sub_model = model_obj
     have_model_to_parse = model_obj is not None
@@ -182,6 +182,7 @@ def parse_chain(
         prev_element_path = element_path
         element_paths.append(element_path)
         i += 1
+    return element_paths
 
 
 def parse_element_arg(model_obj: Union[OscalBaseModel, None],
@@ -202,11 +203,11 @@ def parse_element_arg(model_obj: Union[OscalBaseModel, None],
     if len(path_parts) <= 1:
         raise TrestleError(f'Invalid element path "{element_arg}" with only one element and no wildcard')
 
-    parse_chain(model_obj, path_parts, element_paths, contextual_mode)
+    element_paths = parse_chain(model_obj, path_parts, element_paths, contextual_mode)
 
-    # this should not be possible
     if len(element_paths) <= 0:
-        raise TrestleError(f'Invalid element path "{element_arg}" resulted in no items to split')
+        # don't complain if nothing to split
+        pass
 
     return element_paths
 
