@@ -246,7 +246,7 @@ The following options are currently supported:
 - `-f or --file`: this is optional and specifies the file path of the json/yaml file containing the elements that will be split.
 - `-e or --elements`: specifies the model subcomponent element(s) (JSON/YAML property path) that is/are going to be split. Multiple elements can be specified at once using a comma-separated value, e.g `-e 'catalog.metadata,catalog.groups'`.  Make sure to include the quotes that enclose the comma-separated paths.
 
-If the element is of JSON/YAML type array list and you want trestle to create a separate subcomponent file per array item, the element needs to be suffixed with `.*`, e.g. `-e catalog.groups.*`. If the suffix is not specified, split will place all array items in only one separate subcomponent file, e.g. `groups.json`.
+If the element is of JSON/YAML type array list and you want trestle to create a separate subcomponent file per array item, the element needs to be suffixed with `.*`, e.g. `-e 'catalog.groups.*'`. If the suffix is not specified, split will place all array items in only one separate subcomponent file, e.g. `'groups.json'`.  Again, make sure to include the quotes around the elements.
 
 If you just want to split a file into all its constituent parts and the file does not contain a simple list of objects, you can still use `*` and the file will be split into all its non-trivial elements.  Thus if you split a catalog with `-e catalog.*` the result will be a new directory, `catalog`, containing files representing the large items, `back-matter.json, groups.json and metadata.json`, but there will still be a `catalog.json` file containing just the catalog's `uuid`.  Small items such as strings and dates cannot be split off and will remain in the original model file that is being split.
 
@@ -316,12 +316,11 @@ Trestle validates files according to a number of criteria, and it can operate on
 
 The current list of validation modes that get checked internally are:
 
-| Mode          | Purpose                                                                                                              |
-| ------------- | ------------------------------------------------------------------------|
-| duplicates    | Identify if duplicate uuid's are present                                |
-| oscal_version | Confirm that the oscal version of the file is supported                 |
-| refs          | Confirm that all references in responsible parties are found in roles   |
-
+| Mode          | Purpose                                                               |
+| ------------- | --------------------------------------------------------------------- |
+| duplicates    | Identify if duplicate uuid's are present                              |
+| oscal_version | Confirm that the oscal version of the file is supported               |
+| refs          | Confirm that all references in responsible parties are found in roles |
 
 In addition to validating a single file you can validate all files of a given type with the `-t` option:
 

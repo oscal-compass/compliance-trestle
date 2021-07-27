@@ -422,7 +422,7 @@ def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.
     # A key reason to let them pass is when splitting parts from an array of items that may or may not be present
 
 
-@pytest.mark.parametrize('mode', [0, 1, 2])
+@pytest.mark.parametrize('mode', ['normal_split.*', 'split_two_steps', 'split_in_lower_dir'])
 def test_split_comp_def(
     mode, tmp_path, keep_cwd: pathlib.Path, sample_component_definition: component.ComponentDefinition
 ) -> None:
@@ -436,12 +436,12 @@ def test_split_comp_def(
 
     os.chdir(compdef_dir)
     # do the split in different ways - then re-merge
-    if mode == 0:
+    if mode == 'normal_split.*':
         args = argparse.Namespace(
             file='component-definition.json', element='component-definition.components.*', verbose=1
         )
         assert SplitCmd()._run(args) == 0
-    elif mode == 1:
+    elif mode == 'split_two_steps':
         args = argparse.Namespace(
             file='component-definition.json', element='component-definition.components', verbose=1
         )
@@ -449,7 +449,7 @@ def test_split_comp_def(
         os.chdir('component-definition')
         args = argparse.Namespace(file='components.json', element='components.*', verbose=1)
         assert SplitCmd()._run(args) == 0
-    elif mode == 2:
+    elif mode == 'split_in_lower_dir':
         args = argparse.Namespace(
             file='component-definition.json', element='component-definition.components.*.props', verbose=1
         )

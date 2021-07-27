@@ -19,6 +19,8 @@ import logging
 import pathlib
 from typing import Dict, List, Tuple
 
+from pydantic import BaseModel
+
 import trestle.utils.log as log
 from trestle.core import const
 from trestle.core import utils
@@ -35,18 +37,16 @@ from trestle.utils import fs, trash
 logger = logging.getLogger(__name__)
 
 
-class AliasTracker():
+class AliasTracker(BaseModel):
     """Convenience class to track writing out of models."""
 
     # This tracks the parts that need to be split from each element
     # and makes sure it is written out once
 
-    def __init__(self, alias: str):
-        """Initialize the class."""
-        self.aliases: List[str] = [alias]
-        self.written = False
+    aliases: List[str]
+    written: bool = False
 
-    def add_alias(self, alias: str):
+    def add_alias(self, alias: str) -> None:
         """Add alias."""
         if alias not in self.aliases:
             self.aliases.append(alias)
@@ -85,19 +85,47 @@ class SplitCmd(CommandPlusDocs):
         log.set_log_level_from_args(args)
         logger.debug('Entering trestle split.')
         # get the Model
-        args_raw = args.__dict__
+        args_raw: Dict[str, str] = args.__dict__
 
         # remove any quotes passed in as on windows platforms
         elements_clean: str = args_raw[const.ARG_ELEMENT].strip("'")
 
+        file_name = ''
+        file_name = '' if const.ARG_FILE not in args_raw or args_raw[const.ARG_FILE] is None else args_raw[
+            const.ARG_FILE]
+        # cwd must be in the model directory if file to split is not specified
+        trestle_root: pathlib.Path = fs.get_trestle_project_root(pathlib.Path.cwd())
+        effective_cwd = pathlib.Path.cwd()
+
+        return self.perform_split(trestle_root, effective_cwd, file_name, elements_clean)
+
+    @classmethod
+    def perform_split(
+        cls,
+        trestle_root: pathlib.Path,
+        effective_cwd: pathlib.Path,
+        file_name: str,
+        elements: str,
+    ) -> int:
+        """Perform the split operation.
+
+        Args:
+            trestle_root: trestle root directory
+            effective_cwd: effective directory in which the the split operation is performed
+            file_name: file name of model to split, or '' if deduced from elements and cwd
+            elements: comma separated list of paths to strip from the file, with quotes removed
+
+        Returns:
+            0 on success and 1 on failure
+        """
         file_path_list: List[Tuple[str, str]] = []
 
-        if const.ARG_FILE in args_raw and args_raw[const.ARG_FILE] is not None:
-            file_path_list.append((args_raw[const.ARG_FILE], elements_clean))
+        if file_name:
+            file_path_list.append((file_name, elements))
         else:
             # cwd must be in the model directory if file to split is not specified
             # find top directory for this model based on trestle root and cwd
-            model_dir = fs.get_project_model_path(pathlib.Path.cwd())
+            model_dir = fs.get_project_model_path(effective_cwd)
             if model_dir is None:
                 logger.warning('Current directory must be within a model directory if file is not specified')
                 return 1
@@ -105,14 +133,14 @@ class SplitCmd(CommandPlusDocs):
             content_type: FileContentType = FileContentType.dir_to_content_type(model_dir)
 
             # determine the file needed for each split path
-            element_paths = elements_clean.split(',')
+            element_paths = elements.split(',')
             for path in element_paths:
                 element_path = ElementPath(path)
                 # if element path is relative use directory context to determine absolute path
-                element_path.make_absolute(model_dir)
+                element_path.make_absolute(model_dir, effective_cwd)
                 file_path = element_path.find_last_file_in_path(content_type, model_dir)
                 # now make the element path relative to the model file to be loaded
-                if file_path is None or not element_path.make_relative(file_path.relative_to(model_dir)):
+                if file_path is None or element_path.make_relative(file_path.relative_to(model_dir)) != 0:
                     logger.warning(f'Unable to match element path with files in model directory {element_path}')
                     return 1
                 file_path_list.append((file_path, element_path.to_string()))
@@ -127,6 +155,8 @@ class SplitCmd(CommandPlusDocs):
             else:
                 current_path = file_path_dict[key]
                 file_path_dict[key] = f'{current_path},{path}'
+
+        split_command = SplitCmd()
 
         for raw_file_name, element_path in file_path_dict.items():
             file_path = pathlib.Path(raw_file_name).resolve()
@@ -153,12 +183,12 @@ class SplitCmd(CommandPlusDocs):
             element_paths: List[ElementPath] = cmd_utils.parse_element_args(model, element_path.split(','))
 
             # analyze the split tree and determine which aliases should be stripped from each file
-            aliases_to_strip = self.find_aliases_to_strip(element_paths)
+            aliases_to_strip = split_command.find_aliases_to_strip(element_paths)
 
             # need the file name relative to the base directory
             file_name_no_path = str(file_path.name)
 
-            split_plan = self.split_model(
+            split_plan = split_command.split_model(
                 model, element_paths, base_dir, content_type, file_name_no_path, aliases_to_strip
             )
 
@@ -214,20 +244,34 @@ class SplitCmd(CommandPlusDocs):
         But if the wildcard follows a generic model than members of that model class found in the model will be
         split off.  But only the non-trivial elements are removed, i.e. not str, int, datetime, etc.
 
-        It returns the index where the chain of path ends.
+        Args:
+            model_obj: The OscalBaseModel to be split
+            element_paths: The List[ElementPath] of elements to split, including embedded wildcards
+            base_dir: pathlib.Path of the file being split
+            content_type: json or yaml files
+            cur_path_index: Index into the list of element paths for the current split operation
+            split_plan: The accumulated plan of actions needed to perform the split
+            strip_root: Whether to strip elements from the root object
+            root_file_name: Filename of root file that gets split into a list of items
+            aliases_to_strip: AliasTracker previously loaded with aliases that need to be split from each element
+            last_one: bool indicating last item in array has been split and stripped model can now be written
 
-        For example, element paths could have a list of paths as below for a `ComponentDefinition` model where
-        the first path is the start of the chain.
+        Returns:
+            int representing the index where the chain of the path ends.
 
-        For each of the sub model described by the first element path (e.g component-defintion.components.*) in the
-        chain, the subsequent paths (e.g component.control-implementations.*) will be applied recursively to retrieve
-        the sub-sub models:
-        [
-            'component-definition.component.*',
-            'component.control-implementations.*'
-        ]
-        for a command like below:
-           trestle split -f component.yaml -e component-definition.components.*.control-implementations.*
+        Examples:
+            For example, element paths could have a list of paths as below for a `ComponentDefinition` model where
+            the first path is the start of the chain.
+
+            For each of the sub model described by the first element path (e.g component-defintion.components.*) in the
+            chain, the subsequent paths (e.g component.control-implementations.*) will be applied recursively
+            to retrieve the sub-sub models:
+            [
+                'component-definition.component.*',
+                'component.control-implementations.*'
+            ]
+            for a command like below:
+            trestle split -f component.yaml -e component-definition.components.*.control-implementations.*
         """
         if split_plan is None:
             raise TrestleError('Split plan must have been initialized')
@@ -241,7 +285,7 @@ class SplitCmd(CommandPlusDocs):
 
         # initialize local variables
         element = Element(model_obj)
-        stripped_field_alias = []
+        stripped_field_alias: List[str] = []
 
         # get the sub_model specified by the element_path of this round
         element_path = element_paths[cur_path_index]
@@ -450,5 +494,5 @@ class SplitCmd(CommandPlusDocs):
                 if root_path in tracker_map:
                     tracker_map[root_path].add_alias(alias)
                 else:
-                    tracker_map[root_path] = AliasTracker(alias)
+                    tracker_map[root_path] = AliasTracker(aliases=[alias])
         return tracker_map

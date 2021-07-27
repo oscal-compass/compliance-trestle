@@ -19,7 +19,7 @@ import argparse
 import os
 import pathlib
 import sys
-from typing import List
+from typing import Any, List
 from unittest.mock import patch
 
 from trestle.cli import Trestle
@@ -29,6 +29,7 @@ from trestle.core.commands import cmd_utils
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.models.elements import ElementPath
 from trestle.core.models.file_content_type import FileContentType
+from trestle.core.models.model_types import TopLevelOscalModel
 
 BASE_TMP_DIR = pathlib.Path('tests/__tmp_path').resolve()
 YAML_TEST_DATA_PATH = pathlib.Path('tests/data/yaml/').resolve()
@@ -113,7 +114,7 @@ def create_trestle_project_with_model(
 
     testargs = ['trestle', 'init']
     with patch.object(sys, 'argv', testargs):
-        Trestle().run()
+        assert Trestle().run() == 0
 
     # place model object in top directory outside trestle project
     # so it can be imported
@@ -129,7 +130,7 @@ def create_trestle_project_with_model(
     return trestle_root
 
 
-def list_unordered_equal(list1, list2):
+def list_unordered_equal(list1: List[Any], list2: List[Any]) -> bool:
     """Given 2 lists, check if the items in both the lists are same, regardless of order."""
     list1 = list(list1)  # make a mutable copy
     try:
@@ -140,7 +141,7 @@ def list_unordered_equal(list1, list2):
     return not list1
 
 
-def models_are_equivalent(model_a: OscalBaseModel, model_b: OscalBaseModel) -> bool:
+def models_are_equivalent(model_a: TopLevelOscalModel, model_b: TopLevelOscalModel) -> bool:
     """Test if models are equivalent except for last modified."""
     # this will change the second model as a side-effect
     model_b.metadata.last_modified = model_a.metadata.last_modified

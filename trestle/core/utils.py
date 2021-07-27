@@ -121,6 +121,17 @@ def camel_to_dash(name: str) -> str:
     return camel_to_snake(name).replace('_', '-')
 
 
+def dash_to_underscore(name: str) -> str:
+    """Convert dash to underscore."""
+    return name.replace('-', '_')
+
+
+def underscore_to_dash(name: str) -> str:
+    """Convert underscore to dash and drop final dash if present."""
+    converted = name.replace('_', '-')
+    return converted if converted[-1] != '-' else converted[:-1]
+
+
 @no_type_check
 def get_root_model(module_name: str) -> Tuple[Type[Any], str]:
     """Get the root model class and alias based on the module."""

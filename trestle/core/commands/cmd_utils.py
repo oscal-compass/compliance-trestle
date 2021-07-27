@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle command related utilities."""
-from typing import Any, List, Type
+from typing import Any, List, Type, Union
 
 from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
@@ -70,6 +70,15 @@ def parse_element_args(model: OscalBaseModel,
     the current element to the child.
 
     A path may have multiple *'s, but only the final one can represent splitting a model.
+
+    Args:
+        model: The OscalBaseModel being inspected to determine available elements that can be split
+        element_args: List of str representing links in the chain of element paths to be parsed
+        contextual_mode: bool indicating whether to deduce the full element context from the directory structure
+            or just use the known model structure
+
+    Returns:
+        The requested parsed list of ElementPath for use in split
     """
     # collect all paths
     element_paths: List[ElementPath] = []
@@ -80,24 +89,25 @@ def parse_element_args(model: OscalBaseModel,
     return element_paths
 
 
-def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mode: bool = True) -> List[ElementPath]:
-    """Parse an element arg string into a list of ElementPath."""
-    element_paths: List[ElementPath] = []
-    element_arg = element_arg.strip()
+def parse_chain(
+    model_obj: Union[OscalBaseModel, None],
+    path_parts: List[str],
+    element_paths: List[ElementPath],
+    contextual_mode: bool
+) -> None:
+    """Parse the model chain starting from the beginning.
 
-    if element_arg == '*':
-        raise TrestleError('Invalid element path containing only a single wildcard.')
+    Args:
+        model_obj: Optional model to use for inspecting available elements
+        path_parts: list of string paths to parse including wildcards
+        element_paths: the list of element_paths to parse
+        contextual_mode: True if element context is derived from file directory
 
-    if element_arg == '':
-        raise TrestleError('Invalid element path is empty string.')
-
-    # search for wildcards and create paths with its parent path
-    path_parts = element_arg.split(ElementPath.PATH_SEPARATOR)
-    if len(path_parts) <= 1:
-        raise TrestleError(f'Invalid element path "{element_arg}" with only one element and no wildcard')
-
+    Returns:
+        None - effect of routine is additions to element_paths passed in
+    """
     sub_model = model_obj
-    parsing_model = model_obj is not None
+    have_model_to_parse = model_obj is not None
 
     prev_element_path = None
     latest_path = None
@@ -120,16 +130,17 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
             # at this point sub_model may be a list of items
             # new element path is needed only if any of the items contains the desired part
             if p != ElementPath.WILDCARD:
+                new_attrib = utils.dash_to_underscore(p)
                 if isinstance(sub_model, list):
                     for item in sub_model:
                         # go into the list and find one with requested part
-                        sub_item = getattr(item, p, None)
+                        sub_item = getattr(item, new_attrib, None)
                         if sub_item is not None:
                             sub_model = sub_item
                             break
                 else:
-                    sub_model = getattr(sub_model, p, None)
-            if parsing_model and sub_model is None:
+                    sub_model = getattr(sub_model, new_attrib, None)
+            if have_model_to_parse and sub_model is None:
                 return element_paths
             p = ElementPath.PATH_SEPARATOR.join([parent_model, p])
             element_path = ElementPath(p, parent_path=prev_element_path)
@@ -148,13 +159,13 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
                     # Cannot have parts beyond * if it isn't a list
                     if i < len(path_parts) - 1:
                         raise TrestleError(
-                            f'Cannot split beyond * when the wildcard does not refer to a list.  Path: {element_arg}'
+                            f'Cannot split beyond * when the wildcard does not refer to a list.  Path: {path_parts}'
                         )
                     for key in sub_model.__fields__.keys():
                         # only create element path is item is present in the sub_model
                         if getattr(sub_model, key, None) is None:
                             continue
-                        new_alias = utils.classname_to_alias(key, 'json')
+                        new_alias = utils.underscore_to_dash(key)
                         new_path = full_path_str + '.' + new_alias
                         if not split_is_too_fine(new_path, model_obj):
                             # to add parts of an element, need to add two links
@@ -171,6 +182,27 @@ def parse_element_arg(model_obj: OscalBaseModel, element_arg: str, contextual_mo
         prev_element_path = element_path
         element_paths.append(element_path)
         i += 1
+
+
+def parse_element_arg(model_obj: Union[OscalBaseModel, None],
+                      element_arg: str,
+                      contextual_mode: bool = True) -> List[ElementPath]:
+    """Parse an element arg string into a list of ElementPath."""
+    element_paths: List[ElementPath] = []
+    element_arg = element_arg.strip()
+
+    if element_arg == '*':
+        raise TrestleError('Invalid element path containing only a single wildcard.')
+
+    if element_arg == '':
+        raise TrestleError('Invalid element path is empty string.')
+
+    # search for wildcards and create paths with its parent path
+    path_parts = element_arg.split(ElementPath.PATH_SEPARATOR)
+    if len(path_parts) <= 1:
+        raise TrestleError(f'Invalid element path "{element_arg}" with only one element and no wildcard')
+
+    parse_chain(model_obj, path_parts, element_paths, contextual_mode)
 
     # this should not be possible
     if len(element_paths) <= 0:
