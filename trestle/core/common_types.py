@@ -15,7 +15,7 @@
 # limitations under the License.
 """Special types are defined here."""
 
-from typing import TypeVar, Union
+from typing import TypeVar
 
 from trestle.oscal.assessment_plan import AssessmentPlan
 from trestle.oscal.assessment_results import AssessmentResults
@@ -27,11 +27,11 @@ from trestle.oscal.ssp import SystemSecurityPlan
 
 TopLevelOscalModel = TypeVar(
     'TopLevelOscalModel',
-    bound=Union[AssessmentPlan,
-                AssessmentResults,
-                Catalog,
-                ComponentDefinition,
-                PlanOfActionAndMilestones,
-                Profile,
-                SystemSecurityPlan]
+    AssessmentPlan,
+    AssessmentResults,
+    Catalog,
+    ComponentDefinition,
+    PlanOfActionAndMilestones,
+    Profile,
+    SystemSecurityPlan
 )

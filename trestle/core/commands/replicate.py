@@ -16,10 +16,11 @@
 """Trestle Replicate Command."""
 import argparse
 import logging
-from typing import Type, TypeVar
+from typing import Type
 
 from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.err import TrestleError
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
@@ -37,17 +38,6 @@ from trestle.utils import log
 from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
-
-TLO = TypeVar(
-    'TLO',
-    assessment_plan.AssessmentPlan,
-    assessment_results.AssessmentResults,
-    catalog.Catalog,
-    component.ComponentDefinition,
-    poam.PlanOfActionAndMilestones,
-    profile.Profile,
-    ssp.SystemSecurityPlan
-)
 
 
 class CatalogCmd(CommandPlusDocs):
@@ -143,7 +133,7 @@ class ReplicateCmd(CommandPlusDocs):
         )
 
     @classmethod
-    def replicate_object(cls, model_alias: str, object_type: Type[TLO], args: argparse.Namespace) -> int:
+    def replicate_object(cls, model_alias: str, object_type: Type[TopLevelOscalModel], args: argparse.Namespace) -> int:
         """
         Core replicate routine invoked by subcommands.
 

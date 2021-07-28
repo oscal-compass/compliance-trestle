@@ -27,9 +27,9 @@ from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands import cmd_utils
 from trestle.core.commands.import_ import ImportCmd
+from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.models.elements import ElementPath
 from trestle.core.models.file_content_type import FileContentType
-from trestle.core.models.model_types import TopLevelOscalModel
 
 BASE_TMP_DIR = pathlib.Path('tests/__tmp_path').resolve()
 YAML_TEST_DATA_PATH = pathlib.Path('tests/data/yaml/').resolve()

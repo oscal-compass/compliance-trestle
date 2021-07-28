@@ -135,7 +135,7 @@ class ManagedOSCAL:
 
         success = False
         try:
-            ret = splitcmd.SplitCmd().perform_split(self.root_dir, file_parent, filename, elems)
+            ret = splitcmd.SplitCmd().perform_split(file_parent, filename, elems)
             if ret == 0:
                 success = True
         except Exception as e:

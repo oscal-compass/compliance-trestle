@@ -102,7 +102,6 @@ class SplitCmd(CommandPlusDocs):
     @classmethod
     def perform_split(
         cls,
-        trestle_root: pathlib.Path,
         effective_cwd: pathlib.Path,
         file_name: str,
         elements: str,
@@ -110,7 +109,6 @@ class SplitCmd(CommandPlusDocs):
         """Perform the split operation.
 
         Args:
-            trestle_root: trestle root directory
             effective_cwd: effective directory in which the the split operation is performed
             file_name: file name of model to split, or '' if deduced from elements and cwd
             elements: comma separated list of paths to strip from the file, with quotes removed
