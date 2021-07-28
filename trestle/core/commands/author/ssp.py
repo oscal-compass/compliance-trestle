@@ -239,14 +239,9 @@ class SSPManager():
         self._md_file.set_indent_level(-1)
 
     def _get_control_section(self, control: cat.Control, section: str) -> Optional[str]:
-        for alter in self._alters:
-            if alter.control_id == control.id:
-                if alter.adds is not None:
-                    for add in alter.adds:
-                        if add.parts is not None:
-                            for part in add.parts:
-                                if part.name == section:
-                                    return part.prose
+        for part in control.parts:
+            if part.name == section:
+                return part.prose
         return None
 
     def _add_control_section(self, control: cat.Control, section_tuple: str) -> None:
