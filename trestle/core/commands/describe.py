@@ -83,8 +83,8 @@ class DescribeCmd(CommandPlusDocs):
         The only output is via log lines to a user and there are no side-effects.
 
         Args:
-            file_path: pathlib.Path for model file to describe.
-            element: optional element path of element in model to describe.
+            file_path: pathlib.Path Path for model file to describe.
+            element: str Optional element path of element in model to describe.
 
         Returns:
             0 on success, 1 on failure.
