@@ -58,6 +58,21 @@ class DescribeCmd(CommandPlusDocs):
         return 1
 
     @classmethod
+    def _clean_type_string(cls, text: str) -> str:
+        return text.replace("<class '", '').replace("'>", '')
+
+    @classmethod
+    def _description_text(cls, sub_model: OscalBaseModel) -> str:
+        if type(sub_model) is list:
+            n_items = len(sub_model)
+            type_text = 'Unknown' if not n_items else f'{cls._clean_type_string(str(type(sub_model[0])))}'
+            text = f'list of {n_items} items of type {type_text}'
+            return text
+        if hasattr(sub_model, 'type_'):
+            return cls._clean_type_string(str(sub_model.type_))
+        return cls._clean_type_string(str(type(sub_model)))
+
+    @classmethod
     def describe(cls, file_path: pathlib.Path, element_path_str: str) -> int:
         """Describe the contents of the file.
 
@@ -71,12 +86,32 @@ class DescribeCmd(CommandPlusDocs):
         model_type, _ = fs.get_stripped_contextual_model(file_path)
 
         model: OscalBaseModel = model_type.oscal_read(file_path)
+        sub_model = model
 
-        element_paths = utils.parse_element_arg(model, element_path_str)
+        if element_path_str:
+            element_paths = utils.parse_element_arg(model, element_path_str)
 
-        sub_model_element = Element(model)
+            sub_model_element = Element(model)
 
-        for element_path in element_paths:
-            sub_model_element = Element(sub_model_element.get_at(element_path, False))
+            for element_path in element_paths:
+                sub_model = sub_model_element.get_at(element_path, False)
+                sub_model_element = Element(sub_model)
+
+        # now that we have the desired element, can describe it
+
+        element_text = '' if not element_path_str else f' at element path {element_path_str}'
+
+        if type(sub_model) is list:
+            text = f'Model file {file_path}{element_text} is a {cls._description_text(sub_model)}'
+            logger.info(text)
+        else:
+            text = f'Model file {file_path}{element_text} is of type '
+            text += f'{cls._clean_type_string(str(type(sub_model)))} and contains:'
+            logger.info(text)
+            for key in sub_model.__fields__.keys():
+                value = getattr(sub_model, key, None)
+                if value is not None:
+                    text = f'    {key}: {DescribeCmd._description_text(value)}'
+                    logger.info(text)
 
         return 0
