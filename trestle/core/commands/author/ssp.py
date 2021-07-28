@@ -239,6 +239,7 @@ class SSPManager():
         self._md_file.set_indent_level(-1)
 
     def _get_control_section(self, control: cat.Control, section: str) -> Optional[str]:
+        # this is where the section prose appears to be in the control.  This appears to have changed with OSCAL 1.0.0
         for part in control.parts:
             if part.name == section:
                 return part.prose
