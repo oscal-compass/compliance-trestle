@@ -30,7 +30,7 @@ from trestle.oscal import catalog as oscatalog
 @pytest.mark.parametrize('element_path', ['', 'catalog.metadata.roles', 'catalog.metadata'])
 def test_describe_functionality(
     element_path: str, tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog
-):
+) -> None:
     """Test basic functionality of describe."""
     # prepare trestle project dir with the file
     catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
@@ -42,3 +42,9 @@ def test_describe_functionality(
     os.chdir(catalog_dir)
     args = argparse.Namespace(file='catalog.json', element=element_path, verbose=1)
     assert DescribeCmd()._run(args) == 0
+
+
+def test_describe_failures(tmp_path: pathlib.Path) -> None:
+    """Test describe failure modes."""
+    args = argparse.Namespace(verbose=1)
+    assert DescribeCmd()._run(args) == 1
