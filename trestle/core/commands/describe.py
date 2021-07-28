@@ -20,7 +20,11 @@ import logging
 import pathlib
 
 import trestle.utils.log as log
+from trestle.core.base_model import OscalBaseModel
+from trestle.core.commands import cmd_utils as utils
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.models.elements import Element
+from trestle.utils import fs
 
 logger = logging.getLogger(__name__)
 
@@ -35,11 +39,7 @@ class DescribeCmd(CommandPlusDocs):
         self.add_argument('-f', '--file', help='OSCAL file to import.', type=str, required=True)
 
         self.add_argument(
-            '-e', '--element', help='Optional name of element in file to describe.', type=str, required=True
-        )
-
-        self.add_argument(
-            '-r', '--regenerate', action='store_true', help='Enable regeneration of uuids within the document'
+            '-e', '--element', help='Optional name of element in file to describe.', type=str, required=False
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -47,10 +47,36 @@ class DescribeCmd(CommandPlusDocs):
 
         log.set_log_level_from_args(args)
 
-        return self.describe(pathlib.Path.cwd())
+        if 'file' in args and args.file:
+            model_file = pathlib.Path(args.file)
+
+            element = '' if 'element' not in args else args.element
+
+            return self.describe(model_file, element)
+
+        logger.warning('No file specified for command describe.')
+        return 1
 
     @classmethod
-    def describe(cls, file_path: pathlib.Path) -> int:
-        """Describe the contents of the file."""
-        logger.debug(file_path)
+    def describe(cls, file_path: pathlib.Path, element_path_str: str) -> int:
+        """Describe the contents of the file.
+
+        Args:
+            file_path: pathlib.Path for model file to describe.
+            element: optional element path of element in model to describe.
+
+        Returns:
+            0 on success, 1 on failure.
+        """
+        model_type, _ = fs.get_stripped_contextual_model(file_path)
+
+        model: OscalBaseModel = model_type.oscal_read(file_path)
+
+        element_paths = utils.parse_element_arg(model, element_path_str)
+
+        sub_model_element = Element(model)
+
+        for element_path in element_paths:
+            sub_model_element = Element(sub_model_element.get_at(element_path, False))
+
         return 0
