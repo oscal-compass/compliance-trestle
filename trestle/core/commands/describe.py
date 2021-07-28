@@ -84,7 +84,7 @@ class DescribeCmd(CommandPlusDocs):
 
         Args:
             file_path: pathlib.Path Path for model file to describe.
-            element: str Optional element path of element in model to describe.
+            element_path_str: str Optional element path of element in model to describe.
 
         Returns:
             0 on success, 1 on failure.
