@@ -30,7 +30,9 @@ logger = logging.getLogger(__name__)
 
 
 class DescribeCmd(CommandPlusDocs):
-    """Describe contents of a model file."""
+    """Describe contents of a model file including optional element path."""
+
+    # The only output is via log lines.  No other results or side-effects.
 
     name = 'describe'
 
@@ -59,7 +61,9 @@ class DescribeCmd(CommandPlusDocs):
 
     @classmethod
     def _clean_type_string(cls, text: str) -> str:
-        return text.replace("<class '", '').replace("'>", '')
+        text = text.replace("<class '", '').replace("'>", '')
+        text = text.replace('trestle.oscal.', '')
+        return text
 
     @classmethod
     def _description_text(cls, sub_model: OscalBaseModel) -> str:
@@ -76,6 +80,8 @@ class DescribeCmd(CommandPlusDocs):
     def describe(cls, file_path: pathlib.Path, element_path_str: str) -> int:
         """Describe the contents of the file.
 
+        The only output is via log lines to a user and there are no side-effects.
+
         Args:
             file_path: pathlib.Path for model file to describe.
             element: optional element path of element in model to describe.
@@ -83,11 +89,13 @@ class DescribeCmd(CommandPlusDocs):
         Returns:
             0 on success, 1 on failure.
         """
+        # figure out the model type so we can read it
         model_type, _ = fs.get_stripped_contextual_model(file_path)
 
         model: OscalBaseModel = model_type.oscal_read(file_path)
         sub_model = model
 
+        # if an element path was provided, follow the path chain to the desired sub_model
         if element_path_str:
             element_paths = utils.parse_element_arg(model, element_path_str)
 
@@ -97,8 +105,9 @@ class DescribeCmd(CommandPlusDocs):
                 sub_model = sub_model_element.get_at(element_path, False)
                 sub_model_element = Element(sub_model)
 
-        # now that we have the desired element, can describe it
+        # now that we have the desired sub_model we can describe it
 
+        # create top level text depending on whether an element path was used
         element_text = '' if not element_path_str else f' at element path {element_path_str}'
 
         if type(sub_model) is list:
@@ -111,7 +120,7 @@ class DescribeCmd(CommandPlusDocs):
             for key in sub_model.__fields__.keys():
                 value = getattr(sub_model, key, None)
                 if value is not None:
-                    text = f'    {key}: {DescribeCmd._description_text(value)}'
+                    text = f'    {key}: {cls._description_text(value)}'
                     logger.info(text)
 
         return 0
