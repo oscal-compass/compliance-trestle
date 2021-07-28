@@ -28,6 +28,7 @@ from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands import cmd_utils
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.common_types import TopLevelOscalModel
+from trestle.core.err import TrestleError
 from trestle.core.models.elements import ElementPath
 from trestle.core.models.file_content_type import FileContentType
 
@@ -112,21 +113,25 @@ def create_trestle_project_with_model(
     trestle_root.mkdir()
     os.chdir(trestle_root)
 
-    testargs = ['trestle', 'init']
-    with patch.object(sys, 'argv', testargs):
-        assert Trestle().run() == 0
+    try:
+        testargs = ['trestle', 'init']
+        with patch.object(sys, 'argv', testargs):
+            assert Trestle().run() == 0
 
-    # place model object in top directory outside trestle project
-    # so it can be imported
-    tmp_model_path = top_dir / (model_name + '.json')
-    model_obj.oscal_write(tmp_model_path)
+        # place model object in top directory outside trestle project
+        # so it can be imported
+        tmp_model_path = top_dir / (model_name + '.json')
+        model_obj.oscal_write(tmp_model_path)
 
-    i = ImportCmd()
-    args = argparse.Namespace(
-        trestle_root=trestle_root, file=str(tmp_model_path), output=model_name, verbose=False, regenerate=False
-    )
-    assert i._run(args) == 0
-    os.chdir(cur_dir)
+        i = ImportCmd()
+        args = argparse.Namespace(
+            trestle_root=trestle_root, file=str(tmp_model_path), output=model_name, verbose=False, regenerate=False
+        )
+        assert i._run(args) == 0
+    except BaseException as e:
+        raise TrestleError(f'Error creating trestle project with model: {e}')
+    finally:
+        os.chdir(cur_dir)
     return trestle_root
 
 

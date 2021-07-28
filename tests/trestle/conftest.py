@@ -129,8 +129,8 @@ def sample_component_definition():
     # one component has no properties - the other has two
     def_comp1: DefinedComponent = gens.generate_sample_model(DefinedComponent)
     def_comp2: DefinedComponent = gens.generate_sample_model(DefinedComponent)
-    prop_1: common.Property = gens.generate_sample_model(common.Property)
-    prop_2: common.Property = gens.generate_sample_model(common.Property)
+    prop_1 = gens.generate_sample_model(common.Property)
+    prop_2 = gens.generate_sample_model(common.Property)
     def_comp2.props = [prop_1, prop_2]
     comp_def: ComponentDefinition = gens.generate_sample_model(ComponentDefinition)
     comp_def.components = [def_comp1, def_comp2]
