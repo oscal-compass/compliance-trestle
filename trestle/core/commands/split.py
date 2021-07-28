@@ -94,10 +94,9 @@ class SplitCmd(CommandPlusDocs):
         file_name = '' if const.ARG_FILE not in args_raw or args_raw[const.ARG_FILE] is None else args_raw[
             const.ARG_FILE]
         # cwd must be in the model directory if file to split is not specified
-        trestle_root: pathlib.Path = fs.get_trestle_project_root(pathlib.Path.cwd())
         effective_cwd = pathlib.Path.cwd()
 
-        return self.perform_split(trestle_root, effective_cwd, file_name, elements_clean)
+        return self.perform_split(effective_cwd, file_name, elements_clean)
 
     @classmethod
     def perform_split(
