@@ -32,7 +32,7 @@ from trestle.core.models.file_content_type import FileContentType
 class ElementPath:
     """Element path wrapper of an element.
 
-    This only allows a single wildcard '*' at the end to denote elements of an array of dict
+    This only allows a single wildcard '*' at the end to denote elements of an array or dict
     """
 
     PATH_SEPARATOR: str = const.ALIAS_PATH_SEPARATOR
@@ -61,7 +61,7 @@ class ElementPath:
         for i, part in enumerate(parts):
             if part == '':
                 raise TrestleError(
-                    f'Invalid path "{element_path}" because having empty path parts between "{self.PATH_SEPARATOR}" '
+                    f'Invalid path "{element_path}" because there are empty path parts between "{self.PATH_SEPARATOR}" '
                     'or in the beginning'
                 )
             elif part == self.WILDCARD and i != len(parts) - 1:
@@ -148,6 +148,54 @@ class ElementPath:
                     self._preceding_path = ElementPath(self.PATH_SEPARATOR.join(prec_path_parts))
 
         return self._preceding_path
+
+    def find_last_file_in_path(self, content_type: FileContentType, model_dir: pathlib.Path) -> pathlib.Path:
+        """Find the last (nearest) existing file in the element path leading to this element."""
+        # model dir is the top level dir for this model, e.g. catalogs/mycat
+        path = model_dir
+        extension = FileContentType.to_file_extension(content_type)
+        good_model: pathlib.Path = None
+        for element in self._path:
+            if element == '*':
+                break
+            model_file = (path / element).with_suffix(extension)
+            if not model_file.exists():
+                break
+            path = path / element
+            good_model = model_file
+        return good_model
+
+    def make_absolute(self, model_dir: pathlib.Path, reference_dir: pathlib.Path):
+        """Make the parts absolute from the top model dir."""
+        # Match the current relative element path to the model directory and reference directory
+        # If the element path is partial and doesn't connect to the top of the model,
+        # need to deduce absolute element path from the model_dir and the reference directory
+        # that corresponds to the root of the element path
+
+        # if first element is a model type it is already absolute
+        if self._path[0] not in const.MODEL_TYPE_LIST:
+            rel_path = list(reference_dir.relative_to(model_dir).parts)
+            rel_path.extend(self._path)
+            self._path = rel_path
+
+    def make_relative(self, model_relative_path: pathlib.Path) -> int:
+        """Make the parts relative to the model path."""
+        # The element path should currently be absolute
+        # The model relative path should be relative to the top leve of the model
+        # Change the element path to be relative to the model being loaded
+        # Returns 0 on success and 1 on failur
+        rel_path_parts = model_relative_path.parts[:-1]
+        n_rel_parts = len(rel_path_parts)
+        # the element path can't start above the model path
+        if n_rel_parts >= len(self._path):
+            return 1
+        # confirm the leading parts match
+        for ii in range(n_rel_parts):
+            if rel_path_parts[ii] != self._path[ii]:
+                return 1
+        # chop off the leading parts of the absolute element path
+        self._path = self._path[n_rel_parts:]
+        return 0
 
     def to_file_path(self, content_type: FileContentType = None, root_dir: str = '') -> pathlib.Path:
         """Convert to a file or directory path for the element path.
