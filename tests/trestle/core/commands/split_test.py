@@ -41,7 +41,7 @@ from trestle.oscal import common, component
 from trestle.utils import trash
 
 
-def test_split_model(tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition) -> None:
+def test_split_model_plans(tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition) -> None:
     """Test for split_model method."""
     # Assume we are running a command like below
     # trestle split -f component-definition.yaml -e component-definition.metadata
@@ -74,11 +74,11 @@ def test_split_model(tmp_path: pathlib.Path, sample_nist_component_def: componen
     expected_plan.add_action(CreatePathAction(root_file, True))
     expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
 
-    split_plan = SplitCmd.split_model(component_def, element_paths, component_def_dir, content_type)
+    split_plan = SplitCmd.split_model(component_def, element_paths, component_def_dir, content_type, '', None)
     assert expected_plan == split_plan
 
 
-def test_split_chained_sub_models(
+def test_split_chained_sub_model_plans(
     tmp_path: pathlib.Path, sample_catalog: oscatalog.Catalog, keep_cwd: pathlib.Path
 ) -> None:
     """Test for split_model method with chained sum models like catalog.metadata.parties.*."""
@@ -129,11 +129,11 @@ def test_split_chained_sub_models(
     expected_plan.add_action(CreatePathAction(root_file, True))
     expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
 
-    split_plan = SplitCmd.split_model(catalog, element_paths, catalog_dir, content_type)
+    split_plan = SplitCmd.split_model(catalog, element_paths, catalog_dir, content_type, '', None)
     assert expected_plan == split_plan
 
 
-def test_subsequent_split_model(
+def test_subsequent_split_model_plans(
     tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition, keep_cwd: pathlib.Path
 ) -> None:
     """Test subsequent split of sub models."""
@@ -190,11 +190,11 @@ def test_subsequent_split_model(
     )
 
     # call the split command and compare the plans
-    split_plan = SplitCmd.split_model(metadata, element_paths, metadata_file_dir, content_type)
+    split_plan = SplitCmd.split_model(metadata, element_paths, metadata_file_dir, content_type, '', None)
     assert second_plan == split_plan
 
 
-def test_split_multi_level_dict(
+def test_split_multi_level_dict_plans(
     tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition, keep_cwd
 ) -> None:
     """Test for split_model method."""
@@ -226,9 +226,7 @@ def test_split_multi_level_dict(
 
     # split every targets
     for index, comp_obj in enumerate(components):
-
         # individual target dir
-
         component_element = Element(comp_obj)
         model_type = utils.classname_to_alias(type(comp_obj).__name__, 'json')
         dir_prefix = str(index).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
@@ -257,7 +255,7 @@ def test_split_multi_level_dict(
     expected_plan.add_action(CreatePathAction(root_file, True))
     expected_plan.add_action(WriteFileAction(root_file, Element(remaining_root), content_type))
 
-    split_plan = SplitCmd.split_model(component_def, element_paths, component_def_dir, content_type)
+    split_plan = SplitCmd.split_model(component_def, element_paths, component_def_dir, content_type, '', None)
     assert expected_plan == split_plan
 
 
@@ -278,7 +276,7 @@ def test_split_run(
         assert component_def_dir.joinpath('component-definition.yaml').exists()
         assert component_def_dir.joinpath('component-definition/components').exists()
         assert component_def_dir.joinpath('component-definition/components').is_dir()
-        # FIXME: This is not doign anything.
+        # Confirm that the list items are written with the expected numbered names
         components: list = Element(sample_nist_component_def).get_at(ElementPath('component-definition.components.*'))
         for index in range(len(components)):
             comp_fname = f'{str(index).zfill(const.FILE_DIGIT_PREFIX_LENGTH)}{const.IDX_SEP}defined-component.yaml'
@@ -322,7 +320,7 @@ def test_split_run(
     check_split_files()
 
 
-def test_split_run_failure(
+def test_split_run_failures(
     keep_cwd: pathlib.Path, tmp_path: pathlib.Path, sample_nist_component_def: component.ComponentDefinition
 ) -> None:
     """Test split run failure."""
@@ -355,11 +353,12 @@ def test_split_run_failure(
     # create trestle project
     test_utils.ensure_trestle_config_dir(tmp_path)
 
-    # no file specified
-    testargs = ['trestle', 'split', '-e', 'component-definition.metadata, component-definition.components.*']
+    # no file specified and garbage element
+    testargs = ['trestle', 'split', '-e', 'foo.bar']
     with patch.object(sys, 'argv', testargs):
         rc = Trestle().run()
         assert rc > 0
+
     # check with missing file
     testargs = [
         'trestle',
@@ -387,7 +386,7 @@ def test_split_run_failure(
             Trestle().run()
 
 
-def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.Catalog):
+def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.Catalog) -> None:
     """Test for split_model_at_path_chain method failure scenarios."""
     content_type = FileContentType.JSON
 
@@ -403,89 +402,91 @@ def test_split_model_at_path_chain_failures(tmp_path, sample_catalog: oscatalog.
 
     # no plan should error
     with pytest.raises(TrestleError):
-        SplitCmd.split_model_at_path_chain(sample_catalog, element_paths, catalog_dir, content_type, 0, None, False)
+        SplitCmd.split_model_at_path_chain(
+            sample_catalog, element_paths, catalog_dir, content_type, 0, None, False, '', None
+        )
 
     # negative path index should error
     with pytest.raises(TrestleError):
         SplitCmd.split_model_at_path_chain(
-            sample_catalog, element_paths, catalog_dir, content_type, -1, split_plan, False
+            sample_catalog, element_paths, catalog_dir, content_type, -1, split_plan, False, '', None
         )
 
     # too large path index should return the path index
     cur_path_index = len(element_paths) + 1
     SplitCmd.split_model_at_path_chain(
-        sample_catalog, element_paths, catalog_dir, content_type, cur_path_index, split_plan, False
+        sample_catalog, element_paths, catalog_dir, content_type, cur_path_index, split_plan, False, '', None
     )
 
-    # invalid model path should error
-    element_paths = [ElementPath('catalog.meta')]
-    cur_path_index = 0
-    with pytest.raises(TrestleError):
-        SplitCmd.split_model_at_path_chain(
-            sample_catalog, element_paths, catalog_dir, content_type, cur_path_index, split_plan, False
-        )
-
-    # invalid path for multi item sub-model
-    p0 = ElementPath('catalog.uuid.*')  # uuid exists, but it is not a multi-item sub-model object
-    p1 = ElementPath('uuid.metadata.*', p0)  # this is invalid but we just need a path with the p0 as the parent
-    element_paths = [p0, p1]
-    with pytest.raises(TrestleError):
-        SplitCmd.split_model_at_path_chain(
-            sample_catalog, element_paths, catalog_dir, content_type, 0, split_plan, False
-        )
+    # FIXME All tests to strip parts that don't exist will currently pass unless that behavior is changed
+    # A key reason to let them pass is when splitting parts from an array of items that may or may not be present
 
 
-@pytest.mark.parametrize('direct', [True, False])
+@pytest.mark.parametrize('mode', ['normal_split.*', 'split_two_steps', 'split_in_lower_dir'])
 def test_split_comp_def(
-    direct, tmp_trestle_dir, keep_cwd: pathlib.Path, sample_component_definition: component.ComponentDefinition
+    mode, tmp_path, keep_cwd: pathlib.Path, sample_component_definition: component.ComponentDefinition
 ) -> None:
     """Test splitting of component definition and its dictionary."""
-    my_comp_dir = tmp_trestle_dir / 'component-definitions/my_comp'
-    my_comp_dir.mkdir()
-    my_comp_path = my_comp_dir / 'component-definition.json'
-    sample_component_definition.oscal_write(my_comp_path)
-    os.chdir(my_comp_dir)
-    # do the split either directly or in two steps - then re-merge
-    if direct:
-        args = argparse.Namespace(file='component-definition.json', element='component.components.*', verbose=1)
+    compdef_name = 'mycomp'
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_component_definition, compdef_name)
+
+    compdef_dir = trestle_root / 'component-definitions' / compdef_name
+    compdef_file: pathlib.Path = compdef_dir / 'component-definition.json'
+    original_model = sample_component_definition
+
+    os.chdir(compdef_dir)
+    # do the split in different ways - then re-merge
+    if mode == 'normal_split.*':
+        args = argparse.Namespace(
+            file='component-definition.json', element='component-definition.components.*', verbose=1
+        )
         assert SplitCmd()._run(args) == 0
-    else:
-        args = argparse.Namespace(file='component-definition.json', element='component.components', verbose=1)
+    elif mode == 'split_two_steps':
+        args = argparse.Namespace(
+            file='component-definition.json', element='component-definition.components', verbose=1
+        )
         assert SplitCmd()._run(args) == 0
         os.chdir('component-definition')
         args = argparse.Namespace(file='components.json', element='components.*', verbose=1)
         assert SplitCmd()._run(args) == 0
-    os.chdir(my_comp_dir)
+    elif mode == 'split_in_lower_dir':
+        args = argparse.Namespace(
+            file='component-definition.json', element='component-definition.components.*.props', verbose=1
+        )
+        assert SplitCmd()._run(args) == 0
+
+    os.chdir(compdef_dir)
     args = argparse.Namespace(element='component-definition.*', verbose=1)
     assert MergeCmd()._run(args) == 0
 
+    new_model = component.ComponentDefinition.oscal_read(compdef_file)
+    assert test_utils.models_are_equivalent(new_model, original_model)
 
-def test_split_stop_at_string(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog):
+
+def test_split_stop_at_string(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog) -> None:
     """Test prevention of split at string level."""
     # prepare trestle project dir with the file
-    catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        FileContentType.JSON,
-        sample_catalog,
-        test_utils.CATALOGS_DIR)
+
+    cat_name = 'mycat'
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name)
+    catalog_dir = trestle_root / 'catalogs' / cat_name
 
     os.chdir(catalog_dir)
     args = argparse.Namespace(file='catalog.json', element='catalog.groups.*.controls.*.controls.*.id', verbose=1)
     assert SplitCmd()._run(args) == 1
     args = argparse.Namespace(file='catalog.json', element='catalog.metadata.version', verbose=1)
     assert SplitCmd()._run(args) == 1
-    args = argparse.Namespace(file='catalog.json', element='catalog.groups.*.controls.*.controls.*', verbose=1)
-    assert SplitCmd()._run(args) == 0
 
 
-def test_split_workflow(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog):
+def test_split_tutorial_workflow(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog) -> None:
     """Test split operations and final re-merge in workflow tutorial."""
     # prepare trestle project dir with the file
-    catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        FileContentType.JSON,
-        sample_catalog,
-        test_utils.CATALOGS_DIR)
+    cat_name = 'mycat'
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name)
+
+    catalog_dir = trestle_root / 'catalogs' / cat_name
+    catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
+    orig_model = oscatalog.Catalog.oscal_read(catalog_file)
 
     # step0
     os.chdir(catalog_dir)
@@ -496,16 +497,14 @@ def test_split_workflow(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscata
 
     # step1
     os.chdir('catalog')
-    args = argparse.Namespace(
-        file='metadata.json', element='metadata.roles,metadata.parties,metadata.responsible-parties', verbose=1
-    )
+    args = argparse.Namespace(file='metadata.json', element='metadata.roles,metadata.parties', verbose=1)
     assert SplitCmd()._run(args) == 0
 
     # step2
     os.chdir('metadata')
     args = argparse.Namespace(file='roles.json', element='roles.*', verbose=1)
     assert SplitCmd()._run(args) == 0
-    args = argparse.Namespace(file='responsible-parties.json', element='responsible-parties.*', verbose=1)
+    args = argparse.Namespace(file='parties.json', element='parties.*', verbose=1)
     assert SplitCmd()._run(args) == 0
 
     # step3
@@ -518,19 +517,123 @@ def test_split_workflow(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscata
     args = argparse.Namespace(element='catalog.*', verbose=1)
     assert MergeCmd()._run(args) == 0
 
+    new_model = oscatalog.Catalog.oscal_read(catalog_file)
+    assert test_utils.models_are_equivalent(orig_model, new_model)
 
-@pytest.mark.parametrize('split_path', ['catalog.metadata.roles', 'catalog.*', 'catalog.metadata.*'])
+
+@pytest.mark.parametrize(
+    'split_path',
+    [
+        'catalog.metadata,catalog.groups',
+        'catalog.metadata.roles,catalog.metadata.links',
+        'catalog.metadata.roles.*',
+        'catalog.*',
+        'catalog.metadata.*'
+    ]
+)
 def test_split_catalog_star(
     split_path: str, tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog
-):
+) -> None:
     """Test extended depth split operations and split of dicts."""
     # prepare trestle project dir with the file
-    catalog_dir, catalog_file = test_utils.prepare_trestle_project_dir(
-        tmp_path,
-        FileContentType.JSON,
-        sample_catalog,
-        test_utils.CATALOGS_DIR)
+    cat_name = 'mycat'
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name)
+    orig_model = sample_catalog
+
+    catalog_dir = trestle_root / 'catalogs' / cat_name
+    catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
 
     os.chdir(catalog_dir)
     args = argparse.Namespace(file='catalog.json', element=split_path, verbose=1)
     assert SplitCmd()._run(args) == 0
+    args = argparse.Namespace(element='catalog.*', verbose=1)
+    assert MergeCmd()._run(args) == 0
+
+    new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)
+    assert test_utils.models_are_equivalent(orig_model, new_model)
+
+
+def test_split_deep(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog) -> None:
+    """Test deep split of model."""
+    # prepare trestle project dir with the file
+    cat_name = 'mycat'
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name)
+
+    orig_model: oscatalog.Catalog = sample_catalog
+
+    catalog_dir = trestle_root / 'catalogs' / cat_name
+    catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
+
+    os.chdir(catalog_dir)
+    args = argparse.Namespace(file='catalog.json', element='catalog.groups.*.controls.*.controls.*', verbose=1)
+    assert SplitCmd()._run(args) == 0
+
+    args = argparse.Namespace(element='catalog.*', verbose=1)
+    assert MergeCmd()._run(args) == 0
+
+    new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)
+    assert test_utils.models_are_equivalent(orig_model, new_model)
+
+
+def test_split_relative_path(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog) -> None:
+    """Test split with relative path."""
+    # prepare trestle project dir with the file
+    cat_name = 'mycat'
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name)
+
+    orig_model: oscatalog.Catalog = sample_catalog
+
+    os.chdir(trestle_root)
+    catalog_dir = trestle_root / 'catalogs' / cat_name
+    catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
+
+    args = argparse.Namespace(file='catalogs/mycat/catalog.json', element='catalog.metadata', verbose=1)
+    assert SplitCmd()._run(args) == 0
+
+    # merge receives an element path not a file path
+    # so need to chdir to where the file is
+    os.chdir(catalog_dir)
+    args = argparse.Namespace(element='catalog.*', verbose=1)
+    assert MergeCmd()._run(args) == 0
+
+    new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)
+    assert test_utils.models_are_equivalent(orig_model, new_model)
+
+
+def test_no_file_given(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.Catalog) -> None:
+    """Test split with no file specified."""
+    # prepare trestle project dir with the file
+    cat_name = 'mycat'
+    trestle_root = test_utils.create_trestle_project_with_model(tmp_path, sample_catalog, cat_name)
+
+    orig_model: oscatalog.Catalog = sample_catalog
+
+    catalog_dir = trestle_root / 'catalogs' / cat_name
+    catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
+
+    # no file given and cwd not in trestle directory should fail
+    os.chdir(tmp_path)
+    args = argparse.Namespace(element='catalog.groups', verbose=1)
+    assert SplitCmd()._run(args) == 1
+
+    os.chdir(catalog_dir)
+    args = argparse.Namespace(element='catalog.groups,catalog.metadata', verbose=1)
+    assert SplitCmd()._run(args) == 0
+    assert (catalog_dir / 'catalog/groups.json').exists()
+    assert (catalog_dir / 'catalog/metadata.json').exists()
+
+    os.chdir('./catalog')
+    args = argparse.Namespace(element='groups.*', verbose=1)
+    assert SplitCmd()._run(args) == 0
+    assert (catalog_dir / 'catalog/groups/00000__group.json').exists()
+
+    os.chdir('./groups')
+    args = argparse.Namespace(file='00000__group.json', element='group.*', verbose=1)
+    assert SplitCmd()._run(args) == 0
+
+    os.chdir(catalog_dir)
+    args = argparse.Namespace(element='catalog.*', verbose=1)
+    assert MergeCmd()._run(args) == 0
+
+    new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)
+    assert test_utils.models_are_equivalent(orig_model, new_model)

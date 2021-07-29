@@ -101,5 +101,4 @@ def test_load_distributed(testdata_dir, tmp_trestle_dir):
 
     assert actual_model_type == expected_model_type
     assert actual_model_alias == 'catalog'
-    expected_model_instance.metadata.last_modified = actual_model_instance.metadata.last_modified
-    assert expected_model_instance == actual_model_instance
+    assert test_utils.models_are_equivalent(expected_model_instance, actual_model_instance)

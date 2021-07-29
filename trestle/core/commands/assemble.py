@@ -17,10 +17,11 @@
 
 import argparse
 import logging
-from typing import Type, TypeVar
+from typing import Type
 
 from trestle.core import const
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
@@ -37,17 +38,6 @@ from trestle.utils import log
 from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
-
-TLO = TypeVar(
-    'TLO',
-    assessment_plan.AssessmentPlan,
-    assessment_results.AssessmentResults,
-    catalog.Catalog,
-    component.ComponentDefinition,
-    poam.PlanOfActionAndMilestones,
-    profile.Profile,
-    ssp.SystemSecurityPlan
-)
 
 
 class CatalogCmd(CommandPlusDocs):
@@ -137,7 +127,7 @@ class AssembleCmd(CommandPlusDocs):
         )
 
     @classmethod
-    def assemble_model(cls, model_alias: str, object_type: Type[TLO], args: argparse.Namespace) -> int:
+    def assemble_model(cls, model_alias: str, object_type: Type[TopLevelOscalModel], args: argparse.Namespace) -> int:
         """Assemble a top level OSCAL model within the trestle dist directory."""
         log.set_log_level_from_args(args)
         logger.info(f'Assembling models of type {model_alias}.')

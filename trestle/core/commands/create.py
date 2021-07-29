@@ -18,11 +18,12 @@
 import argparse
 import logging
 from datetime import datetime
-from typing import Type, TypeVar
+from typing import Type
 
 import trestle.oscal
 from trestle.core import generators
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
@@ -38,17 +39,6 @@ from trestle.utils import fs
 from trestle.utils import log
 
 logger = logging.getLogger(__name__)
-
-TLO = TypeVar(
-    'TLO',
-    assessment_plan.AssessmentPlan,
-    assessment_results.AssessmentResults,
-    catalog.Catalog,
-    component.ComponentDefinition,
-    poam.PlanOfActionAndMilestones,
-    profile.Profile,
-    ssp.SystemSecurityPlan,
-)
 
 
 class CatalogCmd(CommandPlusDocs):
@@ -139,7 +129,7 @@ class CreateCmd(CommandPlusDocs):
         )
 
     @classmethod
-    def create_object(cls, model_alias: str, object_type: Type[TLO], args: argparse.Namespace) -> int:
+    def create_object(cls, model_alias: str, object_type: Type[TopLevelOscalModel], args: argparse.Namespace) -> int:
         """Create a top level OSCAL object within the trestle directory, leveraging functionality in add."""
         log.set_log_level_from_args(args)
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
