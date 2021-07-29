@@ -257,7 +257,7 @@ The following option is required:
 
 - `-e or --elements`: specifies the properties (JSON/YAML path) that will be merged, relative to the current working directory. This must contain at least 2 elements, where the last element is the model/sub-component to be merged into the second from last component.
 
-For example, in the command `trestle merge -e catalog.metadata`, executed in the same directory where `catalog.json` or splitted `catalog` directory exists, the property `metadata` from `metadata.json` or `metadata.yaml` would be moved/merged into `catalog.json`. If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into `metadata`, before merging `metadata` subcomponent into `catalog.json`. To specify merging every sub-component split from a component, `.*` can be used. For example, `trestle merge -e catalog.*` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`.
+For example, in the command `trestle merge -e catalog.metadata`, executed in the same directory where `catalog.json` or splitted `catalog` directory exists, the property `metadata` from `metadata.json` or `metadata.yaml` would be moved/merged into `catalog.json`. If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recursively merged into `metadata`, before merging `metadata` subcomponent into `catalog.json`. To specify merging every sub-component split from a component, `.*` can be used. For example, `trestle merge -e catalog.*` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`.
 
 ## `trestle assemble`
 
@@ -329,7 +329,7 @@ And you can validate all models with the `-a` option:
 
 Finally, you can validate a model based on its name using the `-n` option, along with the type of the model:
 
-`trestle validata -t catalog -n my_catalog`
+`trestle validate -t catalog -n my_catalog`
 
 Note that when you `Import` a file it will perform a full validation on it first, and if it does not pass validation the file cannot be imported.
 
@@ -980,4 +980,169 @@ Example output directory contents listing:
 
 ```
 
+</details>
+
+
+## `trestle task xlsx-to-component-definition`
+
+The *trestle task xlsx-to-component-definition* command facilitates transformation of an excel spread sheet into an OSCAL component-definition.json file.
+Specify in the config:
+<ul>
+<li> location of catalog file
+<li> location of spread sheet file
+<li> work sheet name in the spread sheet file
+<li> output directory to write the component-definition.json file
+<li> whether or not to overwrite an existing component-definition.json file
+<li> the organization name
+<li> the organization remarks
+<li> the namespace
+<li> comma separated mappings from name to class
+<li> the catalog URL
+<li> the catalog title
+</ul>
+
+<span style="color:green">
+Example command invocation:
+</span>
+
+> `$TRESTLE_BASEDIR$ trestle task xlsx-to-component-definition -c /home/user/task.config`
+
+<span style="color:green">
+Example config:
+</span>
+
+*/home/user/task.config*
+
+```
+[task.xlsx-to-oscal-component-definition]
+
+catalog-file = nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
+spread-sheet-file = /home/user/compliance/data/spread-sheet/best-practices.xlsx
+work-sheet-name = best_practices_controls
+output-dir = /home/user/compliance/data/tasks/xlsx/output
+output-overwrite = true
+
+org-name = International Business Machines
+org-remarks = IBM
+namespace = http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud
+property-name-to-class = goal_name_id:scc_goal_name_id, goal_version:scc_goal_version
+catalog-url = https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
+catalog-title = NIST Special Publication 800-53 Revision 4
+```
+
+**catalog-file**
+
+<span style="color:green">
+Example catalog-file:
+</span>
+
+[nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json](https://github.com/usnistgov/oscal-content/blob/58af5c83ad7ab5620809c5701877a4b959516d25/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json)
+
+**spread-sheet-file**
+
+<span style="color:green">
+Example spread-sheet-file:
+</span>
+
+[/home/user/compliance/data/spread-sheet/best-practices.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
+
+**output**
+
+<span style="color:green">
+Example component-definition.json:
+</span>
+
+[/home/user/compliance/data/spread-sheet/best-practices.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/component-definition.json)
+
+### spread sheet to component definition mapping
+
+<details>
+<summary>display mapping table</summary>
+
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+</style>
+
+<table>
+<tr>
+<th>spread sheet column name
+<th>component definition path
+<th>comments
+<tr>
+<td>ControlId
+<td><ul>
+    <li>implemented_requirement.property[name='goal_name_id'].value
+    </ul>
+<td><ul>
+    <li>only used if column 'goal_name_id' is empty
+    </ul>
+<tr>
+<td>ControlText
+<td><ul>
+    <li>implemented_requirement.property[name='goal_name_id'].remarks
+    </ul>
+<td><ul>
+    <li>transformation code replaces "Check whether" with "Ensure" in text
+    </ul>
+<tr>
+<td>Nist Mappings
+<td><ul>
+    <li>implemented_requirement.description
+    </ul>
+<td><ul>
+    <li>heading may span multiple columns
+    <li>one value expected per column
+    <li>each entry is separated into control + statements (if any)
+    </ul>
+<tr>
+<td>ResourceTitle
+<td><ul>
+    <li>component.title    
+    <li>component.description
+    <li>component.control-implementation.description + {text}
+    </ul>
+<td><ul>
+    </ul>
+<tr>
+<td>goal_name_id
+<td><ul>
+    <li>implemented_requirement.property[name='goal_name_id'].value
+    </ul>
+<td><ul>
+    </ul>
+<tr>
+<td>Version
+<td><ul>
+    <li>implemented_requirement.property[name='goal_version'].value
+    </ul>
+<td><ul>
+    <li>Value from spread sheet is not currently used. 
+    <li>Value '1.0' is hard coded.
+    </ul>
+<tr>
+<td>Parameter [optional parameter]
+<td><ul>
+    <li>implemented_requirement.set_parameter.param_id
+    </ul>
+<td><ul>
+    <li>The expected text is in two parts separated by '\n'.
+    <li>The text following the '\n' is the value used.
+    </ul>
+<tr>
+<td>Values [alternatives]
+<td><ul>
+    <li>implemented_requirement.set_parameter.values
+    </ul>
+<td><ul>
+    <li>The expected text is of the following format: 
+    <li>v0, [v1, v2...]
+    <li>The value v0 is used.
+    </ul>
+</table>
 </details>
