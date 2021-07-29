@@ -35,7 +35,12 @@ logger = logging.getLogger(__name__)
 
 
 class AddCmd(CommandPlusDocs):
-    """Add a subcomponent to an existing model."""
+    """Add an OSCAL component/subcomponent to the specified component.
+
+    This method takes input a filename and a list of comma-seperated element path. Element paths are field aliases.
+    The method first finds the parent model from the file and loads the file into the model.
+    Then the method executes 'add' for each of the element paths specified.
+    """
 
     name = 'add'
 
