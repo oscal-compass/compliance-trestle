@@ -17,7 +17,9 @@
 import argparse
 import logging
 import pathlib
-from typing import Dict, List
+from typing import Dict, List, Tuple
+
+from pydantic import BaseModel
 
 import trestle.utils.log as log
 from trestle.core import const
@@ -35,6 +37,33 @@ from trestle.utils import fs, trash
 logger = logging.getLogger(__name__)
 
 
+class AliasTracker(BaseModel):
+    """Convenience class to track writing out of models."""
+
+    # This tracks the parts that need to be split from each element
+    # and makes sure it is written out once
+
+    aliases: List[str]
+    written: bool = False
+
+    def add_alias(self, alias: str) -> None:
+        """Add alias."""
+        if alias not in self.aliases:
+            self.aliases.append(alias)
+
+    def get_aliases(self) -> List[str]:
+        """Get the list of aliases."""
+        return self.aliases
+
+    def needs_writing(self) -> bool:
+        """Need to write the model."""
+        return not self.written
+
+    def mark_written(self) -> None:
+        """Mark this model as written."""
+        self.written = True
+
+
 class SplitCmd(CommandPlusDocs):
     """Split subcomponents on a trestle model."""
 
@@ -42,14 +71,13 @@ class SplitCmd(CommandPlusDocs):
 
     def _init_arguments(self) -> None:
         self.add_argument(
-            f'-{const.ARG_FILE_SHORT}',
-            f'--{const.ARG_FILE}',
-            help=const.ARG_DESC_FILE + ' to split.',
+            f'-{const.ARG_FILE_SHORT}', f'--{const.ARG_FILE}', help=const.ARG_DESC_FILE + ' to split.', required=False
         )
         self.add_argument(
             f'-{const.ARG_ELEMENT_SHORT}',
             f'--{const.ARG_ELEMENT}',
             help=const.ARG_DESC_ELEMENT + ' to split.',
+            required=False
         )
 
     def _run(self, args: argparse.Namespace) -> int:
@@ -57,49 +85,120 @@ class SplitCmd(CommandPlusDocs):
         log.set_log_level_from_args(args)
         logger.debug('Entering trestle split.')
         # get the Model
-        args_raw = args.__dict__
-        if args_raw[const.ARG_FILE] is None:
-            logger.error(f'Argument "-{const.ARG_FILE_SHORT}" is required')
-            return 1
-
-        file_path = pathlib.Path(args_raw[const.ARG_FILE]).resolve()
-        if not file_path.exists():
-            logger.error(f'File {file_path} does not exist.')
-            return 1
-        content_type = FileContentType.to_content_type(file_path.suffix)
-
-        # find the base directory of the file
-        file_absolute_path = pathlib.Path(file_path)
-        base_dir = file_absolute_path.parent
-
-        model_type, _ = fs.get_stripped_contextual_model(file_absolute_path)
-
-        model: OscalBaseModel = model_type.oscal_read(file_path)
+        args_raw: Dict[str, str] = args.__dict__
 
         # remove any quotes passed in as on windows platforms
-        elements_clean = args_raw[const.ARG_ELEMENT].strip("'")
+        elements_clean: str = args_raw[const.ARG_ELEMENT].strip("'")
 
-        if cmd_utils.split_is_too_fine(elements_clean, model):
-            logger.warning('Cannot split the model to the level of uuids, strings, etc.')
-            return 1
+        file_name = ''
+        file_name = '' if const.ARG_FILE not in args_raw or args_raw[const.ARG_FILE] is None else args_raw[
+            const.ARG_FILE]
+        # cwd must be in the model directory if file to split is not specified
+        effective_cwd = pathlib.Path.cwd()
 
-        logger.debug(f'split calling parse_element_args on {elements_clean}')
-        element_paths: List[ElementPath] = cmd_utils.parse_element_args(model, elements_clean.split(','))
+        return self.perform_split(effective_cwd, file_name, elements_clean)
 
-        split_plan = self.split_model(
-            model, element_paths, base_dir, content_type, root_file_name=args_raw[const.ARG_FILE]
-        )
+    @classmethod
+    def perform_split(
+        cls,
+        effective_cwd: pathlib.Path,
+        file_name: str,
+        elements: str,
+    ) -> int:
+        """Perform the split operation.
 
-        # Simulate the plan
-        # if it fails, it would throw errors and get out of this command
-        split_plan.simulate()
+        Args:
+            effective_cwd: effective directory in which the the split operation is performed
+            file_name: file name of model to split, or '' if deduced from elements and cwd
+            elements: comma separated list of paths to strip from the file, with quotes removed
 
-        # If we are here then simulation passed
-        # so move the original file to the trash
-        trash.store(file_path, True)
+        Returns:
+            0 on success and 1 on failure
+        """
+        file_path_list: List[Tuple[str, str]] = []
 
-        # execute the plan
-        split_plan.execute()
+        if file_name:
+            file_path_list.append((file_name, elements))
+        else:
+            # cwd must be in the model directory if file to split is not specified
+            # find top directory for this model based on trestle root and cwd
+            model_dir = fs.get_project_model_path(effective_cwd)
+            if model_dir is None:
+                logger.warning('Current directory must be within a model directory if file is not specified')
+                return 1
+
+            content_type: FileContentType = FileContentType.dir_to_content_type(model_dir)
+
+            # determine the file needed for each split path
+            element_paths = elements.split(',')
+            for path in element_paths:
+                element_path = ElementPath(path)
+                # if element path is relative use directory context to determine absolute path
+                element_path.make_absolute(model_dir, effective_cwd)
+                file_path = element_path.find_last_file_in_path(content_type, model_dir)
+                # now make the element path relative to the model file to be loaded
+                if file_path is None or element_path.make_relative(file_path.relative_to(model_dir)) != 0:
+                    logger.warning(f'Unable to match element path with files in model directory {element_path}')
+                    return 1
+                file_path_list.append((file_path, element_path.to_string()))
+
+        # match paths to corresponding files since several paths may be split from the same file
+        file_path_dict: Dict[str, str] = {}
+        for file_path in file_path_list:
+            key = file_path[0]
+            path = file_path[1]
+            if key not in file_path_dict:
+                file_path_dict[key] = path
+            else:
+                current_path = file_path_dict[key]
+                file_path_dict[key] = f'{current_path},{path}'
+
+        split_command = SplitCmd()
+
+        for raw_file_name, element_path in file_path_dict.items():
+            file_path = pathlib.Path(effective_cwd / raw_file_name).resolve()
+            if not file_path.exists():
+                logger.error(f'File {file_path} does not exist.')
+                return 1
+            content_type = FileContentType.to_content_type(file_path.suffix)
+
+            # find the base directory of the file
+            file_absolute_path = pathlib.Path(file_path)
+            base_dir = file_absolute_path.parent
+
+            model_type, _ = fs.get_stripped_contextual_model(file_absolute_path)
+
+            model: OscalBaseModel = model_type.oscal_read(file_path)
+
+            if cmd_utils.split_is_too_fine(element_path, model):
+                logger.warning('Cannot split the model to the level of uuids, strings, etc.')
+                return 1
+
+            # use the model itself to resolve any wildcards and create list of element paths
+            logger.debug(f'split calling parse_element_args on {element_path}')
+            # use contextual mode to parse
+            element_paths: List[ElementPath] = cmd_utils.parse_element_args(model, element_path.split(','))
+
+            # analyze the split tree and determine which aliases should be stripped from each file
+            aliases_to_strip = split_command.find_aliases_to_strip(element_paths)
+
+            # need the file name relative to the base directory
+            file_name_no_path = str(file_path.name)
+
+            split_plan = split_command.split_model(
+                model, element_paths, base_dir, content_type, file_name_no_path, aliases_to_strip
+            )
+
+            # Simulate the plan
+            # if it fails, it would throw errors and get out of this command
+            split_plan.simulate()
+
+            # If we are here then simulation passed
+            # so move the original file to the trash
+            trash.store(file_path, True)
+
+            # execute the plan
+            split_plan.execute()
         return 0
 
     @classmethod
@@ -129,7 +228,9 @@ class SplitCmd(CommandPlusDocs):
         cur_path_index: int,
         split_plan: Plan,
         strip_root: bool,
-        root_file_name: str = ''
+        root_file_name: str,
+        aliases_to_strip: Dict[str, AliasTracker],
+        last_one: bool = True
     ) -> int:
         """Recursively split the model at the provided chain of element paths.
 
@@ -140,20 +241,34 @@ class SplitCmd(CommandPlusDocs):
         But if the wildcard follows a generic model than members of that model class found in the model will be
         split off.  But only the non-trivial elements are removed, i.e. not str, int, datetime, etc.
 
-        It returns the index where the chain of path ends.
+        Args:
+            model_obj: The OscalBaseModel to be split
+            element_paths: The List[ElementPath] of elements to split, including embedded wildcards
+            base_dir: pathlib.Path of the file being split
+            content_type: json or yaml files
+            cur_path_index: Index into the list of element paths for the current split operation
+            split_plan: The accumulated plan of actions needed to perform the split
+            strip_root: Whether to strip elements from the root object
+            root_file_name: Filename of root file that gets split into a list of items
+            aliases_to_strip: AliasTracker previously loaded with aliases that need to be split from each element
+            last_one: bool indicating last item in array has been split and stripped model can now be written
 
-        For example, element paths could have a list of paths as below for a `ComponentDefinition` model where
-        the first path is the start of the chain.
+        Returns:
+            int representing the index where the chain of the path ends.
 
-        For each of the sub model described by the first element path (e.g component-defintion.components.*) in the
-        chain, the subsequent paths (e.g component.control-implementations.*) will be applied recursively to retrieve
-        the sub-sub models:
-        [
-            'component-definition.component.*',
-            'component.control-implementations.*'
-        ]
-        for a command like below:
-           trestle split -f component.yaml -e component-definition.components.*.control-implementations.*
+        Examples:
+            For example, element paths could have a list of paths as below for a `ComponentDefinition` model where
+            the first path is the start of the chain.
+
+            For each of the sub model described by the first element path (e.g component-defintion.components.*) in the
+            chain, the subsequent paths (e.g component.control-implementations.*) will be applied recursively
+            to retrieve the sub-sub models:
+            [
+                'component-definition.component.*',
+                'component.control-implementations.*'
+            ]
+            for a command like below:
+            trestle split -f component.yaml -e component-definition.components.*.control-implementations.*
         """
         if split_plan is None:
             raise TrestleError('Split plan must have been initialized')
@@ -167,31 +282,23 @@ class SplitCmd(CommandPlusDocs):
 
         # initialize local variables
         element = Element(model_obj)
-        stripped_field_alias = []
+        stripped_field_alias: List[str] = []
 
         # get the sub_model specified by the element_path of this round
         element_path = element_paths[cur_path_index]
+
+        # does the next element_path point back at me
         is_parent = cur_path_index + 1 < len(element_paths) and element_paths[cur_path_index
                                                                               + 1].get_parent() == element_path
 
         # root dir name for sub models dir
         # 00000__group.json will have the root_dir name as 00000__group for sub models of group
-        # catalog.json will have the root_dir name as catalog sub models
+        # catalog.json will have the root_dir name as catalog
         root_dir = ''
         if root_file_name != '':
-            root_dir = pathlib.Path(root_file_name).stem
-
-        # check that the path is not multiple level deep
-        path_parts = element_path.get()
-        if path_parts[-1] == ElementPath.WILDCARD:
-            path_parts = path_parts[:-1]
-
-        if cmd_utils.split_is_too_fine('.'.join(path_parts), model_obj):
-            raise TrestleError(f'Split is too fine at element {path_parts[-1]}')
+            root_dir = str(pathlib.Path(root_file_name).with_suffix(''))
 
         sub_models = element.get_at(element_path, False)  # we call sub_models as in plural, but it can be just one
-        if sub_models is None:
-            return cur_path_index
 
         # assume cur_path_index is the end of the chain
         # value of this variable may change during recursive split of the sub-models below
@@ -204,7 +311,15 @@ class SplitCmd(CommandPlusDocs):
             sub_models_dir = base_dir / element_path.to_root_path()
             sub_model_plan = Plan()
             path_chain_end = cls.split_model_at_path_chain(
-                sub_models, element_paths, sub_models_dir, content_type, cur_path_index + 1, sub_model_plan, True
+                sub_models,
+                element_paths,
+                sub_models_dir,
+                content_type,
+                cur_path_index + 1,
+                sub_model_plan,
+                True,
+                '',
+                aliases_to_strip
             )
             sub_model_actions = sub_model_plan.get_actions()
             split_plan.add_actions(sub_model_actions)
@@ -219,7 +334,9 @@ class SplitCmd(CommandPlusDocs):
                     sub_model_items[prefix] = sub_model_item
 
             # process list sub model items
+            count = 0
             for key in sub_model_items:
+                count += 1
                 prefix = key
                 sub_model_item = sub_model_items[key]
 
@@ -230,10 +347,10 @@ class SplitCmd(CommandPlusDocs):
 
                 if require_recursive_split:
                     # prepare individual directory for each sub-model
-                    # FIXME: check for redundant dict behaviour.  (may be out of date with 1.0.0)
                     sub_root_file_name = cmd_utils.to_model_file_name(sub_model_item, prefix, content_type)
                     sub_model_plan = Plan()
 
+                    last_one: bool = count == len(sub_model_items)
                     path_chain_end = cls.split_model_at_path_chain(
                         sub_model_item,
                         element_paths,
@@ -242,7 +359,9 @@ class SplitCmd(CommandPlusDocs):
                         cur_path_index + 1,
                         sub_model_plan,
                         True,
-                        sub_root_file_name
+                        sub_root_file_name,
+                        aliases_to_strip,
+                        last_one
                     )
                     sub_model_actions = sub_model_plan.get_actions()
                 else:
@@ -254,29 +373,43 @@ class SplitCmd(CommandPlusDocs):
         else:
             # the chain of path ends at the current index.
             # so no recursive call. Let's just write the sub model to the file and get out
-            sub_model_file = base_dir / element_path.to_file_path(content_type, root_dir=root_dir)
-            split_plan.add_action(CreatePathAction(sub_model_file))
-            split_plan.add_action(
-                WriteFileAction(sub_model_file, Element(sub_models, element_path.get_element_name()), content_type)
-            )
+            if sub_models is not None:
+                sub_model_file = base_dir / element_path.to_file_path(content_type, root_dir=root_dir)
+                split_plan.add_action(CreatePathAction(sub_model_file))
+                split_plan.add_action(
+                    WriteFileAction(sub_model_file, Element(sub_models, element_path.get_element_name()), content_type)
+                )
 
         # Strip the root model and add a WriteAction for the updated model object in the plan
         if strip_root:
-            stripped_field_alias.append(element_path.get_element_name())
+            full_path = element_path.get_full()
+            path = '.'.join(full_path.split('.')[:-1])
+            aliases = [element_path.get_element_name()]
+            need_to_write = True
+            use_alias_dict = aliases_to_strip is not None and path in aliases_to_strip
+            if use_alias_dict:
+                aliases = aliases_to_strip[path].get_aliases()
+                need_to_write = aliases_to_strip[path].needs_writing()
 
-            stripped_model = model_obj.stripped_instance(stripped_fields_aliases=stripped_field_alias)
+            stripped_model = model_obj.stripped_instance(stripped_fields_aliases=aliases)
+            # can mark it written even if it doesn't need writing since it is empty
+            # but if an array only mark it written if it's the last one
+            if last_one and use_alias_dict:
+                aliases_to_strip[path].mark_written()
             # If it's an empty model after stripping the fields, don't create path and don't write
-            if set(model_obj.__fields__.keys()) == set(stripped_field_alias):
+            field_list = [x for x in model_obj.__fields__.keys() if model_obj.__fields__[x] is not None]
+            if set(field_list) == set(stripped_field_alias):
                 return path_chain_end
 
-            if root_file_name != '':
-                root_file = base_dir / root_file_name
-            else:
-                root_file = base_dir / element_path.to_root_path(content_type)
+            if need_to_write:
+                if root_file_name != '':
+                    root_file = base_dir / root_file_name
+                else:
+                    root_file = base_dir / element_path.to_root_path(content_type)
 
-            split_plan.add_action(CreatePathAction(root_file))
-            wrapper_alias = utils.classname_to_alias(stripped_model.__class__.__name__, 'json')
-            split_plan.add_action(WriteFileAction(root_file, Element(stripped_model, wrapper_alias), content_type))
+                split_plan.add_action(CreatePathAction(root_file))
+                wrapper_alias = utils.classname_to_alias(stripped_model.__class__.__name__, 'json')
+                split_plan.add_action(WriteFileAction(root_file, Element(stripped_model, wrapper_alias), content_type))
 
         # return the end of the current path chain
         return path_chain_end
@@ -288,7 +421,8 @@ class SplitCmd(CommandPlusDocs):
         element_paths: List[ElementPath],
         base_dir: pathlib.Path,
         content_type: FileContentType,
-        root_file_name: str = ''
+        root_file_name: str,
+        aliases_to_strip: Dict[str, AliasTracker]
     ) -> Plan:
         """Split the model at the provided element paths.
 
@@ -309,11 +443,20 @@ class SplitCmd(CommandPlusDocs):
                 if stripped_part == ElementPath.WILDCARD:
                     stripped_field_alias.append('__root__')
                 else:
-                    stripped_field_alias.append(stripped_part)
+                    if stripped_part not in stripped_field_alias:
+                        stripped_field_alias.append(stripped_part)
 
             # split model at the path chain
             cur_path_index = cls.split_model_at_path_chain(
-                model_obj, element_paths, base_dir, content_type, cur_path_index, split_plan, False, root_file_name
+                model_obj,
+                element_paths,
+                base_dir,
+                content_type,
+                cur_path_index,
+                split_plan,
+                False,
+                root_file_name,
+                aliases_to_strip
             )
 
             cur_path_index += 1
@@ -332,3 +475,21 @@ class SplitCmd(CommandPlusDocs):
         split_plan.add_action(WriteFileAction(root_file, Element(stripped_root, wrapper_alias), content_type))
 
         return split_plan
+
+    def find_aliases_to_strip(self, element_paths: List[ElementPath]) -> Dict[str, AliasTracker]:
+        """Find list of aliases that need to be stripped as each element written out."""
+        # A given path may be present in several split actions
+        # Need to determine all parts stripped at each node in order to strip them all and
+        # write the stripped model only once
+        tracker_map: Dict[str, AliasTracker] = {}
+        for element_path in element_paths:
+            path = element_path.get_full()
+            path_parts = path.split('.')
+            alias = path_parts[-1]
+            if len(path_parts) > 2 and alias != '*':
+                root_path = '.'.join(path_parts[:-1])
+                if root_path in tracker_map:
+                    tracker_map[root_path].add_alias(alias)
+                else:
+                    tracker_map[root_path] = AliasTracker(aliases=[alias])
+        return tracker_map

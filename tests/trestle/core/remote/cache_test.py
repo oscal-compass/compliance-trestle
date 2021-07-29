@@ -23,6 +23,8 @@ from unittest.mock import patch
 
 import pytest
 
+from tests.test_utils import models_are_equivalent
+
 import trestle.core.const as const
 import trestle.core.err as err
 from trestle.core import generators
@@ -45,9 +47,7 @@ def test_fetcher_oscal(tmp_trestle_dir):
     fetcher._cache_only = False
     fetcher._update_cache()
     fetched_data = fetcher.get_oscal(Catalog)
-    # Make last_modified identical then compare as this alone is expected to differ:
-    fetched_data.metadata.last_modified = catalog_data.metadata.last_modified
-    assert fetched_data == catalog_data
+    assert models_are_equivalent(fetched_data, catalog_data)
 
 
 def test_fetcher_oscal_fails(tmp_trestle_dir):
