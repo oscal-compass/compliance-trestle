@@ -124,11 +124,6 @@ class ManagedOSCAL:
         file_parent = model_file_path.parent
         filename = model_file_path.name
 
-        if logger.getEffectiveLevel() <= logging.DEBUG:
-            verbose = True
-        else:
-            verbose = False
-
         elems = ''
         first = True
         for elem in elements:
@@ -137,20 +132,14 @@ class ManagedOSCAL:
                 first = False
             else:
                 elems = elems + ',' + elem
-        args = argparse.Namespace(trestle_root=self.root_dir, file=filename, element=elems, verbose=verbose)
 
         success = False
-        cwd = pathlib.Path.cwd()
         try:
-            # change the cwd to model dir for split command
-            os.chdir(file_parent)
-            ret = splitcmd.SplitCmd()._run(args)
+            ret = splitcmd.SplitCmd().perform_split(file_parent, filename, elems)
             if ret == 0:
                 success = True
         except Exception as e:
             raise TrestleError(f'Error in splitting model: {e}')
-        finally:
-            os.chdir(cwd)  # revert back the cwd
 
         logger.debug(f'Model {self.model_name}, file {model_file} splitted successfully.')
         return success

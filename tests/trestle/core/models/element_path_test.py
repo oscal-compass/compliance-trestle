@@ -165,3 +165,13 @@ def test_full_path():
     full_path_parts = p3.get_full_path_parts()
     full_path = ElementPath.PATH_SEPARATOR.join(full_path_parts)
     assert element_arg == full_path
+
+
+def test_make_relative():
+    """Test make relative path."""
+    p = ElementPath('catalog.groups')
+    path = pathlib.Path('catalog/groups/controls')
+    assert p.make_relative(path) == 1
+
+    path = pathlib.Path('profiles/controls')
+    assert p.make_relative(path) == 1

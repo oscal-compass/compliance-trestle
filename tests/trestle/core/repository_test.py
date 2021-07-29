@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Tests for trestle Respository APIs."""
+"""Tests for trestle Repository APIs."""
 
 import pathlib
 
@@ -27,13 +27,13 @@ from trestle.core.repository import ManagedOSCAL, Repository
 
 
 def test_repo(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test creating Respository object."""
+    """Test creating Repository object."""
     repo = Repository(tmp_trestle_dir)
     assert repo.root_dir == tmp_trestle_dir
 
 
 def test_repo_invalid_root(tmp_path: pathlib.Path) -> None:
-    """Invalid trestle_root directory while creating Respository object."""
+    """Invalid trestle_root directory while creating Repository object."""
     with pytest.raises(TrestleError, match='not a valid Trestle root'):
         Repository(tmp_path)
 
@@ -326,7 +326,7 @@ def test_managed_split(tmp_trestle_dir: pathlib.Path) -> None:
 
 
 def test_managed_split_multi(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test model split multiple ekemnets."""
+    """Test model split multiple elements."""
     # generate catalog data and import
     catalog_data = generators.generate_sample_model(oscal.catalog.Catalog)
     repo = Repository(tmp_trestle_dir)
