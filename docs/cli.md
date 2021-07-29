@@ -237,6 +237,10 @@ Finally, during the import process the file must pass the `validate` test descri
 
 This command allows users to replicate a certain OSCAL model (file and directory structure). For example `trestle replicate catalog -i cat1 -o cat11` will replicate the Catalog cat1 into `cat11` directory. It can also regenerate all the UUIDs as required.
 
+## `trestle describe`
+
+This command lets users inspect model files to explore contents using an optional element path.  The command can work well in concert with `split` to show what each file contains, and probe within the contents to determine sub-components that can be extracted as separate files.
+
 ## `trestle split`
 
 This command allows users to further decompose a trestle model into additional subcomponents.
@@ -312,12 +316,11 @@ Trestle validates files according to a number of criteria, and it can operate on
 
 The current list of validation modes that get checked internally are:
 
-| Mode          | Purpose                                                                                                              |
-| ------------- | ------------------------------------------------------------------------|
-| duplicates    | Identify if duplicate uuid's are present                                |
-| oscal_version | Confirm that the oscal version of the file is supported                 |
-| refs          | Confirm that all references in responsible parties are found in roles   |
-
+| Mode          | Purpose                                                               |
+| ------------- | --------------------------------------------------------------------- |
+| duplicates    | Identify if duplicate uuid's are present                              |
+| oscal_version | Confirm that the oscal version of the file is supported               |
+| refs          | Confirm that all references in responsible parties are found in roles |
 
 In addition to validating a single file you can validate all files of a given type with the `-t` option:
 
