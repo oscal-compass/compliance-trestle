@@ -51,7 +51,7 @@ def setup_for_ssp(include_header: bool, big_profile: bool,
     )
     assert i._run(args) == 0
     yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
-    sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence'
+    sections = 'guidance:Implementation Guidance,ExpectedEvidence'
     if include_header:
         args = argparse.Namespace(
             trestle_root=tmp_trestle_dir,
