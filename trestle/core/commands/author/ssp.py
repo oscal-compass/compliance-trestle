@@ -239,7 +239,8 @@ class SSPManager():
         self._md_file.set_indent_level(-1)
 
     def _get_control_section(self, control: cat.Control, section: str) -> str:
-        # this is where the section prose appears to be in the control.  This appears to have changed with OSCAL 1.0.0
+        # look for the section text first in the control and then in the profile
+        # if found in both they are appended
         prose = ''
         for part in control.parts:
             if part.name == section and part.prose is not None:
