@@ -454,8 +454,7 @@ def model_name_from_href_path(href: pathlib.Path) -> str:
     """Find model name from path."""
     name = href.stem
     # if the name looks like 'catalog.json' then the real name is the directory above
-    if name in const.MODEL_TYPE_LIST:
-        name = href.parent.stem
+    name = name if name not in const.MODEL_TYPE_LIST else href.parent.stem
     return name
 
 
