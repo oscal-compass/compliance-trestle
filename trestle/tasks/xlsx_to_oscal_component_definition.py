@@ -280,8 +280,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 self._add_column('ControlId', column, 1)
             elif self._fuzzy_equal('ControlText', cell_value):
                 self._add_column('ControlText', column, 1)
-            elif self._fuzzy_equal('ResourceCategory', cell_value):
-                self._add_column('ResourceCategory', column, 1)
             elif self._fuzzy_equal('Version', cell_value):
                 self._add_column('Version', column, 1)
             elif self._fuzzy_equal('goal_name_id', cell_value):
@@ -298,7 +296,6 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 self._add_column('ParameterValues', column, 1)
         for name in ['ControlId',
                      'ControlText',
-                     'ResourceCategory',
                      'Version',
                      'goal_name_id',
                      'NIST Mappings',
