@@ -450,18 +450,18 @@ def allowed_task_name(name: str) -> bool:
     return True
 
 
-def model_name_from_href_str(href: str) -> str:
-    """Find model name from href."""
-    model_name = href.split('/')[-1]
-    dot_pos = model_name.rfind('.')
-    if dot_pos >= 0:
-        model_name = model_name[:dot_pos]
-    return model_name
-
-
 def model_name_from_href_path(href: pathlib.Path) -> str:
     """Find model name from path."""
-    return href.stem
+    name = href.stem
+    # if the name looks like 'catalog.json' then the real name is the directory above
+    if name in const.MODEL_TYPE_LIST:
+        name = href.parent.stem
+    return name
+
+
+def model_name_from_href_str(href: str) -> str:
+    """Find model name from href."""
+    return model_name_from_href_path(pathlib.Path(href))
 
 
 def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
