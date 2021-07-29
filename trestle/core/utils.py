@@ -92,6 +92,9 @@ def classname_to_alias(classname: str, mode: str) -> str:
     suffix = classname.split('.')[-1]
 
     if mode == 'json':
+        # things like class_ should just be class
+        if suffix[-1] == '_':
+            suffix = suffix[:-1]
         return camel_to_dash(suffix).rstrip('1234567890')
     elif mode == 'field':
         return camel_to_snake(suffix).rstrip('1234567890')
@@ -116,6 +119,17 @@ def alias_to_classname(alias: str, mode: str) -> str:
 def camel_to_dash(name: str) -> str:
     """Convert camelcase to dashcase."""
     return camel_to_snake(name).replace('_', '-')
+
+
+def dash_to_underscore(name: str) -> str:
+    """Convert dash to underscore."""
+    return name.replace('-', '_')
+
+
+def underscore_to_dash(name: str) -> str:
+    """Convert underscore to dash and drop final dash if present."""
+    converted = name.replace('_', '-')
+    return converted if converted[-1] != '-' else converted[:-1]
 
 
 @no_type_check

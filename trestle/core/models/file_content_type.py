@@ -66,6 +66,19 @@ class FileContentType(Enum):
         return FileContentType.UNKNOWN
 
     @classmethod
+    def dir_to_content_type(cls, dir_path: Path) -> 'FileContentType':
+        """Get content type by looking for json or yaml files in dir."""
+        files = dir_path.glob('*')
+        for file in files:
+            if file.is_file():
+                suffix = file.suffix
+                if suffix == '.json':
+                    return FileContentType.JSON
+                if suffix in ['.yaml', '.yml']:
+                    return FileContentType.YAML
+        return FileContentType.UNKNOWN
+
+    @classmethod
     def path_to_file_extension(cls, file_path: Path) -> str:
         """Get extension from file path looking for extension."""
         if file_path.with_suffix('.json').exists():
