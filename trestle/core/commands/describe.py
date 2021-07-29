@@ -23,6 +23,7 @@ import trestle.utils.log as log
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands import cmd_utils as utils
 from trestle.core.commands.command_docs import CommandPlusDocs
+from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element
 from trestle.utils import fs
 
@@ -52,7 +53,7 @@ class DescribeCmd(CommandPlusDocs):
         if 'file' in args and args.file:
             model_file = pathlib.Path(args.file)
 
-            element = '' if 'element' not in args else args.element
+            element = '' if 'element' not in args or args.element is None else args.element.strip("'")
 
             return self.describe(model_file, element)
 
@@ -63,10 +64,13 @@ class DescribeCmd(CommandPlusDocs):
     def _clean_type_string(cls, text: str) -> str:
         text = text.replace("<class '", '').replace("'>", '')
         text = text.replace('trestle.oscal.', '')
+        text = text.replace('pydantic.main.', 'stripped.')
         return text
 
     @classmethod
     def _description_text(cls, sub_model: OscalBaseModel) -> str:
+        if sub_model is None:
+            return 'None'
         if type(sub_model) is list:
             n_items = len(sub_model)
             type_text = 'Unknown' if not n_items else f'{cls._clean_type_string(str(type(sub_model[0])))}'
@@ -90,13 +94,25 @@ class DescribeCmd(CommandPlusDocs):
             0 on success, 1 on failure.
         """
         # figure out the model type so we can read it
-        model_type, _ = fs.get_stripped_contextual_model(file_path)
+        try:
+            model_type, _ = fs.get_stripped_contextual_model(file_path)
+            model: OscalBaseModel = model_type.oscal_read(file_path)
+        except TrestleError as e:
+            logger.warning(f'Error loading model {file_path} to describe: {e}')
+            return 1
 
-        model: OscalBaseModel = model_type.oscal_read(file_path)
         sub_model = model
 
         # if an element path was provided, follow the path chain to the desired sub_model
         if element_path_str:
+            if '*' in element_path_str:
+                logger.warning('Wildcards are not allowed in element paths for describe.')
+                return 1
+
+            if '.' not in element_path_str:
+                logger.warning('The element path for describe must either be omitted or contain at least 2 parts.')
+                return 1
+
             element_paths = utils.parse_element_arg(model, element_path_str)
 
             sub_model_element = Element(model)
@@ -119,8 +135,7 @@ class DescribeCmd(CommandPlusDocs):
             logger.info(text)
             for key in sub_model.__fields__.keys():
                 value = getattr(sub_model, key, None)
-                if value is not None:
-                    text = f'    {key}: {cls._description_text(value)}'
-                    logger.info(text)
+                text = f'    {key}: {cls._description_text(value)}'
+                logger.info(text)
 
         return 0

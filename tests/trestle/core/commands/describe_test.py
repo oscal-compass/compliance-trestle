@@ -25,6 +25,7 @@ from tests import test_utils
 from trestle.core.commands.describe import DescribeCmd
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog as oscatalog
+from trestle.oscal.component import ComponentDefinition
 
 
 @pytest.mark.parametrize('element_path', ['', 'catalog.metadata.roles', 'catalog.metadata'])
@@ -44,7 +45,28 @@ def test_describe_functionality(
     assert DescribeCmd()._run(args) == 0
 
 
-def test_describe_failures(tmp_path: pathlib.Path) -> None:
+def test_describe_failures(tmp_path: pathlib.Path, sample_component_definition: ComponentDefinition) -> None:
     """Test describe failure modes."""
+    comp_def_dir, comp_def_file = test_utils.prepare_trestle_project_dir(
+        tmp_path,
+        FileContentType.JSON,
+        sample_component_definition,
+        test_utils.COMPONENT_DEF_DIR)
+
+    # not in trestle directory
+    args = argparse.Namespace(file='comp_def.json', element='component-definition.metadata', verbose=1)
+    assert DescribeCmd()._run(args) == 1
+
+    os.chdir(comp_def_dir)
+
+    # in trestle directory but have wildcard in element path
+    args = argparse.Namespace(file=comp_def_file, element='component-definition.*.roles', verbose=1)
+    assert DescribeCmd()._run(args) == 1
+
+    # in trestle directory but element only has one part
+    args = argparse.Namespace(file=comp_def_file, element='component-definition', verbose=1)
+    assert DescribeCmd()._run(args) == 1
+
+    # no filename specified
     args = argparse.Namespace(verbose=1)
     assert DescribeCmd()._run(args) == 1
