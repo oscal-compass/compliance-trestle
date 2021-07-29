@@ -44,8 +44,15 @@ def test_describe_functionality(
     args = argparse.Namespace(file='catalog.json', element=element_path, verbose=1)
     assert DescribeCmd()._run(args) == 0
 
+    results = DescribeCmd.describe(catalog_file, '')
+    assert len(results) > 5
+    assert 'catalog.json' in results[0]
+    assert 'catalog.Catalog' in results[0]
 
-def test_describe_failures(tmp_path: pathlib.Path, sample_component_definition: ComponentDefinition) -> None:
+
+def test_describe_failures(
+    tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_component_definition: ComponentDefinition
+) -> None:
     """Test describe failure modes."""
     comp_def_dir, comp_def_file = test_utils.prepare_trestle_project_dir(
         tmp_path,
