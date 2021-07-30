@@ -70,6 +70,12 @@ def test_describe_failures(
     args = argparse.Namespace(file=comp_def_file, element='component-definition.*.roles', verbose=1)
     assert DescribeCmd()._run(args) == 1
 
+    # in trestle directory but have comma in element path
+    args = argparse.Namespace(
+        file=comp_def_file, element='component-definition.metadata,component-definition.back-matter', verbose=1
+    )
+    assert DescribeCmd()._run(args) == 1
+
     # in trestle directory but element only has one part
     args = argparse.Namespace(file=comp_def_file, element='component-definition', verbose=1)
     assert DescribeCmd()._run(args) == 1

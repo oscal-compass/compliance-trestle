@@ -272,6 +272,8 @@ For example, in the command `trestle merge -e 'catalog.metadata'`, executed in t
 
 This command lets users inspect model files to explore contents using an optional element path.  The command can work well in concert with `split` to show what each file contains, and probe within the contents to determine sub-components that can be extracted as separate files.
 
+Unlike split, describe only describes the contents of a single item, so the element path may not contain wildcards (`*`) or commas.
+
 For example, if a catalog file has been imported to `catalogs/my_catalog/catalog.json` then the commmand, `trestle describe -f catalog.json` might yield:
 
 ```

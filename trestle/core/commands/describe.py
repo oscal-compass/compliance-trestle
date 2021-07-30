@@ -108,8 +108,8 @@ class DescribeCmd(CommandPlusDocs):
 
         # if an element path was provided, follow the path chain to the desired sub_model
         if element_path_str:
-            if '*' in element_path_str:
-                logger.warning('Wildcards are not allowed in element paths for describe.')
+            if '*' in element_path_str or ',' in element_path_str:
+                logger.warning('Wildcards and commas are not allowed in the element path for describe.')
                 return []
 
             if '.' not in element_path_str:
