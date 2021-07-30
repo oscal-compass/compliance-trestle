@@ -66,10 +66,17 @@ jobs:
     - name: Validate website content (mkdocs)
       run: |
         make docs-validate
-    - name: Pytest
+    - name: Pytest Fast
+      if: ${{ !(matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
       run: |
         make test
+    - name: Pytest Cov
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
+      run: |
+        make test-cov
+
     - name: Push code-cov
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7' }}
       uses: codecov/codecov-action@v1
       with: 
         token: ${{ secrets.CODECOV_TOKEN }}
