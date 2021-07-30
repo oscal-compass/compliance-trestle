@@ -48,22 +48,27 @@ jobs:
       run: |
         make develop
     - name: Setup pre-commit
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
       run: |
         make pre-commit
     - name: Install dependencies
       run: |
         make install
     - name: Run code formatting (yapf)
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
       run: |
         make code-format
     - name: Run code linting (flake8)
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
       run: |
         make code-lint
     - name: Run code typing check (mypy)
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
       continue-on-error: true
       run: |
         make code-typing
     - name: Validate website content (mkdocs)
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
       run: |
         make docs-validate
     - name: Pytest Fast
