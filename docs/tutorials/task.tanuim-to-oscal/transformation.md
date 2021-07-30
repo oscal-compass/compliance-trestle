@@ -30,8 +30,8 @@ Make these changes:
 - Insure you have a modern [Python](https://www.python.org/downloads/) (3.7, 3.8, 3.9).
 
 ```
-$ python -V</code>
-Python 3.8.3</code>
+$ python -V
+Python 3.8.3
 ```
 
 - Setup a virtual environment.
