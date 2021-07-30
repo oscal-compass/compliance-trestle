@@ -65,3 +65,8 @@ def test_path_to_file_content_type(tmp_trestle_dir: Path) -> None:
 
     assert FileContentType.UNKNOWN == FileContentType.path_to_content_type(tmp_file)
     assert FileContentType.path_to_file_extension(tmp_file) == ''
+
+
+def test_dir_to_content_type(tmp_path: Path) -> None:
+    """Test failure of dir to file content type."""
+    assert FileContentType.UNKNOWN == FileContentType.dir_to_content_type(tmp_path)

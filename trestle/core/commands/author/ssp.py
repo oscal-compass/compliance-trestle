@@ -238,20 +238,25 @@ class SSPManager():
         self._add_parts(control_handle.control)
         self._md_file.set_indent_level(-1)
 
-    def _get_control_section(self, control: cat.Control, section: str) -> Optional[str]:
+    def _get_control_section(self, control: cat.Control, section: str) -> str:
+        # look for the section text first in the control and then in the profile
+        # if found in both they are appended
+        prose = ''
+        for part in control.parts:
+            if part.name == section and part.prose is not None:
+                prose += part.prose
         for alter in self._alters:
             if alter.control_id == control.id:
-                if alter.adds is not None:
-                    for add in alter.adds:
-                        if add.parts is not None:
-                            for part in add.parts:
-                                if part.name == section:
-                                    return part.prose
-        return None
+                for adds in alter.adds:
+                    if adds.parts is not None:
+                        for part in adds.parts:
+                            if part.name == section and part.prose is not None:
+                                prose += part.prose
+        return prose
 
     def _add_control_section(self, control: cat.Control, section_tuple: str) -> None:
         prose = self._get_control_section(control, section_tuple[0])
-        if prose is not None:
+        if prose:
             self._md_file.new_header(level=2, title=f'{control.id} Section {section_tuple[1]}')
             self._md_file.new_line(prose)
             self._md_file.new_paragraph()

@@ -29,6 +29,7 @@ nav:
   - Documentation website: contributing/website.md
   - Developer Certificate of Originality: contributing/DCO.md
 - Known limitations: errors.md
+- Demos: demonstrations-content.md
 - Reference:
   - Integrating with IBM SCC: reference/third-party-result-schema-SCC.md
   - trestle API reference:
@@ -50,6 +51,7 @@ nav:
         - cmd_utils: api_reference/trestle.core.commands.cmd_utils.md
         - command_docs: api_reference/trestle.core.commands.command_docs.md
         - create: api_reference/trestle.core.commands.create.md
+        - describe: api_reference/trestle.core.commands.describe.md
         - import_: api_reference/trestle.core.commands.import_.md
         - init: api_reference/trestle.core.commands.init.md
         - merge: api_reference/trestle.core.commands.merge.md
@@ -59,6 +61,7 @@ nav:
         - task: api_reference/trestle.core.commands.task.md
         - validate: api_reference/trestle.core.commands.validate.md
         - version: api_reference/trestle.core.commands.version.md
+      - common_types: api_reference/trestle.core.common_types.md
       - const: api_reference/trestle.core.const.md
       - draw_io: api_reference/trestle.core.draw_io.md
       - duplicates_validator: api_reference/trestle.core.duplicates_validator.md

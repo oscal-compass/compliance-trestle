@@ -36,7 +36,7 @@ build
 dist
 tmp
 
-.coverage
+.coverage*
 coverage.xml
 cov_html
 
