@@ -34,13 +34,19 @@ code-typing:
 	mypy --pretty trestle
 
 test::
-	python -m pytest --cov trestle tests --cov-report=xml --exitfirst --random-order
+	python -m pytest trestle tests  --exitfirst -n auto
 
-test-all::
+test-cov::
+	python -m pytest --cov trestle tests  --exitfirst --cov-report=xml -n auto 
+
+test-all-random::
 	python -m pytest --cov trestle tests --cov-report=xml --random-order
 
 test-verbose:
 	python -m pytest --cov trestle tests -vv --cov-report=term-missing --cov-report=html:cov_html
+
+test-speed-measure:
+	python -m pytest trestle tests -n auto --durations=30 
 
 release::
 	git config --global user.name "semantic-release (via Github actions)"

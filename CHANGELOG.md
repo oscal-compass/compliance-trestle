@@ -3,6 +3,21 @@
 
 <!--next-version-placeholder-->
 
+## v0.21.0 (2021-07-30)
+### Feature
+* Trestle Release #659 from IBM/develop ([`6329c82`](https://github.com/IBM/compliance-trestle/commit/6329c82ddd59e2699bd6e7dc8cd571e948fa21f6))
+* Describe command to describe contents of model files with optional element path ([#650](https://github.com/IBM/compliance-trestle/issues/650)) ([`905ff8a`](https://github.com/IBM/compliance-trestle/commit/905ff8ac3cb0c7f11a8d8601bbcbcb2f9b40cae0))
+* Spread sheet to component definition ([#635](https://github.com/IBM/compliance-trestle/issues/635)) ([`6fe4e22`](https://github.com/IBM/compliance-trestle/commit/6fe4e22ce9235e95ccd73c836bc8cbedfa99799c))
+
+### Fix
+* Ssp dropping section prose when in profile, now supporting profile & catalog section prose. ([#657](https://github.com/IBM/compliance-trestle/issues/657)) ([`4eadf47`](https://github.com/IBM/compliance-trestle/commit/4eadf475dc0ccd0f38bd365b9b71be90e6f98cce))
+* Ssp section generation failed due to changes due to 1.0.0 ([#649](https://github.com/IBM/compliance-trestle/issues/649)) ([`26dac34`](https://github.com/IBM/compliance-trestle/commit/26dac345c65a59ef49f49af11dbacb1f2094ceb4))
+* Split bugs and make -f optional ([#639](https://github.com/IBM/compliance-trestle/issues/639)) ([`c514301`](https://github.com/IBM/compliance-trestle/commit/c51430175117e1c1071442d3c564fae4afcef461))
+* Cleanup and enhancement of linting. ([#636](https://github.com/IBM/compliance-trestle/issues/636)) ([`631eba9`](https://github.com/IBM/compliance-trestle/commit/631eba9ac1795bfcd109ed0e840898c2e6101528))
+
+### Documentation
+* Cross link documentation between compliance-trestle and compliance-trestle-demos repositories. ([#637](https://github.com/IBM/compliance-trestle/issues/637)) ([`f28aca1`](https://github.com/IBM/compliance-trestle/commit/f28aca1073888a7575a277c819449302e8e52b23))
+
 ## v0.20.0 (2021-07-16)
 ### Feature
 * Adding a global option to trestle author headers. ([#628](https://github.com/IBM/compliance-trestle/issues/628)) ([`16f0265`](https://github.com/IBM/compliance-trestle/commit/16f0265b1296066a203a5f844d89fd642a00fdb6))

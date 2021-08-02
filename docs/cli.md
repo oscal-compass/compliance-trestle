@@ -71,6 +71,8 @@ files become completely unmanageable for users. To combat this, trestle can `tre
 
 Directory structures such as the one below can represent OSCAL document structures. Users are strongly encourage to rely on split and merge to code these structures.
 
+Users can query the contents of files using `trestle describe`, and probe the contents more deeply using it in combination with element paths.
+
 ```
 .
 ├── .trestle
@@ -135,45 +137,26 @@ Notice that trestle is a highly opinionated tool and, therefore, the names of th
 
 ## `trestle create`
 
-This command will create an initial directory structure for various OSCAL models including sample JSON files and subdirectories representing parts of the model. For example, `trestle create catalog -o nist800-53` will create a directory structure of a sample catalog like below.
+This command will create a bare-bones sample file for one of the OSCAL models.  For example, `trestle create catalog -o nist800-53` will create a sample catalog file, `catalog.json` in the catalog subdirectory, `nist800-53` as shown below:
 
 ```
 .
 ├── .trestle
-├── dist 
-│   └── catalogs
-│       └── nist800-53.json
 └── catalogs
     └── nist800-53
-        ├── catalog.json
-        └── catalog        
-            └── groups
-                ├── 00000__group.json            
-                ├── 00000__group
-                │   └── controls
-                │       ├── 00000__control.json
-                │       └── 00001__control.json
-                ├── 00001__group
-                └── 00001__group
-                    └── controls
-                        ├── 00000__control.json
-                        ├── 00001__control.json
-                        └── 00002__control.json
+        └── catalog.json
 ...
 ```
 
-Notice that subdirectories under a trestle directory model such as `$TRESTLE_BASEDIR/catalogs/nist800-53/catalog` and `$TRESTLE_BASEDIR/catalogs/nist800-53/catalog/groups` represent a decomposition of the original file. The subdirectory `catalog` means that the original `catalog.json` was split and the split parts are inside the `catalog` directory (in this case `groups`).
-Every subdirectory in a trestle directory model should have a corresponding `.json` or `.yaml` file with the same name. Exceptions to that rule are named fields (dicts) such as `catalog.metadata.responsible-parties` and array fields such as `catalog.groups`. When those subcomponents are split/expanded each file or subdirectory under them represents an item of the collection. Because of that, if a corresponding `groups.json | groups.yaml` file were to exist, its contents would just be an empty representation of that collection and the user would need to be careful never to edit that file. Therefore, we decided not to create that corresponding file in those cases. Following the same logic, another exception is when all the fields from a `.json | .yaml` file are split, leaving the original file as an empty object. In that case, the file would be deleted as well.
-
 The following subcommands are currently supported:
 
-- `trestle create catalog`: creates a directory structure of a sample OSCAL catalog model under the `catalogs` folder. This folder can contain multiple catalogs.
-- `trestle create profile`: creates a directory structure of a sample OSCAL profile model under the `profiles` folder. This folder can contain multiple profiles.
-- `trestle create component-definition`: creates a directory structure of a sample component-definition model under the `component-definitions` folder. This folder can contain multiple component-definitions.
-- `trestle create system-security-plan`: creates a directory structure of a sample system-security-plan model under the `system-security-plans` folder. This folder can contain multiple system-security-plans.
-- `trestle create assessment-plan`: creates a directory structure of a sample assessment-plan under the `assessment-plans` folder. This folder can contain multiple assessment-plans.
-- `trestle create assessment-result`: creates a directory structure of a sample assessment-result under the `assessment-results` folder. This folder can contain multiple assessment-results.
-- `trestle create plan-of-action-and-milestone`: creates a directory structure of a sample plan-of-action-and-milestone under the `plan-of-action-and-milestones` folder. This folder can contain multiple plan-of-action-and-milestones.
+- `trestle create catalog`: creates a directory structure containing a sample OSCAL catalog model under the `catalogs` folder.
+- `trestle create profile`: creates a directory structure containing a sample OSCAL profile model under the `profiles` folder.
+- `trestle create component-definition`: creates a directory structure containing a sample component-definition model under the `component-definitions` folder.
+- `trestle create system-security-plan`: creates a directory structure containing a sample system-security-plan model under the `system-security-plans` folder.
+- `trestle create assessment-plan`: creates a directory structure containing a sample assessment-plan under the `assessment-plans` folder.
+- `trestle create assessment-result`: creates a directory structure containing a sample assessment-result under the `assessment-results` folder.
+- `trestle create plan-of-action-and-milestone`: creates a directory structure containing a sample plan-of-action-and-milestone under the `plan-of-action-and-milestones` folder.
 
 The following options are supported:
 
@@ -191,34 +174,9 @@ This command allows users to import existing OSCAL files so that they can be man
 ```
 .
 ├── .trestle
-├── dist 
-│   └── catalogs
-│       ├── my_existing_catalog.json 
-│       └── nist800-53.json 
 └── catalogs
-    ├── my_existing_catalog
-    │   ├── catalog.json
-    │   └── catalog
-    │       └── groups
-    │           ├── 00000__group.json
-    │           └── 00000__group
-    │               └── controls
-    │                   ├── 00000__control.json
-    │                   └── 00001__control.json
-    └── nist800-53
-        ├── catalog.json
-        └── catalog        
-            └── groups
-                ├── 00000__group.json            
-                ├── 00000__group
-                │   └── controls
-                │       ├── 00000__control.json
-                │       └── 00001__control.json
-                ├── 00001__group.json
-                └── 00001__group
-                    └── controls
-                        ├── 00000__control.json
-                        ├── 00001__control.json
+    └── my_existing_catalog
+        └── catalog.json
 ...
 ```
 
@@ -229,9 +187,9 @@ The following options are supported:
 
 The import subcommand can determine the type of the model that is to be imported by the contents of the file.
 
-Note that the import command will decompose the file according to the default decomposing rules already mentioned in the `trestle create` section. Similarly to `trestle create`, the user can increase the level of decomposition by using `trestle split` command.
-
 Finally, during the import process the file must pass the `validate` test described below for the command, `validate`.  If the file does not pass validation a warning will be given describing the nature of the problem and the import will fail.
+
+Once a file has been imported it can be split into a rich tree of sub-components as shown at the top of this document.  But the file must be imported first.
 
 ## `trestle replicate`
 
@@ -250,8 +208,55 @@ If the element is of JSON/YAML type array list and you want trestle to create a 
 
 If you just want to split a file into all its constituent parts and the file does not contain a simple list of objects, you can still use `*` and the file will be split into all its non-trivial elements.  Thus if you split a catalog with `-e catalog.*` the result will be a new directory, `catalog`, containing files representing the large items, `back-matter.json, groups.json and metadata.json`, but there will still be a `catalog.json` file containing just the catalog's `uuid`.  Small items such as strings and dates cannot be split off and will remain in the original model file that is being split.
 
+Here are some examples.  Starting with a single catalog file, `my_catalog/catalog.json`, if we do `trestle split -f catalog.json -e 'catalog.*'` we end up with:
+
+```
+catalogs
+ ┗ my_catalog
+ ┃ ┣ catalog
+ ┃ ┃ ┣ back-matter.json
+ ┃ ┃ ┣ groups.json
+ ┃ ┃ ┗ metadata.json
+ ┃ ┗ catalog.json
+```
+
+If I then split roles out of metadata as a single file containing a list of roles, `trestle split -f catalog/metadata.json -e 'metadata.roles'` I would end up with:
+
+```
+catalogs
+ ┗ my_catalog
+ ┃ ┣ catalog
+ ┃ ┃ ┣ metadata
+ ┃ ┃ ┃ ┗ roles.json
+ ┃ ┃ ┣ back-matter.json
+ ┃ ┃ ┣ groups.json
+ ┃ ┃ ┗ metadata.json
+ ┃ ┗ catalog.json
+```
+
+If instead I had specified `-e 'metadata.roles.*'` I would get:
+
+```
+my_catalog
+ ┣ catalog
+ ┃ ┣ metadata
+ ┃ ┃ ┗ roles
+ ┃ ┃ ┃ ┣ 00000__role.json
+ ┃ ┃ ┃ ┗ 00001__role.json
+ ┃ ┣ back-matter.json
+ ┃ ┣ groups.json
+ ┃ ┗ metadata.json
+ ┗ catalog.json
+```
+
+You can see there is no `roles.json` file anymore and instead there is a subdirectory, `roles` containing a list of files, one for each `role`.
+
 If the `-f or --file` option is not specified, the file to split will be determined from the elements specified, in the context of the current working directory.  The current directory must be
 within a specific model (e.g. `catalog` or `profile`), and the element paths must either be absolute (e.g. `catalog.metadata.roles`) or relative to the current working directory.  For example, if you are in `catalogs/mycat/catalog/groups` and you want to split the file `00000__group.json`, you must use `-f` to specify the filename, and the element path can either be absolute, as `catalog.group.*`, or you can set the current working directory to where the file is and use element path `group.*`.  This makes it easier to specify splits when deep in a directory structure.
+
+Every subdirectory in a trestle directory model should have a corresponding `.json` or `.yaml` file with the same name, except when that subdirectory corresponds to a list of items, such as `catalog.groups`. When those subcomponents are split/expanded each file or subdirectory under them represents an item of the collection. Because of that, if a corresponding `groups.json | groups.yaml` file were to exist, its contents would just be an empty representation of that collection and the user would need to be careful never to edit that file. Therefore, we decided not to create that corresponding file in those cases. Following the same logic, another exception is when all the fields from a `.json | .yaml` file are split, leaving the original file as an empty object. In that case, the file would be deleted as well.
+
+To inspect a file to see what elements can be split from it, use the `describe` command described below.  It is also useful for inspection of files created by the split operation.
 
 ## `trestle merge`
 
@@ -261,7 +266,66 @@ The following option is required:
 
 - `-e or --elements`: specifies the properties (JSON/YAML path) that will be merged, relative to the current working directory. This must contain at least 2 elements, where the last element is the model/sub-component to be merged into the second from last component.
 
-For example, in the command `trestle merge -e catalog.metadata`, executed in the same directory where `catalog.json` or splitted `catalog` directory exists, the property `metadata` from `metadata.json` or `metadata.yaml` would be moved/merged into `catalog.json`. If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into `metadata`, before merging `metadata` subcomponent into `catalog.json`. To specify merging every sub-component split from a component, `.*` can be used. For example, `trestle merge -e catalog.*` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`.
+For example, in the command `trestle merge -e 'catalog.metadata'`, executed in the same directory where `catalog.json` or the split `catalog` directory exists, the property `metadata` from `metadata.json` or `metadata.yaml` would be moved/merged into `catalog.json`.
+If the `metadata` model has already been split into smaller sub-component models previously, those smaller sub-components are first recusively merged into `metadata`, before merging `metadata` subcomponent into `catalog.json`. To specify merging every sub-component
+split from a component, `.*` can be used. For example, `trestle merge -e 'catalog.*'` command, issued from the directory where `catalog.json` or`catalog` directory exists, will merge every single sub-component of that catalog back into the `catalog.json`.
+
+## `trestle describe`
+
+This command lets users inspect model files to explore contents using an optional element path.  The command can work well in concert with `split` to show what each file contains, and probe within the contents to determine sub-components that can be extracted as separate files.
+
+Unlike split, describe only describes the contents of a single item, so the element path may not contain wildcards (`*`) or commas.
+
+For example, if a catalog file has been imported to `catalogs/my_catalog/catalog.json` then the commmand, `trestle describe -f catalog.json` might yield:
+
+```
+Model file catalog.json is of type catalog.Catalog and contains:
+    uuid: 613fca2d-704a-42e7-8e2b-b206fb92b456
+    metadata: common.Metadata
+    params: None
+    controls: None
+    groups: list of 20 items of type catalog.Group
+    back_matter: common.BackMatter
+```
+
+Note that contents are listed even when they are empty (and therefore optional) so the full potential contents can be seen.  Also note that if an item corresponds to a list of elements, the number and type of elements is provided.  Finally, if an item is a simple string such as `id`, `uuid` or `title`, the string is shown directly up to a maximum of 100 characters.  If the string is clipped it will be indicated by `[truncated]` at the end of the string.
+
+An element path can be specified to probe the contents, as in `trestle describe -f catalog.json -e 'catalog.metadata.roles'`.  A possible response is:
+
+```
+Model file catalog.json at element path catalog.metadata.roles is a list of 2 items of type common.Role
+```
+
+You can also query individual elements, and elements of an element, e.g. `trestle describe -f catalog.json -e 'catalog.groups.5.controls.3'`
+
+```
+Model file catalog.json at element path catalog.groups.5.controls.3 is of type catalog.Control and contains:
+    id: cp-4
+    class_: SP800-53
+    title: Contingency Plan Testing
+    params: list of 2 items of type common.Parameter
+    props: list of 2 items of type common.Property
+    links: list of 14 items of type common.Link
+    parts: list of 2 items of type common.Part
+    controls: list of 5 items of type catalog.Control
+```
+
+(Note that the numbering starts at 0, so the `.3` corresponds to the 4th element.)
+
+In all output from `describe` the type of the item shown corresponds to the python file and class of the corresponding OSCAL model in trestle.
+
+If you split items off a model so they end up in a subdirectory, the original file is referred to as a "stripped" model, with parts of it stripped off and only some elements remaining.  For example, if you do `trestle split -f catalog.json -e 'catalog.metadata'` it will split off metadata from the original `catalog.json` file and place it in `catalog/metadata.json`.  If you then do `trestle describe -f catalog.json` on the new file, it will say something like:
+
+```
+Model file catalog.json is of type stripped.Catalog and contains:
+    uuid: 613fca2d-704a-42e7-8e2b-b206fb92b456
+    params: None
+    controls: None
+    groups: list of 20 items of type catalog.Group
+    back_matter: common.BackMatter
+```
+
+Note that the type of the file is now `stripped.Catalog` and it no longer contains `metadata`.  Even though metadata is no longer in the original `.json` file, trestle is still aware it is present in the model since it is properly placed as its own file in the subdirectory, `catalog`.
 
 ## `trestle assemble`
 
@@ -332,7 +396,7 @@ And you can validate all models with the `-a` option:
 
 Finally, you can validate a model based on its name using the `-n` option, along with the type of the model:
 
-`trestle validata -t catalog -n my_catalog`
+`trestle validate -t catalog -n my_catalog`
 
 Note that when you `Import` a file it will perform a full validation on it first, and if it does not pass validation the file cannot be imported.
 
@@ -983,4 +1047,169 @@ Example output directory contents listing:
 
 ```
 
+</details>
+
+
+## `trestle task xlsx-to-component-definition`
+
+The *trestle task xlsx-to-component-definition* command facilitates transformation of an excel spread sheet into an OSCAL component-definition.json file.
+Specify in the config:
+<ul>
+<li> location of catalog file
+<li> location of spread sheet file
+<li> work sheet name in the spread sheet file
+<li> output directory to write the component-definition.json file
+<li> whether or not to overwrite an existing component-definition.json file
+<li> the organization name
+<li> the organization remarks
+<li> the namespace
+<li> comma separated mappings from name to class
+<li> the catalog URL
+<li> the catalog title
+</ul>
+
+<span style="color:green">
+Example command invocation:
+</span>
+
+> `$TRESTLE_BASEDIR$ trestle task xlsx-to-component-definition -c /home/user/task.config`
+
+<span style="color:green">
+Example config:
+</span>
+
+*/home/user/task.config*
+
+```
+[task.xlsx-to-oscal-component-definition]
+
+catalog-file = nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
+spread-sheet-file = /home/user/compliance/data/spread-sheet/best-practices.xlsx
+work-sheet-name = best_practices_controls
+output-dir = /home/user/compliance/data/tasks/xlsx/output
+output-overwrite = true
+
+org-name = International Business Machines
+org-remarks = IBM
+namespace = http://ibm.github.io/compliance-trestle/schemas/oscal/cd/ibm-cloud
+property-name-to-class = goal_name_id:scc_goal_name_id, goal_version:scc_goal_version
+catalog-url = https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json
+catalog-title = NIST Special Publication 800-53 Revision 4
+```
+
+**catalog-file**
+
+<span style="color:green">
+Example catalog-file:
+</span>
+
+[nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json](https://github.com/usnistgov/oscal-content/blob/58af5c83ad7ab5620809c5701877a4b959516d25/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json)
+
+**spread-sheet-file**
+
+<span style="color:green">
+Example spread-sheet-file:
+</span>
+
+[/home/user/compliance/data/spread-sheet/best-practices.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/spread-sheet/good.xlsx)
+
+**output**
+
+<span style="color:green">
+Example component-definition.json:
+</span>
+
+[/home/user/compliance/data/spread-sheet/best-practices.xlsx](https://github.com/IBM/compliance-trestle/tree/main/tests/data/tasks/xlsx/output/component-definition.json)
+
+### spread sheet to component definition mapping
+
+<details>
+<summary>display mapping table</summary>
+
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+</style>
+
+<table>
+<tr>
+<th>spread sheet column name
+<th>component definition path
+<th>comments
+<tr>
+<td>ControlId
+<td><ul>
+    <li>implemented_requirement.property[name='goal_name_id'].value
+    </ul>
+<td><ul>
+    <li>only used if column 'goal_name_id' is empty
+    </ul>
+<tr>
+<td>ControlText
+<td><ul>
+    <li>implemented_requirement.property[name='goal_name_id'].remarks
+    </ul>
+<td><ul>
+    <li>transformation code replaces "Check whether" with "Ensure" in text
+    </ul>
+<tr>
+<td>Nist Mappings
+<td><ul>
+    <li>implemented_requirement.description
+    </ul>
+<td><ul>
+    <li>heading may span multiple columns
+    <li>one value expected per column
+    <li>each entry is separated into control + statements (if any)
+    </ul>
+<tr>
+<td>ResourceTitle
+<td><ul>
+    <li>component.title    
+    <li>component.description
+    <li>component.control-implementation.description + {text}
+    </ul>
+<td><ul>
+    </ul>
+<tr>
+<td>goal_name_id
+<td><ul>
+    <li>implemented_requirement.property[name='goal_name_id'].value
+    </ul>
+<td><ul>
+    </ul>
+<tr>
+<td>Version
+<td><ul>
+    <li>implemented_requirement.property[name='goal_version'].value
+    </ul>
+<td><ul>
+    <li>Value from spread sheet is not currently used. 
+    <li>Value '1.0' is hard coded.
+    </ul>
+<tr>
+<td>Parameter [optional parameter]
+<td><ul>
+    <li>implemented_requirement.set_parameter.param_id
+    </ul>
+<td><ul>
+    <li>The expected text is in two parts separated by '\n'.
+    <li>The text following the '\n' is the value used.
+    </ul>
+<tr>
+<td>Values [alternatives]
+<td><ul>
+    <li>implemented_requirement.set_parameter.values
+    </ul>
+<td><ul>
+    <li>The expected text is of the following format: 
+    <li>v0, [v1, v2...]
+    <li>The value v0 is used.
+    </ul>
+</table>
 </details>
