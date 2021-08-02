@@ -25,7 +25,7 @@ from trestle.tasks.base_task import TaskOutcome
 from trestle.utils.fs import text_files_equal
 
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
-get_trestle_version_mock1 = Mock(return_value='0.20.0')
+get_trestle_version_mock1 = Mock(return_value='0.21.0')
 
 
 def test_xlsx_print_info(tmp_path):
