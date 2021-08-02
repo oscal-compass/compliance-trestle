@@ -74,7 +74,7 @@ t_controls = Dict[t_control, t_statements]
 
 
 def get_trestle_version():
-    """Get trestle version."""
+    """Get trestle version wrapper."""
     return __version__
 
 
