@@ -151,3 +151,21 @@ def models_are_equivalent(model_a: TopLevelOscalModel, model_b: TopLevelOscalMod
     # this will change the second model as a side-effect
     model_b.metadata.last_modified = model_a.metadata.last_modified
     return model_a == model_b
+
+
+def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
+    """Determine if files are equal, ignoring newline style."""
+    try:
+        with open(path_a, 'r') as file_a:
+            with open(path_b, 'r') as file_b:
+                lines_a = file_a.readlines()
+                lines_b = file_b.readlines()
+                nlines = len(lines_a)
+                if nlines != len(lines_b):
+                    return False
+                for ii in range(nlines):
+                    if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
+                        return False
+    except Exception:
+        return False
+    return True

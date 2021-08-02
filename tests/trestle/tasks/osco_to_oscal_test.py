@@ -20,10 +20,11 @@ import pathlib
 import uuid
 from unittest.mock import Mock, patch
 
+from tests.test_utils import text_files_equal
+
 import trestle.tasks.osco_to_oscal as osco_to_oscal
 import trestle.transforms.implementations.osco as osco
 from trestle.tasks.base_task import TaskOutcome
-from trestle.utils.fs import text_files_equal
 
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
 uuid_mock2 = Mock(return_value=uuid.UUID('46aADFAC-A1fd-4Cf0-a6aA-d1AfAb3e0d3e'))

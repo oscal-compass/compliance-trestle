@@ -93,12 +93,6 @@ def has_parent_path(sub_path: pathlib.Path, parent_path: pathlib.Path) -> bool:
     return True
 
 
-def has_trestle_project_in_path(path: pathlib.Path) -> bool:
-    """Check if path has a valid trestle project among the parents."""
-    trestle_project_root = get_trestle_project_root(path)
-    return trestle_project_root is not None
-
-
 def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBaseModel], str]:
     """Get the full contextual model class and full jsonpath for the alias based on the contextual path."""
     logger.debug(f'get contextual model type for input path {path}')
@@ -220,7 +214,7 @@ def clean_project_sub_path(sub_path: pathlib.Path) -> None:
     if sub_path.exists():
         sub_path = sub_path.resolve()
         project_root = sub_path.parent
-        if not has_trestle_project_in_path(project_root):
+        if not get_trestle_project_root(project_root):
             raise TrestleError('Path to be cleaned is not a under valid Trestle project root')
 
         # clean all files/directories under sub_path
@@ -461,22 +455,3 @@ def model_name_from_href_path(href: pathlib.Path) -> str:
 def model_name_from_href_str(href: str) -> str:
     """Find model name from href."""
     return model_name_from_href_path(pathlib.Path(href))
-
-
-def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
-    """Determine if files are equal, ignoring newline style."""
-    try:
-        with open(path_a, 'r') as file_a:
-            with open(path_b, 'r') as file_b:
-                lines_a = file_a.readlines()
-                lines_b = file_b.readlines()
-                nlines = len(lines_a)
-                if nlines != len(lines_b):
-                    return False
-                for ii in range(nlines):
-                    if lines_a[ii].rstrip('\r\n') != lines_b[ii].rstrip('\r\n'):
-                        return False
-    except Exception as e:
-        logger.warn(f'Exception comparing file {path_a} to {path_b}.  Return as False. {e}')
-        return False
-    return True

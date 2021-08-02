@@ -123,34 +123,6 @@ def test_get_project_model_path(tmp_path: pathlib.Path) -> None:
     assert fs.get_project_model_path(metadata_dir) == mycatalog_dir
 
 
-def test_has_trestle_project_in_path(tmp_path: pathlib.Path, rand_str: str) -> None:
-    """Test has_trestle_project_in_path method."""
-    project_path: pathlib.Path = pathlib.Path.joinpath(tmp_path, rand_str)
-    sub_path: pathlib.Path = project_path.joinpath('samples2')
-    sub_path.mkdir(exist_ok=True, parents=True)
-    assert sub_path.exists() and sub_path.is_dir()
-
-    # create a file
-    sub_path.joinpath('readme.md').touch()
-
-    # create a data-dir and a file
-    sub_data_dir = pathlib.Path.joinpath(sub_path, 'data')
-    sub_data_dir.mkdir(exist_ok=True, parents=True)
-
-    # create a file
-    sub_data_dir.joinpath('readme.md').touch()
-
-    assert fs.has_trestle_project_in_path(pathlib.Path('/')) is False
-    assert fs.has_trestle_project_in_path(sub_data_dir) is False
-
-    test_utils.ensure_trestle_config_dir(project_path)
-    assert fs.has_trestle_project_in_path(sub_data_dir) is True
-    assert fs.has_trestle_project_in_path(sub_data_dir.joinpath('readme.md')) is True
-    assert fs.has_trestle_project_in_path(sub_path.joinpath('readme.md')) is True
-    assert fs.has_trestle_project_in_path(sub_path) is True
-    assert fs.has_trestle_project_in_path(project_path.parent) is False
-
-
 def test_clean_project_sub_path(tmp_path: pathlib.Path, rand_str: str) -> None:
     """Test clean_project_sub_path method."""
     project_path: pathlib.Path = pathlib.Path.joinpath(tmp_path, rand_str)
@@ -598,33 +570,3 @@ def test_local_and_visible(tmp_path) -> None:
         link_file.symlink_to(local_file)
     assert fs.local_and_visible(local_file)
     assert not fs.local_and_visible(link_file)
-
-
-def test_text_files_equal(tmp_path) -> None:
-    """Test if text files are equal ignoring newline style."""
-    line1 = '  hello  '
-    line2 = 'there to all'
-    unix_path = tmp_path / 'unix.txt'
-    win_path = tmp_path / 'windows.txt'
-    with open(unix_path, 'wb') as uni:
-        uni.write(bytes(line1 + '\n' + line2 + '\n', 'utf-8'))
-    with open(win_path, 'wb') as win:
-        win.write(bytes(line1 + '\r\n' + line2 + '\r\n', 'utf-8'))
-
-    assert fs.text_files_equal(unix_path, win_path)
-
-    line2b = 'thereto all'
-    bad_win_path = tmp_path / 'bad_line.txt'
-    with open(bad_win_path, 'wb') as win:
-        win.write(bytes(line1 + '\r\n' + line2b + '\r\n', 'utf-8'))
-
-    assert not fs.text_files_equal(unix_path, bad_win_path)
-
-    extra_line_path = tmp_path / 'extra_line.txt'
-    with open(extra_line_path, 'wb') as win:
-        win.write(bytes(line1 + '\r\n' + line2 + '\r\n' + line2b + '\r\n', 'utf-8'))
-
-    assert not fs.text_files_equal(unix_path, extra_line_path)
-
-    bad_path = tmp_path / 'foo.txt'
-    assert not fs.text_files_equal(unix_path, bad_path)
