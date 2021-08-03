@@ -77,6 +77,11 @@ t_work_sheet = Worksheet
 t_controls = Dict[t_control, t_statements]
 
 
+def get_trestle_version():
+    """Get trestle version wrapper."""
+    return __version__
+
+
 class XlsxToOscalComponentDefinition(TaskBase):
     """
     Task to create OSCAL ComponentDefinition json.
@@ -250,7 +255,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
             title='Component definition for ' + self._get_catalog_title() + ' profiles',
             last_modified=self._timestamp,
             oscal_version=OSCAL_VERSION,
-            version=__version__,
+            version=get_trestle_version(),
             roles=roles,
             parties=parties,
             responsible_parties=responsible_parties
@@ -550,7 +555,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
                 parameters=self.parameters,
                 timestamp=self._timestamp,
                 oscal_version=OSCAL_VERSION,
-                version=__version__,
+                version=get_trestle_version(),
                 ofile=tfile,
                 verbose=self._verbose,
             )
