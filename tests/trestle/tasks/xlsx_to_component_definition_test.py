@@ -26,6 +26,7 @@ import trestle.tasks.xlsx_to_oscal_component_definition as xlsx_to_oscal_compone
 from trestle.tasks.base_task import TaskOutcome
 
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
+get_trestle_version_mock1 = Mock(return_value='0.21.0')
 
 
 def test_xlsx_print_info(tmp_path):
@@ -54,6 +55,7 @@ def test_xlsx_simulate(tmp_path):
 
 
 @patch(target='uuid.uuid4', new=uuid_mock1)
+@patch(target='trestle.tasks.xlsx_to_oscal_component_definition.get_trestle_version', new=get_trestle_version_mock1)
 def test_xlsx_execute(tmp_path):
     """Test execute call."""
     config = configparser.ConfigParser()
