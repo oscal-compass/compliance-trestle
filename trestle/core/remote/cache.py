@@ -48,7 +48,7 @@ logger = logging.getLogger(__name__)
 class FetcherBase(ABC):
     """FetcherBase - base class for fetching remote oscal objects."""
 
-    def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
+    def __init__(self, trestle_root: pathlib.Path, uri: str, expiration_seconds: int = const.DAY_SECONDS) -> None:
         """Intialize fetcher base.
 
         Args:
@@ -58,64 +58,66 @@ class FetcherBase(ABC):
             cache_only: Whether or not the operation should only target the cache copy
         """
         logger.debug('Initializing FetcherBase')
-        self._inst_cache_path: pathlib.Path
+        self._cached_object_path: pathlib.Path
         self._uri = uri
-        self._refresh = refresh
-        self._cache_only = cache_only
-        self._trestle_cache_path: pathlib.Path = trestle_root / const.TRESTLE_CONFIG_DIR / 'cache'
+        self._trestle_cache_path: pathlib.Path = trestle_root / const.TRESTLE_CACHE_DIR
         # ensure trestle cache directory exists.
         self._trestle_cache_path.mkdir(exist_ok=True)
+        self._expiration_seconds = expiration_seconds
 
     @abstractmethod
-    def _sync_cache(self) -> None:
+    def _do_fetch(self) -> None:
         """Fetch a object from a remote source.
 
         This contains the underlying logic to update the cache.
         """
         pass
 
-    def _update_cache(self) -> None:
-        """Update the cache by fetching the target remote object, if _cache_only is false.
+    def _in_cache(self) -> bool:
+        """Return whether object is contained within the cache or not."""
+        return self._cached_object_path.exists()
 
-        Actual update logic is implemented in sync_cache.
+    def _is_stale(self) -> bool:
+        # Either cache empty or item is expired
+        return True
+
+    def _update_cache(self, force_update: bool = False) -> None:
+        """Update the cache by fetching the target remote object, if stale or forced.
+
+        Args:
+            force_update: force the fetch regardless of staleness.
         """
-        # First discover whether...
-        if self._cache_only:
-            # Don't update if cache only...
-            return
-        if not self.in_cache() or self._refresh:
+        if self._is_stale() or force_update:
             try:
-                self._sync_cache()
+                self._do_fetch()
             except Exception as e:
                 logger.error(f'Unable to update cache for {self._uri}')
                 logger.debug(e)
                 raise TrestleError(f'Cache update failure for {self._uri}') from e
 
-    def get_raw(self) -> Dict[str, Any]:
+    def get_raw(self, force_update=False) -> Dict[str, Any]:
         """Retrieve the raw dictionary representing the underlying object."""
         try:
-            self._update_cache()
+            self._update_cache(force_update)
         except TrestleError as e:
             logger.error(f'Cannot get_raw due to failed _update_cache for {self._uri}')
             logger.debug(e)
             raise TrestleError(f'Cache get failure for {self._uri}') from e
         # Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().
         try:
-            return fs.load_file(self._inst_cache_path)
+            return fs.load_file(self._cached_object_path)
         except Exception as e:
-            logger.error(f'Cannot fs.load_file {self._inst_cache_path}')
+            logger.error(f'Cannot fs.load_file {self._cached_object_path}')
             logger.debug(e)
             raise TrestleError(f'Cache get failure for {self._uri}') from e
 
-    def get_oscal(self, model_type: Type[OscalBaseModel]) -> OscalBaseModel:
+    def get_oscal(self, model_type: Type[OscalBaseModel], force_update=False) -> OscalBaseModel:
         """Retrieve the cached file as a particular OSCAL model.
 
-        Argument:
-        ---------
-        model_type: Type[OscalBaseModel]
-            Identifies what OSCAL model to cast the retrieved object as.
+        Arguments:
+            model_type: Type[OscalBaseModel] Specifies the OSCAL model type of the fetched object.
         """
-        cache_file = self._inst_cache_path
+        cache_file = self._cached_object_path
         if cache_file.exists():
             try:
                 return model_type.oscal_read(cache_file)
@@ -127,71 +129,68 @@ class FetcherBase(ABC):
             logger.error(f'get_oscal error, no cached file for {self._uri}')
             raise TrestleError(f'get_oscal failure for {self._uri}')
 
-    def in_cache(self) -> bool:
-        """Return whether object is contained within the cache or not."""
-        return self._inst_cache_path.exists()
-
 
 class LocalFetcher(FetcherBase):
-    """Fetcher for local content."""
+    r"""Fetcher for local content.
 
-    def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
+    Used for both file:/// and C:\\ type paths.
+    """
+
+    def __init__(self, trestle_root: pathlib.Path, uri: str, expiration_seconds: int = const.DAY_SECONDS) -> None:
         """Initialize local fetcher. Update the expected cache path as per caching specs.
 
         Args:
-            trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
+            trestle_root: trestle root path
             uri: Reference to the file in the local filesystem to cache, which must be outside trestle_root.
-            refresh: Whether or not the cache should be refreshed
-            cache_only: Whether or not the operation should only target the cache copy
+            expiration_seconds: expiration time where file should be fetched again.
         """
-        super().__init__(trestle_root, uri, refresh, cache_only)
-        # Normalize uri to a root file.
-        if 'file:///' == uri[0:8]:
-            uri = uri[7:]
+        super().__init__(trestle_root, uri, expiration_seconds)
+        # Normalize uri to a root file with no drive letter.
+        if uri.startswith(const.FILE_URI):
+            uri = '/' + uri[len(const.FILE_URI):]
 
-        # TODO (#365): Update this to allow for relative paths. Maybe.
-        path = pathlib.Path(uri).resolve()
-        self._abs_path = path
-        localhost_cached_dir = self._trestle_cache_path / 'localhost'
-        localhost_cached_dir = localhost_cached_dir / '__abs__' / '__root__'
+        # store the abs path for fetching
+        self._abs_path = pathlib.Path(uri).resolve()
 
-        # Use the uri's path.parent to set a cache location
-        cache_location_string = path.parent.__str__()
-        # Remove the drive letter for Windows/DOS paths:
-        if re.match('[a-zA-Z]:', uri):
-            cache_location_string = re.sub('[a-zA-Z]:', '', path.parent.__str__())
-        # Locte first non-slash character as the root subdirectory to start with:
-        non_slash_start = re.search('[a-z-A-Z0-9]', cache_location_string).span()[0]
-        cache_location_string_relative = cache_location_string[non_slash_start:]
-        localhost_cached_dir = localhost_cached_dir / pathlib.Path(cache_location_string_relative)
-        localhost_cached_dir.mkdir(parents=True, exist_ok=True)
-        self._inst_cache_path = localhost_cached_dir / pathlib.Path(pathlib.Path(self._uri).name)
+        dir_path_str = str(self._abs_path.parent)
 
-    def _sync_cache(self) -> None:
+        # if uri is file:/// then windows will add bogus drive letter that must be stripped
+        dir_path_str, _ = fs.strip_drive_letter(dir_path_str)
+
+        uri, drive_letter = fs.strip_drive_letter(uri)
+        source_root = const.CACHE_ABS_DIR if not drive_letter else f'__{drive_letter}__'
+
+        localhost_cache_dir = self._trestle_cache_path / f'localhost/{source_root}/{dir_path_str}'
+
+        localhost_cache_dir.mkdir(parents=True, exist_ok=True)
+        self._cached_object_path = localhost_cache_dir / pathlib.Path(uri).name
+
+    def _do_fetch(self) -> None:
         """Copy the local resource into the cache."""
-        # Do not allow remote fetch from a trestle project:
+        # Do not allow fetch from within *this* trestle project
+        # But it is ok to fetch from separate trestle projects
         if fs.get_trestle_project_root(self._abs_path) is not None:
             logger.error(f'Attempt to cache from location within a trestle project: {self._uri}')
             raise TrestleError(
                 'Cache request for invalid input URI:'
                 f'Attempt to cache from location within a trestle project {self._uri}'
             )
-        shutil.copy(self._abs_path, self._inst_cache_path)
+        shutil.copy(self._abs_path, self._cached_object_path)
 
 
 class HTTPSFetcher(FetcherBase):
     """Fetcher for https content."""
 
     # Use request: https://requests.readthedocs.io/en/master/
-    def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
+    def __init__(self, trestle_root: pathlib.Path, uri: str, expiration_seconds: int = const.DAY_SECONDS) -> None:
         """Initialize HTTPS fetcher."""
         logger.debug('Initializing HTTPSFetcher')
-        super().__init__(trestle_root, uri, refresh, cache_only)
+        super().__init__(trestle_root, uri, expiration_seconds)
         self._username = None
         self._password = None
         u = parse.urlparse(self._uri)
         self._url = uri
-        # If the either the username or password is omitted in the url, then the other becomes ''
+        # If the either the username or password is omitted in the uri, then the other becomes ''
         # so we test for either None or ''.
         if u.username != '' and u.username is not None:
             # This also checks for invalid environment variable name (IEEE 1003.1)
@@ -231,7 +230,7 @@ class HTTPSFetcher(FetcherBase):
         if self._username and (self._password == '' or self._password is None):
             logger.error(
                 'Malformed URI, username found but valid password not found '
-                f'via environment variable in URL {self._uri}'
+                f'via environment variable in Uri {self._uri}'
             )
             raise TrestleError(
                 f'Cache request for invalid input URI: username found '
@@ -240,20 +239,20 @@ class HTTPSFetcher(FetcherBase):
         if self._password and not self._username:
             logger.error(
                 f'Malformed URI, password found '
-                f'but valid username environment variable missing in URL {self._uri}'
+                f'but valid username environment variable missing in URI {self._uri}'
             )
             raise TrestleError(
                 f'Cache request for invalid input URI: password found '
                 f'but username not found via environment variable {self._uri}'
             )
         https_cached_dir = self._trestle_cache_path / u.hostname
-        # Skip any number of back- or forward slashes preceding the url path (u.path)
+        # Skip any number of back- or forward slashes preceding the uri path (u.path)
         path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0]:]).parent
         https_cached_dir = https_cached_dir / path_parent
         https_cached_dir.mkdir(parents=True, exist_ok=True)
-        self._inst_cache_path = https_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
+        self._cached_object_path = https_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
 
-    def _sync_cache(self) -> None:
+    def _do_fetch(self) -> None:
         auth = None
         verify = None
         # This order reflects requests library behavior: REQUESTS_CA_BUNDLE comes first.
@@ -278,11 +277,11 @@ class HTTPSFetcher(FetcherBase):
             try:
                 result = response.json()
             except JSONDecodeError as err:
-                logger.debug(f'HTTPSFetcher._sync_cache() request.json() method failed for url {self._url}: {err}')
-                logger.error(f'HTTPSFetcher sync failed, JSON error from getting url {self._url}: {err}')
+                logger.debug(f'HTTPSFetcher._do_fetch() request.json() method failed for url {self._url}: {err}')
+                logger.error(f'HTTPSFetcher fetch failed, JSON error from getting url {self._url}: {err}')
                 raise TrestleError(f'Cache update failure with expected JSON via HTTPS: {self._url} ({err})')
             else:
-                self._inst_cache_path.write_text(json.dumps(result))
+                self._cached_object_path.write_text(json.dumps(result))
         else:
             raise TrestleError(f'GET returned code {response.status_code}: {self._uri}')
 
@@ -290,7 +289,7 @@ class HTTPSFetcher(FetcherBase):
 class SFTPFetcher(FetcherBase):
     """Fetcher for SFTP content."""
 
-    def __init__(self, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False) -> None:
+    def __init__(self, trestle_root: pathlib.Path, uri: str, expiration_seconds: int = const.DAY_SECONDS) -> None:
         """Initialize SFTP fetcher. Update the expected cache path as per caching specs.
 
         Args:
@@ -299,7 +298,7 @@ class SFTPFetcher(FetcherBase):
             refresh: Whether or not the cache should be refreshed
             cache_only: Whether or not the operation should only target the cache copy
         """
-        super().__init__(trestle_root, uri, refresh, cache_only)
+        super().__init__(trestle_root, uri, expiration_seconds)
         # Is this a valid uri, however? Username and password are optional, of course.
         u = parse.urlparse(self._uri)
         if not u.hostname:
@@ -314,9 +313,9 @@ class SFTPFetcher(FetcherBase):
         path_parent = pathlib.Path(u.path[re.search('[^/\\\\]', u.path).span()[0]:]).parent
         sftp_cached_dir = sftp_cached_dir / path_parent
         sftp_cached_dir.mkdir(parents=True, exist_ok=True)
-        self._inst_cache_path = sftp_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
+        self._cached_object_path = sftp_cached_dir / pathlib.Path(pathlib.Path(u.path).name)
 
-    def _sync_cache(self) -> None:
+    def _do_fetch(self) -> None:
         """Fetch remote object and update the cache if appropriate and possible to do so.
 
         Authentication relies on the user's private key being either active via ssh-agent or
@@ -361,7 +360,7 @@ class SFTPFetcher(FetcherBase):
             logger.debug(e)
             raise TrestleError(f'Cache update failure to open sftp for {username}@{u.hostname}')
 
-        localpath = self._inst_cache_path
+        localpath = self._cached_object_path
         try:
             sftp_client.get(remotepath=u.path[1:], localpath=(localpath.__str__()))
         except Exception as e:
@@ -383,29 +382,32 @@ class FetcherFactory(object):
 
     @classmethod
     def get_fetcher(
-        cls, trestle_root: pathlib.Path, uri: str, refresh: bool = False, cache_only: bool = False
+        cls, trestle_root: pathlib.Path, uri: str, expiration_seconds: int = const.DAY_SECONDS
     ) -> FetcherBase:
         """Return an instantiated fetcher object based on the uri.
 
         Args:
             trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
-        uri: Reference to the remote object to cache.
-        refresh: Whether or not the cache should be refreshed
-        cache_only: Whether or not the operation should only target the cache copy
+            uri: Reference to the remote object to cache.
+            refresh: Whether or not the cache should be refreshed.
+            cache_only: Whether or not the operation should only target the cache copy.
+
+        Returns:
+            fetcher object for the given uri.
         """
         # Basic correctness test
-        if len(uri) <= 9 or ('/' not in uri and re.match('[A-Za-z]:\\\\', uri) is None):
+        if len(uri) <= 9 or ('/' not in uri and re.match(const.WINDOWS_DRIVE_URI_REGEX, uri) is None):
             raise TrestleError(f'Unable to fetch uri as it appears to be invalid {uri}')
 
-        if uri[0] == '/' or 'file:///' == uri[0:8]:
+        if uri[0] == '/' or uri.startswith(const.FILE_URI):
             # Note assumption here is that relative paths are not yet supported
             # so these are not allowed for just yet: uri[0:3] == '../' or uri[0:2] == './'
-            return LocalFetcher(trestle_root, uri, refresh, cache_only)
-        elif 'sftp://' == uri[0:7]:
-            return SFTPFetcher(trestle_root, uri, refresh, cache_only)
-        elif 'https://' == uri[0:8] is not None:
-            return HTTPSFetcher(trestle_root, uri, refresh, cache_only)
-        elif re.match('[A-Za-z]:\\\\', uri) is not None:
-            return LocalFetcher(trestle_root, uri, refresh, cache_only)
+            return LocalFetcher(trestle_root, uri, expiration_seconds)
+        elif uri.startswith(const.SFTP_URI):
+            return SFTPFetcher(trestle_root, uri, expiration_seconds)
+        elif uri.startswith(const.HTTPS_URI):
+            return HTTPSFetcher(trestle_root, uri, expiration_seconds)
+        elif re.match(const.WINDOWS_DRIVE_URI_REGEX, uri) is not None:
+            return LocalFetcher(trestle_root, uri, expiration_seconds)
         else:
             raise TrestleError(f'Unable to fetch uri: {uri} as the uri did not match a suppported format.')

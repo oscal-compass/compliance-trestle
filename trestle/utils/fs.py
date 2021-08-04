@@ -19,6 +19,7 @@ import json
 import logging
 import os
 import pathlib
+import re
 from typing import Any, Dict, List, Optional, Tuple, Type, cast
 
 from pydantic import create_model
@@ -480,3 +481,13 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
         logger.warn(f'Exception comparing file {path_a} to {path_b}.  Return as False. {e}')
         return False
     return True
+
+
+def strip_drive_letter(file_path: str) -> Tuple[str, str]:
+    r"""If string starts with e.g. D:\\foo just return /foo along with the drive letter."""
+    drive_string_match = re.match(const.WINDOWS_DRIVE_URI_REGEX, file_path)
+    if drive_string_match is not None:
+        drive_string = drive_string_match[0]
+        drive_letter = drive_string[0]
+        return file_path.replace(drive_string, '/'), drive_letter
+    return file_path, ''
