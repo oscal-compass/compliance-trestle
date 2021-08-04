@@ -19,6 +19,7 @@ Trestle cache operations library.
 Allows for using uris to reference external directories and then expand.
 """
 
+import datetime
 import getpass
 import json
 import logging
@@ -78,22 +79,30 @@ class FetcherBase(ABC):
         return self._cached_object_path.exists()
 
     def _is_stale(self) -> bool:
-        # Either cache empty or item is expired
-        return True
+        # Either cache empty or item is too old
+        if not self._cached_object_path.exists():
+            return True
+        return fs.time_since_modification(self._cached_object_path
+                                          ) > datetime.timedelta(seconds=self._expiration_seconds)
 
-    def _update_cache(self, force_update: bool = False) -> None:
+    def _update_cache(self, force_update: bool = False) -> bool:
         """Update the cache by fetching the target remote object, if stale or forced.
 
         Args:
             force_update: force the fetch regardless of staleness.
+
+        Returns:
+            True if update occurred
         """
         if self._is_stale() or force_update:
             try:
                 self._do_fetch()
+                return True
             except Exception as e:
                 logger.error(f'Unable to update cache for {self._uri}')
                 logger.debug(e)
                 raise TrestleError(f'Cache update failure for {self._uri}') from e
+        return False
 
     def get_raw(self, force_update=False) -> Dict[str, Any]:
         """Retrieve the raw dictionary representing the underlying object."""

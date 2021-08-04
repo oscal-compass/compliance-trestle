@@ -18,6 +18,7 @@
 import pathlib
 import random
 import string
+import time
 from json.decoder import JSONDecodeError
 from unittest.mock import patch
 
@@ -150,7 +151,7 @@ def test_https_fetcher(tmp_trestle_dir, monkeypatch):
     with patch('requests.Response.json') as json_mock:
         json_mock.side_effect = JSONDecodeError(msg='Extra data:', doc=fetcher._uri, pos=0)
         with pytest.raises(TrestleError):
-            fetcher._update_cache()
+            fetcher._update_cache(True)
     # Now we'll get a file that does not exist:
     uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/not_here.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri)
@@ -334,3 +335,28 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch) -> None:
     sftp_uri_2 = 'sftp://user@hostname:2000/path/to/file.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), sftp_uri_2)
     assert type(fetcher) == cache.SFTPFetcher
+
+
+def test_fetcher_expiration(tmp_trestle_dir: pathlib.Path):
+    """Test fetcher expiration behavior."""
+    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+    catalog_file = pathlib.Path(tmp_trestle_dir.parent / f'{rand_str}.json').__str__()
+    catalog_data = generators.generate_sample_model(Catalog)
+    catalog_data.oscal_write(pathlib.Path(catalog_file))
+    # timeout of 10s
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, 10)
+    # should fetch because doesn't have it yet
+    assert fetcher._update_cache()
+    assert fetcher._cached_object_path.exists()
+
+    # should not fetch since it is too soon
+    assert not fetcher._update_cache()
+
+    # wait a bit
+    time.sleep(12)
+
+    # should fetch now
+    assert fetcher._update_cache()
+
+    # should also fetch if we force it
+    assert fetcher._update_cache(True)

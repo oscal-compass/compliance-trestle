@@ -15,6 +15,7 @@
 # limitations under the License.
 """Common file system utilities."""
 
+import datetime
 import json
 import logging
 import os
@@ -491,3 +492,11 @@ def strip_drive_letter(file_path: str) -> Tuple[str, str]:
         drive_letter = drive_string[0]
         return file_path.replace(drive_string, '/'), drive_letter
     return file_path, ''
+
+
+def time_since_modification(file_path: pathlib.Path) -> datetime.timedelta:
+    """Get time since last modification."""
+    if not file_path.exists():
+        raise TrestleError(f'time since modification requested for non existent file {file_path}')
+    last_modification = datetime.datetime.fromtimestamp(file_path.stat().st_mtime)
+    return datetime.datetime.now() - last_modification
