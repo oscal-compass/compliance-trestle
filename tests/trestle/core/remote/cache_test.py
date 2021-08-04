@@ -343,7 +343,8 @@ def test_fetcher_expiration(tmp_trestle_dir: pathlib.Path):
     catalog_file = pathlib.Path(tmp_trestle_dir.parent / f'{rand_str}.json').__str__()
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
-    # timeout of 10s
+
+    # specify quick timeout of 10s
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, 10)
     # should fetch because doesn't have it yet
     assert fetcher._update_cache()
