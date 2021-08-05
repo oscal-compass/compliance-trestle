@@ -76,7 +76,7 @@ class FetcherBase(ABC):
 
     def _is_stale(self) -> bool:
         # Either cache empty or cached item is too old
-        if not self._cached_object_path.exists():
+        if not self._in_cache():
             return True
         return fs.time_since_modification(self._cached_object_path
                                           ) > datetime.timedelta(seconds=self._expiration_seconds)
@@ -102,12 +102,7 @@ class FetcherBase(ABC):
 
     def get_raw(self, force_update=False) -> Dict[str, Any]:
         """Retrieve the raw dictionary representing the underlying object."""
-        try:
-            self._update_cache(force_update)
-        except TrestleError as e:
-            logger.error(f'Cannot get_raw due to failed _update_cache for {self._uri}')
-            logger.debug(e)
-            raise TrestleError(f'Cache get failure for {self._uri}') from e
+        self._update_cache(force_update)
         # Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().
         try:
             return fs.load_file(self._cached_object_path)
@@ -122,12 +117,7 @@ class FetcherBase(ABC):
         Arguments:
             model_type: Type[OscalBaseModel] Specifies the OSCAL model type of the fetched object.
         """
-        try:
-            self._update_cache(force_update)
-        except TrestleError as e:
-            logger.error(f'Cannot get_oscal due to failed _update_cache for {self._uri}')
-            logger.debug(e)
-            raise TrestleError(f'Cache get failure for {self._uri}') from e
+        self._update_cache(force_update)
         cache_file = self._cached_object_path
         if cache_file.exists():
             try:
@@ -179,6 +169,9 @@ class LocalFetcher(FetcherBase):
         # store the abs path to the file for fetching
         # if this is a windows file it will have a drive letter at start after resolve
         self._abs_path = pathlib.Path(uri).resolve()
+
+        if fs.has_parent_path(self._abs_path, trestle_root):
+            raise TrestleError(f'Cannot use cache for trestle in current project directory {self._abs_path}')
 
         # now create appropriate local path for the cached version
         dir_path_str = str(self._abs_path.parent)

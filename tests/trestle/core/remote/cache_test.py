@@ -65,15 +65,7 @@ def test_fetcher_oscal_fails(tmp_trestle_dir):
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(pathlib.Path(catalog_file))
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file)
-    # Create/update the cache copy
-    fetcher._update_cache()
-    # 1. What if cache file does not exist?
-    with patch('pathlib.Path.exists') as path_exists_mock:
-        path_exists_mock.return_value = False
-        with pytest.raises(err.TrestleError):
-            fetcher.get_oscal(Catalog)
-        path_exists_mock.assert_called_once()
-    # 2. What if oscal_read of cache file throws TrestleError?
+    # mock bad read of oscal model
     with patch('trestle.oscal.catalog.Catalog.oscal_read') as oscal_read_mock:
         oscal_read_mock.side_effect = err.TrestleError
         with pytest.raises(err.TrestleError):
@@ -103,24 +95,13 @@ def test_github_fetcher():
 def test_local_fetcher_get_fails(tmp_trestle_dir):
     """Test the local fetcher get failure."""
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = pathlib.Path(tmp_trestle_dir.parent / f'{rand_str}.json').__str__()
+    catalog_dir = tmp_trestle_dir / f'catalogs/{rand_str}'
+    catalog_dir.mkdir(parents=True, exist_ok=True)
+    catalog_file = catalog_dir / 'catalog.json'
     catalog_data = generators.generate_sample_model(Catalog)
-    catalog_data.oscal_write(pathlib.Path(catalog_file))
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file)
-    # FIXME previously running get_raw() at this point should have errored
+    catalog_data.oscal_write(catalog_file)
     with pytest.raises(err.TrestleError):
-        fetcher.get_oscal(Catalog)
-
-
-def test_local_fetcher_bad_uri_in_trestle_project(tmp_trestle_dir):
-    """Test the local fetcher for bad uri inside a trestle project."""
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = pathlib.Path(tmp_trestle_dir / f'{rand_str}.json').__str__()
-    catalog_data = generators.generate_sample_model(Catalog)
-    catalog_data.oscal_write(pathlib.Path(catalog_file))
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file)
-    with pytest.raises(err.TrestleError):
-        fetcher._update_cache()
+        cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), str(catalog_file))
 
 
 def test_local_fetcher_absolute(tmp_trestle_dir):
