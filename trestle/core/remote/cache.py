@@ -47,7 +47,7 @@ logger = logging.getLogger(__name__)
 
 
 class FetcherBase(ABC):
-    """FetcherBase - base class for fetching remote oscal objects."""
+    """FetcherBase - base class for caching and fetching remote oscal objects."""
 
     def __init__(self, trestle_root: pathlib.Path, uri: str, expiration_seconds: int = const.DAY_SECONDS) -> None:
         """Intialize fetcher base.
@@ -55,8 +55,7 @@ class FetcherBase(ABC):
         Args:
             trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
             uri: Reference to the source object to cache.
-            refresh: Whether or not the cache should be refreshed.
-            cache_only: Whether or not the operation should only target the cache copy
+            expiration_seconds: expiration time where file should be fetched again.
         """
         logger.debug('Initializing FetcherBase')
         self._cached_object_path: pathlib.Path
@@ -68,18 +67,15 @@ class FetcherBase(ABC):
 
     @abstractmethod
     def _do_fetch(self) -> None:
-        """Fetch a object from a remote source.
-
-        This contains the underlying logic to update the cache.
-        """
+        """Fetch the object from a remote source."""
         pass
 
     def _in_cache(self) -> bool:
-        """Return whether object is contained within the cache or not."""
+        """Return whether object is present in the cache or not."""
         return self._cached_object_path.exists()
 
     def _is_stale(self) -> bool:
-        # Either cache empty or item is too old
+        # Either cache empty or cached item is too old
         if not self._cached_object_path.exists():
             return True
         return fs.time_since_modification(self._cached_object_path
@@ -142,7 +138,11 @@ class FetcherBase(ABC):
 class LocalFetcher(FetcherBase):
     r"""Fetcher for local content.
 
-    Used for both file:/// and C:\\ type paths.
+    Used for both file:/// and C:\\ or C:/ type paths, but the path must be absolute.
+
+    If file:/// is used on a Windows system, it must be followed by C:/ or other drive letter
+    to be sure it is an absolute path, e.g. file:///C:/Users/Default/Documents/profile.json.
+    The drive letter may be lowercase.
     """
 
     def __init__(self, trestle_root: pathlib.Path, uri: str, expiration_seconds: int = const.DAY_SECONDS) -> None:
@@ -154,18 +154,32 @@ class LocalFetcher(FetcherBase):
             expiration_seconds: expiration time where file should be fetched again.
         """
         super().__init__(trestle_root, uri, expiration_seconds)
-        # Normalize uri to a root file with no drive letter.
-        if uri.startswith(const.FILE_URI):
-            uri = '/' + uri[len(const.FILE_URI):]
 
-        # store the abs path for fetching
+        # Handle as file:/// form
+        if uri.startswith(const.FILE_URI):
+            # strip off entire header including /
+            uri = uri[len(const.FILE_URI):]
+
+            # if it has a drive letter don't add / to front
+            uri = uri if re.match(const.WINDOWS_DRIVE_LETTER_REGEX, uri) else '/' + uri
+
+        # now the uri should be either unix / style or windows C:/ style.  Neither can be relative
+
+        # if it has a drive letter but no / after it, it is not absolute
+        if re.match(const.WINDOWS_DRIVE_LETTER_REGEX, uri):
+            if not re.match(const.WINDOWS_DRIVE_URI_REGEX, uri):
+                raise TrestleError(f'Windows uri must include DriveLetter: followed by one slash: {uri}')
+
+        # store the abs path to the file for fetching
+        # if this is a windows file it will have a drive letter at start after resolve
         self._abs_path = pathlib.Path(uri).resolve()
 
+        # now create appropriate local path for the cached version
         dir_path_str = str(self._abs_path.parent)
 
-        # if uri is file:/// then windows will add bogus drive letter that must be stripped
         dir_path_str, _ = fs.strip_drive_letter(dir_path_str)
 
+        # set the local root to either __root__ for unix or __drive_letter__ for windows
         uri, drive_letter = fs.strip_drive_letter(uri)
         source_root = const.CACHE_ABS_DIR if not drive_letter else f'__{drive_letter}__'
 
@@ -304,8 +318,7 @@ class SFTPFetcher(FetcherBase):
         Args:
             trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
             uri: Reference to the remote file to cache that can be fetched using the sftp:// scheme.
-            refresh: Whether or not the cache should be refreshed
-            cache_only: Whether or not the operation should only target the cache copy
+            expiration_seconds: time in seconds to when cache is stale.
         """
         super().__init__(trestle_root, uri, expiration_seconds)
         # Is this a valid uri, however? Username and password are optional, of course.
@@ -382,12 +395,8 @@ class SFTPFetcher(FetcherBase):
 # Do https://gist.github.com/gbaman/b3137e18c739e0cf98539bf4ec4366ad#gistcomment-2747872
 # or https://gist.github.com/gbaman/b3137e18c739e0cf98539bf4ec4366ad#gistcomment-2752081
 # or https://gist.github.com/gbaman/b3137e18c739e0cf98539bf4ec4366ad#gistcomment-2865053
-class FetcherFactory(object):
+class FetcherFactory:
     """Factory method for creating a fetcher."""
-
-    def __init__(self) -> None:
-        """Initialize fetcher factory."""
-        pass
 
     @classmethod
     def get_fetcher(
@@ -398,8 +407,7 @@ class FetcherFactory(object):
         Args:
             trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
             uri: Reference to the remote object to cache.
-            refresh: Whether or not the cache should be refreshed.
-            cache_only: Whether or not the operation should only target the cache copy.
+            expiration_seconds: time in seconds to when cache is stale.
 
         Returns:
             fetcher object for the given uri.

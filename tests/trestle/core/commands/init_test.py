@@ -48,7 +48,7 @@ def test_init(tmp_path, keep_cwd):
 def test_directory_creation_error(tmp_path, keep_cwd):
     """Test error during init when a directory cannot be created."""
     # Windows read-only on dir does not prevent file creation in dir
-    if platform.system() == 'Windows':
+    if platform.system() == const.WINDOWS_PLATFORM_STR:
         return
     os.chdir(tmp_path)
     config_dir = pathlib.Path(const.TRESTLE_CONFIG_DIR)

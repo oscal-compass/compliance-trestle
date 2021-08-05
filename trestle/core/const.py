@@ -103,6 +103,8 @@ BUG_REPORT = 'https://github.com/IBM/compliance-trestle/issues/new/choose'
 # Sample objects
 SAMPLE_UUID_STR = 'A0000000-0000-4000-8000-000000000000'
 
+WINDOWS_PLATFORM_STR = 'Windows'
+
 # constants related to cache
 
 TRESTLE_CACHE_DIR = TRESTLE_CONFIG_DIR + '/cache'
@@ -111,14 +113,13 @@ HOUR_SECONDS: int = 3600
 
 DAY_SECONDS: int = 24 * HOUR_SECONDS
 
-# File in url
 FILE_URI = 'file:///'
 
 SFTP_URI = 'sftp://'
 
 HTTPS_URI = 'https://'
 
-WINDOWS_DRIVE_URI_REGEX = r'[A-Za-z]:[\\/]'
+WINDOWS_DRIVE_URI_REGEX = r'[A-Za-z]:[\\/][^\\/]'
 
 WINDOWS_DRIVE_LETTER_REGEX = r'[A-Za-z]:'
 

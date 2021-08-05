@@ -16,6 +16,7 @@
 """Testing for cache functionality."""
 
 import pathlib
+import platform
 import random
 import string
 import time
@@ -33,6 +34,13 @@ from trestle.core.err import TrestleError
 from trestle.core.remote import cache
 from trestle.oscal.catalog import Catalog
 from trestle.utils import fs
+
+
+def as_file_uri(path: str) -> str:
+    """Convert sample non-existent path to file:/// and add drive letter if windows."""
+    # Correct usage would start with / and leaving off should cause errors with cache
+    prefix = '/C:' if platform.system() == const.WINDOWS_PLATFORM_STR else ''
+    return 'file://' + prefix + path
 
 
 def test_fetcher_oscal(tmp_trestle_dir):
@@ -269,11 +277,13 @@ def test_sftp_fetcher_get_fails(tmp_trestle_dir, monkeypatch):
                     get_mock.assert_called_once()
 
 
-def test_sftp_fetcher_bad_uri(tmp_trestle_dir):
+@pytest.mark.parametrize(
+    'uri', ['sftp://blah.com', 'sftp:///path/to/file.json', 'sftp://user:pass@hostname.com\\path\\to\\file.json']
+)
+def test_sftp_fetcher_bad_uri(uri, tmp_trestle_dir):
     """Test get_fetcher handling of bad SFTP URI."""
-    for uri in ['sftp://blah.com', 'sftp:///path/to/file.json', 'sftp://user:pass@hostname.com\\path\\to\\file.json']:
-        with pytest.raises(TrestleError):
-            cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri)
+    with pytest.raises(TrestleError):
+        cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri)
 
 
 def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, monkeypatch):
@@ -304,11 +314,11 @@ def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, monkeypatch):
 
 def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch) -> None:
     """Test that the fetcher factory correctly resolves functionality."""
-    local_uri_1 = 'file:///home/user/oscal_file.json'
+    local_uri_1 = as_file_uri('/home/user/oscal_file.json')
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_1)
     assert type(fetcher) == cache.LocalFetcher
 
-    local_uri_2 = '/home/user/oscal_file.json'
+    local_uri_2 = as_file_uri('/home/user/oscal_file.json')
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_2)
     assert type(fetcher) == cache.LocalFetcher
 
@@ -361,3 +371,26 @@ def test_fetcher_expiration(tmp_trestle_dir: pathlib.Path):
 
     # should also fetch if we force it
     assert fetcher._update_cache(True)
+
+
+@pytest.mark.parametrize('uri', ['C:mydir/myfile.json', 'C://mydir/myfile.json'])
+def test_fetcher_failures_windows(uri, tmp_trestle_dir: pathlib.Path) -> None:
+    """Test failures specific to Windows."""
+    if platform.system == const.WINDOWS_PLATFORM_STR:
+        with pytest.raises(TrestleError):
+            cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri)
+
+
+def test_fetcher_failure_windows_wrong_drive(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test failures specific to Windows."""
+    if platform.system == const.WINDOWS_PLATFORM_STR:
+        rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
+        catalog_file = pathlib.Path(tmp_trestle_dir.parent / f'{rand_str}.json').__str__()
+        catalog_data = generators.generate_sample_model(Catalog)
+        catalog_data.oscal_write(pathlib.Path(catalog_file))
+
+        drive_letter, path_str = fs.strip_drive_letter(catalog_file)
+        bad_drive = 'X:' if drive_letter not in ['X', 'x'] else 'Y:'
+        bad_uri = bad_drive + path_str
+        with pytest.raises(TrestleError):
+            cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), bad_uri)
