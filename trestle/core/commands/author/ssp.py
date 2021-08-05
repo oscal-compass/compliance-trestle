@@ -77,9 +77,7 @@ class SSPGenerate(AuthorCommonCommand):
         profile: prof.Profile
         _, _, profile = load_distributed(pathlib.Path(f'profiles/{args.profile}/profile.json'))
         cat_href = profile.imports[0].href
-        cat_name = fs.model_name_from_href_str(cat_href)
-
-        _, _, catalog = load_distributed(pathlib.Path(f'catalogs/{cat_name}/catalog.json'))
+        catalog = fs.model_from_href(cat_href, trestle_root, cat.Catalog)
 
         yaml_header: dict = {}
         if 'yaml_header' in args and args.yaml_header is not None:

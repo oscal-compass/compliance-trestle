@@ -119,12 +119,14 @@ SFTP_URI = 'sftp://'
 
 HTTPS_URI = 'https://'
 
-WINDOWS_DRIVE_URI_REGEX = r'[A-Za-z]:[\\/][^\\/]'
+WINDOWS_DRIVE_URI_REGEX = r'([A-Za-z]:[\\/]?)[^\\/]'
 
 WINDOWS_DRIVE_LETTER_REGEX = r'[A-Za-z]:'
 
 CACHE_ABS_DIR = '__abs__'
 
 UNIX_CACHE_ROOT = '__root__'
+
+TRESTLE_HREF_HEADING = 'trestle://'
 
 TRESTLE_HREF_REGEX = '^trestle://[^/]'

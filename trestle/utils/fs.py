@@ -27,12 +27,14 @@ from pydantic import create_model
 
 from ruamel.yaml import YAML
 
+from trestle.core import common_types
 from trestle.core import const
 from trestle.core import err
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
+from trestle.core.remote import cache
 
 if os.name == 'nt':  # pragma: no cover
     import win32api
@@ -452,17 +454,19 @@ def allowed_task_name(name: str) -> bool:
     return True
 
 
-def model_name_from_href_path(href: pathlib.Path) -> str:
-    """Find model name from path."""
-    name = href.stem
-    # if the name looks like 'catalog.json' then the real name is the directory above
-    name = name if name not in const.MODEL_TYPE_LIST else href.parent.stem
-    return name
-
-
-def model_name_from_href_str(href: str) -> str:
-    """Find model name from href."""
-    return model_name_from_href_path(pathlib.Path(href))
+def model_from_href(
+    href: str,
+    trestle_root: pathlib.Path,
+    model_type: Type[OscalBaseModel],
+    expiration_seconds: int = const.DAY_SECONDS
+) -> common_types.TopLevelOscalModel:
+    """Load model from href string via cache if remote."""
+    # If the href is not of form trestle:// then return cached version
+    if re.match(const.TRESTLE_HREF_REGEX, href):
+        model_path = trestle_root / href[len(const.TRESTLE_HREF_HEADING):]
+        return model_type.oscal_read(model_path)
+    fetcher = cache.FetcherFactory.get_fetcher(trestle_root, href, expiration_seconds)
+    return fetcher.get_oscal(model_type)
 
 
 def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:

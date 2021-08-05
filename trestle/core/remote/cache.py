@@ -122,6 +122,12 @@ class FetcherBase(ABC):
         Arguments:
             model_type: Type[OscalBaseModel] Specifies the OSCAL model type of the fetched object.
         """
+        try:
+            self._update_cache(force_update)
+        except TrestleError as e:
+            logger.error(f'Cannot get_oscal due to failed _update_cache for {self._uri}')
+            logger.debug(e)
+            raise TrestleError(f'Cache get failure for {self._uri}') from e
         cache_file = self._cached_object_path
         if cache_file.exists():
             try:

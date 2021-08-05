@@ -18,11 +18,9 @@
 import argparse
 import logging
 import pathlib
-import re
 
 import trestle.oscal.profile as profile
 import trestle.utils.log as log
-from trestle.core import const
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.utils import fs
 
@@ -69,14 +67,14 @@ class HrefCmd(CommandPlusDocs):
 
         Args:
             profile_name: Name of profile already imported into trestle
-            href: New value for the href of the import, pointing to trestle://...
+            href: New value for the href of the import
 
         Returns:
             0 on success, 1 on failure
 
         Assumptions and requirements:
             The profile must be a valid profile in the trestle project.
-            The import must be a valid catalog in the trestle project.
+            The import must either be a valid uri, including local file, or trestle://
             Assumes only one import by the profile.
             The original href is not checked and will be overwritten.
 
@@ -84,9 +82,6 @@ class HrefCmd(CommandPlusDocs):
             Allow multiple imports with matching hrefs.
             Allow href to point to profile in trestle.
         """
-        if re.match(const.TRESTLE_HREF_REGEX, new_href) is None:
-            logger.warning(f'New href must be of form trestle://...  {new_href}')
-            return 1
         trestle_root = fs.get_trestle_project_root(effective_cwd)
         if trestle_root is None:
             logger.warning(f'Effective directory is not in a trestle project: {effective_cwd}')
