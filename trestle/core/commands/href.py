@@ -66,8 +66,9 @@ class HrefCmd(CommandPlusDocs):
         """Change the href of the import in the profile.
 
         Args:
+            effective_cwd: effective working directory for this call, e.g. trestle_root
             profile_name: Name of profile already imported into trestle
-            href: New value for the href of the import
+            new_href: New value for the href of the import
 
         Returns:
             0 on success, 1 on failure
