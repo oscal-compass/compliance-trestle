@@ -25,6 +25,7 @@ import json
 import logging
 import os
 import pathlib
+import platform
 import re
 import shutil
 from abc import ABC, abstractmethod
@@ -163,6 +164,8 @@ class LocalFetcher(FetcherBase):
 
         # if it has a drive letter but no / after it, it is not absolute
         if re.match(const.WINDOWS_DRIVE_LETTER_REGEX, uri):
+            if platform.system() != const.WINDOWS_PLATFORM_STR:
+                raise TrestleError(f'Cannot cache Windows paths on non-Windows system. {uri}')
             if not re.match(const.WINDOWS_DRIVE_URI_REGEX, uri):
                 raise TrestleError(f'Windows uri must include DriveLetter: followed by one slash: {uri}')
 

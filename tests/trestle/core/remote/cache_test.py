@@ -306,12 +306,17 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch) -> None:
     # Relative paths are not yet supported, e.g., local_uri_3 = '../../file.json', but should come soon.
 
     local_uri_4 = 'C:\\Users\\user\\this.file'
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_4)
-    assert type(fetcher) == cache.LocalFetcher
-
     local_uri_5 = 'C:/Users/user/this.file'
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_5)
-    assert type(fetcher) == cache.LocalFetcher
+    if platform.system() == const.WINDOWS_PLATFORM_STR:
+        fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_4)
+        assert type(fetcher) == cache.LocalFetcher
+        fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_5)
+        assert type(fetcher) == cache.LocalFetcher
+    else:
+        with pytest.raises(TrestleError):
+            cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_4)
+        with pytest.raises(TrestleError):
+            cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), local_uri_5)
 
     https_uri = 'https://{{myusername}}:{{mypassword}}@this.com/this.file'
     monkeypatch.setenv('myusername', 'user123')
