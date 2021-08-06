@@ -47,23 +47,31 @@ class HrefCmd(CommandPlusDocs):
 
         log.set_log_level_from_args(args)
 
-        if 'name' in args and args.name:
-            profile_name: str = args.name
-        else:
-            logger.warning('No profile name specified for command href.')
-            return 1
+        profile_name: str = args.name
 
-        if 'href' in args and args.href:
-            new_href: str = args.href.strip("'")
-            effective_cwd = pathlib.Path.cwd()
-            return self.change_import_href(effective_cwd, profile_name, new_href)
-
-        logger.warning('No href value profied for command href.')
-        return 1
+        new_href: str = args.href.strip("'")
+        return self.change_import_href(args.trestle_root, profile_name, new_href)
 
     @classmethod
-    def change_import_href(cls, effective_cwd: pathlib.Path, profile_name: str, new_href: str) -> int:
-        """Change the href of the import in the profile.
+    def change_import_href(cls, trestle_root: pathlib.Path, profile_name: str, new_href: str) -> int:
+        """Change the href of the import in the profile to point to a catalog in a specific location.
+
+        This function is needed when generating an SSP with a profile that imports a catalog from a temporary
+        location different from the final intended location of the catalog.
+
+        A Profile has an Imports list containing at least one href of a catalog of controls to be imported.
+        If the catalog being referenced is currently in the same trestle project as the profile, the original
+        href is likely different from the one needed to access the catalog from the profile.  Therefore,
+        in order for trestle to find the catalog directly from the profile, the href must be modified in a way that
+        trestle can load it.
+
+        If the catalog is already at the link referred to by the href as a valid URI or absolute file path then no
+        change is needed.  But if the catalog is being worked on in the same trestle directory as the profile,
+        the href should be modified to something like trestle://catalogs/my_catalog/catalog.json
+
+        This change only needs to be made once to the profile while the profile is being used to generate SSP's
+        from the local catalog, but if the final profile is released the href would need to be changed to the
+        intended final location of the catalog.
 
         Args:
             effective_cwd: effective working directory for this call, e.g. trestle_root
@@ -81,12 +89,9 @@ class HrefCmd(CommandPlusDocs):
 
         Future work:
             Allow multiple imports with matching hrefs.
-            Allow href to point to profile in trestle.
+            Allow href to point to profile in trestle rather than catalog, and by name.
+            Allow full chaining of linked catalogs and profiles.
         """
-        trestle_root = fs.get_trestle_project_root(effective_cwd)
-        if trestle_root is None:
-            logger.warning(f'Effective directory is not in a trestle project: {effective_cwd}')
-            return 1
         profile_dir = trestle_root / f'profiles/{profile_name}'
         content_type = fs.get_contextual_file_type(profile_dir)
         profile_path = (profile_dir / 'profile').with_suffix(fs.FileContentType.to_file_extension(content_type))

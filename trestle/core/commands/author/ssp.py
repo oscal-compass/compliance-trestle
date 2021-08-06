@@ -31,6 +31,7 @@ import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.commands.author.common import AuthorCommonCommand
 from trestle.core.markdown_validator import MarkdownValidator
+from trestle.core.remote import cache
 from trestle.utils.load_distributed import load_distributed
 from trestle.utils.md_writer import MDWriter
 
@@ -77,7 +78,8 @@ class SSPGenerate(AuthorCommonCommand):
         profile: prof.Profile
         _, _, profile = load_distributed(pathlib.Path(f'profiles/{args.profile}/profile.json'))
         cat_href = profile.imports[0].href
-        catalog = fs.model_from_href(cat_href, trestle_root, cat.Catalog)
+        fetcher = cache.FetcherFactory.get_fetcher(trestle_root, cat_href)
+        catalog = fetcher.get_oscal(cat.Catalog)
 
         yaml_header: dict = {}
         if 'yaml_header' in args and args.yaml_header is not None:

@@ -20,7 +20,6 @@ import platform
 import random
 import string
 import time
-from json.decoder import JSONDecodeError
 from unittest.mock import patch
 
 import pytest
@@ -131,16 +130,9 @@ def test_https_fetcher(tmp_trestle_dir, monkeypatch):
     # This valid uri should work:
     uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/minimal_catalog.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri)
-    fetcher._refresh = True
-    fetcher._cache_only = False
     fetcher._update_cache()
     assert len(open(fetcher._cached_object_path, encoding=const.FILE_ENCODING).read()) > 0
     dummy_existing_file = fetcher._cached_object_path.__str__()
-    # Now we'll patch _update_cache() to fail with JSONDecodeError:
-    with patch('requests.Response.json') as json_mock:
-        json_mock.side_effect = JSONDecodeError(msg='Extra data:', doc=fetcher._uri, pos=0)
-        with pytest.raises(TrestleError):
-            fetcher._update_cache(True)
     # Now we'll get a file that does not exist:
     uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/not_here.json'
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri)
@@ -341,7 +333,8 @@ def test_fetcher_expiration(tmp_trestle_dir: pathlib.Path):
     catalog_data.oscal_write(pathlib.Path(catalog_file))
 
     # specify quick timeout of 10s
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file, 10)
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file)
+    fetcher._expiration_seconds = 10
     # should fetch because doesn't have it yet
     assert fetcher._update_cache()
     assert fetcher._cached_object_path.exists()

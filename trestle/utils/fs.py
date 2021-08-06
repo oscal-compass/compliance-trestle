@@ -15,26 +15,22 @@
 # limitations under the License.
 """Common file system utilities."""
 
-import datetime
 import json
 import logging
 import os
 import pathlib
-import re
 from typing import Any, Dict, List, Optional, Tuple, Type, cast
 
 from pydantic import create_model
 
 from ruamel.yaml import YAML
 
-from trestle.core import common_types
 from trestle.core import const
 from trestle.core import err
 from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.file_content_type import FileContentType
-from trestle.core.remote import cache
 
 if os.name == 'nt':  # pragma: no cover
     import win32api
@@ -454,21 +450,6 @@ def allowed_task_name(name: str) -> bool:
     return True
 
 
-def model_from_href(
-    href: str,
-    trestle_root: pathlib.Path,
-    model_type: Type[OscalBaseModel],
-    expiration_seconds: int = const.DAY_SECONDS
-) -> common_types.TopLevelOscalModel:
-    """Load model from href string via cache if remote."""
-    # If the href is not of form trestle:// then return cached version
-    if re.match(const.TRESTLE_HREF_REGEX, href):
-        model_path = trestle_root / href[len(const.TRESTLE_HREF_HEADING):]
-        return model_type.oscal_read(model_path)
-    fetcher = cache.FetcherFactory.get_fetcher(trestle_root, href, expiration_seconds)
-    return fetcher.get_oscal(model_type)
-
-
 def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     """Determine if files are equal, ignoring newline style."""
     try:
@@ -486,21 +467,3 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
         logger.warn(f'Exception comparing file {path_a} to {path_b}.  Return as False. {e}')
         return False
     return True
-
-
-def strip_drive_letter(file_path: str) -> Tuple[str, str]:
-    r"""If string starts with e.g. D:\\foo just return /foo along with the drive letter."""
-    drive_string_match = re.match(const.WINDOWS_DRIVE_URI_REGEX, file_path)
-    if drive_string_match is not None:
-        drive_string = drive_string_match[0]
-        drive_letter = drive_string[0]
-        return file_path.replace(drive_string, '/'), drive_letter
-    return file_path, ''
-
-
-def time_since_modification(file_path: pathlib.Path) -> datetime.timedelta:
-    """Get time since last modification."""
-    if not file_path.exists():
-        raise TrestleError(f'time since modification requested for non existent file {file_path}')
-    last_modification = datetime.datetime.fromtimestamp(file_path.stat().st_mtime)
-    return datetime.datetime.now() - last_modification
