@@ -74,7 +74,7 @@ class HrefCmd(CommandPlusDocs):
         intended final location of the catalog.
 
         Args:
-            effective_cwd: effective working directory for this call, e.g. trestle_root
+            trestle_root: trestle_root for this call
             profile_name: Name of profile already imported into trestle
             new_href: New value for the href of the import
 

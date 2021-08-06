@@ -422,7 +422,7 @@ class FetcherFactory:
 
         Args:
             trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
-            URI: Reference to the remote object to cache.
+            uri: Reference to the remote object to cache.
 
         Returns:
             fetcher object for the given URI.
