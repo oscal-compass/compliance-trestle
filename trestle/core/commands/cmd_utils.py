@@ -24,11 +24,6 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
 
 
-def get_model(file_path: str) -> OscalBaseModel:
-    """Get the model specified by the file."""
-    raise NotImplementedError()
-
-
 def model_type_is_too_granular(model_type: Type[Any]) -> bool:
     """Is an model_type too fine to split."""
     if utils.is_collection_field_type(model_type):

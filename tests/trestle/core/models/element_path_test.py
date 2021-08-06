@@ -15,13 +15,14 @@
 # limitations under the License.
 """Tests for trestle elements module."""
 import pathlib
+from typing import Any, Type
 
 import pytest
 
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
-from trestle.oscal import component
+from trestle.oscal import catalog, common, component
 
 
 def test_element_path_init(sample_nist_component_def: component.ComponentDefinition):
@@ -57,10 +58,6 @@ def test_element_path_init(sample_nist_component_def: component.ComponentDefinit
     # expect error
     with pytest.raises(TrestleError):
         ElementPath('catalog.metadata..title')
-
-    # expect error
-    with pytest.raises(TrestleError):
-        ElementPath('catalog')
 
 
 def test_element_path_get_element_name():
@@ -175,3 +172,34 @@ def test_make_relative():
 
     path = pathlib.Path('profiles/controls')
     assert p.make_relative(path) == 1
+
+
+@pytest.mark.parametrize(
+    'element_path, leaf_type, provided_type, raise_exception',
+    [
+        ('catalog.metadata', common.Metadata, None, False),
+        ('catalog.metadata', common.Metadata, catalog.Catalog, False), ('catalog', catalog.Catalog, None, False),
+        ('catalog.controls.control', catalog.Control, None, False),
+        ('catalog.controls.*', catalog.Control, None, False), ('catalog.controls.0', catalog.Control, None, False),
+        ('catalog.controls.1', catalog.Control, None, False),
+        ('group.controls.*.part', common.Part, catalog.Group, False), ('catalog.*.roles.role', common.Role, None, True),
+        ('metadata.roles.role', common.Role, None, True)
+    ]
+)
+def test_get_type_from_element_path(
+    element_path: str, leaf_type: Type[Any], provided_type: Type[Any], raise_exception: bool
+):
+    """Test to see whether an type can be retrieved from the element path."""
+    my_element_path = ElementPath(element_path)
+
+    if raise_exception:
+        with pytest.raises(TrestleError):
+            if provided_type:
+                apparent_type = my_element_path.get_type(provided_type)
+            apparent_type = my_element_path.get_type()
+        assert leaf_type == apparent_type
+        return
+    if provided_type:
+        apparent_type = my_element_path.get_type(provided_type)
+    apparent_type = my_element_path.get_type()
+    assert leaf_type == apparent_type

@@ -18,6 +18,7 @@
 import argparse
 import logging
 import pathlib
+import traceback
 
 import trestle.core.const as const
 from trestle.core.commands.command_docs import CommandPlusDocs
@@ -55,7 +56,21 @@ class SchemaValidate(CommandPlusDocs):
 
         log.set_log_level_from_args(args)
         file_path: pathlib.Path = args.file.resolve()
-        if not file_path.exist() or not file_path.is_file():
+        if not file_path.exists() or not file_path.is_file():
             logger.error('File path provided does not exist or is a directory')
             return 1
-        file_path
+        element_str: str = args.element
+        if ',' in element_str:
+            logger.error('Only a single element path is allowed.')
+        try:
+            return self.schema_validate(file_path, element_str)
+        except Exception:
+            logger.critical('Unexpected error occurred')
+            logger.critical(traceback.format_exc())
+            return 1
+
+    @classmethod
+    def schema_validate(cls, file_path: pathlib.Path, element_string: str) -> int:
+        """Run a schema validation on a file inferring file typ e based on element string."""
+        # Get the top level model
+        return 1

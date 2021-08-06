@@ -235,6 +235,7 @@ def get_target_model(element_path_parts: List[str], current_model_type: Type[Bas
                 # FIXME: From a typing perspective this is wrong.
                 current_model_type = get_inner_type(current_model_type)
             else:
+                # This assumes that if your code finishes with a '*' you actually need one model above.
                 if element_path_parts[index] == '*':
                     return current_model_type
                 current_model_type = current_model_type.alias_to_field_map()[element_path_parts[index]].outer_type_

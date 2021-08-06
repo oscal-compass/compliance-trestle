@@ -72,6 +72,11 @@ class MergeCmd(CommandPlusDocs):
 
         It returns a plan for the operation
         """
+        if not element_path.is_multipart():
+            msg = 'Multiple parts of an element path must be passed to merge e.g. catalog.* or catalog.groups'
+            logger.error(msg)
+            raise TrestleError(msg)
+
         element_path_list = element_path.get_full_path_parts()
         target_model_alias = element_path_list[-1]
         logger.debug(f'merge element path list: {element_path_list} target model alias {target_model_alias}')

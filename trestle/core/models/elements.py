@@ -14,8 +14,9 @@
 """Element wrapper of an OSCAL model element."""
 
 import json
+import logging
 import pathlib
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Type, Union, cast
 
 from pydantic import Field, create_model
 from pydantic.error_wrappers import ValidationError
@@ -23,10 +24,12 @@ from pydantic.error_wrappers import ValidationError
 from ruamel.yaml import YAML
 
 import trestle.core.const as const
-from trestle.core import utils
+from trestle.core import common_types, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError, TrestleNotFoundError
 from trestle.core.models.file_content_type import FileContentType
+
+logger = logging.getLogger(__name__)
 
 
 class ElementPath:
@@ -70,18 +73,91 @@ class ElementPath:
         if parts[-1] == self.WILDCARD:
             if len(parts) == 1:
                 raise TrestleError(f'Invalid path {element_path} with wildcard.')
-
-        if len(parts) <= 1:
-            raise TrestleError(
-                'Element path must have at least two parts with the first part being the model root name, '
-                'like "target-definition.metadata"'
-            )
-
         return parts
 
     def get(self) -> List[str]:
         """Return the path parts as a list."""
         return self._path
+
+    def get_type(self, root_model: Optional[Type[OscalBaseModel]] = None, use_parent: bool = False) -> Type[Any]:
+        """Get the type of an element.
+
+        If possible the model type will be derived from one of the top level models,
+        otherwise a 'root model' can be passed for situations where this is not possible.
+
+        This type path should *NOT* have wild cards in it. It *may* have* indices.
+
+        Args:
+            root_model: An OscalBaseModel Type from which to base the approach on.
+            use_parent: Whether or not to normalise the full path across parent ElementPaths, default to not.
+
+        Returns:
+            The type of the model whether or not it is an OscalModel or not.
+        """
+        effective_path: List[str]
+        if use_parent:
+            effective_path = self.get_full_path_parts()
+        else:
+            effective_path = self._path
+
+        if not root_model:
+            # lookup root model from top level oscal models or fail
+            prev_model = self._top_level_type_lookup(effective_path[0])
+        else:
+            prev_model = root_model
+        if len(effective_path) == 1:
+            return prev_model
+        # variables
+        # for current_element_str in effective_path[1:]:
+        for current_element_str in effective_path[1:]:
+            # Determine if the parent model is a collection.
+            if utils.is_collection_field_type(prev_model):
+                inner_model = utils.get_inner_type(prev_model)
+                inner_class_name = utils.classname_to_alias(inner_model.__name__, 'json')
+                # Assert that the current name fits an expected form.
+                # Valid choices here are *, integer (for arrays) and the inner model alias
+                if (inner_class_name == current_element_str or current_element_str == self.WILDCARD
+                        or current_element_str.isnumeric()):
+                    prev_model = inner_model
+
+                else:
+                    raise TrestleError('Unexpected key in element path when finding type.')
+
+            else:
+                # Indices, * are not allowed on non-collection types
+                if current_element_str == self.WILDCARD:
+                    logger.error('Cannot get the type of an element path where wild cards do not match a  ')
+                    raise TrestleError(
+                        'Wild card in unexpected position when trying to find class type.'
+                        + ' Element path type lookup can only occur where a single type can be identified.'
+                    )
+                prev_model = prev_model.alias_to_field_map()[current_element_str].outer_type_
+        return prev_model
+
+    def _top_level_type_lookup(self, element_str: str) -> Type[common_types.TopLevelOscalModel]:
+        """From an individual element tag, induce the type of the model.
+
+        Args:
+            element_tag: individual element as text such as 'catalog' or 'profile'
+
+        Returns:
+            Top level object model such as catalog, profile etc.
+        """
+        # Even though awkward use chain of models.
+        if element_str not in const.MODEL_TYPE_LIST:
+            raise TrestleError(f'{element_str} is not a top level model (e.g. catalog, profile)')
+        model_package = const.MODEL_TYPE_TO_MODEL_MODULE[const.MODEL_TYPE_TO_MODEL_DIR[element_str]]
+        object_type, _ = utils.get_root_model(model_package)
+        object_type = cast(Type[common_types.TopLevelOscalModel], object_type)
+        return object_type
+
+    def is_multipart(self) -> bool:
+        """Assert whether or not an element path is multiple parts.
+
+        Originally element paths had to have multiple paths.
+        This provides a check for higher level code that still has that requirement.
+        """
+        return len(self._path) > 1
 
     def to_string(self) -> str:
         """Return the path parts as a dot-separated string."""

@@ -390,7 +390,6 @@ def test_get_singular_alias() -> None:
     assert 'role' == fs.get_singular_alias(alias_path='catalog.metadata.roles')
     assert 'property' == fs.get_singular_alias(alias_path='catalog.metadata.props')
 
-    # FIXME ideally this should return control-implementation
     assert 'control-implementations' == fs.get_singular_alias(
         alias_path='component-definition.components.control-implementations'
     )
