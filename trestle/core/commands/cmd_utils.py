@@ -38,7 +38,8 @@ def model_type_is_too_granular(model_type: Type[Any]) -> bool:
 def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
     """Determine if the element path list goes too fine, e.g. individual strings."""
     for split_path in split_paths.split(','):
-        model_type = utils.get_target_model(split_path.split('.'), type(model_obj))
+        # find model type one level above if finishing with '.*'
+        model_type = ElementPath(split_path.rstrip('.*')).get_type(type(model_obj))
         if model_type_is_too_granular(model_type):
             return True
     return False

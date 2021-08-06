@@ -215,10 +215,7 @@ class ElementPath:
 
             if len(path_parts) > 1:
                 prec_path_parts = path_parts[:-1]
-
-                # prec_path_parts must have at least two parts
-                if len(prec_path_parts) > 1:
-                    self._preceding_path = ElementPath(self.PATH_SEPARATOR.join(prec_path_parts))
+                self._preceding_path = ElementPath(self.PATH_SEPARATOR.join(prec_path_parts))
 
         return self._preceding_path
 

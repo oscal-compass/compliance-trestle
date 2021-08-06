@@ -72,7 +72,7 @@ def test_element_path_get_preceding_path(sample_nist_component_def: component.Co
     """Test get parent path method."""
     assert ElementPath('component-definition.metadata.title'
                        ).get_preceding_path() == ElementPath('component-definition.metadata')
-    assert ElementPath('component-definition.metadata').get_preceding_path() is None
+    assert ElementPath('component-definition.metadata').get_preceding_path() == ElementPath('component-definition')
     assert ElementPath('component-definition.metadata.parties.*'
                        ).get_preceding_path() == ElementPath('component-definition.metadata.parties')
     assert ElementPath('component-definition.metadata.*'

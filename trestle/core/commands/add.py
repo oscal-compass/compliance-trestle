@@ -111,12 +111,12 @@ class AddCmd(CommandPlusDocs):
         at the same location and write the file.
         We update the parent_element to prepare for next adds in the chain
         """
-        element_path_list = element_path.get_full_path_parts()
-        if '*' in element_path_list:
+        if '*' in element_path.get_full_path_parts():
             raise err.TrestleError('trestle add does not support Wildcard element path.')
         # Get child model
         try:
-            child_model = utils.get_target_model(element_path_list, parent_model)
+            child_model = element_path.get_type(parent_model)
+
             # Create child element with sample values
             child_object = gens.generate_sample_model(child_model)
 
