@@ -69,17 +69,13 @@ class FetcherBase(ABC):
     def _strip_drive_letter(file_path: str) -> Tuple[str, str]:
         r"""If string starts with e.g. D:\\foo just return /foo along with the drive letter."""
         drive_string_match = re.match(const.WINDOWS_DRIVE_URI_REGEX, file_path)
-        if drive_string_match is not None:
-            drive_string = drive_string_match[0]
-            drive_letter = drive_string[0]
-            return file_path.replace(drive_string, '/'), drive_letter
-        return file_path, ''
+        drive_string = drive_string_match[0]
+        drive_letter = drive_string[0]
+        return file_path.replace(drive_string, '/'), drive_letter
 
     @staticmethod
     def _time_since_modification(file_path: pathlib.Path) -> datetime.timedelta:
         """Get time since last modification."""
-        if not file_path.exists():
-            raise TrestleError(f'time since modification requested for non existent file {file_path}')
         last_modification = datetime.datetime.fromtimestamp(file_path.stat().st_mtime)
         return datetime.datetime.now() - last_modification
 
