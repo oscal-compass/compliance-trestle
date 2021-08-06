@@ -52,8 +52,8 @@ def test_element_path_init(sample_nist_component_def: component.ComponentDefinit
         ElementPath('.*')
 
     # expect error
-    with pytest.raises(TrestleError):
-        ElementPath('catalog.groups.*.controls.*')
+    # no longer expect error.
+    ElementPath('catalog.groups.*.controls.*')
 
     # expect error
     with pytest.raises(TrestleError):
@@ -182,24 +182,26 @@ def test_make_relative():
         ('catalog.controls.control', catalog.Control, None, False),
         ('catalog.controls.*', catalog.Control, None, False), ('catalog.controls.0', catalog.Control, None, False),
         ('catalog.controls.1', catalog.Control, None, False),
-        ('group.controls.*.part', common.Part, catalog.Group, False), ('catalog.*.roles.role', common.Role, None, True),
-        ('metadata.roles.role', common.Role, None, True)
+        ('group.controls.*.parts.part', common.Part, catalog.Group, False),
+        ('catalog.*.roles.role', common.Role, None, True), ('metadata.roles.role', common.Role, None, True)
     ]
 )
 def test_get_type_from_element_path(
     element_path: str, leaf_type: Type[Any], provided_type: Type[Any], raise_exception: bool
 ):
     """Test to see whether an type can be retrieved from the element path."""
+    # parse element path
     my_element_path = ElementPath(element_path)
-
+    apparent_type: Type[Any]
     if raise_exception:
         with pytest.raises(TrestleError):
             if provided_type:
                 apparent_type = my_element_path.get_type(provided_type)
-            apparent_type = my_element_path.get_type()
-        assert leaf_type == apparent_type
+            else:
+                apparent_type = my_element_path.get_type()
         return
     if provided_type:
         apparent_type = my_element_path.get_type(provided_type)
-    apparent_type = my_element_path.get_type()
+    else:
+        apparent_type = my_element_path.get_type()
     assert leaf_type == apparent_type

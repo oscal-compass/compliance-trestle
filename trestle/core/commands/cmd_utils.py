@@ -44,7 +44,7 @@ def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
     return False
 
 
-def parse_element_args(model: OscalBaseModel,
+def parse_element_args(model: Union[OscalBaseModel, None],
                        element_args: List[str],
                        contextual_mode: bool = True) -> List[ElementPath]:
     """Parse element args into a list of ElementPath.

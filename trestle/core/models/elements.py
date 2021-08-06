@@ -61,18 +61,15 @@ class ElementPath:
         """Parse the element path and validate."""
         parts: List[str] = element_path.split(self.PATH_SEPARATOR)
 
-        for i, part in enumerate(parts):
+        for part in parts:
             if part == '':
                 raise TrestleError(
                     f'Invalid path "{element_path}" because there are empty path parts between "{self.PATH_SEPARATOR}" '
                     'or in the beginning'
                 )
-            elif part == self.WILDCARD and i != len(parts) - 1:
-                raise TrestleError(f'Invalid path. Wildcard "{self.WILDCARD}" can only be at the end')
 
-        if parts[-1] == self.WILDCARD:
-            if len(parts) == 1:
-                raise TrestleError(f'Invalid path {element_path} with wildcard.')
+        if parts[0] == self.WILDCARD:
+            raise TrestleError(f'Invalid path {element_path} with wildcard.')
         return parts
 
     def get(self) -> List[str]:
