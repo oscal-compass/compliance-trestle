@@ -84,23 +84,19 @@ def parse_element_args(model: Union[OscalBaseModel, None],
     return element_paths
 
 
-def parse_chain(
-    model_obj: Union[OscalBaseModel, None],
-    path_parts: List[str],
-    element_paths: List[ElementPath],
-    contextual_mode: bool
-) -> List[ElementPath]:
+def parse_chain(model_obj: Union[OscalBaseModel, None], path_parts: List[str],
+                contextual_mode: bool) -> List[ElementPath]:
     """Parse the model chain starting from the beginning.
 
     Args:
         model_obj: Optional model to use for inspecting available elements
         path_parts: list of string paths to parse including wildcards
-        element_paths: the list of element_paths to parse
         contextual_mode: True if element context is derived from file directory
 
     Returns:
         List of ElementPath
     """
+    element_paths: List[ElementPath] = []
     sub_model = model_obj
     have_model_to_parse = model_obj is not None
 
@@ -184,7 +180,6 @@ def parse_element_arg(model_obj: Union[OscalBaseModel, None],
                       element_arg: str,
                       contextual_mode: bool = True) -> List[ElementPath]:
     """Parse an element arg string into a list of ElementPath."""
-    element_paths: List[ElementPath] = []
     element_arg = element_arg.strip()
 
     if element_arg == '*':
@@ -198,7 +193,7 @@ def parse_element_arg(model_obj: Union[OscalBaseModel, None],
     if len(path_parts) <= 1:
         raise TrestleError(f'Invalid element path "{element_arg}" with only one element and no wildcard')
 
-    element_paths = parse_chain(model_obj, path_parts, element_paths, contextual_mode)
+    element_paths = parse_chain(model_obj, path_parts, contextual_mode)
 
     if len(element_paths) <= 0:
         # don't complain if nothing to split
