@@ -69,6 +69,8 @@ class FetcherBase(ABC):
     def _strip_drive_letter(file_path: str) -> Tuple[str, str]:
         r"""If string starts with e.g. D:\\foo just return /foo along with the drive letter."""
         drive_string_match = re.match(const.WINDOWS_DRIVE_URI_REGEX, file_path)
+        if drive_string_match is None:
+            return file_path, ''
         drive_string = drive_string_match[0]
         drive_letter = drive_string[0]
         return file_path.replace(drive_string, '/'), drive_letter
