@@ -38,8 +38,10 @@ from trestle.utils import fs
 def as_file_uri(path: str) -> str:
     """Convert sample non-existent path to file:/// and add drive letter if windows."""
     # Correct usage would start with / and leaving off should cause errors with cache
-    prefix = '/C:' if platform.system() == const.WINDOWS_PLATFORM_STR else ''
-    return 'file://' + prefix + path
+    if platform.system() == const.WINDOWS_PLATFORM_STR:
+        drive = pathlib.Path.cwd().resolve().drive
+        return f'file:///{drive}{path}'
+    return f'file://{path}'
 
 
 def test_fetcher_oscal(tmp_trestle_dir):
@@ -327,14 +329,11 @@ def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch) -> None:
 
 def test_fetcher_expiration(tmp_trestle_dir: pathlib.Path):
     """Test fetcher expiration behavior."""
-    rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
-    catalog_file = pathlib.Path(tmp_trestle_dir.parent / f'{rand_str}.json').__str__()
-    catalog_data = generators.generate_sample_model(Catalog)
-    catalog_data.oscal_write(pathlib.Path(catalog_file))
+    uri = 'https://raw.githubusercontent.com/IBM/compliance-trestle/develop/tests/data/json/minimal_catalog.json'
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), uri)
+    # specify quick timeout of 5s
+    fetcher._expiration_seconds = 5
 
-    # specify quick timeout of 10s
-    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file)
-    fetcher._expiration_seconds = 10
     # should fetch because doesn't have it yet
     assert fetcher._update_cache()
     assert fetcher._cached_object_path.exists()
@@ -343,7 +342,7 @@ def test_fetcher_expiration(tmp_trestle_dir: pathlib.Path):
     assert not fetcher._update_cache()
 
     # wait a bit
-    time.sleep(12)
+    time.sleep(6)
 
     # should fetch now
     assert fetcher._update_cache()

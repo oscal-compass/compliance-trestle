@@ -26,10 +26,9 @@ import os
 import pathlib
 import platform
 import re
-import shutil
 from abc import ABC, abstractmethod
 from io import StringIO
-from typing import Any, Dict, Tuple, Type
+from typing import Any, Dict, Type
 from urllib import parse
 
 import paramiko
@@ -64,16 +63,6 @@ class FetcherBase(ABC):
         self._trestle_cache_path.mkdir(exist_ok=True)
         self._expiration_seconds = const.DAY_SECONDS
         self._in_trestle = False
-
-    @staticmethod
-    def _strip_drive_letter(file_path: str) -> Tuple[str, str]:
-        r"""If string starts with e.g. D:\\foo just return /foo along with the drive letter."""
-        drive_string_match = re.match(const.WINDOWS_DRIVE_URI_REGEX, file_path)
-        if drive_string_match is None:
-            return file_path, ''
-        drive_string = drive_string_match[0]
-        drive_letter = drive_string[0]
-        return file_path.replace(drive_string, '/'), drive_letter
 
     @staticmethod
     def _time_since_modification(file_path: pathlib.Path) -> datetime.timedelta:
@@ -156,10 +145,11 @@ class LocalFetcher(FetcherBase):
     If file:/// is used on a Windows system, it must be followed by C:/ or other drive letter
     to be sure it is an absolute path, e.g. file:///C:/Users/Default/Documents/profile.json.
     The drive letter may be lowercase.
+    LocalFetcher does not do any caching and assumes the file is quickly accessible.
     """
 
     def __init__(self, trestle_root: pathlib.Path, uri: str) -> None:
-        """Initialize local fetcher. Update the expected cache path as per caching specs.
+        """Initialize local fetcher.
 
         Args:
             trestle_root: trestle root path
@@ -197,31 +187,16 @@ class LocalFetcher(FetcherBase):
         if fs.has_parent_path(self._abs_path, trestle_root):
             raise TrestleError(f'Cannot use cache for trestle in current project directory {self._abs_path}')
 
-        # now create appropriate local path for the cached version
-        dir_path_str = str(self._abs_path.parent)
+        # set the cached path to be the actual file path
+        self._cached_object_path = self._abs_path
 
-        dir_path_str, _ = FetcherBase._strip_drive_letter(dir_path_str)
-
-        # set the local root to either __root__ for unix or __drive_letter__ for windows
-        uri, drive_letter = FetcherBase._strip_drive_letter(uri)
-        source_root = const.CACHE_ABS_DIR if not drive_letter else f'__{drive_letter}__'
-
-        localhost_cache_dir = self._trestle_cache_path / f'localhost/{source_root}/{dir_path_str}'
-
-        localhost_cache_dir.mkdir(parents=True, exist_ok=True)
-        self._cached_object_path = localhost_cache_dir / pathlib.Path(uri).name
+    def _is_stale(self):
+        # Local file is always stale.
+        return True
 
     def _do_fetch(self) -> None:
-        """Copy the local resource into the cache."""
-        # Do not allow fetch from within *this* trestle project
-        # But it is ok to fetch from separate trestle projects
-        if fs.get_trestle_project_root(self._abs_path) is not None and not self._in_trestle:
-            logger.error(f'Attempt to cache from location within a trestle project: {self._uri}')
-            raise TrestleError(
-                'Cache request for invalid input URI:'
-                f'Attempt to cache from location within a trestle project {self._uri}'
-            )
-        shutil.copy(self._abs_path, self._cached_object_path)
+        """No need to fetch since using actual file path."""
+        pass
 
 
 class HTTPSFetcher(FetcherBase):

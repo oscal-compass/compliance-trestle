@@ -28,7 +28,36 @@ logger = logging.getLogger(__name__)
 
 
 class HrefCmd(CommandPlusDocs):
-    """Change href of import in profile to point to catalog in trestle project."""
+    """Change href of import in profile to point to catalog in trestle project.
+
+    This command is needed when generating an SSP with a profile that imports a catalog from a temporary
+    location different from the final intended location of the catalog.
+
+    A Profile has an Imports list containing at least one href of a catalog of controls to be imported.
+    If the catalog being referenced is currently in the same trestle project as the profile, the original
+    href is likely different from the one needed to access the catalog from the profile.  Therefore,
+    in order for trestle to find the catalog directly from the profile, the href must be modified in a way that
+    trestle can load it.
+
+    If the catalog is already at the link referred to by the href as a valid URI or absolute file path then no
+    change is needed.  But if the catalog is being worked on in the same trestle directory as the profile,
+    the href should be modified to something like trestle://catalogs/my_catalog/catalog.json
+
+    This change only needs to be made once to the profile while the profile is being used to generate SSP's
+    from the local catalog, but if the final profile is released the href would need to be changed to the
+    intended final location of the catalog.
+
+    Assumptions and requirements:
+        The profile must be a valid profile in the trestle project.
+        The import must either be a valid uri, including local file, or trestle://
+        Assumes only one import by the profile.
+        The original href is not checked and will be overwritten.
+
+    Future work:
+        Allow multiple imports with matching hrefs.
+        Allow href to point to profile in trestle rather than catalog, and by name.
+        Allow full chaining of linked catalogs and profiles.
+    """
 
     name = 'href'
 
@@ -56,23 +85,6 @@ class HrefCmd(CommandPlusDocs):
     def change_import_href(cls, trestle_root: pathlib.Path, profile_name: str, new_href: str) -> int:
         """Change the href of the import in the profile to point to a catalog in a specific location.
 
-        This function is needed when generating an SSP with a profile that imports a catalog from a temporary
-        location different from the final intended location of the catalog.
-
-        A Profile has an Imports list containing at least one href of a catalog of controls to be imported.
-        If the catalog being referenced is currently in the same trestle project as the profile, the original
-        href is likely different from the one needed to access the catalog from the profile.  Therefore,
-        in order for trestle to find the catalog directly from the profile, the href must be modified in a way that
-        trestle can load it.
-
-        If the catalog is already at the link referred to by the href as a valid URI or absolute file path then no
-        change is needed.  But if the catalog is being worked on in the same trestle directory as the profile,
-        the href should be modified to something like trestle://catalogs/my_catalog/catalog.json
-
-        This change only needs to be made once to the profile while the profile is being used to generate SSP's
-        from the local catalog, but if the final profile is released the href would need to be changed to the
-        intended final location of the catalog.
-
         Args:
             trestle_root: trestle_root for this call
             profile_name: Name of profile already imported into trestle
@@ -91,6 +103,7 @@ class HrefCmd(CommandPlusDocs):
             Allow multiple imports with matching hrefs.
             Allow href to point to profile in trestle rather than catalog, and by name.
             Allow full chaining of linked catalogs and profiles.
+
         """
         profile_dir = trestle_root / f'profiles/{profile_name}'
         content_type = fs.get_contextual_file_type(profile_dir)

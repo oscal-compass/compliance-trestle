@@ -51,11 +51,12 @@ def test_href_cmd(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_profile
     assert new_profile.imports[0].href == new_href
 
     # restore orig href to confirm models are otherwise equivalent
+    # only thing different should be last-modified
     new_profile.imports[0].href = orig_href
     assert test_utils.models_are_equivalent(new_profile, sample_profile)
 
 
-def test_describe_failures(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_profile: profile.Profile) -> None:
+def test_href_failures(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_profile: profile.Profile) -> None:
     """Test href failure modes."""
     # prepare trestle project dir with the file
     models_path, profile_path = test_utils.prepare_trestle_project_dir(
@@ -66,13 +67,15 @@ def test_describe_failures(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sampl
 
     cmd_string = 'trestle href -n my_test_model -hr foobar'
 
-    # not in trestle project
+    # not in trestle project so fail
     with patch.object(sys, 'argv', cmd_string.split()):
         rc = Trestle().run()
         assert rc == 1
 
     os.chdir(models_path)
 
+    # add extra import to the profile to force failure
+    # currently only one import is allowed
     sample_profile.imports.append(sample_profile.imports[0])
     sample_profile.oscal_write(profile_path)
     with patch.object(sys, 'argv', cmd_string.split()):
