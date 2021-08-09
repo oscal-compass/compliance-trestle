@@ -450,19 +450,6 @@ def allowed_task_name(name: str) -> bool:
     return True
 
 
-def model_name_from_href_path(href: pathlib.Path) -> str:
-    """Find model name from path."""
-    name = href.stem
-    # if the name looks like 'catalog.json' then the real name is the directory above
-    name = name if name not in const.MODEL_TYPE_LIST else href.parent.stem
-    return name
-
-
-def model_name_from_href_str(href: str) -> str:
-    """Find model name from href."""
-    return model_name_from_href_path(pathlib.Path(href))
-
-
 def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     """Determine if files are equal, ignoring newline style."""
     try:

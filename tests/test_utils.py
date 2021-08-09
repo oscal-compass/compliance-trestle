@@ -41,6 +41,7 @@ JSON_NIST_CATALOG_NAME = 'NIST_SP-800-53_rev5_catalog.json'
 JSON_NIST_PROFILE_NAME = 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
 
 CATALOGS_DIR = 'catalogs'
+PROFILES_DIR = 'profiles'
 COMPONENT_DEF_DIR = 'component-definitions'
 
 NIST_EXAMPLES = pathlib.Path('nist-content/examples')

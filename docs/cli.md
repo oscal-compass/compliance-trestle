@@ -327,11 +327,35 @@ Model file catalog.json is of type stripped.Catalog and contains:
 
 Note that the type of the file is now `stripped.Catalog` and it no longer contains `metadata`.  Even though metadata is no longer in the original `.json` file, trestle is still aware it is present in the model since it is properly placed as its own file in the subdirectory, `catalog`.
 
+## `trestle href`
+
+This command changes the Import href in a profile and is needed when generating an SSP (system security plan) with the author tool, `ssp-generate`.
+The Import in a profile is used to load the associated catalog of controls, which must be available at the corresponding href uri.  If the catalog
+is in the trestle directory then the href should be changed with a command of the form:
+
+```
+trestle href -n my_profile -hr trestle://catalogs/my_catalog/catalog.json
+```
+
+Note that catalogs in the trestle directory are indicated by the `trestle://` prefix, followed by the path from the trestle root directory to the actual
+catalog file.  The profile itself is just indicated by its name.
+
+Currently the profile must contain only one import in its list of Imports, and that is the one that will take on the new href value.
+
+The `trestle href` command can also be used to change the value back to the intended one prior to distribution of the profile.
+
+The provided href can be of form `trestle://`, `https://`, `sftp://`, or `file:///`.  If `file:///` is used, the path provided must be absolute - and on Windows
+it must include the drive letter followed by a slash.  The only time a relative path is allowed is with the `trestle://` heading.
+
+A username and password may be embedded in the url for `https://`, and a CA certificate path will be searched from environment variables `REQUESTS_CA_BUNDLE` and `CURL_CA_BUNDLE` in that order.
+
+Authorization for `sftp://` access relies on the user's private key being either active via `ssh-agent` or supplied via the environment variable `SSH_KEY`. In the latter case it must not require a passphrase prompt.
+
 ## `trestle assemble`
 
 This command assembles all contents (files and directories) representing a specific model into a single OSCAL file located under `dist` folder. For example,
 
-> `$TRESTLE_BASEDIR$ trestle assemble catalog -i nist800-53`
+`$TRESTLE_BASEDIR$ trestle assemble catalog -i nist800-53`
 
 will traverse the `catalogs/nist800-53` directory and its children and combine all data into a OSCAL file that will be written to `dist/catalogs/nist800-53.json`. Note that the parts of catalog `nist800-53` can be written in either YAML/JSON/XML (e.g. based on the file extension), however, the output will be generated as YAML/JSON/XML as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.
 
@@ -339,7 +363,7 @@ will traverse the `catalogs/nist800-53` directory and its children and combine a
 
 This command allows users to add an OSCAL model to a subcomponent in source directory structure of the model. For example,
 
-> `$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle add -f ./catalog.json -e catalog.metadata.roles `
+`$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle add -f ./catalog.json -e catalog.metadata.roles `
 
 will add the following property under the `metadata` property for a catalog that will be written to the appropriate file under `catalogs/nist800-53` directory:
 
@@ -412,7 +436,7 @@ The *trestle task osco-to-oscal* command facilitates transformation of OpenShift
 Example command invocation:
 </span>
 
-> `$TRESTLE_BASEDIR$ trestle task osco-to-oscal -c /home/user/task.config`
+`$TRESTLE_BASEDIR$ trestle task osco-to-oscal -c /home/user/task.config`
 
 <span style="color:green">
 Example config:
@@ -729,7 +753,7 @@ Specify optional config parameter *timestamp* as ISO 8601 formated string (e.g.,
 Example command invocation:
 </span>
 
-> `$TRESTLE_BASEDIR$ trestle task tanium-to-oscal -c /home/user/task.config`
+`$TRESTLE_BASEDIR$ trestle task tanium-to-oscal -c /home/user/task.config`
 
 <span style="color:green">
 Example config:
@@ -1049,11 +1073,11 @@ Example output directory contents listing:
 
 </details>
 
-
 ## `trestle task xlsx-to-component-definition`
 
 The *trestle task xlsx-to-component-definition* command facilitates transformation of an excel spread sheet into an OSCAL component-definition.json file.
 Specify in the config:
+
 <ul>
 <li> location of catalog file
 <li> location of spread sheet file
@@ -1072,7 +1096,7 @@ Specify in the config:
 Example command invocation:
 </span>
 
-> `$TRESTLE_BASEDIR$ trestle task xlsx-to-component-definition -c /home/user/task.config`
+`$TRESTLE_BASEDIR$ trestle task xlsx-to-component-definition -c /home/user/task.config`
 
 <span style="color:green">
 Example config:
