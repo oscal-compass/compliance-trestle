@@ -24,6 +24,7 @@ from pydantic.error_wrappers import ValidationError
 from ruamel.yaml import YAML
 
 import trestle.core.const as const
+from trestle.core import base_model
 from trestle.core import common_types, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError, TrestleNotFoundError
@@ -76,7 +77,7 @@ class ElementPath:
         """Return the path parts as a list."""
         return self._path
 
-    def get_type(self, root_model: Optional[Type[OscalBaseModel]] = None, use_parent: bool = False) -> Type[Any]:
+    def get_type(self, root_model: Optional[Type[Any]] = None, use_parent: bool = False) -> Type[Any]:
         """Get the type of an element.
 
         If possible the model type will be derived from one of the top level models,
@@ -89,7 +90,7 @@ class ElementPath:
             use_parent: Whether or not to normalise the full path across parent ElementPaths, default to not.
 
         Returns:
-            The type of the model whether or not it is an OscalModel or not.
+            The type of the model whether or not it is an OscalBaseModel or not.
         """
         effective_path: List[str]
         if use_parent:
@@ -130,6 +131,37 @@ class ElementPath:
                     )
                 prev_model = prev_model.alias_to_field_map()[current_element_str].outer_type_
         return prev_model
+
+    def get_obm_wrapped_type(self,
+                             root_model: Optional[Type[Any]] = None,
+                             use_parent: bool = False) -> Type[OscalBaseModel]:
+        """Get the type of the element. If the type is a collection wrap the type in an OscalBaseModel as a __root__ element.
+
+        This should principally be used for validating content.
+
+        Args:
+            root_model: An OscalBaseModel Type from which to base the approach on.
+            use_parent: Whether or not to normalise the full path across parent ElementPaths, default to not.
+
+        Returns:
+            The type of the model whether wrapped or not as an OscalBaseModel.
+        """
+        base_type = self.get_type(root_model, use_parent)
+
+        if utils.is_collection_field_type(base_model):
+            # OSCAL does not support collections of collections directly. We should not hit this scenario
+            collection_name = self.get_last()
+            if collection_name == self.WILDCARD:
+                logger.critical('Unexpected error in type system when inferring type from element path.')
+                logger.critical('Please report this issue.')
+                raise TrestleError('Unknown error inferring type from element path.')
+            # Final path must be the alias
+
+            new_base_type = create_model(
+                utils.alias_to_classname(collection_name, 'json'), __base__=OscalBaseModel, __root__=(base_type, ...)
+            )
+            return new_base_type
+        return base_type
 
     def _top_level_type_lookup(self, element_str: str) -> Type[common_types.TopLevelOscalModel]:
         """From an individual element tag, induce the type of the model.

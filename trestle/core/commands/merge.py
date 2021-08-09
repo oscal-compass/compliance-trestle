@@ -133,7 +133,6 @@ class MergeCmd(CommandPlusDocs):
         """3. Load Target model. Target model could be stripped"""
         try:
             target_model_type = element_path.get_type(merged_model_type)
-            target_model_type = utils.get_target_model(element_path.get_full_path_parts(), merged_model_type)
         except Exception as e:
             logger.debug(f'target model not found, element path list {element_path} type {merged_model_type}')
             raise TrestleError(

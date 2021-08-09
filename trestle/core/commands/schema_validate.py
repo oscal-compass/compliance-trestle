@@ -21,6 +21,7 @@ import pathlib
 import traceback
 
 import trestle.core.const as const
+import trestle.core.models.elements as elements
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.utils import log
 
@@ -71,6 +72,12 @@ class SchemaValidate(CommandPlusDocs):
 
     @classmethod
     def schema_validate(cls, file_path: pathlib.Path, element_string: str) -> int:
-        """Run a schema validation on a file inferring file typ e based on element string."""
-        # Get the top level model
-        return 1
+        """Run a schema validation on a file inferring file type based on element string."""
+        # get model type
+        try:
+            element_path = elements.ElementPath(element_string)
+            _ = element_path.get_type()
+
+        except Exception:
+            logger.error('Invalid element type. Please see documentation on element type.')
+            return 1

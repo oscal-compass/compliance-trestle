@@ -15,10 +15,12 @@
 # limitations under the License.
 """Tests for trestle elements module."""
 import pathlib
-from typing import Any, Type
+from typing import Any, List, Type
 
 import pytest
 
+import trestle.core.utils as utils
+from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
@@ -183,7 +185,8 @@ def test_make_relative():
         ('catalog.controls.*', catalog.Control, None, False), ('catalog.controls.0', catalog.Control, None, False),
         ('catalog.controls.1', catalog.Control, None, False),
         ('group.controls.*.parts.part', common.Part, catalog.Group, False),
-        ('catalog.*.roles.role', common.Role, None, True), ('metadata.roles.role', common.Role, None, True)
+        ('catalog.*.roles.role', common.Role, None, True), ('metadata.roles.role', common.Role, None, True),
+        ('catalog.controls', List[catalog.Control], None, False)
     ]
 )
 def test_get_type_from_element_path(
@@ -205,3 +208,22 @@ def test_get_type_from_element_path(
     else:
         apparent_type = my_element_path.get_type()
     assert leaf_type == apparent_type
+
+
+@pytest.mark.parametrize(
+    'element_path, collection, type_or_inner_type, exception_expected',
+    [('catalog.metadata', False, common.Metadata, False), ('catalog.controls', True, catalog.Control, False)]
+)
+def test_get_obm_wrapped_type(
+    element_path: str, collection: bool, type_or_inner_type: Type[OscalBaseModel], exception_expected: bool
+):
+    """Tetst whether we can wrap a control properly."""
+    if exception_expected:
+        with pytest.raises(TrestleError):
+            _ = ElementPath(element_path).get_obm_wrapped_type()
+        return
+    my_type = ElementPath(element_path).get_obm_wrapped_type()
+    if collection:
+        assert type_or_inner_type == utils.get_inner_type(my_type.__root__)
+    else:
+        assert type_or_inner_type == my_type
