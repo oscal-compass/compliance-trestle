@@ -18,7 +18,7 @@ The examples shown will work for linux and mac, but Windows will require the fol
 
 Commands are shown without prompts so they are easy to cut and paste, and responses by trestle are shown with >>> at the start of the line.  In actual usage the >>> would not appear.
 
-Be sure to include the quotes (' ') as shown in the examples, e.g. ```merge -e 'catalog.*'```
+Be sure to include the quotes (' ') as shown in the examples, e.g. `merge -e 'catalog.*'`
 
 In this tutorial you will see sections that contain dropdown that is revealed when you click on them.  Below is an example ("Like this").  Be sure to click on those sections to see their contents - and then close them if you like.
 

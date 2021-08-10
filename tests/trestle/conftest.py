@@ -101,7 +101,7 @@ def sample_catalog():
 
 @pytest.fixture(scope='function')
 def sample_profile():
-    """Return a valid catalog object."""
+    """Return a valid profile object."""
     file_path = pathlib.Path(test_utils.JSON_NIST_DATA_PATH) / test_utils.JSON_NIST_PROFILE_NAME
     profile_obj = Profile.oscal_read(file_path)
     return profile_obj
