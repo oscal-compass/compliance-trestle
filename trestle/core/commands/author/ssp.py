@@ -586,23 +586,23 @@ class SSPManager():
 
         return 0
 
-    def _prune_control(self, needed_ids: list[str], control: cat.Control) -> List[cat.Control]:
+    def _prune_control(self, needed_ids: list[str], control: cat.Control) -> cat.Control:
         # this is only called if the control is needed
         # but some or all of its sub_controls may not be needed
-        # this always returns a list of at least the original control
+        # this always returns the original control, possibly with fewer subcontrols
         if control.controls is None:
-            return [control]
+            return control
         controls = []
         for sub_control in control.controls:
             if sub_control.id in needed_ids:
-                controls.extend(self._prune_control(needed_ids, sub_control))
+                controls.append(self._prune_control(needed_ids, sub_control))
         control.controls = controls if controls else None
-        return [control]
+        return control
 
     def _prune_controls(self, needed_controls: List[ControlHandle]) -> None:
         needed_ids = [control_handle.control.id for control_handle in needed_controls]
         for control_handle in needed_controls:
-            control_handle.control = self._prune_control(needed_ids, control_handle.control)[0]
+            control_handle.control = self._prune_control(needed_ids, control_handle.control)
 
     def generate_resolved_profile_catalog(
         self,
