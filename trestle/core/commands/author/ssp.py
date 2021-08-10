@@ -145,7 +145,7 @@ class SSPManager():
         self._sections: Dict[str, str] = {}
 
     def _replace_params(self, text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
-        # replace params with assignments from the profile or description info if value is not specified
+        # replace params in a control with assignments from the profile or description info if value is not specified
         if control.params is not None:
             for param in control.params:
                 # set default if no information available for text
@@ -188,9 +188,12 @@ class SSPManager():
         return ''
 
     def _get_part(self, control: cat.Control, part: common.Part) -> List[Union[str, List[str]]]:
+        # for a part in a control replace the params using the _param_dict
         items = []
         if part.prose is not None:
             fixed_prose = self._replace_params(part.prose, control, self._param_dict)
+            # change the prose in the control itself
+            part.prose = fixed_prose
             label = self._get_label(part)
             wrapped_label = self._wrap_label(label)
             pad = '' if wrapped_label == '' else ' '
@@ -204,6 +207,7 @@ class SSPManager():
         return items
 
     def _add_parts(self, control: cat.Control) -> None:
+        # for a given control add its parts to the md file after replacing params
         items = []
         if control.parts is not None:
             for part in control.parts:
@@ -579,3 +583,65 @@ class SSPManager():
         ssp.oscal_write(ssp_dir / 'system-security-plan.json')
 
         return 0
+
+
+def generate_resolved_profile_catalog(
+    self,
+    catalog: cat.Catalog,
+    profile: prof.Profile,
+) -> cat.Catalog:
+    """
+    Generate a resolved profile catalog from a profile and catalog.
+
+    The catalog contains a list of controls and the profile selects a subset of them
+    in groups.  This routine generates a new catalog of the controls imported by the profile.
+
+    Args:
+        catalog: An OSCAL catalog
+        profile: An OSCAL profile
+    Returns:
+        A new catalog containing the imported controls
+
+    """
+    logging.debug(
+        f'Generate resolved profile catalog from catalog {catalog.metadata.title}, profile {profile.metadata.title}'
+    )
+
+    # build a convenience dictionary to access control handles by name
+    control_dict: Dict[str, ControlHandle] = {}
+    if catalog.groups is not None:
+        for group in catalog.groups:
+            if group.controls is not None:
+                for control in group.controls:
+                    control_handle = ControlHandle(group.id, group.title, control)
+                    control_dict = self._get_controls(control_handle, control_dict)
+
+    # get list of control_ids needed by profile
+    control_ids: List[str] = []
+    for _import in profile.imports:
+        if _import.include_controls is not None:
+            for include_control in _import.include_controls:
+                control_ids.extend(include_control.with_ids)
+
+    # get list of group id's and associated controls
+    needed_group_ids: Set[str] = set()
+    needed_controls: List[ControlHandle] = []
+    for control_id in control_ids:
+        control_handle = control_dict[control_id.__root__]
+        needed_group_ids.add(control_handle.group_id)
+        needed_controls.append(control_handle)
+
+    # assign values to class members for use when writing out the controls
+    if profile.modify is not None:
+        if profile.modify.set_parameters is not None:
+            param_list = profile.modify.set_parameters
+            self._param_dict = {}
+            for param in param_list:
+                self._param_dict[param.param_id] = param
+        self._alters = profile.modify.alters
+
+    group_dict: Dict[str, cat.Group] = {}
+    for control_handle in needed_controls:
+        group = group_dict.get(control_handle.group_id)
+        if group is None:
+            group = cat.Group()
