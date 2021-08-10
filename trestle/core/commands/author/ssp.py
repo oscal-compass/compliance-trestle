@@ -41,10 +41,11 @@ logger = logging.getLogger(__name__)
 class ControlHandle():
     """Convenience class for handling controls as member of a group."""
 
-    def __init__(self, group_id: str, group_title: str, control: cat.Control):
+    def __init__(self, group_id: str, group_title: str, group_class: str, control: cat.Control):
         """Initialize the control handle."""
         self.group_id = group_id
         self.group_title = group_title
+        self.group_class = group_class
         self.control = control
 
 
@@ -225,8 +226,9 @@ class SSPManager():
         if control_handle.control.controls is not None:
             group_id = control_handle.group_id
             group_title = control_handle.group_title
+            group_class = control_handle.group_class
             for sub_control in control_handle.control.controls:
-                control_handle = ControlHandle(group_id, group_title, sub_control)
+                control_handle = ControlHandle(group_id, group_title, group_class, sub_control)
                 control_dict = self._get_controls(control_handle, control_dict)
         return control_dict
 
@@ -342,7 +344,7 @@ class SSPManager():
             for group in catalog.groups:
                 if group.controls is not None:
                     for control in group.controls:
-                        control_handle = ControlHandle(group.id, group.title, control)
+                        control_handle = ControlHandle(group.id, group.title, group.class_, control)
                         control_dict = self._get_controls(control_handle, control_dict)
 
         # get list of control_ids needed by profile
@@ -584,6 +586,24 @@ class SSPManager():
 
         return 0
 
+    def _prune_control(self, needed_ids: list[str], control: cat.Control) -> List[cat.Control]:
+        # this is only called if the control is needed
+        # but some or all of its sub_controls may not be needed
+        # this always returns a list of at least the original control
+        if control.controls is None:
+            return [control]
+        controls = []
+        for sub_control in control.controls:
+            if sub_control.id in needed_ids:
+                controls.extend(self._prune_control(needed_ids, sub_control))
+        control.controls = controls if controls else None
+        return [control]
+
+    def _prune_controls(self, needed_controls: List[ControlHandle]) -> None:
+        needed_ids = [control_handle.control.id for control_handle in needed_controls]
+        for control_handle in needed_controls:
+            control_handle.control = self._prune_control(needed_ids, control_handle.control)[0]
+
     def generate_resolved_profile_catalog(
         self,
         the_catalog: cat.Catalog,
@@ -607,13 +627,13 @@ class SSPManager():
             + f'profile {the_profile.metadata.title}'
         )
 
-        # build a convenience dictionary to access control handles by name
+        # build a convenience dictionary to access all catalog control handles by name
         control_dict: Dict[str, ControlHandle] = {}
         if the_catalog.groups is not None:
             for group in the_catalog.groups:
                 if group.controls is not None:
                     for control in group.controls:
-                        control_handle = ControlHandle(group.id, group.title, control)
+                        control_handle = ControlHandle(group.id, group.title, group.class_, control)
                         control_dict = self._get_controls(control_handle, control_dict)
 
         # get list of control_ids needed by profile
@@ -631,6 +651,9 @@ class SSPManager():
             needed_group_ids.add(control_handle.group_id)
             needed_controls.append(control_handle)
 
+        # if a control includes controls - only include ones that are needed
+        self._prune_controls(needed_controls)
+
         # assign values to class members for use when writing out the controls
         if the_profile.modify is not None:
             if the_profile.modify.set_parameters is not None:
@@ -645,7 +668,12 @@ class SSPManager():
             group_id = control_handle.group_id
             group = group_dict.get(group_id)
             if group is None:
-                group = cat.Group(id=group_id, title=control_handle.group_title, controls=[control_handle.control])
+                group = cat.Group(
+                    id=group_id,
+                    title=control_handle.group_title,
+                    class_=control_handle.group_class,
+                    controls=[control_handle.control]
+                )
                 group_dict[group_id] = group
             else:
                 group_dict[group_id].controls.append(control_handle.control)
@@ -653,6 +681,7 @@ class SSPManager():
         resolved_catalog: cat.Catalog = gens.generate_sample_model(cat.Catalog)
         resolved_metadata: common.Metadata = the_profile.metadata
         resolved_metadata.title = f'{the_catalog.metadata.title}: Resolved by profile {the_profile.metadata.title}'
+        resolved_metadata.links = [common.Link(**{'href': the_profile.imports[0].href, 'rel': 'resolution-source'})]
         resolved_catalog.metadata = resolved_metadata
         resolved_catalog.groups = []
         for group in group_dict.values():

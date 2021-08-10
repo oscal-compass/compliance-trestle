@@ -251,8 +251,13 @@ def test_ssp_generator_resolved_profile_catalog(tmp_trestle_dir: pathlib.Path) -
     _, _, _ = setup_for_ssp(False, True, tmp_trestle_dir)
     the_catalog = Catalog.oscal_read(tmp_trestle_dir / f'catalogs/{cat_name}/catalog.json')
     the_profile = Profile.oscal_read(tmp_trestle_dir / f'profiles/{prof_name}/profile.json')
+    new_catalog_dir = tmp_trestle_dir / f'catalogs/{prof_name}_resolved_catalog'
+    new_catalog_dir.mkdir(parents=True, exist_ok=True)
+    new_catalog_path = new_catalog_dir / 'catalog.json'
 
     ssp_manager = SSPManager()
     resolved_catalog = ssp_manager.generate_resolved_profile_catalog(the_catalog, the_profile)
     assert resolved_catalog
     assert len(resolved_catalog.groups) == 18
+
+    resolved_catalog.oscal_write(new_catalog_path)
