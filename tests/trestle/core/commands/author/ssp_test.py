@@ -27,9 +27,12 @@ from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate, SSPManage
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.markdown_validator import MarkdownValidator
+from trestle.oscal.catalog import Catalog
+from trestle.oscal.profile import Profile
 
 prof_name = 'my_prof'
 ssp_name = 'my_ssp'
+cat_name = 'imported_nist_cat'
 
 
 def setup_for_ssp(include_header: bool,
@@ -38,7 +41,6 @@ def setup_for_ssp(include_header: bool,
                   import_cat: bool = True) -> Tuple[argparse.Namespace, str]:
     """Create the markdown ssp content from catalog and profile."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
-    cat_name = 'imported_nist_cat'
     if big_profile:
         prof_path = test_utils.JSON_NIST_DATA_PATH / 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
     else:
@@ -242,3 +244,15 @@ def test_ssp_internals() -> None:
     ssp_manager = SSPManager()
     result = ssp_manager._get_label_prose(0, tree)
     assert result == (-1, 'a', '')
+
+
+def test_ssp_generator_resolved_profile_catalog(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test the ssp generator to create a resolved profile catalog."""
+    _, _, _ = setup_for_ssp(False, True, tmp_trestle_dir)
+    the_catalog = Catalog.oscal_read(tmp_trestle_dir / f'catalogs/{cat_name}/catalog.json')
+    the_profile = Profile.oscal_read(tmp_trestle_dir / f'profiles/{prof_name}/profile.json')
+
+    ssp_manager = SSPManager()
+    resolved_catalog = ssp_manager.generate_resolved_profile_catalog(the_catalog, the_profile)
+    assert resolved_catalog
+    assert len(resolved_catalog.groups) == 18

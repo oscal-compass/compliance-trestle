@@ -584,64 +584,78 @@ class SSPManager():
 
         return 0
 
+    def generate_resolved_profile_catalog(
+        self,
+        the_catalog: cat.Catalog,
+        the_profile: prof.Profile,
+    ) -> cat.Catalog:
+        """
+        Generate a resolved profile catalog from a profile and catalog.
 
-def generate_resolved_profile_catalog(
-    self,
-    catalog: cat.Catalog,
-    profile: prof.Profile,
-) -> cat.Catalog:
-    """
-    Generate a resolved profile catalog from a profile and catalog.
+        The catalog contains a list of controls and the profile selects a subset of them
+        in groups.  This routine generates a new catalog of the controls imported by the profile.
 
-    The catalog contains a list of controls and the profile selects a subset of them
-    in groups.  This routine generates a new catalog of the controls imported by the profile.
+        Args:
+            catalog: An OSCAL catalog
+            profile: An OSCAL profile
+        Returns:
+            A new catalog containing the imported controls
 
-    Args:
-        catalog: An OSCAL catalog
-        profile: An OSCAL profile
-    Returns:
-        A new catalog containing the imported controls
+        """
+        logging.debug(
+            f'Generate resolved profile catalog from catalog {the_catalog.metadata.title}, '
+            + f'profile {the_profile.metadata.title}'
+        )
 
-    """
-    logging.debug(
-        f'Generate resolved profile catalog from catalog {catalog.metadata.title}, profile {profile.metadata.title}'
-    )
+        # build a convenience dictionary to access control handles by name
+        control_dict: Dict[str, ControlHandle] = {}
+        if the_catalog.groups is not None:
+            for group in the_catalog.groups:
+                if group.controls is not None:
+                    for control in group.controls:
+                        control_handle = ControlHandle(group.id, group.title, control)
+                        control_dict = self._get_controls(control_handle, control_dict)
 
-    # build a convenience dictionary to access control handles by name
-    control_dict: Dict[str, ControlHandle] = {}
-    if catalog.groups is not None:
-        for group in catalog.groups:
-            if group.controls is not None:
-                for control in group.controls:
-                    control_handle = ControlHandle(group.id, group.title, control)
-                    control_dict = self._get_controls(control_handle, control_dict)
+        # get list of control_ids needed by profile
+        control_ids: List[str] = []
+        for _import in the_profile.imports:
+            if _import.include_controls is not None:
+                for include_control in _import.include_controls:
+                    control_ids.extend(include_control.with_ids)
 
-    # get list of control_ids needed by profile
-    control_ids: List[str] = []
-    for _import in profile.imports:
-        if _import.include_controls is not None:
-            for include_control in _import.include_controls:
-                control_ids.extend(include_control.with_ids)
+        # get list of group id's and associated controls
+        needed_group_ids: Set[str] = set()
+        needed_controls: List[ControlHandle] = []
+        for control_id in control_ids:
+            control_handle = control_dict[control_id.__root__]
+            needed_group_ids.add(control_handle.group_id)
+            needed_controls.append(control_handle)
 
-    # get list of group id's and associated controls
-    needed_group_ids: Set[str] = set()
-    needed_controls: List[ControlHandle] = []
-    for control_id in control_ids:
-        control_handle = control_dict[control_id.__root__]
-        needed_group_ids.add(control_handle.group_id)
-        needed_controls.append(control_handle)
+        # assign values to class members for use when writing out the controls
+        if the_profile.modify is not None:
+            if the_profile.modify.set_parameters is not None:
+                param_list = the_profile.modify.set_parameters
+                self._param_dict = {}
+                for param in param_list:
+                    self._param_dict[param.param_id] = param
+            self._alters = the_profile.modify.alters
 
-    # assign values to class members for use when writing out the controls
-    if profile.modify is not None:
-        if profile.modify.set_parameters is not None:
-            param_list = profile.modify.set_parameters
-            self._param_dict = {}
-            for param in param_list:
-                self._param_dict[param.param_id] = param
-        self._alters = profile.modify.alters
+        group_dict: Dict[str, cat.Group] = {}
+        for control_handle in needed_controls:
+            group_id = control_handle.group_id
+            group = group_dict.get(group_id)
+            if group is None:
+                group = cat.Group(id=group_id, title=control_handle.group_title, controls=[control_handle.control])
+                group_dict[group_id] = group
+            else:
+                group_dict[group_id].controls.append(control_handle.control)
 
-    group_dict: Dict[str, cat.Group] = {}
-    for control_handle in needed_controls:
-        group = group_dict.get(control_handle.group_id)
-        if group is None:
-            group = cat.Group()
+        resolved_catalog: cat.Catalog = gens.generate_sample_model(cat.Catalog)
+        resolved_metadata: common.Metadata = the_profile.metadata
+        resolved_metadata.title = f'{the_catalog.metadata.title}: Resolved by profile {the_profile.metadata.title}'
+        resolved_catalog.metadata = resolved_metadata
+        resolved_catalog.groups = []
+        for group in group_dict.values():
+            resolved_catalog.groups.append(group)
+
+        return resolved_catalog
