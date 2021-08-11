@@ -83,6 +83,12 @@ class ElementPath:
         otherwise a 'root model' can be passed for situations where this is not possible.
 
         This type path should *NOT* have wild cards in it. It *may* have* indices.
+        Valid Examples:
+            catalog.metadata
+            catalog.groups
+            catalog.groups.group
+            catalog
+            catalog.groups.0
 
         Args:
             root_model: An OscalBaseModel Type from which to base the approach on.
