@@ -66,6 +66,8 @@ docs-validate:: docs-automation
 docs-serve: docs-automation
 	mkdocs serve	
 
+mdformat:
+	pre-commit run mdformat --all-files
 # Something funky about these tests.
 # clean::
 # 	find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
