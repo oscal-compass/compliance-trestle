@@ -586,7 +586,7 @@ class SSPManager():
 
         return 0
 
-    def _prune_control(self, needed_ids: list[str], control: cat.Control) -> cat.Control:
+    def _prune_control(self, needed_ids: list[str], control: cat.Control, exclude_ids: List[str]) -> cat.Control:
         # this is only called if the control is needed
         # but some or all of its sub_controls may not be needed
         # this always returns the original control, possibly with fewer subcontrols
@@ -594,15 +594,38 @@ class SSPManager():
             return control
         controls = []
         for sub_control in control.controls:
-            if sub_control.id in needed_ids:
-                controls.append(self._prune_control(needed_ids, sub_control))
+            if sub_control.id in needed_ids and sub_control.id not in exclude_ids:
+                controls.append(self._prune_control(needed_ids, sub_control, exclude_ids))
+                exclude_ids.append(sub_control.id)
         control.controls = controls if controls else None
         return control
 
-    def _prune_controls(self, needed_controls: List[ControlHandle]) -> None:
+    def _prune_controls(self, needed_controls: List[ControlHandle]) -> List[ControlHandle]:
         needed_ids = [control_handle.control.id for control_handle in needed_controls]
+        exclude_ids = []
+        final_controls: List[ControlHandle] = []
         for control_handle in needed_controls:
-            control_handle.control = self._prune_control(needed_ids, control_handle.control)
+            if control_handle.control.id not in exclude_ids:
+                control_handle.control = self._prune_control(needed_ids, control_handle.control, exclude_ids)
+                exclude_ids.append(control_handle.control.id)
+                final_controls.append(control_handle)
+        return final_controls
+
+    def _find_links(self, control: cat.Control) -> Set[str]:
+        links = set()
+        for link in control.links:
+            uuid_str = link.href.replace('#', '')
+            links.add(uuid_str)
+        if control.controls is not None:
+            for sub_control in control.controls:
+                links.update(self._find_links(sub_control))
+        return links
+
+    def _find_all_links(self, needed_controls: List[ControlHandle]) -> Set[str]:
+        links = set()
+        for control_handle in needed_controls:
+            links.update(self._find_links(control_handle.control))
+        return links
 
     def generate_resolved_profile_catalog(
         self,
@@ -652,7 +675,9 @@ class SSPManager():
             needed_controls.append(control_handle)
 
         # if a control includes controls - only include ones that are needed
-        self._prune_controls(needed_controls)
+        final_controls = self._prune_controls(needed_controls)
+
+        needed_links: Set[str] = self._find_all_links(final_controls)
 
         # assign values to class members for use when writing out the controls
         if the_profile.modify is not None:
@@ -664,7 +689,7 @@ class SSPManager():
             self._alters = the_profile.modify.alters
 
         group_dict: Dict[str, cat.Group] = {}
-        for control_handle in needed_controls:
+        for control_handle in final_controls:
             group_id = control_handle.group_id
             group = group_dict.get(group_id)
             if group is None:
@@ -682,6 +707,12 @@ class SSPManager():
         resolved_metadata: common.Metadata = the_profile.metadata
         resolved_metadata.title = f'{the_catalog.metadata.title}: Resolved by profile {the_profile.metadata.title}'
         resolved_metadata.links = [common.Link(**{'href': the_profile.imports[0].href, 'rel': 'resolution-source'})]
+        resolved_catalog.back_matter = the_catalog.back_matter
+        new_resources: List[common.Resource] = []
+        for resource in the_catalog.back_matter.resources:
+            if resource.uuid in needed_links:
+                new_resources.append(resource)
+        resolved_catalog.back_matter.resources = new_resources
         resolved_catalog.metadata = resolved_metadata
         resolved_catalog.groups = []
         for group in group_dict.values():

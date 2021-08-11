@@ -21,6 +21,8 @@ from typing import Any, Dict, List, Tuple, Type, TypeVar
 
 import pydantic
 
+from trestle.core.common_types import FixedUuidModel
+
 logger = logging.getLogger(__name__)
 
 # Generic type var
@@ -196,6 +198,12 @@ def regenerate_uuids_in_place(object_of_interest: Any, uuid_lut: Dict[str, str])
 
     """
     uuid_str = 'uuid'
+    # Certain types are known not to need updating and should not change
+    # Resources are identified by uuid, and the corresponding href will have # in front of the uuid string
+    # Neither of these should change
+    # If other similar types are found they should be added to the FixedUuidModel typevar to prevent updating
+    if isinstance(object_of_interest, FixedUuidModel):
+        return object_of_interest, uuid_lut
     if isinstance(object_of_interest, pydantic.BaseModel):
         # fields_set has names of fields set when model was initialized
         fields = getattr(object_of_interest, '__fields_set__', None)
