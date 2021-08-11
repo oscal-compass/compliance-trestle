@@ -212,18 +212,23 @@ def test_get_type_from_element_path(
 
 @pytest.mark.parametrize(
     'element_path, collection, type_or_inner_type, exception_expected',
-    [('catalog.metadata', False, common.Metadata, False), ('catalog.controls', True, catalog.Control, False)]
+    [
+        ('catalog.metadata', False, common.Metadata, False), ('catalog.controls', True, catalog.Control, False),
+        ('catalog.controls.control.controls', True, catalog.Control, False),
+        ('catalog.controls.control', False, catalog.Control, False)
+    ]
 )
 def test_get_obm_wrapped_type(
     element_path: str, collection: bool, type_or_inner_type: Type[OscalBaseModel], exception_expected: bool
 ):
-    """Tetst whether we can wrap a control properly."""
+    """Test whether we can wrap a control properly."""
     if exception_expected:
         with pytest.raises(TrestleError):
             _ = ElementPath(element_path).get_obm_wrapped_type()
         return
     my_type = ElementPath(element_path).get_obm_wrapped_type()
     if collection:
-        assert type_or_inner_type == utils.get_inner_type(my_type.__root__)
+        inner_type = utils.get_inner_type(my_type)
+        assert type_or_inner_type == inner_type
     else:
         assert type_or_inner_type == my_type

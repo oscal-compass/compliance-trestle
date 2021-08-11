@@ -198,6 +198,7 @@ def is_collection_field_type(field_type: Type[Any]) -> bool:
     return origin_type in [list, dict]
 
 
+# Type annotation is incorrect.
 def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, TG]]]) -> Type[TG]:
     """Get the inner model in a generic collection model such as a List or a Dict.
 

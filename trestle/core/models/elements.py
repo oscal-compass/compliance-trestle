@@ -24,7 +24,6 @@ from pydantic.error_wrappers import ValidationError
 from ruamel.yaml import YAML
 
 import trestle.core.const as const
-from trestle.core import base_model
 from trestle.core import common_types, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError, TrestleNotFoundError
@@ -147,8 +146,10 @@ class ElementPath:
             The type of the model whether wrapped or not as an OscalBaseModel.
         """
         base_type = self.get_type(root_model, use_parent)
+        # Get an outer model type.
+        origin_type = utils.get_origin(base_type)
 
-        if utils.is_collection_field_type(base_model):
+        if origin_type in [list, dict]:
             # OSCAL does not support collections of collections directly. We should not hit this scenario
             collection_name = self.get_last()
             if collection_name == self.WILDCARD:
