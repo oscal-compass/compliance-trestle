@@ -376,7 +376,7 @@ def get_models_of_type(model_type: str, root: pathlib.Path) -> List[str]:
     for f in root_model_dir.glob('*/'):
         # only look for proper json and yaml files
         if not should_ignore(f.stem):
-            if f.suffix or f.name.endswith('.'):
+            if not f.is_dir():
                 logger.warn(
                     f'Ignoring validation of misplaced file {f.name} '
                     + f'found in the model directory, {model_dir_name}.'
