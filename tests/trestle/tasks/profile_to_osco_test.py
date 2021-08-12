@@ -121,7 +121,7 @@ def test_profile_to_osco_execute_no_output_dir(tmp_path):
 
 
 def test_profile_to_osco_execute_no_overwrite(tmp_path):
-    """Test execute call."""
+    """Test execute call no overwrite."""
     config = configparser.ConfigParser()
     config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-no-overwrite.config')
     config.read(config_path)
