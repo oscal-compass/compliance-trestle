@@ -325,7 +325,7 @@ def test_bad_unicode_in_parsetree(tmp_path: pathlib.Path):
 
 
 def test_broken_yaml_header(testdata_dir: pathlib.Path):
-    """Test error on read of bad unicode in parsetree."""
+    """Test for a bad markdown header."""
     bad_file = testdata_dir / 'author' / 'bad_md_header.md'
     with pytest.raises(err.TrestleError):
         _ = markdown_validator.MarkdownValidator.load_markdown_parsetree(bad_file)
