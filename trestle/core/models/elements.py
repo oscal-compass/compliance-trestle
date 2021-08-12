@@ -47,8 +47,6 @@ class ElementPath:
 
         It assumes the element path contains oscal field alias with hyphens only
         """
-        if isinstance(parent_path, str):
-            parent_path = ElementPath(parent_path)
         self._parent_path = parent_path
 
         self._path: List[str] = self._parse(element_path)

@@ -23,15 +23,17 @@ import pytest
 
 from trestle.cli import Trestle
 from trestle.core.commands.partial_object_validate import PartialObjectValidate
+from trestle.core.err import TrestleError
 
 benchmark_args = ['sample_file', 'element_path', 'rc']
 benchmark_values = [
     (pathlib.Path('json/minimal_catalog.json'), 'catalog',
-     0), (pathlib.Path('json/minimal_catalog.json'), 'catalog.metadata', 1),
-    (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups', 0),
+     0), (pathlib.Path('json/minimal_catalog.json'), 'catalog.metadata',
+          1), (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups', 0),
     (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group.groups', 0),
     (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group', 1),
-    (pathlib.Path('json/minimal_catalog_missing_uuid.json'), 'catalog', 1)
+    (pathlib.Path('json/minimal_catalog_missing_uuid.json'), 'catalog', 1),
+    (pathlib.Path('json/minimal_catalog.json'), 'catalogs', 1)
 ]
 
 
@@ -66,3 +68,31 @@ def test_cli(
     monkeypatch.setattr(sys, 'argv', command_str.split())
     cli_rc = Trestle().run()
     assert rc == cli_rc
+
+
+def test_for_failure_on_multiple_element_paths(testdata_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test whether a bad element string correctly errors."""
+    element_str = "'catalogs,profile'"
+    full_path = testdata_dir / 'json/minimal_catalog.json'
+    command_str = f'trestle partial-object-validate -f {str(full_path)} -e {element_str}'
+    monkeypatch.setattr(sys, 'argv', command_str.split())
+    rc = Trestle().run()
+    assert rc > 0
+
+
+def test_handling_unexpected_exception(testdata_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test whether a bad element string correctly errors."""
+
+    def patch_raise_exception():
+        raise TrestleError('Hello')
+
+    element_str = 'catalog'
+    full_path = testdata_dir / 'json/minimal_catalog.json'
+    command_str = f'trestle partial-object-validate -f {str(full_path)} -e {element_str}'
+    monkeypatch.setattr(sys, 'argv', command_str.split())
+    monkeypatch.setattr(
+        'trestle.core.commands.partial_object_validate.PartialObjectValidate.partial_object_validate',
+        patch_raise_exception
+    )
+    rc = Trestle().run()
+    assert rc > 0

@@ -215,7 +215,8 @@ def test_get_type_from_element_path(
     [
         ('catalog.metadata', False, common.Metadata, False), ('catalog.controls', True, catalog.Control, False),
         ('catalog.controls.control.controls', True, catalog.Control, False),
-        ('catalog.controls.control', False, catalog.Control, False)
+        ('catalog.controls.control', False, catalog.Control, False), ('catalog.*', False, List[catalog.Control], True),
+        ('catalog.controls.*', False, catalog.Control, False)
     ]
 )
 def test_get_obm_wrapped_type(
@@ -232,3 +233,10 @@ def test_get_obm_wrapped_type(
         assert type_or_inner_type == inner_type
     else:
         assert type_or_inner_type == my_type
+
+
+def test_get_type_with_parent() -> None:
+    """Test get parent type with path chain."""
+    parent_path = ElementPath('catalog.controls')
+    current_path = ElementPath('controls.control', parent_path=parent_path)
+    assert current_path.get_type(use_parent=True) == catalog.Control
