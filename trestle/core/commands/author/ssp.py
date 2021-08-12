@@ -16,6 +16,7 @@
 import argparse
 import logging
 import pathlib
+import re
 import string
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
@@ -30,6 +31,7 @@ import trestle.oscal.ssp as ossp
 import trestle.utils.fs as fs
 import trestle.utils.log as log
 from trestle.core.commands.author.common import AuthorCommonCommand
+from trestle.core.const import MARKDOWN_URL_REGEX, UUID_REGEX
 from trestle.core.markdown_validator import MarkdownValidator
 from trestle.core.remote import cache
 from trestle.utils.load_distributed import load_distributed
@@ -611,21 +613,40 @@ class SSPManager():
                 final_controls.append(control_handle)
         return final_controls
 
-    def _find_links(self, control: cat.Control) -> Set[str]:
-        links = set()
+    def _find_uuid_refs(self, control: cat.Control) -> Set[str]:
+        refs = set()
         for link in control.links:
             uuid_str = link.href.replace('#', '')
-            links.add(uuid_str)
+            refs.add(uuid_str)
+        if control.parts is not None:
+            for part in control.parts:
+                if part.prose is not None:
+                    # find the two parts, label and ref, in each markdown url
+                    # expecting form [label](#uuid)
+                    # but if it is a control ref it may be e.g. [CM-7](#cm-7)
+                    # for now label is not used
+                    # the ref may be a uuid or control id
+                    # currently only uuids to confirm presence in backmatter
+                    # note that prose may be multi-line but findall searches all lines
+                    matches = re.findall(MARKDOWN_URL_REGEX, part.prose)
+                    for match in matches:
+                        ref = match[1]
+                        if len(ref) > 1 and ref[0] == '#':
+                            uuid_match = re.findall(UUID_REGEX, ref[1:])
+                            # there should be only one uuid in the parens
+                            if uuid_match:
+                                refs.add(uuid_match[0])
         if control.controls is not None:
             for sub_control in control.controls:
-                links.update(self._find_links(sub_control))
-        return links
+                refs.update(self._find_uuid_refs(sub_control))
+        return refs
 
-    def _find_all_links(self, needed_controls: List[ControlHandle]) -> Set[str]:
-        links = set()
+    def _find_all_uuid_refs(self, needed_controls: List[ControlHandle]) -> Set[str]:
+        # uuid refs can either be in links or prose.  find all needed by controls
+        refs = set()
         for control_handle in needed_controls:
-            links.update(self._find_links(control_handle.control))
-        return links
+            refs.update(self._find_uuid_refs(control_handle.control))
+        return refs
 
     def generate_resolved_profile_catalog(
         self,
@@ -677,7 +698,8 @@ class SSPManager():
         # if a control includes controls - only include ones that are needed
         final_controls = self._prune_controls(needed_controls)
 
-        needed_links: Set[str] = self._find_all_links(final_controls)
+        # find all referenced uuids
+        needed_uuid_refs: Set[str] = self._find_all_uuid_refs(final_controls)
 
         # assign values to class members for use when writing out the controls
         if the_profile.modify is not None:
@@ -710,7 +732,7 @@ class SSPManager():
         resolved_catalog.back_matter = the_catalog.back_matter
         new_resources: List[common.Resource] = []
         for resource in the_catalog.back_matter.resources:
-            if resource.uuid in needed_links:
+            if resource.uuid in needed_uuid_refs:
                 new_resources.append(resource)
         resolved_catalog.back_matter.resources = new_resources
         resolved_catalog.metadata = resolved_metadata

@@ -370,11 +370,19 @@ def get_models_of_type(model_type: str, root: pathlib.Path) -> List[str]:
         raise err.TrestleError('Given directory is not within a trestle project.')
 
     # contruct path to the model file name
-    root_model_dir = trestle_root / model_type_to_model_dir(model_type)
+    model_dir_name = model_type_to_model_dir(model_type)
+    root_model_dir = trestle_root / model_dir_name
     model_list = []
     for f in root_model_dir.glob('*/'):
+        # only look for proper json and yaml files
         if not should_ignore(f.stem):
-            model_list.append(f.stem)
+            if f.suffix or f.name.endswith('.'):
+                logger.warn(
+                    f'Ignoring validation of misplaced file {f.name} '
+                    + f'found in the model directory, {model_dir_name}.'
+                )
+            else:
+                model_list.append(f.stem)
     return model_list
 
 
