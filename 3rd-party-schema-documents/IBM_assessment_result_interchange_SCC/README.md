@@ -48,8 +48,8 @@ The inventory should be included in *local-definitions* if observations are bein
 ## Transforms
 
 1. File *Unification SCC class for OSCO and Tanium to OSCAL.xlsx* contains the *SCC class* mapping from Tanium and OpenShift Compliance Operator results data to OSCAL. Although other
-properties are constructed during transformation, only items having *SCC class* are shown
-in the table. 
+   properties are constructed during transformation, only items having *SCC class* are shown
+   in the table.
 
 <img src="../Unification-SCC-class-for-OSCO-and-Tanium-to-OSCAL.png"/>
 

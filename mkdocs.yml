@@ -52,6 +52,7 @@ nav:
         - command_docs: api_reference/trestle.core.commands.command_docs.md
         - create: api_reference/trestle.core.commands.create.md
         - describe: api_reference/trestle.core.commands.describe.md
+        - href: api_reference/trestle.core.commands.href.md
         - import_: api_reference/trestle.core.commands.import_.md
         - init: api_reference/trestle.core.commands.init.md
         - merge: api_reference/trestle.core.commands.merge.md
@@ -99,6 +100,7 @@ nav:
       - osco_to_oscal: api_reference/trestle.tasks.osco_to_oscal.md
       - tanium_to_oscal: api_reference/trestle.tasks.tanium_to_oscal.md
       - transform: api_reference/trestle.tasks.transform.md
+      - xlsx_to_oscal_component_definition: api_reference/trestle.tasks.xlsx_to_oscal_component_definition.md
     - transforms:
       - implementations:
         - osco: api_reference/trestle.transforms.implementations.osco.md
@@ -114,6 +116,7 @@ nav:
       - load_distributed: api_reference/trestle.utils.load_distributed.md
       - log: api_reference/trestle.utils.log.md
       - md_writer: api_reference/trestle.utils.md_writer.md
+      - oscal_helper: api_reference/trestle.utils.oscal_helper.md
       - trash: api_reference/trestle.utils.trash.md
 plugins:
 - search

@@ -20,9 +20,10 @@ import pathlib
 import uuid
 from unittest.mock import Mock, patch
 
+from tests.test_utils import text_files_equal
+
 import trestle.tasks.xlsx_to_oscal_component_definition as xlsx_to_oscal_component_definition
 from trestle.tasks.base_task import TaskOutcome
-from trestle.utils.fs import text_files_equal
 
 uuid_mock1 = Mock(return_value=uuid.UUID('56666738-0f9a-4e38-9aac-c0fad00a5821'))
 get_trestle_version_mock1 = Mock(return_value='0.21.0')

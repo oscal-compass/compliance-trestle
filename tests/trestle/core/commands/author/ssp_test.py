@@ -23,8 +23,8 @@ from ruamel.yaml import YAML
 
 from tests import test_utils
 
-import trestle.utils.fs as fs
 from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate, SSPManager
+from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.markdown_validator import MarkdownValidator
 
@@ -32,24 +32,34 @@ prof_name = 'my_prof'
 ssp_name = 'my_ssp'
 
 
-def setup_for_ssp(include_header: bool, big_profile: bool,
-                  tmp_trestle_dir: pathlib.Path) -> Tuple[argparse.Namespace, str]:
+def setup_for_ssp(include_header: bool,
+                  big_profile: bool,
+                  tmp_trestle_dir: pathlib.Path,
+                  import_cat: bool = True) -> Tuple[argparse.Namespace, str]:
     """Create the markdown ssp content from catalog and profile."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
-    cat_name = fs.model_name_from_href_path(cat_path)
+    cat_name = 'imported_nist_cat'
     if big_profile:
         prof_path = test_utils.JSON_NIST_DATA_PATH / 'NIST_SP-800-53_rev5_MODERATE-baseline_profile.json'
     else:
         prof_path = test_utils.JSON_TEST_DATA_PATH / 'simple_test_profile.json'
-    i = ImportCmd()
-    args = argparse.Namespace(
-        trestle_root=tmp_trestle_dir, file=str(cat_path), output=cat_name, verbose=True, regenerate=True
-    )
-    assert i._run(args) == 0
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir, file=str(prof_path), output=prof_name, verbose=True, regenerate=True
     )
+    i = ImportCmd()
     assert i._run(args) == 0
+
+    # need to change href in profile to either imported location or cached external
+    if import_cat:
+        args = argparse.Namespace(
+            trestle_root=tmp_trestle_dir, file=str(cat_path), output=cat_name, verbose=True, regenerate=True
+        )
+        assert i._run(args) == 0
+        new_href = f'trestle://catalogs/{cat_name}/catalog.json'
+    else:
+        new_href = str(cat_path.resolve())
+    assert HrefCmd.change_import_href(tmp_trestle_dir, prof_name, new_href) == 0
+
     yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
     sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
     if include_header:
@@ -85,9 +95,10 @@ def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> No
                 md.write(prose + '\n')
 
 
-def test_ssp_generator(tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('import_cat', [False, True])
+def test_ssp_generator(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
-    args, sections, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir)
+    args, sections, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, import_cat)
     ssp_cmd = SSPGenerate()
     # run the command for happy path
     assert ssp_cmd._run(args) == 0

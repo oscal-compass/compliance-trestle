@@ -72,12 +72,17 @@ class MergeCmd(CommandPlusDocs):
 
         It returns a plan for the operation
         """
-        element_path_list = element_path.get_full_path_parts()
-        target_model_alias = element_path_list[-1]
-        logger.debug(f'merge element path list: {element_path_list} target model alias {target_model_alias}')
+        if not element_path.is_multipart():
+            msg = 'Multiple parts of an element path must be passed to merge e.g. catalog.* or catalog.groups'
+            logger.error(msg)
+            raise TrestleError(msg)
+
+        target_model_alias = element_path.get_last()
+        logger.debug(f'merge element path list: {element_path} target model alias {target_model_alias}')
         """1. Load desination model into a stripped model"""
         # Load destination model
-        destination_model_alias = element_path_list[-2]
+        destination_path = element_path.get_preceding_path()
+        destination_model_alias = destination_path.get_last()
         # Destination model filetype
         try:
             logger.debug(f'merge destination model alias: {destination_model_alias}')
@@ -105,7 +110,7 @@ class MergeCmd(CommandPlusDocs):
             if destination_model_type.is_collection_container():
                 collection_type = destination_model_type.get_collection_type()
 
-            merged_model_type, merged_model_alias, merged_model_instance = load_distributed.load_distributed(
+            merged_model_type, _, merged_model_instance = load_distributed.load_distributed(
                 destination_model_filename, collection_type)
             plan = Plan()
             reset_destination_action = CreatePathAction(destination_model_filename, clear_content=True)
@@ -122,14 +127,14 @@ class MergeCmd(CommandPlusDocs):
 
         logger.debug(f'get dest model with fields stripped: {target_model_alias}')
         # Get destination model without the target field stripped
-        merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(
+        merged_model_type, _ = fs.get_stripped_contextual_model(
             destination_model_filename,
             aliases_not_to_be_stripped=[target_model_alias])
         """3. Load Target model. Target model could be stripped"""
         try:
-            target_model_type = utils.get_target_model(element_path_list, merged_model_type)
+            target_model_type = element_path.get_type(merged_model_type)
         except Exception as e:
-            logger.debug(f'target model not found, element path list {element_path_list} type {merged_model_type}')
+            logger.debug(f'target model not found, element path list {element_path} type {merged_model_type}')
             raise TrestleError(
                 f'Target model not found. Possibly merge of the elements not allowed at this point. {str(e)}'
             )

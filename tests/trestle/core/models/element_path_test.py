@@ -15,13 +15,16 @@
 # limitations under the License.
 """Tests for trestle elements module."""
 import pathlib
+from typing import Any, List, Type
 
 import pytest
 
+import trestle.core.utils as utils
+from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
-from trestle.oscal import component
+from trestle.oscal import catalog, common, component
 
 
 def test_element_path_init(sample_nist_component_def: component.ComponentDefinition):
@@ -51,16 +54,12 @@ def test_element_path_init(sample_nist_component_def: component.ComponentDefinit
         ElementPath('.*')
 
     # expect error
-    with pytest.raises(TrestleError):
-        ElementPath('catalog.groups.*.controls.*')
+    # no longer expect error.
+    ElementPath('catalog.groups.*.controls.*')
 
     # expect error
     with pytest.raises(TrestleError):
         ElementPath('catalog.metadata..title')
-
-    # expect error
-    with pytest.raises(TrestleError):
-        ElementPath('catalog')
 
 
 def test_element_path_get_element_name():
@@ -75,7 +74,7 @@ def test_element_path_get_preceding_path(sample_nist_component_def: component.Co
     """Test get parent path method."""
     assert ElementPath('component-definition.metadata.title'
                        ).get_preceding_path() == ElementPath('component-definition.metadata')
-    assert ElementPath('component-definition.metadata').get_preceding_path() is None
+    assert ElementPath('component-definition.metadata').get_preceding_path() == ElementPath('component-definition')
     assert ElementPath('component-definition.metadata.parties.*'
                        ).get_preceding_path() == ElementPath('component-definition.metadata.parties')
     assert ElementPath('component-definition.metadata.*'
@@ -175,3 +174,69 @@ def test_make_relative():
 
     path = pathlib.Path('profiles/controls')
     assert p.make_relative(path) == 1
+
+
+@pytest.mark.parametrize(
+    'element_path, leaf_type, provided_type, raise_exception',
+    [
+        ('catalog.metadata', common.Metadata, None, False),
+        ('catalog.metadata', common.Metadata, catalog.Catalog, False), ('catalog', catalog.Catalog, None, False),
+        ('catalog.controls.control', catalog.Control, None, False),
+        ('catalog.controls.*', catalog.Control, None, False), ('catalog.controls.0', catalog.Control, None, False),
+        ('catalog.controls.1', catalog.Control, None, False),
+        ('group.controls.*.parts.part', common.Part, catalog.Group, False),
+        ('catalog.*.roles.role', common.Role, None, True), ('metadata.roles.role', common.Role, None, True),
+        ('catalog.controls', List[catalog.Control], None, False)
+    ]
+)
+def test_get_type_from_element_path(
+    element_path: str, leaf_type: Type[Any], provided_type: Type[Any], raise_exception: bool
+):
+    """Test to see whether an type can be retrieved from the element path."""
+    # parse element path
+    my_element_path = ElementPath(element_path)
+    apparent_type: Type[Any]
+    if raise_exception:
+        with pytest.raises(TrestleError):
+            if provided_type:
+                apparent_type = my_element_path.get_type(provided_type)
+            else:
+                apparent_type = my_element_path.get_type()
+        return
+    if provided_type:
+        apparent_type = my_element_path.get_type(provided_type)
+    else:
+        apparent_type = my_element_path.get_type()
+    assert leaf_type == apparent_type
+
+
+@pytest.mark.parametrize(
+    'element_path, collection, type_or_inner_type, exception_expected',
+    [
+        ('catalog.metadata', False, common.Metadata, False), ('catalog.controls', True, catalog.Control, False),
+        ('catalog.controls.control.controls', True, catalog.Control, False),
+        ('catalog.controls.control', False, catalog.Control, False), ('catalog.*', False, List[catalog.Control], True),
+        ('catalog.controls.*', False, catalog.Control, False)
+    ]
+)
+def test_get_obm_wrapped_type(
+    element_path: str, collection: bool, type_or_inner_type: Type[OscalBaseModel], exception_expected: bool
+):
+    """Test whether we can wrap a control properly."""
+    if exception_expected:
+        with pytest.raises(TrestleError):
+            _ = ElementPath(element_path).get_obm_wrapped_type()
+        return
+    my_type = ElementPath(element_path).get_obm_wrapped_type()
+    if collection:
+        inner_type = utils.get_inner_type(my_type)
+        assert type_or_inner_type == inner_type
+    else:
+        assert type_or_inner_type == my_type
+
+
+def test_get_type_with_parent() -> None:
+    """Test get parent type with path chain."""
+    parent_path = ElementPath('catalog.controls')
+    current_path = ElementPath('controls.control', parent_path=parent_path)
+    assert current_path.get_type(use_parent=True) == catalog.Control

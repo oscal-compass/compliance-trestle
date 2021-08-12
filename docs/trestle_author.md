@@ -231,21 +231,29 @@ If `--task-name` is not provided all folders in the repository will be measured.
 
 ## `trestle author ssp-generate`
 
-The `ssp-generate` sub-command creates a partial ssp from a catalog, profile and optional yaml header file.  It can also assemble the markdown files
-into a single json SSP file.  The catalog consists of a number of controls with parameters, and the profile specifies a subset of
+The `ssp-generate` sub-command creates a partial SSP from a catalog, profile and optional yaml header file.  `ssp-assemble` (described below) can later assemble the markdown files into a single json SSP file.  The catalog consists of a number of controls with parameters, and the profile specifies a subset of
 those controls along with corresponding parameter values.  This command merges the information from the two files and generates a
 directory containing a set of markdown files, one for each control in the profile.  Each markdown file has the yaml header embedded
 at the start of the file.
 
 Example usage for creation of the markdown:
 
-`trestle author ssp-generate -p my_prof -y /my_yaml_dir/header.yaml -s "ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence" -o my_ssp`
+`trestle author ssp-generate -p my_prof -y /my_yaml_dir/header.yaml -s 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence' -o my_ssp`
 
 In this example the catalog and profile have previously been imported into the trestle project directory, making sure to import the
-catalog using the name specified in the import href of the profile.  Note that the path in the href is ignored.  The optional yaml
-header file can be anywhere in the file system.  In this case the two sections loaded are `ImplGuidance` and `ExpectedEvidence` -
-and their aliases are provided with full spacing and spelling so the section headers will have proper titles.  The output will be
-placed in the trestle subdirectory `my_ssp` with a subdirectory for each control group.
+catalog using the name specified in the import href of the profile.
+
+The `-s --section` argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  Each colon-separated pair refers to the actual part name first, followed by the form that should be used in the heading for that section.  This is done because the name itself may be abbreviated and lack needed spaces between words.
+
+(Note that the single quotes are required on Unix-like systems, but on Windows they are only needed if the contained string includes spaces, in which case *double* quotes should be used.)
+
+If the imported catalog is not at the URI pointed to by the Import href of the profile then the href should be changed using the `trestle href` command.
+
+The optional yaml header file can be anywhere in the file system.
+
+In this case the two sections loaded are `ImplGuidance` and `ExpectedEvidence` - and their aliases are provided with full spacing and
+spelling so the section headers will have proper titles.  The output will be placed in the trestle subdirectory `my_ssp` with a subdirectory
+for each control group.
 
 <br>
 <details>
@@ -307,7 +315,7 @@ Add control implementation description here.
 
 Do it carefully.
 
-## ac-1 Section ExpectedEvidence
+## ac-1 Section Expected Evidence
 
 Detailed logs.
    
@@ -322,7 +330,7 @@ Note that for each statement in the control description there is a corresponding
 
 Also note that the optional final sections are provided, and labeled using the alias given at the command line.
 
-## `trestle author ssp-generate`
+## `trestle author ssp-assemble`
 
 After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:
 

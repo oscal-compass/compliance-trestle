@@ -35,7 +35,20 @@ logger = logging.getLogger(__name__)
 
 
 class AddCmd(CommandPlusDocs):
-    """Add a subcomponent to an existing model."""
+    """Add an OSCAL object to the provided file based on element path.
+
+    This CLI takes input a filename and a list of comma-seperated element path. Element paths are based on the json
+    field names.
+
+    Examples of element paths:
+        catalog.metadata
+        catalog.controls.control
+        assessment-results.results.
+
+
+    The method first finds the parent model from the file and loads the file into the model.
+    Then the method executes 'add' for each of the element paths specified.
+    """
 
     name = 'add'
 
@@ -54,7 +67,7 @@ class AddCmd(CommandPlusDocs):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        """Add an OSCAL component/subcomponent to the specified component.
+        """Add an OSCAL object to the specified file based on element path.
 
         This method takes input a filename and a list of comma-seperated element path. Element paths are field aliases.
         The method first finds the parent model from the file and loads the file into the model.
@@ -106,12 +119,12 @@ class AddCmd(CommandPlusDocs):
         at the same location and write the file.
         We update the parent_element to prepare for next adds in the chain
         """
-        element_path_list = element_path.get_full_path_parts()
-        if '*' in element_path_list:
+        if '*' in element_path.get_full_path_parts():
             raise err.TrestleError('trestle add does not support Wildcard element path.')
         # Get child model
         try:
-            child_model = utils.get_target_model(element_path_list, parent_model)
+            child_model = element_path.get_type(parent_model)
+
             # Create child element with sample values
             child_object = gens.generate_sample_model(child_model)
 
