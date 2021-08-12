@@ -442,16 +442,3 @@ def allowed_task_name(name: str) -> bool:
         logger.error('Task name cannot contain __global__')
         return False
     return True
-
-
-def model_name_from_href_path(href: pathlib.Path) -> str:
-    """Find model name from path."""
-    name = href.stem
-    # if the name looks like 'catalog.json' then the real name is the directory above
-    name = name if name not in const.MODEL_TYPE_LIST else href.parent.stem
-    return name
-
-
-def model_name_from_href_str(href: str) -> str:
-    """Find model name from href."""
-    return model_name_from_href_path(pathlib.Path(href))
