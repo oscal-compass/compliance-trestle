@@ -1,0 +1,740 @@
+{
+  "profile": {
+    "uuid": "4e225c4d-20c5-47b3-bd59-0e880bffab23",
+    "metadata": {
+      "title": "Best Practices NIST CONTROLS Profile",
+      "last-modified": "2021-08-09T15:07:24.000+00:00",
+      "version": "0.21.0",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "https://myco.com/cloud/compliance/spread-sheet/best-practices.xlsx",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-17.1",
+              "ac-17.2",
+              "ac-18",
+              "ac-2",
+              "ac-2.1",
+              "ac-2.3",
+              "ac-2.7",
+              "ac-21",
+              "ac-3",
+              "ac-3.5",
+              "ac-4",
+              "ac-5",
+              "ac-6",
+              "ac-6.10",
+              "au-12",
+              "au-2",
+              "ca-7",
+              "cm-10",
+              "cm-2",
+              "cm-3",
+              "cm-5",
+              "cm-7",
+              "cm-8",
+              "cm-8.1",
+              "cm-8.3",
+              "cm-8.4",
+              "cp-6",
+              "ia-2",
+              "ia-2.1",
+              "ia-2.11",
+              "ia-2.2",
+              "ia-4",
+              "ia-5",
+              "ia-5.1",
+              "ia-5.4",
+              "ia-7",
+              "pe-11",
+              "pe-11.1",
+              "ra-5",
+              "sa-11",
+              "sa-3",
+              "sc-12",
+              "sc-13",
+              "sc-17",
+              "sc-2",
+              "sc-23",
+              "sc-28",
+              "sc-36",
+              "sc-7",
+              "sc-7.3",
+              "sc-7.5",
+              "sc-8",
+              "sc-8.1",
+              "si-2.2",
+              "si-4",
+              "si-7",
+              "si-7.1",
+              "si-7.9"
+            ]
+          }
+        ]
+      }
+    ],
+    "modify": {
+      "set-parameters": [
+        {
+          "param-id": "myco_minimum_password_length",
+          "label": "Minimum Password Length",
+          "usage": "Check whether id password policy requires minimum length of 12 characters",
+          "values": [
+            "12"
+          ]
+        },
+        {
+          "param-id": "myco_password_reuse_prevention",
+          "label": "Password Reuse Prevention",
+          "usage": "Check whether id password policy prevents password reuse below the minimum of #",
+          "values": [
+            "24"
+          ]
+        },
+        {
+          "param-id": "allowed_admins_per_account",
+          "label": "Maximum allowed administrators per account",
+          "usage": "Check whether there are no more than # IAM administrators configured per account",
+          "values": [
+            "10"
+          ]
+        },
+        {
+          "param-id": "api_keys_rotated_days",
+          "label": "API Keys Rotated Days",
+          "usage": "Check whether Cloud API keys that are managed in IAM are rotated at least every # days",
+          "values": [
+            "90"
+          ]
+        },
+        {
+          "param-id": "account_owner_last_login_days",
+          "label": "Account Owner Last Login Days",
+          "usage": "Check whether an account owner has logged in to Cloud in the past # days",
+          "values": [
+            "30"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_iam",
+          "label": "Maximum no of IAM user administrators",
+          "usage": "Check whether IAM-enabled services have no more than # users with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_iam",
+          "label": "Maximum no of IAM Service ID administrators",
+          "usage": "Check whether IAM-enabled services have no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_iam",
+          "label": "Minimum no of IAM managers",
+          "usage": "Check whether IAM-enabled services have at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_iam",
+          "label": "Minimum no of IAM Service ID managers",
+          "usage": "Check whether IAM-enabled services have at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_cloudant_db",
+          "label": "Maximum no of Cloudant DB user administrators",
+          "usage": "Check whether Cloudant has no more than # users with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_cloudant_db",
+          "label": "Maximum no of Cloudant DB Service IDs administrators",
+          "usage": "Check whether Cloudant has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_cloudant_db",
+          "label": "Minimum no of Cloudant database IAM managers",
+          "usage": "Check whether Cloudant has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_cloudant_db",
+          "label": "Minimum no of Cloudant database IAM Service ID managers",
+          "usage": "Check whether Cloudant has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "hpcs_crypto_units",
+          "label": "Hyper Protect Crypto Units",
+          "usage": "Check whether Hyper Protect Crypto Services instance has at least # crypto units",
+          "values": [
+            "2"
+          ]
+        },
+        {
+          "param-id": "hpcs_rotation_policy",
+          "label": "Hyper Protect Crypto Keys Rotation Policy",
+          "usage": "Check whether Hyper Protect Crypto Services encryption keys that are generated by the service are rotated automatically at least every # months",
+          "values": [
+            "1"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_redis_db",
+          "label": "Maximum no of Redis DB user administrators",
+          "usage": "Check whether Databases for Redis has no more than # users with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_postgresql_db",
+          "label": "Maximum no of Postgresql DB user administrators",
+          "usage": "Check whether Databases for PostreSQL has no more than # users with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_mongo_db",
+          "label": "Maximum no of Mongo DB user administrators",
+          "usage": "Check whether Databases for MongoDB has no more than # users with the IAM administrator",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_elastic_search_db",
+          "label": "Maximum no of Elastic Search DB user administrators",
+          "usage": "Check whether Databases for Elasticsearch has no more than # users with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_etcd_db",
+          "label": "Maximum no of ETCD user administrators",
+          "usage": "Check whether Databases for etcd has no more than # users with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_key",
+          "label": "Maximum no of Key user administrators",
+          "usage": "Check whether Key Protect has no more than # users with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_kubernetes_container",
+          "label": "Maximum no of Kubernetes Container user administrators",
+          "usage": "Check whether Kubernetes Service has no more than # users with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_enterprise_db",
+          "label": "Maximum no of Enterprise DB user administrators",
+          "usage": "Check whether Databases for EnterpriseDB has no more than # users with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_elastic_search_db",
+          "label": "Maximum no of Elastic Search DB Service ID administrators",
+          "usage": "Check whether Databases for Elasticsearch has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_key",
+          "label": "Maximum no of Key Service ID administrators",
+          "usage": "Check whether Key Protect has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_etcd_db",
+          "label": "Maximum no of ETCD Service ID administrators",
+          "usage": "Check whether Databases for etcd has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_kubernetes_container",
+          "label": "Maximum no of Kubernetes Container Service ID administrators",
+          "usage": "Check whether Kubernetes Service has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_enterprise_db",
+          "label": "Maximum no of Enterprise DB Service ID  administrators",
+          "usage": "Check whether Databases for EnterpriseDB has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_redis_db",
+          "label": "Minimum no of Redis databases IAM managers",
+          "usage": "Check whether App ID has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_redis_db",
+          "label": "Minimum no of Redis databases IAM Servcie ID managers",
+          "usage": "Check whether App ID has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_postgresql_db",
+          "label": "Minimum no of PostgreSQL databases IAM managers",
+          "usage": "Check whether Cloud Object Storage has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_postgresql_db",
+          "label": "Minimum no of PostgreSQL databases IAM Service ID managers",
+          "usage": "Check whether Cloud Object Storage has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_mongo_db",
+          "label": "Minimum no of MongoDB IAM managers",
+          "usage": "Check whether Event Streams has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_mongo_db",
+          "label": "Minimum no of MongoDB IAM Service ID managers",
+          "usage": "Check whether Event Streams has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_elastic_search_db",
+          "label": "Minimum no of Elastic Search IAM managers",
+          "usage": "Check whether schematics has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_elastic_search_db",
+          "label": "Minimum no of Elastic Search IAM Servcie ID managers",
+          "usage": "Check whether schematics has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_etcd_db",
+          "label": "Minimum no of etcd IAM managers",
+          "usage": "Check whether Transit Gateway has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_etcd_db",
+          "label": "Minimum no of etcd IAM Service ID managers",
+          "usage": "Check whether Transit Gateway has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_key",
+          "label": "Minimum no of Key IAM managers",
+          "usage": "Check whether Key Protect has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_key",
+          "label": "Minimum no of Key IAM Service ID managers",
+          "usage": "Check whether Key Protect has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_kubernetes_container",
+          "label": "Minimum no of Kubernetes Container IAM managers",
+          "usage": "Check whether Kubernetes Service has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_kubernetes_container",
+          "label": "Minimum no of Kubernetes Container IAM Service ID managers",
+          "usage": "Check whether Kubernetes Service has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_enterprise_db",
+          "label": "Minimum no of Enterprise DB IAM managers",
+          "usage": "Check whether Certificate Manager has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_enterprise_db",
+          "label": "Minimum no of Enterprise DB IAM Service ID managers",
+          "usage": "Check whether Certificate Manager has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_monitoring",
+          "label": "Maximum no of Monitoring user administrators",
+          "usage": "Check whether Event Streams has no more than # users with the IAM administrator role assigned to monitor metrics",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_logdna",
+          "label": "Maximum no of LogDNA user administrators",
+          "usage": "Check whether Activity Tracker has no more than # users with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_logdna",
+          "label": "Maximum no of LogDNA ServiceID administrators",
+          "usage": "Check whether Activity Tracker has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_monitoring",
+          "label": "Maximum no of Monitoring Service ID administrators",
+          "usage": "Check whether Cloud Monitoring has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_mongo_db",
+          "label": "Maximum no of Mongo DB Service ID administrators",
+          "usage": "Check whether Databases for MongoDB has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_redis_db",
+          "label": "Maximum no of Redis DB Service ID administrators",
+          "usage": "Check whether Databases for Redis has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_postgresql_db",
+          "label": "Maximum no of Postgresql DB Service ID administrators",
+          "usage": "Check whether Databases for PostgreSQL has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_monitoring",
+          "label": "Minimum no of Monitoring IAM Service ID managers",
+          "usage": "Check whether Cloud Internet Services (CIS) has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_monitoring",
+          "label": "Minimum no of Monitoring IAM Service ID managers",
+          "usage": "Check whether Cloud Internet Services (CIS) has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_logdna",
+          "label": "Minimum no of LogDNA IAM managers",
+          "usage": "Check whether Activity Tracker has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_logdna",
+          "label": "Minimum no of LogDNA IAM Service ID managers",
+          "usage": "Check whether Activity Tracker has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "ssh_port",
+          "label": "SSH Port",
+          "usage": "Check whether Virtual Private Cloud (VPC) security groups have no inbound rules that specify source IP 0.0.0.0/0 to SSH port 22",
+          "values": [
+            "22"
+          ]
+        },
+        {
+          "param-id": "rdp_port",
+          "label": "RDP Port",
+          "usage": "Check whether Virtual Private Cloud (VPC) security groups have no inbound rules that specify source IP 0.0.0.0/0 to RDP ports 3389",
+          "values": [
+            "3389"
+          ]
+        },
+        {
+          "param-id": "iks_ingress_tls_versions",
+          "label": "tlsVersion",
+          "usage": "Check whether Kubernetes Service Ingress is configured only with TLS v1.2 for all inbound traffic",
+          "values": [
+            "1.2"
+          ]
+        },
+        {
+          "param-id": "diffie_hellman_group",
+          "label": "Diffie-Hellman Group",
+          "usage": "Check whether VPN for VPC has a Diffie-Hellman group set to at least group #",
+          "values": [
+            "14"
+          ]
+        },
+        {
+          "param-id": "pre_shared_key",
+          "label": "Pre-Shared Key",
+          "usage": "Check whether VPN for VPC authentication is configured with a strong pre-shared key with at least 24 # alphanumeric characters",
+          "values": [
+            "24"
+          ]
+        },
+        {
+          "param-id": "dns_port",
+          "label": "DNS Port",
+          "usage": "Check whether Security Groups for VPC contains no outbound rules in security groups that specify source IP 8.8.8.8/32 to DNS port 53",
+          "values": [
+            "53"
+          ]
+        },
+        {
+          "param-id": "vm_nic_count",
+          "label": "VM NIC Count",
+          "usage": "Check whether Virtual Servers for VPC instance has the minimum # interfaces",
+          "values": [
+            "1"
+          ]
+        },
+        {
+          "param-id": "scan_interval_max",
+          "label": "Max Scan Interval Days",
+          "usage": "Check whether Continuous Delivery Vulnerability Advisor scans for critical or high vulnerabilities in the system (Container Registry) at least every # day(s) ",
+          "values": [
+            "7"
+          ]
+        },
+        {
+          "param-id": "image_scaning_vulnerability_threashhold",
+          "label": "Image scaning vulnerability threashhold",
+          "usage": "Check whether Security Insights sends alerts for critical, high, or medium vulnerabilities for images in Container Registry \nCheck whether Continuous Delivery  Vulnerability Advisor scans the images in Container Registry to identify vulnerabilities above the # threshold. ",
+          "values": [
+            "low"
+          ]
+        },
+        {
+          "param-id": "source_code_scaning_vulnerability_threashhold",
+          "label": "Source code scaning vulnerability threashhold",
+          "usage": "Check whether Continuous Delivery toolchain continuously scans source code to identify vulnerabilities above the # threshold. ",
+          "values": [
+            "low"
+          ]
+        },
+        {
+          "param-id": "arbitrary_keys_rotated_days",
+          "label": "Arbitrary Keys Rotated Days",
+          "usage": "Check whether Secrets Manager arbitrary secrets are rotated at least every # days",
+          "values": [
+            "90"
+          ]
+        },
+        {
+          "param-id": "username_password_keys_rotated_days",
+          "label": "IAM credentials Keys Rotated Days",
+          "usage": "Check whether Secrets Manager user credentials are rotated at least every # days",
+          "values": [
+            "90"
+          ]
+        },
+        {
+          "param-id": "iam_credentials_keys_rotated_days",
+          "label": "maxAPIKeyAge",
+          "usage": "Check whether Secrets Manager IAM credentials are rotated at least every # days",
+          "values": [
+            "90"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_secrets_manager",
+          "label": "Maximum no of Secrets Manager user administrators",
+          "usage": "Check whether Secrets Manager has no more than # users with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_toolchain",
+          "label": "Maximum no of Toolchain user administrators",
+          "usage": "Check whether Continuous Delivery has no more than # users with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_admins_for_container_registry",
+          "label": "Maximum no of Kubernetes Container user administrators",
+          "usage": "Check whether Container Registry has no more than # users with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_container_registry",
+          "label": "Maximum no of Kubernetes Container Service ID administrators",
+          "usage": "Check whether Container Registry has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_tool_chain",
+          "label": "Maximum no of Toolchain Service ID administrators",
+          "usage": "Check whether Continuous Delivery has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_admins_for_secrets_manager",
+          "label": "Maximum no of Secrets Manager Service ID administrators",
+          "usage": "Check whether Secrets Manager has no more than # service IDs with the IAM administrator role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_secrets_manager",
+          "label": "Minimum no of Secrets Manager IAM managers",
+          "usage": "Check whether Secrets Manager has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_secrets_manager",
+          "label": "Minimum no of Secrets Manager IAM Service ID managers",
+          "usage": "Check whether Secrets Manager has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_toolchain",
+          "label": "Minimum no of Toolchain IAM managers",
+          "usage": "Check whether Continuous Delivery has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_toolchain",
+          "label": "Minimum no of Toolchain IAM Service ID managers",
+          "usage": "Check whether Continuous Delivery has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_managers_for_container_registry",
+          "label": "Minimum no of Container Registry IAM managers",
+          "usage": "Check whether Container Registry has at least # users with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "no_of_service_id_managers_for_container_registry",
+          "label": "Minimum no of Container Registry IAM Service ID managers",
+          "usage": "Check whether Container Registry has at least # service IDs with the IAM manager role",
+          "values": [
+            "3"
+          ]
+        },
+        {
+          "param-id": "access_tokens_expire",
+          "label": "Access Tokens Expire Minutes",
+          "usage": "Check whether App ID access tokens are configured to expire within # minutes",
+          "values": [
+            "120"
+          ]
+        },
+        {
+          "param-id": "allowed_service_ids_admins_per_account",
+          "label": "Maximum allowed service ID with admin privilege per account",
+          "usage": "Check whether account has no more than # service IDs with admin privileges",
+          "values": [
+            "10"
+          ]
+        }
+      ]
+    }
+  }
+}

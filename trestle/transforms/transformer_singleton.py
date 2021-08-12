@@ -15,10 +15,14 @@
 """Create the singleton transformer factory here."""
 
 from trestle.transforms.implementations.osco import OscoTransformer
+from trestle.transforms.implementations.osco import ProfileToOscoTransformer
 from trestle.transforms.implementations.tanium import TaniumTransformer
 from trestle.transforms.transformer_factory import TransformerFactory
 
 transformer_factory = TransformerFactory()
 
+# results
 transformer_factory.register_transformer('osco', OscoTransformer)
 transformer_factory.register_transformer('tanium', TaniumTransformer)
+# profiles
+transformer_factory.register_transformer('profile-to-osco', ProfileToOscoTransformer)

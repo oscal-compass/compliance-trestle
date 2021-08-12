@@ -16,11 +16,13 @@
 
 import json
 import logging
-from typing import List
+from typing import Dict, List
 
 from ruamel.yaml import YAML
 
+from trestle.oscal.profile import Profile
 from trestle.transforms.results import Results
+from trestle.transforms.transformer_factory import ProfileToNativeTransformer
 from trestle.transforms.transformer_factory import ResultsTransformer
 from trestle.transforms.utils.osco_helper import ResultsMgr
 
@@ -30,7 +32,7 @@ logger = logging.getLogger(__name__)
 class OscoTransformer(ResultsTransformer):
     """Interface for Osco transformer."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize."""
         self._results_mgr = ResultsMgr(self.get_timestamp())
 
@@ -107,3 +109,62 @@ class OscoTransformer(ResultsTransformer):
         if results is None:
             results = self._ingest_yaml(blob)
         return results
+
+
+class ProfileToOscoTransformer(ProfileToNativeTransformer):
+    """Interface for Profile to Osco transformer."""
+
+    def __init__(self) -> None:
+        """Initialize."""
+        self._extends = 'ocp4-cis-node'
+        self._api_version = 'compliance.openshift.io/v1alpha1'
+        self._kind = 'TailoredProfile'
+        self._name = 'customized-tailored-profile'
+
+    def set_extends(self, value) -> None:
+        """Set extends."""
+        self._extends = value
+
+    def set_api_version(self, value) -> None:
+        """Set api version."""
+        self._api_version = value
+
+    def set_kind(self, value) -> None:
+        """Set kind."""
+        self._kind = value
+
+    def set_name(self, value) -> None:
+        """Set name."""
+        self._name = value
+
+    def transform(self, profile: Profile) -> Dict:
+        """Transform the Profile into a OSCO yaml."""
+        # set values
+        set_values = self._get_set_values(profile)
+        # spec
+        spec = {
+            'extends': self._extends,
+            'title': profile.metadata.title,
+            'setValues': set_values,
+        }
+        # yaml data
+        ydata = {
+            'apiVersion': self._api_version,
+            'kind': self._kind,
+            'metadata': {
+                'name': self._name
+            },
+            'spec': spec,
+        }
+        return ydata
+
+    def _get_set_values(self, profile) -> List[Dict]:
+        """Extract set_paramater name/value pairs from profile."""
+        set_values = []
+        for set_parameter in profile.modify.set_parameters:
+            name = set_parameter.param_id
+            parameter_value = set_parameter.values[0]
+            value = parameter_value.__root__
+            set_value = {'name': name, 'value': value}
+            set_values.append(set_value)
+        return set_values

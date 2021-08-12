@@ -21,6 +21,7 @@ from typing import Dict, Type
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
+from trestle.oscal.profile import Profile
 from trestle.transforms.results import Results
 
 
@@ -44,6 +45,14 @@ class TransformerBase(ABC):
     @abstractmethod
     def transform(self, blob: str) -> OscalBaseModel:
         """Transform the blob into a general OscalBaseModel."""
+
+
+class ProfileToNativeTransformer(TransformerBase):
+    """Abstract interface for transformers that specifically transform profile into Dict."""
+
+    @abstractmethod
+    def transform(self, profile: Profile) -> Dict:
+        """Transform the Profile into Dict."""
 
 
 class ResultsTransformer(TransformerBase):
