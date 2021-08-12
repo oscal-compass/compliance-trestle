@@ -555,7 +555,7 @@ class Element:
     def to_json(self) -> str:
         """Convert into JSON string."""
         if self._wrapper_alias == self.IGNORE_WRAPPER_ALIAS:
-            json_data = json.dumps(self._elem, sort_keys=False, indent=4)
+            json_data = json.dumps(self._elem, sort_keys=False, indent=4, ensure_ascii=False)
         else:
             # Note before trying to edit this
             # This transient model allows self._elem not be an OscalBaseModel (e.g. a DICT or LIST)
@@ -564,8 +564,7 @@ class Element:
             dynamic_passer['TransientField'] = (self._elem.__class__, Field(self, alias=self._wrapper_alias))
             wrapper_model = create_model('TransientModel', __base__=OscalBaseModel, **dynamic_passer)  # type: ignore
             wrapped_model = wrapper_model(**{self._wrapper_alias: self._elem})
-            json_data = wrapped_model.json(exclude_none=True, by_alias=True, indent=4)
-
+            json_data = wrapped_model.json(exclude_none=True, by_alias=True, indent=4, ensure_ascii=False)
         return json_data
 
     @classmethod

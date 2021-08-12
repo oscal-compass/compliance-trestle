@@ -129,7 +129,7 @@ def test_import_run_rollback(tmp_trestle_dir: pathlib.Path) -> None:
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     dup_file_name = f'{tmp_trestle_dir.parent}/dup-{rand_str}.json'
     dup_file = pathlib.Path(dup_file_name).open('w+', encoding=const.FILE_ENCODING)
-    dup_file.write(json.dumps(dup_cat))
+    dup_file.write(json.dumps(dup_cat, ensure_ascii=False))
     dup_file.close()
     j = importcmd.ImportCmd()
     args = argparse.Namespace(
@@ -274,7 +274,7 @@ def test_import_root_key_failure(tmp_trestle_dir: pathlib.Path) -> None:
     sample_data = {'id': '0000', 'title': 'nothing'}
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding=const.FILE_ENCODING)
-    sample_file.write(json.dumps(sample_data))
+    sample_file.write(json.dumps(sample_data, ensure_ascii=False))
     sample_file.close()
     args = argparse.Namespace(trestle_root=tmp_trestle_dir, file=sample_file.name, output='catalog', verbose=True)
     i = importcmd.ImportCmd()
@@ -287,7 +287,7 @@ def test_import_failure_parse_file(tmp_trestle_dir: pathlib.Path) -> None:
     sample_data = {'id': '0000'}
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     sample_file = pathlib.Path(f'{tmp_trestle_dir.parent}/{rand_str}.json').open('w+', encoding=const.FILE_ENCODING)
-    sample_file.write(json.dumps(sample_data))
+    sample_file.write(json.dumps(sample_data, ensure_ascii=False))
     sample_file.close()
     with patch('trestle.core.parser.parse_file') as parse_file_mock:
         parse_file_mock.side_effect = err.TrestleError('stuff')

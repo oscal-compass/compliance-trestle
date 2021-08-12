@@ -240,13 +240,13 @@ class OscalBaseModel(BaseModel):
         """
         if pretty:
             wrapped = self._oscal_wrap()
-            wrapped_str = wrapped.json(exclude_none=True, by_alias=True, indent=2)
+            wrapped_str = wrapped.json(exclude_none=True, by_alias=True, indent=2, ensure_ascii=False)
 
         else:
             # Ma
             class_name = self.__class__.__name__
             tl_alias = classname_to_alias(class_name, 'json')
-            raw_model = self.json(exclude_none=True, by_alias=True)
+            raw_model = self.json(exclude_none=True, by_alias=True, ensure_ascii=False)
 
             wrapped_str = f'{{"{tl_alias}": {raw_model}}}'
         return wrapped_str
