@@ -20,11 +20,12 @@ import pathlib
 
 from ruamel.yaml import YAML
 
+from tests.test_utils import text_files_equal
+
 import trestle.tasks.profile_to_osco as profile_to_osco
 from trestle.oscal.profile import Profile
 from trestle.tasks.base_task import TaskOutcome
 from trestle.transforms.implementations.osco import ProfileToOscoTransformer
-from trestle.utils.fs import text_files_equal
 
 
 def test_profile_to_osco_print_info(tmp_path):
