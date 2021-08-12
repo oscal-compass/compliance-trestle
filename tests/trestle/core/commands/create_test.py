@@ -40,7 +40,7 @@ def test_create_cmd(tmp_trestle_dir: pathlib.Path) -> None:
         test_args = testargs_root + [subcommand] + ['-o', name_stem]
         with mock.patch.object(sys, 'argv', test_args):
             rc = Trestle().run()
-            assert rc == 0
+        assert rc == 0
         model_file = tmp_trestle_dir / const.MODEL_TYPE_TO_MODEL_DIR[subcommand] / name_stem / f'{subcommand}.json'
         with open(model_file, 'r', encoding=const.FILE_ENCODING) as fp:
             model = json.load(fp)

@@ -43,7 +43,7 @@ test-all-random::
 	python -m pytest --cov trestle tests --cov-report=xml --random-order
 
 test-verbose:
-	python -m pytest --cov trestle tests -vv --cov-report=term-missing --cov-report=html:cov_html
+	python -m pytest  trestle tests -vv -n auto
 
 test-speed-measure:
 	python -m pytest trestle tests -n auto --durations=30 

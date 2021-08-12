@@ -327,6 +327,26 @@ Model file catalog.json is of type stripped.Catalog and contains:
 
 Note that the type of the file is now `stripped.Catalog` and it no longer contains `metadata`.  Even though metadata is no longer in the original `.json` file, trestle is still aware it is present in the model since it is properly placed as its own file in the subdirectory, `catalog`.
 
+## `trestle partial-object-validate`
+
+OSCAL objects are extremely large. Some systems may only be able to produce partial OSCAL objects. For example
+the tanium-to-oscal task produces the `results` attribute of an `assessment-results` object.
+
+`trestle partial-object-validate` allows the validation of any sub-element/attribute using element path.
+
+Using the example above `trestle partial-object-validate -f results.json -e asssesment-results.results`.
+
+The file is not required to be in the trestle project or required to be a specific file name.
+
+### Example valid element-paths
+
+All element paths must be absolute e.g.:
+`catalog.metadata`
+`catalog`
+`catalog.groups`
+`catalog.groups.group.controls.control.controls.control`
+Remembering in the end you only care about the end type. So in this scenario `catalog.groups.group.controls.control.controls.control` is equivalent to `catalog.controls.control`.
+
 ## `trestle href`
 
 This command changes the Import href in a profile and is needed when generating an SSP (system security plan) with the author tool, `ssp-generate`.

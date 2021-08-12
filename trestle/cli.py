@@ -26,6 +26,7 @@ from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.commands.init import InitCmd
 from trestle.core.commands.merge import MergeCmd
+from trestle.core.commands.partial_object_validate import PartialObjectValidate
 from trestle.core.commands.remove import RemoveCmd
 from trestle.core.commands.replicate import ReplicateCmd
 from trestle.core.commands.split import SplitCmd
@@ -41,20 +42,21 @@ class Trestle(CommandPlusDocs):
     """Manage OSCAL files in a human friendly manner."""
 
     subcommands = [
-        InitCmd,
-        CreateCmd,
-        SplitCmd,
-        AuthorCmd,
-        MergeCmd,
-        ReplicateCmd,
         AddCmd,
-        RemoveCmd,
-        ValidateCmd,
-        DescribeCmd,
-        ImportCmd,
-        HrefCmd,
-        TaskCmd,
         AssembleCmd,
+        AuthorCmd,
+        CreateCmd,
+        DescribeCmd,
+        HrefCmd,
+        ImportCmd,
+        InitCmd,
+        MergeCmd,
+        PartialObjectValidate,
+        RemoveCmd,
+        ReplicateCmd,
+        SplitCmd,
+        TaskCmd,
+        ValidateCmd,
         VersionCmd
     ]
 

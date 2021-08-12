@@ -38,23 +38,6 @@ def test_parse_dict() -> None:
         assert target is not None
 
 
-def test_to_class_name() -> None:
-    """Test to_class_name."""
-    tests = [
-        {
-            'name': 'catalog',
-            'expected': 'Catalog',
-        },
-        {
-            'name': 'component-definition',
-            'expected': 'ComponentDefinition',
-        },
-    ]
-
-    for test in tests:
-        assert parser.to_class_name(test['name']) == test['expected']
-
-
 def test_to_full_model_name() -> None:
     """Test to_full_model_name."""
     tests = [
