@@ -315,15 +315,17 @@ def test_compare_tree_force_failure():
     _ = md_validator.wrap_content(ast_parse)
 
 
-def test_search_for_headings():
-    """Test to search for headings and sub-headings."""
-    pass
-
-
 def test_bad_unicode_in_parsetree(tmp_path: pathlib.Path):
     """Test error on read of bad unicode in parsetree."""
     bad_file = tmp_path / 'bad_unicode.md'
     with open(bad_file, 'wb') as f:
         f.write(b'\x81')
+    with pytest.raises(err.TrestleError):
+        _ = markdown_validator.MarkdownValidator.load_markdown_parsetree(bad_file)
+
+
+def test_broken_yaml_header(testdata_dir: pathlib.Path):
+    """Test error on read of bad unicode in parsetree."""
+    bad_file = testdata_dir / 'author' / 'bad_md_header.md'
     with pytest.raises(err.TrestleError):
         _ = markdown_validator.MarkdownValidator.load_markdown_parsetree(bad_file)
