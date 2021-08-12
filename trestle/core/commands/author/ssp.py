@@ -19,6 +19,7 @@ import pathlib
 import re
 import string
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from uuid import uuid4
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -626,7 +627,7 @@ class SSPManager():
                     # but if it is a control ref it may be e.g. [CM-7](#cm-7)
                     # for now label is not used
                     # the ref may be a uuid or control id
-                    # currently only uuids to confirm presence in backmatter
+                    # currently only uuids used to confirm presence in backmatter
                     # note that prose may be multi-line but findall searches all lines
                     matches = re.findall(MARKDOWN_URL_REGEX, part.prose)
                     for match in matches:
@@ -695,10 +696,10 @@ class SSPManager():
             needed_group_ids.add(control_handle.group_id)
             needed_controls.append(control_handle)
 
-        # if a control includes controls - only include ones that are needed
+        # if a control includes controls - only include those that we know are needed
         final_controls = self._prune_controls(needed_controls)
 
-        # find all referenced uuids
+        # find all referenced uuids - they should be 1:1 with those in backmatter
         needed_uuid_refs: Set[str] = self._find_all_uuid_refs(final_controls)
 
         # assign values to class members for use when writing out the controls
@@ -710,6 +711,7 @@ class SSPManager():
                     self._param_dict[param.param_id] = param
             self._alters = the_profile.modify.alters
 
+        # build the needed groups of controls
         group_dict: Dict[str, cat.Group] = {}
         for control_handle in final_controls:
             group_id = control_handle.group_id
@@ -725,19 +727,25 @@ class SSPManager():
             else:
                 group_dict[group_id].controls.append(control_handle.control)
 
-        resolved_catalog: cat.Catalog = gens.generate_sample_model(cat.Catalog)
-        resolved_metadata: common.Metadata = the_profile.metadata
-        resolved_metadata.title = f'{the_catalog.metadata.title}: Resolved by profile {the_profile.metadata.title}'
-        resolved_metadata.links = [common.Link(**{'href': the_profile.imports[0].href, 'rel': 'resolution-source'})]
-        resolved_catalog.back_matter = the_catalog.back_matter
+        # assemble the final resolved profile catalog
+
+        # update the original profile metadata with new contents
+        # roles and responsible-parties will be pulled in with new uuid's
+        new_metadata = the_profile.metadata
+        new_metadata.title = f'{the_catalog.metadata.title}: Resolved by profile {the_profile.metadata.title}'
+        new_metadata.links = [common.Link(**{'href': the_profile.imports[0].href, 'rel': 'resolution-source'})]
+
+        # prune the list of resources to only those that are needed
         new_resources: List[common.Resource] = []
         for resource in the_catalog.back_matter.resources:
             if resource.uuid in needed_uuid_refs:
                 new_resources.append(resource)
-        resolved_catalog.back_matter.resources = new_resources
-        resolved_catalog.metadata = resolved_metadata
-        resolved_catalog.groups = []
-        for group in group_dict.values():
-            resolved_catalog.groups.append(group)
 
-        return resolved_catalog
+        new_groups = list(group_dict.values())
+
+        return cat.Catalog(
+            uuid=str(uuid4()),
+            metadata=new_metadata,
+            back_matter=common.BackMatter(resources=new_resources),
+            groups=new_groups
+        )
