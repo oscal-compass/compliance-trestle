@@ -35,9 +35,17 @@ logger = logging.getLogger(__name__)
 
 
 class AddCmd(CommandPlusDocs):
-    """Add an OSCAL component/subcomponent to the specified component.
+    """Add an OSCAL object to the provided file based on element path.
 
-    This method takes input a filename and a list of comma-seperated element path. Element paths are field aliases.
+    This CLI takes input a filename and a list of comma-seperated element path. Element paths are based on the json
+    field names.
+
+    Examples of element paths:
+        catalog.metadata
+        catalog.controls.control
+        assessment-results.results.
+
+
     The method first finds the parent model from the file and loads the file into the model.
     Then the method executes 'add' for each of the element paths specified.
     """
@@ -59,7 +67,7 @@ class AddCmd(CommandPlusDocs):
         )
 
     def _run(self, args: argparse.Namespace) -> int:
-        """Add an OSCAL component/subcomponent to the specified component.
+        """Add an OSCAL object to the specified file based on element path.
 
         This method takes input a filename and a list of comma-seperated element path. Element paths are field aliases.
         The method first finds the parent model from the file and loads the file into the model.

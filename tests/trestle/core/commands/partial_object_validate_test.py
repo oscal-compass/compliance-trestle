@@ -24,6 +24,16 @@ import pytest
 from trestle.cli import Trestle
 from trestle.core.commands.partial_object_validate import PartialObjectValidate
 
+benchmark_args = ['sample_file', 'element_path', 'rc']
+benchmark_values = [
+    (pathlib.Path('json/minimal_catalog.json'), 'catalog',
+     0), (pathlib.Path('json/minimal_catalog.json'), 'catalog.metadata', 1),
+    (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups', 0),
+    (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group.groups', 0),
+    (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group', 1),
+    (pathlib.Path('json/minimal_catalog_missing_uuid.json'), 'catalog', 1)
+]
+
 
 def test_missing_file(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test what happens when a file is missing."""
@@ -35,17 +45,7 @@ def test_missing_file(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     assert rc == 1
 
 
-@pytest.mark.parametrize(
-    ['sample_file', 'element_path', 'rc'],
-    [
-        (pathlib.Path('json/minimal_catalog.json'), 'catalog', 0),
-        (pathlib.Path('json/minimal_catalog.json'), 'catalog.metadata', 1),
-        (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups', 0),
-        (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group.groups', 0),
-        (pathlib.Path('split_merge/load_distributed/groups.json'), 'catalog.groups.group', 1),
-        (pathlib.Path('json/minimal_catalog_missing_uuid.json'), 'catalog', 1)
-    ]
-)
+@pytest.mark.parametrize(benchmark_args, benchmark_values)
 def test_partial_object_validate(
     sample_file: pathlib.Path, element_path: str, rc: int, testdata_dir: pathlib.Path
 ) -> None:
@@ -54,3 +54,15 @@ def test_partial_object_validate(
     actual_rc = PartialObjectValidate.partial_object_validate(full_path, element_path)
 
     assert rc == actual_rc
+
+
+@pytest.mark.parametrize(benchmark_args, benchmark_values)
+def test_cli(
+    sample_file: str, element_path: str, rc: int, testdata_dir: pathlib.Path, monkeypatch: MonkeyPatch
+) -> None:
+    """Test the CLI directly."""
+    full_path = testdata_dir / sample_file
+    command_str = f'trestle partial-object-validate -f {str(full_path)} -e {element_path}'
+    monkeypatch.setattr(sys, 'argv', command_str.split())
+    cli_rc = Trestle().run()
+    assert rc == cli_rc

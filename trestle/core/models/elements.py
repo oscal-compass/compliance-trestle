@@ -174,7 +174,7 @@ class ElementPath:
         """From an individual element tag, induce the type of the model.
 
         Args:
-            element_tag: individual element as text such as 'catalog' or 'profile'
+            element_str: individual element as text such as 'catalog' or 'profile'
 
         Returns:
             Top level object model such as catalog, profile etc.
@@ -192,6 +192,15 @@ class ElementPath:
 
         Originally element paths had to have multiple paths.
         This provides a check for higher level code that still has that requirement.
+
+        Single part:
+            catalog
+            control
+            assessment-results
+
+        Multipart:
+            catalog.metadata
+            catalog.controls.control
         """
         return len(self._path) > 1
 
