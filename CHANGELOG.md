@@ -3,6 +3,16 @@
 
 <!--next-version-placeholder-->
 
+## v0.22.0 (2021-08-13)
+### Feature
+* Schema validate command including miscellaneous fixes. ([#665](https://github.com/IBM/compliance-trestle/issues/665)) ([`3ab088a`](https://github.com/IBM/compliance-trestle/commit/3ab088a9a9b4927a660510fe6fe8438a9b48fdfa))
+* New command href and now ssp gen uses caching to pull catalog from remote ([#669](https://github.com/IBM/compliance-trestle/issues/669)) ([`660ef47`](https://github.com/IBM/compliance-trestle/commit/660ef47b48d17ce19ab31690ef8264afb085e326))
+
+### Fix
+* Improved error handling of yaml headers in markdown files. ([#676](https://github.com/IBM/compliance-trestle/issues/676)) ([`1983925`](https://github.com/IBM/compliance-trestle/commit/198392543a864ab213d869ddeaa123817d69b3c2))
+* Documentation fixes as well as fixes to json serializisation for full utf-8 support. ([#674](https://github.com/IBM/compliance-trestle/issues/674)) ([`d051638`](https://github.com/IBM/compliance-trestle/commit/d0516381a8be4d4c97c14395965ade00f8181083))
+* Relocate ParameterHelper class. ([#667](https://github.com/IBM/compliance-trestle/issues/667)) ([`0dbf472`](https://github.com/IBM/compliance-trestle/commit/0dbf472c5d3513fb85d66e4f76bb3bc037fc726f))
+
 ## v0.21.0 (2021-07-30)
 ### Feature
 * Trestle Release #659 from IBM/develop ([`6329c82`](https://github.com/IBM/compliance-trestle/commit/6329c82ddd59e2699bd6e7dc8cd571e948fa21f6))

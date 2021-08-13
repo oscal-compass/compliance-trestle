@@ -209,7 +209,13 @@ class MarkdownValidator:
             logger.error(f'See: {const.WEBSITE_ROOT}/errors/#utf-8-encoding-only')
             logger.debug(f'Underlying exception {e}')
             raise err.TrestleError('Unable to load file due to utf-8 encoding issues.')
-        fm = frontmatter.loads(content)
+        try:
+            fm = frontmatter.loads(content)
+        except Exception as e:
+            logger.error(f'Error parsing yaml header from file {path}')
+            logger.error('This is most likely due to an incorrect yaml structure.')
+            logger.debug(f'Underlying error: {str(e)}')
+            raise err.TrestleError(f'Failure parsing yaml header on file {path}')
         header_dict = fm.metadata
         md_no_header = fm.content
         mistune_ast_parser = mistune.create_markdown(renderer=mistune.AstRenderer())
