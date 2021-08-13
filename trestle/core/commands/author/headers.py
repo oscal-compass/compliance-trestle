@@ -159,15 +159,21 @@ class Headers(AuthorCommonCommand):
                 if candidate_path.is_file():
                     clean_suffix = candidate_path.suffix.lstrip('.')
                     if clean_suffix == 'md':
+                        logger.info(f'Validating: {self.rel_dir(candidate_path)}')
                         md_validator = MarkdownValidator(template_lut['md'], True, True)
                         validate_status = md_validator.validate(candidate_path)
                         if not validate_status:
+                            logger.info(f'Invalid: {self.rel_dir(candidate_path)}')
                             return False
+                        logger.info(f'Valid: {self.rel_dir(candidate_path)}')
                     elif clean_suffix == 'drawio':
+                        logger.info(f'Validating: {self.rel_dir(candidate_path)}')
                         drawio_validator = DrawIOMetadataValidator(template_lut['drawio'])
                         validate_status = drawio_validator.validate(candidate_path)
                         if not validate_status:
+                            logger.info(f'Invalid: {self.rel_dir(candidate_path)}')
                             return False
+                        logger.info(f'Valid: {self.rel_dir(candidate_path)}')
                     else:
                         logger.info(f'Unsupported file {self.rel_dir(candidate_path)} ignored.')
                 elif recurse:
@@ -192,10 +198,10 @@ class Headers(AuthorCommonCommand):
             try:
                 valid = self._validate_dir(template_lut, path, recurse, readme_validate)
                 if not valid:
-                    logger.info(f'validation failed on {self.rel_dir(path)}')
+                    logger.info(f'validation failed on {path}')
                     return 1
             except Exception as e:
-                logger.error(f'Error during header validation {e}')
+                logger.error(f'Error during header validation on {path} {e}')
                 logger.error('Aborting')
                 return 1
         return 0
