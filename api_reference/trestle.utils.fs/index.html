@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.utils.fs/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.1">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.4">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.1118c9be.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.f7f47774.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ba0d045b.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
         
           
           
@@ -50,6 +50,17 @@
     
     
       
+
+  
+
+
+  
+
+  
+
+
+  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){"undefined"!=typeof location$&&location$.subscribe(function(t){gtag("config","G-XT3KGMHSY8",{page_path:t.pathname})})})</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
 
 
     
@@ -826,6 +837,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.commands.href/" class="md-nav__link">
+        href
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.commands.import_/" class="md-nav__link">
         import_
       </a>
@@ -1451,6 +1474,18 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.xlsx_to_oscal_component_definition/" class="md-nav__link">
+        xlsx_to_oscal_component_definition
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -1786,13 +1821,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.utils.fs.has_trestle_project_in_path" class="md-nav__link">
-    has_trestle_project_in_path()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#trestle.utils.fs.is_hidden" class="md-nav__link">
     is_hidden()
   </a>
@@ -1835,20 +1863,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.utils.fs.model_name_from_href_path" class="md-nav__link">
-    model_name_from_href_path()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.utils.fs.model_name_from_href_str" class="md-nav__link">
-    model_name_from_href_str()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#trestle.utils.fs.model_type_to_model_dir" class="md-nav__link">
     model_type_to_model_dir()
   </a>
@@ -1858,13 +1872,6 @@
           <li class="md-nav__item">
   <a href="#trestle.utils.fs.should_ignore" class="md-nav__link">
     should_ignore()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.utils.fs.text_files_equal" class="md-nav__link">
-    text_files_equal()
   </a>
   
 </li>
@@ -1918,6 +1925,18 @@
     <li class="md-nav__item">
       <a href="../trestle.utils.md_writer/" class="md-nav__link">
         md_writer
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.utils.oscal_helper/" class="md-nav__link">
+        oscal_helper
       </a>
     </li>
   
@@ -2084,13 +2103,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.utils.fs.has_trestle_project_in_path" class="md-nav__link">
-    has_trestle_project_in_path()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#trestle.utils.fs.is_hidden" class="md-nav__link">
     is_hidden()
   </a>
@@ -2133,20 +2145,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.utils.fs.model_name_from_href_path" class="md-nav__link">
-    model_name_from_href_path()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.utils.fs.model_name_from_href_str" class="md-nav__link">
-    model_name_from_href_str()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#trestle.utils.fs.model_type_to_model_dir" class="md-nav__link">
     model_type_to_model_dir()
   </a>
@@ -2156,13 +2154,6 @@
           <li class="md-nav__item">
   <a href="#trestle.utils.fs.should_ignore" class="md-nav__link">
     should_ignore()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.utils.fs.text_files_equal" class="md-nav__link">
-    text_files_equal()
   </a>
   
 </li>
@@ -2351,7 +2342,7 @@
     <span class="k">if</span> <span class="n">sub_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="n">sub_path</span> <span class="o">=</span> <span class="n">sub_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
         <span class="n">project_root</span> <span class="o">=</span> <span class="n">sub_path</span><span class="o">.</span><span class="n">parent</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_trestle_project_in_path</span><span class="p">(</span><span class="n">project_root</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">get_trestle_project_root</span><span class="p">(</span><span class="n">project_root</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Path to be cleaned is not a under valid Trestle project root&#39;</span><span class="p">)</span>
 
         <span class="c1"># clean all files/directories under sub_path</span>
@@ -2875,34 +2866,6 @@ a parameter.</p>
 
 
 
-<h4 class="doc doc-heading" id="trestle.utils.fs.has_trestle_project_in_path">
-<code class="highlight language-python"><span class="n">has_trestle_project_in_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></code>
-
-
-<a class="headerlink" href="#trestle.utils.fs.has_trestle_project_in_path" title="Permanent link">¤</a></h4>
-
-    <div class="doc doc-contents ">
-
-      <p>Check if path has a valid trestle project among the parents.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>trestle/utils/fs.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">has_trestle_project_in_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Check if path has a valid trestle project among the parents.&quot;&quot;&quot;</span>
-    <span class="n">trestle_project_root</span> <span class="o">=</span> <span class="n">get_trestle_project_root</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">trestle_project_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
 <h4 class="doc doc-heading" id="trestle.utils.fs.is_hidden">
 <code class="highlight language-python"><span class="n">is_hidden</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></code>
 
@@ -3138,63 +3101,6 @@ if a OSCAL object type is unknown but the context a user is in.</p>
 
 
 
-<h4 class="doc doc-heading" id="trestle.utils.fs.model_name_from_href_path">
-<code class="highlight language-python"><span class="n">model_name_from_href_path</span><span class="p">(</span><span class="n">href</span><span class="p">)</span></code>
-
-
-<a class="headerlink" href="#trestle.utils.fs.model_name_from_href_path" title="Permanent link">¤</a></h4>
-
-    <div class="doc doc-contents ">
-
-      <p>Find model name from path.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>trestle/utils/fs.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">model_name_from_href_path</span><span class="p">(</span><span class="n">href</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Find model name from path.&quot;&quot;&quot;</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">href</span><span class="o">.</span><span class="n">stem</span>
-    <span class="c1"># if the name looks like &#39;catalog.json&#39; then the real name is the directory above</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">const</span><span class="o">.</span><span class="n">MODEL_TYPE_LIST</span> <span class="k">else</span> <span class="n">href</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">stem</span>
-    <span class="k">return</span> <span class="n">name</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h4 class="doc doc-heading" id="trestle.utils.fs.model_name_from_href_str">
-<code class="highlight language-python"><span class="n">model_name_from_href_str</span><span class="p">(</span><span class="n">href</span><span class="p">)</span></code>
-
-
-<a class="headerlink" href="#trestle.utils.fs.model_name_from_href_str" title="Permanent link">¤</a></h4>
-
-    <div class="doc doc-contents ">
-
-      <p>Find model name from href.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>trestle/utils/fs.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">model_name_from_href_str</span><span class="p">(</span><span class="n">href</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Find model name from href.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">model_name_from_href_path</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">href</span><span class="p">))</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
 <h4 class="doc doc-heading" id="trestle.utils.fs.model_type_to_model_dir">
 <code class="highlight language-python"><span class="n">model_type_to_model_dir</span><span class="p">(</span><span class="n">model_type</span><span class="p">)</span></code>
 
@@ -3239,47 +3145,6 @@ if a OSCAL object type is unknown but the context a user is in.</p>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">should_ignore</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Check if the file or directory should be ignored or not.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span> <span class="ow">or</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-function">
-
-
-
-<h4 class="doc doc-heading" id="trestle.utils.fs.text_files_equal">
-<code class="highlight language-python"><span class="n">text_files_equal</span><span class="p">(</span><span class="n">path_a</span><span class="p">,</span> <span class="n">path_b</span><span class="p">)</span></code>
-
-
-<a class="headerlink" href="#trestle.utils.fs.text_files_equal" title="Permanent link">¤</a></h4>
-
-    <div class="doc doc-contents ">
-
-      <p>Determine if files are equal, ignoring newline style.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>trestle/utils/fs.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">text_files_equal</span><span class="p">(</span><span class="n">path_a</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">path_b</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Determine if files are equal, ignoring newline style.&quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_a</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_a</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_b</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_b</span><span class="p">:</span>
-                <span class="n">lines_a</span> <span class="o">=</span> <span class="n">file_a</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-                <span class="n">lines_b</span> <span class="o">=</span> <span class="n">file_b</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-                <span class="n">nlines</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines_a</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">nlines</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines_b</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="kc">False</span>
-                <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nlines</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">lines_a</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">lines_b</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">):</span>
-                        <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Exception comparing file </span><span class="si">{</span><span class="n">path_a</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">path_b</span><span class="si">}</span><span class="s1">.  Return as False. </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">return</span> <span class="kc">True</span>
 </code></pre></div>
         </details>
     </div>
@@ -3368,10 +3233,10 @@ if a OSCAL object type is unknown but the context a user is in.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.53c85856.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.716f8af4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.febc23d1.min.js"></script>
       
     
   </body>

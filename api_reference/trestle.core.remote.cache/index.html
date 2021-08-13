@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.remote.cache/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.1">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.4">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.1118c9be.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.f7f47774.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ba0d045b.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
         
           
           
@@ -50,6 +50,17 @@
     
     
       
+
+  
+
+
+  
+
+  
+
+
+  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){"undefined"!=typeof location$&&location$.subscribe(function(t){gtag("config","G-XT3KGMHSY8",{page_path:t.pathname})})})</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
 
 
     
@@ -828,6 +839,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.commands.href/" class="md-nav__link">
+        href
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.commands.import_/" class="md-nav__link">
         import_
       </a>
@@ -1266,22 +1289,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.remote.cache.FetcherBase.get_oscal--argument" class="md-nav__link">
-    Argument:
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#trestle.core.remote.cache.FetcherBase.get_raw" class="md-nav__link">
     get_raw()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.remote.cache.FetcherBase.in_cache" class="md-nav__link">
-    in_cache()
   </a>
   
 </li>
@@ -1311,13 +1320,6 @@
   
     <nav class="md-nav" aria-label="Methods">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.remote.cache.FetcherFactory.__init__" class="md-nav__link">
-    __init__()
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#trestle.core.remote.cache.FetcherFactory.get_fetcher" class="md-nav__link">
@@ -1717,6 +1719,18 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.xlsx_to_oscal_component_definition/" class="md-nav__link">
+        xlsx_to_oscal_component_definition
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -1962,6 +1976,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.utils.oscal_helper/" class="md-nav__link">
+        oscal_helper
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.utils.trash/" class="md-nav__link">
         trash
       </a>
@@ -2064,22 +2090,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#trestle.core.remote.cache.FetcherBase.get_oscal--argument" class="md-nav__link">
-    Argument:
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#trestle.core.remote.cache.FetcherBase.get_raw" class="md-nav__link">
     get_raw()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.remote.cache.FetcherBase.in_cache" class="md-nav__link">
-    in_cache()
   </a>
   
 </li>
@@ -2109,13 +2121,6 @@
   
     <nav class="md-nav" aria-label="Methods">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.remote.cache.FetcherFactory.__init__" class="md-nav__link">
-    __init__()
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#trestle.core.remote.cache.FetcherFactory.get_fetcher" class="md-nav__link">
@@ -2276,7 +2281,7 @@
     <div class="doc doc-contents first">
 
       <p>Trestle cache operations library.</p>
-<p>Allows for using uris to reference external directories and then expand.</p>
+<p>Allows for using URI's to reference external directories and then expand.</p>
 
 
 
@@ -2319,7 +2324,7 @@
 
     <div class="doc doc-contents ">
 
-      <p>FetcherBase - base class for fetching remote oscal objects.</p>
+      <p>FetcherBase - base class for caching and fetching remote oscal objects.</p>
 
 
 
@@ -2339,7 +2344,7 @@
 
 
 <h6 class="doc doc-heading" id="trestle.core.remote.cache.FetcherBase.__init__">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">refresh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cache_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
@@ -2374,39 +2379,26 @@
         <td><p>Reference to the source object to cache.</p></td>
         <td><em>required</em></td>
       </tr>
-      <tr>
-        <td><code>refresh</code></td>
-        <td><code>bool</code></td>
-        <td><p>Whether or not the cache should be refreshed.</p></td>
-        <td><code>False</code></td>
-      </tr>
-      <tr>
-        <td><code>cache_only</code></td>
-        <td><code>bool</code></td>
-        <td><p>Whether or not the operation should only target the cache copy</p></td>
-        <td><code>False</code></td>
-      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>trestle/core/remote/cache.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">cache_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Intialize fetcher base.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.</span>
 <span class="sd">        uri: Reference to the source object to cache.</span>
-<span class="sd">        refresh: Whether or not the cache should be refreshed.</span>
-<span class="sd">        cache_only: Whether or not the operation should only target the cache copy</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Initializing FetcherBase&#39;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_inst_cache_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_cached_object_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_uri</span> <span class="o">=</span> <span class="n">uri</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_refresh</span> <span class="o">=</span> <span class="n">refresh</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_cache_only</span> <span class="o">=</span> <span class="n">cache_only</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_cache_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="n">trestle_root</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_CONFIG_DIR</span> <span class="o">/</span> <span class="s1">&#39;cache&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_root</span> <span class="o">=</span> <span class="n">trestle_root</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_cache_path</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_root</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_CACHE_DIR</span>
     <span class="c1"># ensure trestle cache directory exists.</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_cache_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_expiration_seconds</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">DAY_SECONDS</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_in_trestle</span> <span class="o">=</span> <span class="kc">False</span>
 </code></pre></div>
         </details>
     </div>
@@ -2420,7 +2412,7 @@
 
 
 <h6 class="doc doc-heading" id="trestle.core.remote.cache.FetcherBase.get_oscal">
-<code class="highlight language-python"><span class="n">get_oscal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_type</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get_oscal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_type</span><span class="p">,</span> <span class="n">force_update</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 <a class="headerlink" href="#trestle.core.remote.cache.FetcherBase.get_oscal" title="Permanent link">¤</a></h6>
@@ -2428,28 +2420,41 @@
     <div class="doc doc-contents ">
 
       <p>Retrieve the cached file as a particular OSCAL model.</p>
-<h6 id="trestle.core.remote.cache.FetcherBase.get_oscal--argument">Argument:<a class="headerlink" href="#trestle.core.remote.cache.FetcherBase.get_oscal--argument" title="Permanent link">¤</a></h6>
-<div class="admonition model_type">
-<p class="admonition-title">Type[OscalBaseModel]</p>
-<p>Identifies what OSCAL model to cast the retrieved object as.</p>
-</div>
 
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>model_type</code></td>
+        <td><code>Type[trestle.core.base_model.OscalBaseModel]</code></td>
+        <td><p>Type[OscalBaseModel] Specifies the OSCAL model type of the fetched object.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
         <details class="quote">
           <summary>Source code in <code>trestle/core/remote/cache.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_oscal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">OscalBaseModel</span><span class="p">:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_oscal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">OscalBaseModel</span><span class="p">],</span> <span class="n">force_update</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OscalBaseModel</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Retrieve the cached file as a particular OSCAL model.</span>
 
-<span class="sd">    Argument:</span>
-<span class="sd">    ---------</span>
-<span class="sd">    model_type: Type[OscalBaseModel]</span>
-<span class="sd">        Identifies what OSCAL model to cast the retrieved object as.</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        model_type: Type[OscalBaseModel] Specifies the OSCAL model type of the fetched object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cache_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst_cache_path</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_update_cache</span><span class="p">(</span><span class="n">force_update</span><span class="p">)</span>
+    <span class="n">cache_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_object_path</span>
     <span class="k">if</span> <span class="n">cache_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">model_type</span><span class="o">.</span><span class="n">oscal_read</span><span class="p">(</span><span class="n">cache_file</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get_oscal failed, JSON error loading cache file for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="si">}</span><span class="s1"> as </span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get_oscal failed, error loading cache file for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="si">}</span><span class="s1"> as </span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;get_oscal failure for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
     <span class="k">else</span><span class="p">:</span>
@@ -2468,7 +2473,7 @@
 
 
 <h6 class="doc doc-heading" id="trestle.core.remote.cache.FetcherBase.get_raw">
-<code class="highlight language-python"><span class="n">get_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force_update</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 
 <a class="headerlink" href="#trestle.core.remote.cache.FetcherBase.get_raw" title="Permanent link">¤</a></h6>
@@ -2479,48 +2484,16 @@
 
         <details class="quote">
           <summary>Source code in <code>trestle/core/remote/cache.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">get_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force_update</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Retrieve the raw dictionary representing the underlying object.&quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_cache</span><span class="p">()</span>
-    <span class="k">except</span> <span class="n">TrestleError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot get_raw due to failed _update_cache for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cache get failure for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_update_cache</span><span class="p">(</span><span class="n">force_update</span><span class="p">)</span>
     <span class="c1"># Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">fs</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inst_cache_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fs</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cached_object_path</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot fs.load_file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_inst_cache_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot fs.load_file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cached_object_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cache get failure for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h6 class="doc doc-heading" id="trestle.core.remote.cache.FetcherBase.in_cache">
-<code class="highlight language-python"><span class="n">in_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
-
-
-<a class="headerlink" href="#trestle.core.remote.cache.FetcherBase.in_cache" title="Permanent link">¤</a></h6>
-
-    <div class="doc doc-contents ">
-
-      <p>Return whether object is contained within the cache or not.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>trestle/core/remote/cache.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">in_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Return whether object is contained within the cache or not.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst_cache_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
 </code></pre></div>
         </details>
     </div>
@@ -2571,38 +2544,8 @@
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.remote.cache.FetcherFactory.__init__">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-special"><code>special</code></small>
-  </span>
-
-<a class="headerlink" href="#trestle.core.remote.cache.FetcherFactory.__init__" title="Permanent link">¤</a></h6>
-
-    <div class="doc doc-contents ">
-
-      <p>Initialize fetcher factory.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>trestle/core/remote/cache.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Initialize fetcher factory.&quot;&quot;&quot;</span>
-    <span class="k">pass</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
 <h6 class="doc doc-heading" id="trestle.core.remote.cache.FetcherFactory.get_fetcher">
-<code class="highlight language-python"><span class="n">get_fetcher</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">refresh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cache_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">get_fetcher</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
@@ -2612,7 +2555,7 @@
 
     <div class="doc doc-contents ">
 
-      <p>Return an instantiated fetcher object based on the uri.</p>
+      <p>Return an instantiated fetcher object based on the URI.</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -2631,41 +2574,60 @@
         <td><p>Path of the Trestle project path, i.e., within which .trestle is to be found.</p></td>
         <td><em>required</em></td>
       </tr>
+      <tr>
+        <td><code>uri</code></td>
+        <td><code>str</code></td>
+        <td><p>Reference to the remote object to cache.</p></td>
+        <td><em>required</em></td>
+      </tr>
   </tbody>
-</table>      <p>uri: Reference to the remote object to cache.
-refresh: Whether or not the cache should be refreshed
-cache_only: Whether or not the operation should only target the cache copy</p>
-
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>FetcherBase</code></td>
+      <td><p>fetcher object for the given URI.</p></td>
+    </tr>
+  </tbody>
+</table>
         <details class="quote">
           <summary>Source code in <code>trestle/core/remote/cache.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">get_fetcher</span><span class="p">(</span>
-    <span class="bp">cls</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">cache_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FetcherBase</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Return an instantiated fetcher object based on the uri.</span>
+<span class="k">def</span> <span class="nf">get_fetcher</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FetcherBase</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return an instantiated fetcher object based on the URI.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.</span>
-<span class="sd">    uri: Reference to the remote object to cache.</span>
-<span class="sd">    refresh: Whether or not the cache should be refreshed</span>
-<span class="sd">    cache_only: Whether or not the operation should only target the cache copy</span>
+<span class="sd">        uri: Reference to the remote object to cache.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        fetcher object for the given URI.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Basic correctness test</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">9</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;/&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">uri</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;[A-Za-z]:</span><span class="se">\\\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">9</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;/&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">uri</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">WINDOWS_DRIVE_URI_REGEX</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to fetch uri as it appears to be invalid </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">uri</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span> <span class="ow">or</span> <span class="s1">&#39;file:///&#39;</span> <span class="o">==</span> <span class="n">uri</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">uri</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/&#39;</span> <span class="ow">or</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_URI</span><span class="p">):</span>
         <span class="c1"># Note assumption here is that relative paths are not yet supported</span>
         <span class="c1"># so these are not allowed for just yet: uri[0:3] == &#39;../&#39; or uri[0:2] == &#39;./&#39;</span>
-        <span class="k">return</span> <span class="n">LocalFetcher</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">refresh</span><span class="p">,</span> <span class="n">cache_only</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="s1">&#39;sftp://&#39;</span> <span class="o">==</span> <span class="n">uri</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">7</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="n">SFTPFetcher</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">refresh</span><span class="p">,</span> <span class="n">cache_only</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="s1">&#39;https://&#39;</span> <span class="o">==</span> <span class="n">uri</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">HTTPSFetcher</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">refresh</span><span class="p">,</span> <span class="n">cache_only</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;[A-Za-z]:</span><span class="se">\\\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">LocalFetcher</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">refresh</span><span class="p">,</span> <span class="n">cache_only</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">LocalFetcher</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">SFTP_URI</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SFTPFetcher</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">HTTPS_URI</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">HTTPSFetcher</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_HREF_HEADING</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">LocalFetcher</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">WINDOWS_DRIVE_URI_REGEX</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">LocalFetcher</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to fetch uri: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s1"> as the uri did not match a suppported format.&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to fetch URI: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s1"> as the uri did not match a suppported format.&#39;</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2717,7 +2679,7 @@ cache_only: Whether or not the operation should only target the cache copy</p>
 
 
 <h6 class="doc doc-heading" id="trestle.core.remote.cache.HTTPSFetcher.__init__">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">refresh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cache_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
@@ -2731,15 +2693,15 @@ cache_only: Whether or not the operation should only target the cache copy</p>
 
         <details class="quote">
           <summary>Source code in <code>trestle/core/remote/cache.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">cache_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Initialize HTTPS fetcher.&quot;&quot;&quot;</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Initializing HTTPSFetcher&#39;</span><span class="p">)</span>
-    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">refresh</span><span class="p">,</span> <span class="n">cache_only</span><span class="p">)</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_username</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_password</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_url</span> <span class="o">=</span> <span class="n">uri</span>
-    <span class="c1"># If the either the username or password is omitted in the url, then the other becomes &#39;&#39;</span>
+    <span class="c1"># If the either the username or password is omitted in the URI, then the other becomes &#39;&#39;</span>
     <span class="c1"># so we test for either None or &#39;&#39;.</span>
     <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">username</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">u</span><span class="o">.</span><span class="n">username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># This also checks for invalid environment variable name (IEEE 1003.1)</span>
@@ -2779,7 +2741,7 @@ cache_only: Whether or not the operation should only target the cache copy</p>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_username</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_password</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_password</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
             <span class="s1">&#39;Malformed URI, username found but valid password not found &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;via environment variable in URL </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;via environment variable in URI </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="p">)</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;Cache request for invalid input URI: username found &#39;</span>
@@ -2788,18 +2750,18 @@ cache_only: Whether or not the operation should only target the cache copy</p>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_password</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_username</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;Malformed URI, password found &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;but valid username environment variable missing in URL </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;but valid username environment variable missing in URI </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="p">)</span>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;Cache request for invalid input URI: password found &#39;</span>
             <span class="sa">f</span><span class="s1">&#39;but username not found via environment variable </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="p">)</span>
     <span class="n">https_cached_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_cache_path</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">hostname</span>
-    <span class="c1"># Skip any number of back- or forward slashes preceding the url path (u.path)</span>
+    <span class="c1"># Skip any number of back- or forward slashes preceding the URI path (u.path)</span>
     <span class="n">path_parent</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;[^/</span><span class="se">\\\\</span><span class="s1">]&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">span</span><span class="p">()[</span><span class="mi">0</span><span class="p">]:])</span><span class="o">.</span><span class="n">parent</span>
     <span class="n">https_cached_dir</span> <span class="o">=</span> <span class="n">https_cached_dir</span> <span class="o">/</span> <span class="n">path_parent</span>
     <span class="n">https_cached_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_inst_cache_path</span> <span class="o">=</span> <span class="n">https_cached_dir</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_cached_object_path</span> <span class="o">=</span> <span class="n">https_cached_dir</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -2832,6 +2794,12 @@ cache_only: Whether or not the operation should only target the cache copy</p>
     <div class="doc doc-contents ">
 
       <p>Fetcher for local content.</p>
+<p>Used for both file:/// and C:\ or C:/ type paths, but the path must be absolute.
+Also used for trestle:// files present in the current trestle root.</p>
+<p>If file:/// is used on a Windows system, it must be followed by C:/ or other drive letter
+to be sure it is an absolute path, e.g. file:///C:/Users/Default/Documents/profile.json.
+The drive letter may be lowercase.
+LocalFetcher does not do any caching and assumes the file is quickly accessible.</p>
 
 
 
@@ -2851,7 +2819,7 @@ cache_only: Whether or not the operation should only target the cache copy</p>
 
 
 <h6 class="doc doc-heading" id="trestle.core.remote.cache.LocalFetcher.__init__">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">refresh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cache_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
@@ -2861,7 +2829,7 @@ cache_only: Whether or not the operation should only target the cache copy</p>
 
     <div class="doc doc-contents ">
 
-      <p>Initialize local fetcher. Update the expected cache path as per caching specs.</p>
+      <p>Initialize local fetcher.</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -2877,7 +2845,7 @@ cache_only: Whether or not the operation should only target the cache copy</p>
       <tr>
         <td><code>trestle_root</code></td>
         <td><code>Path</code></td>
-        <td><p>Path of the Trestle project path, i.e., within which .trestle is to be found.</p></td>
+        <td><p>trestle root path</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
@@ -2886,53 +2854,51 @@ cache_only: Whether or not the operation should only target the cache copy</p>
         <td><p>Reference to the file in the local filesystem to cache, which must be outside trestle_root.</p></td>
         <td><em>required</em></td>
       </tr>
-      <tr>
-        <td><code>refresh</code></td>
-        <td><code>bool</code></td>
-        <td><p>Whether or not the cache should be refreshed</p></td>
-        <td><code>False</code></td>
-      </tr>
-      <tr>
-        <td><code>cache_only</code></td>
-        <td><code>bool</code></td>
-        <td><p>Whether or not the operation should only target the cache copy</p></td>
-        <td><code>False</code></td>
-      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>trestle/core/remote/cache.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">cache_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Initialize local fetcher. Update the expected cache path as per caching specs.</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Initialize local fetcher.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.</span>
+<span class="sd">        trestle_root: trestle root path</span>
 <span class="sd">        uri: Reference to the file in the local filesystem to cache, which must be outside trestle_root.</span>
-<span class="sd">        refresh: Whether or not the cache should be refreshed</span>
-<span class="sd">        cache_only: Whether or not the operation should only target the cache copy</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">refresh</span><span class="p">,</span> <span class="n">cache_only</span><span class="p">)</span>
-    <span class="c1"># Normalize uri to a root file.</span>
-    <span class="k">if</span> <span class="s1">&#39;file:///&#39;</span> <span class="o">==</span> <span class="n">uri</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">]:</span>
-        <span class="n">uri</span> <span class="o">=</span> <span class="n">uri</span><span class="p">[</span><span class="mi">7</span><span class="p">:]</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
 
-    <span class="c1"># TODO (#365): Update this to allow for relative paths. Maybe.</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_abs_path</span> <span class="o">=</span> <span class="n">path</span>
-    <span class="n">localhost_cached_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_cache_path</span> <span class="o">/</span> <span class="s1">&#39;localhost&#39;</span>
-    <span class="n">localhost_cached_dir</span> <span class="o">=</span> <span class="n">localhost_cached_dir</span> <span class="o">/</span> <span class="s1">&#39;__abs__&#39;</span> <span class="o">/</span> <span class="s1">&#39;__root__&#39;</span>
+    <span class="c1"># Handle as file:/// form</span>
+    <span class="k">if</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_URI</span><span class="p">):</span>
+        <span class="c1"># strip off entire header including /</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="n">uri</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FILE_URI</span><span class="p">):]</span>
 
-    <span class="c1"># Use the uri&#39;s path.parent to set a cache location</span>
-    <span class="n">cache_location_string</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
-    <span class="c1"># Remove the drive letter for Windows/DOS paths:</span>
-    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;[a-zA-Z]:&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">):</span>
-        <span class="n">cache_location_string</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;[a-zA-Z]:&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="fm">__str__</span><span class="p">())</span>
-    <span class="c1"># Locte first non-slash character as the root subdirectory to start with:</span>
-    <span class="n">non_slash_start</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;[a-z-A-Z0-9]&#39;</span><span class="p">,</span> <span class="n">cache_location_string</span><span class="p">)</span><span class="o">.</span><span class="n">span</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">cache_location_string_relative</span> <span class="o">=</span> <span class="n">cache_location_string</span><span class="p">[</span><span class="n">non_slash_start</span><span class="p">:]</span>
-    <span class="n">localhost_cached_dir</span> <span class="o">=</span> <span class="n">localhost_cached_dir</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">cache_location_string_relative</span><span class="p">)</span>
-    <span class="n">localhost_cached_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_inst_cache_path</span> <span class="o">=</span> <span class="n">localhost_cached_dir</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="c1"># if it has a drive letter don&#39;t add / to front</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="n">uri</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">WINDOWS_DRIVE_LETTER_REGEX</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">uri</span>
+    <span class="k">elif</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_HREF_HEADING</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_in_trestle</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">uri</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">trestle_root</span> <span class="o">/</span> <span class="n">uri</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TRESTLE_HREF_HEADING</span><span class="p">):])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_abs_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cached_object_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_abs_path</span>
+        <span class="k">return</span>
+
+    <span class="c1"># now the URI should be either unix / style or windows C:/ style.  Neither can be relative</span>
+
+    <span class="c1"># if it has a drive letter but no / after it, it is not absolute</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">WINDOWS_DRIVE_LETTER_REGEX</span><span class="p">,</span> <span class="n">uri</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">!=</span> <span class="n">const</span><span class="o">.</span><span class="n">WINDOWS_PLATFORM_STR</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot cache Windows paths on non-Windows system. </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">WINDOWS_DRIVE_URI_REGEX</span><span class="p">,</span> <span class="n">uri</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Windows URI must include DriveLetter: followed by one slash: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># store the abs path to the file for fetching</span>
+    <span class="c1"># if this is a windows file it will have a drive letter at start after resolve</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_abs_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">fs</span><span class="o">.</span><span class="n">has_parent_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_abs_path</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot use cache for trestle in current project directory </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_abs_path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># set the cached path to be the actual file path</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_cached_object_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_abs_path</span>
 </code></pre></div>
         </details>
     </div>
@@ -2984,7 +2950,7 @@ cache_only: Whether or not the operation should only target the cache copy</p>
 
 
 <h6 class="doc doc-heading" id="trestle.core.remote.cache.SFTPFetcher.__init__">
-<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">refresh</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cache_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span></code>
 
   <span class="doc doc-properties">
       <small class="doc doc-property doc-property-special"><code>special</code></small>
@@ -3019,33 +2985,19 @@ cache_only: Whether or not the operation should only target the cache copy</p>
         <td><p>Reference to the remote file to cache that can be fetched using the sftp:// scheme.</p></td>
         <td><em>required</em></td>
       </tr>
-      <tr>
-        <td><code>refresh</code></td>
-        <td><code>bool</code></td>
-        <td><p>Whether or not the cache should be refreshed</p></td>
-        <td><code>False</code></td>
-      </tr>
-      <tr>
-        <td><code>cache_only</code></td>
-        <td><code>bool</code></td>
-        <td><p>Whether or not the operation should only target the cache copy</p></td>
-        <td><code>False</code></td>
-      </tr>
   </tbody>
 </table>
         <details class="quote">
           <summary>Source code in <code>trestle/core/remote/cache.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">cache_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trestle_root</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Initialize SFTP fetcher. Update the expected cache path as per caching specs.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.</span>
 <span class="sd">        uri: Reference to the remote file to cache that can be fetched using the sftp:// scheme.</span>
-<span class="sd">        refresh: Whether or not the cache should be refreshed</span>
-<span class="sd">        cache_only: Whether or not the operation should only target the cache copy</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">refresh</span><span class="p">,</span> <span class="n">cache_only</span><span class="p">)</span>
-    <span class="c1"># Is this a valid uri, however? Username and password are optional, of course.</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trestle_root</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+    <span class="c1"># Is this a valid URI, however? Username and password are optional, of course.</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">u</span><span class="o">.</span><span class="n">hostname</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Malformed URI, cannot parse hostname in URL </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -3055,11 +3007,11 @@ cache_only: Whether or not the operation should only target the cache copy</p>
         <span class="k">raise</span> <span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cache request for invalid input URI: missing file path </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="n">sftp_cached_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trestle_cache_path</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">hostname</span>
-    <span class="c1"># Skip any number of back- or forward slashes preceding the url path (u.path)</span>
+    <span class="c1"># Skip any number of back- or forward slashes preceding the URL path (u.path)</span>
     <span class="n">path_parent</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;[^/</span><span class="se">\\\\</span><span class="s1">]&#39;</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">span</span><span class="p">()[</span><span class="mi">0</span><span class="p">]:])</span><span class="o">.</span><span class="n">parent</span>
     <span class="n">sftp_cached_dir</span> <span class="o">=</span> <span class="n">sftp_cached_dir</span> <span class="o">/</span> <span class="n">path_parent</span>
     <span class="n">sftp_cached_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_inst_cache_path</span> <span class="o">=</span> <span class="n">sftp_cached_dir</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_cached_object_path</span> <span class="o">=</span> <span class="n">sftp_cached_dir</span> <span class="o">/</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </code></pre></div>
         </details>
     </div>
@@ -3159,10 +3111,10 @@ cache_only: Whether or not the operation should only target the cache copy</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.53c85856.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.716f8af4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.febc23d1.min.js"></script>
       
     
   </body>

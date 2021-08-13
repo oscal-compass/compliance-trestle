@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.base_model/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.1">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.4">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.1118c9be.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.f7f47774.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ba0d045b.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.3f5d1f46.min.css">
         
           
           
@@ -50,6 +50,17 @@
     
     
       
+
+  
+
+
+  
+
+  
+
+
+  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){"undefined"!=typeof location$&&location$.subscribe(function(t){gtag("config","G-XT3KGMHSY8",{page_path:t.pathname})})})</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
 
 
     
@@ -1047,6 +1058,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../trestle.core.commands.href/" class="md-nav__link">
+        href
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../trestle.core.commands.import_/" class="md-nav__link">
         import_
       </a>
@@ -1672,6 +1695,18 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.tasks.xlsx_to_oscal_component_definition/" class="md-nav__link">
+        xlsx_to_oscal_component_definition
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -1907,6 +1942,18 @@
     <li class="md-nav__item">
       <a href="../trestle.utils.md_writer/" class="md-nav__link">
         md_writer
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trestle.utils.oscal_helper/" class="md-nav__link">
+        oscal_helper
       </a>
     </li>
   
@@ -3052,11 +3099,18 @@ which looks like</p>
                 <span class="n">json_loads</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">__config__</span><span class="o">.</span><span class="n">json_loads</span><span class="p">,</span>
             <span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error loading file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error loading file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Provided oscal file does not have a single top level key wrapping it.&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;It has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="si">}</span><span class="s1"> keys.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="s1">&#39;Invalid OSCAL file structure, multiple base keys.&#39;</span><span class="p">)</span>
         <span class="n">parsed</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="n">alias</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Provided oscal file does not have top level key: </span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Provided oscal file does not have top level key key: </span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error parsing file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">err</span><span class="o">.</span><span class="n">TrestleError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error parsing file </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">parsed</span>
 </code></pre></div>
         </details>
@@ -3127,13 +3181,13 @@ which looks like</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">pretty</span><span class="p">:</span>
         <span class="n">wrapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_oscal_wrap</span><span class="p">()</span>
-        <span class="n">wrapped_str</span> <span class="o">=</span> <span class="n">wrapped</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">wrapped_str</span> <span class="o">=</span> <span class="n">wrapped</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Ma</span>
         <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="n">tl_alias</span> <span class="o">=</span> <span class="n">classname_to_alias</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">)</span>
-        <span class="n">raw_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">raw_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="n">wrapped_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">&quot;</span><span class="si">{</span><span class="n">tl_alias</span><span class="si">}</span><span class="s1">&quot;: </span><span class="si">{</span><span class="n">raw_model</span><span class="si">}</span><span class="se">}}</span><span class="s1">&#39;</span>
     <span class="k">return</span> <span class="n">wrapped_str</span>
@@ -3533,10 +3587,10 @@ as formatting of the json.</p>
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.53c85856.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.716f8af4.min.js"></script>
+      <script src="../../assets/javascripts/bundle.febc23d1.min.js"></script>
       
     
   </body>

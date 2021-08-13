@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/trestle_author/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.1">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.4">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.1118c9be.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.f7f47774.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ba0d045b.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
         
           
           
@@ -50,6 +50,17 @@
     
     
       
+
+  
+
+
+  
+
+  
+
+
+  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){"undefined"!=typeof location$&&location$.subscribe(function(t){gtag("config","G-XT3KGMHSY8",{page_path:t.pathname})})})</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
 
 
     
@@ -570,8 +581,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#trestle-author-ssp-generate_1" class="md-nav__link">
-    trestle author ssp-generate
+  <a href="#trestle-author-ssp-assemble" class="md-nav__link">
+    trestle author ssp-assemble
   </a>
   
 </li>
@@ -1035,6 +1046,18 @@
     <li class="md-nav__item">
       <a href="../api_reference/trestle.core.commands.describe/" class="md-nav__link">
         describe
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.href/" class="md-nav__link">
+        href
       </a>
     </li>
   
@@ -1670,6 +1693,18 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.xlsx_to_oscal_component_definition/" class="md-nav__link">
+        xlsx_to_oscal_component_definition
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -1915,6 +1950,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../api_reference/trestle.utils.oscal_helper/" class="md-nav__link">
+        oscal_helper
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../api_reference/trestle.utils.trash/" class="md-nav__link">
         trash
       </a>
@@ -2147,8 +2194,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#trestle-author-ssp-generate_1" class="md-nav__link">
-    trestle author ssp-generate
+  <a href="#trestle-author-ssp-assemble" class="md-nav__link">
+    trestle author ssp-assemble
   </a>
   
 </li>
@@ -2326,18 +2373,21 @@ trestle_root
 <p>Allows a single set of templates defined in <code>.trestle/author/__global__</code> to be applied to mulitple directories in trestle.
 If <code>--task-name</code> is not provided all folders in the repository will be measured.</p>
 <h2 id="trestle-author-ssp-generate"><code>trestle author ssp-generate</code><a class="headerlink" href="#trestle-author-ssp-generate" title="Permanent link">¤</a></h2>
-<p>The <code>ssp-generate</code> sub-command creates a partial ssp from a catalog, profile and optional yaml header file.  It can also assemble the markdown files
-into a single json SSP file.  The catalog consists of a number of controls with parameters, and the profile specifies a subset of
+<p>The <code>ssp-generate</code> sub-command creates a partial SSP from a catalog, profile and optional yaml header file.  <code>ssp-assemble</code> (described below) can later assemble the markdown files into a single json SSP file.  The catalog consists of a number of controls with parameters, and the profile specifies a subset of
 those controls along with corresponding parameter values.  This command merges the information from the two files and generates a
 directory containing a set of markdown files, one for each control in the profile.  Each markdown file has the yaml header embedded
 at the start of the file.</p>
 <p>Example usage for creation of the markdown:</p>
-<p><code>trestle author ssp-generate -p my_prof -y /my_yaml_dir/header.yaml -s "ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence" -o my_ssp</code></p>
+<p><code>trestle author ssp-generate -p my_prof -y /my_yaml_dir/header.yaml -s 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence' -o my_ssp</code></p>
 <p>In this example the catalog and profile have previously been imported into the trestle project directory, making sure to import the
-catalog using the name specified in the import href of the profile.  Note that the path in the href is ignored.  The optional yaml
-header file can be anywhere in the file system.  In this case the two sections loaded are <code>ImplGuidance</code> and <code>ExpectedEvidence</code> -
-and their aliases are provided with full spacing and spelling so the section headers will have proper titles.  The output will be
-placed in the trestle subdirectory <code>my_ssp</code> with a subdirectory for each control group.</p>
+catalog using the name specified in the import href of the profile.</p>
+<p>The <code>-s --section</code> argument specifies the name of Parts in the control for which the corresponding prose should be included in the control's markdown file.  Each colon-separated pair refers to the actual part name first, followed by the form that should be used in the heading for that section.  This is done because the name itself may be abbreviated and lack needed spaces between words.</p>
+<p>(Note that the single quotes are required on Unix-like systems, but on Windows they are only needed if the contained string includes spaces, in which case <em>double</em> quotes should be used.)</p>
+<p>If the imported catalog is not at the URI pointed to by the Import href of the profile then the href should be changed using the <code>trestle href</code> command.</p>
+<p>The optional yaml header file can be anywhere in the file system.</p>
+<p>In this case the two sections loaded are <code>ImplGuidance</code> and <code>ExpectedEvidence</code> - and their aliases are provided with full spacing and
+spelling so the section headers will have proper titles.  The output will be placed in the trestle subdirectory <code>my_ssp</code> with a subdirectory
+for each control group.</p>
 <p><br></p>
 <details>
 <summary>The resulting files look like this</summary>
@@ -2397,7 +2447,7 @@ Add control implementation description here.
 
 Do it carefully.
 
-## ac-1 Section ExpectedEvidence
+## ac-1 Section Expected Evidence
 
 Detailed logs.
 </code></pre></div>
@@ -2407,7 +2457,7 @@ Detailed logs.
 <p>Each label in the ssp is wrapped in [] to indicate it comes directly from the label and is not generated by the markdown viewer.  Keep in mind that the actual label is the same but with the [] removed.</p>
 <p>Note that for each statement in the control description there is a corresponding response section in which to provide a detailed response for later inclusion in the final ssp as the control implementation.</p>
 <p>Also note that the optional final sections are provided, and labeled using the alias given at the command line.</p>
-<h2 id="trestle-author-ssp-generate_1"><code>trestle author ssp-generate</code><a class="headerlink" href="#trestle-author-ssp-generate_1" title="Permanent link">¤</a></h2>
+<h2 id="trestle-author-ssp-assemble"><code>trestle author ssp-assemble</code><a class="headerlink" href="#trestle-author-ssp-assemble" title="Permanent link">¤</a></h2>
 <p>After manually edting the markdown and providing the responses for the control implementation requirements, the markdown can be assembled into a single json SSP file with:</p>
 <p><code>trestle author ssp-assemble -m my_ssp -o my_json_ssp</code></p>
 <p>This will assemble the markdown files in the my_ssp directory and create a json SSP with name my_json_ssp in the system-security-plans directory.</p>
@@ -2481,10 +2531,10 @@ Detailed logs.
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.53c85856.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.716f8af4.min.js"></script>
+      <script src="../assets/javascripts/bundle.febc23d1.min.js"></script>
       
     
   </body>

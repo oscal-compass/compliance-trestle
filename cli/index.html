@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/cli/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.1">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.4">
     
     
       
@@ -22,10 +22,10 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.1118c9be.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.f7f47774.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ba0d045b.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
         
           
           
@@ -50,6 +50,17 @@
     
     
       
+
+  
+
+
+  
+
+  
+
+
+  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-XT3KGMHSY8"),document.addEventListener("DOMContentLoaded",function(){"undefined"!=typeof location$&&location$.subscribe(function(t){gtag("config","G-XT3KGMHSY8",{page_path:t.pathname})})})</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XT3KGMHSY8"></script>
 
 
     
@@ -441,6 +452,33 @@
         <li class="md-nav__item">
   <a href="#trestle-describe" class="md-nav__link">
     trestle describe
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-partial-object-validate" class="md-nav__link">
+    trestle partial-object-validate
+  </a>
+  
+    <nav class="md-nav" aria-label="trestle partial-object-validate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-valid-element-paths" class="md-nav__link">
+    Example valid element-paths
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-href" class="md-nav__link">
+    trestle href
   </a>
   
 </li>
@@ -985,6 +1023,18 @@
     <li class="md-nav__item">
       <a href="../api_reference/trestle.core.commands.describe/" class="md-nav__link">
         describe
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.commands.href/" class="md-nav__link">
+        href
       </a>
     </li>
   
@@ -1620,6 +1670,18 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.xlsx_to_oscal_component_definition/" class="md-nav__link">
+        xlsx_to_oscal_component_definition
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -1865,6 +1927,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../api_reference/trestle.utils.oscal_helper/" class="md-nav__link">
+        oscal_helper
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../api_reference/trestle.utils.trash/" class="md-nav__link">
         trash
       </a>
@@ -1980,6 +2054,33 @@
         <li class="md-nav__item">
   <a href="#trestle-describe" class="md-nav__link">
     trestle describe
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-partial-object-validate" class="md-nav__link">
+    trestle partial-object-validate
+  </a>
+  
+    <nav class="md-nav" aria-label="trestle partial-object-validate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-valid-element-paths" class="md-nav__link">
+    Example valid element-paths
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trestle-href" class="md-nav__link">
+    trestle href
   </a>
   
 </li>
@@ -2315,17 +2416,40 @@ split from a component, <code>.*</code> can be used. For example, <code>trestle 
     back_matter: common.BackMatter
 </code></pre></div>
 <p>Note that the type of the file is now <code>stripped.Catalog</code> and it no longer contains <code>metadata</code>.  Even though metadata is no longer in the original <code>.json</code> file, trestle is still aware it is present in the model since it is properly placed as its own file in the subdirectory, <code>catalog</code>.</p>
+<h2 id="trestle-partial-object-validate"><code>trestle partial-object-validate</code><a class="headerlink" href="#trestle-partial-object-validate" title="Permanent link">¤</a></h2>
+<p>OSCAL objects are extremely large. Some systems may only be able to produce partial OSCAL objects. For example
+the tanium-to-oscal task produces the <code>results</code> attribute of an <code>assessment-results</code> object.</p>
+<p><code>trestle partial-object-validate</code> allows the validation of any sub-element/attribute using element path.</p>
+<p>Using the example above <code>trestle partial-object-validate -f results.json -e asssesment-results.results</code>.</p>
+<p>The file is not required to be in the trestle project or required to be a specific file name.</p>
+<h3 id="example-valid-element-paths">Example valid element-paths<a class="headerlink" href="#example-valid-element-paths" title="Permanent link">¤</a></h3>
+<p>All element paths must be absolute e.g.:
+<code>catalog.metadata</code>
+<code>catalog</code>
+<code>catalog.groups</code>
+<code>catalog.groups.group.controls.control.controls.control</code>
+Remembering in the end you only care about the end type. So in this scenario <code>catalog.groups.group.controls.control.controls.control</code> is equivalent to <code>catalog.controls.control</code>.</p>
+<h2 id="trestle-href"><code>trestle href</code><a class="headerlink" href="#trestle-href" title="Permanent link">¤</a></h2>
+<p>This command changes the Import href in a profile and is needed when generating an SSP (system security plan) with the author tool, <code>ssp-generate</code>.
+The Import in a profile is used to load the associated catalog of controls, which must be available at the corresponding href uri.  If the catalog
+is in the trestle directory then the href should be changed with a command of the form:</p>
+<div class="highlight"><pre><span></span><code>trestle href -n my_profile -hr trestle://catalogs/my_catalog/catalog.json
+</code></pre></div>
+<p>Note that catalogs in the trestle directory are indicated by the <code>trestle://</code> prefix, followed by the path from the trestle root directory to the actual
+catalog file.  The profile itself is just indicated by its name.</p>
+<p>Currently the profile must contain only one import in its list of Imports, and that is the one that will take on the new href value.</p>
+<p>The <code>trestle href</code> command can also be used to change the value back to the intended one prior to distribution of the profile.</p>
+<p>The provided href can be of form <code>trestle://</code>, <code>https://</code>, <code>sftp://</code>, or <code>file:///</code>.  If <code>file:///</code> is used, the path provided must be absolute - and on Windows
+it must include the drive letter followed by a slash.  The only time a relative path is allowed is with the <code>trestle://</code> heading.</p>
+<p>A username and password may be embedded in the url for <code>https://</code>, and a CA certificate path will be searched from environment variables <code>REQUESTS_CA_BUNDLE</code> and <code>CURL_CA_BUNDLE</code> in that order.</p>
+<p>Authorization for <code>sftp://</code> access relies on the user's private key being either active via <code>ssh-agent</code> or supplied via the environment variable <code>SSH_KEY</code>. In the latter case it must not require a passphrase prompt.</p>
 <h2 id="trestle-assemble"><code>trestle assemble</code><a class="headerlink" href="#trestle-assemble" title="Permanent link">¤</a></h2>
 <p>This command assembles all contents (files and directories) representing a specific model into a single OSCAL file located under <code>dist</code> folder. For example,</p>
-<blockquote>
 <p><code>$TRESTLE_BASEDIR$ trestle assemble catalog -i nist800-53</code></p>
-</blockquote>
 <p>will traverse the <code>catalogs/nist800-53</code> directory and its children and combine all data into a OSCAL file that will be written to <code>dist/catalogs/nist800-53.json</code>. Note that the parts of catalog <code>nist800-53</code> can be written in either YAML/JSON/XML (e.g. based on the file extension), however, the output will be generated as YAML/JSON/XML as desired. Trestle will infer the content type from the file extension and create the model representation appropriately in memory and then output in the desired format. Trestle assemble will also validate content as it assembles the files and make sure the contents are syntactically correct.</p>
 <h2 id="trestle-add"><code>trestle add</code><a class="headerlink" href="#trestle-add" title="Permanent link">¤</a></h2>
 <p>This command allows users to add an OSCAL model to a subcomponent in source directory structure of the model. For example,</p>
-<blockquote>
 <p><code>$TRESTLE_BASEDIR/catalogs/nist800-53$ trestle add -f ./catalog.json -e catalog.metadata.roles</code></p>
-</blockquote>
 <p>will add the following property under the <code>metadata</code> property for a catalog that will be written to the appropriate file under <code>catalogs/nist800-53</code> directory:</p>
 <div class="highlight"><pre><span></span><code>&quot;roles&quot;: [
   {
@@ -2387,9 +2511,7 @@ remote system state.</p>
 <p><span style="color:green">
 Example command invocation:
 </span></p>
-<blockquote>
 <p><code>$TRESTLE_BASEDIR$ trestle task osco-to-oscal -c /home/user/task.config</code></p>
-</blockquote>
 <p><span style="color:green">
 Example config:
 </span></p>
@@ -2670,9 +2792,7 @@ Specify optional config parameter <em>timestamp</em> as ISO 8601 formated string
 <p><span style="color:green">
 Example command invocation:
 </span></p>
-<blockquote>
 <p><code>$TRESTLE_BASEDIR$ trestle task tanium-to-oscal -c /home/user/task.config</code></p>
-</blockquote>
 <p><span style="color:green">
 Example config:
 </span></p>
@@ -2988,9 +3108,7 @@ Specify in the config:</p>
 <p><span style="color:green">
 Example command invocation:
 </span></p>
-<blockquote>
 <p><code>$TRESTLE_BASEDIR$ trestle task xlsx-to-component-definition -c /home/user/task.config</code></p>
-</blockquote>
 <p><span style="color:green">
 Example config:
 </span></p>
@@ -3186,10 +3304,10 @@ th, td {
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.53c85856.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.716f8af4.min.js"></script>
+      <script src="../assets/javascripts/bundle.febc23d1.min.js"></script>
       
     
   </body>
