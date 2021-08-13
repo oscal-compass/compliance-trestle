@@ -15,7 +15,6 @@
 # limitations under the License.
 """Tests for models util module."""
 import pathlib
-from typing import List
 
 import pytest
 
@@ -206,36 +205,3 @@ def test_alias_to_classname() -> None:
 
     with pytest.raises(err.TrestleError):
         assert mutils.alias_to_classname('component-definition', 'invalid') == 'ComponentDefinition'
-
-
-def test_get_target_model() -> None:
-    """Test utils method get_target_model."""
-    assert mutils.is_collection_field_type(
-        mutils.get_target_model(['catalog', 'metadata', 'roles'], catalog.Catalog)
-    ) is True
-    assert (mutils.get_target_model(['catalog', 'metadata', 'roles'], catalog.Catalog)).__origin__ is list
-    assert mutils.get_inner_type(
-        mutils.get_target_model(['catalog', 'metadata', 'roles'], catalog.Catalog)
-    ) is common.Role
-
-    assert mutils.is_collection_field_type(
-        mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog)
-    ) is True
-    assert mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog).__origin__ is list
-    assert mutils.get_inner_type(
-        mutils.get_target_model(['catalog', 'metadata', 'responsible-parties'], catalog.Catalog)
-    ) is common.ResponsibleParty
-
-    assert mutils.is_collection_field_type(
-        mutils.get_target_model(['catalog', 'metadata', 'responsible-parties', 'creator'], catalog.Catalog)
-    ) is False
-    assert mutils.get_target_model(
-        ['catalog', 'metadata', 'responsible-parties', 'creator'], catalog.Catalog
-    ) is common.ResponsibleParty
-
-    assert mutils.get_target_model(['catalog', 'metadata'], catalog.Catalog) is common.Metadata
-
-    with pytest.raises(err.TrestleError):
-        mutils.get_target_model(['catalog', 'metadata', 'bad_element'], catalog.Catalog)
-
-    assert mutils.get_target_model(['groups', '*', 'controls', '*'], List[catalog.Group]) == catalog.Control

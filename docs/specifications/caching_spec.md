@@ -146,7 +146,7 @@ Trestle will:
 
 1. Infer file type from http headers
 1. write out the file to object.{filetype} file.
-1. If a user requests https://sample.com/path/to/file/object.json\` trestle MUST warn the user of the risk of conflicts
+1. If a user requests https://sample.com/path/to/file/object.json` trestle MUST warn the user of the risk of conflicts
    with automatically generated names.
 
 ### Authentication:

@@ -24,7 +24,7 @@ import logging
 import pathlib
 from typing import Any, Dict, Optional
 
-from trestle.core import const
+from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.utils import fs
@@ -73,22 +73,6 @@ def root_key(data: Dict[str, Any]) -> str:
     raise TrestleError('data does not contain a root key')
 
 
-def to_class_name(name: str) -> str:
-    """Convert to pascal class name."""
-    if name.find('-') != -1:
-        parts = name.split('-')
-
-        for i, part in enumerate(parts):
-            parts[i] = part.capitalize()
-
-        name = ''.join(parts)
-        return name
-
-    chars = list(name)
-    chars[0] = chars[0].upper()
-    return ''.join(chars)
-
-
 def to_full_model_name(root_key: str) -> Optional[str]:
     """
     Find model name from the root_key in the file.
@@ -99,7 +83,7 @@ def to_full_model_name(root_key: str) -> Optional[str]:
     try:
         module = const.MODEL_TYPE_TO_MODEL_MODULE[const.MODEL_TYPE_TO_MODEL_DIR[root_key]]
         # This method has been simplified to rely on the correct behaviour of the dicts above.
-        class_name = to_class_name(root_key)
+        class_name = utils.alias_to_classname(root_key, 'json')
 
         return f'{module}.{class_name}'
     except Exception as ex:

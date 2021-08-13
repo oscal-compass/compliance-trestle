@@ -240,13 +240,13 @@ class OscalBaseModel(BaseModel):
         """
         if pretty:
             wrapped = self._oscal_wrap()
-            wrapped_str = wrapped.json(exclude_none=True, by_alias=True, indent=2)
+            wrapped_str = wrapped.json(exclude_none=True, by_alias=True, indent=2, ensure_ascii=False)
 
         else:
             # Ma
             class_name = self.__class__.__name__
             tl_alias = classname_to_alias(class_name, 'json')
-            raw_model = self.json(exclude_none=True, by_alias=True)
+            raw_model = self.json(exclude_none=True, by_alias=True, ensure_ascii=False)
 
             wrapped_str = f'{{"{tl_alias}": {raw_model}}}'
         return wrapped_str
@@ -312,11 +312,18 @@ class OscalBaseModel(BaseModel):
                     json_loads=cls.__config__.json_loads,
                 )
         except Exception as e:
-            raise err.TrestleError(f'Error loading file {path} {e}')
+            raise err.TrestleError(f'Error loading file {path} {str(e)}')
         try:
+            if not len(obj) == 1:
+                logger.error('Provided oscal file does not have a single top level key wrapping it.')
+                logger.error(f'It has {len(obj)} keys.')
+                raise err.TrestleError('Invalid OSCAL file structure, multiple base keys.')
             parsed = cls.parse_obj(obj[alias])
+        except KeyError:
+            logger.error(f'Provided oscal file does not have top level key: {alias}')
+            raise err.TrestleError(f'Provided oscal file does not have top level key key: {alias}')
         except Exception as e:
-            raise err.TrestleError(f'Error parsing file {path} {e}')
+            raise err.TrestleError(f'Error parsing file {path} {str(e)}')
         return parsed
 
     def copy_to(self, new_oscal_type: Type['OscalBaseModel']) -> 'OscalBaseModel':
