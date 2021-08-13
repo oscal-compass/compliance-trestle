@@ -147,3 +147,8 @@ theme:
     accent: purple
     primary: teal
     scheme: slate
+extra:
+  analytics:
+    provider: google
+    property: G-XT3KGMHSY8
+
