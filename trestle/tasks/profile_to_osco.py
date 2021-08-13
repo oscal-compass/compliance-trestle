@@ -15,6 +15,7 @@
 """OSCAL transformation tasks."""
 
 import configparser
+import json
 import logging
 import pathlib
 import traceback
@@ -59,8 +60,11 @@ class ProfileToOsco(TaskBase):
         )
         logger.info('')
         logger.info('Configuration flags sit under [task.profile-to-osco]:')
-        logger.info('  input-file = (required) the path of the input file comprising OSCAL profile.')
-        logger.info('  output-dir = (required) the path of the output directory comprising synthesized .yaml file.')
+        logger.info('  input-file = (required) path of the input file comprising OSCAL profile.')
+        logger.info('  output-dir = (required) path of the output directory comprising synthesized .yaml file.')
+        logger.info(
+            '  output-name = (optional) name of created file in output directory, default is osco-profile.yaml.'
+        )
         logger.info('  output-overwrite = (optional) true [default] or false; replace existing output when true.')
         logger.info(
             '  quiet = (optional) true or false [default]; display file creations and rules analysis when false.'
@@ -102,7 +106,7 @@ class ProfileToOsco(TaskBase):
         # insure output dir exists
         output_path.mkdir(exist_ok=True, parents=True)
         # output file path
-        output_name = self._config.get('output-name', 'profile.yaml')
+        output_name = self._config.get('output-name', 'osco-profile.yaml')
         output_filepath = pathlib.Path(output_dir, output_name)
         logger.info(f'{output_filepath}')
         # overwrite
@@ -114,7 +118,7 @@ class ProfileToOsco(TaskBase):
         profile = Profile.oscal_read(input_path)
         # transform
         transformer = ProfileToOscoTransformer()
-        ydata = transformer.transform(profile)
+        ydata = json.loads(transformer.transform(profile))
         # write output
         yaml = YAML(typ='safe')
         yaml.default_flow_style = False

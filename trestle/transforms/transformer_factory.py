@@ -13,15 +13,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Define the TransformerFactory and corresponding ResultsTransformer class it creates."""
+"""Define the TransformerFactory and corresponding transformer classes it creates."""
 
 import datetime
 from abc import ABC, abstractmethod
-from typing import Dict, Type
+from typing import Any, Dict, Type
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
-from trestle.oscal.profile import Profile
 from trestle.transforms.results import Results
 
 
@@ -43,16 +42,24 @@ class TransformerBase(ABC):
         return TransformerBase._timestamp
 
     @abstractmethod
-    def transform(self, blob: str) -> OscalBaseModel:
+    def transform(self, blob: Any) -> Any:
         """Transform the blob into a general OscalBaseModel."""
 
 
-class ProfileToNativeTransformer(TransformerBase):
-    """Abstract interface for transformers that specifically transform profile into Dict."""
+class FromOscalTransformer(TransformerBase):
+    """Abstract interface for transformers from OSCAL."""
 
     @abstractmethod
-    def transform(self, profile: Profile) -> Dict:
-        """Transform the Profile into Dict."""
+    def transform(self, obj: OscalBaseModel) -> str:
+        """Transform the from OSCAL."""
+
+
+class ToOscalTransformer(TransformerBase):
+    """Abstract interface for transformers to OSCAL."""
+
+    @abstractmethod
+    def transform(self, obj: str) -> OscalBaseModel:
+        """Transform the to OSCAL."""
 
 
 class ResultsTransformer(TransformerBase):

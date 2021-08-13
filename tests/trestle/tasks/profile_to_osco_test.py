@@ -12,9 +12,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""XLSX to OSCAL component-definition task tests."""
+"""OSCAL Profile to OSCO task tests."""
 
 import configparser
+import json
 import os
 import pathlib
 
@@ -156,17 +157,17 @@ def test_profile_to_osco_execute_set(tmp_path):
     section = config['task.profile-to-osco']
     input_file = section['input-file']
     input_path = pathlib.Path(input_file)
-    f_expected = pathlib.Path(section['output-dir'], 'profile.yaml')
-    f_produced = pathlib.Path(tmp_path, 'profile.yaml')
+    f_expected = pathlib.Path(section['output-dir'], 'osco-profile.yaml')
+    d_produced = tmp_path
+    section['output-dir'] = str(d_produced)
+    f_produced = pathlib.Path(d_produced, 'osco-profile.yaml')
     # read input
     profile = Profile.oscal_read(input_path)
     # transform
-    transformer = ProfileToOscoTransformer()
-    transformer.set_extends('extends')
-    transformer.set_api_version('api_version')
-    transformer.set_kind('kind')
-    transformer.set_name('name')
-    ydata = transformer.transform(profile)
+    transformer = ProfileToOscoTransformer(
+        extends='extends', api_version='api_version', kind='kind', name='name', namespace='namespace'
+    )
+    ydata = json.loads(transformer.transform(profile))
     # write output
     yaml = YAML(typ='safe')
     yaml.default_flow_style = False

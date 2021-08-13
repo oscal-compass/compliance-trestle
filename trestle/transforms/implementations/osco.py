@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Facilitate Tanium report to NIST OSCAL transformation."""
+"""Facilitate OSCAL-OSCO transformation."""
 
 import json
 import logging
@@ -22,7 +22,7 @@ from ruamel.yaml import YAML
 
 from trestle.oscal.profile import Profile
 from trestle.transforms.results import Results
-from trestle.transforms.transformer_factory import ProfileToNativeTransformer
+from trestle.transforms.transformer_factory import FromOscalTransformer
 from trestle.transforms.transformer_factory import ResultsTransformer
 from trestle.transforms.utils.osco_helper import ResultsMgr
 
@@ -111,33 +111,25 @@ class OscoTransformer(ResultsTransformer):
         return results
 
 
-class ProfileToOscoTransformer(ProfileToNativeTransformer):
+class ProfileToOscoTransformer(FromOscalTransformer):
     """Interface for Profile to Osco transformer."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        extends='ocp4-cis-node',
+        api_version='compliance.openshift.io/v1alpha1',
+        kind='TailoredProfile',
+        name='customized-tailored-profile',
+        namespace='openshift-compliance',
+    ) -> None:
         """Initialize."""
-        self._extends = 'ocp4-cis-node'
-        self._api_version = 'compliance.openshift.io/v1alpha1'
-        self._kind = 'TailoredProfile'
-        self._name = 'customized-tailored-profile'
+        self._extends = extends
+        self._api_version = api_version
+        self._kind = kind
+        self._name = name
+        self._namespace = namespace
 
-    def set_extends(self, value) -> None:
-        """Set extends."""
-        self._extends = value
-
-    def set_api_version(self, value) -> None:
-        """Set api version."""
-        self._api_version = value
-
-    def set_kind(self, value) -> None:
-        """Set kind."""
-        self._kind = value
-
-    def set_name(self, value) -> None:
-        """Set name."""
-        self._name = value
-
-    def transform(self, profile: Profile) -> Dict:
+    def transform(self, profile: Profile) -> str:
         """Transform the Profile into a OSCO yaml."""
         # set values
         set_values = self._get_set_values(profile)
@@ -152,11 +144,12 @@ class ProfileToOscoTransformer(ProfileToNativeTransformer):
             'apiVersion': self._api_version,
             'kind': self._kind,
             'metadata': {
-                'name': self._name
+                'name': self._name,
+                'namespace': self._namespace,
             },
             'spec': spec,
         }
-        return ydata
+        return json.dumps(ydata)
 
     def _get_set_values(self, profile) -> List[Dict]:
         """Extract set_paramater name/value pairs from profile."""
