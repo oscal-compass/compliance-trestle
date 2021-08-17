@@ -1,0 +1,39 @@
+{
+  "profile": {
+    "uuid": "A0000000-0000-4000-8000-000000000000",
+    "metadata": {
+      "title": "test profile b",
+      "last-modified": "2021-01-01T00:00:00.000+00:00",
+      "version": "2021-01-01",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "trestle://catalogs/NIST_SP-800-53_rev5_catalog/catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-3",
+              "ac-4"
+            ]
+          }
+        ]
+      }
+    ],
+    "modify": {
+      "set_parameters": [
+        {
+          "param_id": "ac-3.2_prm_1",
+            "values": [
+              "key users"
+            ]
+        },
+        {  "param_id": "ac-3.3_smt",
+            "values": [
+              "full compliance"
+            ]
+        }
+      ]
+    }
+  }
+}

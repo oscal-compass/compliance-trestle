@@ -83,7 +83,7 @@ class SSPGenerate(AuthorCommonCommand):
         _, _, profile = load_distributed(pathlib.Path(f'profiles/{args.profile}/profile.json'))
         cat_href = profile.imports[0].href
         fetcher = cache.FetcherFactory.get_fetcher(trestle_root, cat_href)
-        catalog = fetcher.get_oscal(cat.Catalog)
+        catalog = fetcher.get_oscal_with_model_type(cat.Catalog)
 
         yaml_header: dict = {}
         if 'yaml_header' in args and args.yaml_header is not None:

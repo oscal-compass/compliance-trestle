@@ -54,7 +54,9 @@ def test_fetcher_oscal(tmp_trestle_dir):
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file)
     # Create/update the cache copy
     fetcher._update_cache()
-    fetched_data = fetcher.get_oscal(Catalog)
+    fetched_data = fetcher.get_oscal_with_model_type(Catalog)
+    assert models_are_equivalent(fetched_data, catalog_data)
+    fetched_data, _ = fetcher.get_oscal()
     assert models_are_equivalent(fetched_data, catalog_data)
 
 
@@ -70,7 +72,7 @@ def test_fetcher_oscal_fails(tmp_trestle_dir):
     with patch('trestle.oscal.catalog.Catalog.oscal_read') as oscal_read_mock:
         oscal_read_mock.side_effect = err.TrestleError
         with pytest.raises(err.TrestleError):
-            fetcher.get_oscal(Catalog)
+            fetcher.get_oscal_with_model_type(Catalog)
         oscal_read_mock.assert_called_once()
 
 
