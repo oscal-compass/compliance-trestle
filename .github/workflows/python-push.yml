@@ -54,6 +54,10 @@ jobs:
     - name: Install dependencies
       run: |
         make install
+    - name: Run md document formatting (mdformat)
+      if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
+      run: |
+        make mdformat
     - name: Run code formatting (yapf)
       if: ${{ (matrix.os == 'ubuntu-latest' && matrix.python-version == '3.7') }}
       run: |

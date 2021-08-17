@@ -174,7 +174,9 @@ def _get_model_field_info(field_type: Type[Any]) -> Union[Type[Any], str, Type[A
 
 
 # FIXME: Typing issues here
-# I'm still not sure whether this type is correct or not.
+# FIXME: This method has diverged significantly from expectations:
+
+
 def is_collection_field_type(field_type: Type[Any]) -> bool:
     """Check whether a type hint is a collection type as used by OSCAL.
 
@@ -196,6 +198,7 @@ def is_collection_field_type(field_type: Type[Any]) -> bool:
     return origin_type in [list, dict]
 
 
+# Type annotation is incorrect.
 def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, TG]]]) -> Type[TG]:
     """Get the inner model in a generic collection model such as a List or a Dict.
 
@@ -216,28 +219,3 @@ def get_inner_type(collection_field_type: Union[Type[List[TG]], Type[Dict[str, T
     except Exception as e:
         logger.debug(e)
         raise err.TrestleError('Model type is not a Dict or List') from e
-
-
-def get_target_model(element_path_parts: List[str], current_model_type: Type[BaseModel]) -> Type[BaseModel]:
-    """Get the target model from the parts of a Element Path.
-
-    Args:
-        element_path_parts: Parts of an ElementPath as str and expressed in aliases
-        current_model_type: Parent model of the current element path
-    Returns:
-        The type of the model at the specified ElementPath of the input model.
-    """
-    # FIXME: Could be in oscal base model
-    try:
-        for index in range(1, len(element_path_parts)):
-            if is_collection_field_type(current_model_type):
-                # Return the model class inside the collection
-                # FIXME: From a typing perspective this is wrong.
-                current_model_type = get_inner_type(current_model_type)
-            else:
-                if element_path_parts[index] == '*':
-                    return current_model_type
-                current_model_type = current_model_type.alias_to_field_map()[element_path_parts[index]].outer_type_
-        return current_model_type
-    except Exception as e:
-        raise err.TrestleError(f'Possibly bad element path. {str(e)}')
