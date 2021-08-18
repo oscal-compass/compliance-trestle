@@ -13,11 +13,8 @@
 # limitations under the License.
 """Abstract base class for pipelines and filters."""
 
-import logging
 from abc import ABC, abstractclassmethod
 from typing import Any, List
-
-logger = logging.getLogger(__name__)
 
 
 class Pipeline():
@@ -29,7 +26,7 @@ class Pipeline():
         @abstractclassmethod
         def process(self, input_: Any) -> Any:
             """Process the input to output."""
-            return 0
+            return input_
 
     def __init__(self, filters: List[Filter]):
         """Initialize the class."""

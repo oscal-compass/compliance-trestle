@@ -362,7 +362,7 @@ class SSPManager():
         needed_group_ids: Set[str] = set()
         needed_controls: List[ControlHandle] = []
         for control_id in control_ids:
-            control_handle = control_dict[control_id.__root__]
+            control_handle = control_dict[control_id]
             needed_group_ids.add(control_handle.group_id)
             needed_controls.append(control_handle)
 

@@ -24,8 +24,7 @@
         "include-controls": [
           {
             "with-ids": [
-              "ac-1",
-              "ac-2"
+              "ac-4"
             ]
           }
         ]
