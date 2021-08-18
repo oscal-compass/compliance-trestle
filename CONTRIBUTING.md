@@ -61,6 +61,7 @@ In trestle's CI environment this results in the following rules:
 1. All merges from develop into main MUST be done by a merge commit (e.g. preserving the history of commits into the develop branch).
 1. Hotfixes into main, not via develop, MUST be done via a squash merge.
 1. Merge's into any branch excluding main and develop are at the developers choice.
+1. Use of autocommit is encouraged to ensure commit messages and squash vs merge commit are completed properly.
 
 ## Typing, docstrings and documentation
 
