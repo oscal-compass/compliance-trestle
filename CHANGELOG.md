@@ -3,6 +3,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.22.1 (2021-08-19)
+### Fix
+* Strip back dependencies due to dependency error ([#684](https://github.com/IBM/compliance-trestle/issues/684)) ([`a8b4768`](https://github.com/IBM/compliance-trestle/commit/a8b476859cbc3ba77f9bf389ed2bb977bd80c592))
+* Updating developer docs to include details on the CI workflow. ([#683](https://github.com/IBM/compliance-trestle/issues/683)) ([`e8d63e1`](https://github.com/IBM/compliance-trestle/commit/e8d63e1ddcfb9bf1b179de195bb86b7af7758fe3))
+
 ## v0.22.0 (2021-08-13)
 ### Feature
 * Schema validate command including miscellaneous fixes. ([#665](https://github.com/IBM/compliance-trestle/issues/665)) ([`3ab088a`](https://github.com/IBM/compliance-trestle/commit/3ab088a9a9b4927a660510fe6fe8438a9b48fdfa))

@@ -30,31 +30,45 @@ pull request so it can be tracked.
 ### Merge approval
 
 The project maintainers use LGTM (Looks Good To Me) in comments on the code
-review to indicate acceptance. A change requires LGTMs from one of the
-maintainers of each component affected.
+review to indicate acceptance. A change requires LGTMs from one of the maintainers.
 
 For a list of the maintainers, see the [MAINTAINERS.md](https://ibm.github.io/compliance-trestle/maintainers/) page.
 
-### Merging and release workflow.
+### Trestle merging and release workflow
 
-`trestle` today is maintaining two protected workflow branches. The a trunk development branch `develop` which is the target
-for all enhancements and non critical features. `main` is used to track releases and allow for hotfixes.
+`trestle` is operating on a simple, yet opinionated, method for continuous integration. It's designed to give developers a coherent understanding of the objectives of other past developers.
+The criteria for this are below. Trestle effectively uses a gitflow workflow with one modification: PR's merge into develop are squash merged as one commit.
 
-Each merge into `develop` will be squashed into a single commit. This can either be performed on merge or via developers
-rebasing their commits into a single commit. As `trestle` has adopted [python semantic release](https://python-semantic-release.readthedocs.org)
-the rebase / squash merge commit MUST follow the [angular commit style](https://github.com/angular/angular.js/blob/main/DEVELOPERS.md#-git-commit-guidelines).
+In trestle's CI environment this results in the following rules:
 
-Merges from `develop` to `main` for release capture all of these commits for the changelog. The current objective is to
-release once per sprint (2 weeks)
+1. All Commit's *MUST* be signed off with `git commit --signoff` irrespective of the author's affiliation. This ensures all code can be attributed.
+   1. This is enforced by DCO bot and can be overrided by maintainers presuming at least one commit is signed-off.
+1. All commits *SHOULD* use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0-beta.2/)
+   1. This is as github, when only one commit is in a PR, will use the native git commit message as the merge commit title.
+      1. When only a single commit is provided the commit MUST be an conventional commit and will be checked the `Lint PR` aciton.
+1. All PR's title's MUST be formed as an [convention commit](https://www.conventionalcommits.org/en/v1.0.0-beta.2/)
+   1. This is checked by the `Lint PR` action
+1. All PR's to `develop` and hotfix PR's to `main` must close at least one issue by [linking the PR to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword).
+1. Trestle will release on demand the default approach for a hot fix should be to merge into `develop`, followed by releasing to `main`, unless this will release functionality that is not ready.
+1. Each feature/fix/chore (PR into develop) be represented by a single commit into develop / main with a coherent title (in the PR).
+   1. The trestle preference for doing this is to use squash merge functionality when merging a PR into develop.
+1. Developers *MUST* pass the required CI checks for each PR.
+1. Developers are encouraged to use GitHub's automated merge process where possible to keep the number of active PR's low.
 
-Hotfixes *may* be merged directly into main when critical bugs are found. Each hotfix *must* be squashed when merging
-into main and MUST only be a commit of type `fix:` in angular style.
+### Merge details for committers:
+
+1. All merges into develop MUST be conducted by a squash-merge
+1. All merges from develop into main MUST be done by a merge commit (e.g. preserving the history of commits into the develop branch).
+1. Hotfixes into main, not via develop, MUST be done via a squash merge.
+1. Merge's into any branch excluding main and develop are at the developers choice.
+1. Use of autocommit is encouraged to ensure commit messages and squash vs merge commit are completed properly.
 
 ## Typing, docstrings and documentation
 
 `trestle` has a goal of using [PEP 484](https://www.python.org/dev/peps/pep-0484/) type annotations where possible / practical.
 The devops process does not _strictly_ enforce typing, however, the expectation is that type coverage is added for new
 commits with a focus on quality over quantity (e.g. don't add `Any` everywhere just to meet coverage requirements).
+Python typing of functions is an active work in progress.
 
 `mkbuild` is used to generate the [trestle documenation site](https://ibm.github.io/compliance-trestle). The `mkbuild`
 website includes an API reference section generated from the code. Docstrings within the code are expected to follow
