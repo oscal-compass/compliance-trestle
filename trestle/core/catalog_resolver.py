@@ -16,8 +16,10 @@
 import logging
 import pathlib
 import re
-from typing import Any, Dict, Iterable, List, Optional, Set, Union
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union
 from uuid import uuid4
+
+from pydantic import BaseModel
 
 import trestle.oscal.catalog as cat
 import trestle.oscal.profile as prof
@@ -30,38 +32,157 @@ from trestle.oscal import common
 logger = logging.getLogger(__name__)
 
 
-class ControlHandle():
-    """Convenience class for handling controls as member of a group."""
+class CatalogInterface():
+    """Interface to query and modify catalog contents."""
 
-    def __init__(self, group_id: str, group_title: str, group_class: str, control: cat.Control):
-        """Initialize the control handle."""
-        self.group_id = group_id
-        self.group_title = group_title
-        self.group_class = group_class
-        self.control = control
+    class ControlHandle(BaseModel):
+        """Convenience class for handling controls as member of a group."""
+
+        group_id: str
+        group_title: str
+        group_class: str
+        control: cat.Control
+
+    def __init__(self, catalog: cat.Catalog) -> None:
+        """Initialize the interface with the catalog."""
+        self._catalog = catalog
+        self._control_dict = self._create_control_dict()
+
+    def _get_controls(self, control_handle: ControlHandle,
+                      control_dict: Dict[str, ControlHandle]) -> Dict[str, ControlHandle]:
+        """Get all controls contained in this control and add it to the growing dict."""
+        # add this control to the dict
+        control_dict[control_handle.control.id] = control_handle
+        # then add all its sub-controls to the dict recursively
+        if control_handle.control.controls is not None:
+            group_id = control_handle.group_id
+            group_title = control_handle.group_title
+            group_class = control_handle.group_class
+            for sub_control in control_handle.control.controls:
+                control_handle = CatalogInterface.ControlHandle(
+                    group_id=group_id, group_title=group_title, group_class=group_class, control=sub_control
+                )
+                control_dict = self._get_controls(control_handle, control_dict)
+        # return the expanded dict
+        return control_dict
+
+    def _create_control_dict(self) -> Dict[str, ControlHandle]:
+        control_dict: Dict[str, CatalogInterface.ControlHandle] = {}
+        if self._catalog.groups is not None:
+            for group in self._catalog.groups:
+                if group.controls is not None:
+                    for control in group.controls:
+                        control_handle = CatalogInterface.ControlHandle(
+                            group_id=group.id, group_title=group.title, group_class=group.class_, control=control
+                        )
+                        control_dict = self._get_controls(control_handle, control_dict)
+        return control_dict
+
+    def get_control_ids(self) -> List[str]:
+        """Get all control ids in catalog."""
+        return self._control_dict.keys()
+
+    def get_control(self, control_id: str) -> cat.Control:
+        """Get control from catalog with this id."""
+        return self._control_dict[control_id].control
+
+    def replace_control(self, control: cat.Control) -> None:
+        """Replace the control in the catalog after modifying it."""
+        self._control_dict[control.id].control = control
+
+    def get_group_info(self, control_id: str) -> Tuple[str, str, str]:
+        """Get the group id for this control."""
+        return (
+            self._control_dict[control_id].group_id,
+            self._control_dict[control_id].group_title,
+            self._control_dict[control_id].group_class
+        )
 
 
 class CatalogResolver():
     """Class to resolve a catalog given a profile."""
 
     class Prune(Pipeline.Filter):
-        """Prune the catalog based on include rule."""
+        """Prune the catalog based on the import include rule."""
 
         def __init__(self, import_: prof.Import) -> None:
             """Inject the import."""
+            # This needs to be created prior to knowing the catalog.
             self._import = import_
+            self._catalog_interface: Optional[CatalogInterface] = None
+            self._catalog: Optional[cat.Catalog] = None
 
-        def _get_controls(self, control_handle: ControlHandle,
-                          control_dict: Dict[str, ControlHandle]) -> Dict[str, ControlHandle]:
-            control_dict[control_handle.control.id] = control_handle
-            if control_handle.control.controls is not None:
-                group_id = control_handle.group_id
-                group_title = control_handle.group_title
-                group_class = control_handle.group_class
-                for sub_control in control_handle.control.controls:
-                    control_handle = ControlHandle(group_id, group_title, group_class, sub_control)
-                    control_dict = self._get_controls(control_handle, control_dict)
-            return control_dict
+        def _set_catalog(self, catalog: cat.Catalog) -> None:
+            """Set the catalog used by the catalog interface."""
+            self._catalog_interface = CatalogInterface(catalog)
+            self._catalog = catalog
+
+        def _find_uuid_refs(self, control_id: str) -> Set[str]:
+            # find all needed resource refs buried in control links and prose
+            control = self._catalog_interface.get_control(control_id)
+            refs = set()
+            for link in control.links:
+                uuid_str = link.href.replace('#', '')
+                refs.add(uuid_str)
+            if control.parts is not None:
+                for part in control.parts:
+                    if part.prose is not None:
+                        # find the two parts, label and ref, in each markdown url
+                        # expecting form [label](#uuid)
+                        # but if it is a control ref it may be e.g. [CM-7](#cm-7)
+                        # for now label is not used
+                        # the ref may be a uuid or control id
+                        # currently only uuids are used to confirm needed presence in backmatter
+                        # note that prose may be multi-line but findall searches all lines
+                        matches = re.findall(MARKDOWN_URL_REGEX, part.prose)
+                        for match in matches:
+                            ref = match[1]
+                            if len(ref) > 1 and ref[0] == '#':
+                                uuid_match = re.findall(UUID_REGEX, ref[1:])
+                                # there should be only one uuid in the parens
+                                if uuid_match:
+                                    refs.add(uuid_match[0])
+            if control.controls is not None:
+                for sub_control in control.controls:
+                    refs.update(self._find_uuid_refs(sub_control))
+            return refs
+
+        def _find_all_uuid_refs(self, needed_control_ids: List[str]) -> Set[str]:
+            # uuid refs can either be in links or prose.  find all needed by controls
+            refs = set()
+            for control_id in needed_control_ids:
+                refs.update(self._find_uuid_refs(control_id))
+            return refs
+
+        def _find_needed_control_ids(self) -> List[str]:
+            # get list of control_ids needed by profile and corresponding groups
+            control_ids: List[str] = []
+
+            if self._import.include_controls is not None:
+                for include_control in self._import.include_controls:
+                    new_ids = [withid.__root__ for withid in include_control.with_ids]
+                    control_ids.extend(new_ids)
+            else:
+                control_ids = self._catalog_interface.get_control_ids()
+
+            new_list = control_ids
+
+            # now exclude any
+            if self._import.exclude_controls is not None:
+                exclude_list = []
+                for exclude_control in self._import.exclude_controls:
+                    new_ids = [withid.__root__ for withid in exclude_control.with_ids]
+                    exclude_list.extend(new_ids)
+                for control_id in control_ids:
+                    if control_id not in exclude_list:
+                        new_list.append(control_id)
+            return new_list
+
+        def _find_needed_group_ids(self, control_ids: List[str]) -> List[str]:
+            """Find list of groups referenced by control ids."""
+            group_ids_list = [self._catalog_interface.get_group_info(cont_id)[0] for cont_id in control_ids]
+            # collapse to unique list
+            return list(set(group_ids_list))
 
         def _prune_control(self, needed_ids: list[str], control: cat.Control, exclude_ids: List[str]) -> cat.Control:
             # this is only called if the control is needed
@@ -77,107 +198,45 @@ class CatalogResolver():
             control.controls = controls if controls else None
             return control
 
-        def _prune_controls(self, needed_controls: List[ControlHandle]) -> List[ControlHandle]:
-            needed_ids = [control_handle.control.id for control_handle in needed_controls]
+        def _prune_controls(self, needed_ids: List[str]) -> List[str]:
             exclude_ids = []
-            final_controls: List[ControlHandle] = []
-            for control_handle in needed_controls:
-                if control_handle.control.id not in exclude_ids:
-                    control_handle.control = self._prune_control(needed_ids, control_handle.control, exclude_ids)
-                    exclude_ids.append(control_handle.control.id)
-                    final_controls.append(control_handle)
-            return final_controls
+            final_ids: List[str] = []
+            for control_id in needed_ids:
+                if control_id not in exclude_ids:
+                    control = self._catalog_interface.get_control(control_id)
+                    control = self._prune_control(needed_ids, control, exclude_ids)
+                    self._catalog_interface.replace_control(control)
+                    exclude_ids.append(control_id)
+                    final_ids.append(control_id)
+            return final_ids
 
-        def _find_uuid_refs(self, control: cat.Control) -> Set[str]:
-            refs = set()
-            for link in control.links:
-                uuid_str = link.href.replace('#', '')
-                refs.add(uuid_str)
-            if control.parts is not None:
-                for part in control.parts:
-                    if part.prose is not None:
-                        # find the two parts, label and ref, in each markdown url
-                        # expecting form [label](#uuid)
-                        # but if it is a control ref it may be e.g. [CM-7](#cm-7)
-                        # for now label is not used
-                        # the ref may be a uuid or control id
-                        # currently only uuids used to confirm presence in backmatter
-                        # note that prose may be multi-line but findall searches all lines
-                        matches = re.findall(MARKDOWN_URL_REGEX, part.prose)
-                        for match in matches:
-                            ref = match[1]
-                            if len(ref) > 1 and ref[0] == '#':
-                                uuid_match = re.findall(UUID_REGEX, ref[1:])
-                                # there should be only one uuid in the parens
-                                if uuid_match:
-                                    refs.add(uuid_match[0])
-            if control.controls is not None:
-                for sub_control in control.controls:
-                    refs.update(self._find_uuid_refs(sub_control))
-            return refs
-
-        def _find_all_uuid_refs(self, needed_controls: List[ControlHandle]) -> Set[str]:
-            # uuid refs can either be in links or prose.  find all needed by controls
-            refs = set()
-            for control_handle in needed_controls:
-                refs.update(self._find_uuid_refs(control_handle.control))
-            return refs
-
-        def _prune_catalog(self, catalog: cat.Catalog) -> cat.Catalog:
+        def _prune_catalog(self) -> cat.Catalog:
             """Merge the controls with the current catalog based on the profile."""
-            # build a convenience dictionary to access all catalog control handles by name
-            control_dict: Dict[str, ControlHandle] = {}
-            if catalog.groups is not None:
-                for group in catalog.groups:
-                    if group.controls is not None:
-                        for control in group.controls:
-                            control_handle = ControlHandle(group.id, group.title, group.class_, control)
-                            control_dict = self._get_controls(control_handle, control_dict)
-
-            # get list of control_ids needed by profile
-            control_ids: List[str] = []
-            if self._import.include_controls is not None:
-                for include_control in self._import.include_controls:
-                    new_ids = [withid.__root__ for withid in include_control.with_ids]
-                    control_ids.extend(new_ids)
-            else:
-                control_ids = control_dict.keys()
-
-            # get list of group id's and associated controls
-            needed_group_ids: Set[str] = set()
-            needed_controls: List[ControlHandle] = []
-            for control_id in control_ids:
-                control_handle = control_dict[control_id]
-                needed_group_ids.add(control_handle.group_id)
-                needed_controls.append(control_handle)
+            needed_ids = self._find_needed_control_ids()
 
             # if a control includes controls - only include those that we know are needed
-            final_controls: List[ControlHandle] = self._prune_controls(needed_controls)
-
-            # find all referenced uuids - they should be 1:1 with those in backmatter
-            needed_uuid_refs: Set[str] = self._find_all_uuid_refs(final_controls)
+            final_control_ids = self._prune_controls(needed_ids)
 
             # build the needed groups of controls
             group_dict: Dict[str, cat.Group] = {}
-            for control_handle in final_controls:
-                group_id = control_handle.group_id
+            for control_id in final_control_ids:
+                group_id, group_title, group_class = self._catalog_interface.get_group_info(control_id)
                 group = group_dict.get(group_id)
+                control = self._catalog_interface.get_control(control_id)
                 if group is None:
-                    group = cat.Group(
-                        id=group_id,
-                        title=control_handle.group_title,
-                        class_=control_handle.group_class,
-                        controls=[control_handle.control]
-                    )
+                    group = cat.Group(id=group_id, title=group_title, class_=group_class, controls=[control])
                     group_dict[group_id] = group
                 else:
-                    group_dict[group_id].controls.append(control_handle.control)
+                    group_dict[group_id].controls.append(control)
 
             # assemble the final resolved profile catalog
 
+            # find all referenced uuids - they should be 1:1 with those in backmatter
+            needed_uuid_refs: Set[str] = self._find_all_uuid_refs(final_control_ids)
+
             # prune the list of resources to only those that are needed
             new_resources: List[common.Resource] = []
-            for resource in catalog.back_matter.resources:
+            for resource in self._catalog.back_matter.resources:
                 if resource.uuid in needed_uuid_refs:
                     new_resources.append(resource)
 
@@ -185,21 +244,20 @@ class CatalogResolver():
 
             new_cat = cat.Catalog(
                 uuid=str(uuid4()),
-                metadata=catalog.metadata,
+                metadata=self._catalog.metadata,
                 back_matter=common.BackMatter(resources=new_resources),
                 groups=new_groups
             )
 
             return new_cat
 
-        def prune_catalog(self, catalog: cat.Catalog) -> cat.Catalog:
-            """Just prune it and return catalog."""
-            return self._prune_catalog(catalog)
-
-        def process(self, models: Iterable[Union[cat.Catalog, prof.Profile]]) -> cat.Catalog:
-            """Prune the catalog based on the include rule in import_."""
-            for model in models:
-                yield self._prune_catalog(model)
+        def process(self, catalog_iter: Iterable[cat.Catalog]) -> cat.Catalog:
+            """Prune the catalog based on the include rule in the import_."""
+            # this only processes the one catalog yielded by the one import in this pipeline.
+            # it must yield in order to have the merge filter loop over available imported catalogs.
+            catalog = next(catalog_iter)
+            self._set_catalog(catalog)
+            yield self._prune_catalog()
 
     class Merge(Pipeline.Filter):
         """Merge the incoming catalogs according to rules in the profile."""
@@ -233,27 +291,84 @@ class CatalogResolver():
         def __init__(self, profile: prof.Profile) -> None:
             """Initialize the filter."""
             self._profile = profile
+            self._catalog_interface: Optional[CatalogInterface] = None
+
+        def _replace_params(self, text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
+            # replace params in a control with assignments from the profile or description info
+            #  if value is not specified
+            if control.params is not None:
+                for param in control.params:
+                    # set default if no information available for text
+                    param_text = f'[{param.id} = no description available]'
+                    set_param = param_dict.get(param.id, None)
+                    # param value provided so just replace it
+                    if set_param is not None:
+                        values = [value.__root__ for value in set_param.values]
+                        param_text = values[0] if len(values) == 1 else f"[{', '.join(values)}]"
+                    else:
+                        # if select present, use it
+                        if param.select is not None:
+                            param_text = f'{param.id} = '
+                            if param.select.how_many is not None:
+                                param_text += f'{param.select.how_many.value} '
+                            if param.select.choice is not None:
+                                param_text += str(param.select.choice)
+                            param_text = f'[{param_text}]'
+                        # else use the label
+                        if param.label is not None:
+                            param_text = f'[{param.id} = {param.label}]'
+                    text = text.replace(param.id, param_text)
+
+            # strip {{ }}
+            text = text.replace(' {{', '').replace(' }}', '').replace('insert: param, ', '').strip()
+
+            return text
+
+        def _replace_part_prose(
+            self, control: cat.Control, part: common.Part, param_dict: Dict[str, prof.SetParameter]
+        ) -> None:
+            # for a part in a control replace the params using the _param_dict
+            if part.prose is not None:
+                fixed_prose = self._replace_params(part.prose, control, param_dict)
+                # change the prose in the control itself
+                part.prose = fixed_prose
+            if part.parts is not None:
+                for prt in part.parts:
+                    self._replace_part_prose(control, prt, param_dict)
 
         def _modify_controls(self, catalog: cat.Catalog) -> cat.Catalog:
             """Modify the controls based on the profile."""
-            if False:
-                if self._profile.modify is not None:
-                    if self._profile.modify.set_parameters is not None:
-                        param_list = self._profile.modify.set_parameters
-                        self._param_dict = {}
-                        for param in param_list:
-                            self._param_dict[param.param_id] = param
-                    self._alters = self._profile.modify.alters
-                # update the original profile metadata with new contents
-                # roles and responsible-parties will be pulled in with new uuid's
-                new_metadata = self._profile.metadata
-                new_metadata.title = f'{catalog.metadata.title}: Resolved by profile {self._profile.metadata.title}'
-                new_metadata.links = [
-                    common.Link(**{
-                        'href': self._profile.imports[0].href, 'rel': 'resolution-source'
-                    })
-                ]
+            self._catalog_interface = CatalogInterface(catalog)
+            param_dict: Dict[str, prof.SetParameter] = {}
+            alters = []
+            if self._profile.modify is not None:
+                if self._profile.modify.set_parameters is not None:
+                    param_list = self._profile.modify.set_parameters
+                    for param in param_list:
+                        param_dict[param.param_id] = param
+                alters = self._profile.modify.alters
 
+            # FIXME handle alters
+            if alters is not None:
+                pass
+
+            control_ids = self._catalog_interface.get_control_ids()
+            for control_id in control_ids:
+                control = self._catalog_interface.get_control(control_id)
+                if control.parts is not None:
+                    for part in control.parts:
+                        self._replace_part_prose(control, part, param_dict)
+                self._catalog_interface.replace_control(control)
+
+            # update the original profile metadata with new contents
+            # roles and responsible-parties will be pulled in with new uuid's
+            new_metadata = self._profile.metadata
+            new_metadata.title = f'{catalog.metadata.title}: Resolved by profile {self._profile.metadata.title}'
+            links: List[common.Link] = []
+            for import_ in self._profile.imports:
+                links.append(common.Link(**{'href': import_.href, 'rel': 'resolution-source'}))
+            new_metadata.links = links
+            catalog.metadata = new_metadata
             return catalog
 
         def process(self, catalog: cat.Catalog) -> cat.Catalog:
@@ -288,6 +403,9 @@ class CatalogResolver():
                 modify_filter = CatalogResolver.Modify(profile)
 
                 if initializing:
+                    # this creates the merge filter needed to catch imports yielded below
+                    # this merge captures all imports in the initial catalog and processes them
+                    # there is no need to prune here because the sub-imports get pruned
                     import_filter = CatalogResolver.Import(self._trestle_root, import_)
                     pipeline = Pipeline([import_filter, merge_filter, modify_filter])
                     yield pipeline.process(import_)
