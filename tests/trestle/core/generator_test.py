@@ -137,6 +137,20 @@ def test_get_all_sample_models() -> None:
                 gens.generate_sample_model(oscal_cls)
 
 
+def test_get_all_sample_models_optional() -> None:
+    """Test we can get all models which exist."""
+    pkgpath = os.path.dirname(oscal.__file__)
+    for _, name, _ in pkgutil.iter_modules([pkgpath]):
+        __import__(f'trestle.oscal.{name}')
+        clsmembers = inspect.getmembers(sys.modules[f'trestle.oscal.{name}'], inspect.isclass)
+        for _, oscal_cls in clsmembers:
+
+            # This removes some enums and other objects.
+            # add check that it is not OscalBaseModel
+            if issubclass(oscal_cls, OscalBaseModel):
+                _ = gens.generate_sample_model(oscal_cls, optional=True, depth=-1)
+
+
 def test_gen_date_authorized() -> None:
     """Corner case test for debugging."""
     model = gens.generate_sample_model(ssp.DateAuthorized)
@@ -146,3 +160,14 @@ def test_gen_date_authorized() -> None:
 def test_gen_moo() -> None:
     """Member of organisation is the one case where __root__ is a uuid constr."""
     _ = gens.generate_sample_model(common.MemberOfOrganization)
+
+
+def test_gen_control() -> None:
+    """Make sure recursion is not going crazy."""
+    _ = gens.generate_sample_model(catalog.Control, optional=True, depth=100)
+
+
+def test_ensure_optional_exists() -> None:
+    """Explicit test to ensure that optional variables are populated."""
+    my_catalog = gens.generate_sample_model(catalog.Catalog, optional=True, depth=-1)
+    assert type(my_catalog.controls[0]) == catalog.Control

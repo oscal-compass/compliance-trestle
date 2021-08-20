@@ -80,8 +80,10 @@ def generate_sample_value_by_type(
             return 'REPLACE_ME'
     elif hasattr(type_, '__name__') and 'ConstrainedIntValue' in type_.__name__:
         # create an int value as close to the floor as possible does not test upper bound
-        multiple = type_.multiple_of or 1  # default to every integer
-        floor = type_.ge or type_.gt + 1 or 0  # default to 0
+        multiple = type_.multiple_of if type_.multiple_of else 1  # default to every integer
+        # this command is a bit of a problem
+        floor = type_.ge if type_.ge else 0
+        floor = type_.gt + 1 if type_.gt else floor
         if math.remainder(floor, multiple) == 0:
             return floor
         else:
@@ -94,22 +96,38 @@ def generate_sample_value_by_type(
     elif type_ is pydantic.networks.AnyUrl:
         # TODO: Cleanup: this should be usable from a url.. but it's not inuitive.
         return pydantic.networks.AnyUrl('https://sample.com/replaceme.html', scheme='http', host='sample.com')
+    elif type_ == Any:
+        # Return empty dict - aka users can put whatever they want here.
+        return {}
     else:
         raise err.TrestleError(f'Fatal: Bad type in model {type_}')
 
 
-def generate_sample_model(model: Union[Type[TG], List[TG], Dict[str, TG]]) -> TG:
-    """Given a model class, generate an object of that class with sample values."""
-    # FIXME: Typing is wrong.
-    # TODO: The typing here is very generic - which may cause some pain. It may be more appropriate to create a wrapper
-    # Function for the to level execution. This would imply restructuring some other parts of the code.
+def generate_sample_model(
+    model: Union[Type[TG], List[TG], Dict[str, TG]], optional: bool = False, depth: int = -1
+) -> TG:
+    """Given a model class, generate an object of that class with sample values.
+
+    Can generate optional variables with an enabled flag. Any array objects will have a single entry injected into it.
+
+    Note: Trestle generate will not activate recursive loops irrespective of the depth flag.
+
+    Args:
+        model: The model type provided. Typically for a user as an OscalBaseModel Subclass.
+        optional: Whether or not to generate optional fields.
+        depth: Depth of the tree at which optional fields are generated. Negative values (default) removes the limit.
+
+    Returns:
+        The generated instance with a pro-forma values filled out as best as possible.
+    """
+    effective_optional = optional and not depth == 0
 
     model_type = model
     # This block normalizes model type down to
     if utils.is_collection_field_type(model):  # type: ignore
         model_type = utils.get_origin(model)  # type: ignore
         model = utils.get_inner_type(model)  # type: ignore
-    model = cast(TG, model)  # type: ignore
+    model = cast(TG, model)
 
     model_dict = {}
     # this block is needed to avoid situations where an inbuilt is inside a list / dict.
@@ -120,11 +138,16 @@ def generate_sample_model(model: Union[Type[TG], List[TG], Dict[str, TG]]) -> TG
             # It also does not inspect for which union we want. Should be removable with oscal 1.0.0
             if utils.get_origin(outer_type) == Union:
                 outer_type = outer_type.__args__[0]
-            if model.__fields__[field].required:
+            if model.__fields__[field].required or effective_optional:
                 """ FIXME: This type_ could be a List or a Dict """
                 # FIXME could be ForwardRef('SystemComponentStatus')
-                if utils.is_collection_field_type(outer_type) or safe_is_sub(outer_type, OscalBaseModel):
-                    model_dict[field] = generate_sample_model(outer_type)
+                if utils.is_collection_field_type(outer_type):
+                    inner_type = utils.get_inner_type(outer_type)
+                    if inner_type == model:
+                        continue
+                    model_dict[field] = generate_sample_model(outer_type, optional=optional, depth=depth - 1)
+                elif safe_is_sub(outer_type, OscalBaseModel):
+                    model_dict[field] = generate_sample_model(outer_type, optional=optional, depth=depth - 1)
                 else:
                     # Hacking here:
                     # Root models should ideally not exist, however, sometimes we are stuck with them.
