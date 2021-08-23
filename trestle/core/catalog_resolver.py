@@ -194,7 +194,7 @@ class CatalogResolver():
             # collapse to unique list
             return list(set(group_ids_list))
 
-        def _prune_control(self, needed_ids: list[str], control: cat.Control, exclude_ids: List[str]) -> cat.Control:
+        def _prune_control(self, needed_ids: List[str], control: cat.Control, exclude_ids: List[str]) -> cat.Control:
             # this is only called if the control is needed
             # but some or all of its sub_controls may not be needed
             # this always returns the original control, possibly with fewer subcontrols
