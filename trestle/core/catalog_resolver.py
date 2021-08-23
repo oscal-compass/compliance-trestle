@@ -66,16 +66,30 @@ class CatalogInterface():
         # return the expanded dict
         return control_dict
 
+    def _get_group_controls(self, group: cat.Group, control_dict: Dict[str, ControlHandle]) -> Dict[str, ControlHandle]:
+        for group in self._catalog.groups:
+            if group.controls is not None:
+                for control in group.controls:
+                    control_handle = CatalogInterface.ControlHandle(
+                        group_id=group.id, group_title=group.title, group_class=group.class_, control=control
+                    )
+                    control_dict = self._get_controls(control_handle, control_dict)
+            if group.groups is not None:
+                for group in group.groups:
+                    control_dict = self._get_group_controls(group, control_dict)
+        return control_dict
+
     def _create_control_dict(self) -> Dict[str, ControlHandle]:
         control_dict: Dict[str, CatalogInterface.ControlHandle] = {}
         if self._catalog.groups is not None:
             for group in self._catalog.groups:
-                if group.controls is not None:
-                    for control in group.controls:
-                        control_handle = CatalogInterface.ControlHandle(
-                            group_id=group.id, group_title=group.title, group_class=group.class_, control=control
-                        )
-                        control_dict = self._get_controls(control_handle, control_dict)
+                control_dict = self._get_group_controls(group, control_dict)
+        if self._catalog.controls is not None:
+            for control in self._catalog.controls:
+                control_handle = CatalogInterface.ControlHandle(
+                    group_id='catalog', group_title='catalog', group_class='catalog', control=control
+                )
+                control_dict = self._get_controls(control_handle, control_dict)
         return control_dict
 
     def get_control_ids(self) -> List[str]:
@@ -86,10 +100,26 @@ class CatalogInterface():
         """Get control from catalog with this id."""
         return self._control_dict[control_id].control
 
+    def _get_all_group_controls(self, group: cat.Group) -> cat.Control:
+        controls: List[cat.Control] = []
+        for control in group.controls:
+            controls.append(control)
+        if group.groups is not None:
+            for group in group.groups:
+                if group.controls is not None:
+                    controls.extend(self._get_all_group_controls(group))
+        return controls
+
     def get_all_controls(self) -> cat.Control:
         """Yield all controls in the catalog by group."""
-        for group in self._catalog.groups:
-            for control in group.controls:
+        if self._catalog.groups is not None:
+            for group in self._catalog.groups:
+                if group.controls is not None:
+                    controls = self._get_all_group_controls(group)
+                    for control in controls:
+                        yield control
+        if self._catalog.controls is not None:
+            for control in self._catalog.controls:
                 yield control
 
     def replace_control(self, control: cat.Control) -> None:
@@ -122,9 +152,6 @@ class CatalogResolver():
             """Set the catalog used by the catalog interface."""
             self._catalog_interface = CatalogInterface(catalog)
             self._catalog = catalog
-
-        def _set_import(self, import_: prof.Import) -> None:
-            self._import = import_
 
         def _find_uuid_refs(self, control_id: str) -> Set[str]:
             # find all needed resource refs buried in control links and prose
@@ -187,12 +214,6 @@ class CatalogResolver():
                     if control_id not in exclude_list:
                         new_list.append(control_id)
             return new_list
-
-        def _find_needed_group_ids(self, control_ids: List[str]) -> List[str]:
-            """Find list of groups referenced by control ids."""
-            group_ids_list = [self._catalog_interface.get_group_info(cont_id)[0] for cont_id in control_ids]
-            # collapse to unique list
-            return list(set(group_ids_list))
 
         def _prune_control(self, needed_ids: List[str], control: cat.Control, exclude_ids: List[str]) -> cat.Control:
             # this is only called if the control is needed
