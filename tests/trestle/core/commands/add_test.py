@@ -17,7 +17,8 @@
 import os
 import pathlib
 import sys
-from unittest.mock import patch
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
@@ -34,7 +35,7 @@ from trestle.oscal.common import BackMatter
 from trestle.utils.fs import get_stripped_contextual_model
 
 
-def test_run(tmp_trestle_dir: pathlib.Path):
+def test_run(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test _run for AddCmd."""
     original_catalog_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_missing_roles.json')
     dest_file_folder = tmp_trestle_dir / 'catalogs' / 'test_catalog'
@@ -56,14 +57,14 @@ def test_run(tmp_trestle_dir: pathlib.Path):
         'catalog.metadata.roles, catalog.metadata.roles, catalog.metadata.responsible-parties'
     ]
 
-    with patch.object(sys, 'argv', testargs):
-        assert Trestle().run() == 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    assert Trestle().run() == 0
 
     actual_catalog = Catalog.oscal_read(dest_file_location)
     assert expected_catalog_roles2_rp == actual_catalog
 
 
-def test_add(tmp_path, keep_cwd):
+def test_add(tmp_path: pathlib.Path, keep_cwd: pathlib.Path) -> None:
     """Test AddCmd.add() method for trestle add."""
     file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / 'minimal_catalog_missing_roles.json'
     minimal_catalog_missing_roles = Catalog.oscal_read(file_path)
@@ -82,7 +83,7 @@ def test_add(tmp_path, keep_cwd):
 
     content_type = FileContentType.JSON
 
-    catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
+    _, _ = test_utils.prepare_trestle_project_dir(
         tmp_path,
         content_type,
         minimal_catalog_missing_roles,
@@ -93,7 +94,7 @@ def test_add(tmp_path, keep_cwd):
     element_path = ElementPath('catalog.metadata.roles')
     catalog_element = Element(minimal_catalog_missing_roles)
     expected_update_action_1 = UpdateAction(expected_catalog_roles1.get_at(element_path), catalog_element, element_path)
-    actual_update_action, actual_catalog_roles = AddCmd.add(element_path, Catalog, catalog_element)
+    actual_update_action, actual_catalog_roles = AddCmd.add(element_path, catalog_element, False)
 
     assert actual_catalog_roles == expected_catalog_roles1
     assert actual_update_action == expected_update_action_1
@@ -101,7 +102,7 @@ def test_add(tmp_path, keep_cwd):
     # Execute second _add - this time roles already exists, so this adds a roles object to roles array
     catalog_element = actual_catalog_roles
     expected_update_action_2 = UpdateAction(expected_catalog_roles2.get_at(element_path), catalog_element, element_path)
-    actual_update_action2, actual_catalog_roles2 = AddCmd.add(element_path, Catalog, catalog_element)
+    actual_update_action2, actual_catalog_roles2 = AddCmd.add(element_path, catalog_element, False)
     assert actual_catalog_roles2 == expected_catalog_roles2
     assert actual_update_action2 == expected_update_action_2
 
@@ -111,16 +112,16 @@ def test_add(tmp_path, keep_cwd):
     expected_update_action_3 = UpdateAction(
         expected_catalog_roles2_rp.get_at(element_path), catalog_element, element_path
     )
-    actual_update_action3, actual_catalog_roles2_rp = AddCmd.add(element_path, Catalog, catalog_element)
+    actual_update_action3, actual_catalog_roles2_rp = AddCmd.add(element_path, catalog_element, False)
     assert actual_catalog_roles2_rp == expected_catalog_roles2_rp
     assert actual_update_action3 == expected_update_action_3
 
 
-def test_add_failure(tmp_path, sample_catalog_minimal, keep_cwd):
+def test_add_failure(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, keep_cwd: pathlib.Path) -> None:
     """Test AddCmd.add() method for trestle add."""
     content_type = FileContentType.JSON
 
-    catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
+    _, _ = test_utils.prepare_trestle_project_dir(
         tmp_path,
         content_type,
         sample_catalog_minimal,
@@ -131,35 +132,37 @@ def test_add_failure(tmp_path, sample_catalog_minimal, keep_cwd):
     catalog_element = Element(sample_catalog_minimal)
 
     with pytest.raises(err.TrestleError):
-        AddCmd.add(element_path, Catalog, catalog_element)
+        AddCmd.add(element_path, catalog_element, False)
 
     element_path = ElementPath('catalog.metadata.title')
     with pytest.raises(err.TrestleError):
-        AddCmd.add(element_path, Catalog, catalog_element)
+        AddCmd.add(element_path, catalog_element, False)
 
     element_path = ElementPath('catalog.metadata.bad_path')
     with pytest.raises(err.TrestleError):
-        AddCmd.add(element_path, Catalog, catalog_element)
+        AddCmd.add(element_path, catalog_element, False)
 
 
-def test_run_failure(keep_cwd):
+def test_run_failure(keep_cwd: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failure of _run for AddCmd."""
     testargs = ['trestle', 'add', '-e', 'catalog.metadata.roles']
-    with patch.object(sys, 'argv', testargs):
-        with pytest.raises(SystemExit) as e:
-            Trestle().run()
-        assert e.type == SystemExit
-        assert e.value.code == 2
+    monkeypatch.setattr(sys, 'argv', testargs)
+    with pytest.raises(SystemExit) as e:
+        Trestle().run()
+    assert e.type == SystemExit
+    assert e.value.code == 2
 
     testargs = ['trestle', 'add', '-f', './catalog.json']
-    with patch.object(sys, 'argv', testargs):
-        with pytest.raises(SystemExit) as e:
-            Trestle().run()
-        assert e.type == SystemExit
-        assert e.value.code == 2
+    monkeypatch.setattr(sys, 'argv', testargs)
+    with pytest.raises(SystemExit) as e:
+        Trestle().run()
+    assert e.type == SystemExit
+    assert e.value.code == 2
 
 
-def test_striped_model(tmp_path, keep_cwd, sample_catalog_minimal):
+def test_stripped_model(
+    tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch
+) -> None:
     """Test _run for AddCmd for stripped model."""
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
@@ -170,16 +173,16 @@ def test_striped_model(tmp_path, keep_cwd, sample_catalog_minimal):
     )
     os.chdir(catalog_def_dir)
     testargs = ['trestle', 'split', '-f', 'catalog.json', '-e', 'catalog.metadata']
-    with patch.object(sys, 'argv', testargs):
-        assert Trestle().run() == 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    assert Trestle().run() == 0
 
     # Now that the metadata has been split, add of catalog.metadata.roles will error,
     # but add of catalog.back-matter will pass
 
     testargs = ['trestle', 'add', '-f', 'catalog.json', '-e', 'catalog.metadata.roles']
 
-    with patch.object(sys, 'argv', testargs):
-        assert Trestle().run() == 1
+    monkeypatch.setattr(sys, 'argv', testargs)
+    assert Trestle().run() == 1
 
     testargs = ['trestle', 'add', '-f', 'catalog.json', '-e', 'catalog.back-matter']
 
@@ -188,8 +191,8 @@ def test_striped_model(tmp_path, keep_cwd, sample_catalog_minimal):
     current_catalog.back_matter = BackMatter()
     expected_catalog = current_catalog
 
-    with patch.object(sys, 'argv', testargs):
-        assert Trestle().run() == 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    assert Trestle().run() == 0
 
     actual_model, _ = get_stripped_contextual_model()
     actual_catalog = actual_model.oscal_read(pathlib.Path('catalog.json'))
