@@ -229,7 +229,7 @@ class OscalBaseModel(BaseModel):
         result[classname_to_alias(class_name, 'json')] = self.dict(by_alias=True, exclude_none=True)
         return result
 
-    def oscal_serialize_json(self, pretty: Optional[bool] = False) -> str:
+    def oscal_serialize_json(self, pretty: bool = False) -> str:
         """
         Return an 'oscal wrapped' json object serialized in a compressed form.
 
