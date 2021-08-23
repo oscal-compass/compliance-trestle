@@ -22,16 +22,13 @@ import pathlib
 from tests import test_utils
 
 from trestle.core.catalog_resolver import CatalogResolver
+from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.import_ import ImportCmd
 from trestle.utils import log
-
-prof_name = 'my_prof'
 
 
 def test_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the resolver."""
-    prof_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_a.json'
-
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir,
@@ -39,6 +36,13 @@ def test_resolver(tmp_trestle_dir: pathlib.Path) -> None:
         output='NIST_SP-800-53_rev5_catalog',
         verbose=False,
         regenerate=True
+    )
+    i = ImportCmd()
+    assert i._run(args) == 0
+
+    prof_a_path = test_utils.JSON_TEST_DATA_PATH / 'test_profile_a.json'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, file=str(prof_a_path), output='test_profile_a', verbose=False, regenerate=True
     )
     i = ImportCmd()
     assert i._run(args) == 0
@@ -52,5 +56,15 @@ def test_resolver(tmp_trestle_dir: pathlib.Path) -> None:
 
     log.set_global_logging_levels(logging.DEBUG)
 
-    cat = CatalogResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
+    cat = CatalogResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+    cat_dir = tmp_trestle_dir / 'catalogs/my_cat'
+    cat_dir.mkdir(exist_ok=True, parents=True)
+    cat.oscal_write(cat_dir / 'catalog.json')
     assert cat
+
+    ssp_cmd = SSPGenerate()
+    sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, profile='test_profile_a', output='my_ssp', verbose=True, sections=sections
+    )
+    assert ssp_cmd._run(args) == 0

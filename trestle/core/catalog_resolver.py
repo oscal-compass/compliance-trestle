@@ -454,7 +454,7 @@ class CatalogResolver():
             self._import = import_
 
         def process(self, input_=None) -> Any:
-            """Load href for catalog or profile and yield each import as catalog imported its distinct pipeline."""
+            """Load href for catalog or profile and yield each import as catalog imported by its distinct pipeline."""
             logger.debug(f'import entering process with href {self._import.href}')
             fetcher = cache.FetcherFactory.get_fetcher(self._trestle_root, self._import.href)
 

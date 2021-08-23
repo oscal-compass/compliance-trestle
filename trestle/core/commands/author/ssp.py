@@ -141,17 +141,19 @@ class SSPManager():
     def _get_part(self, control: cat.Control, part: common.Part) -> List[Union[str, List[str]]]:
         # for a part in a control replace the params using the _param_dict
         items = []
-        if part.prose is not None:
-            label = self._get_label(part)
-            wrapped_label = self._wrap_label(label)
-            pad = '' if wrapped_label == '' else ' '
-            items.append(f'{wrapped_label}{pad}{part.prose}')
-        if part.parts is not None:
-            sub_list = []
-            for prt in part.parts:
-                sub_list.extend(self._get_part(control, prt))
-            sub_list.append('')
-            items.append(sub_list)
+        # parts that are sections are output separately
+        if part.name not in self._sections:
+            if part.prose is not None:
+                label = self._get_label(part)
+                wrapped_label = self._wrap_label(label)
+                pad = '' if wrapped_label == '' else ' '
+                items.append(f'{wrapped_label}{pad}{part.prose}')
+            if part.parts is not None:
+                sub_list = []
+                for prt in part.parts:
+                    sub_list.extend(self._get_part(control, prt))
+                sub_list.append('')
+                items.append(sub_list)
         return items
 
     def _add_parts(self, control: cat.Control) -> None:
@@ -159,6 +161,9 @@ class SSPManager():
         items = []
         if control.parts is not None:
             for part in control.parts:
+                # parts that are sections are output separately
+                if part.name in self._sections:
+                    continue
                 if part.name == 'statement':
                     items.append(self._get_part(control, part))
             # unwrap the list if it is many levels deep
@@ -168,7 +173,7 @@ class SSPManager():
             self._md_file.new_list(items)
 
     def _add_yaml_header(self, yaml_header: Optional[dict]) -> None:
-        if yaml_header is not None:
+        if yaml_header:
             self._md_file.add_yaml_header(yaml_header)
 
     def _add_control_description(self, control: cat.Control, group_title: str) -> None:
@@ -187,13 +192,6 @@ class SSPManager():
         for part in control.parts:
             if part.name == section and part.prose is not None:
                 prose += part.prose
-        for alter in self._alters:
-            if alter.control_id == control.id:
-                for adds in alter.adds:
-                    if adds.parts is not None:
-                        for part in adds.parts:
-                            if part.name == section and part.prose is not None:
-                                prose += part.prose
         return prose
 
     def _add_control_section(self, control: cat.Control, section_tuple: str) -> None:
@@ -212,6 +210,9 @@ class SSPManager():
             if part.parts is not None:
                 if part.name == 'statement':
                     for prt in part.parts:
+                        # parts that are sections are output separately
+                        if prt.name in self._sections:
+                            continue
                         self._md_file.new_hr()
                         self._md_file.new_header(level=3, title=f'Part {self._get_label(prt)}')
                         self._md_file.new_line(f'Add control implementation description here for statement {prt.id}')
@@ -219,20 +220,26 @@ class SSPManager():
         self._md_file.new_hr()
 
     def _write_control(
-        self, dest_path: pathlib.Path, control: cat.Control, group_title: str, yaml_header: Optional[dict]
+        self,
+        dest_path: pathlib.Path,
+        control: cat.Control,
+        group_title: str,
+        yaml_header: Optional[dict],
+        sections: Optional[Dict[str, str]]
     ) -> None:
         control_file = dest_path / (control.id + '.md')
         self._md_file = MDWriter(control_file)
+        self._sections = sections
 
         self._add_yaml_header(yaml_header)
 
         self._add_control_description(control, group_title)
 
-        self._add_response(control)
-
         if self._sections is not None:
             for section_tuple in self._sections.items():
                 self._add_control_section(control, section_tuple)
+
+        self._add_response(control)
 
         self._md_file.write_out()
 
@@ -277,7 +284,7 @@ class SSPManager():
         for control in catalog_interface.get_all_controls():
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
             out_path = md_path / group_id
-            self._write_control(out_path, control, group_title, yaml_header)
+            self._write_control(out_path, control, group_title, yaml_header, sections)
 
         return 0
 
