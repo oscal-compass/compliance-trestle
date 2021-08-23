@@ -97,14 +97,17 @@ def test_github_fetcher():
 
 def test_local_fetcher_get_fails(tmp_trestle_dir):
     """Test the local fetcher get failure."""
+    # previously local fetches were not allowed but they need to be allowed for resolved catalog
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     catalog_dir = tmp_trestle_dir / f'catalogs/{rand_str}'
     catalog_dir.mkdir(parents=True, exist_ok=True)
     catalog_file = catalog_dir / 'catalog.json'
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(catalog_file)
-    with pytest.raises(err.TrestleError):
-        cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), str(catalog_file))
+    saved_data = fs.load_file(pathlib.Path(catalog_file))
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), str(catalog_file))
+    fetched_data = fetcher.get_raw()
+    assert fetched_data == saved_data
 
 
 def test_local_fetcher_absolute(tmp_trestle_dir):

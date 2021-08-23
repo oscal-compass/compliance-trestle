@@ -16,10 +16,8 @@
 import argparse
 import logging
 import pathlib
-import re
 import string
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
-from uuid import uuid4
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -31,25 +29,12 @@ import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 import trestle.utils.fs as fs
 import trestle.utils.log as log
+from trestle.core.catalog_resolver import CatalogInterface, CatalogResolver
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.const import MARKDOWN_URL_REGEX, UUID_REGEX
 from trestle.core.markdown_validator import MarkdownValidator
-from trestle.core.remote import cache
-from trestle.utils.load_distributed import load_distributed
 from trestle.utils.md_writer import MDWriter
 
 logger = logging.getLogger(__name__)
-
-
-class ControlHandle():
-    """Convenience class for handling controls as member of a group."""
-
-    def __init__(self, group_id: str, group_title: str, group_class: str, control: cat.Control):
-        """Initialize the control handle."""
-        self.group_id = group_id
-        self.group_title = group_title
-        self.group_class = group_class
-        self.control = control
 
 
 class SSPGenerate(AuthorCommonCommand):
@@ -71,19 +56,12 @@ class SSPGenerate(AuthorCommonCommand):
 
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
-        trestle_root = fs.get_trestle_project_root(pathlib.Path.cwd())
-        if not trestle_root:
-            logger.warning(f'Current working directory {pathlib.Path.cwd()} is not with a trestle project.')
-            return 1
+        trestle_root = args.trestle_root
         if not fs.allowed_task_name(args.output):
             logger.warning(f'{args.output} is not an allowed directory name')
             return 1
 
-        profile: prof.Profile
-        _, _, profile = load_distributed(pathlib.Path(f'profiles/{args.profile}/profile.json'))
-        cat_href = profile.imports[0].href
-        fetcher = cache.FetcherFactory.get_fetcher(trestle_root, cat_href)
-        catalog = fetcher.get_oscal_with_model_type(cat.Catalog)
+        profile_path = pathlib.Path(f'profiles/{args.profile}/profile.json')
 
         yaml_header: dict = {}
         if 'yaml_header' in args and args.yaml_header is not None:
@@ -110,7 +88,7 @@ class SSPGenerate(AuthorCommonCommand):
 
         ssp_manager = SSPManager()
 
-        return ssp_manager.generate_ssp(catalog, profile, markdown_path, sections, yaml_header)
+        return ssp_manager.generate_ssp(trestle_root, profile_path.resolve(), markdown_path, sections, yaml_header)
 
 
 class SSPAssemble(AuthorCommonCommand):
@@ -143,44 +121,13 @@ class SSPManager():
     def __init__(self):
         """Initialize the class."""
         self._param_dict: Dict[str, str] = {}
-        self._md_file: MDWriter = None
+        self._md_file: Optional[MDWriter] = None
         self._alters: List[prof.Alter] = []
-        self._yaml_header: dict = None
         self._sections: Dict[str, str] = {}
 
-    def _replace_params(self, text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
-        # replace params in a control with assignments from the profile or description info if value is not specified
-        if control.params is not None:
-            for param in control.params:
-                # set default if no information available for text
-                param_text = f'[{param.id} = no description available]'
-                set_param = param_dict.get(param.id, None)
-                # param value provided so just replace it
-                if set_param is not None:
-                    values = [value.__root__ for value in set_param.values]
-                    param_text = values[0] if len(values) == 1 else f"[{', '.join(values)}]"
-                else:
-                    # if select present, use it
-                    if param.select is not None:
-                        param_text = f'{param.id} = '
-                        if param.select.how_many is not None:
-                            param_text += f'{param.select.how_many.value} '
-                        if param.select.choice is not None:
-                            param_text += str(param.select.choice)
-                        param_text = f'[{param_text}]'
-                    # else use the label
-                    if param.label is not None:
-                        param_text = f'[{param.id} = {param.label}]'
-                text = text.replace(param.id, param_text)
-
-        # strip {{ }}
-        text = text.replace(' {{', '').replace(' }}', '').replace('insert: param, ', '').strip()
-
-        return text
-
     def _wrap_label(self, label: str):
-        l_side = '['
-        r_side = ']'
+        l_side = '\['
+        r_side = '\]'
         wrapped = '' if label == '' else f'{l_side}{label}{r_side}'
         return wrapped
 
@@ -195,13 +142,10 @@ class SSPManager():
         # for a part in a control replace the params using the _param_dict
         items = []
         if part.prose is not None:
-            fixed_prose = self._replace_params(part.prose, control, self._param_dict)
-            # change the prose in the control itself
-            part.prose = fixed_prose
             label = self._get_label(part)
             wrapped_label = self._wrap_label(label)
             pad = '' if wrapped_label == '' else ' '
-            items.append(f'{wrapped_label}{pad}{fixed_prose}')
+            items.append(f'{wrapped_label}{pad}{part.prose}')
         if part.parts is not None:
             sub_list = []
             for prt in part.parts:
@@ -223,28 +167,17 @@ class SSPManager():
             self._md_file.new_paragraph()
             self._md_file.new_list(items)
 
-    def _get_controls(self, control_handle: ControlHandle,
-                      control_dict: Dict[str, ControlHandle]) -> Dict[str, ControlHandle]:
-        control_dict[control_handle.control.id] = control_handle
-        if control_handle.control.controls is not None:
-            group_id = control_handle.group_id
-            group_title = control_handle.group_title
-            group_class = control_handle.group_class
-            for sub_control in control_handle.control.controls:
-                control_handle = ControlHandle(group_id, group_title, group_class, sub_control)
-                control_dict = self._get_controls(control_handle, control_dict)
-        return control_dict
+    def _add_yaml_header(self, yaml_header: Optional[dict]) -> None:
+        if yaml_header is not None:
+            self._md_file.add_yaml_header(yaml_header)
 
-    def _add_yaml_header(self) -> None:
-        self._md_file.add_yaml_header(self._yaml_header)
-
-    def _add_control_description(self, control_handle: ControlHandle) -> None:
+    def _add_control_description(self, control: cat.Control, group_title: str) -> None:
         self._md_file.new_paragraph()
-        title = f'{control_handle.control.id} - {control_handle.group_title} {control_handle.control.title}'
+        title = f'{control.id} - {group_title} {control.title}'
         self._md_file.new_header(level=1, title=title)
         self._md_file.new_header(level=2, title='Control Description')
         self._md_file.set_indent_level(-1)
-        self._add_parts(control_handle.control)
+        self._add_parts(control)
         self._md_file.set_indent_level(-1)
 
     def _get_control_section(self, control: cat.Control, section: str) -> str:
@@ -286,35 +219,33 @@ class SSPManager():
         self._md_file.new_hr()
 
     def _write_control(
-        self,
-        dest_path: pathlib.Path,
-        control_handle: ControlHandle,
+        self, dest_path: pathlib.Path, control: cat.Control, group_title: str, yaml_header: Optional[dict]
     ) -> None:
-        control_file = dest_path / (control_handle.control.id + '.md')
+        control_file = dest_path / (control.id + '.md')
         self._md_file = MDWriter(control_file)
 
-        self._add_yaml_header()
+        self._add_yaml_header(yaml_header)
 
-        self._add_control_description(control_handle)
+        self._add_control_description(control, group_title)
 
-        self._add_response(control_handle.control)
+        self._add_response(control)
 
         if self._sections is not None:
             for section_tuple in self._sections.items():
-                self._add_control_section(control_handle.control, section_tuple)
+                self._add_control_section(control, section_tuple)
 
         self._md_file.write_out()
 
     def generate_ssp(
         self,
-        catalog: cat.Catalog,
-        profile: prof.Profile,
+        trestle_root: pathlib.Path,
+        profile_path: pathlib.Path,
         md_path: pathlib.Path,
         sections: Optional[Dict[str, str]],
         yaml_header: dict
     ) -> int:
         """
-        Generate a partial ssp in markdown format from catalog, profile and yaml header.
+        Generate a partial ssp in markdown format from a profile and yaml header.
 
         The catalog contains a list of controls and the profile selects a subset of them
         in groups.  The profile also specifies parameters for the controls.  The result
@@ -322,8 +253,7 @@ class SSPManager():
         has the yaml header at the top.
 
         Args:
-            catalog: An OSCAL catalog
-            profile: An OSCAL profile
+            profile_path: File path for OSCAL profile
             md_path: The directory into which the markdown controls are written
             sections: A comma separated list of id:alias separated by colon to specify optional
                 additional sections to be written out.  The id corresponds to the name found
@@ -335,58 +265,19 @@ class SSPManager():
             0 on success, 1 otherwise
 
         """
-        logging.debug(
-            f'Generate ssp in {md_path} from catalog {catalog.metadata.title}, profile {profile.metadata.title}'
-        )
+        logging.debug(f'Generate ssp in {md_path} from profile {profile_path}')
         # create the directory in which to write the control markdown files
         md_path.mkdir(exist_ok=True, parents=True)
 
-        # build a convenience dictionary to access control handles by name
-        control_dict: Dict[str, ControlHandle] = {}
-        if catalog.groups is not None:
-            for group in catalog.groups:
-                if group.controls is not None:
-                    for control in group.controls:
-                        control_handle = ControlHandle(group.id, group.title, group.class_, control)
-                        control_dict = self._get_controls(control_handle, control_dict)
-
-        # get list of control_ids needed by profile
-        control_ids: List[str] = []
-        # no need to check since imports is required
-        for _import in profile.imports:
-            if _import.include_controls is not None:
-                for include_control in _import.include_controls:
-                    control_ids.extend(include_control.with_ids)
-
-        # get list of group id's and associated controls
-        needed_group_ids: Set[str] = set()
-        needed_controls: List[ControlHandle] = []
-        for control_id in control_ids:
-            control_handle = control_dict[control_id]
-            needed_group_ids.add(control_handle.group_id)
-            needed_controls.append(control_handle)
-
-        # make the directories for each group
-        for group_id in needed_group_ids:
-            (md_path / group_id).mkdir(exist_ok=True)
-
-        # assign values to class members for use when writing out the controls
-        if profile.modify is not None:
-            if profile.modify.set_parameters is not None:
-                param_list = profile.modify.set_parameters
-                self._param_dict = {}
-                for param in param_list:
-                    self._param_dict[param.param_id] = param
-            self._alters = profile.modify.alters
-
-        if bool(yaml_header):
-            self._yaml_header = yaml_header
-        self._sections = sections
+        catalog_resolver = CatalogResolver()
+        resolved_catalog = catalog_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
+        catalog_interface = CatalogInterface(resolved_catalog)
 
         # write out the controls
-        for control_handle in needed_controls:
-            out_path = md_path / control_handle.group_id
-            self._write_control(out_path, control_handle)
+        for control in catalog_interface.get_all_controls():
+            group_id, group_title, _ = catalog_interface.get_group_info(control.id)
+            out_path = md_path / group_id
+            self._write_control(out_path, control, group_title, yaml_header)
 
         return 0
 
@@ -588,164 +479,3 @@ class SSPManager():
         ssp.oscal_write(ssp_dir / 'system-security-plan.json')
 
         return 0
-
-    def _prune_control(self, needed_ids: list[str], control: cat.Control, exclude_ids: List[str]) -> cat.Control:
-        # this is only called if the control is needed
-        # but some or all of its sub_controls may not be needed
-        # this always returns the original control, possibly with fewer subcontrols
-        if control.controls is None:
-            return control
-        controls = []
-        for sub_control in control.controls:
-            if sub_control.id in needed_ids and sub_control.id not in exclude_ids:
-                controls.append(self._prune_control(needed_ids, sub_control, exclude_ids))
-                exclude_ids.append(sub_control.id)
-        control.controls = controls if controls else None
-        return control
-
-    def _prune_controls(self, needed_controls: List[ControlHandle]) -> List[ControlHandle]:
-        needed_ids = [control_handle.control.id for control_handle in needed_controls]
-        exclude_ids = []
-        final_controls: List[ControlHandle] = []
-        for control_handle in needed_controls:
-            if control_handle.control.id not in exclude_ids:
-                control_handle.control = self._prune_control(needed_ids, control_handle.control, exclude_ids)
-                exclude_ids.append(control_handle.control.id)
-                final_controls.append(control_handle)
-        return final_controls
-
-    def _find_uuid_refs(self, control: cat.Control) -> Set[str]:
-        refs = set()
-        for link in control.links:
-            uuid_str = link.href.replace('#', '')
-            refs.add(uuid_str)
-        if control.parts is not None:
-            for part in control.parts:
-                if part.prose is not None:
-                    # find the two parts, label and ref, in each markdown url
-                    # expecting form [label](#uuid)
-                    # but if it is a control ref it may be e.g. [CM-7](#cm-7)
-                    # for now label is not used
-                    # the ref may be a uuid or control id
-                    # currently only uuids used to confirm presence in backmatter
-                    # note that prose may be multi-line but findall searches all lines
-                    matches = re.findall(MARKDOWN_URL_REGEX, part.prose)
-                    for match in matches:
-                        ref = match[1]
-                        if len(ref) > 1 and ref[0] == '#':
-                            uuid_match = re.findall(UUID_REGEX, ref[1:])
-                            # there should be only one uuid in the parens
-                            if uuid_match:
-                                refs.add(uuid_match[0])
-        if control.controls is not None:
-            for sub_control in control.controls:
-                refs.update(self._find_uuid_refs(sub_control))
-        return refs
-
-    def _find_all_uuid_refs(self, needed_controls: List[ControlHandle]) -> Set[str]:
-        # uuid refs can either be in links or prose.  find all needed by controls
-        refs = set()
-        for control_handle in needed_controls:
-            refs.update(self._find_uuid_refs(control_handle.control))
-        return refs
-
-    def generate_resolved_profile_catalog(
-        self,
-        the_catalog: cat.Catalog,
-        the_profile: prof.Profile,
-    ) -> cat.Catalog:
-        """
-        Generate a resolved profile catalog from a profile and catalog.
-
-        The catalog contains a list of controls and the profile selects a subset of them
-        in groups.  This routine generates a new catalog of the controls imported by the profile.
-
-        Args:
-            catalog: An OSCAL catalog
-            profile: An OSCAL profile
-        Returns:
-            A new catalog containing the imported controls
-
-        """
-        logging.debug(
-            f'Generate resolved profile catalog from catalog {the_catalog.metadata.title}, '
-            + f'profile {the_profile.metadata.title}'
-        )
-
-        # build a convenience dictionary to access all catalog control handles by name
-        control_dict: Dict[str, ControlHandle] = {}
-        if the_catalog.groups is not None:
-            for group in the_catalog.groups:
-                if group.controls is not None:
-                    for control in group.controls:
-                        control_handle = ControlHandle(group.id, group.title, group.class_, control)
-                        control_dict = self._get_controls(control_handle, control_dict)
-
-        # get list of control_ids needed by profile
-        control_ids: List[str] = []
-        for _import in the_profile.imports:
-            if _import.include_controls is not None:
-                for include_control in _import.include_controls:
-                    control_ids.extend(include_control.with_ids)
-
-        # get list of group id's and associated controls
-        needed_group_ids: Set[str] = set()
-        needed_controls: List[ControlHandle] = []
-        for control_id in control_ids:
-            control_handle = control_dict[control_id.__root__]
-            needed_group_ids.add(control_handle.group_id)
-            needed_controls.append(control_handle)
-
-        # if a control includes controls - only include those that we know are needed
-        final_controls = self._prune_controls(needed_controls)
-
-        # find all referenced uuids - they should be 1:1 with those in backmatter
-        needed_uuid_refs: Set[str] = self._find_all_uuid_refs(final_controls)
-
-        # assign values to class members for use when writing out the controls
-        if the_profile.modify is not None:
-            if the_profile.modify.set_parameters is not None:
-                param_list = the_profile.modify.set_parameters
-                self._param_dict = {}
-                for param in param_list:
-                    self._param_dict[param.param_id] = param
-            self._alters = the_profile.modify.alters
-
-        # build the needed groups of controls
-        group_dict: Dict[str, cat.Group] = {}
-        for control_handle in final_controls:
-            group_id = control_handle.group_id
-            group = group_dict.get(group_id)
-            if group is None:
-                group = cat.Group(
-                    id=group_id,
-                    title=control_handle.group_title,
-                    class_=control_handle.group_class,
-                    controls=[control_handle.control]
-                )
-                group_dict[group_id] = group
-            else:
-                group_dict[group_id].controls.append(control_handle.control)
-
-        # assemble the final resolved profile catalog
-
-        # update the original profile metadata with new contents
-        # roles and responsible-parties will be pulled in with new uuid's
-        new_metadata = the_profile.metadata
-        new_metadata.title = f'{the_catalog.metadata.title}: Resolved by profile {the_profile.metadata.title}'
-        new_metadata.links = [common.Link(**{'href': the_profile.imports[0].href, 'rel': 'resolution-source'})]
-
-        # prune the list of resources to only those that are needed
-        new_resources: List[common.Resource] = []
-        for resource in the_catalog.back_matter.resources:
-            if resource.uuid in needed_uuid_refs:
-                new_resources.append(resource)
-
-        new_groups = list(group_dict.values())
-
-        return cat.Catalog(
-            uuid=str(uuid4()),
-            metadata=new_metadata,
-            back_matter=common.BackMatter(resources=new_resources),
-            groups=new_groups
-        )

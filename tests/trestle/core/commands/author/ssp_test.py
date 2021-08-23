@@ -23,12 +23,11 @@ from ruamel.yaml import YAML
 
 from tests import test_utils
 
+from trestle.core.catalog_resolver import CatalogResolver
 from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate, SSPManager
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.markdown_validator import MarkdownValidator
-from trestle.oscal.catalog import Catalog
-from trestle.oscal.profile import Profile
 
 prof_name = 'my_prof'
 ssp_name = 'my_ssp'
@@ -211,21 +210,6 @@ def test_ssp_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 1
 
 
-def test_ssp_bad_dir(tmp_path: pathlib.Path) -> None:
-    """Test ssp not in trestle project."""
-    ssp_cmd = SSPGenerate()
-    args = argparse.Namespace(
-        trestle_root=tmp_path, profile='my_prof', output='my_ssp', verbose=True, yaml_header='dummy.yaml'
-    )
-    assert ssp_cmd._run(args) == 1
-
-    ssp_cmd = SSPAssemble()
-    args = argparse.Namespace(
-        trestle_root=tmp_path, markdown='my_ssp', output='my_json_ssp', verbose=True, yaml_header='dummy.yaml'
-    )
-    assert ssp_cmd._run(args) == 1
-
-
 def test_ssp_internals() -> None:
     """Test unusual cases in ssp."""
     tree = [
@@ -249,14 +233,13 @@ def test_ssp_internals() -> None:
 def test_ssp_generator_resolved_profile_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator to create a resolved profile catalog."""
     _, _, _ = setup_for_ssp(False, True, tmp_trestle_dir)
-    the_catalog = Catalog.oscal_read(tmp_trestle_dir / f'catalogs/{cat_name}/catalog.json')
-    the_profile = Profile.oscal_read(tmp_trestle_dir / f'profiles/{prof_name}/profile.json')
+    profile_path = tmp_trestle_dir / f'profiles/{prof_name}/profile.json'
     new_catalog_dir = tmp_trestle_dir / f'catalogs/{prof_name}_resolved_catalog'
     new_catalog_dir.mkdir(parents=True, exist_ok=True)
     new_catalog_path = new_catalog_dir / 'catalog.json'
 
-    ssp_manager = SSPManager()
-    resolved_catalog = ssp_manager.generate_resolved_profile_catalog(the_catalog, the_profile)
+    catalog_resolver = CatalogResolver()
+    resolved_catalog = catalog_resolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
     assert resolved_catalog
     assert len(resolved_catalog.groups) == 18
 

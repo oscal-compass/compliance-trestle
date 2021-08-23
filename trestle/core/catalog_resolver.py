@@ -36,7 +36,7 @@ class CatalogInterface():
     """Interface to query and modify catalog contents."""
 
     class ControlHandle(BaseModel):
-        """Convenience class for handling controls as member of a group."""
+        """Convenience class for handling controls as members of a group."""
 
         group_id: str
         group_title: str
@@ -86,12 +86,18 @@ class CatalogInterface():
         """Get control from catalog with this id."""
         return self._control_dict[control_id].control
 
+    def get_all_controls(self) -> cat.Control:
+        """Yield all controls in the catalog by group."""
+        for group in self._catalog.groups:
+            for control in group.controls:
+                yield control
+
     def replace_control(self, control: cat.Control) -> None:
         """Replace the control in the catalog after modifying it."""
         self._control_dict[control.id].control = control
 
     def get_group_info(self, control_id: str) -> Tuple[str, str, str]:
-        """Get the group id for this control."""
+        """Get the group_id, title, class for this control."""
         return (
             self._control_dict[control_id].group_id,
             self._control_dict[control_id].group_title,
