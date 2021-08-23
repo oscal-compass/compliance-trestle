@@ -104,7 +104,7 @@ def generate_sample_value_by_type(
 
 
 def generate_sample_model(
-    model: Union[Type[TG], List[TG], Dict[str, TG]], optional: bool = False, depth: int = -1
+    model: Union[Type[TG], List[TG], Dict[str, TG]], include_optional: bool = False, depth: int = -1
 ) -> TG:
     """Given a model class, generate an object of that class with sample values.
 
@@ -114,13 +114,13 @@ def generate_sample_model(
 
     Args:
         model: The model type provided. Typically for a user as an OscalBaseModel Subclass.
-        optional: Whether or not to generate optional fields.
+        include_optional: Whether or not to generate optional fields.
         depth: Depth of the tree at which optional fields are generated. Negative values (default) removes the limit.
 
     Returns:
         The generated instance with a pro-forma values filled out as best as possible.
     """
-    effective_optional = optional and not depth == 0
+    effective_optional = include_optional and not depth == 0
 
     model_type = model
     # This block normalizes model type down to
@@ -145,9 +145,9 @@ def generate_sample_model(
                     inner_type = utils.get_inner_type(outer_type)
                     if inner_type == model:
                         continue
-                    model_dict[field] = generate_sample_model(outer_type, optional=optional, depth=depth - 1)
+                    model_dict[field] = generate_sample_model(outer_type, optional=include_optional, depth=depth - 1)
                 elif safe_is_sub(outer_type, OscalBaseModel):
-                    model_dict[field] = generate_sample_model(outer_type, optional=optional, depth=depth - 1)
+                    model_dict[field] = generate_sample_model(outer_type, optional=include_optional, depth=depth - 1)
                 else:
                     # Hacking here:
                     # Root models should ideally not exist, however, sometimes we are stuck with them.
