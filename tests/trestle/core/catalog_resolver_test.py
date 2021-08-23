@@ -16,12 +16,14 @@
 """Tests for models module."""
 
 import argparse
+import logging
 import pathlib
 
 from tests import test_utils
 
 from trestle.core.catalog_resolver import CatalogResolver
 from trestle.core.commands.import_ import ImportCmd
+from trestle.utils import log
 
 prof_name = 'my_prof'
 
@@ -47,6 +49,8 @@ def test_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     )
     i = ImportCmd()
     assert i._run(args) == 0
+
+    log.set_global_logging_levels(logging.DEBUG)
 
     cat = CatalogResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_path)
     assert cat
