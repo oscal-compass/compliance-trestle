@@ -145,9 +145,13 @@ def generate_sample_model(
                     inner_type = utils.get_inner_type(outer_type)
                     if inner_type == model:
                         continue
-                    model_dict[field] = generate_sample_model(outer_type, optional=include_optional, depth=depth - 1)
+                    model_dict[field] = generate_sample_model(
+                        outer_type, include_optional=include_optional, depth=depth - 1
+                    )
                 elif safe_is_sub(outer_type, OscalBaseModel):
-                    model_dict[field] = generate_sample_model(outer_type, optional=include_optional, depth=depth - 1)
+                    model_dict[field] = generate_sample_model(
+                        outer_type, include_optional=include_optional, depth=depth - 1
+                    )
                 else:
                     # Hacking here:
                     # Root models should ideally not exist, however, sometimes we are stuck with them.

@@ -148,7 +148,7 @@ def test_get_all_sample_models_optional() -> None:
             # This removes some enums and other objects.
             # add check that it is not OscalBaseModel
             if issubclass(oscal_cls, OscalBaseModel):
-                _ = gens.generate_sample_model(oscal_cls, optional=True, depth=-1)
+                _ = gens.generate_sample_model(oscal_cls, include_optional=True, depth=-1)
 
 
 def test_gen_date_authorized() -> None:
@@ -164,10 +164,10 @@ def test_gen_moo() -> None:
 
 def test_gen_control() -> None:
     """Make sure recursion is not going crazy."""
-    _ = gens.generate_sample_model(catalog.Control, optional=True, depth=100)
+    _ = gens.generate_sample_model(catalog.Control, include_optional=True, depth=100)
 
 
 def test_ensure_optional_exists() -> None:
     """Explicit test to ensure that optional variables are populated."""
-    my_catalog = gens.generate_sample_model(catalog.Catalog, optional=True, depth=-1)
+    my_catalog = gens.generate_sample_model(catalog.Catalog, include_optional=True, depth=-1)
     assert type(my_catalog.controls[0]) == catalog.Control
