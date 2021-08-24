@@ -207,7 +207,7 @@ class SSPManager():
     def _add_control_section(self, control: cat.Control, section_tuple: str) -> None:
         prose = self._get_control_section(control, section_tuple[0])
         if prose:
-            self._md_file.new_header(level=2, title=f'{control.id} Section {section_tuple[1]}')
+            self._md_file.new_header(level=2, title=f'{control.id} Section: {section_tuple[1]}')
             self._md_file.new_line(prose)
             self._md_file.new_paragraph()
 
@@ -216,17 +216,30 @@ class SSPManager():
         self._md_file.new_paragraph()
         self._md_file.new_header(level=2, title=f'{control.id} What is the solution and how is it implemented?')
 
-        for part in control.parts:
-            if part.parts is not None:
-                if part.name == 'statement':
-                    for prt in part.parts:
-                        # parts that are sections are output separately
-                        if prt.name in self._sections:
-                            continue
-                        self._md_file.new_hr()
-                        self._md_file.new_header(level=3, title=f'Part {self._get_label(prt)}')
-                        self._md_file.new_line(f'Add control implementation description here for statement {prt.id}')
-                        self._md_file.new_paragraph()
+        # if the control has no parts written out then enter implementation in the top level entry
+        # but if it does have parts written out, leave top level blank and provide details in the parts
+        # Note that parts corresponding to sections don't get written out here so a check is needed
+        did_write_part = False
+        comment_text = '<!--- Please leave this section blank and enter implementation details in the parts below. -->'
+        if control.parts:
+            for part in control.parts:
+                if part.parts:
+                    if part.name == 'statement':
+                        for prt in part.parts:
+                            # parts that are sections are output separately
+                            if prt.name in self._sections:
+                                continue
+                            if not did_write_part:
+                                self._md_file.new_line(comment_text)
+                                did_write_part = True
+                            self._md_file.new_hr()
+                            self._md_file.new_header(level=3, title=f'Part {self._get_label(prt)}')
+                            self._md_file.new_line(
+                                f'Add control implementation description here for statement {prt.id}'
+                            )
+                            self._md_file.new_paragraph()
+        if not did_write_part:
+            self._md_file.new_line(f'Add control implementation description here for control {control.id}')
         self._md_file.new_hr()
 
     def _write_control(
