@@ -86,6 +86,8 @@ class SSPGenerate(AuthorCommonCommand):
                 else:
                     sections[section] = section
 
+        logger.debug(f'ssp sections: {sections}')
+
         ssp_manager = SSPManager()
 
         return ssp_manager.generate_ssp(trestle_root, profile_path.resolve(), markdown_path, sections, yaml_header)
@@ -185,13 +187,21 @@ class SSPManager():
         self._add_parts(control)
         self._md_file.set_indent_level(-1)
 
+    def _get_control_section_part(self, part: common.Part, section: str) -> str:
+        prose = ''
+        if part.name == section and part.prose is not None:
+            prose += part.prose
+        if part.parts is not None and part.parts:
+            for sub_part in part.parts:
+                prose += self._get_control_section_part(sub_part, section)
+        return prose
+
     def _get_control_section(self, control: cat.Control, section: str) -> str:
         # look for the section text first in the control and then in the profile
         # if found in both they are appended
         prose = ''
         for part in control.parts:
-            if part.name == section and part.prose is not None:
-                prose += part.prose
+            prose += self._get_control_section_part(part, section)
         return prose
 
     def _add_control_section(self, control: cat.Control, section_tuple: str) -> None:

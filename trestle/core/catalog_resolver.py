@@ -39,8 +39,8 @@ class CatalogInterface():
         """Convenience class for handling controls as members of a group."""
 
         group_id: str
-        group_title: str
-        group_class: str
+        group_title: Optional[str]
+        group_class: Optional[str]
         control: cat.Control
 
     def __init__(self, catalog: cat.Catalog) -> None:
@@ -106,7 +106,7 @@ class CatalogInterface():
             controls.append(control)
         if group.groups is not None:
             for group in group.groups:
-                if group.controls is not None:
+                if group.controls:
                     controls.extend(self._get_all_group_controls(group))
         return controls
 
@@ -268,24 +268,36 @@ class CatalogResolver():
 
             # prune the list of resources to only those that are needed
             new_resources: List[common.Resource] = []
-            for resource in self._catalog.back_matter.resources:
-                if resource.uuid in needed_uuid_refs:
-                    new_resources.append(resource)
+            if self._catalog.back_matter is not None and self._catalog.back_matter.resources is not None:
+                for resource in self._catalog.back_matter.resources:
+                    if resource.uuid in needed_uuid_refs:
+                        new_resources.append(resource)
 
             new_groups = list(group_dict.values())
 
-            new_cat = cat.Catalog(
-                uuid=str(uuid4()),
-                metadata=self._catalog.metadata,
-                back_matter=common.BackMatter(resources=new_resources),
-                groups=new_groups
-            )
+            if new_resources and new_groups:
+                new_cat = cat.Catalog(
+                    uuid=str(uuid4()),
+                    metadata=self._catalog.metadata,
+                    back_matter=common.BackMatter(resources=new_resources),
+                    groups=new_groups
+                )
+            elif new_resources:
+                new_cat = cat.Catalog(
+                    uuid=str(uuid4()),
+                    metadata=self._catalog.metadata,
+                    back_matter=common.BackMatter(resources=new_resources)
+                )
+            elif new_groups:
+                new_cat = cat.Catalog(uuid=str(uuid4()), metadata=self._catalog.metadata, groups=new_groups)
+            else:
+                new_cat = cat.Catalog(uuid=str(uuid4()), metadata=self._catalog.metadata)
 
             return new_cat
 
         def prune(self, catalog: cat.Catalog) -> cat.Catalog:
             """Do the prune as a normal function."""
-            logger.debug(f'Prune directly catalog {catalog.metadata.title} with import {self._import.include_controls}')
+            logger.debug(f'Prune directly catalog {catalog.metadata.title} with import {self._import.href}')
             self._set_catalog(catalog)
             return self._prune_catalog()
 
@@ -382,6 +394,8 @@ class CatalogResolver():
 
         def _add_to_part(self, part: common.Part, id_: str, new_parts: List[common.Part]) -> bool:
             if part.id == id_:
+                if not part.parts:
+                    part.parts = []
                 part.parts.extend(new_parts)
                 return True
             if part.parts is not None:
@@ -424,7 +438,7 @@ class CatalogResolver():
                     if alter.adds is None:
                         raise TrestleError('Alter has no adds to perform.')
                     for add in alter.adds:
-                        if add.position.name is not None and add.position.name != 'after':
+                        if add.position is not None and add.position.name is not None and add.position.name != 'after':
                             raise TrestleError('Alter position must be "after" or None.')
                         control = self._catalog_interface.get_control(alter.control_id)
                         if add.by_id is not None:
@@ -434,6 +448,8 @@ class CatalogResolver():
                         if add.props is not None:
                             if add.by_id is not None:
                                 TrestleError('Alter cannot add props by id.')
+                            if not control.props:
+                                control.props = []
                             control.props.extend(add.props)
                             continue
                         TrestleError('Alter must either add parts or props')
@@ -483,11 +499,9 @@ class CatalogResolver():
             model, model_type = fetcher.get_oscal()
 
             if model_type == 'catalog':
-                # just yield a catalog for later pruning
                 logger.debug(f'DIRECT YIELD in import of catalog {model.metadata.title}')
                 prune_filter = CatalogResolver.Prune(self._import)
                 yield prune_filter.prune(model)
-                # yield model
             else:
                 if model_type != 'profile':
                     raise TrestleError(f'Improper model type {model_type} as profile import.')
