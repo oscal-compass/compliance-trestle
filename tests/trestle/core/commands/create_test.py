@@ -18,7 +18,6 @@ import argparse
 import json
 import pathlib
 import sys
-from unittest import mock
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -34,15 +33,18 @@ from trestle.oscal.catalog import Catalog
 subcommand_list = const.MODEL_TYPE_LIST
 
 
-def test_create_cmd(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+@pytest.mark.parametrize('include_optional', [(True), (False)])
+def test_create_cmd(tmp_trestle_dir: pathlib.Path, include_optional: bool, monkeypatch: MonkeyPatch) -> None:
     """Happy path test at the cli level."""
     # Test
     testargs_root = ['trestle', 'create']
     for subcommand in subcommand_list:
         name_stem = f'random_named_{subcommand}'
         test_args = testargs_root + [subcommand] + ['-o', name_stem]
-        with mock.patch.object(sys, 'argv', test_args):
-            rc = Trestle().run()
+        if include_optional:
+            test_args += ['-iof']
+        monkeypatch.setattr(sys, 'argv', test_args)
+        rc = Trestle().run()
         assert rc == 0
         model_file = tmp_trestle_dir / const.MODEL_TYPE_TO_MODEL_DIR[subcommand] / name_stem / f'{subcommand}.json'
         with open(model_file, 'r', encoding=const.FILE_ENCODING) as fp:
