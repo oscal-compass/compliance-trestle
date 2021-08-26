@@ -1,2 +1,2 @@
-::: trestle.core.commands.import\_
+::: trestle.core.commands.import_
 handler: python
