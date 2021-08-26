@@ -178,6 +178,10 @@ class CatalogInterface():
             for control in cat_controls:
                 yield control
 
+    def get_count_of_controls(self, recurse: bool) -> int:
+        """Find number of controls in the catalog with or without recursion."""
+        return len(list(self.get_all_controls(recurse)))
+
     def get_group_info(self, control_id: str) -> Tuple[str, str, str]:
         """Get the group_id, title, class for this control."""
         return (
@@ -403,12 +407,6 @@ class ProfileResolver():
                 new_cat = cat.Catalog(uuid=str(uuid4()), metadata=self._catalog.metadata)
 
             return new_cat
-
-        def prune(self, catalog: cat.Catalog) -> cat.Catalog:
-            """Do the prune as a normal function."""
-            logger.debug(f'Prune directly catalog {catalog.metadata.title} with import {self._import.href}')
-            self._set_catalog(catalog)
-            return self._prune_catalog()
 
         def process(self, catalog_iter: Iterable[cat.Catalog]) -> cat.Catalog:
             """Prune the catalog based on the include rule in the import_."""

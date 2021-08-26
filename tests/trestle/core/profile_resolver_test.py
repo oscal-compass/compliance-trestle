@@ -75,3 +75,12 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
         trestle_root=tmp_trestle_dir, profile='test_profile_a', output='my_ssp', verbose=True, sections=sections
     )
     assert ssp_cmd._run(args) == 0
+
+    # FIXME should check this worked ok
+    interface.update_catalog_with_dict()
+
+    assert interface.get_count_of_controls(False) == 3
+
+    assert interface.get_count_of_controls(True) == 4
+
+    assert interface.get_dependent_control_ids('ac-3') == ['ac-3.3']
