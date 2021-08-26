@@ -14,7 +14,9 @@
           {
             "with-ids": [
               "ac-3",
-              "ac-4"
+              "ac-3.3",
+              "ac-4",
+              "ac-5"
             ]
           }
         ]
@@ -23,14 +25,14 @@
     "modify": {
       "set_parameters": [
         {
-          "param_id": "ac-3.2_prm_1",
+          "param_id": "ac-3.3_prm_1",
             "values": [
-              "key users"
+              "key power users"
             ]
         },
-        {  "param_id": "ac-3.3_smt",
+        {  "param_id": "ac-3.3_prm_2",
             "values": [
-              "full compliance"
+              "full and complete compliance"
             ]
         }
       ]

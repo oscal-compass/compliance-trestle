@@ -28,8 +28,6 @@ logger = logging.getLogger(__name__)
 class MDWriter():
     """Simple class to create markdown files."""
 
-    h_rule = '______________________________________________________________________'
-
     def __init__(self, file_path: pathlib.Path):
         """Initialize the class."""
         self._file_path = file_path
@@ -90,7 +88,7 @@ class MDWriter():
     def new_hr(self) -> None:
         """Add horizontal rule."""
         self.new_paragraph()
-        self.new_line(self.h_rule)
+        self.new_line(const.SSP_MD_HRULE_LINE)
         self.new_paragraph()
 
     def new_list(self, list_: List[Any]) -> None:

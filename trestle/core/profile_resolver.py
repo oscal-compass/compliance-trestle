@@ -32,15 +32,30 @@ from trestle.oscal import common
 logger = logging.getLogger(__name__)
 
 
+class PathNode(BaseModel):
+    """Node in path to control in catalog."""
+
+    id_: str
+    is_control: bool
+
+
 class CatalogInterface():
     """Interface to query and modify catalog contents."""
 
     class ControlHandle(BaseModel):
-        """Convenience class for handling controls as members of a group."""
+        """Convenience class for handling controls as members of a group.
+
+        group_id: id of parent group or 'catalog' if not in a group
+        group_title: title of the group
+        group_class: class of the group
+        path: path of parent controls leading to this child control
+        control: the control itself
+        """
 
         group_id: str
         group_title: Optional[str]
         group_class: Optional[str]
+        path: List[PathNode]
         control: cat.Control
 
     def __init__(self, catalog: cat.Catalog) -> None:
@@ -48,83 +63,120 @@ class CatalogInterface():
         self._catalog = catalog
         self._control_dict = self._create_control_dict()
 
-    def _get_controls(self, control_handle: ControlHandle,
-                      control_dict: Dict[str, ControlHandle]) -> Dict[str, ControlHandle]:
+    def _add_sub_controls(
+        self, control_handle: ControlHandle, control_dict: Dict[str, ControlHandle], path: List[PathNode]
+    ) -> None:
         """Get all controls contained in this control and add it to the growing dict."""
-        # add this control to the dict
-        control_dict[control_handle.control.id] = control_handle
         # then add all its sub-controls to the dict recursively
-        if control_handle.control.controls is not None:
+        if control_handle.control.controls:
             group_id = control_handle.group_id
             group_title = control_handle.group_title
             group_class = control_handle.group_class
             for sub_control in control_handle.control.controls:
+                new_path = path[:]
+                new_path.append(PathNode(id_=sub_control.id, is_control=True))
                 control_handle = CatalogInterface.ControlHandle(
-                    group_id=group_id, group_title=group_title, group_class=group_class, control=sub_control
+                    group_id=group_id,
+                    group_title=group_title,
+                    group_class=group_class,
+                    path=new_path,
+                    control=sub_control
                 )
-                control_dict = self._get_controls(control_handle, control_dict)
-        # return the expanded dict
-        return control_dict
+                control_dict[sub_control.id] = control_handle
+                self._add_sub_controls(control_handle, control_dict, new_path)
 
-    def _get_group_controls(self, group: cat.Group, control_dict: Dict[str, ControlHandle]) -> Dict[str, ControlHandle]:
-        for group in self._catalog.groups:
-            if group.controls is not None:
-                for control in group.controls:
-                    control_handle = CatalogInterface.ControlHandle(
-                        group_id=group.id, group_title=group.title, group_class=group.class_, control=control
-                    )
-                    control_dict = self._get_controls(control_handle, control_dict)
-            if group.groups is not None:
-                for group in group.groups:
-                    control_dict = self._get_group_controls(group, control_dict)
-        return control_dict
+    def _add_group_controls(
+        self, group: cat.Group, control_dict: Dict[str, ControlHandle], path: List[PathNode]
+    ) -> None:
+        if group.controls is not None:
+            group_path = path[:]
+            group_path.append(PathNode(id_=group.id, is_control=False))
+            for control in group.controls:
+                new_path = group_path[:]
+                new_path.append(PathNode(id_=control.id, is_control=True))
+                control_handle = CatalogInterface.ControlHandle(
+                    group_id=group.id,
+                    group_title=group.title,
+                    group_class=group.class_,
+                    control=control,
+                    path=new_path
+                )
+                control_dict[control.id] = control_handle
+                self._add_sub_controls(control_handle, control_dict, new_path)
+        if group.groups is not None:
+            group_path = path[:]
+            group_path.append(PathNode(id_=group.id, is_control=False))
+            for sub_group in group.groups:
+                new_path = group_path[:]
+                new_path.append(sub_group.id)
+                self._add_group_controls(sub_group, control_dict, new_path)
 
     def _create_control_dict(self) -> Dict[str, ControlHandle]:
         control_dict: Dict[str, CatalogInterface.ControlHandle] = {}
+        # add controls by group
         if self._catalog.groups is not None:
             for group in self._catalog.groups:
-                control_dict = self._get_group_controls(group, control_dict)
+                self._add_group_controls(group, control_dict, [])
+        # now add controls not in a group, if any
         if self._catalog.controls is not None:
+            group_path = [PathNode(id_='catalog', is_control=False)]
             for control in self._catalog.controls:
+                new_path = group_path[:]
+                new_path.append(PathNode(id_=control.id, is_control=True))
                 control_handle = CatalogInterface.ControlHandle(
-                    group_id='catalog', group_title='catalog', group_class='catalog', control=control
+                    group_id='catalog', group_title='catalog', group_class='catalog', control=control, path=new_path
                 )
-                control_dict = self._get_controls(control_handle, control_dict)
+                control_dict[control.id] = control_handle
+                self._add_sub_controls(control_handle, control_dict, new_path)
         return control_dict
 
+    def _get_all_controls_in_list(self, controls: List[cat.Control], recurse: bool) -> List[cat.Control]:
+        new_list: List[cat.Control] = []
+        for control in controls:
+            new_list.append(control)
+            if recurse and control.controls:
+                new_list.extend(self._get_all_controls_in_list(control.controls, recurse))
+        return new_list
+
+    def _get_all_controls_in_group(self, group: cat.Group, recurse: bool) -> cat.Control:
+        # return the list of all controls in this group
+        controls: List[cat.Control] = []
+        if group.controls:
+            controls.extend(self._get_all_controls_in_list(group.controls, recurse))
+        if recurse and group.groups:
+            for group in group.groups:
+                if group.controls:
+                    controls.extend(self._get_all_controls_in_group(group, recurse))
+        return controls
+
+    def get_dependent_control_ids(self, control_id: str) -> List[str]:
+        """Find all children of this control."""
+        children: List[str] = []
+        control = self.get_control(control_id)
+        if control.controls:
+            new_controls = self._get_all_controls_in_list(control.controls, True)
+            children.extend([con.id for con in new_controls])
+        return children
+
     def get_control_ids(self) -> List[str]:
-        """Get all control ids in catalog."""
+        """Get all control ids in catalog using the dict."""
         return self._control_dict.keys()
 
     def get_control(self, control_id: str) -> cat.Control:
-        """Get control from catalog with this id."""
+        """Get control from catalog with this id using the dict."""
         return self._control_dict[control_id].control
 
-    def _get_all_group_controls(self, group: cat.Group) -> cat.Control:
-        controls: List[cat.Control] = []
-        for control in group.controls:
-            controls.append(control)
-        if group.groups is not None:
-            for group in group.groups:
-                if group.controls:
-                    controls.extend(self._get_all_group_controls(group))
-        return controls
-
-    def get_all_controls(self) -> cat.Control:
-        """Yield all controls in the catalog by group."""
-        if self._catalog.groups is not None:
+    def get_all_controls(self, recurse: bool) -> cat.Control:
+        """Yield all deep and individual controls from the catalog by group."""
+        if self._catalog.groups:
             for group in self._catalog.groups:
-                if group.controls is not None:
-                    controls = self._get_all_group_controls(group)
-                    for control in controls:
-                        yield control
-        if self._catalog.controls is not None:
-            for control in self._catalog.controls:
+                controls = self._get_all_controls_in_group(group, recurse)
+                for control in controls:
+                    yield control
+        if self._catalog.controls:
+            cat_controls = self._get_all_controls_in_list(self._catalog.controls, recurse)
+            for control in cat_controls:
                 yield control
-
-    def replace_control(self, control: cat.Control) -> None:
-        """Replace the control in the catalog after modifying it."""
-        self._control_dict[control.id].control = control
 
     def get_group_info(self, control_id: str) -> Tuple[str, str, str]:
         """Get the group_id, title, class for this control."""
@@ -134,8 +186,73 @@ class CatalogInterface():
             self._control_dict[control_id].group_class
         )
 
+    def get_path(self, control_id: str) -> List[PathNode]:
+        """Return the path into the catalog for this control."""
+        return self._control_dict[control_id].path
 
-class CatalogResolver():
+    def replace_control(self, control: cat.Control) -> None:
+        """Replace the control in the control_dict after modifying it."""
+        self._control_dict[control.id].control = control
+
+    def _update_all_controls_in_list(self, controls: List[cat.Control]) -> List[cat.Control]:
+        new_list: List[cat.Control] = []
+        for control in controls:
+            new_list.append(self.get_control(control.id))
+        return new_list
+
+    def _update_all_controls_in_group(self, group: cat.Group) -> None:
+        if group.controls:
+            group.controls = self._update_all_controls_in_list(group.controls)
+        if group.groups:
+            new_groups: List[cat.Group] = []
+            for sub_group in group.groups:
+                new_groups.append(self._update_all_controls_in_group(sub_group))
+            group.groups = new_groups
+
+    def update_catalog_with_dict(self):
+        """Update the actual catalog with changes made to the dict."""
+        if self._catalog.groups:
+            new_groups: List[cat.Group] = []
+            for group in self._catalog.groups:
+                self._update_all_controls_in_group(group)
+                new_groups.append(group)
+            self._catalog.groups = new_groups
+        if self._catalog.controls:
+            self._catalog.controls = self._update_all_controls_in_list(self._catalog.controls)
+
+    # below are utility functions
+
+    def _find_string_in_part(self, control_id: str, part: common.Part, seek_str: str) -> List[str]:
+        hits: List[str] = []
+        if part.prose:
+            if part.prose.find(seek_str) >= 0:
+                hits.append((control_id, part.prose))
+        if part.parts:
+            for sub_part in part.parts:
+                hits.extend(self._find_string_in_part(control_id, sub_part, seek_str))
+        return hits
+
+    def find_string_in_control(self, control: cat.Control, seek_str: str) -> List[Tuple[str, str]]:
+        """Find all instances of this string in prose of control."""
+        hits: List[Tuple[str, str]] = []
+        if control.parts:
+            for part in control.parts:
+                hits.extend(self._find_string_in_part(control.id, part, seek_str))
+        if False:
+            if control.controls:
+                for con in control.controls:
+                    hits.extend(self.find_string_in_control(con, seek_str))
+        return hits
+
+    def find_string_in_all_controls_prose(self, seek_str: str) -> List[Tuple[str, str]]:
+        """Find all instances of this string in catalog prose and return with control id."""
+        hits: List[Tuple[str, str]] = []
+        for control in self.get_all_controls(True):
+            hits.extend(self.find_string_in_control(control, seek_str))
+        return hits
+
+
+class ProfileResolver():
     """Class to resolve a catalog given a profile."""
 
     class Prune(Pipeline.Filter):
@@ -202,18 +319,10 @@ class CatalogResolver():
             else:
                 control_ids = self._catalog_interface.get_control_ids()
 
-            new_list = control_ids
-
-            # now exclude any
             if self._import.exclude_controls is not None:
-                exclude_list = []
-                for exclude_control in self._import.exclude_controls:
-                    new_ids = [withid.__root__ for withid in exclude_control.with_ids]
-                    exclude_list.extend(new_ids)
-                for control_id in control_ids:
-                    if control_id not in exclude_list:
-                        new_list.append(control_id)
-            return new_list
+                raise TrestleError('exclude controls is not currently supported')
+
+            return control_ids
 
         def _prune_control(self, needed_ids: List[str], control: cat.Control, exclude_ids: List[str]) -> cat.Control:
             # this is only called if the control is needed
@@ -306,9 +415,7 @@ class CatalogResolver():
             # this only processes the one catalog yielded by the one import in this pipeline.
             # it must yield in order to have the merge filter loop over available imported catalogs.
             self._set_catalog(next(catalog_iter))
-            logger.debug(
-                f'prune yielding catalog {self._catalog.metadata.title} with import {self._import.include_controls}'
-            )
+            logger.debug(f'prune yielding catalog {self._catalog.metadata.title} with import {self._import.href}')
             yield self._prune_catalog()
 
     class Merge(Pipeline.Filter):
@@ -350,8 +457,7 @@ class CatalogResolver():
             logger.debug(f'modify initialize filter with profile {profile.metadata.title}')
 
         def _replace_params(self, text: str, control: cat.Control, param_dict: Dict[str, prof.SetParameter]) -> str:
-            # replace params in a control with assignments from the profile or description info
-            #  if value is not specified
+            # replace params in control prose with assignments for this control from the profile or description info
             if control.params is not None:
                 for param in control.params:
                     # set default if no information available for text
@@ -364,19 +470,23 @@ class CatalogResolver():
                     else:
                         # if select present, use it
                         if param.select is not None:
-                            param_text = f'{param.id} = '
+                            param_text = '['
                             if param.select.how_many is not None:
-                                param_text += f'{param.select.how_many.value} '
+                                param_text += f'{param.select.how_many.value}: '
                             if param.select.choice is not None:
-                                param_text += str(param.select.choice)
-                            param_text = f'[{param_text}]'
+                                param_text += ', '.join(param.select.choice)
+                            param_text = f'{param_text}]'
                         # else use the label
                         if param.label is not None:
-                            param_text = f'[{param.id} = {param.label}]'
-                    text = text.replace(param.id, param_text)
+                            param_text = f'[{param.label}]'
+                    # this needs to be a regex match to distinguish param_1 from param_10
+                    pattern = re.compile(f'{param.id}(?:[^0-9a-zA-Z._\-#@])')
+                    text = pattern.sub(param_text, text)
 
             # strip {{ }}
-            text = text.replace(' {{', '').replace(' }}', '').replace('insert: param, ', '').strip()
+            pattern = re.compile('( *{{| *}})')
+            text = pattern.sub('', text)
+            text = text.replace('insert: param, ', '').strip()
 
             return text
 
@@ -391,6 +501,11 @@ class CatalogResolver():
             if part.parts is not None:
                 for prt in part.parts:
                     self._replace_part_prose(control, prt, param_dict)
+            if control.controls:
+                for sub_control in control.controls:
+                    if sub_control.parts:
+                        for prt in sub_control.parts:
+                            self._replace_part_prose(sub_control, prt, param_dict)
 
         def _add_to_part(self, part: common.Part, id_: str, new_parts: List[common.Part]) -> bool:
             if part.id == id_:
@@ -463,6 +578,8 @@ class CatalogResolver():
                         self._replace_part_prose(control, part, param_dict)
                 self._catalog_interface.replace_control(control)
 
+            catalog = self._catalog_interface._catalog
+
             # update the original profile metadata with new contents
             # roles and responsible-parties will be pulled in with new uuid's
             new_metadata = self._profile.metadata
@@ -500,8 +617,7 @@ class CatalogResolver():
 
             if model_type == 'catalog':
                 logger.debug(f'DIRECT YIELD in import of catalog {model.metadata.title}')
-                prune_filter = CatalogResolver.Prune(self._import)
-                yield prune_filter.prune(model)
+                yield model
             else:
                 if model_type != 'profile':
                     raise TrestleError(f'Improper model type {model_type} as profile import.')
@@ -512,16 +628,16 @@ class CatalogResolver():
                     f'import pipelines for sub_imports of profile {self._import.href} with title {model.metadata.title}'
                 )
                 for sub_import in profile.imports:
-                    import_filter = CatalogResolver.Import(self._trestle_root, sub_import)
-                    pipeline = Pipeline([import_filter])
+                    import_filter = ProfileResolver.Import(self._trestle_root, sub_import)
+                    prune_filter = ProfileResolver.Prune(sub_import)
+                    pipeline = Pipeline([import_filter, prune_filter])
                     pipelines.append(pipeline)
                     logger.debug(
                         f'sub_import add pipeline for sub href {sub_import.href} of main href {self._import.href}'
                     )
-                merge_filter = CatalogResolver.Merge(profile)
-                prune_filter = CatalogResolver.Prune(self._import)
-                modify_filter = CatalogResolver.Modify(profile)
-                final_pipeline = Pipeline([merge_filter, prune_filter, modify_filter])
+                merge_filter = ProfileResolver.Merge(profile)
+                modify_filter = ProfileResolver.Modify(profile)
+                final_pipeline = Pipeline([merge_filter, modify_filter])
                 yield next(final_pipeline.process(pipelines))
 
     @staticmethod
@@ -529,7 +645,7 @@ class CatalogResolver():
         """Create the resolved profile catalog given a profile path."""
         logger.debug(f'get resolved profile catalog for {profile_path} via generated Import.')
         import_ = prof.Import(href=str(profile_path), include_all={})
-        import_filter = CatalogResolver.Import(trestle_root, import_)
+        import_filter = ProfileResolver.Import(trestle_root, import_)
         logger.debug('launch pipeline')
         result = next(import_filter.process())
         return result

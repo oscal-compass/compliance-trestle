@@ -21,13 +21,13 @@ import pathlib
 
 from tests import test_utils
 
-from trestle.core.catalog_resolver import CatalogResolver
 from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.import_ import ImportCmd
+from trestle.core.profile_resolver import CatalogInterface, ProfileResolver
 from trestle.utils import log
 
 
-def test_resolver(tmp_trestle_dir: pathlib.Path) -> None:
+def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the resolver."""
     cat_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     args = argparse.Namespace(
@@ -56,7 +56,14 @@ def test_resolver(tmp_trestle_dir: pathlib.Path) -> None:
 
     log.set_global_logging_levels(logging.DEBUG)
 
-    cat = CatalogResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+    cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
+    interface = CatalogInterface(cat)
+    list1 = interface.find_string_in_all_controls_prose('Detailed evidence logs')
+    list2 = interface.find_string_in_all_controls_prose('full and complete compliance')
+
+    assert len(list1) == 1
+    assert len(list2) == 1
+
     cat_dir = tmp_trestle_dir / 'catalogs/my_cat'
     cat_dir.mkdir(exist_ok=True, parents=True)
     cat.oscal_write(cat_dir / 'catalog.json')

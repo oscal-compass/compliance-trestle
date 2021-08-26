@@ -23,11 +23,11 @@ from ruamel.yaml import YAML
 
 from tests import test_utils
 
-from trestle.core.catalog_resolver import CatalogResolver
 from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate, SSPManager
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.markdown_validator import MarkdownValidator
+from trestle.core.profile_resolver import ProfileResolver
 
 prof_name = 'my_prof'
 ssp_name = 'my_ssp'
@@ -59,7 +59,7 @@ def setup_for_ssp(include_header: bool,
         new_href = f'trestle://catalogs/{cat_name}/catalog.json'
     else:
         new_href = str(cat_path.resolve())
-    assert HrefCmd.change_import_href(tmp_trestle_dir, prof_name, new_href) == 0
+    assert HrefCmd.change_import_href(tmp_trestle_dir, prof_name, new_href, 0) == 0
 
     yaml_path = test_utils.YAML_TEST_DATA_PATH / 'good_simple.yaml'
     sections = 'ImplGuidance:Implementation Guidance,ExpectedEvidence:Expected Evidence,guidance:Guidance'
@@ -79,21 +79,25 @@ def setup_for_ssp(include_header: bool,
     return args, sections, yaml_path
 
 
-def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> None:
+def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> int:
     """Insert response prose in for a statement of a control."""
     control_dir = trestle_dir / ssp_name / statement_id.split('-')[0]
     md_file = control_dir / (statement_id.split('_')[0] + '.md')
 
-    with open(md_file, 'r') as md:
-        lines = md.readlines()
+    return test_utils.insert_text_in_file(md_file, statement_id, prose.split('\n'))
 
-    with open(md_file, 'w') as md:
-        for line in lines:
-            # replace the 'Add control implementation' line with the new lines of prose
-            if line.find(statement_id) < 0:
-                md.write(line)
-            else:
-                md.write(prose + '\n')
+
+def confirm_control_contains(trestle_dir: pathlib.Path, statement_id: str, seek_str: str) -> bool:
+    """Confirm the text is present in the control markdown."""
+    control_dir = trestle_dir / ssp_name / statement_id.split('-')[0]
+    md_file = control_dir / (statement_id.split('_')[0] + '.md')
+
+    responses = SSPManager.get_all_implementation_prose(md_file)
+    part_label = statement_id.split('.')[-1]
+    if part_label not in responses:
+        return False
+    prose = '\n'.join(responses[part_label])
+    return seek_str in prose
 
 
 @pytest.mark.parametrize('import_cat', [False, True])
@@ -134,24 +138,6 @@ def test_ssp_generator(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 1
 
 
-def test_ssp_generator_large_profile(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test the ssp generator with a large profile."""
-    args, sections, yaml_path = setup_for_ssp(True, True, tmp_trestle_dir)
-    ssp_cmd = SSPGenerate()
-    # run the command for happy path
-    assert ssp_cmd._run(args) == 0
-    controls_dir = tmp_trestle_dir / ssp_name
-    ac_dir = controls_dir / 'ac'
-    ac_1 = ac_dir / 'ac-1.md'
-    ac_2 = ac_dir / 'ac-2.md'
-    assert ac_1.exists()
-    assert ac_2.exists()
-    assert ac_1.stat().st_size > 1000
-    assert ac_2.stat().st_size > 2000
-    n_expected_groups = 18
-    assert len(list(controls_dir.glob('*'))) == n_expected_groups
-
-
 def test_ssp_generator_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator with no yaml header."""
     args, sections, yaml_path = setup_for_ssp(False, False, tmp_trestle_dir)
@@ -174,31 +160,31 @@ def test_ssp_generator_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     assert not header
 
 
-@pytest.mark.parametrize('use_tree', [False, True])
-def test_ssp_assemble(use_tree: bool, tmp_trestle_dir: pathlib.Path) -> None:
-    """Test ssp assemble."""
-    args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir)
+def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
+    """Test ssp assemble from cli."""
+    gen_args, _, _ = setup_for_ssp(True, True, tmp_trestle_dir)
 
     # first create the markdown
     ssp_gen = SSPGenerate()
-    assert ssp_gen._run(args) == 0
+    assert ssp_gen._run(gen_args) == 0
 
     prose_a = 'Hello there\n  How are you\n line with more text\n\ndouble line'
     prose_b = 'This is fun\nline with *bold* text'
 
     # edit it a bit
-    insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a)
-    insert_prose(tmp_trestle_dir, 'ac-1_smt.b', prose_b)
+    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.a', prose_a) == 0
+    assert insert_prose(tmp_trestle_dir, 'ac-1_smt.b', prose_b) == 0
 
     # now assemble the edited controls into json ssp
-    # two different invocations modes are used so that use_tree can be overridden
-    if use_tree:
-        ssp_assemble = SSPAssemble()
-        args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True)
-        assert ssp_assemble._run(args) == 0
-    else:
-        ssp_manager = SSPManager()
-        assert ssp_manager.assemble_ssp(ssp_name, ssp_name, True) == 0
+    ssp_assemble = SSPAssemble()
+    args = argparse.Namespace(trestle_root=tmp_trestle_dir, markdown=ssp_name, output=ssp_name, verbose=True)
+    assert ssp_assemble._run(args) == 0
+
+    # now write it back out and confirm text is still there
+    assert ssp_gen._run(gen_args) == 0
+    assert confirm_control_contains(tmp_trestle_dir, 'ac-1_smt.a', 'Hello there')
+    assert confirm_control_contains(tmp_trestle_dir, 'ac-1_smt.a', 'line with more text')
+    assert confirm_control_contains(tmp_trestle_dir, 'ac-1_smt.b', 'This is fun')
 
 
 def test_ssp_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
@@ -210,26 +196,6 @@ def test_ssp_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 1
 
 
-def test_ssp_internals() -> None:
-    """Test unusual cases in ssp."""
-    tree = [
-        {
-            'type': 'thematic_break'
-        }, {
-            'type': 'foo'
-        }, {
-            'type': 'heading', 'children': [{
-                'text': 'Part a'
-            }]
-        }, {
-            'type': 'bar'
-        }
-    ]
-    ssp_manager = SSPManager()
-    result = ssp_manager._get_label_prose(0, tree)
-    assert result == (-1, 'a', '')
-
-
 def test_ssp_generator_resolved_profile_catalog(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator to create a resolved profile catalog."""
     _, _, _ = setup_for_ssp(False, True, tmp_trestle_dir)
@@ -238,8 +204,8 @@ def test_ssp_generator_resolved_profile_catalog(tmp_trestle_dir: pathlib.Path) -
     new_catalog_dir.mkdir(parents=True, exist_ok=True)
     new_catalog_path = new_catalog_dir / 'catalog.json'
 
-    catalog_resolver = CatalogResolver()
-    resolved_catalog = catalog_resolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
+    profile_resolver = ProfileResolver()
+    resolved_catalog = profile_resolver.get_resolved_profile_catalog(tmp_trestle_dir, profile_path)
     assert resolved_catalog
     assert len(resolved_catalog.groups) == 18
 

@@ -24,7 +24,8 @@
         "include-controls": [
           {
             "with-ids": [
-              "ac-4"
+              "ac-3",
+              "ac-3.3"
             ]
           }
         ]
@@ -35,7 +36,7 @@
         {
           "param_id": "ac-1_prm_1",
             "values": [
-              "all personell"
+              "all alert personell"
             ]
         },
         {  "param_id": "ac-1_prm_2",
@@ -130,7 +131,7 @@
                 {
                   "id": "ac-1_expevid",
                   "name": "ExpectedEvidence",
-                  "prose": "Detailed logs."
+                  "prose": "Detailed evidence logs."
                 }
               ]
             }
@@ -146,7 +147,7 @@
                 {
                   "id": "ac-2_implgdn",
                   "name": "ImplGuidance",
-                  "prose": "Maintain compliance"
+                  "prose": "Maintain vigilant compliance"
                 },
                 {
                   "id": "ac-2_expevid",
