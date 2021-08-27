@@ -64,6 +64,27 @@ def test_run(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     assert expected_catalog_roles2_rp == actual_catalog
 
 
+def test_run_iof(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
+    """Test _run for AddCmd."""
+    original_catalog_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_missing_roles.json')
+    dest_file_folder = tmp_trestle_dir / 'catalogs' / 'test_catalog'
+    dest_file_location = dest_file_folder / 'catalog.yml'
+    dest_file_folder.mkdir(parents=True)
+    Catalog.oscal_read(original_catalog_path).oscal_write(dest_file_location)
+    testargs = [
+        'trestle',
+        'add',
+        '-f',
+        str(dest_file_location),
+        '-e',
+        'catalog.metadata.roles, catalog.metadata.roles, catalog.metadata.responsible-parties',
+        '-iof'
+    ]
+
+    monkeypatch.setattr(sys, 'argv', testargs)
+    assert Trestle().run() == 0
+
+
 def test_add(tmp_path: pathlib.Path, keep_cwd: pathlib.Path) -> None:
     """Test AddCmd.add() method for trestle add."""
     file_path = pathlib.Path(test_utils.JSON_TEST_DATA_PATH) / 'minimal_catalog_missing_roles.json'
