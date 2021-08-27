@@ -359,7 +359,7 @@ trestle href -n my_profile -hr trestle://catalogs/my_catalog/catalog.json
 Similarly, if the item imported is a profile, a corresponding href should point to a json file in the `profiles` directory.
 
 Note that catalogs or profiles in the trestle directory are indicated by the `trestle://` prefix, followed by the path from the trestle root directory to the actual
-catalog file.  The profile itself, that is having its imports modified, is just indicated by its name with the `-n` option.
+catalog file.  The profile itself, which is having its imports modified, is just indicated by its name with the `-n` option.
 
 If the profile has more than one import, you can display the corresponding hrefs with:
 

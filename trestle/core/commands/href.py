@@ -55,7 +55,7 @@ class HrefCmd(CommandPlusDocs):
         self.add_argument(
             '-i',
             '--item',
-            help='Item number of href to modify.  Get list by running href with no -n to list values.',
+            help='Item number of href to modify.  Get list by running href with just -n <prof_name> to list values.',
             type=int,
             required=False,
             default=0
@@ -78,23 +78,23 @@ class HrefCmd(CommandPlusDocs):
     def change_import_href(cls, trestle_root: pathlib.Path, profile_name: str, new_href: str, import_num: int) -> int:
         """Change the href of the import in the profile to point to a catalog in a specific location.
 
-        A Profile has an Imports list containing at least one href of a catalog of controls to be imported.
-        If the catalog being referenced is currently in the same trestle project as the profile, the original
-        href is likely different from the one needed to access the catalog from the profile.  Therefore,
-        in order for trestle to find the catalog directly from the profile, the href must be modified in a way that
+        A Profile has an Imports list containing at least one href of a catalog or profile to be imported.
+        If the item being referenced is currently in the same trestle project as the main profile, the original
+        href is likely different from the one needed to access the item from the profile.  Therefore,
+        in order for trestle to find the item directly from the profile, the href must be modified in a way that
         trestle can load it.
 
-        If the catalog is already at the link referred to by the href as a valid URI or absolute file path then no
-        change is needed.  But if the catalog is being worked on in the same trestle directory as the profile,
+        If the item is already at the link referred to by the href as a valid URI or absolute file path then no
+        change is needed.  But if the item is being worked on in the same trestle directory as the profile,
         the href should be modified to something like trestle://catalogs/my_catalog/catalog.json
 
         This change only needs to be made once to the profile while the profile is being used to generate SSP's
-        from the local catalog, but if the final profile is released the href would need to be changed to the
-        intended final location of the catalog.
+        from the local item, but if the final profile is released the href would need to be changed to the
+        intended final location of the referenced item.
 
         Args:
             trestle_root: trestle_root for this call
-            profile_name: Name of profile already imported into trestle
+            profile_name: Name of profile already imported into trestle containing href's to be changed
             new_href: New value for the href of the import.  If blank just list the hrefs
             import_num: Item number of the href to change.
 
