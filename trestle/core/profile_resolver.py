@@ -108,7 +108,7 @@ class CatalogInterface():
             group_path.append(PathNode(id_=group.id, is_control=False))
             for sub_group in group.groups:
                 new_path = group_path[:]
-                new_path.append(sub_group.id)
+                new_path.append(PathNode(id_=sub_group.id, is_control=False))
                 self._add_group_controls(sub_group, control_dict, new_path)
 
     def _create_control_dict(self) -> Dict[str, ControlHandle]:
@@ -210,7 +210,8 @@ class CatalogInterface():
         if group.groups:
             new_groups: List[cat.Group] = []
             for sub_group in group.groups:
-                new_groups.append(self._update_all_controls_in_group(sub_group))
+                self._update_all_controls_in_group(sub_group)
+                new_groups.append(sub_group)
             group.groups = new_groups
 
     def update_catalog_with_dict(self):
@@ -380,31 +381,24 @@ class ProfileResolver():
             needed_uuid_refs: Set[str] = self._find_all_uuid_refs(final_control_ids)
 
             # prune the list of resources to only those that are needed
-            new_resources: List[common.Resource] = []
+            new_resources: Optional[List[common.Resource]] = []
             if self._catalog.back_matter is not None and self._catalog.back_matter.resources is not None:
                 for resource in self._catalog.back_matter.resources:
                     if resource.uuid in needed_uuid_refs:
                         new_resources.append(resource)
 
-            new_groups = list(group_dict.values())
+            new_groups: Optional[List[cat.Group]] = list(group_dict.values())
 
-            if new_resources and new_groups:
-                new_cat = cat.Catalog(
-                    uuid=str(uuid4()),
-                    metadata=self._catalog.metadata,
-                    back_matter=common.BackMatter(resources=new_resources),
-                    groups=new_groups
-                )
-            elif new_resources:
-                new_cat = cat.Catalog(
-                    uuid=str(uuid4()),
-                    metadata=self._catalog.metadata,
-                    back_matter=common.BackMatter(resources=new_resources)
-                )
-            elif new_groups:
-                new_cat = cat.Catalog(uuid=str(uuid4()), metadata=self._catalog.metadata, groups=new_groups)
-            else:
-                new_cat = cat.Catalog(uuid=str(uuid4()), metadata=self._catalog.metadata)
+            # should avoid empty lists so set to None if empty
+            new_resources = new_resources if new_resources else None
+            new_groups = new_groups if new_groups else None
+
+            new_cat = cat.Catalog(
+                uuid=str(uuid4()),
+                metadata=self._catalog.metadata,
+                back_matter=common.BackMatter(resources=new_resources),
+                groups=new_groups
+            )
 
             return new_cat
 
@@ -430,7 +424,7 @@ class ProfileResolver():
             if catalog.groups is not None:
                 for group in catalog.groups:
                     if group.id not in [g.id for g in merged.groups]:
-                        merged.groups.append(cat.Group(id=group.id, controls=[]))
+                        merged.groups.append(cat.Group(id=group.id, title=group.title, controls=[]))
                     index = [g.id for g in merged.groups].index(group.id)
                     merged.groups[index].controls.extend(group.controls)
             return merged
@@ -512,18 +506,16 @@ class ProfileResolver():
                 part.parts.extend(new_parts)
                 return True
             if part.parts is not None:
-                for ii, part in enumerate(part.parts):
+                for part in part.parts:
                     if self._add_to_part(part, id_, new_parts):
-                        part.parts[ii] = part
                         return True
             return False
 
         def _add_to_parts(self, control: cat.Control, id_: str, new_parts: List[common.Part]) -> None:
             """Find part in control and add to end of its list of parts."""
             # Update the control with the new parts - otherwise error
-            for ii, part in enumerate(control.parts):
+            for part in control.parts:
                 if self._add_to_part(part, id_, new_parts):
-                    control.parts[ii] = part
                     return True
             raise TrestleError(f'Unable to add parts for control {control.id} and part {id_}')
 
@@ -586,7 +578,16 @@ class ProfileResolver():
             for import_ in self._profile.imports:
                 links.append(common.Link(**{'href': import_.href, 'rel': 'resolution-source'}))
             new_metadata.links = links
+            # move catalog controls from dummy group 'catalog' into the catalog
+            if catalog.groups:
+                for group in catalog.groups:
+                    if group.id == 'catalog':
+                        catalog.controls = group.controls
+                        catalog.groups = [group for group in catalog.groups if group.id != 'catalog']
+                        break
+
             catalog.metadata = new_metadata
+
             return catalog
 
         def process(self, catalog_iter: Iterable[cat.Catalog]) -> cat.Catalog:

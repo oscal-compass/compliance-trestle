@@ -24,6 +24,9 @@
         "include-controls": [
           {
             "with-ids": [
+              "a-1",
+              "b-2-1",
+              "cat-1",
               "ac-3",
               "ac-3.3"
             ]
@@ -116,6 +119,36 @@
         }
       ],
       "alters": [
+        {
+          "control_id": "a-1",
+          "adds": [
+            {
+              "position": "after",
+              "by_id": "a-1_smt",
+              "parts": [
+                {
+                  "id": "a-1_implgdn",
+                  "name": "ImplGuidance",
+                  "prose": "New part in subpart"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "control_id": "b-2-1",
+          "adds": [
+            {
+              "position": "after",
+              "props": [
+                {
+                  "name": "state",
+                  "value": "Victoria"
+                }
+              ]
+            }
+          ]
+        },
         {
           "control_id": "ac-1",
           "adds": [

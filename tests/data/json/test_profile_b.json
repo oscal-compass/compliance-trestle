@@ -1,6 +1,6 @@
 {
   "profile": {
-    "uuid": "A0000000-0000-4000-8000-000000000000",
+    "uuid": "A0000000-0000-4000-8000-000000000001",
     "metadata": {
       "title": "test profile b",
       "last-modified": "2021-01-01T00:00:00.000+00:00",
@@ -20,6 +20,10 @@
             ]
           }
         ]
+      },
+      {
+        "href": "trestle://profiles/test_profile_c/profile.json",
+        "include-all": {}
       }
     ],
     "modify": {
