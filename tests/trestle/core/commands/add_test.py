@@ -65,7 +65,7 @@ def test_run(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
 
 
 def test_run_iof(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
-    """Test _run for AddCmd."""
+    """Test _run for AddCmd with iof."""
     original_catalog_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_missing_roles.json')
     dest_file_folder = tmp_trestle_dir / 'catalogs' / 'test_catalog'
     dest_file_location = dest_file_folder / 'catalog.yml'
