@@ -252,8 +252,9 @@ class SSPManager():
 
     @staticmethod
     def _strip_bad_chars(label: str) -> str:
-        # remove chars that would cause statement regex to fail.  Just letters and digits
-        allowed_chars = string.ascii_letters + string.digits
+        # remove chars that would cause statement_id regex to fail.
+        # actual value can't start with digit, ., or -
+        allowed_chars = string.ascii_letters + string.digits + '-._'
         new_label = ''
         for c in label:
             if c in allowed_chars:
@@ -312,6 +313,8 @@ class SSPManager():
     @staticmethod
     def get_all_implementation_prose(control_file: pathlib.Path) -> Dict[str, List[str]]:
         """Find all labels and associated prose in this control."""
+        if not control_file.exists():
+            return {}
         ii = 0
         lines: List[str] = []
         with open(control_file, 'r') as f:
@@ -346,7 +349,6 @@ class SSPManager():
             by_comp.description = '\n'.join(prose_lines)
             # create a statement to hold the by-component and assign the statement id
             statement: ossp.Statement = gens.generate_sample_model(ossp.Statement)
-            # strip badchars from label
             statement.statement_id = f'{control_id}_smt.{label}'
             statement.by_components = [by_comp]
             # create a new implemented requirement linked to the control id to hold the statement
@@ -357,24 +359,6 @@ class SSPManager():
 
         return imp_reqs
 
-    def _load_response_text_from_existing_control_md(self, control_file: pathlib.Path,
-                                                     control: cat.Control) -> Dict[str, List[str]]:
-        text_dict: Dict[str, List[str]] = {}
-        if control_file.exists():
-            ii = 0
-            lines: List[str] = []
-            with open(control_file, 'r') as f:
-                raw_lines = f.readlines()
-            lines = [line.strip('\r\n') for line in raw_lines]
-
-            # keep moving down through the file picking up labels and prose for the imp requirements
-            while True:
-                ii, part_label, prose = self._get_label_prose(ii, lines)
-                if ii < 0:
-                    break
-                text_dict[part_label] = prose
-        return text_dict
-
     def _write_control(
         self,
         dest_path: pathlib.Path,
@@ -384,7 +368,7 @@ class SSPManager():
         sections: Optional[Dict[str, str]]
     ) -> None:
         control_file = dest_path / (control.id + '.md')
-        existing_text = self._load_response_text_from_existing_control_md(control_file, control)
+        existing_text = self.get_all_implementation_prose(control_file)
         self._md_file = MDWriter(control_file)
         self._sections = sections
 

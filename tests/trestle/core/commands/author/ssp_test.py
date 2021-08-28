@@ -87,13 +87,12 @@ def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> in
     return test_utils.insert_text_in_file(md_file, statement_id, prose.split('\n'))
 
 
-def confirm_control_contains(trestle_dir: pathlib.Path, statement_id: str, seek_str: str) -> bool:
-    """Confirm the text is present in the control markdown."""
-    control_dir = trestle_dir / ssp_name / statement_id.split('-')[0]
-    md_file = control_dir / (statement_id.split('_')[0] + '.md')
+def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_label: str, seek_str: str) -> bool:
+    """Confirm the text is present in the control markdown in the correct part."""
+    control_dir = trestle_dir / ssp_name / control_id.split('-')[0]
+    md_file = control_dir / f'{control_id}.md'
 
     responses = SSPManager.get_all_implementation_prose(md_file)
-    part_label = statement_id.split('.')[-1]
     if part_label not in responses:
         return False
     prose = '\n'.join(responses[part_label])
@@ -182,9 +181,9 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
 
     # now write it back out and confirm text is still there
     assert ssp_gen._run(gen_args) == 0
-    assert confirm_control_contains(tmp_trestle_dir, 'ac-1_smt.a', 'Hello there')
-    assert confirm_control_contains(tmp_trestle_dir, 'ac-1_smt.a', 'line with more text')
-    assert confirm_control_contains(tmp_trestle_dir, 'ac-1_smt.b', 'This is fun')
+    assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'Hello there')
+    assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'a.', 'line with more text')
+    assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'b.', 'This is fun')
 
 
 def test_ssp_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
