@@ -174,6 +174,7 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     return True
 
 
+
 def insert_text_in_file(file_path: pathlib.Path, tag: str, text_lines: List[str]) -> int:
     """Insert text lines after line containing tag.
 
@@ -231,3 +232,8 @@ def generate_complex_catalog() -> cat.Catalog:
     catalog.groups = [group_a, group_b]
 
     return catalog
+
+def patch_raise_exception() -> None:
+    """Raise TrestleError exception, to be used for testing."""
+    raise TrestleError('Forced raising of an errors')
+

@@ -21,9 +21,10 @@ from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
+import tests.test_utils as test_utils
+
 from trestle.cli import Trestle
 from trestle.core.commands.partial_object_validate import PartialObjectValidate
-from trestle.core.err import TrestleError
 
 benchmark_args = ['sample_file', 'element_path', 'rc']
 benchmark_values = [
@@ -82,17 +83,13 @@ def test_for_failure_on_multiple_element_paths(testdata_dir: pathlib.Path, monke
 
 def test_handling_unexpected_exception(testdata_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test whether a bad element string correctly errors."""
-
-    def patch_raise_exception():
-        raise TrestleError('Hello')
-
     element_str = 'catalog'
     full_path = testdata_dir / 'json/minimal_catalog.json'
     command_str = f'trestle partial-object-validate -f {str(full_path)} -e {element_str}'
     monkeypatch.setattr(sys, 'argv', command_str.split())
     monkeypatch.setattr(
         'trestle.core.commands.partial_object_validate.PartialObjectValidate.partial_object_validate',
-        patch_raise_exception
+        test_utils.patch_raise_exception
     )
     rc = Trestle().run()
     assert rc > 0

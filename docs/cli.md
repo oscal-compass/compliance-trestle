@@ -167,6 +167,8 @@ The user can edit the parts of the generated OSCAL model by modifying the sample
 The initial level of decomposition of each type of model varies according to the model type.
 This default or reference decomposition behaviour can be changed by modifying the rules in a `.trestle/config file`. These rules can be written as a sequence of `trestle split` commands.
 
+Passing `-iof` or `--include-optional-fields` will make `trestle create` generate a richer model containing all optional fields until finding recursion in the model (e.g controls within control).
+
 ## `trestle import`
 
 This command allows users to import existing OSCAL files so that they can be managed using trestle. For example `trestle import -f existing_catalog.json -o my_existing_catalog` will import `existing_catalog.json` into a new folder under `catalogs` as shown below:
@@ -418,6 +420,8 @@ Default values for mandatory datatypes will be like below. All UUID's will be po
 - Float/Double: 0.00
 - Id field: Auto generated UUID
 ```
+
+Passing `-iof` or `--include-optional-fields` will make `trestle add` generate a richer model containing all optional fields until finding recursion in the model (e.g controls within control).
 
 ## `trestle remove`
 
