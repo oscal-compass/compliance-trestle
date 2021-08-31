@@ -1,0 +1,60 @@
+{
+  "profile": {
+    "uuid": "4e225c4d-20c5-47b3-bd59-0e880bffab23",
+    "metadata": {
+      "title": "Best Practices NIST CONTROLS Profile",
+      "last-modified": "2021-08-09T15:07:24.000+00:00",
+      "version": "0.21.0",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "https://github.com/usnistgov/oscal-content/blob/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "ac-17.1",
+              "ac-6",
+              "au-2",
+              "ca-7",
+              "cm-10",
+              "ia-2.11",
+              "ia-2.2",
+              "sc-13",
+              "si-7",
+              "si-7.9"
+            ]
+          }
+        ]
+      }
+    ],
+    "modify": {
+      "set-parameters": [
+        {
+          "param-id": "myco_minimum_password_length",
+          "label": "Minimum Password Length",
+          "usage": "Check whether id password policy requires minimum length of 12 characters",
+          "values": [
+            "12"
+          ]
+        },
+        {
+          "param-id": "myco_password_reuse_prevention",
+          "label": "Password Reuse Prevention",
+          "usage": "Check whether id password policy prevents password reuse below the minimum of #",
+          "values": [
+            "24"
+          ]
+        },
+        {
+          "param-id": "allowed_service_ids_admins_per_account",
+          "label": "Maximum allowed service ID with admin privilege per account",
+          "usage": "Check whether account has no more than # service IDs with admin privileges",
+          "values": [
+            "10"
+          ]
+        }
+      ]
+    }
+  }
+}
