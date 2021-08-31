@@ -231,3 +231,8 @@ def generate_complex_catalog() -> cat.Catalog:
     catalog.groups = [group_a, group_b]
 
     return catalog
+
+
+def patch_raise_exception() -> None:
+    """Raise TrestleError exception, to be used for testing."""
+    raise TrestleError('Forced raising of an errors')

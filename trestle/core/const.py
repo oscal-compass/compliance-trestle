@@ -88,6 +88,10 @@ VAL_MODE_REFS = 'refs'
 VAL_MODE_ALL = 'all'
 VAL_MODE_OSCAL_VERSION = 'oscal_version'
 
+IOF_SHORT = '-iof'
+IOF_LONG = '--include-optional-fields'
+IOF_HELP = 'Include fields that are optional in the OSCAL model when generating the new object.'
+
 FILE_ENCODING = 'utf8'
 
 # ESCAPE CHARACTERS FOR MD heads

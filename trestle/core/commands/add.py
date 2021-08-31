@@ -65,6 +65,7 @@ class AddCmd(CommandPlusDocs):
             help=const.ARG_DESC_ELEMENT + ' to add.',
             required=True
         )
+        self.add_argument(const.IOF_SHORT, const.IOF_LONG, help=const.IOF_HELP, action='store_true')
 
     def _run(self, args: argparse.Namespace) -> int:
         """Add an OSCAL object to the specified file based on element path.
@@ -80,18 +81,17 @@ class AddCmd(CommandPlusDocs):
             file_path = pathlib.Path(args_dict[const.ARG_FILE]).resolve()
 
             # Get parent model and then load json into parent model
-            parent_model, parent_alias = fs.get_stripped_contextual_model(file_path)
+            parent_model, _ = fs.get_stripped_contextual_model(file_path)
             parent_object = parent_model.oscal_read(file_path)
             # FIXME : handle YAML files after detecting file type
             parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
 
             add_plan = Plan()
-
             # Do _add for each element_path specified in args
             element_paths: List[str] = args_dict[const.ARG_ELEMENT].split(',')
             for elm_path_str in element_paths:
                 element_path = ElementPath(elm_path_str)
-                update_action, parent_element = self.add(element_path, parent_model, parent_element)
+                update_action, parent_element = self.add(element_path, parent_element, args.include_optional_fields)
                 add_plan.add_action(update_action)
 
             create_action = CreatePathAction(file_path, True)
@@ -109,7 +109,7 @@ class AddCmd(CommandPlusDocs):
         return 0
 
     @classmethod
-    def add(cls, element_path, parent_model, parent_element):
+    def add(cls, element_path: ElementPath, parent_element: Element, include_optional: bool):
         """For a element_path, add a child model to the parent_element of a given parent_model.
 
         First we find the child model at the specified element path and instantiate it with default values.
@@ -123,10 +123,10 @@ class AddCmd(CommandPlusDocs):
             raise err.TrestleError('trestle add does not support Wildcard element path.')
         # Get child model
         try:
-            child_model = element_path.get_type(parent_model)
+            child_model = element_path.get_type(type(parent_element.get()))
 
             # Create child element with sample values
-            child_object = gens.generate_sample_model(child_model)
+            child_object = gens.generate_sample_model(child_model, include_optional=include_optional)
 
             if parent_element.get_at(element_path) is not None:
                 # The element already exists
