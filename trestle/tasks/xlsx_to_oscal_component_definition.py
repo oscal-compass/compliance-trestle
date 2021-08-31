@@ -20,7 +20,7 @@ import logging
 import pathlib
 import traceback
 import uuid
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from openpyxl import load_workbook
 from openpyxl.cell.cell import MergedCell
@@ -605,7 +605,7 @@ class XlsxToOscalComponentDefinition(TaskBase):
         logger.debug(f'catalog-title: {value}')
         return value
 
-    def _row_generator(self, work_sheet: t_work_sheet) -> t_row:
+    def _row_generator(self, work_sheet: t_work_sheet) -> Iterator[t_row]:
         """Generate rows until goal_id is None."""
         row = 1
         while True:

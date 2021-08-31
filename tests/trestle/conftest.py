@@ -18,6 +18,7 @@ import pathlib
 import random
 import string
 import sys
+from typing import Iterator
 from unittest.mock import patch
 from uuid import uuid4
 
@@ -138,7 +139,7 @@ def sample_component_definition():
 
 
 @pytest.fixture(scope='function')
-def tmp_trestle_dir(tmp_path: pathlib.Path) -> pathlib.Path:
+def tmp_trestle_dir(tmp_path: pathlib.Path) -> Iterator[pathlib.Path]:
     """Create and return a new trestle project directory using std tmp_path fixture.
 
     Note that this fixture relies on the 'trestle init' command and therefore may
@@ -156,7 +157,7 @@ def tmp_trestle_dir(tmp_path: pathlib.Path) -> pathlib.Path:
 
 
 @pytest.fixture(scope='function')
-def tmp_empty_cwd(tmp_path: pathlib.Path) -> pathlib.Path:
+def tmp_empty_cwd(tmp_path: pathlib.Path) -> Iterator[pathlib.Path]:
     """Create a temporary directory and cd into that directory with fail out afterwards.
 
     The purpose of this is to provide a clean directory per unit test and ensure we get
@@ -178,7 +179,7 @@ def testdata_dir() -> pathlib.Path:
 
 
 @pytest.fixture(scope='function')
-def keep_cwd() -> pathlib.Path:
+def keep_cwd() -> Iterator[pathlib.Path]:
     """Force test to return to orig directory if chdir's happen in test."""
     old_cwd = os.getcwd()
     yield old_cwd

@@ -16,7 +16,7 @@
 import logging
 import pathlib
 import re
-from typing import Any, Dict, Iterable, List, Optional, Set, Tuple, Union
+from typing import Dict, Iterator, List, Optional, Set, Tuple, Union
 from uuid import uuid4
 
 from pydantic import BaseModel
@@ -160,7 +160,7 @@ class CatalogInterface():
         """Get control from catalog with this id using the dict."""
         return self._control_dict[control_id].control
 
-    def get_all_controls(self, recurse: bool) -> cat.Control:
+    def get_all_controls(self, recurse: bool) -> Iterator[cat.Control]:
         """Yield all deep and individual controls from the catalog by group."""
         if self._catalog.groups:
             for group in self._catalog.groups:
@@ -386,7 +386,7 @@ class ProfileResolver():
 
             return new_cat
 
-        def process(self, catalog_iter: Iterable[cat.Catalog]) -> cat.Catalog:
+        def process(self, catalog_iter: Iterator[cat.Catalog]) -> Iterator[cat.Catalog]:
             """
             Prune the catalog based on the include rule in the import_.
 
@@ -416,7 +416,7 @@ class ProfileResolver():
                     merged.groups[index].controls.extend(group.controls)
             return merged
 
-        def process(self, pipelines: List[Pipeline]) -> cat.Catalog:
+        def process(self, pipelines: List[Pipeline]) -> Iterator[cat.Catalog]:
             """
             Merge the incoming catalogs.
 
@@ -583,7 +583,7 @@ class ProfileResolver():
 
             return catalog
 
-        def process(self, catalog_iter: Iterable[cat.Catalog]) -> cat.Catalog:
+        def process(self, catalog_iter: Iterator[cat.Catalog]) -> Iterator[cat.Catalog]:
             """Make the modifications to the controls based on the profile."""
             catalog = next(catalog_iter)
             logger.debug(
@@ -599,7 +599,7 @@ class ProfileResolver():
             self._trestle_root = trestle_root
             self._import = import_
 
-        def process(self, input_=None) -> Any:
+        def process(self, input_=None) -> Iterator[cat.Catalog]:
             """Load href for catalog or profile and yield each import as catalog imported by its distinct pipeline."""
             logger.debug(f'import entering process with href {self._import.href}')
             fetcher = cache.FetcherFactory.get_fetcher(self._trestle_root, self._import.href)

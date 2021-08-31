@@ -28,7 +28,7 @@ class Pipeline():
             """Process the input to output."""
             return input_
 
-    def __init__(self, filters: List[Filter]):
+    def __init__(self, filters: List[Filter]) -> None:
         """Initialize the class."""
         self._filters = filters
 
