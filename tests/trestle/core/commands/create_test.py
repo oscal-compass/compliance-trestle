@@ -18,11 +18,13 @@ import argparse
 import json
 import pathlib
 import sys
-from unittest import mock
+
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
-import trestle.core.err as err
+import tests.test_utils as test_utils
+
 from trestle.cli import Trestle
 from trestle.core import const
 from trestle.core.commands import create
@@ -31,15 +33,18 @@ from trestle.oscal.catalog import Catalog
 subcommand_list = const.MODEL_TYPE_LIST
 
 
-def test_create_cmd(tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('include_optional', [(True), (False)])
+def test_create_cmd(tmp_trestle_dir: pathlib.Path, include_optional: bool, monkeypatch: MonkeyPatch) -> None:
     """Happy path test at the cli level."""
     # Test
     testargs_root = ['trestle', 'create']
     for subcommand in subcommand_list:
         name_stem = f'random_named_{subcommand}'
         test_args = testargs_root + [subcommand] + ['-o', name_stem]
-        with mock.patch.object(sys, 'argv', test_args):
-            rc = Trestle().run()
+        if include_optional:
+            test_args += ['-iof']
+        monkeypatch.setattr(sys, 'argv', test_args)
+        rc = Trestle().run()
         assert rc == 0
         model_file = tmp_trestle_dir / const.MODEL_TYPE_TO_MODEL_DIR[subcommand] / name_stem / f'{subcommand}.json'
         with open(model_file, 'r', encoding=const.FILE_ENCODING) as fp:
@@ -50,7 +55,9 @@ def test_create_cmd(tmp_trestle_dir: pathlib.Path) -> None:
 def test_no_dir(tmp_empty_cwd: pathlib.Path) -> None:
     """Test for no trestle directory."""
     # Setup argparse
-    args = argparse.Namespace(trestle_root=tmp_empty_cwd, extension='json', output='catalog', verbose=0)
+    args = argparse.Namespace(
+        trestle_root=tmp_empty_cwd, extension='json', output='catalog', verbose=0, include_optional_fields=False
+    )
     rc = create.CreateCmd.create_object('catalog', Catalog, args)
     # check for non zero return code.
     assert rc > 0
@@ -58,55 +65,57 @@ def test_no_dir(tmp_empty_cwd: pathlib.Path) -> None:
 
 def test_fail_overwrite(tmp_trestle_dir: pathlib.Path) -> None:
     """Test that a failure occurs when doubling up a create."""
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, extension='json', output='my_catalog', verbose=0)
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, extension='json', output='my_catalog', verbose=0, include_optional_fields=False
+    )
     rc = create.CreateCmd.create_object('catalog', Catalog, args)
     assert rc == 0
     rc = create.CreateCmd.create_object('catalog', Catalog, args)
     assert rc > 0
 
 
-def test_broken_args(tmp_trestle_dir: pathlib.Path) -> None:
+def test_broken_args(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test behaviour on broken arguments."""
     # must be done using sys patching.
     testargs_root = ['trestle', 'create']
-    with mock.patch.object(sys, 'argv', testargs_root):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            Trestle().run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code > 0
+    monkeypatch.setattr(sys, 'argv', testargs_root)
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        Trestle().run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code > 0
     testargs = testargs_root + ['catalog']
     # missing command
-    with mock.patch.object(sys, 'argv', testargs):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            Trestle().run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code > 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        Trestle().run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code > 0
     # missing mandatory args
     testargs = testargs + ['-x', 'json']
-    with mock.patch.object(sys, 'argv', testargs):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            Trestle().run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code > 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        Trestle().run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code > 0
     testargs = testargs + ['-o', 'output']
     # correct behavior
-    with mock.patch.object(sys, 'argv', testargs):
-        rc = Trestle().run()
-        assert rc == 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    rc = Trestle().run()
+    assert rc == 0
     # correct behavior
     testargs[2] = 'bad_name'
-    with mock.patch.object(sys, 'argv', testargs):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            Trestle().run()
-        assert pytest_wrapped_e.type == SystemExit
-        assert pytest_wrapped_e.value.code > 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        Trestle().run()
+    assert pytest_wrapped_e.type == SystemExit
+    assert pytest_wrapped_e.value.code > 0
 
 
-def test_execute_failure(tmp_trestle_dir: pathlib.Path) -> None:
+def test_execute_failure(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Ensure create plan failure will return clean return codes from run."""
-    args = argparse.Namespace(trestle_root=tmp_trestle_dir, extension='json', output='my_catalog', verbose=0)
-
-    with mock.patch('trestle.core.models.plans.Plan.simulate') as simulate_mock:
-        simulate_mock.side_effect = err.TrestleError('stuff')
-        rc = create.CreateCmd.create_object('catalog', Catalog, args)
-        assert rc == 1
+    args = argparse.Namespace(
+        trestle_root=tmp_trestle_dir, extension='json', output='my_catalog', verbose=0, include_optional_fields=False
+    )
+    monkeypatch.setattr('trestle.core.models.plans.Plan.simulate', test_utils.patch_raise_exception)
+    rc = create.CreateCmd.create_object('catalog', Catalog, args)
+    assert rc == 1

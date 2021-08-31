@@ -170,3 +170,8 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     except Exception:
         return False
     return True
+
+
+def patch_raise_exception() -> None:
+    """Raise TrestleError exception, to be used for testing."""
+    raise TrestleError('Forced raising of an errors')
