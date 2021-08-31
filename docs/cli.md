@@ -351,18 +351,31 @@ Remembering in the end you only care about the end type. So in this scenario `ca
 
 ## `trestle href`
 
-This command changes the Import href in a profile and is needed when generating an SSP (system security plan) with the author tool, `ssp-generate`.
-The Import in a profile is used to load the associated catalog of controls, which must be available at the corresponding href uri.  If the catalog
-is in the trestle directory then the href should be changed with a command of the form:
+This command changes the href of an Import in a profile and is needed when generating an SSP (system security plan) with the author tool, `ssp-generate`.
+The Imports in a profile are used to load associated catalogs of controls and profiles, and must be available at the corresponding href uri.  If an imported catalog is in the trestle directory then the href should be changed with a command of the form:
 
 ```
 trestle href -n my_profile -hr trestle://catalogs/my_catalog/catalog.json
 ```
 
-Note that catalogs in the trestle directory are indicated by the `trestle://` prefix, followed by the path from the trestle root directory to the actual
-catalog file.  The profile itself is just indicated by its name.
+Similarly, if the item imported is a profile, a corresponding href should point to a json file in the `profiles` directory.
 
-Currently the profile must contain only one import in its list of Imports, and that is the one that will take on the new href value.
+Note that catalogs or profiles in the trestle directory are indicated by the `trestle://` prefix, followed by the path from the trestle root directory to the actual
+catalog file.  The profile itself, which is having its imports modified, is just indicated by its name with the `-n` option.
+
+If the profile has more than one import, you can display the corresponding hrefs with:
+
+```
+trestle href -n my_profile
+```
+
+This will give a numbered list of the hrefs.  You can then change them individually by providing the corresponding item number:
+
+```
+trestle href -n my_profile -i 1 -hr trestle://catalogs/my_catalog/catalog.json
+```
+
+This will change the href indexed as `1` when the list was displayed.  The href's are indexed starting from 0.
 
 The `trestle href` command can also be used to change the value back to the intended one prior to distribution of the profile.
 

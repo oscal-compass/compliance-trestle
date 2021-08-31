@@ -62,7 +62,7 @@ repos:
         exclude: "(oscal/)"
         stages: [commit]
   - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.8
+    rev: 0.7.9
     hooks:
     - id: mdformat
       exclude: "CHANGELOG.md|docs/mkdocs_code_of_conduct.md|docs/api_reference|tests/data/author"

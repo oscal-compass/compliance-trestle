@@ -37,6 +37,12 @@ def test_href_cmd(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_profile
 
     os.chdir(models_path)
 
+    # just list the hrefs
+    cmd_string = 'trestle href -n my_test_model'
+    with patch.object(sys, 'argv', cmd_string.split()):
+        rc = Trestle().run()
+        assert rc == 0
+
     orig_href = sample_profile.imports[0].href
 
     new_href = 'trestle://catalogs/my_catalog/catalog.json'
@@ -74,8 +80,9 @@ def test_href_failures(tmp_path: pathlib.Path, keep_cwd: pathlib.Path, sample_pr
 
     os.chdir(models_path)
 
-    # add extra import to the profile to force failure
-    # currently only one import is allowed
+    cmd_string = 'trestle href -n my_test_model -hr foobar -i 2'
+
+    # add extra import to the profile and ask for import number 2
     sample_profile.imports.append(sample_profile.imports[0])
     sample_profile.oscal_write(profile_path)
     with patch.object(sys, 'argv', cmd_string.split()):

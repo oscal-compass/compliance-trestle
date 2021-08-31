@@ -20,14 +20,17 @@ develop:
 pre-commit: 
 	pre-commit install
 
+pre-commit-update:
+	pre-commit autoupdate
+
 install:
 	python -m pip install  --upgrade pip setuptools
 	python -m pip install . --upgrade --upgrade-strategy eager
 
-code-format:
+code-format: pre-commit-update
 	pre-commit run yapf --all-files
 
-code-lint:
+code-lint: pre-commit-update
 	pre-commit run flake8 --all-files
 
 code-typing:
@@ -66,7 +69,7 @@ docs-validate:: docs-automation
 docs-serve: docs-automation
 	mkdocs serve	
 
-mdformat:
+mdformat: pre-commit-update
 	pre-commit run mdformat --all-files
 # Something funky about these tests.
 # clean::

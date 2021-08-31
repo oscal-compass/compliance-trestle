@@ -88,7 +88,7 @@ class MDWriter():
     def new_hr(self) -> None:
         """Add horizontal rule."""
         self.new_paragraph()
-        self.new_line('---')
+        self.new_line(const.SSP_MD_HRULE_LINE)
         self.new_paragraph()
 
     def new_list(self, list_: List[Any]) -> None:
@@ -105,19 +105,25 @@ class MDWriter():
             self._add_indent_level(1)
             self.new_paragraph()
             for item in list_:
+                if self._indent_level <= 0:
+                    self.new_paragraph()
                 self.new_list(item)
             self._add_indent_level(-1)
 
     def write_out(self) -> None:
         """Write out the markdown file."""
         try:
+            self._file_path.parent.mkdir(exist_ok=True, parents=True)
             with open(self._file_path, 'w', encoding=const.FILE_ENCODING) as f:
                 # Make sure yaml header is written first
                 if self._yaml_header is not None:
                     f.write('---\n')
+                    f.write('\n')
                     yaml = YAML(typ='safe')
                     yaml.default_flow_style = False
+                    yaml.indent(mapping=2, sequence=4, offset=2)
                     yaml.dump(self._yaml_header, f)
+                    f.write('\n')
                     f.write('---\n')
 
                 f.write('\n'.join(self._lines))

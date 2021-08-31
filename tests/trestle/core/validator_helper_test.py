@@ -29,8 +29,8 @@ import trestle.oscal.common as common
 import trestle.oscal.component as component
 import trestle.oscal.ssp as ssp
 
-catalog_path = pathlib.Path('nist-content/nist.gov/SP800-53/rev4/json/NIST_SP-800-53_rev4_catalog.json')
 ssp_path = pathlib.Path('nist-content/src/examples/ssp/json/ssp-example.json')
+catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
 
 
 def test_has_no_duplicate_values_generic() -> None:
@@ -81,8 +81,8 @@ def test_regenerate_uuids_catalog() -> None:
     """Test regeneration of uuids with updated refs in catalog."""
     orig_cat = catalog.Catalog.oscal_read(catalog_path)
     new_cat, uuid_lut, n_refs_updated = validator_helper.regenerate_uuids(orig_cat)
-    assert len(uuid_lut.items()) == 121
-    assert n_refs_updated == 0
+    assert len(uuid_lut.items()) == 2
+    assert n_refs_updated == 2
 
 
 def test_find_all_attribs_by_regex() -> None:

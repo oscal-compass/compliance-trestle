@@ -54,7 +54,9 @@ def test_fetcher_oscal(tmp_trestle_dir):
     fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), catalog_file)
     # Create/update the cache copy
     fetcher._update_cache()
-    fetched_data = fetcher.get_oscal(Catalog)
+    fetched_data = fetcher.get_oscal_with_model_type(Catalog)
+    assert models_are_equivalent(fetched_data, catalog_data)
+    fetched_data, _ = fetcher.get_oscal()
     assert models_are_equivalent(fetched_data, catalog_data)
 
 
@@ -70,7 +72,7 @@ def test_fetcher_oscal_fails(tmp_trestle_dir):
     with patch('trestle.oscal.catalog.Catalog.oscal_read') as oscal_read_mock:
         oscal_read_mock.side_effect = err.TrestleError
         with pytest.raises(err.TrestleError):
-            fetcher.get_oscal(Catalog)
+            fetcher.get_oscal_with_model_type(Catalog)
         oscal_read_mock.assert_called_once()
 
 
@@ -95,14 +97,17 @@ def test_github_fetcher():
 
 def test_local_fetcher_get_fails(tmp_trestle_dir):
     """Test the local fetcher get failure."""
+    # previously local fetches were not allowed but they need to be allowed for resolved catalog
     rand_str = ''.join(random.choice(string.ascii_letters) for x in range(16))
     catalog_dir = tmp_trestle_dir / f'catalogs/{rand_str}'
     catalog_dir.mkdir(parents=True, exist_ok=True)
     catalog_file = catalog_dir / 'catalog.json'
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(catalog_file)
-    with pytest.raises(err.TrestleError):
-        cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), str(catalog_file))
+    saved_data = fs.load_file(pathlib.Path(catalog_file))
+    fetcher = cache.FetcherFactory.get_fetcher(pathlib.Path(tmp_trestle_dir), str(catalog_file))
+    fetched_data = fetcher.get_raw()
+    assert fetched_data == saved_data
 
 
 def test_local_fetcher_absolute(tmp_trestle_dir):
