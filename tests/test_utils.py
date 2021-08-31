@@ -174,26 +174,21 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     return True
 
 
-def insert_text_in_file(file_path: pathlib.Path, tag: str, text_lines: List[str]) -> int:
-    """Insert text lines after line containing tag.
+def insert_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> int:
+    r"""Insert text lines after line containing tag.
 
     Return 0 on success, 1 tag not found.
-    Text lines should be bare strings with no line ending.
+    Text is a string with appropriate \n line endings.
     """
     lines: List[str] = []
-    with open(file_path, 'r') as f:
+    with file_path.open('r') as f:
         lines = f.readlines()
-    new_lines = []
-    found = False
-    for line in lines:
-        new_lines.append(line.strip('\r\n'))
-        if not found and line.find(tag) >= 0:
-            new_lines.extend(text_lines)
-            found = True
-    if found:
-        with open(file_path, 'w') as f:
-            f.writelines('\n'.join(new_lines))
-        return 0
+    for ii, line in enumerate(lines):
+        if line.find(tag) >= 0:
+            lines.insert(ii + 1, text)
+            with file_path.open('w') as f:
+                f.writelines(lines)
+            return 0
     return 1
 
 

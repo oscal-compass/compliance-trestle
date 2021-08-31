@@ -84,7 +84,7 @@ def insert_prose(trestle_dir: pathlib.Path, statement_id: str, prose: str) -> in
     control_dir = trestle_dir / ssp_name / statement_id.split('-')[0]
     md_file = control_dir / (statement_id.split('_')[0] + '.md')
 
-    return test_utils.insert_text_in_file(md_file, statement_id, prose.split('\n'))
+    return test_utils.insert_text_in_file(md_file, statement_id, prose)
 
 
 def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_label: str, seek_str: str) -> bool:

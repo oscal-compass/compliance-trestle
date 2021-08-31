@@ -18,6 +18,7 @@
 import argparse
 import logging
 import pathlib
+from typing import List, Tuple
 
 from tests import test_utils
 
@@ -25,6 +26,14 @@ from trestle.core.commands.author.ssp import SSPGenerate
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.profile_resolver import CatalogInterface, ProfileResolver
 from trestle.utils import log
+
+
+def find_string_in_all_controls_prose(interface: CatalogInterface, seek_str: str) -> List[Tuple[str, str]]:
+    """Find all instances of this string in catalog prose and return with control id."""
+    hits: List[Tuple[str, str]] = []
+    for control in interface.get_all_controls(True):
+        hits.extend(interface.find_string_in_control(control, seek_str))
+    return hits
 
 
 def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
@@ -71,8 +80,8 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
 
     cat = ProfileResolver.get_resolved_profile_catalog(tmp_trestle_dir, prof_a_path)
     interface = CatalogInterface(cat)
-    list1 = interface.find_string_in_all_controls_prose('Detailed evidence logs')
-    list2 = interface.find_string_in_all_controls_prose('full and complete compliance')
+    list1 = find_string_in_all_controls_prose(interface, 'Detailed evidence logs')
+    list2 = find_string_in_all_controls_prose(interface, 'full and complete compliance')
 
     assert len(list1) == 1
     assert len(list2) == 1
@@ -87,9 +96,6 @@ def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
         trestle_root=tmp_trestle_dir, profile='test_profile_a', output='my_ssp', verbose=True, sections=sections
     )
     assert ssp_cmd._run(args) == 0
-
-    # FIXME should check this worked ok
-    interface.update_catalog_with_dict()
 
     assert interface.get_count_of_controls(False) == 6
 
@@ -109,4 +115,3 @@ def test_deep_catalog() -> None:
     interface = CatalogInterface(catalog)
     assert interface.get_count_of_controls(False) == 10
     assert interface.get_count_of_controls(True) == 15
-    interface.update_catalog_with_dict()

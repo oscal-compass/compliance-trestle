@@ -82,6 +82,10 @@ class SSPGenerate(AuthorCommonCommand):
             for section in section_tuples:
                 if ':' in section:
                     s = section.split(':')
+                    section_label = s[0].strip()
+                    if section_label == 'statement':
+                        logger.warning('Section label "statment" is not allowed.')
+                        return 1
                     sections[s[0].strip()] = s[1].strip()
                 else:
                     sections[section] = section
@@ -138,8 +142,12 @@ class SSPManager():
         return ''
 
     def _get_part(self, control: cat.Control, part: common.Part) -> List[Union[str, List[str]]]:
-        # for a part in a control find the parts in it that require implementations
-        # return list of string formatted labels and associated descriptive prose
+        """
+        Find parts in control that require implementations.
+
+        For a part in a control find the parts in it that require implementations
+        return list of string formatted labels and associated descriptive prose
+        """
         items = []
         # parts that are sections are output separately
         if part.name not in self._sections:
@@ -157,13 +165,10 @@ class SSPManager():
         return items
 
     def _add_parts(self, control: cat.Control) -> None:
-        # for a given control add its parts to the md file after replacing params
+        """For a given control add its parts to the md file after replacing params."""
         items = []
         if control.parts is not None:
             for part in control.parts:
-                # parts that are sections are output separately
-                if part.name in self._sections:
-                    continue
                 if part.name == 'statement':
                     items.append(self._get_part(control, part))
             # unwrap the list if it is many levels deep
@@ -177,7 +182,7 @@ class SSPManager():
             self._md_file.add_yaml_header(yaml_header)
 
     def _add_control_description(self, control: cat.Control, group_title: str) -> None:
-        # add the control description and parts to the md file
+        """Add the control description and parts to the md file."""
         self._md_file.new_paragraph()
         title = f'{control.id} - {group_title} {control.title}'
         self._md_file.new_header(level=1, title=title)
@@ -187,7 +192,7 @@ class SSPManager():
         self._md_file.set_indent_level(-1)
 
     def _get_control_section_part(self, part: common.Part, section: str) -> str:
-        # get the prose for a section in the control
+        """Get the prose for a section in the control."""
         prose = ''
         if part.name == section and part.prose is not None:
             prose += part.prose
@@ -197,30 +202,33 @@ class SSPManager():
         return prose
 
     def _get_control_section(self, control: cat.Control, section: str) -> str:
-        # look for the section text first in the control and then in the profile
-        # if found in both they are appended
+        """
+        Find section text first in the control and then in the profile.
+
+        If found in both they are appended
+        """
         prose = ''
         for part in control.parts:
             prose += self._get_control_section_part(part, section)
         return prose
 
     def _add_control_section(self, control: cat.Control, section_tuple: str) -> None:
-        # add the control section to the md file
+        """Add the control section to the md file."""
         prose = self._get_control_section(control, section_tuple[0])
         if prose:
-            self._md_file.new_header(level=2, title=f'{control.id} section: {section_tuple[1]}')
+            self._md_file.new_header(level=1, title=f'{control.id} section: {section_tuple[1]}')
             self._md_file.new_line(prose)
             self._md_file.new_paragraph()
 
     def _insert_existing_text(self, part_label: str, existing_text: Dict[str, List[str]]) -> None:
-        # insert text captured in the previous markdown and reinsert to avoid overwrite
+        """Insert text captured in the previous markdown and reinsert to avoid overwrite."""
         if part_label in existing_text:
             self._md_file.new_paragraph()
             for line in existing_text[part_label]:
                 self._md_file.new_line(line)
 
     def _add_response(self, control: cat.Control, existing_text: Dict[str, List[str]]) -> None:
-        # add the response request text for all parts to the markdown along with the header
+        """Add the response request text for all parts to the markdown along with the header."""
         self._md_file.new_hr()
         self._md_file.new_paragraph()
         self._md_file.new_header(level=2, title=f'{control.id} {const.SSP_MD_IMPLEMENTATION_QUESTION}')
@@ -242,7 +250,7 @@ class SSPManager():
                                 did_write_part = True
                             self._md_file.new_hr()
                             part_label = self._get_label(prt)
-                            self._md_file.new_header(level=3, title=f'Part {part_label}')
+                            self._md_file.new_header(level=2, title=f'Part {part_label}')
                             self._md_file.new_line(f'{const.SSP_ADD_IMPLEMENTATION_FOR_STATEMENT_TEXT} {prt.id}')
                             self._insert_existing_text(part_label, existing_text)
                             self._md_file.new_paragraph()
@@ -252,8 +260,11 @@ class SSPManager():
 
     @staticmethod
     def _strip_bad_chars(label: str) -> str:
-        # remove chars that would cause statement_id regex to fail.
-        # actual value can't start with digit, ., or -
+        """
+        Remove chars that would cause statement_id regex to fail.
+
+        Actual value can't start with digit, ., or -
+        """
         allowed_chars = string.ascii_letters + string.digits + '-._'
         new_label = ''
         for c in label:
@@ -263,8 +274,11 @@ class SSPManager():
 
     @staticmethod
     def _trim_prose_lines(lines: List[str]) -> List[str]:
-        # trim empty lines at start and end of list of lines in prose
-        # also need to exclude the line requesting implementation prose
+        """
+        Trim empty lines at start and end of list of lines in prose.
+
+        Also need to exclude the line requesting implementation prose
+        """
         ii = 0
         n_lines = len(lines)
         while ii < n_lines and (lines[ii].strip(' \r\n') == ''
@@ -279,18 +293,21 @@ class SSPManager():
 
     @staticmethod
     def _get_label_prose(ii: int, lines: List[str]) -> Tuple[int, str, List[str]]:
-        # returns the found label and its corresponding list of prose lines
-        # ii should point to start of file or directly at a new Part or control
-        # this looks for two types of reference lines:
-        # _______\n### Part label
-        # _______\n## label
-        # if a section is meant to be left blank it goes ahead and reads the comment text
+        r"""
+        Return the found label and its corresponding list of prose lines.
+
+        ii should point to start of file or directly at a new Part or control
+        This looks for two types of reference lines:
+        _______\n## Part label
+        _______\n# label
+        If a section is meant to be left blank it goes ahead and reads the comment text
+        """
         nlines = len(lines)
         prose_lines: List[str] = []
         item_label = ''
         while ii < nlines:
             # start of new part
-            if lines[ii].startswith('### Part'):
+            if lines[ii].startswith('## Part'):
                 item_label = lines[ii].strip().split(' ')[-1]
                 ii += 1
                 # collect until next hrule
@@ -299,7 +316,7 @@ class SSPManager():
                         return ii, item_label, SSPManager._trim_prose_lines(prose_lines)
                     prose_lines.append(lines[ii].strip())
                     ii += 1
-            elif lines[ii].startswith('## ') and lines[ii].strip().endswith(const.SSP_MD_IMPLEMENTATION_QUESTION):
+            elif lines[ii].startswith('# ') and lines[ii].strip().endswith(const.SSP_MD_IMPLEMENTATION_QUESTION):
                 item_label = lines[ii].strip().split(' ')[1]
                 ii += 1
                 while ii < nlines:
@@ -312,12 +329,20 @@ class SSPManager():
 
     @staticmethod
     def get_all_implementation_prose(control_file: pathlib.Path) -> Dict[str, List[str]]:
-        """Find all labels and associated prose in this control."""
+        """
+        Find all labels and associated prose in this control.
+
+        Args:
+            control_file: path to the control markdown file
+
+        Returns:
+            Dictionary of part labels and corresponding prose read from the markdown file.
+        """
         if not control_file.exists():
             return {}
         ii = 0
         lines: List[str] = []
-        with open(control_file, 'r') as f:
+        with control_file.open('r') as f:
             raw_lines = f.readlines()
         lines = [line.strip('\r\n') for line in raw_lines]
 
@@ -333,7 +358,7 @@ class SSPManager():
 
     def _get_implementations(self, control_file: pathlib.Path,
                              component: ossp.SystemComponent) -> List[ossp.ImplementedRequirement]:
-        # get implementation requirements associated with a given control and link them to the one component we created
+        """Get implementation requirements associated with given control and link to the one component we created."""
         control_id = control_file.stem
         imp_reqs: list[ossp.ImplementedRequirement] = []
         responses = self.get_all_implementation_prose(control_file)
