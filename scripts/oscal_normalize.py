@@ -731,6 +731,15 @@ def kill_min_items(classes):
     return classes
 
 
+def fix_include_all(classes):
+    """Replace [IncludeAll] with [Any]."""
+    for i, c in enumerate(classes):
+        for j, line in enumerate(c.lines):
+            c.lines[j] = line.replace('[IncludeAll]', '[Any]')
+        classes[i] = c
+    return classes
+
+
 def strip_file(classes):
     """Given set of classes from a file strip all names and apply changes to references in the bodies."""
     classes = strip_prefixes(classes)
@@ -764,6 +773,9 @@ def normalize_files():
 
     # kill the min_items immediately
     uc = kill_min_items(all_classes)
+
+    # fix IncludeAll that isn't defined properly in schema
+    uc = fix_include_all(all_classes)
 
     # organize in a dict with filename as key
     file_classes = _list_to_file_classes(all_classes)

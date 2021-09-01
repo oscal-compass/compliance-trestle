@@ -28,7 +28,7 @@ import platform
 import re
 from abc import ABC, abstractmethod
 from io import StringIO
-from typing import Any, Dict, Type
+from typing import Any, Dict, Tuple, Type
 from urllib import parse
 
 import paramiko
@@ -36,7 +36,7 @@ import paramiko
 import requests
 from requests.auth import HTTPBasicAuth
 
-from trestle.core import const
+from trestle.core import const, parser
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
 from trestle.utils import fs
@@ -116,7 +116,7 @@ class FetcherBase(ABC):
             logger.debug(e)
             raise TrestleError(f'Cache get failure for {self._uri}') from e
 
-    def get_oscal(self, model_type: Type[OscalBaseModel], force_update=False) -> OscalBaseModel:
+    def get_oscal_with_model_type(self, model_type: Type[OscalBaseModel], force_update=False) -> OscalBaseModel:
         """Retrieve the cached file as a particular OSCAL model.
 
         Arguments:
@@ -134,6 +134,13 @@ class FetcherBase(ABC):
         else:
             logger.error(f'get_oscal error, no cached file for {self._uri}')
             raise TrestleError(f'get_oscal failure for {self._uri}')
+
+    def get_oscal(self, force_update=False) -> Tuple[OscalBaseModel, str]:
+        """Retrieve the cached file without knowing its model type."""
+        model_dict = self.get_raw(force_update)
+        root_key = parser.root_key(model_dict)
+        model_name = parser.to_full_model_name(root_key)
+        return parser.parse_dict(model_dict[root_key], model_name), root_key
 
 
 class LocalFetcher(FetcherBase):
@@ -184,8 +191,7 @@ class LocalFetcher(FetcherBase):
         # if this is a windows file it will have a drive letter at start after resolve
         self._abs_path = pathlib.Path(uri).resolve()
 
-        if fs.has_parent_path(self._abs_path, trestle_root):
-            raise TrestleError(f'Cannot use cache for trestle in current project directory {self._abs_path}')
+        # FIXME confirm that we should not error on loading from within trestle
 
         # set the cached path to be the actual file path
         self._cached_object_path = self._abs_path

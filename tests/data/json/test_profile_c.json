@@ -1,0 +1,45 @@
+{
+  "profile": {
+    "uuid": "A0000000-0000-4000-8000-000000000002",
+    "metadata": {
+      "title": "test profile c",
+      "last-modified": "2021-01-01T00:00:00.000+00:00",
+      "version": "2021-01-01",
+      "oscal-version": "1.0.0"
+    },
+    "imports": [
+      {
+        "href": "trestle://catalogs/complex_cat/catalog.json",
+        "include-controls": [
+          {
+            "with-ids": [
+              "a-1",
+              "b-2-1",
+              "cat-1"
+            ]
+          }
+        ]
+      }
+    ],
+    "modify": {
+      "alters": [
+        {
+          "control_id": "a-1",
+          "adds": [
+            {
+              "position": "after",
+              "by_id": "a-1_smt",
+              "parts": [
+                {
+                  "id": "a-1_deep",
+                  "name": "DeepGuidance",
+                  "prose": "Extra added part in subpart"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
