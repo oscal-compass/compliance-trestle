@@ -814,6 +814,8 @@ def normalize_files():
     # re-order them in each file and dump
     reorder_and_dump_as_python(file_classes)
 
+    # this will leave files with raw formatting and make code-format must be run separately
+
 
 if __name__ == '__main__':
     """Main invocation."""
