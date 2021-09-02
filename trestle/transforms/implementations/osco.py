@@ -191,7 +191,9 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         return value
 
     def _get_rationale_for_set_value(self, profile, name) -> str:
+        """Rationale for set value."""
         return 'not determinable from specification'
 
     def _get_rationale_for_disable_rule(self, profile, name) -> str:
+        """Rationale for disable rule."""
         return 'not determinable from specification'
