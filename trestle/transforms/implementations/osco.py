@@ -135,16 +135,19 @@ class ProfileToOscoTransformer(FromOscalTransformer):
         set_values = self._get_set_values(profile)
         # spec
         spec = {
-            'extends': self._extends,
+            'extends': self._get_metadata_prop_value(profile, 'base_profile_mnemonic', self._extends),
             'title': profile.metadata.title,
             'setValues': set_values,
         }
+        disable_rules = self._get_disable_rules(profile)
+        if len(disable_rules) > 0:
+            spec['disableRules'] = disable_rules
         # yaml data
         ydata = {
             'apiVersion': self._api_version,
             'kind': self._kind,
             'metadata': {
-                'name': self._name,
+                'name': self._get_metadata_prop_value(profile, 'profile_mnemonic', self._name),
                 'namespace': self._namespace,
             },
             'spec': spec,
@@ -158,6 +161,37 @@ class ProfileToOscoTransformer(FromOscalTransformer):
             name = set_parameter.param_id
             parameter_value = set_parameter.values[0]
             value = parameter_value.__root__
-            set_value = {'name': name, 'value': value}
+            rationale = self._get_rationale_for_set_value(profile, name)
+            set_value = {'name': name, 'value': value, 'rationale': rationale}
             set_values.append(set_value)
         return set_values
+
+    def _get_metadata_prop_value(self, profile, name, default_) -> str:
+        """Extract metadata prop or else default if not present."""
+        if profile.metadata.props is not None:
+            for prop in profile.metadata.props:
+                if prop.name == name:
+                    return prop.value
+        logger.info(f'using default: {name} = {default_}')
+        return default_
+
+    def _get_disable_rules(self, profile) -> List[str]:
+        """Extract disabled rules."""
+        value = []
+        if profile.imports is not None:
+            for item in profile.imports:
+                if item.exclude_controls is not None:
+                    for control in item.exclude_controls:
+                        if control.with_ids is not None:
+                            for with_id in control.with_ids:
+                                name = with_id.__root__
+                                rationale = self._get_rationale_for_disable_rule(profile, name)
+                                entry = {'name': name, 'rationale': rationale}
+                                value.append(entry)
+        return value
+
+    def _get_rationale_for_set_value(self, profile, name) -> str:
+        return 'not determinable from specification'
+
+    def _get_rationale_for_disable_rule(self, profile, name) -> str:
+        return 'not determinable from specification'

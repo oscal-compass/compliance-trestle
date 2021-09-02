@@ -108,11 +108,11 @@ class ProfileToOsco(TaskBase):
         # output file path
         output_name = self._config.get('output-name', 'osco-profile.yaml')
         output_filepath = pathlib.Path(output_dir, output_name)
-        logger.info(f'{output_filepath}')
+        logger.info(f'output-file: {output_filepath}')
         # overwrite
         overwrite = self._config.getboolean('output-overwrite', True)
         if not overwrite and pathlib.Path(output_filepath).exists():
-            logger.error(f'output: {output_filepath} already exists')
+            logger.error(f'output-file: {output_filepath} already exists')
             return TaskOutcome('failure')
         # read input
         profile = Profile.oscal_read(input_path)
