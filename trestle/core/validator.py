@@ -65,7 +65,7 @@ class Validator(ABC):
             for m in models:
                 model_path = models_path / m
                 try:
-                    _, _, model = load_distributed(model_path)
+                    _, _, model = load_distributed(model_path, trestle_root)
                 except TrestleError as e:
                     logger.warning(f'File load error {e}')
                     return 1
@@ -80,7 +80,7 @@ class Validator(ABC):
             model_tups = fs.get_all_models(trestle_root)
             for mt in model_tups:
                 model_path = trestle_root / fs.model_type_to_model_dir(mt[0]) / mt[1]
-                _, _, model = load_distributed(model_path)
+                _, _, model = load_distributed(model_path, trestle_root)
                 if not self.model_is_valid(model):
                     logger.info(f'INVALID: Model {model_path} did not pass the {self.error_msg()}')
                     return 1
@@ -90,7 +90,7 @@ class Validator(ABC):
         # validate file
         if 'file' in args and args.file:
             file_path = trestle_root / args.file
-            _, _, model = load_distributed(file_path)
+            _, _, model = load_distributed(file_path, trestle_root)
             if not self.model_is_valid(model):
                 logger.info(f'INVALID: Model {file_path} did not pass the {self.error_msg()}')
                 return 1

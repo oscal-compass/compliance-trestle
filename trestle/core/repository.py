@@ -78,7 +78,7 @@ class ManagedOSCAL:
     def read(self) -> OscalBaseModel:
         """Read OSCAL model from repository."""
         logger.debug(f'Reading model {self.model_name}.')
-        _, _, model = load_distributed(self.filepath)
+        _, _, model = load_distributed(self.filepath, self.root_dir)
         return model
 
     def write(self, model: OscalBaseModel) -> bool:
@@ -135,7 +135,7 @@ class ManagedOSCAL:
 
         success = False
         try:
-            ret = splitcmd.SplitCmd().perform_split(file_parent, filename, elems)
+            ret = splitcmd.SplitCmd().perform_split(file_parent, filename, elems, self.root_dir)
             if ret == 0:
                 success = True
         except Exception as e:

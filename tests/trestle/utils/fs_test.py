@@ -416,29 +416,26 @@ def test_contextual_get_singular_alias(tmp_path: pathlib.Path, keep_cwd: pathlib
     groups_dir = catalog_dir / 'groups'
     group_dir = groups_dir / f'00000{const.IDX_SEP}group'
 
-    os.chdir(mycatalog_dir)
-    assert 'responsible-party' == fs.get_singular_alias(
-        alias_path='catalog.metadata.responsible-parties', contextual_mode=True
-    )
+    rel_dir = mycatalog_dir.relative_to(tmp_path)
+    assert 'responsible-party' == fs.get_singular_alias('catalog.metadata.responsible-parties', rel_dir)
     # Both should work to deal with the case back-matter is already split from the catalog in a separate file
-    assert 'resource' == fs.get_singular_alias(alias_path='catalog.back-matter.resources', contextual_mode=True)
-    assert 'resource' == fs.get_singular_alias(alias_path='back-matter.resources', contextual_mode=True)
+    assert 'resource' == fs.get_singular_alias('catalog.back-matter.resources', rel_dir)
+    assert 'resource' == fs.get_singular_alias('back-matter.resources', rel_dir)
 
-    os.chdir(metadata_dir)
+    rel_dir = metadata_dir.relative_to(tmp_path)
     with pytest.raises(TrestleError):
-        fs.get_singular_alias('metadata.roles', contextual_mode=False)
-    alias = fs.get_singular_alias('metadata.roles', contextual_mode=True)
+        fs.get_singular_alias('metadata.roles')
+    alias = fs.get_singular_alias('metadata.roles', rel_dir)
     assert alias == 'role'
-    assert 'responsible-party' == fs.get_singular_alias(
-        alias_path='metadata.responsible-parties.*', contextual_mode=True
-    )
-    assert 'property' == fs.get_singular_alias(alias_path='metadata.responsible-parties.*.props', contextual_mode=True)
+    assert 'responsible-party' == fs.get_singular_alias('metadata.responsible-parties.*', rel_dir)
 
-    os.chdir(groups_dir)
-    assert 'control' == fs.get_singular_alias(alias_path='groups.*.controls.*.controls', contextual_mode=True)
+    assert 'property' == fs.get_singular_alias('metadata.responsible-parties.*.props', rel_dir)
 
-    os.chdir(group_dir)
-    assert 'control' == fs.get_singular_alias(alias_path='group.controls.*.controls', contextual_mode=True)
+    rel_dir = groups_dir.relative_to(tmp_path)
+    assert 'control' == fs.get_singular_alias('groups.*.controls.*.controls', rel_dir)
+
+    rel_dir = group_dir.relative_to(tmp_path)
+    assert 'control' == fs.get_singular_alias('group.controls.*.controls', rel_dir)
 
 
 def test_get_contextual_file_type(tmp_path: pathlib.Path) -> None:

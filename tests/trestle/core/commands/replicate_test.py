@@ -62,7 +62,7 @@ def test_replicate_cmd(testdata_dir, tmp_trestle_dir, regen) -> None:
     rep_name = 'repcatalog'
     _copy_local(test_data_source, source_name, 'catalog')
 
-    catalogs_dir = Path('catalogs/')
+    catalogs_dir = tmp_trestle_dir / 'catalogs/'
     rep_file = catalogs_dir / rep_name / 'catalog.json'
 
     # execute the command to replicate the model into replicated
@@ -73,9 +73,9 @@ def test_replicate_cmd(testdata_dir, tmp_trestle_dir, regen) -> None:
 
     # now load the replicate and compare
 
-    rep_model_type, rep_model_alias, rep_model_instance = load_distributed(rep_file)
+    rep_model_type, rep_model_alias, rep_model_instance = load_distributed(rep_file, tmp_trestle_dir)
 
-    expected_model_type, _ = fs.get_contextual_model_type(rep_file.resolve())
+    expected_model_type, _ = fs.get_stripped_model_type(rep_file.resolve(), tmp_trestle_dir)
 
     expected_model_instance = Catalog.oscal_read(testdata_dir / 'split_merge/load_distributed/catalog.json')
 
