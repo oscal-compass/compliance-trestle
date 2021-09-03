@@ -140,6 +140,8 @@ class FetcherBase(ABC):
         model_dict = self.get_raw(force_update)
         root_key = parser.root_key(model_dict)
         model_name = parser.to_full_model_name(root_key)
+        if model_name is None:
+            raise TrestleError(f'Failed cache read of non top level model with root_key {root_key}')
         return parser.parse_dict(model_dict[root_key], model_name), root_key
 
 

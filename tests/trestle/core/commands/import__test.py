@@ -203,7 +203,9 @@ def test_import_non_top_level_element(tmp_trestle_dir: pathlib.Path) -> None:
 def test_import_missing_input_file(tmp_trestle_dir: pathlib.Path) -> None:
     """Test for missing input file."""
     # Test
-    args = argparse.Namespace(file='random_named_file.json', output='catalog', verbose=True)
+    args = argparse.Namespace(
+        file='random_named_file.json', output='catalog', verbose=True, trestle_root=tmp_trestle_dir
+    )
     i = importcmd.ImportCmd()
     rc = i._run(args)
     assert rc == 1

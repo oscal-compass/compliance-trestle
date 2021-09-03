@@ -22,12 +22,21 @@ TRESTLE_DIST_DIR = 'dist'
 TRESTLE_CONFIG_FILE = 'config.ini'
 TRESTLE_KEEP_FILE = '.keep'
 """Map of plural form of a model type to the oscal module that contains the classes related to it."""
-MODEL_TYPE_TO_MODEL_MODULE = {
+MODEL_DIR_TO_MODEL_MODULE = {
     'catalogs': f'{PACKAGE_OSCAL}.catalog',
     'profiles': f'{PACKAGE_OSCAL}.profile',
     'component-definitions': f'{PACKAGE_OSCAL}.component',
     'system-security-plans': f'{PACKAGE_OSCAL}.ssp',
     'assessment-plans': f'{PACKAGE_OSCAL}.assessment_plan',
+    'assessment-results': f'{PACKAGE_OSCAL}.assessment_results',
+    'plan-of-action-and-milestones': f'{PACKAGE_OSCAL}.poam'
+}
+MODEL_TYPE_TO_MODEL_MODULE = {
+    'catalog': f'{PACKAGE_OSCAL}.catalog',
+    'profile': f'{PACKAGE_OSCAL}.profile',
+    'component-definition': f'{PACKAGE_OSCAL}.component',
+    'system-security-plan': f'{PACKAGE_OSCAL}.ssp',
+    'assessment-plan': f'{PACKAGE_OSCAL}.assessment_plan',
     'assessment-results': f'{PACKAGE_OSCAL}.assessment_results',
     'plan-of-action-and-milestones': f'{PACKAGE_OSCAL}.poam'
 }
@@ -51,6 +60,16 @@ MODEL_TYPE_LIST = [
     'assessment-plan',
     'assessment-results',
     'plan-of-action-and-milestones'
+]
+
+MODEL_DIR_LIST = [
+    'catalogs',
+    'profiles',
+    'component-definitions',
+    'system-security-plans',
+    'assessment-plans',
+    'assessment-results',
+    'plan-of-action-and-milestones',
 ]
 
 # argument names
