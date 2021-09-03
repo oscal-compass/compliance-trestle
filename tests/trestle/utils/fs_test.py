@@ -16,7 +16,6 @@
 import os
 import pathlib
 from typing import List
-from unittest import mock
 
 import pytest
 
@@ -177,18 +176,16 @@ def test_load_file(tmp_path: pathlib.Path) -> None:
         pass
 
 
-def test_get_contextual_model_type(tmp_path: pathlib.Path) -> None:
+def test_get_relative_model_type(tmp_path: pathlib.Path) -> None:
     """Test get model type and alias based on filesystem context."""
     import trestle.core.utils as cutils
     with pytest.raises(TrestleError):
-        fs.get_contextual_model_type(tmp_path / 'invalidpath')
+        fs.get_relative_model_type(pathlib.Path('invalidpath'))
 
     with pytest.raises(TrestleError):
-        fs.get_contextual_model_type(tmp_path)
+        fs.get_relative_model_type(pathlib.Path('./'))
 
-    create_sample_catalog_project(tmp_path)
-
-    catalogs_dir = tmp_path / 'catalogs'
+    catalogs_dir = pathlib.Path('catalogs')
     mycatalog_dir = catalogs_dir / 'mycatalog'
     catalog_dir = mycatalog_dir / 'catalog'
     metadata_dir = catalog_dir / 'metadata'
@@ -198,44 +195,38 @@ def test_get_contextual_model_type(tmp_path: pathlib.Path) -> None:
     groups_dir = catalog_dir / 'groups'
     group_dir = groups_dir / f'00000{const.IDX_SEP}group'
     controls_dir = group_dir / 'controls'
-
-    with mock.patch('trestle.utils.fs.get_project_model_path') as get_project_model_path_mock:
-        get_project_model_path_mock.side_effect = [None]
-        with pytest.raises(TrestleError):
-            fs.get_contextual_model_type(mycatalog_dir)
-
     with pytest.raises(TrestleError):
-        assert fs.get_contextual_model_type(catalogs_dir) is None
+        fs.get_relative_model_type(catalogs_dir)
 
-    assert fs.get_contextual_model_type(mycatalog_dir) == (catalog.Catalog, 'catalog')
-    assert fs.get_contextual_model_type(mycatalog_dir / 'catalog.json') == (catalog.Catalog, 'catalog')
-    assert fs.get_contextual_model_type(catalog_dir / 'back-matter.json') == (common.BackMatter, 'catalog.back-matter')
-    assert fs.get_contextual_model_type(catalog_dir / 'metadata.yaml') == (common.Metadata, 'catalog.metadata')
-    assert fs.get_contextual_model_type(metadata_dir) == (common.Metadata, 'catalog.metadata')
-    assert fs.get_contextual_model_type(roles_dir) == (List[common.Role], 'catalog.metadata.roles')
-    (type_, element) = fs.get_contextual_model_type(roles_dir)
+    assert fs.get_relative_model_type(mycatalog_dir) == (catalog.Catalog, 'catalog')
+    assert fs.get_relative_model_type(mycatalog_dir / 'catalog.json') == (catalog.Catalog, 'catalog')
+    assert fs.get_relative_model_type(catalog_dir / 'back-matter.json') == (common.BackMatter, 'catalog.back-matter')
+    assert fs.get_relative_model_type(catalog_dir / 'metadata.yaml') == (common.Metadata, 'catalog.metadata')
+    assert fs.get_relative_model_type(metadata_dir) == (common.Metadata, 'catalog.metadata')
+    assert fs.get_relative_model_type(roles_dir) == (List[common.Role], 'catalog.metadata.roles')
+    (type_, element) = fs.get_relative_model_type(roles_dir)
     assert cutils.get_origin(type_) == list
     assert element == 'catalog.metadata.roles'
-    assert fs.get_contextual_model_type(roles_dir / '00000__role.json') == (common.Role, 'catalog.metadata.roles.role')
-    model_type, full_alias = fs.get_contextual_model_type(rps_dir)
+    assert fs.get_relative_model_type(roles_dir / '00000__role.json') == (common.Role, 'catalog.metadata.roles.role')
+    model_type, full_alias = fs.get_relative_model_type(rps_dir)
     assert model_type == List[common.ResponsibleParty]
     assert full_alias == 'catalog.metadata.responsible-parties'
-    assert fs.get_contextual_model_type(
+    assert fs.get_relative_model_type(
         rps_dir / 'creator__responsible-party.json'
     ) == (common.ResponsibleParty, 'catalog.metadata.responsible-parties.responsible-party')
-    (type_, element) = fs.get_contextual_model_type(props_dir)
+    (type_, element) = fs.get_relative_model_type(props_dir)
     assert cutils.get_origin(type_) == list
     assert cutils.get_inner_type(type_) == common.Property
     assert element == 'catalog.metadata.props'
-    (expected_type, expected_json_path) = fs.get_contextual_model_type(props_dir / f'00000{const.IDX_SEP}property.json')
+    (expected_type, expected_json_path) = fs.get_relative_model_type(props_dir / f'00000{const.IDX_SEP}property.json')
     assert expected_type == common.Property
     assert expected_json_path == 'catalog.metadata.props.property'
     assert cutils.get_origin(type_) == list
-    assert fs.get_contextual_model_type(groups_dir / f'00000{const.IDX_SEP}group.json'
-                                        ) == (catalog.Group, 'catalog.groups.group')
-    assert fs.get_contextual_model_type(group_dir) == (catalog.Group, 'catalog.groups.group')
-    assert fs.get_contextual_model_type(controls_dir / f'00000{const.IDX_SEP}control.json'
-                                        ) == (catalog.Control, 'catalog.groups.group.controls.control')
+    assert fs.get_relative_model_type(groups_dir / f'00000{const.IDX_SEP}group.json'
+                                      ) == (catalog.Group, 'catalog.groups.group')
+    assert fs.get_relative_model_type(group_dir) == (catalog.Group, 'catalog.groups.group')
+    assert fs.get_relative_model_type(controls_dir / f'00000{const.IDX_SEP}control.json'
+                                      ) == (catalog.Control, 'catalog.groups.group.controls.control')
 
 
 def create_sample_catalog_project(trestle_base_dir: pathlib.Path) -> None:
@@ -287,19 +278,19 @@ def test_extract_alias() -> None:
     ) == 'responsible-party'
 
 
-def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
+def test_get_stripped_model_type(tmp_path: pathlib.Path) -> None:
     """Test get stripped model type and alias based on filesystem context."""
     with pytest.raises(TrestleError):
-        fs.get_stripped_contextual_model(tmp_path / 'invalidpath')
+        fs.get_stripped_model_type(tmp_path / 'invalidpath', tmp_path)
 
     with pytest.raises(TrestleError):
-        fs.get_stripped_contextual_model(tmp_path)
+        fs.get_stripped_model_type(tmp_path, tmp_path)
 
     create_sample_catalog_project(tmp_path)
 
     catalogs_dir = tmp_path / 'catalogs'
     with pytest.raises(TrestleError):
-        assert fs.get_stripped_contextual_model(catalogs_dir) is None
+        fs.get_stripped_model_type(catalogs_dir, tmp_path)
 
     def check_stripped_catalog() -> None:
         assert 'uuid' in alias_to_field_map
@@ -308,11 +299,11 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
         assert 'groups' not in alias_to_field_map
 
     mycatalog_dir = catalogs_dir / 'mycatalog'
-    stripped_catalog = fs.get_stripped_contextual_model(mycatalog_dir)
+    stripped_catalog = fs.get_stripped_model_type(mycatalog_dir, tmp_path)
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_catalog()
 
-    stripped_catalog = fs.get_stripped_contextual_model(mycatalog_dir / 'catalog.json')
+    stripped_catalog = fs.get_stripped_model_type(mycatalog_dir / 'catalog.json', tmp_path)
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_catalog()
 
@@ -334,16 +325,16 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
 
     catalog_dir = mycatalog_dir / 'catalog'
     metadata_dir = catalog_dir / 'metadata'
-    stripped_catalog = fs.get_stripped_contextual_model(metadata_dir)
+    stripped_catalog = fs.get_stripped_model_type(metadata_dir, tmp_path)
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_metadata(alias_to_field_map)
 
-    stripped_catalog = fs.get_stripped_contextual_model(catalog_dir / 'metadata.json')
+    stripped_catalog = fs.get_stripped_model_type(catalog_dir / 'metadata.json', tmp_path)
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_metadata(alias_to_field_map)
 
     groups_dir = catalog_dir / 'groups'
-    stripped_catalog = fs.get_stripped_contextual_model(groups_dir)
+    stripped_catalog = fs.get_stripped_model_type(groups_dir, tmp_path)
 
     assert stripped_catalog[0].__name__ == 'Groups'
     assert stripped_catalog[1] == 'catalog.groups'
@@ -359,11 +350,11 @@ def test_get_stripped_contextual_model(tmp_path: pathlib.Path) -> None:
         assert 'groups' in alias_to_field_map
         assert 'controls' not in alias_to_field_map
 
-    stripped_catalog = fs.get_stripped_contextual_model(groups_dir / f'00000{const.IDX_SEP}group')
+    stripped_catalog = fs.get_stripped_model_type(groups_dir / f'00000{const.IDX_SEP}group', tmp_path)
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_group()
 
-    stripped_catalog = fs.get_stripped_contextual_model(groups_dir / f'00000{const.IDX_SEP}group.json')
+    stripped_catalog = fs.get_stripped_model_type(groups_dir / f'00000{const.IDX_SEP}group.json', tmp_path)
     alias_to_field_map = stripped_catalog[0].alias_to_field_map()
     check_stripped_group()
 

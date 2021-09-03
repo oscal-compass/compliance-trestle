@@ -105,10 +105,15 @@ def get_relative_model_type(relative_path: pathlib.Path) -> Tuple[Type[OscalBase
         Alias of that oscal model.
 
     """
-    project_type = relative_path.parts[0]  # catalogs, profiles, etc
-    module_name = const.MODEL_TYPE_TO_MODEL_MODULE[project_type]
+    if len(relative_path.parts) < 2:
+        raise TrestleError('Insufficient path length to be a valid relative path w.r.t Trestle project root directory.')
+    project_type = relative_path.parts[0]
+    model_relative_path = pathlib.Path(*relative_path.parts[2:])  # catalogs, profiles, etc
 
-    model_relative_path = pathlib.Path(*relative_path.parts[2:])
+    try:
+        module_name = const.MODEL_TYPE_TO_MODEL_MODULE[project_type]
+    except KeyError:
+        raise TrestleError('No valid trestle model type directory (e.g. catalogs) found.')
 
     model_type, model_alias = utils.get_root_model(module_name)
     full_alias = model_alias
@@ -235,6 +240,12 @@ def get_singular_alias(alias_path: str, relative_path: Optional[pathlib.Path] = 
 
     If contextual_mode is True and contextual_path is None, it assumes alias_path is relative to the directory the user
     is running trestle from.
+
+    Args:
+        alias_path: The current alias element path as a string
+        relative_path: Optional relative path (w.r.t. trestle_root) to cater for relative element paths.
+    Returns:
+        Alias as a string
     """
     if len(alias_path.strip()) == 0:
         raise err.TrestleError(f'Invalid jsonpath {alias_path}')

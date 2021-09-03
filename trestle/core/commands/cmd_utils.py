@@ -73,9 +73,7 @@ def parse_element_args(
     Args:
         model: The OscalBaseModel being inspected to determine available elements that can be split
         element_args: List of str representing links in the chain of element paths to be parsed
-        contextual_mode: bool indicating whether to deduce the full element context from the directory structure
-            or just use the known model structure
-
+        relative_path: Optional relative path (from trestle root) used to validate element args are valid.
     Returns:
         The requested parsed list of ElementPath for use in split
     """
@@ -96,9 +94,9 @@ def parse_chain(
     """Parse the model chain starting from the beginning.
 
     Args:
-        model_obj: Optional model to use for inspecting available elements
+        model_obj: Model to use for inspecting available elements, if available or none
         path_parts: list of string paths to parse including wildcards
-        contextual_mode: True if element context is derived from file directory
+        relative_path: Optional relative path (w.r.t trestle project root directory)
 
     Returns:
         List of ElementPath
@@ -188,7 +186,15 @@ def parse_element_arg(
     element_arg: str,
     relative_path: Optional[pathlib.Path] = None
 ) -> List[ElementPath]:
-    """Parse an element arg string into a list of ElementPath."""
+    """Parse an element arg string into a list of ElementPath.
+
+    Args:
+        model: The OscalBaseModel being inspected to determine available elements that can be split
+        element_arg: Single element path, as a string.
+        relative_path: Optional relative path (from trestle root) used to validate element args are valid.
+    Returns:
+        The requested parsed list of ElementPath for use in split
+    """
     element_arg = element_arg.strip()
 
     if element_arg == '*':
