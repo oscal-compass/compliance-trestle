@@ -11,14 +11,14 @@
       
       
       
-        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.commands.init/">
+        <link rel="canonical" href="https://ibm.github.io/compliance-trestle/api_reference/trestle.core.pipeline/">
       
       <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
     
     
       
-        <title>init - Compliance Trestle</title>
+        <title>pipeline - Compliance Trestle</title>
       
     
     
@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#trestle.core.commands.init" class="md-skip">
+        <a href="#trestle.core.pipeline" class="md-skip">
           Skip to content
         </a>
       
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              init
+              pipeline
             
           </span>
         </div>
@@ -915,11 +915,126 @@
             
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../trestle.core.pipeline/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          pipeline
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         pipeline
       </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#trestle.core.pipeline" class="md-nav__link">
+    pipeline
+  </a>
+  
+    <nav class="md-nav" aria-label="pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.pipeline-classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.pipeline.Pipeline" class="md-nav__link">
+    Pipeline
+  </a>
+  
+    <nav class="md-nav" aria-label="Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.pipeline.Pipeline-classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.pipeline.Pipeline.Filter" class="md-nav__link">
+    Filter
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.pipeline.Pipeline-methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.pipeline.Pipeline.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.pipeline.Pipeline.process" class="md-nav__link">
+    process()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -927,14 +1042,12 @@
             
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_14" type="checkbox" id="__nav_8_2_2_14" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_14" type="checkbox" id="__nav_8_2_2_14" >
       
       <label class="md-nav__link" for="__nav_8_2_2_14">
         commands
@@ -1241,93 +1354,11 @@
             
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          init
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../trestle.core.commands.init/" class="md-nav__link">
         init
       </a>
-      
-        
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#trestle.core.commands.init" class="md-nav__link">
-    init
-  </a>
-  
-    <nav class="md-nav" aria-label="init">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.commands.init.logger" class="md-nav__link">
-    logger
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.commands.init-classes" class="md-nav__link">
-    Classes
-  </a>
-  
-    <nav class="md-nav" aria-label="Classes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.commands.init.InitCmd" class="md-nav__link">
-    InitCmd
-  </a>
-  
-    <nav class="md-nav" aria-label="InitCmd">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.commands.init.InitCmd.name" class="md-nav__link">
-    name
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1926,22 +1957,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#trestle.core.commands.init" class="md-nav__link">
-    init
+  <a href="#trestle.core.pipeline" class="md-nav__link">
+    pipeline
   </a>
   
-    <nav class="md-nav" aria-label="init">
+    <nav class="md-nav" aria-label="pipeline">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.commands.init.logger" class="md-nav__link">
-    logger
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#trestle.core.commands.init-classes" class="md-nav__link">
+  <a href="#trestle.core.pipeline-classes" class="md-nav__link">
     Classes
   </a>
   
@@ -1949,17 +1973,57 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.commands.init.InitCmd" class="md-nav__link">
-    InitCmd
+  <a href="#trestle.core.pipeline.Pipeline" class="md-nav__link">
+    Pipeline
   </a>
   
-    <nav class="md-nav" aria-label="InitCmd">
+    <nav class="md-nav" aria-label="Pipeline">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#trestle.core.commands.init.InitCmd.name" class="md-nav__link">
-    name
+  <a href="#trestle.core.pipeline.Pipeline-classes" class="md-nav__link">
+    Classes
   </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.pipeline.Pipeline.Filter" class="md-nav__link">
+    Filter
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.pipeline.Pipeline-methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.pipeline.Pipeline.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trestle.core.pipeline.Pipeline.process" class="md-nav__link">
+    process()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -1990,27 +2054,27 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/IBM/compliance-trestle/edit/master/docs/api_reference/trestle.core.commands.init.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/IBM/compliance-trestle/edit/master/docs/api_reference/trestle.core.pipeline.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
                 
-                  <h1>init</h1>
+                  <h1>pipeline</h1>
                 
                 <div class="doc doc-object doc-module">
 
 
 
-<h2 class="doc doc-heading" id="trestle.core.commands.init">
-        <code>trestle.core.commands.init</code>
+<h2 class="doc doc-heading" id="trestle.core.pipeline">
+        <code>trestle.core.pipeline</code>
 
 
 
-<a class="headerlink" href="#trestle.core.commands.init" title="Permanent link">¤</a></h2>
+<a class="headerlink" href="#trestle.core.pipeline" title="Permanent link">¤</a></h2>
 
     <div class="doc doc-contents first">
 
-      <p>Trestle Init Command.</p>
+      <p>Abstract base class for pipelines and filters.</p>
 
 
 
@@ -2020,40 +2084,48 @@
 
 
 
-
-  <div class="doc doc-object doc-attribute">
-
-
-
-<h4 class="doc doc-heading" id="trestle.core.commands.init.logger">
-<code class="highlight language-python"><span class="n">logger</span></code>
-
-
-<a class="headerlink" href="#trestle.core.commands.init.logger" title="Permanent link">¤</a></h4>
-
-    <div class="doc doc-contents ">
-
-    </div>
-
-  </div>
-
-
-<h3 id="trestle.core.commands.init-classes">Classes<a class="headerlink" href="#trestle.core.commands.init-classes" title="Permanent link">¤</a></h3>
+<h3 id="trestle.core.pipeline-classes">Classes<a class="headerlink" href="#trestle.core.pipeline-classes" title="Permanent link">¤</a></h3>
 
   <div class="doc doc-object doc-class">
 
 
 
-<h4 class="doc doc-heading" id="trestle.core.commands.init.InitCmd">
-        <code>InitCmd</code>
+<h4 class="doc doc-heading" id="trestle.core.pipeline.Pipeline">
+        <code>Pipeline</code>
 
 
 
-<a class="headerlink" href="#trestle.core.commands.init.InitCmd" title="Permanent link">¤</a></h4>
+<a class="headerlink" href="#trestle.core.pipeline.Pipeline" title="Permanent link">¤</a></h4>
 
     <div class="doc doc-contents ">
 
-      <p>Initialize a trestle working directory.</p>
+      <p>Pipeline base class.</p>
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+<h5 id="trestle.core.pipeline.Pipeline-classes">Classes<a class="headerlink" href="#trestle.core.pipeline.Pipeline-classes" title="Permanent link">¤</a></h5>
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.pipeline.Pipeline.Filter">
+        <code>Filter</code>
+
+
+
+<a class="headerlink" href="#trestle.core.pipeline.Pipeline.Filter" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Filter class used by pipeline.</p>
 
 
 
@@ -2065,17 +2137,43 @@
 
 
 
-  <div class="doc doc-object doc-attribute">
+
+<h7 id="trestle.core.pipeline.Pipeline.Filter-methods">Methods<a class="headerlink" href="#trestle.core.pipeline.Pipeline.Filter-methods" title="Permanent link">¤</a></h7>
+
+  <div class="doc doc-object doc-method">
 
 
 
-<h6 class="doc doc-heading" id="trestle.core.commands.init.InitCmd.name">
-<code class="highlight language-python"><span class="n">name</span></code>
+<h8 class="doc doc-heading" id="trestle.core.pipeline.Pipeline.Filter.process">
+<code class="highlight language-python"><span class="n">process</span><span class="p">(</span><span class="n">input_</span><span class="p">)</span></code>
 
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-classmethod"><code>classmethod</code></small>
+  </span>
 
-<a class="headerlink" href="#trestle.core.commands.init.InitCmd.name" title="Permanent link">¤</a></h6>
+<a class="headerlink" href="#trestle.core.pipeline.Pipeline.Filter.process" title="Permanent link">¤</a></h8>
 
     <div class="doc doc-contents ">
+
+      <p>Process the input to output.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/pipeline.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="nd">@abstractclassmethod</span>
+<span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Process the input to output.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">input_</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
 
     </div>
 
@@ -2083,6 +2181,64 @@
 
 
 
+<h5 id="trestle.core.pipeline.Pipeline-methods">Methods<a class="headerlink" href="#trestle.core.pipeline.Pipeline-methods" title="Permanent link">¤</a></h5>
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.pipeline.Pipeline.__init__">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+<a class="headerlink" href="#trestle.core.pipeline.Pipeline.__init__" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Initialize the class.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/pipeline.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Filter</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Initialize the class.&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span> <span class="o">=</span> <span class="n">filters</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h6 class="doc doc-heading" id="trestle.core.pipeline.Pipeline.process">
+<code class="highlight language-python"><span class="n">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">)</span></code>
+
+
+<a class="headerlink" href="#trestle.core.pipeline.Pipeline.process" title="Permanent link">¤</a></h6>
+
+    <div class="doc doc-contents ">
+
+      <p>Process the filter pipeline.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>trestle/core/pipeline.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Process the filter pipeline.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">filter_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">:</span>
+        <span class="n">input_</span> <span class="o">=</span> <span class="n">filter_</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">input_</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">input_</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
@@ -2126,7 +2282,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../trestle.core.commands.import_/" class="md-footer__link md-footer__link--prev" aria-label="Previous: import_" rel="prev">
+        <a href="../trestle.core.utils/" class="md-footer__link md-footer__link--prev" aria-label="Previous: utils" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -2135,20 +2291,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              import_
+              utils
             </div>
           </div>
         </a>
       
       
         
-        <a href="../trestle.core.commands.partial_object_validate/" class="md-footer__link md-footer__link--next" aria-label="Next: partial_object_validate" rel="next">
+        <a href="../trestle.core.commands.describe/" class="md-footer__link md-footer__link--next" aria-label="Next: describe" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              partial_object_validate
+              describe
             </div>
           </div>
           <div class="md-footer__button md-icon">

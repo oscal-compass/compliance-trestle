@@ -14,7 +14,7 @@
         <link rel="canonical" href="https://ibm.github.io/compliance-trestle/cli/">
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.4">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.6">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.f7f47774.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.802231af.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.3f5d1f46.min.css">
@@ -829,6 +829,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../api_reference/trestle.tasks.profile_to_osco.md" class="md-nav__link">
+        profile_to_osco
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../api_reference/trestle.tasks.osco_to_oscal/" class="md-nav__link">
         osco_to_oscal
       </a>
@@ -916,6 +928,18 @@
   
   
     <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.profile_resolver/" class="md-nav__link">
+        profile_resolver
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../api_reference/trestle.core.validator_helper/" class="md-nav__link">
         validator_helper
       </a>
@@ -931,14 +955,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_5" type="checkbox" id="__nav_8_2_2_5" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_6" type="checkbox" id="__nav_8_2_2_6" >
       
-      <label class="md-nav__link" for="__nav_8_2_2_5">
+      <label class="md-nav__link" for="__nav_8_2_2_6">
         models
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="models" data-md-level="4">
-        <label class="md-nav__title" for="__nav_8_2_2_5">
+        <label class="md-nav__title" for="__nav_8_2_2_6">
           <span class="md-nav__icon md-icon"></span>
           models
         </label>
@@ -1086,18 +1110,30 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../api_reference/trestle.core.pipeline/" class="md-nav__link">
+        pipeline
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
     
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_12" type="checkbox" id="__nav_8_2_2_12" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_14" type="checkbox" id="__nav_8_2_2_14" >
       
-      <label class="md-nav__link" for="__nav_8_2_2_12">
+      <label class="md-nav__link" for="__nav_8_2_2_14">
         commands
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="commands" data-md-level="4">
-        <label class="md-nav__title" for="__nav_8_2_2_12">
+        <label class="md-nav__title" for="__nav_8_2_2_14">
           <span class="md-nav__icon md-icon"></span>
           commands
         </label>
@@ -1195,14 +1231,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_12_8" type="checkbox" id="__nav_8_2_2_12_8" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_14_8" type="checkbox" id="__nav_8_2_2_14_8" >
       
-      <label class="md-nav__link" for="__nav_8_2_2_12_8">
+      <label class="md-nav__link" for="__nav_8_2_2_14_8">
         author
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="author" data-md-level="5">
-        <label class="md-nav__title" for="__nav_8_2_2_12_8">
+        <label class="md-nav__title" for="__nav_8_2_2_14_8">
           <span class="md-nav__icon md-icon"></span>
           author
         </label>
@@ -1528,14 +1564,14 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_21" type="checkbox" id="__nav_8_2_2_21" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8_2_2_23" type="checkbox" id="__nav_8_2_2_23" >
       
-      <label class="md-nav__link" for="__nav_8_2_2_21">
+      <label class="md-nav__link" for="__nav_8_2_2_23">
         remote
         <span class="md-nav__icon md-icon"></span>
       </label>
       <nav class="md-nav" aria-label="remote" data-md-level="4">
-        <label class="md-nav__title" for="__nav_8_2_2_21">
+        <label class="md-nav__title" for="__nav_8_2_2_23">
           <span class="md-nav__icon md-icon"></span>
           remote
         </label>
@@ -2315,6 +2351,7 @@ files become completely unmanageable for users. To combat this, trestle can <cod
 <p>The user can edit the parts of the generated OSCAL model by modifying the sample content in those directories.</p>
 <p>The initial level of decomposition of each type of model varies according to the model type.
 This default or reference decomposition behaviour can be changed by modifying the rules in a <code>.trestle/config file</code>. These rules can be written as a sequence of <code>trestle split</code> commands.</p>
+<p>Passing <code>-iof</code> or <code>--include-optional-fields</code> will make <code>trestle create</code> generate a richer model containing all optional fields until finding recursion in the model (e.g controls within control).</p>
 <h2 id="trestle-import"><code>trestle import</code><a class="headerlink" href="#trestle-import" title="Permanent link">¤</a></h2>
 <p>This command allows users to import existing OSCAL files so that they can be managed using trestle. For example <code>trestle import -f existing_catalog.json -o my_existing_catalog</code> will import <code>existing_catalog.json</code> into a new folder under <code>catalogs</code> as shown below:</p>
 <div class="highlight"><pre><span></span><code>.
@@ -2442,14 +2479,20 @@ the tanium-to-oscal task produces the <code>results</code> attribute of an <code
 <code>catalog.groups.group.controls.control.controls.control</code>
 Remembering in the end you only care about the end type. So in this scenario <code>catalog.groups.group.controls.control.controls.control</code> is equivalent to <code>catalog.controls.control</code>.</p>
 <h2 id="trestle-href"><code>trestle href</code><a class="headerlink" href="#trestle-href" title="Permanent link">¤</a></h2>
-<p>This command changes the Import href in a profile and is needed when generating an SSP (system security plan) with the author tool, <code>ssp-generate</code>.
-The Import in a profile is used to load the associated catalog of controls, which must be available at the corresponding href uri.  If the catalog
-is in the trestle directory then the href should be changed with a command of the form:</p>
+<p>This command changes the href of an Import in a profile and is needed when generating an SSP (system security plan) with the author tool, <code>ssp-generate</code>.
+The Imports in a profile are used to load associated catalogs of controls and profiles, and must be available at the corresponding href uri.  If an imported catalog is in the trestle directory then the href should be changed with a command of the form:</p>
 <div class="highlight"><pre><span></span><code>trestle href -n my_profile -hr trestle://catalogs/my_catalog/catalog.json
 </code></pre></div>
-<p>Note that catalogs in the trestle directory are indicated by the <code>trestle://</code> prefix, followed by the path from the trestle root directory to the actual
-catalog file.  The profile itself is just indicated by its name.</p>
-<p>Currently the profile must contain only one import in its list of Imports, and that is the one that will take on the new href value.</p>
+<p>Similarly, if the item imported is a profile, a corresponding href should point to a json file in the <code>profiles</code> directory.</p>
+<p>Note that catalogs or profiles in the trestle directory are indicated by the <code>trestle://</code> prefix, followed by the path from the trestle root directory to the actual
+catalog file.  The profile itself, which is having its imports modified, is just indicated by its name with the <code>-n</code> option.</p>
+<p>If the profile has more than one import, you can display the corresponding hrefs with:</p>
+<div class="highlight"><pre><span></span><code>trestle href -n my_profile
+</code></pre></div>
+<p>This will give a numbered list of the hrefs.  You can then change them individually by providing the corresponding item number:</p>
+<div class="highlight"><pre><span></span><code>trestle href -n my_profile -i 1 -hr trestle://catalogs/my_catalog/catalog.json
+</code></pre></div>
+<p>This will change the href indexed as <code>1</code> when the list was displayed.  The href's are indexed starting from 0.</p>
 <p>The <code>trestle href</code> command can also be used to change the value back to the intended one prior to distribution of the profile.</p>
 <p>The provided href can be of form <code>trestle://</code>, <code>https://</code>, <code>sftp://</code>, or <code>file:///</code>.  If <code>file:///</code> is used, the path provided must be absolute - and on Windows
 it must include the drive letter followed by a slash.  The only time a relative path is allowed is with the <code>trestle://</code> heading.</p>
@@ -2477,6 +2520,7 @@ it must include the drive letter followed by a slash.  The only time a relative 
 - Float/Double: 0.00
 - Id field: Auto generated UUID
 </code></pre></div>
+<p>Passing <code>-iof</code> or <code>--include-optional-fields</code> will make <code>trestle add</code> generate a richer model containing all optional fields until finding recursion in the model (e.g controls within control).</p>
 <h2 id="trestle-remove"><code>trestle remove</code><a class="headerlink" href="#trestle-remove" title="Permanent link">¤</a></h2>
 <p>The trestle remove command is the reversal of <code>trestle add</code>.</p>
 <h2 id="trestle-validate"><code>trestle validate</code><a class="headerlink" href="#trestle-validate" title="Permanent link">¤</a></h2>
@@ -3316,10 +3360,10 @@ th, td {
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.409db549.min.js", "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.febc23d1.min.js"></script>
+      <script src="../assets/javascripts/bundle.756773cc.min.js"></script>
       
     
   </body>
