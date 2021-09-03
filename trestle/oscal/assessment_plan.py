@@ -19,13 +19,17 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
 
 from trestle.core.base_model import OscalBaseModel
 import trestle.oscal.common as common
 
 
 class TermsAndConditions(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     parts: Optional[List[common.AssessmentPart]] = Field(None)
 
 
@@ -42,6 +46,10 @@ class State(Enum):
 
 
 class SetParameter(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     param_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -57,6 +65,10 @@ class SetParameter(OscalBaseModel):
 
 
 class SelectControlById(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     control_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -70,6 +82,10 @@ class SelectControlById(OscalBaseModel):
 
 
 class Origin(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     actors: List[common.OriginActor] = Field(...)
     related_tasks: Optional[List[common.RelatedTask]] = Field(None, alias='related-tasks')
 
@@ -83,6 +99,10 @@ class Method(OscalBaseModel):
 
 
 class Observation(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -119,6 +139,10 @@ class Observation(OscalBaseModel):
 
 
 class Entry(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -153,6 +177,10 @@ class Entry(OscalBaseModel):
 
 
 class ControlSelection(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     description: Optional[str] = Field(
         None,
         description='A human-readable description of in-scope controls specified for assessment.',
@@ -172,6 +200,10 @@ class ControlSelection(OscalBaseModel):
 
 
 class Characterization(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     origin: Origin
@@ -179,11 +211,19 @@ class Characterization(OscalBaseModel):
 
 
 class Status1(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     state: State1 = Field(..., description='The operational status.', title='State')
     remarks: Optional[common.Remarks] = None
 
 
 class SystemComponent(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                  ) = Field(
                      ...,
@@ -223,6 +263,10 @@ class SystemComponent(OscalBaseModel):
 
 
 class Status(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     state: State = Field(
         ...,
         description='An indication as to whether the objective is satisfied or not.',
@@ -240,6 +284,10 @@ class Status(OscalBaseModel):
 
 
 class FindingTarget(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     type: common.Type1 = Field(
         ...,
         description='Identifies the type of the target.',
@@ -277,10 +325,18 @@ class FindingTarget(OscalBaseModel):
 
 
 class RiskLog(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     entries: List[Entry] = Field(...)
 
 
 class ReviewedControls(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     description: Optional[str] = Field(
         None,
         description='A human-readable description of control objectives.',
@@ -296,6 +352,10 @@ class ReviewedControls(OscalBaseModel):
 
 
 class Response(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -328,6 +388,10 @@ class Response(OscalBaseModel):
 
 
 class Risk(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -374,11 +438,19 @@ class Risk(OscalBaseModel):
 
 
 class AssessmentAssets(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     components: Optional[List[SystemComponent]] = Field(None)
     assessment_platforms: List[common.AssessmentPlatform] = Field(..., alias='assessment-platforms')
 
 
 class Step(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -401,6 +473,10 @@ class Step(OscalBaseModel):
 
 
 class Activity(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -428,6 +504,10 @@ class Activity(OscalBaseModel):
 
 
 class LocalDefinitions(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     components: Optional[List[SystemComponent]] = Field(None)
     inventory_items: Optional[List[common.InventoryItem]] = Field(None, alias='inventory-items')
     users: Optional[List[common.SystemUser]] = Field(None)
@@ -437,6 +517,10 @@ class LocalDefinitions(OscalBaseModel):
 
 
 class AssessmentPlan(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(

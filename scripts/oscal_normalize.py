@@ -105,7 +105,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
 
 from trestle.core.base_model import OscalBaseModel
 """
@@ -813,6 +813,8 @@ def normalize_files():
 
     # re-order them in each file and dump
     reorder_and_dump_as_python(file_classes)
+
+    # this will leave files with raw formatting and make code-format must be run separately
 
 
 if __name__ == '__main__':
