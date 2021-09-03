@@ -79,6 +79,31 @@ def test_profile_to_osco_execute(tmp_path):
         assert (result)
 
 
+def test_profile_to_osco_execute_disable(tmp_path):
+    """Test execute call."""
+    config = configparser.ConfigParser()
+    config_path = pathlib.Path('tests/data/tasks/profile-to-osco/profile-to-osco-disable.config')
+    config.read(config_path)
+    section = config['task.profile-to-osco']
+    d_expected = pathlib.Path(section['output-dir'])
+    d_produced = tmp_path
+    section['output-dir'] = str(d_produced)
+    tgt = profile_to_osco.ProfileToOsco(section)
+    retval = tgt.simulate()
+    assert retval == TaskOutcome.SIM_SUCCESS
+    assert len(os.listdir(str(tmp_path))) == 0
+    retval = tgt.execute()
+    assert retval == TaskOutcome.SUCCESS
+    list_dir = os.listdir(d_produced)
+    assert len(list_dir) == 1
+    assert d_expected != d_produced
+    for fn in list_dir:
+        f_expected = d_expected / fn
+        f_produced = d_produced / fn
+        result = text_files_equal(f_expected, f_produced)
+        assert (result)
+
+
 def test_profile_to_osco_execute_bogus_profile(tmp_path):
     """Test execute call bogus profile."""
     config = configparser.ConfigParser()
