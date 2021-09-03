@@ -16,7 +16,6 @@
 """Tests for trestle load_distributed module."""
 
 import shutil
-from pathlib import Path
 
 from tests import test_utils
 
@@ -33,7 +32,7 @@ def test_load_list(testdata_dir, tmp_trestle_dir):
 
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
 
-    catalogs_dir = Path('catalogs/')
+    catalogs_dir = tmp_trestle_dir / 'catalogs'
     mycatalog_dir = catalogs_dir / 'mycatalog'
     catalog_dir = mycatalog_dir / 'catalog'
 
@@ -41,14 +40,14 @@ def test_load_list(testdata_dir, tmp_trestle_dir):
     shutil.rmtree(catalogs_dir)
     shutil.copytree(test_data_source, catalogs_dir)
 
-    actual_model_type, actual_model_alias, actual_roles = _load_list(catalog_dir / 'metadata' / 'roles')
+    actual_model_type, actual_model_alias, actual_roles = _load_list(catalog_dir / 'metadata' / 'roles',
+                                                                     tmp_trestle_dir)
 
     expected_roles = [
         Role.oscal_read(catalog_dir / 'metadata/roles/00000__role.json'),
         Role.oscal_read(catalog_dir / 'metadata/roles/00001__role.json')
     ]
-
-    expected_model_type, _ = fs.get_stripped_contextual_model((catalog_dir / 'metadata/roles').resolve())
+    expected_model_type, _ = fs.get_stripped_model_type((catalog_dir / 'metadata/roles').resolve(), tmp_trestle_dir)
 
     assert actual_model_type.__signature__ == expected_model_type.__signature__
     assert actual_model_alias == 'catalog.metadata.roles'
@@ -62,7 +61,7 @@ def test_load_list_group(testdata_dir, tmp_trestle_dir):
 
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
 
-    catalogs_dir = Path('catalogs/')
+    catalogs_dir = tmp_trestle_dir / 'catalogs'
     mycatalog_dir = catalogs_dir / 'mycatalog'
     catalog_dir = mycatalog_dir / 'catalog'
 
@@ -70,7 +69,7 @@ def test_load_list_group(testdata_dir, tmp_trestle_dir):
     shutil.rmtree(catalogs_dir)
     shutil.copytree(test_data_source, catalogs_dir)
 
-    actual_model_type, actual_model_alias, actual_groups = _load_list(catalog_dir / 'groups')
+    actual_model_type, actual_model_alias, actual_groups = _load_list(catalog_dir / 'groups', tmp_trestle_dir)
 
     # load_list is expected to return a list of array, instead of an instance of Groups class
     expected_groups = (actual_model_type.oscal_read(testdata_dir / 'split_merge/load_distributed/groups.json')).__root__
@@ -85,7 +84,7 @@ def test_load_distributed(testdata_dir, tmp_trestle_dir):
 
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
 
-    catalogs_dir = Path('catalogs/')
+    catalogs_dir = tmp_trestle_dir / 'catalogs'
     mycatalog_dir = catalogs_dir / 'mycatalog'
     catalog_file = mycatalog_dir / 'catalog.json'
 
@@ -93,12 +92,10 @@ def test_load_distributed(testdata_dir, tmp_trestle_dir):
     shutil.rmtree(catalogs_dir)
     shutil.copytree(test_data_source, catalogs_dir)
 
-    actual_model_type, actual_model_alias, actual_model_instance = load_distributed(catalog_file)
-
-    expected_model_type, _ = fs.get_contextual_model_type(catalog_file.resolve())
+    actual_model_type, actual_model_alias, actual_model_instance = load_distributed(catalog_file, tmp_trestle_dir)
 
     expected_model_instance = Catalog.oscal_read(testdata_dir / 'split_merge/load_distributed/catalog.json')
 
-    assert actual_model_type == expected_model_type
+    assert actual_model_type == Catalog
     assert actual_model_alias == 'catalog'
     assert test_utils.models_are_equivalent(expected_model_instance, actual_model_instance)

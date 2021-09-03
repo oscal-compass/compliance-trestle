@@ -21,7 +21,6 @@ from typing import List, Tuple, Type
 
 import trestle.core.const as const
 import trestle.core.err as err
-from trestle.core import utils
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
@@ -65,23 +64,25 @@ class RemoveCmd(CommandPlusDocs):
         args_dict = args.__dict__
 
         file_path = pathlib.Path(args_dict[const.ARG_FILE]).resolve()
-
-        # Get parent model and then load json into parent model
         try:
-            parent_model, parent_alias = fs.get_contextual_model_type(file_path)
+            relative_path = file_path.relative_to(args.trestle_root)
+        # Get parent model and then load json into parent model
+        except Exception:
+            logger.error(f'{file_path} is not part of the trestle project {args.trestle_root}')
+            return 1
+        try:
+            parent_model, parent_alias = fs.get_relative_model_type(relative_path)
         except Exception as err:
-            logger.debug(f'fs.get_contextual_model_type() failed: {err}')
-            logger.error(f'Remove failed (fs.get_contextual_model_type()): {err}')
+            logger.error(f'Remove failed (fs.get_relative_model_type()): {err}')
             return 1
 
         try:
             parent_object = parent_model.oscal_read(file_path)
         except Exception as err:
-            logger.debug(f'parent_model.oscal_read() failed: {err}')
             logger.error(f'Remove failed (parent_model.oscal_read()): {err}')
             return 1
 
-        parent_element = Element(parent_object, utils.classname_to_alias(parent_model.__name__, 'json'))
+        parent_element = Element(parent_object, parent_alias)
 
         add_plan = Plan()
 

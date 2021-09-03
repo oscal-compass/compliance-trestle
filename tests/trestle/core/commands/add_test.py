@@ -32,7 +32,7 @@ from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.common import BackMatter
-from trestle.utils.fs import get_stripped_contextual_model
+from trestle.utils.fs import get_stripped_model_type
 
 
 def test_run(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
@@ -207,7 +207,7 @@ def test_stripped_model(
 
     testargs = ['trestle', 'add', '-f', 'catalog.json', '-e', 'catalog.back-matter']
 
-    current_model, _ = get_stripped_contextual_model()
+    current_model, _ = get_stripped_model_type(catalog_def_dir, tmp_path)
     current_catalog = current_model.oscal_read(pathlib.Path('catalog.json'))
     current_catalog.back_matter = BackMatter()
     expected_catalog = current_catalog
@@ -215,6 +215,6 @@ def test_stripped_model(
     monkeypatch.setattr(sys, 'argv', testargs)
     assert Trestle().run() == 0
 
-    actual_model, _ = get_stripped_contextual_model()
+    actual_model, _ = get_stripped_model_type(catalog_def_dir, tmp_path)
     actual_catalog = actual_model.oscal_read(pathlib.Path('catalog.json'))
     assert expected_catalog == actual_catalog

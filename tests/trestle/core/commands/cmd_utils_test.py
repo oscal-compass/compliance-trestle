@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Tests for trestle cmd utils module."""
-import os
 from typing import List
 
 import pytest
@@ -37,53 +36,51 @@ def prepare_expected_element_paths(element_args: List[str]) -> List[ElementPath]
 
 def test_parse_element_arg(tmp_path, keep_cwd):
     """Unit test parse a single element arg."""
-    owd = keep_cwd
     with pytest.raises(TrestleError):
-        cmd_utils.parse_element_arg(None, 'component-definition', False)
+        cmd_utils.parse_element_arg(None, 'component-definition')
 
     with pytest.raises(TrestleError):
-        cmd_utils.parse_element_arg(None, '*.*', False)
+        cmd_utils.parse_element_arg(None, '*.*')
 
     with pytest.raises(TrestleError):
-        cmd_utils.parse_element_arg(None, '*', False)
+        cmd_utils.parse_element_arg(None, '*')
 
     with pytest.raises(TrestleError):
-        cmd_utils.parse_element_arg(None, 'component-definition.components.*.*', False)
+        cmd_utils.parse_element_arg(None, 'component-definition.components.*.*')
 
     element_arg = 'catalog.groups.*'
     expected_paths: List[ElementPath] = prepare_expected_element_paths(['catalog.groups.*'])
-    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(None, element_arg, False)
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(None, element_arg)
     assert expected_paths == element_paths
 
     # contextual path
     test_utils.ensure_trestle_config_dir(tmp_path)
     catalog_split_dir = tmp_path / 'catalogs/nist800-53/catalog'
     catalog_split_dir.mkdir(exist_ok=True, parents=True)
-    os.chdir(catalog_split_dir)
+    rel_dir = catalog_split_dir.relative_to(tmp_path)
     element_arg = 'groups.*'
     expected_paths = prepare_expected_element_paths(['groups.*'])
-    element_paths = cmd_utils.parse_element_arg(None, element_arg, True)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg, rel_dir)
     assert expected_paths == element_paths
-    os.chdir(owd)
 
     element_arg = 'catalog.metadata.parties.*'
     expected_paths = prepare_expected_element_paths(['catalog.metadata', 'metadata.parties.*'])
-    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg)
     assert expected_paths == element_paths
 
     element_arg = 'component-definition.components'
     expected_paths = prepare_expected_element_paths(['component-definition.components'])
-    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg)
     assert expected_paths == element_paths
 
     element_arg = 'component-definition.components.*'
     expected_paths = prepare_expected_element_paths(['component-definition.components.*'])
-    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg)
     assert expected_paths == element_paths
 
     element_arg = 'component-definition.metadata.roles'
     expected_paths = prepare_expected_element_paths(['component-definition.metadata', 'metadata.roles'])
-    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg)
     assert expected_paths == element_paths
 
     element_arg = 'catalog.groups.*.controls.*.controls.*'
@@ -91,38 +88,38 @@ def test_parse_element_arg(tmp_path, keep_cwd):
     p2 = ElementPath('group.controls.*', parent_path=p1)
     p3 = ElementPath('control.controls.*', parent_path=p2)
     expected_paths = [p1, p2, p3]
-    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg)
     assert expected_paths == element_paths
 
     element_arg = 'catalog.groups.*.controls'
     p1 = ElementPath('catalog.groups.*')
     p2 = ElementPath('group.controls', parent_path=p1)
     expected_paths = [p1, p2]
-    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg)
     assert expected_paths == element_paths
 
     element_arg = 'component-definition.components.*.control-implementations'
     p1 = ElementPath('component-definition.components.*')
     p2 = ElementPath('defined-component.control-implementations', parent_path=p1)
     expected_paths = [p1, p2]
-    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg)
     assert expected_paths == element_paths
 
     element_arg = 'component-definition.components.*.control-implementations.*'
     p1 = ElementPath('component-definition.components.*')
     p2 = ElementPath('defined-component.control-implementations.*', parent_path=p1)
     expected_paths = [p1, p2]
-    element_paths = cmd_utils.parse_element_arg(None, element_arg, False)
+    element_paths = cmd_utils.parse_element_arg(None, element_arg)
     assert expected_paths == element_paths
 
     # use contextual path for parsing path
     test_utils.ensure_trestle_config_dir(tmp_path)
     comp_def_dir = tmp_path / 'component-definitions/mycomponent/'
     comp_def_dir.mkdir(exist_ok=True, parents=True)
-    os.chdir(comp_def_dir)
+    rel_dir = comp_def_dir.relative_to(tmp_path)
     element_arg = 'metadata.parties.*'
     expected_paths: List[ElementPath] = prepare_expected_element_paths(['metadata.parties.*'])
-    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(None, element_arg, True)
+    element_paths: List[ElementPath] = cmd_utils.parse_element_arg(None, element_arg, rel_dir)
     assert expected_paths == element_paths
 
 

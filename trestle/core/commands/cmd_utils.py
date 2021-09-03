@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Trestle command related utilities."""
-from typing import Any, List, Type, Union
+import pathlib
+from typing import Any, List, Optional, Type, Union
 
 from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
@@ -45,9 +46,11 @@ def split_is_too_fine(split_paths: str, model_obj: OscalBaseModel) -> bool:
     return False
 
 
-def parse_element_args(model: Union[OscalBaseModel, None],
-                       element_args: List[str],
-                       contextual_mode: bool = True) -> List[ElementPath]:
+def parse_element_args(
+    model: Union[OscalBaseModel, None],
+    element_args: List[str],
+    relative_path: Optional[pathlib.Path] = None
+) -> List[ElementPath]:
     """Parse element args into a list of ElementPath.
 
     The element paths are either simple links of two elements, or two elements followed by *.
@@ -70,29 +73,30 @@ def parse_element_args(model: Union[OscalBaseModel, None],
     Args:
         model: The OscalBaseModel being inspected to determine available elements that can be split
         element_args: List of str representing links in the chain of element paths to be parsed
-        contextual_mode: bool indicating whether to deduce the full element context from the directory structure
-            or just use the known model structure
-
+        relative_path: Optional relative path (from trestle root) used to validate element args are valid.
     Returns:
         The requested parsed list of ElementPath for use in split
     """
     # collect all paths
     element_paths: List[ElementPath] = []
     for element_arg in element_args:
-        paths = parse_element_arg(model, element_arg, contextual_mode)
+        paths = parse_element_arg(model, element_arg, relative_path)
         element_paths.extend(paths)
 
     return element_paths
 
 
-def parse_chain(model_obj: Union[OscalBaseModel, None], path_parts: List[str],
-                contextual_mode: bool) -> List[ElementPath]:
+def parse_chain(
+    model_obj: Union[OscalBaseModel, None],
+    path_parts: List[str],
+    relative_path: Optional[pathlib.Path] = None
+) -> List[ElementPath]:
     """Parse the model chain starting from the beginning.
 
     Args:
-        model_obj: Optional model to use for inspecting available elements
+        model_obj: Model to use for inspecting available elements, if available or none
         path_parts: list of string paths to parse including wildcards
-        contextual_mode: True if element context is derived from file directory
+        relative_path: Optional relative path (w.r.t trestle project root directory)
 
     Returns:
         List of ElementPath
@@ -142,7 +146,7 @@ def parse_chain(model_obj: Union[OscalBaseModel, None], path_parts: List[str],
         # If path has wildcard and it does not refer to a list, then there can be nothing after *
         if element_path.get_last() == ElementPath.WILDCARD:
             full_path_str = ElementPath.PATH_SEPARATOR.join(element_path.get_full_path_parts()[:-1])
-            parent_model = fs.get_singular_alias(full_path_str, contextual_mode)
+            parent_model = fs.get_singular_alias(full_path_str, relative_path)
             # Does wildcard mean we need to inspect the sub_model to determine what can be split off from it?
             # If it has __root__ it may mean it contains a list of objects and should be split as a list
             if isinstance(sub_model, OscalBaseModel):
@@ -177,10 +181,20 @@ def parse_chain(model_obj: Union[OscalBaseModel, None], path_parts: List[str],
     return element_paths
 
 
-def parse_element_arg(model_obj: Union[OscalBaseModel, None],
-                      element_arg: str,
-                      contextual_mode: bool = True) -> List[ElementPath]:
-    """Parse an element arg string into a list of ElementPath."""
+def parse_element_arg(
+    model_obj: Union[OscalBaseModel, None],
+    element_arg: str,
+    relative_path: Optional[pathlib.Path] = None
+) -> List[ElementPath]:
+    """Parse an element arg string into a list of ElementPath.
+
+    Args:
+        model_obj: The OscalBaseModel being inspected to determine available elements that can be split
+        element_arg: Single element path, as a string.
+        relative_path: Optional relative path (from trestle root) used to validate element args are valid.
+    Returns:
+        The requested parsed list of ElementPath for use in split
+    """
     element_arg = element_arg.strip()
 
     if element_arg == '*':
@@ -194,7 +208,7 @@ def parse_element_arg(model_obj: Union[OscalBaseModel, None],
     if len(path_parts) <= 1:
         raise TrestleError(f'Invalid element path "{element_arg}" with only one element and no wildcard')
 
-    element_paths = parse_chain(model_obj, path_parts, contextual_mode)
+    element_paths = parse_chain(model_obj, path_parts, relative_path)
 
     if len(element_paths) <= 0:
         # don't complain if nothing to split

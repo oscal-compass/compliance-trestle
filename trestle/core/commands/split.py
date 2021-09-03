@@ -96,14 +96,11 @@ class SplitCmd(CommandPlusDocs):
         # cwd must be in the model directory if file to split is not specified
         effective_cwd = pathlib.Path.cwd()
 
-        return self.perform_split(effective_cwd, file_name, elements_clean)
+        return self.perform_split(effective_cwd, file_name, elements_clean, args.trestle_root)
 
     @classmethod
     def perform_split(
-        cls,
-        effective_cwd: pathlib.Path,
-        file_name: str,
-        elements: str,
+        cls, effective_cwd: pathlib.Path, file_name: str, elements: str, trestle_root: pathlib.Path
     ) -> int:
         """Perform the split operation.
 
@@ -165,8 +162,7 @@ class SplitCmd(CommandPlusDocs):
             # find the base directory of the file
             file_absolute_path = pathlib.Path(file_path)
             base_dir = file_absolute_path.parent
-
-            model_type, _ = fs.get_stripped_contextual_model(file_absolute_path)
+            model_type, _ = fs.get_stripped_model_type(file_path, trestle_root)
 
             model: OscalBaseModel = model_type.oscal_read(file_path)
 
@@ -177,7 +173,10 @@ class SplitCmd(CommandPlusDocs):
             # use the model itself to resolve any wildcards and create list of element paths
             logger.debug(f'split calling parse_element_args on {element_path}')
             # use contextual mode to parse
-            element_paths: List[ElementPath] = cmd_utils.parse_element_args(model, element_path.split(','))
+
+            element_paths: List[ElementPath] = cmd_utils.parse_element_args(
+                model, element_path.split(','), effective_cwd.relative_to(trestle_root)
+            )
 
             # analyze the split tree and determine which aliases should be stripped from each file
             aliases_to_strip = split_command.find_aliases_to_strip(element_paths)

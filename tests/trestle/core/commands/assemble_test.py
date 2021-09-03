@@ -44,7 +44,7 @@ def test_run_and_missing_model(tmp_trestle_dir: pathlib.Path) -> None:
 def test_assemble_catalog(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
     """Test assembling a catalog."""
     test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs'
-    catalogs_dir = pathlib.Path('catalogs/')
+    catalogs_dir = tmp_trestle_dir / 'catalogs'
     mycatalog_dir = catalogs_dir / 'mycatalog'
     # Copy files from test/data/split_merge/step4
     shutil.rmtree(catalogs_dir)
@@ -58,7 +58,7 @@ def test_assemble_catalog(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.P
 
     # Read assembled model
     actual_model = Catalog.oscal_read(pathlib.Path('dist/catalogs/mycatalog.json'))
-    _, _, expected_model = load_distributed(mycatalog_dir / 'catalog.json')
+    _, _, expected_model = load_distributed(mycatalog_dir / 'catalog.json', tmp_trestle_dir)
 
     assert actual_model == expected_model
 
@@ -118,7 +118,7 @@ def test_assemble_missing_top_model(testdata_dir: pathlib.Path, tmp_trestle_dir:
 def test_assemble_catalog_all(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
     """Test assembling all catalogs in trestle dir."""
     shutil.rmtree(pathlib.Path('dist'))
-    catalogs_dir = pathlib.Path('catalogs')
+    catalogs_dir = tmp_trestle_dir / 'catalogs'
     my_names = ['mycatalog1', 'mycatalog2', 'mycatalog3']
     for my_name in my_names:
         test_data_source = testdata_dir / 'split_merge/step4_split_groups_array/catalogs/mycatalog'
@@ -131,7 +131,7 @@ def test_assemble_catalog_all(testdata_dir: pathlib.Path, tmp_trestle_dir: pathl
 
     # Read assembled model
     for my_name in my_names:
-        _, _, expected_model = load_distributed(catalogs_dir / f'{my_name}/catalog.json')
+        _, _, expected_model = load_distributed(catalogs_dir / f'{my_name}/catalog.json', tmp_trestle_dir)
         actual_model = Catalog.oscal_read(pathlib.Path(f'dist/catalogs/{my_name}.json'))
         assert actual_model == expected_model
 

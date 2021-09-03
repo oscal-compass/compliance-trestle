@@ -98,7 +98,7 @@ def test_split_chained_sub_model_plans(
     catalog = oscatalog.Catalog.oscal_read(catalog_file)
     element = Element(catalog)
     element_args = ['catalog.metadata.parties.*']
-    element_paths = test_utils.prepare_element_paths(catalog_dir, element_args)
+    element_paths = cmd_utils.parse_element_args(None, element_args, catalog_dir.relative_to(tmp_path))
     assert 2 == len(element_paths)
 
     expected_plan = Plan()
@@ -153,7 +153,7 @@ def test_subsequent_split_model_plans(
     component_def = component.ComponentDefinition.oscal_read(component_def_file)
     element = Element(component_def, 'component-definition')
     element_args = ['component-definition.metadata']
-    element_paths = test_utils.prepare_element_paths(component_def_dir, element_args)
+    element_paths = cmd_utils.parse_element_args(None, element_args, component_def_dir.relative_to(tmp_path))
     metadata_file = component_def_dir / element_paths[0].to_file_path(content_type)
     metadata: common.Metadata = element.get_at(element_paths[0])
     root_file = component_def_dir / element_paths[0].to_root_path(content_type)
@@ -175,7 +175,7 @@ def test_subsequent_split_model_plans(
     element = Element(metadata2, metadata_field_alias)
 
     element_args = ['metadata.parties.*']
-    element_paths = test_utils.prepare_element_paths(component_def_dir, element_args)
+    element_paths = cmd_utils.parse_element_args(None, element_args, component_def_dir.relative_to(tmp_path))
     parties_dir = metadata_file_dir / element_paths[0].to_file_path()
     for i, party in enumerate(element.get_at(element_paths[0])):
         prefix = str(i).zfill(const.FILE_DIGIT_PREFIX_LENGTH)
@@ -216,7 +216,7 @@ def test_split_multi_level_dict_plans(
     component_def: component.ComponentDefinition = component.ComponentDefinition.oscal_read(component_def_file)
     element = Element(component_def)
     element_args = ['component-definition.components.*.control-implementations.*']
-    element_paths = test_utils.prepare_element_paths(component_def_dir, element_args)
+    element_paths = cmd_utils.parse_element_args(None, element_args, component_def_dir.relative_to(tmp_path))
 
     expected_plan = Plan()
 
@@ -296,7 +296,8 @@ def test_split_run(
     args = argparse.Namespace(
         file='component-definition.yaml',
         element='component-definition.components.*,component-definition.metadata',
-        verbose=0
+        verbose=0,
+        trestle_root=tmp_path
     )
 
     os.chdir(component_def_dir)
@@ -312,7 +313,8 @@ def test_split_run(
     args = argparse.Namespace(
         file='component-definition.yaml',
         element='component-definition.metadata,component-definition.components.*',
-        verbose=0
+        verbose=0,
+        trestle_root=tmp_path
     )
     os.chdir(component_def_dir)
     assert cmd._run(args) == 0
@@ -438,25 +440,34 @@ def test_split_comp_def(
     # do the split in different ways - then re-merge
     if mode == 'normal_split.*':
         args = argparse.Namespace(
-            file='component-definition.json', element='component-definition.components.*', verbose=1
+            file='component-definition.json',
+            element='component-definition.components.*',
+            verbose=1,
+            trestle_root=trestle_root
         )
         assert SplitCmd()._run(args) == 0
     elif mode == 'split_two_steps':
         args = argparse.Namespace(
-            file='component-definition.json', element='component-definition.components', verbose=1
+            file='component-definition.json',
+            element='component-definition.components',
+            verbose=1,
+            trestle_root=trestle_root
         )
         assert SplitCmd()._run(args) == 0
         os.chdir('component-definition')
-        args = argparse.Namespace(file='components.json', element='components.*', verbose=1)
+        args = argparse.Namespace(file='components.json', element='components.*', verbose=1, trestle_root=trestle_root)
         assert SplitCmd()._run(args) == 0
     elif mode == 'split_in_lower_dir':
         args = argparse.Namespace(
-            file='component-definition.json', element='component-definition.components.*.props', verbose=1
+            file='component-definition.json',
+            element='component-definition.components.*.props',
+            verbose=1,
+            trestle_root=trestle_root
         )
         assert SplitCmd()._run(args) == 0
 
     os.chdir(compdef_dir)
-    args = argparse.Namespace(element='component-definition.*', verbose=1)
+    args = argparse.Namespace(element='component-definition.*', verbose=1, trestle_root=trestle_root)
     assert MergeCmd()._run(args) == 0
 
     new_model = component.ComponentDefinition.oscal_read(compdef_file)
@@ -472,9 +483,13 @@ def test_split_stop_at_string(tmp_path, keep_cwd: pathlib.Path, sample_catalog: 
     catalog_dir = trestle_root / 'catalogs' / cat_name
 
     os.chdir(catalog_dir)
-    args = argparse.Namespace(file='catalog.json', element='catalog.groups.*.controls.*.controls.*.id', verbose=1)
+    args = argparse.Namespace(
+        file='catalog.json', element='catalog.groups.*.controls.*.controls.*.id', verbose=1, trestle_root=trestle_root
+    )
     assert SplitCmd()._run(args) == 1
-    args = argparse.Namespace(file='catalog.json', element='catalog.metadata.version', verbose=1)
+    args = argparse.Namespace(
+        file='catalog.json', element='catalog.metadata.version', verbose=1, trestle_root=trestle_root
+    )
     assert SplitCmd()._run(args) == 1
 
 
@@ -491,30 +506,35 @@ def test_split_tutorial_workflow(tmp_path, keep_cwd: pathlib.Path, sample_catalo
     # step0
     os.chdir(catalog_dir)
     args = argparse.Namespace(
-        file='catalog.json', element='catalog.metadata,catalog.groups,catalog.back-matter', verbose=1
+        file='catalog.json',
+        element='catalog.metadata,catalog.groups,catalog.back-matter',
+        verbose=1,
+        trestle_root=trestle_root
     )
     assert SplitCmd()._run(args) == 0
 
     # step1
     os.chdir('catalog')
-    args = argparse.Namespace(file='metadata.json', element='metadata.roles,metadata.parties', verbose=1)
+    args = argparse.Namespace(
+        file='metadata.json', element='metadata.roles,metadata.parties', verbose=1, trestle_root=trestle_root
+    )
     assert SplitCmd()._run(args) == 0
 
     # step2
     os.chdir('metadata')
-    args = argparse.Namespace(file='roles.json', element='roles.*', verbose=1)
+    args = argparse.Namespace(file='roles.json', element='roles.*', verbose=1, trestle_root=trestle_root)
     assert SplitCmd()._run(args) == 0
-    args = argparse.Namespace(file='parties.json', element='parties.*', verbose=1)
+    args = argparse.Namespace(file='parties.json', element='parties.*', verbose=1, trestle_root=trestle_root)
     assert SplitCmd()._run(args) == 0
 
     # step3
     os.chdir('..')
-    args = argparse.Namespace(file='./groups.json', element='groups.*.controls.*', verbose=1)
+    args = argparse.Namespace(file='./groups.json', element='groups.*.controls.*', verbose=1, trestle_root=trestle_root)
     assert SplitCmd()._run(args) == 0
 
     # step4
     os.chdir(catalog_dir)
-    args = argparse.Namespace(element='catalog.*', verbose=1)
+    args = argparse.Namespace(element='catalog.*', verbose=1, trestle_root=trestle_root)
     assert MergeCmd()._run(args) == 0
 
     new_model = oscatalog.Catalog.oscal_read(catalog_file)
@@ -544,9 +564,9 @@ def test_split_catalog_star(
     catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
 
     os.chdir(catalog_dir)
-    args = argparse.Namespace(file='catalog.json', element=split_path, verbose=1)
+    args = argparse.Namespace(file='catalog.json', element=split_path, verbose=1, trestle_root=trestle_root)
     assert SplitCmd()._run(args) == 0
-    args = argparse.Namespace(element='catalog.*', verbose=1)
+    args = argparse.Namespace(element='catalog.*', verbose=1, trestle_root=trestle_root)
     assert MergeCmd()._run(args) == 0
 
     new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)
@@ -565,10 +585,12 @@ def test_split_deep(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatalog.
     catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
 
     os.chdir(catalog_dir)
-    args = argparse.Namespace(file='catalog.json', element='catalog.groups.*.controls.*.controls.*', verbose=1)
+    args = argparse.Namespace(
+        file='catalog.json', element='catalog.groups.*.controls.*.controls.*', verbose=1, trestle_root=trestle_root
+    )
     assert SplitCmd()._run(args) == 0
 
-    args = argparse.Namespace(element='catalog.*', verbose=1)
+    args = argparse.Namespace(element='catalog.*', verbose=1, trestle_root=trestle_root)
     assert MergeCmd()._run(args) == 0
 
     new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)
@@ -587,13 +609,15 @@ def test_split_relative_path(tmp_path, keep_cwd: pathlib.Path, sample_catalog: o
     catalog_dir = trestle_root / 'catalogs' / cat_name
     catalog_file: pathlib.Path = catalog_dir / 'catalog.json'
 
-    args = argparse.Namespace(file='catalogs/mycat/catalog.json', element='catalog.metadata', verbose=1)
+    args = argparse.Namespace(
+        file='catalogs/mycat/catalog.json', element='catalog.metadata', verbose=1, trestle_root=trestle_root
+    )
     assert SplitCmd()._run(args) == 0
 
     # merge receives an element path not a file path
     # so need to chdir to where the file is
     os.chdir(catalog_dir)
-    args = argparse.Namespace(element='catalog.*', verbose=1)
+    args = argparse.Namespace(element='catalog.*', verbose=1, trestle_root=trestle_root)
     assert MergeCmd()._run(args) == 0
 
     new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)
@@ -613,26 +637,26 @@ def test_no_file_given(tmp_path, keep_cwd: pathlib.Path, sample_catalog: oscatal
 
     # no file given and cwd not in trestle directory should fail
     os.chdir(tmp_path)
-    args = argparse.Namespace(element='catalog.groups', verbose=1)
+    args = argparse.Namespace(element='catalog.groups', verbose=1, trestle_root=trestle_root)
     assert SplitCmd()._run(args) == 1
 
     os.chdir(catalog_dir)
-    args = argparse.Namespace(element='catalog.groups,catalog.metadata', verbose=1)
+    args = argparse.Namespace(element='catalog.groups,catalog.metadata', verbose=1, trestle_root=trestle_root)
     assert SplitCmd()._run(args) == 0
     assert (catalog_dir / 'catalog/groups.json').exists()
     assert (catalog_dir / 'catalog/metadata.json').exists()
 
     os.chdir('./catalog')
-    args = argparse.Namespace(element='groups.*', verbose=1)
+    args = argparse.Namespace(element='groups.*', verbose=1, trestle_root=trestle_root)
     assert SplitCmd()._run(args) == 0
     assert (catalog_dir / 'catalog/groups/00000__group.json').exists()
 
     os.chdir('./groups')
-    args = argparse.Namespace(file='00000__group.json', element='group.*', verbose=1)
+    args = argparse.Namespace(file='00000__group.json', element='group.*', verbose=1, trestle_root=trestle_root)
     assert SplitCmd()._run(args) == 0
 
     os.chdir(catalog_dir)
-    args = argparse.Namespace(element='catalog.*', verbose=1)
+    args = argparse.Namespace(element='catalog.*', verbose=1, trestle_root=trestle_root)
     assert MergeCmd()._run(args) == 0
 
     new_model: oscatalog.Catalog = oscatalog.Catalog.oscal_read(catalog_file)
