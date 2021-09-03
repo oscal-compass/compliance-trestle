@@ -58,7 +58,7 @@ class MergeCmd(CommandPlusDocs):
         try:
             for element_path in element_paths:
                 logger.debug(f'merge {element_path}')
-                plan = self.merge(ElementPath(element_path))
+                plan = self.merge(ElementPath(element_path), args.trestle_root.resolve())
                 plan.simulate()
                 plan.execute()
         except TrestleError as err:
@@ -67,7 +67,7 @@ class MergeCmd(CommandPlusDocs):
         return 0
 
     @classmethod
-    def merge(cls, element_path: ElementPath) -> Plan:
+    def merge(cls, element_path: ElementPath, trestle_root: Path) -> Plan:
         """Merge operations.
 
         It returns a plan for the operation
@@ -96,7 +96,7 @@ class MergeCmd(CommandPlusDocs):
         destination_model_filename = Path(f'{utils.classname_to_alias(destination_model_alias, "json")}{file_ext}')
         destination_model_filename = destination_model_filename.resolve()
         logger.debug(f'destination model filename is {destination_model_filename}')
-        destination_model_type, _ = fs.get_stripped_contextual_model(destination_model_filename)
+        destination_model_type, _ = fs.get_stripped_model_type(destination_model_filename, trestle_root)
 
         destination_model_object: OscalBaseModel = None
         if destination_model_filename.exists():
@@ -111,7 +111,7 @@ class MergeCmd(CommandPlusDocs):
                 collection_type = destination_model_type.get_collection_type()
 
             merged_model_type, _, merged_model_instance = load_distributed.load_distributed(
-                destination_model_filename, collection_type)
+                destination_model_filename, trestle_root, collection_type)
             plan = Plan()
             reset_destination_action = CreatePathAction(destination_model_filename, clear_content=True)
             wrapper_alias = destination_model_alias
@@ -127,9 +127,8 @@ class MergeCmd(CommandPlusDocs):
 
         logger.debug(f'get dest model with fields stripped: {target_model_alias}')
         # Get destination model without the target field stripped
-        merged_model_type, _ = fs.get_stripped_contextual_model(
-            destination_model_filename,
-            aliases_not_to_be_stripped=[target_model_alias])
+        merged_model_type, _ = fs.get_stripped_model_type(destination_model_filename, trestle_root,
+                                                          aliases_not_to_be_stripped=[target_model_alias])
         """3. Load Target model. Target model could be stripped"""
         try:
             target_model_type = element_path.get_type(merged_model_type)
@@ -158,14 +157,15 @@ class MergeCmd(CommandPlusDocs):
         target_model_filename = target_model_path.with_suffix(file_ext)
         if target_model_filename.exists():
             logger.debug(f'target model path with extension does exist so load distrib {target_model_filename}')
-            _, _, target_model_object = load_distributed.load_distributed(target_model_filename)
+            _, _, target_model_object = load_distributed.load_distributed(target_model_filename, trestle_root)
         else:
             target_model_filename = Path(target_model_path)
             logger.debug(f'target model path plus extension does not exist so load distrib {target_model_filename}')
             logger.debug(f'get collection type for model type {target_model_type}')
             collection_type = utils.get_origin(target_model_type)
             logger.debug(f'load {target_model_filename} as collection type {collection_type}')
-            _, _, target_model_object = load_distributed.load_distributed(target_model_filename, collection_type)
+            _, _, target_model_object = load_distributed.load_distributed(target_model_filename, trestle_root,
+                                                                          collection_type)
 
         if hasattr(target_model_object, '__dict__') and '__root__' in target_model_object.__dict__:
             logger.debug('loaded object has dict and root so set target model object to root contents')

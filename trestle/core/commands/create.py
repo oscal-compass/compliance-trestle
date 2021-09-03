@@ -21,90 +21,18 @@ from datetime import datetime
 from typing import Type
 
 import trestle.oscal
+from trestle.core import const
 from trestle.core import generators
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
-from trestle.core.models.elements import Element
+from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.oscal import assessment_plan
-from trestle.oscal import assessment_results
-from trestle.oscal import catalog
-from trestle.oscal import component
-from trestle.oscal import poam
-from trestle.oscal import profile
-from trestle.oscal import ssp
 from trestle.utils import fs
 from trestle.utils import log
 
 logger = logging.getLogger(__name__)
-
-
-class CatalogCmd(CommandPlusDocs):
-    """Create a sample catalog in the trestle directory structure, given an OSCAL schema."""
-
-    name = 'catalog'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        """Create a sample catalog in the trestle directory structure, given an OSCAL schema."""
-        logger.info(f'Creating catalog titled: {args.output}')
-        return CreateCmd.create_object(self.name, catalog.Catalog, args)
-
-
-class ProfileCmd(CommandPlusDocs):
-    """Create a sample profile."""
-
-    name = 'profile'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        logger.info(f'Creating profile titled: {args.output}')
-        return CreateCmd.create_object(self.name, profile.Profile, args)
-
-
-class ComponentDefinitionCmd(CommandPlusDocs):
-    """Create a sample component definition."""
-
-    name = 'component-definition'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return CreateCmd.create_object(self.name, component.ComponentDefinition, args)
-
-
-class SystemSecurityPlanCmd(CommandPlusDocs):
-    """Create a sample system security plan."""
-
-    name = 'system-security-plan'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return CreateCmd.create_object(self.name, ssp.SystemSecurityPlan, args)
-
-
-class AssessmentPlanCmd(CommandPlusDocs):
-    """Create a sample assessment plan."""
-
-    name = 'assessment-plan'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return CreateCmd.create_object(self.name, assessment_plan.AssessmentPlan, args)
-
-
-class AssessmentResultCmd(CommandPlusDocs):
-    """Create a sample assessment result."""
-
-    name = 'assessment-results'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return CreateCmd.create_object(self.name, assessment_results.AssessmentResults, args)
-
-
-class PlanOfActionAndMilestonesCmd(CommandPlusDocs):
-    """Create a sample plan of action and milestones."""
-
-    name = 'plan-of-action-and-milestones'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return CreateCmd.create_object(self.name, poam.PlanOfActionAndMilestones, args)
 
 
 class CreateCmd(CommandPlusDocs):
@@ -112,21 +40,18 @@ class CreateCmd(CommandPlusDocs):
 
     name = 'create'
 
-    subcommands = [
-        CatalogCmd,
-        ProfileCmd,
-        ComponentDefinitionCmd,
-        SystemSecurityPlanCmd,
-        AssessmentPlanCmd,
-        AssessmentResultCmd,
-        PlanOfActionAndMilestonesCmd
-    ]
-
     def _init_arguments(self) -> None:
+        self.add_argument('model', help='', choices=const.MODEL_TYPE_LIST)
         self.add_argument('-o', '--output', help='Name of the output created model.', required=True)
+        self.add_argument(const.IOF_SHORT, const.IOF_LONG, help=const.IOF_HELP, action='store_true')
         self.add_argument(
             '-x', '--extension', help='Type of file output.', choices=['json', 'yaml', 'yml'], default='json'
         )
+
+    def _run(self, args: argparse.Namespace) -> int:
+        """Execute."""
+        object_type = ElementPath(args.model).get_type()
+        return self.create_object(args.model, object_type, args)
 
     @classmethod
     def create_object(cls, model_alias: str, object_type: Type[TopLevelOscalModel], args: argparse.Namespace) -> int:
@@ -148,7 +73,7 @@ class CreateCmd(CommandPlusDocs):
             return 1
 
         # Create sample model.
-        sample_model = generators.generate_sample_model(object_type)
+        sample_model = generators.generate_sample_model(object_type, include_optional=args.include_optional_fields)
         # Presuming top level level model not sure how to do the typing for this.
         sample_model.metadata.title = f'Generic {model_alias} created by trestle named {args.output}.'  # type: ignore
         sample_model.metadata.last_modified = datetime.now().astimezone()

@@ -19,7 +19,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
 
 from trestle.core.base_model import OscalBaseModel
 
@@ -30,6 +30,10 @@ class AddrLine(OscalBaseModel):
 
 
 class Address(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     type: Optional[constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -61,6 +65,10 @@ class Address(OscalBaseModel):
 
 
 class WithinDateRange(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     start: datetime = Field(
         ...,
         description='The task must occur on or after the specified date.',
@@ -130,6 +138,10 @@ class Transport(Enum):
 
 
 class ThreatId(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     system: AnyUrl = Field(
         ...,
         description='Specifies the source of the threat information.',
@@ -144,6 +156,10 @@ class ThreatId(OscalBaseModel):
 
 
 class TelephoneNumber(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     type: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
         None, description='Indicates the type of phone number.', title='type flag'
     )
@@ -151,6 +167,10 @@ class TelephoneNumber(OscalBaseModel):
 
 
 class SystemId(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     identifier_type: Optional[AnyUrl] = Field(
         None,
         alias='identifier-type',
@@ -172,6 +192,10 @@ class StatementId(OscalBaseModel):
 
 
 class Source(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     task_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -184,6 +208,10 @@ class Source(OscalBaseModel):
 
 
 class SelectObjectiveById(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     objective_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -226,6 +254,10 @@ class Remarks(OscalBaseModel):
 
 
 class RelatedRisk(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     risk_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                       ) = Field(
                           ...,
@@ -236,6 +268,10 @@ class RelatedRisk(OscalBaseModel):
 
 
 class RelatedObservation1(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     observation_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -247,6 +283,10 @@ class RelatedObservation1(OscalBaseModel):
 
 
 class RelatedObservation(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     observation_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -267,6 +307,10 @@ class Published(OscalBaseModel):
 
 
 class Property(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     name: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -309,6 +353,10 @@ class Property(OscalBaseModel):
 
 
 class PortRange(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     start: Optional[conint(ge=0, multiple_of=1)] = Field(
         None,
         description='Indicates the starting port number in a port range',
@@ -323,6 +371,10 @@ class PortRange(OscalBaseModel):
 
 
 class Protocol(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: Optional[constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     )] = Field(
@@ -360,6 +412,10 @@ class ParameterValue(OscalBaseModel):
 
 
 class ParameterGuideline(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     prose: str = Field(
         ...,
         description='Prose permits multiple paragraphs, lists, tables etc.',
@@ -376,6 +432,10 @@ class OscalVersion(OscalBaseModel):
 
 
 class OnDate(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     date: datetime = Field(
         ...,
         description='The task must occur on the specified date.',
@@ -395,6 +455,10 @@ class MemberOfOrganization(OscalBaseModel):
 
 
 class LoggedBy(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     party_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                        ) = Field(
                            ...,
@@ -423,6 +487,10 @@ class LocationUuid(OscalBaseModel):
 
 
 class Link(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     href: str = Field(
         ...,
         description='A resolvable URL reference to a resource.',
@@ -461,6 +529,10 @@ class LastModified(OscalBaseModel):
 
 
 class ImportSsp(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     href: str = Field(
         ...,
         description='>A resolvable URL reference to the system security plan for the system being assessed.',
@@ -470,6 +542,10 @@ class ImportSsp(OscalBaseModel):
 
 
 class ImplementationStatus(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     state: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -487,6 +563,10 @@ class HowMany(Enum):
 
 
 class Hash(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     algorithm: constr(regex=r'^\S(.*\S)?$'
                       ) = Field(..., description='Method by which a hash is derived', title='Hash algorithm')
     value: str
@@ -501,6 +581,10 @@ class FunctionPerformed(OscalBaseModel):
 
 
 class Facet(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     name: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -523,6 +607,10 @@ class Facet(OscalBaseModel):
 
 
 class ExternalId(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     scheme: AnyUrl = Field(
         ...,
         description='Indicates the type of external identifier.',
@@ -540,6 +628,10 @@ class EmailAddress(OscalBaseModel):
 
 
 class DocumentId(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     scheme: Optional[AnyUrl] = Field(
         None,
         description=
@@ -550,6 +642,10 @@ class DocumentId(OscalBaseModel):
 
 
 class Dependency(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     task_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                       ) = Field(
                           ...,
@@ -561,6 +657,10 @@ class Dependency(OscalBaseModel):
 
 
 class ControlObjectiveSelection(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     description: Optional[str] = Field(
         None,
         description='A human-readable description of this collection of control objectives.',
@@ -580,12 +680,20 @@ class ControlObjectiveSelection(OscalBaseModel):
 
 
 class Citation(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     text: str = Field(..., description='A line of citation text.', title='Citation Text')
     props: Optional[List[Property]] = Field(None)
     links: Optional[List[Link]] = Field(None)
 
 
 class Base64(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     filename: Optional[str] = Field(
         None,
         description=
@@ -603,6 +711,10 @@ class Base64(OscalBaseModel):
 
 
 class AuthorizedPrivilege(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     title: str = Field(
         ...,
         description='A human readable name for the privilege.',
@@ -617,6 +729,10 @@ class AuthorizedPrivilege(OscalBaseModel):
 
 
 class AtFrequency(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     period: conint(
         ge=1, multiple_of=1
     ) = Field(
@@ -628,6 +744,10 @@ class AtFrequency(OscalBaseModel):
 
 
 class AssessmentSubjectPlaceholder(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -648,6 +768,10 @@ class AssessmentSubjectPlaceholder(OscalBaseModel):
 
 
 class AssessmentPart(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: Optional[constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     )] = Field(
@@ -696,6 +820,10 @@ class AssessmentPart(OscalBaseModel):
 
 
 class AssessmentMethod(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -716,6 +844,10 @@ class AssessmentMethod(OscalBaseModel):
 
 
 class Timing(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     on_date: Optional[OnDate] = Field(
         None,
         alias='on-date',
@@ -737,6 +869,10 @@ class Timing(OscalBaseModel):
 
 
 class Test(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     expression: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         description='A formal (executable) expression of a constraint',
@@ -746,6 +882,10 @@ class Test(OscalBaseModel):
 
 
 class ParameterConstraint(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     description: Optional[str] = Field(
         None,
         description='A textual summary of the constraint to be applied.',
@@ -755,6 +895,10 @@ class ParameterConstraint(OscalBaseModel):
 
 
 class SystemUser(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                  ) = Field(
                      ...,
@@ -785,6 +929,10 @@ class SystemUser(OscalBaseModel):
 
 
 class SubjectReference(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     subject_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -812,6 +960,10 @@ class SubjectReference(OscalBaseModel):
 
 
 class MitigatingFactor(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -839,6 +991,10 @@ class MitigatingFactor(OscalBaseModel):
 
 
 class SelectSubjectById(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     subject_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -861,6 +1017,10 @@ class SelectSubjectById(OscalBaseModel):
 
 
 class AssessmentSubject(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     type: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -889,6 +1049,10 @@ class AssessmentSubject(OscalBaseModel):
 
 
 class Role(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -920,6 +1084,10 @@ class Role(OscalBaseModel):
 
 
 class Rlink(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     href: str = Field(
         ...,
         description='A resolvable URI reference to a resource.',
@@ -936,6 +1104,10 @@ class Rlink(OscalBaseModel):
 
 
 class Resource(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -971,10 +1143,18 @@ class Resource(OscalBaseModel):
 
 
 class BackMatter(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     resources: Optional[List[Resource]] = Field(None)
 
 
 class Revision(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     title: Optional[str] = Field(
         None,
         description='A name given to the document revision, which may be used by a tool for display and navigation.',
@@ -990,6 +1170,10 @@ class Revision(OscalBaseModel):
 
 
 class ResponsibleRole(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     role_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -1006,6 +1190,10 @@ class ResponsibleRole(OscalBaseModel):
 
 
 class ResponsibleParty(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     role_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -1022,6 +1210,10 @@ class ResponsibleParty(OscalBaseModel):
 
 
 class RequiredAsset(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -1047,6 +1239,10 @@ class RequiredAsset(OscalBaseModel):
 
 
 class RelevantEvidence(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     href: Optional[str] = Field(
         None,
         description='>A resolvable URL reference to relevant evidence.',
@@ -1063,6 +1259,10 @@ class RelevantEvidence(OscalBaseModel):
 
 
 class Party(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -1099,6 +1299,10 @@ class Party(OscalBaseModel):
 
 
 class Part(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     id: Optional[constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -1148,6 +1352,10 @@ class Part(OscalBaseModel):
 
 
 class LocalObjective(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     control_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -1169,6 +1377,10 @@ class LocalObjective(OscalBaseModel):
 
 
 class ParameterSelection(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     how_many: Optional[HowMany] = Field(
         None,
         alias='how-many',
@@ -1180,6 +1392,10 @@ class ParameterSelection(OscalBaseModel):
 
 
 class Parameter(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -1228,6 +1444,10 @@ class Parameter(OscalBaseModel):
 
 
 class OriginActor(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     type: Type3 = Field(..., description='The kind of actor.', title='Actor Type')
     actor_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                        ) = Field(
@@ -1250,6 +1470,10 @@ class OriginActor(OscalBaseModel):
 
 
 class Location(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -1273,6 +1497,10 @@ class Location(OscalBaseModel):
 
 
 class Metadata(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     title: str = Field(
         ...,
         description='A name given to the document, which may be used by a tool for display and navigation.',
@@ -1294,6 +1522,10 @@ class Metadata(OscalBaseModel):
 
 
 class ImplementedComponent(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     component_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -1309,6 +1541,10 @@ class ImplementedComponent(OscalBaseModel):
 
 
 class InventoryItem(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -1330,6 +1566,10 @@ class InventoryItem(OscalBaseModel):
 
 
 class IdentifiedSubject(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     subject_placeholder_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -1342,6 +1582,10 @@ class IdentifiedSubject(OscalBaseModel):
 
 
 class RelatedTask(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     task_uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                       ) = Field(
                           ...,
@@ -1363,6 +1607,10 @@ class RelatedTask(OscalBaseModel):
 
 
 class RelatedResponse(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     response_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -1378,6 +1626,10 @@ class RelatedResponse(OscalBaseModel):
 
 
 class AssociatedActivity(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     activity_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -1394,6 +1646,10 @@ class AssociatedActivity(OscalBaseModel):
 
 
 class Task(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                  ) = Field(
                      ...,
@@ -1426,6 +1682,10 @@ class Task(OscalBaseModel):
 
 
 class UsesComponent(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     component_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -1441,6 +1701,10 @@ class UsesComponent(OscalBaseModel):
 
 
 class AssessmentPlatform(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                  ) = Field(
                      ...,

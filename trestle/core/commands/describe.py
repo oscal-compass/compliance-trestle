@@ -55,9 +55,12 @@ class DescribeCmd(CommandPlusDocs):
             model_file = pathlib.Path(args.file)
 
             element = '' if 'element' not in args or args.element is None else args.element.strip("'")
-
-            results = self.describe(model_file, element)
-            return 0 if len(results) > 0 else 1
+            try:
+                results = self.describe(model_file.resolve(), element, args.trestle_root)
+                return 0 if len(results) > 0 else 1
+            except Exception as error:
+                logger.error(f'Unexpected error: {error}')
+                return 1
 
         logger.warning('No file specified for command describe.')
         return 1
@@ -86,7 +89,7 @@ class DescribeCmd(CommandPlusDocs):
         return cls._clean_type_string(str(type(sub_model)))
 
     @classmethod
-    def describe(cls, file_path: pathlib.Path, element_path_str: str) -> List[str]:
+    def describe(cls, file_path: pathlib.Path, element_path_str: str, trestle_root: pathlib.Path) -> List[str]:
         """Describe the contents of the file.
 
         Args:
@@ -98,7 +101,7 @@ class DescribeCmd(CommandPlusDocs):
         """
         # figure out the model type so we can read it
         try:
-            model_type, _ = fs.get_stripped_contextual_model(file_path)
+            model_type, _ = fs.get_stripped_model_type(file_path, trestle_root)
             model: OscalBaseModel = model_type.oscal_read(file_path)
         except TrestleError as e:
             logger.warning(f'Error loading model {file_path} to describe: {e}')

@@ -23,16 +23,9 @@ from trestle.core import const
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.models.actions import CreatePathAction, WriteFileAction
-from trestle.core.models.elements import Element
+from trestle.core.models.elements import Element, ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
-from trestle.oscal import assessment_plan
-from trestle.oscal import assessment_results
-from trestle.oscal import catalog
-from trestle.oscal import component
-from trestle.oscal import poam
-from trestle.oscal import profile
-from trestle.oscal import ssp
 from trestle.utils import fs
 from trestle.utils import log
 from trestle.utils.load_distributed import load_distributed
@@ -40,91 +33,22 @@ from trestle.utils.load_distributed import load_distributed
 logger = logging.getLogger(__name__)
 
 
-class CatalogCmd(CommandPlusDocs):
-    """Assemble a catalog."""
-
-    name = 'catalog'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        """Assemble a catalog."""
-        return AssembleCmd.assemble_model(self.name, catalog.Catalog, args)
-
-
-class ProfileCmd(CommandPlusDocs):
-    """Assemble a profile."""
-
-    name = 'profile'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return AssembleCmd.assemble_model(self.name, profile.Profile, args)
-
-
-class ComponentDefinitionCmd(CommandPlusDocs):
-    """Assemble a component definition."""
-
-    name = 'component-definition'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return AssembleCmd.assemble_model(self.name, component.ComponentDefinition, args)
-
-
-class SystemSecurityPlanCmd(CommandPlusDocs):
-    """Assemble a system security plan."""
-
-    name = 'system-security-plan'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return AssembleCmd.assemble_model(self.name, ssp.SystemSecurityPlan, args)
-
-
-class AssessmentPlanCmd(CommandPlusDocs):
-    """Assemble a  assessment plan."""
-
-    name = 'assessment-plan'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return AssembleCmd.assemble_model(self.name, assessment_plan.AssessmentPlan, args)
-
-
-class AssessmentResultCmd(CommandPlusDocs):
-    """Assemble a  assessment result."""
-
-    name = 'assessment-results'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return AssembleCmd.assemble_model(self.name, assessment_results.AssessmentResults, args)
-
-
-class PlanOfActionAndMilestonesCmd(CommandPlusDocs):
-    """Assemble a plan of action and milestones."""
-
-    name = 'plan-of-action-and-milestones'
-
-    def _run(self, args: argparse.Namespace) -> int:
-        return AssembleCmd.assemble_model(self.name, poam.PlanOfActionAndMilestones, args)
-
-
 class AssembleCmd(CommandPlusDocs):
     """Assemble all subcomponents from a specified trestle model into a single JSON/YAML file under dist."""
 
     name = 'assemble'
 
-    subcommands = [
-        CatalogCmd,
-        ProfileCmd,
-        ComponentDefinitionCmd,
-        SystemSecurityPlanCmd,
-        AssessmentPlanCmd,
-        AssessmentResultCmd,
-        PlanOfActionAndMilestonesCmd
-    ]
-
     def _init_arguments(self) -> None:
+        self.add_argument('model', help='', choices=const.MODEL_TYPE_LIST)
         self.add_argument('-n', '--name', help='Name of a single model to assemble.')
         self.add_argument('-t', '--type', action='store_true', help='Assemble all models of the given type.')
         self.add_argument(
             '-x', '--extension', help='Type of file output.', choices=['json', 'yaml', 'yml'], default='json'
         )
+
+    def _run(self, args: argparse.Namespace) -> int:
+        object_type = ElementPath(args.model).get_type()
+        return self.assemble_model(args.model, object_type, args)
 
     @classmethod
     def assemble_model(cls, model_alias: str, object_type: Type[TopLevelOscalModel], args: argparse.Namespace) -> int:
@@ -167,7 +91,7 @@ class AssembleCmd(CommandPlusDocs):
                 return 1
 
             # distributed load
-            _, _, assembled_model = load_distributed(root_model_filepath)
+            _, _, assembled_model = load_distributed(root_model_filepath, args.trestle_root)
             plural_alias = fs.model_type_to_model_dir(model_alias)
 
             assembled_model_dir = trestle_root / const.TRESTLE_DIST_DIR / plural_alias

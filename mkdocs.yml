@@ -41,12 +41,14 @@ nav:
       - xlsx_to_oscal_component_definition: api_reference/trestle.tasks.xlsx_to_oscal_component_definition.md
       - base_task: api_reference/trestle.tasks.base_task.md
       - transform: api_reference/trestle.tasks.transform.md
+      - profile_to_osco: api_reference/trestle.tasks.profile_to_osco.md
       - osco_to_oscal: api_reference/trestle.tasks.osco_to_oscal.md
       - tanium_to_oscal: api_reference/trestle.tasks.tanium_to_oscal.md
     - core:
       - validator: api_reference/trestle.core.validator.md
       - oscal_version_validator: api_reference/trestle.core.oscal_version_validator.md
       - common_types: api_reference/trestle.core.common_types.md
+      - profile_resolver: api_reference/trestle.core.profile_resolver.md
       - validator_helper: api_reference/trestle.core.validator_helper.md
       - models:
         - interfaces: api_reference/trestle.core.models.interfaces.md
@@ -60,6 +62,7 @@ nav:
       - parser: api_reference/trestle.core.parser.md
       - all_validator: api_reference/trestle.core.all_validator.md
       - utils: api_reference/trestle.core.utils.md
+      - pipeline: api_reference/trestle.core.pipeline.md
       - commands:
         - describe: api_reference/trestle.core.commands.describe.md
         - task: api_reference/trestle.core.commands.task.md

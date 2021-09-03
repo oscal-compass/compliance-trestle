@@ -23,14 +23,14 @@ from typing import Any, List
 from unittest.mock import patch
 
 from trestle.cli import Trestle
-from trestle.core import const, utils
+from trestle.core import const, generators, utils
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.commands import cmd_utils
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.err import TrestleError
-from trestle.core.models.elements import ElementPath
 from trestle.core.models.file_content_type import FileContentType
+from trestle.oscal import catalog as cat
+from trestle.oscal import common
 
 BASE_TMP_DIR = pathlib.Path('tests/__tmp_path').resolve()
 YAML_TEST_DATA_PATH = pathlib.Path('tests/data/yaml/').resolve()
@@ -74,16 +74,6 @@ def ensure_trestle_config_dir(sub_dir: pathlib.Path):
     """Ensure that the sub_dir has trestle config dir."""
     trestle_dir = sub_dir / const.TRESTLE_CONFIG_DIR
     trestle_dir.mkdir(exist_ok=True, parents=True)
-
-
-def prepare_element_paths(base_dir, element_args) -> List[ElementPath]:
-    """Prepare element paths for tests."""
-    cur_dir = pathlib.Path.cwd()
-    os.chdir(base_dir)
-    element_paths: List[ElementPath] = cmd_utils.parse_element_args(None, element_args, True)
-    os.chdir(cur_dir)
-
-    return element_paths
 
 
 def prepare_trestle_project_dir(
@@ -170,3 +160,62 @@ def text_files_equal(path_a: pathlib.Path, path_b: pathlib.Path) -> bool:
     except Exception:
         return False
     return True
+
+
+def insert_text_in_file(file_path: pathlib.Path, tag: str, text: str) -> int:
+    r"""Insert text lines after line containing tag.
+
+    Return 0 on success, 1 tag not found.
+    Text is a string with appropriate \n line endings.
+    """
+    lines: List[str] = []
+    with file_path.open('r') as f:
+        lines = f.readlines()
+    for ii, line in enumerate(lines):
+        if line.find(tag) >= 0:
+            lines.insert(ii + 1, text)
+            with file_path.open('w') as f:
+                f.writelines(lines)
+            return 0
+    return 1
+
+
+def generate_control_list(label: str, count: int) -> List[cat.Control]:
+    """Generate a list of controls with indexed names."""
+    controls: List[cat.Control] = []
+    for ii in range(count):
+        control = generators.generate_sample_model(cat.Control, True)
+        control.id = f'{label}-{ii + 1}'
+        controls.append(control)
+    return controls
+
+
+def generate_complex_catalog() -> cat.Catalog:
+    """Generate a complex and deep catalog for testing."""
+    group_a = generators.generate_sample_model(cat.Group, True)
+    group_a.id = 'a'
+    group_a.controls = generate_control_list('a', 4)
+    part = generators.generate_sample_model(common.Part)
+    part.id = 'a-1_smt'
+    part.parts = None
+    group_a.controls[0].parts[0].id = 'part_with_subpart'
+    group_a.controls[0].parts[0].parts = [part]
+    group_b = generators.generate_sample_model(cat.Group, True)
+    group_b.id = 'b'
+    group_b.controls = generate_control_list('b', 3)
+    group_b.controls[2].controls = generate_control_list('b-2', 3)
+    group_ba = generators.generate_sample_model(cat.Group, True)
+    group_ba.id = 'ba'
+    group_ba.controls = generate_control_list('ba', 2)
+    group_b.groups = [group_ba]
+
+    catalog = generators.generate_sample_model(cat.Catalog, True)
+    catalog.controls = generate_control_list('cat', 3)
+    catalog.groups = [group_a, group_b]
+
+    return catalog
+
+
+def patch_raise_exception() -> None:
+    """Raise TrestleError exception, to be used for testing."""
+    raise TrestleError('Forced raising of an errors')

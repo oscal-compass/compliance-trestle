@@ -19,7 +19,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
 
 from trestle.core.base_model import OscalBaseModel
 import trestle.oscal.common as common
@@ -38,6 +38,10 @@ class WithChildControls(Enum):
 
 
 class SetParameter(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     param_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -85,6 +89,10 @@ class SetParameter(OscalBaseModel):
 
 
 class Remove(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     by_name: Optional[constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -152,6 +160,10 @@ class Method(Enum):
 
 
 class Matching(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     pattern: Optional[constr(regex=r'^\S(.*\S)?$')] = Field(
         None,
         description='A glob expression matching the IDs of one or more controls to be selected.',
@@ -162,8 +174,15 @@ class Matching(OscalBaseModel):
 class IncludeAll(OscalBaseModel):
     pass
 
+    class Config:
+        extra = Extra.forbid
+
 
 class Combine(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     method: Optional[Method] = Field(
         None,
         description='How clashing controls should be handled',
@@ -181,6 +200,10 @@ class AsIs(OscalBaseModel):
 
 
 class Add(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     position: Optional[Position] = Field(
         None,
         description='Where to add the new content with respect to the targeted element (beside it or inside it)',
@@ -207,6 +230,10 @@ class Add(OscalBaseModel):
 
 
 class Alter(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     control_id: Optional[constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -221,11 +248,19 @@ class Alter(OscalBaseModel):
 
 
 class Modify(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     set_parameters: Optional[List[SetParameter]] = Field(None, alias='set-parameters')
     alters: Optional[List[Alter]] = Field(None)
 
 
 class SelectControlById(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     with_child_controls: Optional[WithChildControls] = Field(
         None,
         alias='with-child-controls',
@@ -237,6 +272,10 @@ class SelectControlById(OscalBaseModel):
 
 
 class Import(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     href: str = Field(
         ...,
         description='A resolvable URL reference to the base catalog or profile that this profile is tailoring.',
@@ -248,6 +287,10 @@ class Import(OscalBaseModel):
 
 
 class InsertControls(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     order: Optional[Order] = Field(
         None,
         description='A designation of how a selection of controls in a profile is to be ordered.',
@@ -259,6 +302,10 @@ class InsertControls(OscalBaseModel):
 
 
 class Group(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     id: Optional[constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -291,17 +338,29 @@ class Group(OscalBaseModel):
 
 
 class Custom(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     groups: Optional[List[Group]] = Field(None)
     insert_controls: Optional[List[InsertControls]] = Field(None, alias='insert-controls')
 
 
 class Merge(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     combine: Optional[Combine] = None
     as_is: Optional[AsIs] = Field(None, alias='as-is')
     custom: Optional[Custom] = None
 
 
 class Profile(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(

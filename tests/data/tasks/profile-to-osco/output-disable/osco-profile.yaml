@@ -1,0 +1,46 @@
+apiVersion: compliance.openshift.io/v1alpha1
+kind: TailoredProfile
+metadata:
+  name: roks-cis-node
+  namespace: openshift-compliance
+spec:
+  disableRules:
+  - name: xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver
+    rationale: not determinable from specification
+  - name: xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver
+    rationale: not determinable from specification
+  - name: xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager
+    rationale: not determinable from specification
+  extends: ocp4-cis-node
+  setValues:
+  - name: kubelet_eviction_thresholds_set_soft_memory_available
+    rationale: not determinable from specification
+    value: 500Mi
+  - name: kubelet_eviction_thresholds_set_soft_nodefs_available
+    rationale: not determinable from specification
+    value: 10%
+  - name: kubelet_eviction_thresholds_set_soft_nodefs_inodesfree
+    rationale: not determinable from specification
+    value: 5%
+  - name: kubelet_eviction_thresholds_set_soft_imagefs_available
+    rationale: not determinable from specification
+    value: 15%
+  - name: kubelet_eviction_thresholds_set_soft_imagefs_inodesfree
+    rationale: not determinable from specification
+    value: 10%
+  - name: kubelet_eviction_thresholds_set_hard_memory_available
+    rationale: not determinable from specification
+    value: 200Mi
+  - name: kubelet_eviction_thresholds_set_hard_nodefs_available
+    rationale: not determinable from specification
+    value: 5%
+  - name: kubelet_eviction_thresholds_set_hard_nodefs_inodesfree
+    rationale: not determinable from specification
+    value: 4%
+  - name: kubelet_eviction_thresholds_set_hard_imagefs_available
+    rationale: not determinable from specification
+    value: 10%
+  - name: kubelet_eviction_thresholds_set_hard_imagefs_inodesfree
+    rationale: not determinable from specification
+    value: 5%
+  title: Tailored Profile

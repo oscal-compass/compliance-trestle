@@ -1,0 +1,18 @@
+apiVersion: compliance.openshift.io/v1alpha1
+kind: TailoredProfile
+metadata:
+  name: customized-tailored-profile
+  namespace: openshift-compliance
+spec:
+  extends: ocp4-cis-node
+  setValues:
+  - name: myco_minimum_password_length
+    rationale: not determinable from specification
+    value: '12'
+  - name: myco_password_reuse_prevention
+    rationale: not determinable from specification
+    value: '24'
+  - name: allowed_service_ids_admins_per_account
+    rationale: not determinable from specification
+    value: '10'
+  title: Best Practices NIST CONTROLS Profile
