@@ -118,10 +118,9 @@ def get_relative_model_type(relative_path: pathlib.Path) -> Tuple[Type[OscalBase
     model_type, model_alias = utils.get_root_model(module_name)
     full_alias = model_alias
 
-    for i in range(len(model_relative_path.parts)):
-        tmp_path = pathlib.Path(model_relative_path.parts[i])
-        alias = extract_alias(tmp_path)
-        if i > 0 or model_alias != alias:
+    for index, part in enumerate(model_relative_path.parts):
+        alias = extract_alias(part)
+        if index > 0 or model_alias != alias:
             model_alias = alias
             full_alias = f'{full_alias}.{model_alias}'
             if utils.is_collection_field_type(model_type):
@@ -163,7 +162,7 @@ def get_stripped_model_type(
 
     malias = model_alias.split('.')[-1]
     logger.debug(f'not collection field type, malias: {malias}')
-    if absolute_path.is_dir() and malias != extract_alias(absolute_path):
+    if absolute_path.is_dir() and malias != extract_alias(absolute_path.name):
         split_subdir = absolute_path / malias
     else:
         split_subdir = absolute_path.parent / absolute_path.with_suffix('').name
@@ -172,7 +171,7 @@ def get_stripped_model_type(
     if split_subdir.exists():
         for f in split_subdir.iterdir():
             # TODO ignore hidden files
-            alias = extract_alias(f)
+            alias = extract_alias(f.name)
             if alias not in aliases_not_to_be_stripped:
                 aliases_to_be_stripped.add(alias)
 
@@ -187,10 +186,14 @@ def get_stripped_model_type(
         return singular_model_type, model_alias
 
 
-def extract_alias(path: pathlib.Path) -> str:
-    """Extract alias from filename or directory name removing extensions and prefixes related to dict and list."""
-    alias = path.with_suffix('').name  # remove suffix extension of file if it exists
-    alias = alias.split(const.IDX_SEP)[-1]  # get suffix of file or directory name representing list or dict item
+def extract_alias(string_dir: str) -> str:
+    """
+    Extract alias from filename or directory name removing extensions and prefixes related to dict and list.
+
+    As we need to do this for multiple parts of a path operating on strings is easier.
+    """
+    alias = string_dir.split('.')[0].split(const.IDX_SEP
+                                           )[-1]  # get suffix of file or directory name representing list or dict item
     return alias
 
 

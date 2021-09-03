@@ -264,17 +264,17 @@ def create_sample_catalog_project(trestle_base_dir: pathlib.Path) -> None:
 
 def test_extract_alias() -> None:
     """Test extraction of alias from filename or directory names."""
-    assert fs.extract_alias(pathlib.Path('catalog')) == 'catalog'
-    assert fs.extract_alias(pathlib.Path('/tmp/catalog')) == 'catalog'
-    assert fs.extract_alias(pathlib.Path('/catalogs/mycatalog/catalog.json')) == 'catalog'
-    assert fs.extract_alias(pathlib.Path('/catalogs/mycatalog/catalog.yaml')) == 'catalog'
-    assert fs.extract_alias(pathlib.Path('responsible-parties')) == 'responsible-parties'
-    assert fs.extract_alias(pathlib.Path('responsible-parties.json')) == 'responsible-parties'
-    assert fs.extract_alias(pathlib.Path('/roles')) == 'roles'
-    assert fs.extract_alias(pathlib.Path('/roles/roles.json')) == 'roles'
-    assert fs.extract_alias(pathlib.Path(f'/roles/00000{const.IDX_SEP}role.json')) == 'role'
+    assert fs.extract_alias(pathlib.Path('catalog').name) == 'catalog'
+    assert fs.extract_alias(pathlib.Path('/tmp/catalog').name) == 'catalog'
+    assert fs.extract_alias(pathlib.Path('/catalogs/mycatalog/catalog.json').name) == 'catalog'
+    assert fs.extract_alias(pathlib.Path('/catalogs/mycatalog/catalog.yaml').name) == 'catalog'
+    assert fs.extract_alias(pathlib.Path('responsible-parties').name) == 'responsible-parties'
+    assert fs.extract_alias(pathlib.Path('responsible-parties.json').name) == 'responsible-parties'
+    assert fs.extract_alias(pathlib.Path('/roles').name) == 'roles'
+    assert fs.extract_alias(pathlib.Path('/roles/roles.json').name) == 'roles'
+    assert fs.extract_alias(pathlib.Path(f'/roles/00000{const.IDX_SEP}role.json').name) == 'role'
     assert fs.extract_alias(
-        pathlib.Path(f'/metadata/responsible-parties/creator{const.IDX_SEP}responsible-party.json')
+        pathlib.Path(f'/metadata/responsible-parties/creator{const.IDX_SEP}responsible-party.json').name
     ) == 'responsible-party'
 
 

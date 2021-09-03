@@ -56,8 +56,8 @@ def _load_dict(abs_path: Path, abs_trestle_root: Path) -> Tuple[Type[OscalBaseMo
 
 
 def load_distributed(
-    abs_path: Path,
-    abs_trestle_root: Path,
+    file_path: Path,
+    trestle_root: Path,
     collection_type: Optional[Type[Any]] = None
 ) -> Tuple[Type[OscalBaseModel], str, Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]]:
     """
@@ -66,8 +66,8 @@ def load_distributed(
     If the model is decomposed/split/distributed,the decomposed models are loaded recursively.
 
     Args:
-        abs_path : The path to the file/directory to be loaded, resolved.
-        abs_trestle_root: The trestle project root directory, resolved.
+        file_path : The path to the file/directory to be loaded.
+        trestle_root: The trestle project root directory.
         collection_type: The type of collection model, if it is a collection model.
             typing.List if the model is a list, typing.Dict if the model is additionalProperty.
             Defaults to None.
@@ -78,10 +78,11 @@ def load_distributed(
         the decomposed models loaded recursively.
     """
     # if trying to load file that does not exist, load path instead
+    abs_path = file_path.resolve()
+    abs_trestle_root = trestle_root.resolve()
     if not abs_path.exists():
         abs_path = abs_path.with_name(abs_path.stem)
 
-    abs_path = abs_path.resolve()
     if not abs_path.exists():
         raise TrestleNotFoundError(f'File {abs_path} not found for load.')
 
