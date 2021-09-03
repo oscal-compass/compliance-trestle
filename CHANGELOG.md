@@ -3,6 +3,18 @@
 
 <!--next-version-placeholder-->
 
+## v0.23.0 (2021-09-03)
+### Feature
+* Update of Oscal profile to osco from initial PoC with stakeholder review. ([`c47092a`](https://github.com/IBM/compliance-trestle/commit/c47092aecf0d4b73eef2147738832748ecb04b1a))
+* Resolved profile catalog functionality and enhanced ssp generation ([#694](https://github.com/IBM/compliance-trestle/issues/694)) ([`193e3b9`](https://github.com/IBM/compliance-trestle/commit/193e3b9e8179d3be0b5eaa4692e9106c5e4ad628))
+* Add new OSCAL profile-to-osco-yaml transformer functionality. ([#677](https://github.com/IBM/compliance-trestle/issues/677)) ([`c7e2156`](https://github.com/IBM/compliance-trestle/commit/c7e2156b9cc2546d15a70e7699091465c8a54e91))
+* Adding rich model generation to trestle add and trestle create. ([#693](https://github.com/IBM/compliance-trestle/issues/693)) ([`9d32953`](https://github.com/IBM/compliance-trestle/commit/9d329530893da01de1b71dce8711fa3edb1fc2cb))
+* Adding capability to allowing generator to generate optional fields. ([#690](https://github.com/IBM/compliance-trestle/issues/690)) ([`4a0f631`](https://github.com/IBM/compliance-trestle/commit/4a0f6318b426e24a2764e0a75edcaa84861cadd8))
+
+### Fix
+* Refactor underlying methods to isolate calls to Path.cwd() ([#716](https://github.com/IBM/compliance-trestle/issues/716)) ([`473c1d8`](https://github.com/IBM/compliance-trestle/commit/473c1d8ca85e688bd75362a3f0f22e8cc81c327d))
+* Cleanup assemble command to reduce LoC covering the same functionality. ([#709](https://github.com/IBM/compliance-trestle/issues/709)) ([`c40cfca`](https://github.com/IBM/compliance-trestle/commit/c40cfca85af92c6e5d6c725ea069db4d534676f9))
+
 ## v0.22.1 (2021-08-19)
 ### Fix
 * Strip back dependencies due to dependency error ([#684](https://github.com/IBM/compliance-trestle/issues/684)) ([`a8b4768`](https://github.com/IBM/compliance-trestle/commit/a8b476859cbc3ba77f9bf389ed2bb977bd80c592))
