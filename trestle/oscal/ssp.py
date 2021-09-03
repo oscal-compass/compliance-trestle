@@ -19,7 +19,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
 
 from trestle.core.base_model import OscalBaseModel
 import trestle.oscal.common as common
@@ -50,6 +50,10 @@ class State(Enum):
 
 
 class SetParameter(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     param_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -73,6 +77,10 @@ class Selected(OscalBaseModel):
 
 
 class SecurityImpactLevel(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     security_objective_confidentiality: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
         alias='security-objective-confidentiality',
@@ -97,6 +105,10 @@ class SecurityImpactLevel(OscalBaseModel):
 
 
 class Satisfied(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -126,6 +138,10 @@ class Satisfied(OscalBaseModel):
 
 
 class Responsibility(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -155,6 +171,10 @@ class Responsibility(OscalBaseModel):
 
 
 class Provided(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -176,6 +196,10 @@ class Provided(OscalBaseModel):
 
 
 class Inherited(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -212,6 +236,10 @@ class InformationTypeId(OscalBaseModel):
 
 
 class ImportProfile(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     href: str = Field(
         ...,
         description="A resolvable URL reference to the profile to use as the system's control baseline.",
@@ -221,6 +249,10 @@ class ImportProfile(OscalBaseModel):
 
 
 class Export(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     description: Optional[str] = Field(
         None,
         description=
@@ -235,6 +267,10 @@ class Export(OscalBaseModel):
 
 
 class Diagram(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                  ) = Field(..., description='The identifier for this diagram.', title='Diagram ID')
     description: Optional[str] = Field(None, description='A summary of the diagram.', title='Diagram Description')
@@ -260,6 +296,10 @@ class DateAuthorized(OscalBaseModel):
 
 
 class DataFlow(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     description: str = Field(
         ...,
         description="A summary of the system's data flow.",
@@ -272,6 +312,10 @@ class DataFlow(OscalBaseModel):
 
 
 class Categorization(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     system: AnyUrl = Field(
         ...,
         description='Specifies the information type identification system used.',
@@ -281,6 +325,10 @@ class Categorization(OscalBaseModel):
 
 
 class ByComponent(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     component_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -327,6 +375,10 @@ class Base(OscalBaseModel):
 
 
 class AvailabilityImpact(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     base: Base
@@ -335,6 +387,10 @@ class AvailabilityImpact(OscalBaseModel):
 
 
 class AuthorizationBoundary(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     description: str = Field(
         ...,
         description="A summary of the system's authorization boundary.",
@@ -351,16 +407,28 @@ class AuthorizationBoundary(OscalBaseModel):
 
 
 class Status1(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     state: State = Field(..., description='The current operating status.', title='State')
     remarks: Optional[common.Remarks] = None
 
 
 class Status(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     state: State1 = Field(..., description='The operational status.', title='State')
     remarks: Optional[common.Remarks] = None
 
 
 class SystemComponent(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                  ) = Field(
                      ...,
@@ -400,6 +468,10 @@ class SystemComponent(OscalBaseModel):
 
 
 class Statement(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     statement_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -425,6 +497,10 @@ class Statement(OscalBaseModel):
 
 
 class ImplementedRequirement(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -452,6 +528,10 @@ class ImplementedRequirement(OscalBaseModel):
 
 
 class ControlImplementation(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     description: str = Field(
         ...,
         description=
@@ -463,6 +543,10 @@ class ControlImplementation(OscalBaseModel):
 
 
 class NetworkArchitecture(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     description: str = Field(
         ...,
         description="A summary of the system's network architecture.",
@@ -475,6 +559,10 @@ class NetworkArchitecture(OscalBaseModel):
 
 
 class LeveragedAuthorization(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -502,6 +590,10 @@ class LeveragedAuthorization(OscalBaseModel):
 
 
 class SystemImplementation(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     leveraged_authorizations: Optional[List[LeveragedAuthorization]] = Field(None, alias='leveraged-authorizations')
@@ -512,6 +604,10 @@ class SystemImplementation(OscalBaseModel):
 
 
 class IntegrityImpact(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     base: Base
@@ -520,6 +616,10 @@ class IntegrityImpact(OscalBaseModel):
 
 
 class ConfidentialityImpact(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     base: Base
@@ -528,6 +628,10 @@ class ConfidentialityImpact(OscalBaseModel):
 
 
 class InformationType(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: Optional[constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     )] = Field(
@@ -574,12 +678,20 @@ class InformationType(OscalBaseModel):
 
 
 class SystemInformation(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     props: Optional[List[common.Property]] = Field(None)
     links: Optional[List[common.Link]] = Field(None)
     information_types: List[InformationType] = Field(..., alias='information-types')
 
 
 class SystemCharacteristics(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     system_ids: List[common.SystemId] = Field(..., alias='system-ids')
     system_name: constr(regex=r'^\S(.*\S)?$') = Field(
         ...,
@@ -615,6 +727,10 @@ class SystemCharacteristics(OscalBaseModel):
 
 
 class SystemSecurityPlan(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(

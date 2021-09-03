@@ -19,13 +19,17 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import AnyUrl, EmailStr, Field, conint, constr
+from pydantic import AnyUrl, EmailStr, Extra, Field, conint, constr
 
 from trestle.core.base_model import OscalBaseModel
 import trestle.oscal.common as common
 
 
 class Statement(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     statement_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -62,6 +66,10 @@ class State(Enum):
 
 
 class SetParameter(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     param_id: constr(
         regex=
         r'^[_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][_A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD\-\.0-9\u00B7\u0300-\u036F\u203F-\u2040]*$'
@@ -77,6 +85,10 @@ class SetParameter(OscalBaseModel):
 
 
 class IncorporatesComponent(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     component_uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
@@ -93,6 +105,10 @@ class IncorporatesComponent(OscalBaseModel):
 
 
 class ImportComponentDefinition(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     href: str = Field(
         ...,
         description=
@@ -102,6 +118,10 @@ class ImportComponentDefinition(OscalBaseModel):
 
 
 class ImplementedRequirement(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                  ) = Field(
                      ...,
@@ -132,6 +152,10 @@ class ImplementedRequirement(OscalBaseModel):
 
 
 class ControlImplementation(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                  ) = Field(
                      ...,
@@ -157,6 +181,10 @@ class ControlImplementation(OscalBaseModel):
 
 
 class Capability(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                  ) = Field(
                      ...,
@@ -177,11 +205,19 @@ class Capability(OscalBaseModel):
 
 
 class Status(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     state: State = Field(..., description='The operational status.', title='State')
     remarks: Optional[common.Remarks] = None
 
 
 class SystemComponent(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                  ) = Field(
                      ...,
@@ -221,6 +257,10 @@ class SystemComponent(OscalBaseModel):
 
 
 class DefinedComponent(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
                  ) = Field(
                      ...,
@@ -256,6 +296,10 @@ class DefinedComponent(OscalBaseModel):
 
 
 class ComponentDefinition(OscalBaseModel):
+
+    class Config:
+        extra = Extra.forbid
+
     uuid: constr(
         regex=r'^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$'
     ) = Field(
