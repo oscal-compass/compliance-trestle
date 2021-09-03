@@ -66,16 +66,16 @@ def load_distributed(
     If the model is decomposed/split/distributed,the decomposed models are loaded recursively.
 
     Args:
-        file_path (pathlib.Path): The path to the file/directory to be loaded.
-        collection_type (Type[Any], optional): The type of collection model, if it is a collection model.
+        abs_path : The path to the file/directory to be loaded, resolved.
+        abs_trestle_root: The trestle project root directory, resolved.
+        collection_type: The type of collection model, if it is a collection model.
             typing.List if the model is a list, typing.Dict if the model is additionalProperty.
             Defaults to None.
 
     Returns:
-        Tuple[Type[OscalBaseModel], str, Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]]: Return
-            a tuple of Model Type (e.g. class 'trestle.oscal.catalog.Catalog'), Model Alias (e.g. 'catalog.metadata'),
-            and Instance of the Model. If the model is decomposed/split/distributed, the instance of the model contains
-            the decomposed models loaded recursively.
+        Return a tuple of Model Type (e.g. class 'trestle.oscal.catalog.Catalog'), Model Alias (e.g. 'catalog.metadata')
+        and Instance of the Model. If the model is decomposed/split/distributed, the instance of the model contains
+        the decomposed models loaded recursively.
     """
     # if trying to load file that does not exist, load path instead
     if not abs_path.exists():

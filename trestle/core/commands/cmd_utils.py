@@ -189,7 +189,7 @@ def parse_element_arg(
     """Parse an element arg string into a list of ElementPath.
 
     Args:
-        model: The OscalBaseModel being inspected to determine available elements that can be split
+        model_obj: The OscalBaseModel being inspected to determine available elements that can be split
         element_arg: Single element path, as a string.
         relative_path: Optional relative path (from trestle root) used to validate element args are valid.
     Returns:
