@@ -25,11 +25,9 @@ from unittest.mock import patch
 from trestle.cli import Trestle
 from trestle.core import const, generators, utils
 from trestle.core.base_model import OscalBaseModel
-from trestle.core.commands import cmd_utils
 from trestle.core.commands.import_ import ImportCmd
 from trestle.core.common_types import TopLevelOscalModel
 from trestle.core.err import TrestleError
-from trestle.core.models.elements import ElementPath
 from trestle.core.models.file_content_type import FileContentType
 from trestle.oscal import catalog as cat
 from trestle.oscal import common
@@ -76,16 +74,6 @@ def ensure_trestle_config_dir(sub_dir: pathlib.Path):
     """Ensure that the sub_dir has trestle config dir."""
     trestle_dir = sub_dir / const.TRESTLE_CONFIG_DIR
     trestle_dir.mkdir(exist_ok=True, parents=True)
-
-
-def prepare_element_paths(base_dir, element_args) -> List[ElementPath]:
-    """Prepare element paths for tests."""
-    cur_dir = pathlib.Path.cwd()
-    os.chdir(base_dir)
-    element_paths: List[ElementPath] = cmd_utils.parse_element_args(None, element_args, True)
-    os.chdir(cur_dir)
-
-    return element_paths
 
 
 def prepare_trestle_project_dir(

@@ -93,43 +93,34 @@ def has_parent_path(sub_path: pathlib.Path, parent_path: pathlib.Path) -> bool:
     return True
 
 
-def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBaseModel], str]:
-    """Get the full contextual model class and full jsonpath for the alias based on the contextual path."""
-    logger.debug(f'get contextual model type for input path {path}')
+def get_relative_model_type(relative_path: pathlib.Path) -> Tuple[Type[OscalBaseModel], str]:
+    """
+    Given the relative path of a file with respect to 'trestle_root' return the oscal model type.
 
-    if path is None:
-        path = pathlib.Path.cwd()
-    else:
-        if not path.exists():
-            path = pathlib.Path.cwd() / path
+    Args:
+        relative_path: Relative path of the model of interest with respect to the root directory of the trestle project.
 
-    logger.debug(f'get contextual model type final path {path}')
+    Returns:
+        Type of Oscal Model for the provided model
+        Alias of that oscal model.
 
-    if not is_valid_project_model_path(path):
-        raise err.TrestleError(f'Trestle project model not found at {path}')
+    """
+    if len(relative_path.parts) < 2:
+        raise TrestleError('Insufficient path length to be a valid relative path w.r.t Trestle project root directory.')
+    project_type = relative_path.parts[0]
+    model_relative_path = pathlib.Path(*relative_path.parts[2:])  # catalogs, profiles, etc
 
-    root_path = get_trestle_project_root(path)
-    project_model_path = get_project_model_path(path)
-
-    logger.debug(f'root_path is {root_path} and project_model_path is {project_model_path}')
-
-    if root_path is None or project_model_path is None:
-        raise err.TrestleError('Trestle project model not found')
-
-    relative_path = path.relative_to(str(root_path))
-    project_type = relative_path.parts[0]  # catalogs, profiles, etc
-    module_name = const.MODEL_TYPE_TO_MODEL_MODULE[project_type]
-
-    model_relative_path = pathlib.Path(*relative_path.parts[2:])
+    try:
+        module_name = const.MODEL_TYPE_TO_MODEL_MODULE[project_type]
+    except KeyError:
+        raise TrestleError('No valid trestle model type directory (e.g. catalogs) found.')
 
     model_type, model_alias = utils.get_root_model(module_name)
     full_alias = model_alias
 
-    for i in range(len(model_relative_path.parts)):
-        tmp_path = root_path.joinpath(*relative_path.parts[:2], *model_relative_path.parts[:i + 1])
-
-        alias = extract_alias(tmp_path)
-        if i > 0 or model_alias != alias:
+    for index, part in enumerate(model_relative_path.parts):
+        alias = extract_alias(part)
+        if index > 0 or model_alias != alias:
             model_alias = alias
             full_alias = f'{full_alias}.{model_alias}'
             if utils.is_collection_field_type(model_type):
@@ -140,8 +131,11 @@ def get_contextual_model_type(path: pathlib.Path = None) -> Tuple[Type[OscalBase
     return model_type, full_alias
 
 
-def get_stripped_contextual_model(path: pathlib.Path = None,
-                                  aliases_not_to_be_stripped: List[str] = None) -> Tuple[Type[OscalBaseModel], str]:
+def get_stripped_model_type(
+    absolute_path: pathlib.Path,
+    absolute_trestle_root: pathlib.Path,
+    aliases_not_to_be_stripped: List[str] = None
+) -> Tuple[Type[OscalBaseModel], str]:
     """
     Get the stripped contextual model class and alias based on the contextual path.
 
@@ -150,15 +144,9 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
     a parameter.
     """
     # Set default value of path to Path.cwd()
-    if path is None:
-        logger.debug('get_stripped_contextual_model based on cwd')
-        path = pathlib.Path.cwd()
-    path = path.resolve()
-    logger.debug(f'get_stripped_contextual_model path is {path} and not stripped is {aliases_not_to_be_stripped}')
     if aliases_not_to_be_stripped is None:
         aliases_not_to_be_stripped = []
-
-    singular_model_type, model_alias = get_contextual_model_type(path)
+    singular_model_type, model_alias = get_relative_model_type(absolute_path.relative_to(absolute_trestle_root))
     logger.debug(f'singular model type {singular_model_type} model alias {model_alias}')
 
     # Stripped models do not apply to collection types such as List[] and Dict{}
@@ -174,17 +162,16 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
 
     malias = model_alias.split('.')[-1]
     logger.debug(f'not collection field type, malias: {malias}')
-
-    if path.is_dir() and malias != extract_alias(path):
-        split_subdir = path / malias
+    if absolute_path.is_dir() and malias != extract_alias(absolute_path.name):
+        split_subdir = absolute_path / malias
     else:
-        split_subdir = path.parent / path.with_suffix('').name
+        split_subdir = absolute_path.parent / absolute_path.with_suffix('').name
 
     aliases_to_be_stripped = set()
     if split_subdir.exists():
         for f in split_subdir.iterdir():
             # TODO ignore hidden files
-            alias = extract_alias(f)
+            alias = extract_alias(f.name)
             if alias not in aliases_not_to_be_stripped:
                 aliases_to_be_stripped.add(alias)
 
@@ -199,10 +186,14 @@ def get_stripped_contextual_model(path: pathlib.Path = None,
         return singular_model_type, model_alias
 
 
-def extract_alias(path: pathlib.Path) -> str:
-    """Extract alias from filename or directory name removing extensions and prefixes related to dict and list."""
-    alias = path.with_suffix('').name  # remove suffix extension of file if it exists
-    alias = alias.split(const.IDX_SEP)[-1]  # get suffix of file or directory name representing list or dict item
+def extract_alias(string_dir: str) -> str:
+    """
+    Extract alias from filename or directory name removing extensions and prefixes related to dict and list.
+
+    As we need to do this for multiple parts of a path operating on strings is easier.
+    """
+    alias = string_dir.split('.')[0].split(const.IDX_SEP
+                                           )[-1]  # get suffix of file or directory name representing list or dict item
     return alias
 
 
@@ -246,12 +237,18 @@ def load_file(file_name: pathlib.Path) -> Dict[str, Any]:
             return json.load(f)
 
 
-def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
+def get_singular_alias(alias_path: str, relative_path: Optional[pathlib.Path] = None) -> str:
     """
     Get the alias in the singular form from a jsonpath.
 
     If contextual_mode is True and contextual_path is None, it assumes alias_path is relative to the directory the user
     is running trestle from.
+
+    Args:
+        alias_path: The current alias element path as a string
+        relative_path: Optional relative path (w.r.t. trestle_root) to cater for relative element paths.
+    Returns:
+        Alias as a string
     """
     if len(alias_path.strip()) == 0:
         raise err.TrestleError(f'Invalid jsonpath {alias_path}')
@@ -259,9 +256,9 @@ def get_singular_alias(alias_path: str, contextual_mode: bool = False) -> str:
     singular_alias: str = ''
 
     full_alias_path = alias_path
-    if contextual_mode:
+    if relative_path:
         logger.debug(f'get_singular_alias contextual mode: {str}')
-        _, full_model_alias = get_contextual_model_type()
+        _, full_model_alias = get_relative_model_type(relative_path)
         first_alias_a = full_model_alias.split('.')[-1]
         first_alias_b = alias_path.split('.')[0]
         if first_alias_a == first_alias_b:

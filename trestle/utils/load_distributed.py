@@ -24,19 +24,18 @@ from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
 
 
-def _load_list(file_path: Path) -> Tuple[Type[OscalBaseModel], str, List[OscalBaseModel]]:
+def _load_list(abs_path: Path, abs_trestle_root: Path) -> Tuple[Type[OscalBaseModel], str, List[OscalBaseModel]]:
     """Given path to a directory of list(array) models, load the distributed models."""
     aliases_not_to_be_stripped = []
     instances_to_be_merged: List[OscalBaseModel] = []
-    file_path = file_path.resolve()
-    collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(file_path)
-
-    for path in sorted(Path.iterdir(file_path)):
+    abs_path = abs_path.resolve()
+    collection_model_type, collection_model_alias = fs.get_stripped_model_type(abs_path, abs_trestle_root)
+    for path in sorted(Path.iterdir(abs_path)):
 
         # ASSUMPTION HERE: if it is a directory, there's a file that can not be decomposed further.
         if path.is_dir():
             continue
-        model_type, model_alias, model_instance = load_distributed(path)
+        _, model_alias, model_instance = load_distributed(path, abs_trestle_root)
 
         instances_to_be_merged.append(model_instance)
         aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
@@ -44,12 +43,12 @@ def _load_list(file_path: Path) -> Tuple[Type[OscalBaseModel], str, List[OscalBa
     return collection_model_type, collection_model_alias, instances_to_be_merged
 
 
-def _load_dict(filepath: Path) -> Tuple[Type[OscalBaseModel], str, Dict[str, OscalBaseModel]]:
+def _load_dict(abs_path: Path, abs_trestle_root: Path) -> Tuple[Type[OscalBaseModel], str, Dict[str, OscalBaseModel]]:
     """Given path to a directory of additionalProperty(dict) models, load the distributed models."""
     model_dict: Dict[str, OscalBaseModel] = {}
-    collection_model_type, collection_model_alias = fs.get_stripped_contextual_model(filepath)
-    for path in sorted(Path.iterdir(filepath)):
-        model_type, model_alias, model_instance = load_distributed(path)
+    collection_model_type, collection_model_alias = fs.get_stripped_model_type(abs_path, abs_trestle_root)
+    for path in sorted(Path.iterdir(abs_path)):
+        model_type, model_alias, model_instance = load_distributed(path, abs_trestle_root)
         field_name = path.parts[-1].split('__')[0].split('.')[0]
         model_dict[field_name] = model_instance
 
@@ -58,6 +57,7 @@ def _load_dict(filepath: Path) -> Tuple[Type[OscalBaseModel], str, Dict[str, Osc
 
 def load_distributed(
     file_path: Path,
+    trestle_root: Path,
     collection_type: Optional[Type[Any]] = None
 ) -> Tuple[Type[OscalBaseModel], str, Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]]:
     """
@@ -66,58 +66,58 @@ def load_distributed(
     If the model is decomposed/split/distributed,the decomposed models are loaded recursively.
 
     Args:
-        file_path (pathlib.Path): The path to the file/directory to be loaded.
-        collection_type (Type[Any], optional): The type of collection model, if it is a collection model.
+        file_path : The path to the file/directory to be loaded.
+        trestle_root: The trestle project root directory.
+        collection_type: The type of collection model, if it is a collection model.
             typing.List if the model is a list, typing.Dict if the model is additionalProperty.
             Defaults to None.
 
     Returns:
-        Tuple[Type[OscalBaseModel], str, Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]]: Return
-            a tuple of Model Type (e.g. class 'trestle.oscal.catalog.Catalog'), Model Alias (e.g. 'catalog.metadata'),
-            and Instance of the Model. If the model is decomposed/split/distributed, the instance of the model contains
-            the decomposed models loaded recursively.
+        Return a tuple of Model Type (e.g. class 'trestle.oscal.catalog.Catalog'), Model Alias (e.g. 'catalog.metadata')
+        and Instance of the Model. If the model is decomposed/split/distributed, the instance of the model contains
+        the decomposed models loaded recursively.
     """
     # if trying to load file that does not exist, load path instead
-    if not file_path.exists():
-        file_path = file_path.with_name(file_path.stem)
+    abs_path = file_path.resolve()
+    abs_trestle_root = trestle_root.resolve()
+    if not abs_path.exists():
+        abs_path = abs_path.with_name(abs_path.stem)
 
-    file_path = file_path.resolve()
-    if not file_path.exists():
-        raise TrestleNotFoundError(f'File {file_path} not found for load.')
+    if not abs_path.exists():
+        raise TrestleNotFoundError(f'File {abs_path} not found for load.')
 
     # If the path contains a list type model
     if collection_type is list:
-        return _load_list(file_path)
+        return _load_list(abs_path, abs_trestle_root)
 
     # If the path contains a dict type model
     if collection_type is dict:
-        return _load_dict(file_path)
+        return _load_dict(abs_path, abs_trestle_root)
 
     # Get current model
-    primary_model_type, primary_model_alias = fs.get_stripped_contextual_model(file_path)
-    primary_model_instance: Type[OscalBaseModel] = None
+    primary_model_type, primary_model_alias = fs.get_stripped_model_type(abs_path, abs_trestle_root)
+    primary_model_instance: OscalBaseModel = None
 
     # is this an attempt to load an actual json or yaml file?
-    content_type = FileContentType.path_to_content_type(file_path)
+    content_type = FileContentType.path_to_content_type(abs_path)
     # if file is sought but it doesn't exist, ignore and load as decomposed model
-    if FileContentType.is_readable_file(content_type) and file_path.exists():
-        primary_model_instance = primary_model_type.oscal_read(file_path)
+    if FileContentType.is_readable_file(content_type) and abs_path.exists():
+        primary_model_instance = primary_model_type.oscal_read(abs_path)
     # Is model decomposed?
-    decomposed_dir = file_path.with_name(file_path.stem)
+    decomposed_dir = abs_path.with_name(abs_path.stem)
 
     if decomposed_dir.exists():
         aliases_not_to_be_stripped = []
         instances_to_be_merged: List[OscalBaseModel] = []
 
-        for path in sorted(Path.iterdir(decomposed_dir)):
-
-            if path.is_file():
-                model_type, model_alias, model_instance = load_distributed(path)
+        for local_path in sorted(Path.iterdir(decomposed_dir)):
+            if local_path.is_file():
+                model_type, model_alias, model_instance = load_distributed(local_path, abs_trestle_root)
                 aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
                 instances_to_be_merged.append(model_instance)
 
-            elif path.is_dir():
-                model_type, model_alias = fs.get_stripped_contextual_model(path)
+            elif local_path.is_dir():
+                model_type, model_alias = fs.get_stripped_model_type(local_path, abs_trestle_root)
                 # Only load the directory if it is a collection model. Otherwise do nothing - it gets loaded when
                 # iterating over the model file
 
@@ -131,14 +131,16 @@ def load_distributed(
                 if model_type.is_collection_container():
                     # This directory is a decomposed List or Dict
                     collection_type = model_type.get_collection_type()
-                    model_type, model_alias, model_instance = load_distributed(path, collection_type)
+                    model_type, model_alias, model_instance = load_distributed(local_path, abs_trestle_root,
+                                                                               collection_type)
                     aliases_not_to_be_stripped.append(model_alias.split('.')[-1])
                     instances_to_be_merged.append(model_instance)
         primary_model_dict = {}
         if primary_model_instance is not None:
             primary_model_dict = primary_model_instance.__dict__
 
-        merged_model_type, merged_model_alias = fs.get_stripped_contextual_model(file_path, aliases_not_to_be_stripped)
+        merged_model_type, merged_model_alias = fs.get_stripped_model_type(abs_path, abs_trestle_root,
+                                                                           aliases_not_to_be_stripped)
 
         # The following use of top_level is to allow loading of a top level model by name only, e.g. MyCatalog
         # There may be a better overall way to approach this.

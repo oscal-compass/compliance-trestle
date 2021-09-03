@@ -41,10 +41,10 @@ def test_describe_functionality(
         test_utils.CATALOGS_DIR)
 
     os.chdir(catalog_dir)
-    args = argparse.Namespace(file='catalog.json', element=element_path, verbose=1)
+    args = argparse.Namespace(file='catalog.json', element=element_path, verbose=1, trestle_root=tmp_path)
     assert DescribeCmd()._run(args) == 0
 
-    results = DescribeCmd.describe(catalog_file, '')
+    results = DescribeCmd.describe(catalog_file.resolve(), '', tmp_path)
     assert len(results) > 5
     assert 'catalog.json' in results[0]
     assert 'catalog.Catalog' in results[0]
@@ -61,23 +61,30 @@ def test_describe_failures(
         test_utils.COMPONENT_DEF_DIR)
 
     # not in trestle directory
-    args = argparse.Namespace(file='comp_def.json', element='component-definition.metadata', verbose=1)
+    args = argparse.Namespace(
+        file='comp_def.json', element='component-definition.metadata', verbose=1, trestle_root=tmp_path
+    )
     assert DescribeCmd()._run(args) == 1
 
     os.chdir(comp_def_dir)
 
     # in trestle directory but have wildcard in element path
-    args = argparse.Namespace(file=comp_def_file, element='component-definition.*.roles', verbose=1)
+    args = argparse.Namespace(
+        file=comp_def_file, element='component-definition.*.roles', verbose=1, trestle_root=tmp_path
+    )
     assert DescribeCmd()._run(args) == 1
 
     # in trestle directory but have comma in element path
     args = argparse.Namespace(
-        file=comp_def_file, element='component-definition.metadata,component-definition.back-matter', verbose=1
+        file=comp_def_file,
+        element='component-definition.metadata,component-definition.back-matter',
+        verbose=1,
+        trestle_root=tmp_path
     )
     assert DescribeCmd()._run(args) == 1
 
     # in trestle directory but element only has one part
-    args = argparse.Namespace(file=comp_def_file, element='component-definition', verbose=1)
+    args = argparse.Namespace(file=comp_def_file, element='component-definition', verbose=1, trestle_root=tmp_path)
     assert DescribeCmd()._run(args) == 1
 
     # no filename specified

@@ -91,7 +91,7 @@ class AssembleCmd(CommandPlusDocs):
                 return 1
 
             # distributed load
-            _, _, assembled_model = load_distributed(root_model_filepath)
+            _, _, assembled_model = load_distributed(root_model_filepath, args.trestle_root)
             plural_alias = fs.model_type_to_model_dir(model_alias)
 
             assembled_model_dir = trestle_root / const.TRESTLE_DIST_DIR / plural_alias

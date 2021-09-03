@@ -151,7 +151,7 @@ class ReplicateCmd(CommandPlusDocs):
 
         # 1 Bad working directory if not running from current working directory
         trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
-        if not trestle_root or not fs.is_valid_project_root(args.trestle_root):
+        if not trestle_root or not fs.is_valid_project_root(trestle_root):
             logger.error(f'Given directory: {trestle_root} is not a trestle project.')
             return 1
 
@@ -170,7 +170,7 @@ class ReplicateCmd(CommandPlusDocs):
         # 3 Distributed load from file
 
         try:
-            model_type, model_alias, model_instance = load_distributed(input_file)
+            model_type, model_alias, model_instance = load_distributed(input_file, trestle_root)
         except TrestleError as err:
             logger.debug(f'load_distributed() failed: {err}')
             logger.warning(f'Replicate failed, error loading file: {err}')
