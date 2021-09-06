@@ -246,28 +246,33 @@ def test_sftp_fetcher_bad_uri(uri: str, tmp_trestle_dir: pathlib.Path) -> None:
         cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
 
 
-def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, monkeypatch: pytest.MonkeyPatch) -> None:
+@pytest.mark.parametrize(
+    'uri',
+    [
+        'ftp://some.host/this.file',
+        'https://{{9invalid}}:@github.com/IBM/test/file',
+        'https://{{invalid var}}:@github.com/IBM/test/file',
+        'https://{{invalid-var}}:@github.com/IBM/test/file',
+        'https://{{_}}:@github.com/IBM/test/file',
+        'https://{{myusername}}:@github.com/IBM/test/file',
+        'https://{{myusername}}:passwordstring@github.com/IBM/test/file',
+        'https://{{myusername_not_defined}}:passwordstring@github.com/IBM/test/file',
+        'https://{{myusername}}:{{password_var_not_defined}}@github.com/IBM/test/file',
+        'https://{{myusername}}:{{0invalid}}@github.com/IBM/test/file',
+        'https://{{myusername}}:{{invalid var}}@github.com/IBM/test/file',
+        'https://{{myusername}}:{{invalid-var}}@github.com/IBM/test/file',
+        'https://{{myusername}}:{{_}}@github.com/IBM/test/file',
+        'https://usernamestring:{{mypassword}}@github.com/IBM/test/file',
+        'https://:{{mypassword}}@github.com/IBM/test/file'
+    ]
+)
+def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, uri: str, monkeypatch: pytest.MonkeyPatch) -> None:
     """Test fetcher factory with bad URI."""
     monkeypatch.setenv('myusername', 'user123')
     monkeypatch.setenv('mypassword', 'somep4ss')
     # FIXME temporarily remove sftp:// failing in CICD
-    for uri in ['ftp://some.host/this.file',
-                'https://{{9invalid}}:@github.com/IBM/test/file',
-                'https://{{invalid var}}:@github.com/IBM/test/file',
-                'https://{{invalid-var}}:@github.com/IBM/test/file',
-                'https://{{_}}:@github.com/IBM/test/file',
-                'https://{{myusername}}:@github.com/IBM/test/file',
-                'https://{{myusername}}:passwordstring@github.com/IBM/test/file',
-                'https://{{myusername_not_defined}}:passwordstring@github.com/IBM/test/file',
-                'https://{{myusername}}:{{password_var_not_defined}}@github.com/IBM/test/file',
-                'https://{{myusername}}:{{0invalid}}@github.com/IBM/test/file',
-                'https://{{myusername}}:{{invalid var}}@github.com/IBM/test/file',
-                'https://{{myusername}}:{{invalid-var}}@github.com/IBM/test/file',
-                'https://{{myusername}}:{{_}}@github.com/IBM/test/file',
-                'https://usernamestring:{{mypassword}}@github.com/IBM/test/file',
-                'https://:{{mypassword}}@github.com/IBM/test/file']:
-        with pytest.raises(TrestleError):
-            cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
+    with pytest.raises(TrestleError):
+        cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
 
 
 def test_fetcher_factory(tmp_trestle_dir: pathlib.Path, monkeypatch: pytest.MonkeyPatch) -> None:
