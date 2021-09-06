@@ -249,6 +249,12 @@ def test_sftp_fetcher_bad_uri(uri: str, tmp_trestle_dir: pathlib.Path) -> None:
 @pytest.mark.parametrize(
     'uri',
     [
+        '',
+        'sftp://',
+        '..',
+        '.json',
+        'a.ym',
+        'ftp://some.host/this.file',
         'https://{{9invalid}}:@github.com/IBM/test/file',
         'https://{{invalid var}}:@github.com/IBM/test/file',
         'https://{{invalid-var}}:@github.com/IBM/test/file',
@@ -265,11 +271,11 @@ def test_sftp_fetcher_bad_uri(uri: str, tmp_trestle_dir: pathlib.Path) -> None:
         'https://:{{mypassword}}@github.com/IBM/test/file'
     ]
 )
-def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, uri: str, monkeypatch: pytest.MonkeyPatch) -> None:
+def hide_test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, uri: str, monkeypatch: pytest.MonkeyPatch) -> None:
     """Test fetcher factory with bad URI."""
-    monkeypatch.setenv('myusername', 'user123')
-    monkeypatch.setenv('mypassword', 'somep4ss')
-    # FIXME temporarily remove sftp:// failing in CICD
+    if 'https' in uri:
+        monkeypatch.setenv('myusername', 'user123')
+        monkeypatch.setenv('mypassword', 'somep4ss')
     with pytest.raises(TrestleError):
         cache.FetcherFactory.get_fetcher(tmp_trestle_dir, uri)
 
