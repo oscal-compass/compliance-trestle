@@ -36,12 +36,13 @@ logger = logging.getLogger(__name__)
 class ImportCmd(CommandPlusDocs):
     """Import an existing full OSCAL model into the trestle project."""
 
-    # The line above comes with the doc string
     name = 'import'
 
     def _init_arguments(self) -> None:
         logger.debug('Init arguments')
-        self.add_argument('-f', '--file', help='OSCAL file to import.', type=str, required=True)
+        self.add_argument(
+            '-f', '--file', help='OSCAL file to import - either file path or url.', type=str, required=True
+        )
 
         self.add_argument('-o', '--output', help='Name of output element.', type=str, required=True)
 
@@ -60,30 +61,19 @@ class ImportCmd(CommandPlusDocs):
             logger.warning(f'Attempt to import from non-valid trestle project root {trestle_root}')
             return 1
 
-        input_file = pathlib.Path(args.file).resolve()
-        if not input_file.exists():
-            logger.warning(f'Input file {args.file} for import does not exist.')
+        input_uri = args.file
+        if cache.FetcherFactory.in_trestle_directory(trestle_root, input_uri):
+            logger.warning(f'Imported file {input_uri} cannot be from current trestle project. Use duplicate instead.')
             return 1
 
-        # Importing a file that is already inside a trestle-initialized dir is bad
         try:
-            input_file.relative_to(trestle_root)
-        except ValueError:
-            # An exception here is good: it means that the input file is not inside a trestle dir.
-            pass
-        else:
-            logger.warning(f'Imported file {input_file} cannot be from current trestle project. Use duplicate instead.')
-            return 1
-
-        # Work out typing information from input suffix.
-        try:
-            content_type = FileContentType.to_content_type(input_file.suffix)
+            content_type = FileContentType.to_content_type('.' + input_uri.split('.')[-1])
         except TrestleError as err:
             logger.debug(f'FileContentType.to_content_type() failed: {err}')
             logger.warning(f'Import failed, could not work out content type from file suffix: {err}')
             return 1
 
-        fetcher = cache.FetcherFactory.get_fetcher(trestle_root, str(input_file))
+        fetcher = cache.FetcherFactory.get_fetcher(trestle_root, str(input_uri))
         try:
             model_read, parent_alias = fetcher.get_oscal(True)
         except TrestleError as err:
@@ -96,14 +86,14 @@ class ImportCmd(CommandPlusDocs):
 
         desired_model_dir = trestle_root / plural_path
         desired_model_path: pathlib.Path = desired_model_dir / output_name / parent_alias
-        desired_model_path = desired_model_path.with_suffix(input_file.suffix).resolve()
+        desired_model_path = desired_model_path.with_suffix(FileContentType.to_file_extension(content_type)).resolve()
 
         if desired_model_path.exists():
             logger.warning(f'Cannot import because file to be imported here: {desired_model_path} already exists.')
             return 1
 
         if args.regenerate:
-            logger.debug(f'regenerating uuids in {input_file}')
+            logger.debug(f'regenerating uuids in imported file {input_uri}')
             model_read, lut, nchanged = validator_helper.regenerate_uuids(model_read)
             logger.debug(f'uuid lut has {len(lut.items())} entries and {nchanged} refs were updated')
 
@@ -136,7 +126,7 @@ class ImportCmd(CommandPlusDocs):
             rc = validatecmd.ValidateCmd()._run(args)
         except TrestleError as err:
             logger.debug(f'validator.validate() raised exception: {err}')
-            logger.error(f'Import of {str(input_file)} failed with validation error: {err}')
+            logger.error(f'Import of {str(input_uri)} failed with validation error: {err}')
             rollback = True
         else:
             if rc > 0:
@@ -146,7 +136,7 @@ class ImportCmd(CommandPlusDocs):
                 rollback = True
 
         if rollback:
-            logger.debug(f'Rolling back import of {str(input_file)} to {desired_model_path}')
+            logger.debug(f'Rolling back import of {str(input_uri)} to {desired_model_path}')
             try:
                 import_plan.rollback()
             except TrestleError as err:

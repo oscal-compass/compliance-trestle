@@ -171,7 +171,7 @@ Passing `-iof` or `--include-optional-fields` will make `trestle create` generat
 
 ## `trestle import`
 
-This command allows users to import existing OSCAL files so that they can be managed using trestle. For example `trestle import -f existing_catalog.json -o my_existing_catalog` will import `existing_catalog.json` into a new folder under `catalogs` as shown below:
+This command allows users to import existing OSCAL files so that they can be managed using trestle. For example `trestle import -f /local_dir/existing_catalog.json -o my_existing_catalog` will import `existing_catalog.json` into a new folder under `catalogs` as shown below:
 
 ```
 .
@@ -184,12 +184,14 @@ This command allows users to import existing OSCAL files so that they can be man
 
 The following options are supported:
 
-- `-f or --file`: specifies the path of an existing OSCAL file.
+- `-f or --file`: specifies the path of an existing OSCAL file or URL to a remote file.
 - `-o or --output`: specifies the name/alias of a model. It is used as the prefix for the output filename under the `dist` directory and for naming the source subdirectories under  `catalogs`, `profiles`, `component-definitions`, `system-security-plans`, `assessment-plans`, `assessment-results` or `plan-of-action-and-milestones`.
 
-The import subcommand can determine the type of the model that is to be imported by the contents of the file.
+The `--file` option may be an absolute or relative path, and it may be a URL.  For details on allowed formats please see the documentation for the `href` command.  The file must be imported from outside the current trestle directory or an error will result.
 
-Finally, during the import process the file must pass the `validate` test described below for the command, `validate`.  If the file does not pass validation a warning will be given describing the nature of the problem and the import will fail.
+The import subcommand can determine the type of the model that is to be imported by the contents of the file.  But the file name must end with an allowed json or yaml extension: \`.json, .yaml, .yml'
+
+During the import process the file must pass the `validate` test described below for the command, `validate`.  If the file does not pass validation a warning will be given describing the nature of the problem and the import will fail.
 
 Once a file has been imported it can be split into a rich tree of sub-components as shown at the top of this document.  But the file must be imported first.
 

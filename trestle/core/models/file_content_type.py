@@ -35,7 +35,7 @@ class FileContentType(Enum):
 
     @classmethod
     def to_file_extension(cls, content_type: 'FileContentType') -> str:
-        """Get file extension for the type."""
+        """Get file extension for the type, including the dot."""
         if content_type == FileContentType.YAML:
             return '.yaml'
         elif content_type == FileContentType.JSON:
@@ -44,7 +44,7 @@ class FileContentType(Enum):
 
     @classmethod
     def to_content_type(cls, file_extension: str) -> 'FileContentType':
-        """Get content type form file extension."""
+        """Get content type form file extension, including the dot."""
         if file_extension == '.json':
             return FileContentType.JSON
         elif file_extension == '.yaml' or file_extension == '.yml':
