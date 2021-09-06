@@ -249,7 +249,6 @@ def test_sftp_fetcher_bad_uri(uri: str, tmp_trestle_dir: pathlib.Path) -> None:
 @pytest.mark.parametrize(
     'uri',
     [
-        'ftp://some.host/this.file',
         'https://{{9invalid}}:@github.com/IBM/test/file',
         'https://{{invalid var}}:@github.com/IBM/test/file',
         'https://{{invalid-var}}:@github.com/IBM/test/file',
