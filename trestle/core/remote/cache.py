@@ -321,14 +321,22 @@ class SFTPFetcher(FetcherBase):
             trestle_root: Path of the Trestle project path, i.e., within which .trestle is to be found.
             uri: Reference to the remote file to cache that can be fetched using the sftp:// scheme.
         """
+        logger.debug(f'initialize SFTPFetcher for uri {uri}')
         super().__init__(trestle_root, uri)
         # Is this a valid URI, however? Username and password are optional, of course.
-        u = parse.urlparse(self._uri)
+        try:
+            u = parse.urlparse(self._uri)
+        except Exception as e:
+            logger.warning(f'SFTP fetcher unable to parse uri {self._uri} error {e}')
+            raise TrestleError(f'Unable to parse malformed url {self._uri} error {e}')
+        logger.debug(f'SFTP fetcher with parsed uri {u}')
         if not u.hostname:
-            logger.error(f'Malformed URI, cannot parse hostname in URL {self._uri}')
+            logger.debug('SFTP fetcher uri missing hostname')
+            logger.warning(f'Malformed URI, cannot parse hostname in URL {self._uri}')
             raise TrestleError(f'Cache request for invalid input URI: missing hostname {self._uri}')
         if not u.path:
-            logger.error(f'Malformed URI, cannot parse path in URL {self._uri}')
+            logger.debug('SFTP fetcher uri missing path')
+            logger.warning(f'Malformed URI, cannot parse path in URL {self._uri}')
             raise TrestleError(f'Cache request for invalid input URI: missing file path {self._uri}')
 
         sftp_cached_dir = self._trestle_cache_path / u.hostname
