@@ -251,11 +251,7 @@ def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, monkeypatch: pytest.Monk
     monkeypatch.setenv('myusername', 'user123')
     monkeypatch.setenv('mypassword', 'somep4ss')
     # FIXME temporarily remove sftp:// failing in CICD
-    for uri in ['',
-                '..',
-                '.json',
-                'a.ym',
-                'ftp://some.host/this.file',
+    for uri in ['ftp://some.host/this.file',
                 'https://{{9invalid}}:@github.com/IBM/test/file',
                 'https://{{invalid var}}:@github.com/IBM/test/file',
                 'https://{{invalid-var}}:@github.com/IBM/test/file',
