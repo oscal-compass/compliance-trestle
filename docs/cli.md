@@ -189,7 +189,7 @@ The following options are supported:
 
 The `--file` option may be an absolute or relative path, and it may be a URL.  For details on allowed formats please see the documentation for the `href` command.  The file must be imported from outside the current trestle directory or an error will result.
 
-The import subcommand can determine the type of the model that is to be imported by the contents of the file.  But the file name must end with an allowed json or yaml extension: \`.json, .yaml, .yml'
+The import subcommand can determine the type of the model that is to be imported by the contents of the file.  But the file name must end with an allowed json or yaml extension: `.json, .yaml, .yml`
 
 During the import process the file must pass the `validate` test described below for the command, `validate`.  If the file does not pass validation a warning will be given describing the nature of the problem and the import will fail.
 
