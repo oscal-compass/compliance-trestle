@@ -271,7 +271,7 @@ def test_sftp_fetcher_bad_uri(uri: str, tmp_trestle_dir: pathlib.Path) -> None:
         'https://:{{mypassword}}@github.com/IBM/test/file'
     ]
 )
-def hide_test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, uri: str, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_fetcher_bad_uri(tmp_trestle_dir: pathlib.Path, uri: str, monkeypatch: pytest.MonkeyPatch) -> None:
     """Test fetcher factory with bad URI."""
     if 'https' in uri:
         monkeypatch.setenv('myusername', 'user123')
