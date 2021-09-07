@@ -221,7 +221,7 @@ def clean_project_sub_path(sub_path: pathlib.Path) -> None:
             sub_path.unlink()
 
 
-def load_file(file_name: pathlib.Path, encoding=const.FILE_ENCODING) -> Dict[str, Any]:
+def load_file(file_name: pathlib.Path) -> Dict[str, Any]:
     """
     Load JSON or YAML file content into a dict.
 
@@ -229,7 +229,7 @@ def load_file(file_name: pathlib.Path, encoding=const.FILE_ENCODING) -> Dict[str
     if a OSCAL object type is unknown but the context a user is in.
     """
     content_type = FileContentType.to_content_type(file_name.suffix)
-    with file_name.open('r', encoding=encoding) as f:
+    with file_name.open('r', encoding=const.FILE_ENCODING) as f:
         if content_type == FileContentType.YAML:
             yaml = YAML(typ='safe')
             return yaml.load(f)

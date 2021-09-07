@@ -114,7 +114,7 @@ class FetcherBase(ABC):
         except Exception:
             try:
                 # files from NIST seem to need cp1252 encoding
-                raw_data = fs.load_file(self._cached_object_path, const.WINDOWS_FILE_ENCODING)
+                raw_data = fs.load_file(self._cached_object_path)
             except Exception as e:
                 logger.error(f'Cannot fs.load_file {self._cached_object_path}')
                 logger.debug(e)
@@ -314,7 +314,7 @@ class HTTPSFetcher(FetcherBase):
             except Exception as err:
                 raise TrestleError(f'Cache update failure reading response via HTTPS: {self._url} ({err})')
             else:
-                self._cached_object_path.write_text(result)
+                self._cached_object_path.write_text(result, encoding=const.FILE_ENCODING)
         else:
             raise TrestleError(f'GET returned code {response.status_code}: {self._uri}')
 
