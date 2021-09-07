@@ -110,11 +110,16 @@ class FetcherBase(ABC):
         self._update_cache(force_update)
         # Return results in the cache, whether yaml or json, or whatever is supported by fs.load_file().
         try:
-            return fs.load_file(self._cached_object_path)
-        except Exception as e:
-            logger.error(f'Cannot fs.load_file {self._cached_object_path}')
-            logger.debug(e)
-            raise TrestleError(f'Cache get failure for {self._uri}') from e
+            raw_data = fs.load_file(self._cached_object_path)
+        except Exception:
+            try:
+                # files from NIST seem to need cp1252 encoding
+                raw_data = fs.load_file(self._cached_object_path, const.WINDOWS_FILE_ENCODING)
+            except Exception as e:
+                logger.error(f'Cannot fs.load_file {self._cached_object_path}')
+                logger.debug(e)
+                raise TrestleError(f'Cache get failure for {self._uri}') from e
+        return raw_data
 
     def get_oscal_with_model_type(self, model_type: Type[OscalBaseModel], force_update=False) -> OscalBaseModel:
         """Retrieve the cached file as a particular OSCAL model.

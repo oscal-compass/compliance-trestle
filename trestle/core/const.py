@@ -113,6 +113,8 @@ IOF_HELP = 'Include fields that are optional in the OSCAL model when generating 
 
 FILE_ENCODING = 'utf8'
 
+WINDOWS_FILE_ENCODING = 'cp1252'
+
 # ESCAPE CHARACTERS FOR MD heads
 HEADER_L_ESCAPE = '{'
 HEADER_R_ESCAPE = '}'
