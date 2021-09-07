@@ -42,7 +42,8 @@ def as_file_uri(path: str) -> str:
     if platform.system() == const.WINDOWS_PLATFORM_STR:
         drive = pathlib.Path.cwd().resolve().drive
         return f'file:///{drive}{path}'
-    return f'file://{path}'
+    bare_path = path.lstrip('/')
+    return f'file:///{bare_path}'
 
 
 def get_catalog_fetcher(tmp_trestle_dir: pathlib.Path,
