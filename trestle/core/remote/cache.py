@@ -181,6 +181,9 @@ class LocalFetcher(FetcherBase):
 
         # now the URI should be either unix / style or windows C:/ style.  It may be relative.
 
+        if ':' in uri and platform.system() != const.WINDOWS_PLATFORM_STR:
+            raise TrestleError(f'Cannot have : in uri on non-Windows system unless ftps, https or trestle: {uri}')
+
         # if it has a drive letter but no / after it, it is not absolute
         if re.match(const.WINDOWS_DRIVE_LETTER_REGEX, uri):
             if platform.system() != const.WINDOWS_PLATFORM_STR:
