@@ -113,7 +113,6 @@ class FetcherBase(ABC):
             raw_data = fs.load_file(self._cached_object_path)
         except Exception:
             try:
-                # files from NIST seem to need cp1252 encoding
                 raw_data = fs.load_file(self._cached_object_path)
             except Exception as e:
                 logger.error(f'Cannot fs.load_file {self._cached_object_path}')

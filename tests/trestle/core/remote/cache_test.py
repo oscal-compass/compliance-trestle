@@ -33,7 +33,6 @@ from trestle.core import generators
 from trestle.core.err import TrestleError
 from trestle.core.remote import cache
 from trestle.oscal.catalog import Catalog
-from trestle.utils import fs
 
 
 def as_file_uri(path: str) -> str:
@@ -56,18 +55,17 @@ def get_catalog_fetcher(tmp_trestle_dir: pathlib.Path,
     catalog_file = dest_dir / cat_name
     catalog_data = generators.generate_sample_model(Catalog)
     catalog_data.oscal_write(catalog_file)
-    saved_data = fs.load_file(pathlib.Path(catalog_file))
     if relative:
         catalog_str = f'./catalogs/{cat_name}' if in_trestle else f'../{cat_name}'
     else:
         catalog_str = str(catalog_file)
     fetcher = cache.FetcherFactory.get_fetcher(tmp_trestle_dir, catalog_str)
-    return fetcher, catalog_data, saved_data
+    return fetcher, catalog_data
 
 
 def test_fetcher_oscal(tmp_trestle_dir: pathlib.Path) -> None:
     """Test whether fetcher can get an object from the cache as an oscal model."""
-    fetcher, catalog_data, _ = get_catalog_fetcher(tmp_trestle_dir)
+    fetcher, catalog_data = get_catalog_fetcher(tmp_trestle_dir)
     fetcher._update_cache()
     fetched_data = fetcher.get_oscal_with_model_type(Catalog)
     assert models_are_equivalent(fetched_data, catalog_data)
@@ -77,20 +75,13 @@ def test_fetcher_oscal(tmp_trestle_dir: pathlib.Path) -> None:
 
 def test_fetcher_oscal_fails(tmp_trestle_dir: pathlib.Path) -> None:
     """Test failed read from cache."""
-    fetcher, _, _ = get_catalog_fetcher(tmp_trestle_dir)
+    fetcher, _ = get_catalog_fetcher(tmp_trestle_dir)
     # mock bad read of oscal model
     with patch('trestle.oscal.catalog.Catalog.oscal_read') as oscal_read_mock:
         oscal_read_mock.side_effect = err.TrestleError
         with pytest.raises(err.TrestleError):
             fetcher.get_oscal_with_model_type(Catalog)
         oscal_read_mock.assert_called_once()
-
-
-def test_fetcher_base(tmp_trestle_dir: pathlib.Path) -> None:
-    """Test whether fetcher can get a raw object from the cache."""
-    fetcher, _, saved_data = get_catalog_fetcher(tmp_trestle_dir)
-    fetched_data = fetcher.get_raw()
-    assert fetched_data == saved_data
 
 
 def test_github_fetcher():
@@ -100,7 +91,7 @@ def test_github_fetcher():
 
 def test_local_fetcher_relative(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the local fetcher for an object with an aboslute path."""
-    fetcher, catalog_data, _ = get_catalog_fetcher(tmp_trestle_dir, False, True)
+    fetcher, catalog_data = get_catalog_fetcher(tmp_trestle_dir, False, True)
     fetched_data, _ = fetcher.get_oscal()
     assert models_are_equivalent(fetched_data, catalog_data)
 
