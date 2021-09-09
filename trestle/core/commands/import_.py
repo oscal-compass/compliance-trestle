@@ -17,10 +17,8 @@
 import argparse
 import logging
 import pathlib
-from json.decoder import JSONDecodeError
 
 import trestle.core.commands.validate as validatecmd
-from trestle.core import parser
 from trestle.core import validator_helper
 from trestle.core.commands.command_docs import CommandPlusDocs
 from trestle.core.err import TrestleError
@@ -28,6 +26,7 @@ from trestle.core.models.actions import CreatePathAction, WriteFileAction
 from trestle.core.models.elements import Element
 from trestle.core.models.file_content_type import FileContentType
 from trestle.core.models.plans import Plan
+from trestle.core.remote import cache
 from trestle.utils import fs
 from trestle.utils import log
 
@@ -37,12 +36,13 @@ logger = logging.getLogger(__name__)
 class ImportCmd(CommandPlusDocs):
     """Import an existing full OSCAL model into the trestle project."""
 
-    # The line above comes with the doc string
     name = 'import'
 
     def _init_arguments(self) -> None:
         logger.debug('Init arguments')
-        self.add_argument('-f', '--file', help='OSCAL file to import.', type=str, required=True)
+        self.add_argument(
+            '-f', '--file', help='OSCAL file to import - either file path or url.', type=str, required=True
+        )
 
         self.add_argument('-o', '--output', help='Name of output element.', type=str, required=True)
 
@@ -56,99 +56,52 @@ class ImportCmd(CommandPlusDocs):
 
         logger.debug('Entering import run.')
 
-        # 1. Validate input arguments are as expected.
-        # This code block may never be reached as the argument is declared to be required.
-
-        # 1.1 Check that input file given exists.
-        input_file = pathlib.Path(args.file).resolve()
-        if not input_file.exists():
-            logger.error(f'Input file {args.file} does not exist.')
+        trestle_root = args.trestle_root
+        if not fs.is_valid_project_root(trestle_root):
+            logger.warning(f'Attempt to import from non-valid trestle project root {trestle_root}')
             return 1
 
-        # 1.2 Bad working directory if not running from current working directory
-        trestle_root = args.trestle_root  # trestle root is set via command line in args. Default is cwd.
-        if not trestle_root or not fs.is_valid_project_root(args.trestle_root):
-            logger.error(f'Given directory: {trestle_root} is not a trestle project.')
+        input_uri = args.file
+        if cache.FetcherFactory.in_trestle_directory(trestle_root, input_uri):
+            logger.warning(f'Imported file {input_uri} cannot be from current trestle project. Use duplicate instead.')
             return 1
 
-        # 2. Importing a file that is already inside a trestle-initialized dir is bad
         try:
-            input_file.relative_to(trestle_root)
-        except ValueError:
-            # An exception here is good: it means that the input file is not inside a trestle dir.
-            pass
-        else:
-            logger.error('Input file cannot be from current trestle project. Use duplicate instead.')
-            return 1
-
-        # 3. Work out typing information from input suffix.
-        try:
-            content_type = FileContentType.to_content_type(input_file.suffix)
+            content_type = FileContentType.to_content_type('.' + input_uri.split('.')[-1])
         except TrestleError as err:
             logger.debug(f'FileContentType.to_content_type() failed: {err}')
-            logger.error(f'Import failed, could not work out content type from file suffix: {err}')
+            logger.warning(f'Import failed, could not work out content type from file suffix: {err}')
             return 1
 
-        # 4. Load input and parse for model
-
-        # 4.1 Load from file
+        fetcher = cache.FetcherFactory.get_fetcher(trestle_root, str(input_uri))
         try:
-            data = fs.load_file(input_file)
-        except JSONDecodeError as err:
-            logger.debug(f'fs.load_file() failed: {err}')
-            logger.error(f'Import failed, JSON error loading file: {err}')
-            return 1
+            model_read, parent_alias = fetcher.get_oscal(True)
         except TrestleError as err:
-            logger.debug(f'fs.load_file() failed: {err}')
-            logger.error(f'Import failed, error loading file: {err}')
-            return 1
-        except PermissionError as err:
-            logger.debug(f'fs.load_file() failed: {err}')
-            logger.error(f'Import failed, access permission error loading file: {err}')
+            logger.warning(f'Error importing file: {err}')
             return 1
 
-        # 4.2 root key check
-        try:
-            parent_alias = parser.root_key(data)
-        except TrestleError as err:
-            logger.debug(f'parser.root_key() failed: {err}')
-            logger.error(f'Import failed, failed to parse input file for root key: {err}')
-            return 1
-
-        # 4.3 parse the model
-        parent_model_name = parser.to_full_model_name(parent_alias)
-        try:
-            parent_model = parser.parse_dict(data[parent_alias], parent_model_name)
-        except TrestleError as err:
-            logger.debug(f'parser.parse_file() failed: {err}')
-            logger.error(f'Import failed, failed to parse valid contents of input file: {err}')
-            return 1
-
-        # 5. Work out output directory and file
         plural_path = fs.model_type_to_model_dir(parent_alias)
 
+        output_name = args.output
+
         desired_model_dir = trestle_root / plural_path
-        # args.output is presumed to be assured as it is declared to be required
-        if args.output:
-            desired_model_path = desired_model_dir / args.output / (parent_alias + input_file.suffix)
-            desired_model_path = desired_model_path.resolve()
+        desired_model_path: pathlib.Path = desired_model_dir / output_name / parent_alias
+        desired_model_path = desired_model_path.with_suffix(FileContentType.to_file_extension(content_type)).resolve()
 
         if desired_model_path.exists():
-            logger.error(f'OSCAL file to be created here: {desired_model_path} exists.')
-            logger.error('Aborting trestle import.')
+            logger.warning(f'Cannot import because file to be imported here: {desired_model_path} already exists.')
             return 1
 
-        # 6. Prepare actions and plan
-        model_read = parent_model.oscal_read(input_file)
         if args.regenerate:
-            logger.debug(f'regenerating uuids in {input_file}')
+            logger.debug(f'regenerating uuids in imported file {input_uri}')
             model_read, lut, nchanged = validator_helper.regenerate_uuids(model_read)
             logger.debug(f'uuid lut has {len(lut.items())} entries and {nchanged} refs were updated')
+
         top_element = Element(model_read)
         create_action = CreatePathAction(desired_model_path, True)
         write_action = WriteFileAction(desired_model_path, top_element, content_type)
 
-        # create a plan to create the directory and imported file.
+        # create a plan to create the directory and write the imported file.
         import_plan = Plan()
         import_plan.add_action(create_action)
         import_plan.add_action(write_action)
@@ -157,42 +110,40 @@ class ImportCmd(CommandPlusDocs):
             import_plan.simulate()
         except TrestleError as err:
             logger.debug(f'import_plan.simulate() failed: {err}')
-            logger.error(f'Import failed, error in testing import operation: {err}')
+            logger.error(f'Import failed, error in simulating import operation: {err}')
             return 1
 
         try:
             import_plan.execute()
         except TrestleError as err:
             logger.debug(f'import_plan.execute() failed: {err}')
-            logger.error(f'Import failed, error in actual import operation: {err}')
+            logger.error(f'Import plan execution failed with error: {err}')
             return 1
 
-        # 7. Validate the imported file, rollback if unsuccessful:
         args = argparse.Namespace(file=desired_model_path, verbose=args.verbose, trestle_root=args.trestle_root)
         rollback = False
         try:
             rc = validatecmd.ValidateCmd()._run(args)
         except TrestleError as err:
             logger.debug(f'validator.validate() raised exception: {err}')
-            logger.error(f'Import of {str(input_file)} failed, validation failed with error: {err}')
+            logger.error(f'Import of {str(input_uri)} failed with validation error: {err}')
             rollback = True
         else:
             if rc > 0:
                 logger.debug(f'validator.validate() did not pass for {desired_model_path}')
                 msg = f'Validation of imported file {desired_model_path} did not pass'
-                logger.error(msg)
+                logger.warning(msg)
                 rollback = True
 
         if rollback:
-            logger.debug(f'Rolling back import of {str(input_file)} to {desired_model_path}')
+            logger.debug(f'Rolling back import of {str(input_uri)} to {desired_model_path}')
             try:
                 import_plan.rollback()
             except TrestleError as err:
                 logger.debug(f'Failed rollback attempt with error: {err}')
-                logger.error(f'Failed to rollback: {err}. Remove {desired_model_path} to resolve state.')
+                logger.error(f'Import failed in plan rollback: {err}. Manually remove {desired_model_path} to recover.')
             return 1
         else:
             logger.debug(f'Successful rollback of import to {desired_model_path}')
-        # 8. Leave the rest to trestle split
 
         return 0

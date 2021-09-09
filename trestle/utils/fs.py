@@ -66,7 +66,7 @@ def is_valid_project_model_path(path: pathlib.Path) -> bool:
         return False
 
     relative_path = path.relative_to(str(root_path))
-    if len(relative_path.parts) < 2 or relative_path.parts[0] not in const.MODEL_TYPE_TO_MODEL_MODULE:
+    if len(relative_path.parts) < 2 or relative_path.parts[0] not in const.MODEL_DIR_LIST:
         return False
     return True
 
@@ -107,13 +107,13 @@ def get_relative_model_type(relative_path: pathlib.Path) -> Tuple[Type[OscalBase
     """
     if len(relative_path.parts) < 2:
         raise TrestleError('Insufficient path length to be a valid relative path w.r.t Trestle project root directory.')
-    project_type = relative_path.parts[0]
+    model_dir = relative_path.parts[0]
     model_relative_path = pathlib.Path(*relative_path.parts[2:])  # catalogs, profiles, etc
 
-    try:
-        module_name = const.MODEL_TYPE_TO_MODEL_MODULE[project_type]
-    except KeyError:
-        raise TrestleError('No valid trestle model type directory (e.g. catalogs) found.')
+    if model_dir in const.MODEL_DIR_LIST:
+        module_name = const.MODEL_DIR_TO_MODEL_MODULE[model_dir]
+    else:
+        raise TrestleError(f'No valid trestle model type directory (e.g. catalogs) found for {model_dir}.')
 
     model_type, model_alias = utils.get_root_model(module_name)
     full_alias = model_alias
