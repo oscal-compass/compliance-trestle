@@ -21,6 +21,8 @@ import sys
 from unittest import mock
 from unittest.mock import patch
 
+from _pytest.monkeypatch import MonkeyPatch
+
 import pytest
 
 from tests import test_utils
@@ -35,7 +37,7 @@ from trestle.core.models.plans import Plan
 from trestle.oscal.catalog import Catalog
 
 
-def test_remove(tmp_path):
+def test_remove(tmp_path: pathlib.Path):
     """Test RemoveCmd.remove() method for trestle remove: removing Roles and Responsible-Parties."""
     # 1. Remove responsible-parties
     # Note: minimal catalog does have responsible-parties but doesn't have Roles.
@@ -94,7 +96,7 @@ def test_remove(tmp_path):
     assert catalog_without_roles == actual_catalog_removed_roles
 
 
-def test_remove_failure(tmp_path):
+def test_remove_failure(tmp_path: pathlib.Path):
     """Test failure of RemoveCmd.remove() method for trestle remove."""
     # Note: minimal catalog does have responsible-parties but doesn't have Roles.
     file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'minimal_catalog_missing_roles.json')
@@ -123,26 +125,26 @@ def test_remove_failure(tmp_path):
         AssertionError()
 
 
-def test_run_failure_switches(tmp_path):
+def test_run_failure_switches(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     """Test failure of _run on bad switches for RemoveCmd."""
     # 1. Missing --file argument.
     testargs = ['trestle', 'remove', '-e', 'catalog.metadata.roles']
-    with patch.object(sys, 'argv', testargs):
-        with pytest.raises(SystemExit) as e:
-            Trestle().run()
-        assert e.type == SystemExit
-        assert e.value.code == 2
+    monkeypatch.setattr(sys, 'argv', testargs)
+    with pytest.raises(SystemExit) as e:
+        Trestle().run()
+    assert e.type == SystemExit
+    assert e.value.code == 2
 
     # 2. Missing --element argument.
     testargs = ['trestle', 'remove', '-f', './catalog.json']
-    with patch.object(sys, 'argv', testargs):
-        with pytest.raises(SystemExit) as e:
-            Trestle().run()
-        assert e.type == SystemExit
-        assert e.value.code == 2
+    monkeypatch.setattr(sys, 'argv', testargs)
+    with pytest.raises(SystemExit) as e:
+        Trestle().run()
+    assert e.type == SystemExit
+    assert e.value.code == 2
 
 
-def test_run_failure_nonexistent_element(tmp_path, sample_catalog_minimal):
+def test_run_failure_nonexistent_element(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch):
     """Test failure of _run on RemoveCmd in specifying nonexistent element for removal."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
@@ -155,20 +157,20 @@ def test_run_failure_nonexistent_element(tmp_path, sample_catalog_minimal):
 
     # 1. self.remove() fails -- Should happen if wildcard is given, or nonexistent element.
     testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.blah']
-    with patch.object(sys, 'argv', testargs):
-        exitcode = Trestle().run()
-        assert exitcode == 1
+    monkeypatch.setattr(sys, 'argv', testargs)
+    exitcode = Trestle().run()
+    assert exitcode == 1
 
     # 2. Corrupt json file
     source_file_path = pathlib.Path.joinpath(test_utils.JSON_TEST_DATA_PATH, 'bad_simple.json')
     shutil.copyfile(source_file_path, catalog_def_file)
     testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata.roles']
-    with patch.object(sys, 'argv', testargs):
-        exitcode = Trestle().run()
-        assert exitcode == 1
+    monkeypatch.setattr(sys, 'argv', testargs)
+    exitcode = Trestle().run()
+    assert exitcode == 1
 
 
-def test_run_failure_wildcard(tmp_path, sample_catalog_minimal):
+def test_run_failure_wildcard(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch):
     """Test failure of _run on RemoveCmd in specifying wildcard in element for removal."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
@@ -179,12 +181,12 @@ def test_run_failure_wildcard(tmp_path, sample_catalog_minimal):
         test_utils.CATALOGS_DIR
     )
     testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.*']
-    with patch.object(sys, 'argv', testargs):
-        exitcode = Trestle().run()
-        assert exitcode == 1
+    monkeypatch.setattr(sys, 'argv', testargs)
+    exitcode = Trestle().run()
+    assert exitcode == 1
 
 
-def test_run_failure_required_element(tmp_path, sample_catalog_minimal):
+def test_run_failure_required_element(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch):
     """Test failure of _run on RemoveCmd in specifying a required element for removal."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
@@ -196,12 +198,12 @@ def test_run_failure_required_element(tmp_path, sample_catalog_minimal):
     )
     # 4. simulate() fails -- Should happen if required element is target for deletion
     testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata']
-    with patch.object(sys, 'argv', testargs):
-        exitcode = Trestle().run()
-        assert exitcode == 1
+    monkeypatch.setattr(sys, 'argv', testargs)
+    exitcode = Trestle().run()
+    assert exitcode == 1
 
 
-def test_run_failure_project_not_found(tmp_path, sample_catalog_minimal):
+def test_run_failure_project_not_found(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch):
     """Test failure of _run on RemoveCmd in specifying file in non-initialized location."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
@@ -213,12 +215,12 @@ def test_run_failure_project_not_found(tmp_path, sample_catalog_minimal):
     )
     # 5. get_contextual_model_type() fails, i.e., "Trestle project not found"
     testargs = ['trestle', 'remove', '-f', '/dev/null', '-e', 'catalog.metadata']
-    with patch.object(sys, 'argv', testargs):
-        exitcode = Trestle().run()
-        assert exitcode == 1
+    monkeypatch.setattr(sys, 'argv', testargs)
+    exitcode = Trestle().run()
+    assert exitcode == 1
 
 
-def test_run_failure_filenotfounderror(tmp_path, sample_catalog_minimal):
+def test_run_failure_filenotfounderror(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch):
     """Test failure of _run on RemoveCmd in specifying a nonexistent file."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
@@ -233,13 +235,20 @@ def test_run_failure_filenotfounderror(tmp_path, sample_catalog_minimal):
     testargs = [
         'trestle', 'remove', '-f', re.sub('my_test_model/', '', str(catalog_def_file)), '-e', 'catalog.metadata'
     ]
-    with patch.object(sys, 'argv', testargs):
-        exitcode = Trestle().run()
-        assert exitcode == 1
+    monkeypatch.setattr(sys, 'argv', testargs)
+    exitcode = Trestle().run()
+    assert exitcode == 1
 
 
-def test_run_failure_plan_execute(tmp_path, sample_catalog_minimal):
+def test_run_failure_plan_execute(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch):
     """Test failure plan execute() in _run on RemoveCmd."""
+
+    # def mock_simulate(*args, **kwargs):
+    #     return
+
+    # def mock_execute(*args, **kwargs):
+    #     raise err.TrestleError('stuff')
+
     # Create a temporary file as a valid arg for trestle remove:
     content_type = FileContentType.JSON
     catalog_def_dir, catalog_def_file = test_utils.prepare_trestle_project_dir(
@@ -256,9 +265,16 @@ def test_run_failure_plan_execute(tmp_path, sample_catalog_minimal):
             with patch.object(sys, 'argv', testargs):
                 exitcode = Trestle().run()
                 assert exitcode == 1
+    # pytest monkeypatch version:
+    # monkeypatch.setattr(Plan, 'simulate', mock_simulate)
+    # monkeypatch.setattr(Plan, 'execute', mock_execute)
+    # with pytest.raises(err.TrestleError):
+    #     monkeypatch.setattr(sys, 'argv', testargs)
+    #     exitcode = Trestle().run()
+    #     assert exitcode == 1
 
 
-def test_run(tmp_path, sample_catalog_missing_roles):
+def test_run(tmp_path: pathlib.Path, sample_catalog_missing_roles, monkeypatch: MonkeyPatch):
     """Test _run for RemoveCmd."""
     # 1. Test trestle remove for one element.
     # expected catalog after remove of Responsible-Party
@@ -286,8 +302,8 @@ def test_run(tmp_path, sample_catalog_missing_roles):
         'catalog.metadata.responsible-parties'
     ]
 
-    with patch.object(sys, 'argv', testargs):
-        assert Trestle().run() == 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    assert Trestle().run() == 0
 
     actual_catalog = Catalog.oscal_read(catalog_def_file)
     assert expected_catalog_no_rp == actual_catalog
@@ -316,8 +332,8 @@ def test_run(tmp_path, sample_catalog_missing_roles):
         'catalog.metadata.responsible-parties,catalog.metadata.roles'
     ]
 
-    with patch.object(sys, 'argv', testargs):
-        assert Trestle().run() == 0
+    monkeypatch.setattr(sys, 'argv', testargs)
+    assert Trestle().run() == 0
 
     actual_catalog = Catalog.oscal_read(catalog_def_file_2)
     assert expected_catalog_no_rp == actual_catalog
