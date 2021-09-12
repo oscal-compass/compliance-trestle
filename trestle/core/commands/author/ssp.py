@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 
 
 class SSPGenerate(AuthorCommonCommand):
-    """SSP command Generate SSP in markdown form from Profile."""
+    """Generate SSP in markdown form from a Profile."""
 
     name = 'ssp-generate'
 
@@ -98,7 +98,7 @@ class SSPGenerate(AuthorCommonCommand):
 
 
 class SSPAssemble(AuthorCommonCommand):
-    """SSP command Assemble SSP into json format from a directory of markdown files."""
+    """Assemble markdown files of controls into an SSP json file."""
 
     name = 'ssp-assemble'
 
@@ -384,7 +384,7 @@ class SSPManager():
 
         return imp_reqs
 
-    def _write_control(
+    def write_control(
         self,
         dest_path: pathlib.Path,
         control: cat.Control,
@@ -392,6 +392,7 @@ class SSPManager():
         yaml_header: Optional[dict],
         sections: Optional[Dict[str, str]]
     ) -> None:
+        """Write out the control in markdown format."""
         control_file = dest_path / (control.id + '.md')
         existing_text = self.get_all_implementation_prose(control_file)
         self._md_file = MDWriter(control_file)
@@ -451,7 +452,7 @@ class SSPManager():
         for control in catalog_interface.get_all_controls(True):
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
             out_path = md_path / group_id
-            self._write_control(out_path, control, group_title, yaml_header, sections)
+            self.write_control(out_path, control, group_title, yaml_header, sections)
 
         return 0
 
