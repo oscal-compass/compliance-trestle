@@ -80,17 +80,13 @@ def to_full_model_name(root_key: str) -> Optional[str]:
     Args:
         root_key: root key such as 'system-security-plan' from a top level OSCAL model.
     """
-    try:
-        module = const.MODEL_TYPE_TO_MODEL_MODULE[const.MODEL_TYPE_TO_MODEL_DIR[root_key]]
-        # This method has been simplified to rely on the correct behaviour of the dicts above.
-        class_name = utils.alias_to_classname(root_key, 'json')
+    if root_key not in const.MODEL_TYPE_LIST:
+        logger.warning(f'{root_key} is not a top level model name.')
+        return None
 
-        return f'{module}.{class_name}'
-    except Exception as ex:
-        logger.error(f'Module / Class not found for root_key {root_key}, {ex}. Most likely as not a top level model.')
-        pass
-
-    return None
+    module = const.MODEL_TYPE_TO_MODEL_MODULE[root_key]
+    class_name = utils.alias_to_classname(root_key, 'json')
+    return f'{module}.{class_name}'
 
 
 def parse_file(file_name: pathlib.Path, model_name: Optional[str]) -> OscalBaseModel:

@@ -23,6 +23,7 @@ from ruamel.yaml import YAML
 
 from tests import test_utils
 
+from trestle.core import const
 from trestle.core.commands.author.ssp import SSPAssemble, SSPGenerate, SSPManager
 from trestle.core.commands.href import HrefCmd
 from trestle.core.commands.import_ import ImportCmd
@@ -114,7 +115,7 @@ def test_ssp_generator(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     assert ac_1.stat().st_size > 1000
     assert ac_2.stat().st_size > 2000
 
-    with open(yaml_path, 'r', encoding='utf8') as f:
+    with open(yaml_path, 'r', encoding=const.FILE_ENCODING) as f:
         yaml = YAML(typ='safe')
         expected_header = yaml.load(f)
     header, tree = MarkdownValidator.load_markdown_parsetree(ac_1)

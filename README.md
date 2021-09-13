@@ -67,6 +67,10 @@ Trestle runs on most all python platforms (e.g. Linux, Mac, Windows) and is avai
 
 Complete documentation, tutorials, and background on compliance can be found [here](https://ibm.github.io/compliance-trestle).
 
+## Demos
+
+A collection of demos utilizing trestle can be found in the related project [compliance-trestle-demos](https://github.com/IBM/compliance-trestle-demos).
+
 ## Development status
 
 Compliance trestle is currently beta. The expectation is that in ongoing work there may be un-announced changes that are breaking within the trestle codebase. With the release of NIST's version 1.0.0 of OSCAL we expect that these changes will be decreasing in size as trestle approaches a 1.0.0 release for itself.
