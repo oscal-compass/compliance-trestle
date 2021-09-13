@@ -18,8 +18,6 @@ import pathlib
 import re
 import shutil
 import sys
-from unittest import mock
-from unittest.mock import patch
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -144,7 +142,9 @@ def test_run_failure_switches(tmp_path: pathlib.Path, monkeypatch: MonkeyPatch):
     assert e.value.code == 2
 
 
-def test_run_failure_nonexistent_element(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch):
+def test_run_failure_nonexistent_element(
+    tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch
+):
     """Test failure of _run on RemoveCmd in specifying nonexistent element for removal."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
@@ -186,7 +186,9 @@ def test_run_failure_wildcard(tmp_path: pathlib.Path, sample_catalog_minimal: Ca
     assert exitcode == 1
 
 
-def test_run_failure_required_element(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch):
+def test_run_failure_required_element(
+    tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch
+):
     """Test failure of _run on RemoveCmd in specifying a required element for removal."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
@@ -197,13 +199,16 @@ def test_run_failure_required_element(tmp_path: pathlib.Path, sample_catalog_min
         test_utils.CATALOGS_DIR
     )
     # 4. simulate() fails -- Should happen if required element is target for deletion
+    monkeypatch.chdir(tmp_path)
     testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata']
     monkeypatch.setattr(sys, 'argv', testargs)
     exitcode = Trestle().run()
     assert exitcode == 1
 
 
-def test_run_failure_project_not_found(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch):
+def test_run_failure_project_not_found(
+    tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch
+):
     """Test failure of _run on RemoveCmd in specifying file in non-initialized location."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
@@ -220,7 +225,9 @@ def test_run_failure_project_not_found(tmp_path: pathlib.Path, sample_catalog_mi
     assert exitcode == 1
 
 
-def test_run_failure_filenotfounderror(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch):
+def test_run_failure_filenotfounderror(
+    tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch
+):
     """Test failure of _run on RemoveCmd in specifying a nonexistent file."""
     # Create a temporary catalog file with responsible-parties
     content_type = FileContentType.JSON
@@ -240,14 +247,19 @@ def test_run_failure_filenotfounderror(tmp_path: pathlib.Path, sample_catalog_mi
     assert exitcode == 1
 
 
-def test_run_failure_plan_execute(tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch):
+def test_run_failure_plan_execute(
+    tmp_path: pathlib.Path, sample_catalog_minimal: Catalog, monkeypatch: MonkeyPatch, caplog: pytest.LogCaptureFixture
+):
     """Test failure plan execute() in _run on RemoveCmd."""
+    # Plant this specific logged error for failing execution in mock_execute:
+    logged_error = 'fail_execute'
 
-    # def mock_simulate(*args, **kwargs):
-    #     return
+    # Mock a successful simulate(), to avoid the actual simulate() call invoking an execute() call:
+    def mock_simulate(*args, **kwargs):
+        return
 
-    # def mock_execute(*args, **kwargs):
-    #     raise err.TrestleError('stuff')
+    def mock_execute(*args, **kwargs):
+        raise err.TrestleError(logged_error)
 
     # Create a temporary file as a valid arg for trestle remove:
     content_type = FileContentType.JSON
@@ -257,21 +269,19 @@ def test_run_failure_plan_execute(tmp_path: pathlib.Path, sample_catalog_minimal
         sample_catalog_minimal,
         test_utils.CATALOGS_DIR
     )
-    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata.responsible-parties']
-
-    with mock.patch('trestle.core.models.plans.Plan.simulate'):
-        with mock.patch('trestle.core.models.plans.Plan.execute') as execute_mock:
-            execute_mock.side_effect = err.TrestleError('stuff')
-            with patch.object(sys, 'argv', testargs):
-                exitcode = Trestle().run()
-                assert exitcode == 1
-    # pytest monkeypatch version:
-    # monkeypatch.setattr(Plan, 'simulate', mock_simulate)
-    # monkeypatch.setattr(Plan, 'execute', mock_execute)
-    # with pytest.raises(err.TrestleError):
-    #     monkeypatch.setattr(sys, 'argv', testargs)
-    #     exitcode = Trestle().run()
-    #     assert exitcode == 1
+    monkeypatch.chdir(tmp_path)
+    # Add remarks here, so it is a valid removal target,
+    testargs = ['trestle', 'add', '-f', str(catalog_def_file), '-e', 'catalog.metadata.remarks']
+    monkeypatch.setattr(sys, 'argv', testargs)
+    Trestle().run()
+    # .. then attempt to remove it here, but mocking a failed execute:
+    testargs = ['trestle', 'remove', '-f', str(catalog_def_file), '-e', 'catalog.metadata.remarks']
+    monkeypatch.setattr(Plan, 'simulate', mock_simulate)
+    monkeypatch.setattr(Plan, 'execute', mock_execute)
+    monkeypatch.setattr(sys, 'argv', testargs)
+    caplog.clear()
+    Trestle().run()
+    assert logged_error in caplog.text
 
 
 def test_run(tmp_path: pathlib.Path, sample_catalog_missing_roles, monkeypatch: MonkeyPatch):
