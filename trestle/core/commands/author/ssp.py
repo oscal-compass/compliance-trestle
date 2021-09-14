@@ -411,19 +411,19 @@ class SSPManager():
         self._md_file.write_out()
 
     def _write_part_full(self, part: common.Part, level: int) -> None:
-        title = f'Part {part.name}:'
+        title = f'Part: {part.name}'
         self._md_file.new_header(level=level, title=title)
         self._md_file.new_paragraph()
         if part.id:
-            self._md_file.new_line(f'id: {part.id}')
+            self._md_file.new_paraline(f'id: {part.id}')
         if part.ns:
-            self._md_file.new_line(f'ns: {part.ns}')
+            self._md_file.new_paraline(f'ns: {part.ns}')
         if part.class_:
-            self._md_file.new_line(f'class: {part.class_}')
+            self._md_file.new_paraline(f'class: {part.class_}')
         if part.title:
-            self._md_file.new_line(f'title: {part.title}')
+            self._md_file.new_paraline(f'title: {part.title}')
         if part.prose:
-            self._md_file.new_line('prose:')
+            self._md_file.new_paraline('prose:')
             self._md_file.new_line(part.prose)
         if part.props:
             for prop in part.props:
@@ -443,65 +443,65 @@ class SSPManager():
     def _write_link(self, link: common.Link) -> None:
         self._md_file.new_line(f'link: {link.href}')
         if link.rel:
-            self._md_file.new_line(f'rel: {link.rel}')
+            self._md_file.new_paraline(f'rel: {link.rel}')
         if link.media_type:
-            self._md_file.new_line(f'media type: {link.media_type}')
+            self._md_file.new_paraline(f'media type: {link.media_type}')
         if link.text:
-            self._md_file.new_line(f'text: {link.text}')
+            self._md_file.new_paraline(f'text: {link.text}')
 
     def _write_constraint(self, constraint: common.ParameterConstraint) -> None:
-        self._md_file.new_line('constraint:')
+        self._md_file.new_paraline('constraint:')
         if constraint.description:
-            self._md_file.new_line(f'description: {constraint.description}')
+            self._md_file.new_paraline(f'description: {constraint.description}')
         if constraint.tests:
             for test in constraint.tests:
-                self._md_file.new_line(f'test: {test.expression}')
+                self._md_file.new_paraline(f'test: {test.expression}')
                 if test.remarks:
-                    self._md_file.new_line(f'remarks: {test.remarks.__root__}')
+                    self._md_file.new_paraline(f'remarks: {test.remarks.__root__}')
 
     def _write_guideline(self, guideline: common.ParameterGuideline) -> None:
-        self._md_file.new_line(f'guideline: {guideline.prose}')
+        self._md_file.new_paraline(f'guideline: {guideline.prose}')
 
     def _write_param(self, param: common.Parameter, level: int) -> None:
         self._md_file.new_paragraph()
         title = f'Parameter: {param.id}'
         self._md_file.new_header(level, title)
         if param.class_:
-            self._md_file.new_header(level + 1, f'class: {param.class_}')
+            self._md_file.new_paraline(f'class: {param.class_}')
         if param.depends_on:
-            self._md_file.new_header(level + 1, f'depends on: {param.depends_on}')
+            self._md_file.new_paraline(f'depends on: {param.depends_on}')
         if param.props:
             for prop in param.props:
                 self._write_prop(prop, level + 1)
         if param.links:
             for link in param.links:
-                self._write_link(link)
+                self._write_link(link, level + 1)
         if param.label:
-            self._md_file.new_header(level + 1, f'label: {param.label}')
+            self._md_file.new_line(f'label: {param.label}')
         if param.usage:
-            self._md_file.new_header(level + 1, f'usage: {param.usage}')
+            self._md_file.new_paraline(f'usage: {param.usage}')
         if param.constraints:
-            self._md_file.new_header(level + 1, 'constraints:')
+            self._md_file.new_paraline('constraints:')
             for constraint in param.constraints:
                 self._write_constraint(constraint)
         if param.guidelines:
-            self._md_file.new_header(level + 1, 'guidelines:')
+            self._md_file.new_line('guidelines:')
             for guideline in param.guidelines:
                 self._write_guideline(guideline)
         if param.values:
-            self._md_file.new_header(level + 1, 'values:')
+            self._md_file.new_paraline('values:')
             for value in param.values:
                 self._write_value(value)
         if param.select:
-            self._md_file.new_header(level + 1, 'selection:')
+            self._md_file.new_paraline('selection:')
             if param.select.how_many:
-                self._md_file.new_line(f'how many: {param.select.how_many}')
+                self._md_file.new_paraline(f'how many: {param.select.how_many}')
             if param.select.choice:
-                self._md_file.new_line('choice:')
+                self._md_file.new_paraline('choice:')
                 for choice in param.select.choice:
-                    self._md_file.new_line(choice)
+                    self._md_file.new_paraline(choice)
         if param.remarks:
-            self._md_file.new_header(level + 1, f'remarks: {param.remarks.__root__}')
+            self._md_file.new_paraline(f'remarks: {param.remarks.__root__}')
 
     def _write_params_full(self, control: cat.Control) -> None:
         if control.params:
@@ -545,7 +545,7 @@ class SSPManager():
         if control.controls:
             for sub_control in control.controls:
                 control_list.extend(self._get_control_list(sub_control))
-            self._md_file.new_header(level=2, title='Controls')
+            self._md_file.new_header(level=2, title='Controls:')
             for id_ in control_list:
                 self._md_file.new_line(id_)
 
@@ -554,7 +554,7 @@ class SSPManager():
         self._md_file = MDWriter(dest_path)
 
         self._md_file.new_paragraph()
-        title = f'{control.id} - {group_title} {control.title}'
+        title = f'Control: {control.id} - {group_title} {control.title}'
         self._md_file.new_header(level=1, title=title)
         self._md_file.set_indent_level(-1)
         if control.class_:

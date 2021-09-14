@@ -74,6 +74,11 @@ class MDWriter():
             return
         self._add_line_raw(out_line)
 
+    def new_paraline(self, line: str) -> None:
+        """Add a paragraph and a line to output."""
+        self.new_paragraph()
+        self.new_line(line)
+
     def new_paragraph(self):
         """Start a new paragraph."""
         self.new_line('')
