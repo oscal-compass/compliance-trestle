@@ -410,6 +410,164 @@ class SSPManager():
 
         self._md_file.write_out()
 
+    def _write_part_full(self, part: common.Part, level: int) -> None:
+        title = f'Part {part.name}:'
+        self._md_file.new_header(level=level, title=title)
+        self._md_file.new_paragraph()
+        if part.id:
+            self._md_file.new_line(f'id: {part.id}')
+        if part.ns:
+            self._md_file.new_line(f'ns: {part.ns}')
+        if part.class_:
+            self._md_file.new_line(f'class: {part.class_}')
+        if part.title:
+            self._md_file.new_line(f'title: {part.title}')
+        if part.prose:
+            self._md_file.new_line('prose:')
+            self._md_file.new_line(part.prose)
+        if part.props:
+            for prop in part.props:
+                self._write_prop(prop, level + 1)
+        if part.parts:
+            for sub_part in part.parts:
+                self._write_part_full(sub_part, level + 1)
+        if part.links:
+            for link in part.links:
+                self._write_link(link)
+
+    def _write_parts_full(self, control: cat.Control) -> None:
+        if control.parts:
+            for part in control.parts:
+                self._write_part_full(part, 2)
+
+    def _write_link(self, link: common.Link) -> None:
+        self._md_file.new_line(f'link: {link.href}')
+        if link.rel:
+            self._md_file.new_line(f'rel: {link.rel}')
+        if link.media_type:
+            self._md_file.new_line(f'media type: {link.media_type}')
+        if link.text:
+            self._md_file.new_line(f'text: {link.text}')
+
+    def _write_constraint(self, constraint: common.ParameterConstraint) -> None:
+        self._md_file.new_line('constraint:')
+        if constraint.description:
+            self._md_file.new_line(f'description: {constraint.description}')
+        if constraint.tests:
+            for test in constraint.tests:
+                self._md_file.new_line(f'test: {test.expression}')
+                if test.remarks:
+                    self._md_file.new_line(f'remarks: {test.remarks.__root__}')
+
+    def _write_guideline(self, guideline: common.ParameterGuideline) -> None:
+        self._md_file.new_line(f'guideline: {guideline.prose}')
+
+    def _write_param(self, param: common.Parameter, level: int) -> None:
+        self._md_file.new_paragraph()
+        title = f'Parameter {param.id}'
+        self._md_file.new_header(level, title)
+        if param.class_:
+            self._md_file.new_header(level + 1, f'class: {param.class_}')
+        if param.depends_on:
+            self._md_file.new_header(level + 1, f'depends on: {param.depends_on}')
+        if param.props:
+            for prop in param.props:
+                self._write_prop(prop, level + 1)
+        if param.links:
+            for link in param.links:
+                self._write_link(link)
+        if param.label:
+            self._md_file.new_header(level + 1, f'label: {param.label}')
+        if param.usage:
+            self._md_file.new_header(level + 1, f'usage: {param.usage}')
+        if param.constraints:
+            self._md_file.new_header(level + 1, 'constraints:')
+            for constraint in param.constraints:
+                self._write_constraint(constraint)
+        if param.guidelines:
+            self._md_file.new_header(level + 1, 'guidelines:')
+            for guideline in param.guidelines:
+                self._write_guideline(guideline)
+        if param.values:
+            self._md_file.new_header(level + 1, 'values:')
+            for value in param.values:
+                self._write_value(value)
+        if param.select:
+            self._md_file.new_header(level + 1, 'selection:')
+            if param.select.how_many:
+                self._md_file.new_line(f'how many: {param.select.how_many}')
+            if param.select.choice:
+                self._md_file.new_line('choice:')
+                for choice in param.select.choice:
+                    self._md_file.new_line(choice)
+        if param.remarks:
+            self._md_file.new_header(level + 1, f'remarks: {param.remarks.__root__}')
+
+    def _write_params_full(self, control: cat.Control) -> None:
+        if control.params:
+            for param in control.params:
+                self._write_param(param, 2)
+
+    def _write_prop(self, prop: common.Property, level: int) -> None:
+        self._md_file.new_paragraph()
+        title = f'Prop {prop.name}: {prop.value}'
+        self._md_file.new_header(level, title)
+        if prop.uuid:
+            self._md_file.new_header(level + 1, f'uuid: {prop.uuid}')
+        if prop.ns:
+            self._md_file.new_header(level + 1, f'ns: {prop.ns}')
+        if prop.class_:
+            self._md_file.new_header(level + 1, f'class: {prop.class_}')
+        if prop.remarks:
+            self._md_file.new_header(level + 1, f'remarks: {prop.remarks.__root__}')
+
+    def _write_props_full(self, control: cat.Control) -> None:
+        if control.props:
+            for prop in control.props:
+                self._write_prop(prop, 2)
+
+    def _write_links_full(self, control: cat.Control) -> None:
+        if control.links:
+            for link in control.links:
+                self._md_file.new_paragraph()
+                title = f'Link {link.href}: {link.rel}'
+                self._md_file.new_header(2, title)
+
+    def _get_control_list(self, control: cat.Control) -> List[str]:
+        control_list: List[str] = [control.id]
+        if control.controls:
+            for sub_control in control.controls:
+                control_list.extend(self._get_control_list(sub_control))
+        return control_list
+
+    def _write_controls_full(self, control: cat.Control) -> None:
+        control_list: List[str] = []
+        if control.controls:
+            for sub_control in control.controls:
+                control_list.extend(self._get_control_list(sub_control))
+            self._md_file.new_header(level=2, title='Controls')
+            for id_ in control_list:
+                self._md_file.new_line(id_)
+
+    def write_control_full(self, dest_path: pathlib.Path, control: cat.Control, group_title: str) -> None:
+        """Write out the full control in markdown format."""
+        self._md_file = MDWriter(dest_path)
+
+        self._md_file.new_paragraph()
+        title = f'{control.id} - {group_title} {control.title}'
+        self._md_file.new_header(level=1, title=title)
+        self._md_file.set_indent_level(-1)
+        if control.class_:
+            self._md_file.new_header(level=2, title=f'Class: {control.class_}')
+
+        self._write_params_full(control)
+        self._write_props_full(control)
+        self._write_links_full(control)
+        self._write_parts_full(control)
+        self._write_controls_full(control)
+
+        self._md_file.write_out()
+
     def generate_ssp(
         self,
         trestle_root: pathlib.Path,
