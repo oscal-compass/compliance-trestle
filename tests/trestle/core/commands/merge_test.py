@@ -111,7 +111,7 @@ def test_merge_plan_simple_case(testdata_dir, tmp_trestle_dir):
 
     # Call merge()
 
-    generated_plan = MergeCmd.merge(ElementPath('catalog.back-matter'), tmp_trestle_dir)
+    generated_plan = MergeCmd.merge(Path.cwd(), ElementPath('catalog.back-matter'), tmp_trestle_dir)
 
     # Assert the generated plan matches the expected plan'
     assert generated_plan == expected_plan
@@ -170,7 +170,7 @@ def test_merge_expanded_metadata_into_catalog(testdata_dir, tmp_trestle_dir):
     expected_plan.add_action(delete_element_action)
 
     # Call merge()
-    generated_plan = MergeCmd.merge(ElementPath('catalog.metadata'), tmp_trestle_dir)
+    generated_plan = MergeCmd.merge(Path.cwd(), ElementPath('catalog.metadata'), tmp_trestle_dir)
 
     # Assert the generated plan matches the expected plan'
     assert generated_plan == expected_plan
@@ -217,7 +217,7 @@ def test_merge_everything_into_catalog(testdata_dir, tmp_trestle_dir):
     expected_plan.add_action(delete_element_action)
 
     # Call merge()
-    generated_plan = MergeCmd.merge(ElementPath('catalog.*'), tmp_trestle_dir)
+    generated_plan = MergeCmd.merge(Path.cwd(), ElementPath('catalog.*'), tmp_trestle_dir)
 
     # Assert the generated plan matches the expected plan'
     assert generated_plan == expected_plan
@@ -307,7 +307,7 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
 
     # Call merge()
 
-    generated_plan = MergeCmd.merge(ElementPath('metadata.roles'), tmp_trestle_dir)
+    generated_plan = MergeCmd.merge(Path.cwd(), ElementPath('metadata.roles'), tmp_trestle_dir)
 
     # Assert the generated plan matches the expected plan'
     assert generated_plan == expected_plan
