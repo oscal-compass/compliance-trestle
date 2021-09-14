@@ -464,7 +464,7 @@ class SSPManager():
 
     def _write_param(self, param: common.Parameter, level: int) -> None:
         self._md_file.new_paragraph()
-        title = f'Parameter {param.id}'
+        title = f'Parameter: {param.id}'
         self._md_file.new_header(level, title)
         if param.class_:
             self._md_file.new_header(level + 1, f'class: {param.class_}')
@@ -510,7 +510,7 @@ class SSPManager():
 
     def _write_prop(self, prop: common.Property, level: int) -> None:
         self._md_file.new_paragraph()
-        title = f'Prop {prop.name}: {prop.value}'
+        title = f'Property: {prop.name} {prop.value}'
         self._md_file.new_header(level, title)
         if prop.uuid:
             self._md_file.new_header(level + 1, f'uuid: {prop.uuid}')
@@ -530,7 +530,7 @@ class SSPManager():
         if control.links:
             for link in control.links:
                 self._md_file.new_paragraph()
-                title = f'Link {link.href}: {link.rel}'
+                title = f'Link: {link.href} {link.rel}'
                 self._md_file.new_header(2, title)
 
     def _get_control_list(self, control: cat.Control) -> List[str]:
