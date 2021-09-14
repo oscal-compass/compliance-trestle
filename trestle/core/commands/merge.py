@@ -86,7 +86,7 @@ class MergeCmd(CommandPlusDocs):
         # Destination model filetype
         try:
             logger.debug(f'merge destination model alias: {destination_model_alias}')
-            logger.debug('merge getting contextual file type from cwd')
+            logger.debug('merge getting contextual file type effective working directory')
             file_type = fs.get_contextual_file_type(effective_cwd)
             logger.debug(f'contextual file type is {file_type}')
         except Exception as e:
