@@ -51,7 +51,7 @@ def test_catalog_generate(tmp_trestle_dir: pathlib.Path) -> None:
     catalog_dir.mkdir(parents=True, exist_ok=True)
     catalog_path = catalog_dir / 'catalog.json'
     shutil.copy(nist_catalog_path, catalog_path)
-    markdown_path = tmp_trestle_dir / 'my_md'
+    markdown_path = tmp_trestle_dir / 'my_md_prose'
     markdown_path.mkdir(parents=True, exist_ok=True)
     catalog_generator = CatalogGenerate()
     catalog_generator.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path)

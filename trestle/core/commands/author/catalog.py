@@ -19,9 +19,9 @@ import pathlib
 
 import trestle.utils.fs as fs
 import trestle.utils.log as log
+from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.commands.author.ssp import SSPManager
-from trestle.core.profile_resolver import CatalogInterface
+from trestle.core.control_io import ControlIo
 from trestle.utils.load_distributed import load_distributed
 
 logger = logging.getLogger(__name__)
@@ -59,14 +59,14 @@ class CatalogGenerate(AuthorCommonCommand):
         """Generate markdown for the controls in the catalog."""
         _, _, catalog = load_distributed(catalog_path, trestle_root)
         catalog_interface = CatalogInterface(catalog)
-        ssp_manager = SSPManager()
+        control_io = ControlIo()
         for control in catalog_interface.get_all_controls(True):
             group_id, group_title, _ = catalog_interface.get_group_info(control.id)
             group_dir = markdown_path if group_id == 'catalog' else markdown_path / group_id
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)
             control_path = group_dir / f'{control.id}.md'
-            ssp_manager.write_control_full(control_path, control, group_title)
+            control_io.write_control_full(control_path, control, group_title)
 
 
 class CatalogAssemble(AuthorCommonCommand):
