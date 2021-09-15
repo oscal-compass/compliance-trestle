@@ -16,8 +16,11 @@
 """Tests for trestle split command."""
 import argparse
 import os
+import pathlib
 import shutil
 from pathlib import Path
+
+import pytest
 
 from tests import test_utils
 
@@ -362,4 +365,89 @@ def test_split_merge(testdata_dir, tmp_trestle_dir):
     # Check both the catalogs are the same.
     post_catalog_type, _ = fs.get_stripped_model_type(catalog_file.resolve(), tmp_trestle_dir)
     post_merge_catalog = post_catalog_type.oscal_read(catalog_file)
+    assert post_merge_catalog == pre_split_catalog
+
+
+# Note this is EXPENSIVE
+@pytest.mark.parametrize(
+    'rel_context_dir, use_absolutes, split_elem, merge_elem, use_effective_cwd',
+    [
+        ('catalogs/mycatalog', False, 'catalog.groups.*.controls.*', 'catalog.*', False),
+        ('catalogs/mycatalog', True, 'catalog.groups.*.controls.*', 'catalog.*', False),
+        ('', False, 'catalog.groups.*.controls.*', 'catalog.*', True),
+        ('catalogs', False, 'catalog.groups.*.controls.*', 'catalog.*', True),
+        ('catalogs/mycatalog', True, 'catalog.groups.*.controls.*', 'catalog.*', True)
+    ],
+    ids=[
+        'In expected working directory',
+        'In expected, using absolute paths',
+        'out of expected relative paths using trestle root',
+        'out of expected using something other than trestle root',
+        'out of expected absolute paths'
+    ]
+)
+def test_split_merge_out_of_context(
+    testdata_dir,
+    tmp_trestle_dir,
+    rel_context_dir: str,
+    use_absolutes: bool,
+    split_elem: str,
+    merge_elem: str,
+    use_effective_cwd: bool
+):
+    """Test merging data that has been split using the split command- to ensure symmetry."""
+    # trestle split -f catalog.json -e catalog.groups.*.controls.*
+
+    # prepare trestle project dir with the file - could e cleaned up.
+    test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
+    test_data_source = testdata_dir / 'split_merge/step0-merged_catalog/catalogs/'  # Pontentially change to NIST DIR
+    catalogs_dir = Path('catalogs/')
+    shutil.rmtree(catalogs_dir)
+    shutil.copytree(test_data_source, catalogs_dir)
+
+    full_path_to_model_dir = tmp_trestle_dir / 'catalogs' / 'mycatalog'
+    full_path_to_model = full_path_to_model_dir / 'catalog.json'
+    full_context_dir = tmp_trestle_dir / rel_context_dir
+
+    if use_absolutes:
+        model_dir = full_path_to_model_dir
+        model_file = full_path_to_model
+    else:
+        model_dir = full_path_to_model_dir.relative_to(full_context_dir)
+        model_file = full_path_to_model.relative_to(full_context_dir)
+
+    # Always use full context dir for safety
+    os.chdir(full_context_dir)
+
+    # Read and store the catalog before split
+    stripped_catalog_type, _ = fs.get_stripped_model_type(full_path_to_model.resolve(), tmp_trestle_dir)
+    pre_split_catalog = stripped_catalog_type.oscal_read(full_path_to_model)
+    assert 'groups' in pre_split_catalog.__fields__.keys()
+
+    # Split the catalog
+    args = argparse.Namespace(
+        name='split', file=model_file, verbose=0, element=split_elem, trestle_root=tmp_trestle_dir
+    )
+    split = SplitCmd()._run(args)
+
+    assert split == 0
+
+    interim_catalog_type, _ = fs.get_stripped_model_type(full_path_to_model.resolve(), tmp_trestle_dir)
+    interim_catalog = interim_catalog_type.oscal_read(full_path_to_model.resolve())
+    assert 'groups' not in interim_catalog.__fields__.keys()
+
+    # Merge everything back into the catalog
+    # Equivalent to trestle merge -e catalog.*
+    if use_effective_cwd:
+        plan = MergeCmd.merge(model_dir, ElementPath(merge_elem), trestle_root=tmp_trestle_dir)
+
+    else:
+        os.chdir(full_path_to_model_dir)
+        plan = MergeCmd.merge(pathlib.Path.cwd(), ElementPath(merge_elem), trestle_root=tmp_trestle_dir)
+    plan.simulate()
+    plan.execute()
+
+    # Check both the catalogs are the same.
+    post_catalog_type, _ = fs.get_stripped_model_type(full_path_to_model.resolve(), tmp_trestle_dir)
+    post_merge_catalog = post_catalog_type.oscal_read(full_path_to_model)
     assert post_merge_catalog == pre_split_catalog

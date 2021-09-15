@@ -557,3 +557,39 @@ def test_local_and_visible(tmp_path) -> None:
         link_file.symlink_to(local_file)
     assert fs.local_and_visible(local_file)
     assert not fs.local_and_visible(link_file)
+
+
+@pytest.mark.parametrize(
+    'candidate, build, expect_failure',
+    [
+        (pathlib.Path('relative_file.json'), False, False),
+        (pathlib.Path('relative_file.json'), True, False),
+        (pathlib.Path('/random/absolute/path'), False, True),
+        (pathlib.Path('/random/absolute/path'), False, True),
+        (pathlib.Path('~/random/home_directory/path'), False, True),
+        (pathlib.Path('~/random/home_directory/path'), True, False),
+        (pathlib.Path('../relative_file.json'), False, True),
+        (pathlib.Path('../relative_file.json'), True, True),
+        (
+            pathlib.Path('./hello/../relative_file.json'),
+            False,
+            False,
+        ),
+        (
+            pathlib.Path('./hello/../relative_file.json'),
+            True,
+            False,
+        ),
+    ]
+)
+def test_relative_resolve(tmp_path, candidate: pathlib.Path, build: bool, expect_failure: bool):
+    """Test relative resolve capability."""
+    if build:
+        input_path = tmp_path / candidate
+    else:
+        input_path = candidate
+    if expect_failure:
+        with pytest.raises(TrestleError):
+            _ = fs.relative_resolve(input_path, tmp_path)
+    else:
+        _ = fs.relative_resolve(input_path, tmp_path)
