@@ -151,16 +151,15 @@ class SplitCmd(CommandPlusDocs):
                 file_path_dict[key] = f'{current_path},{path}'
 
         for raw_file_name, element_path in file_path_dict.items():
+            file_path = fs.relative_resolve(pathlib.Path(raw_file_name), effective_cwd)
             # this makes assumptions that the path is relative.
-            file_path = pathlib.Path(effective_cwd / raw_file_name).resolve()
             if not file_path.exists():
                 logger.error(f'File {file_path} does not exist.')
                 return 1
             content_type = FileContentType.to_content_type(file_path.suffix)
 
             # find the base directory of the file
-            file_absolute_path = pathlib.Path(file_path)
-            base_dir = file_absolute_path.parent
+            base_dir = file_path.parent
             model_type, _ = fs.get_stripped_model_type(file_path, trestle_root)
 
             model: OscalBaseModel = model_type.oscal_read(file_path)
@@ -174,7 +173,7 @@ class SplitCmd(CommandPlusDocs):
             # use contextual mode to parse
 
             element_paths: List[ElementPath] = cmd_utils.parse_element_args(
-                model, element_path.split(','), effective_cwd.relative_to(trestle_root)
+                model, element_path.split(','), base_dir.relative_to(trestle_root)
             )
 
             # analyze the split tree and determine which aliases should be stripped from each file

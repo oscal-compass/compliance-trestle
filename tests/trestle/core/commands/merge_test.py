@@ -399,7 +399,6 @@ def test_split_merge_out_of_context(
     # trestle split -f catalog.json -e catalog.groups.*.controls.*
 
     # prepare trestle project dir with the file - could e cleaned up.
-    return  # hot fix for now.
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
     test_data_source = testdata_dir / 'split_merge/step0-merged_catalog/catalogs/'  # Pontentially change to NIST DIR
     catalogs_dir = Path('catalogs/')
@@ -411,10 +410,8 @@ def test_split_merge_out_of_context(
     full_context_dir = tmp_trestle_dir / rel_context_dir
 
     if use_absolutes:
-        model_dir = full_path_to_model_dir
         model_file = full_path_to_model
     else:
-        model_dir = full_path_to_model_dir.relative_to(full_context_dir)
         model_file = full_path_to_model.relative_to(full_context_dir)
 
     # Always use full context dir for safety
@@ -440,7 +437,7 @@ def test_split_merge_out_of_context(
     # Merge everything back into the catalog
     # Equivalent to trestle merge -e catalog.*
     if use_effective_cwd:
-        plan = MergeCmd.merge(model_dir, ElementPath(merge_elem), trestle_root=tmp_trestle_dir)
+        plan = MergeCmd.merge(full_path_to_model_dir, ElementPath(merge_elem), trestle_root=tmp_trestle_dir)
 
     else:
         os.chdir(full_path_to_model_dir)
