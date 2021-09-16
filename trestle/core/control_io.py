@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Create resolved catalog from profile."""
+"""Handle direct i/o reading and writing controls as markdown."""
 
 import logging
 import pathlib
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 class ControlIo():
-    """Class to read and write controls to markdown."""
+    """Class to read and write controls as markdown."""
 
     header_tokens = ['Control', 'class', 'Param', 'Prop', 'link', 'Part', 'Controls']
     label_tokens = [
@@ -338,6 +338,8 @@ class ControlIo():
 
         self._md_file.write_out()
 
+    # Below deals with writing out full control details
+
     def _write_part_full(self, part: common.Part, level: int) -> None:
         title = f'Part: {part.name}'
         self._md_file.new_header(level=level, title=title)
@@ -496,7 +498,6 @@ class ControlIo():
     ) -> None:
         """Write out the full control in markdown format."""
         self._md_file = MDWriter(dest_path)
-
         self._md_file.new_paragraph()
         title = f'Control: {control.id} - {group_title} {control.title}'
         self._md_file.new_header(level=1, title=title)
@@ -516,12 +517,12 @@ class ControlIo():
     def _get_id_title(self, ii: int, lines: List[str]) -> Tuple[int, str, str]:
         while ii < len(lines):
             line = lines[ii]
-            if line.startswith('# Control:'):
-                tokens = line.split()
-                return (ii, tokens[-2], tokens[-1])
-            else:
-                raise TrestleError(f'Unable to parse control id and title from {line}')
             ii += 1
+            if line.startswith('# Control: '):
+                id_ = line.split()[2]
+                # FIXME this should be regex since - may be in title
+                title = line.split('-')[-1]
+                return (ii, id_, title)
         raise TrestleError('Unable to find #Control: heading in control markdown file.')
 
     def _get_header_level(self, line: str) -> int:
@@ -533,17 +534,19 @@ class ControlIo():
         # if multiline read until...
         return -1
 
-    def _read_prop(self, ii: int, lines: List[str], name: str, value: str, props: List[common.Property]) -> int:
+    def _read_prop(
+        self, ii: int, lines: List[str], name: str, value: str, props: List[common.Property], level: int
+    ) -> int:
         return -1
 
-    def _read_link(self, ii: int, lines: List[str], href: str, links: List[common.Link]) -> int:
+    def _read_link(self, ii: int, lines: List[str], href: str, links: List[common.Link], level: int) -> int:
         return -1
 
-    def _read_part(self, ii: int, lines: List[str], name: str, parts: List[common.Part]) -> int:
+    def _read_part(self, ii: int, lines: List[str], name: str, parts: List[common.Part], level: int) -> int:
         return -1
 
     def _read_controls(self, ii: int, lines: List[str], control_id_list: List[str]) -> int:
-        """For now assume this is at end of file."""
+        """Read list of included control ids at end of file - not actual full control details."""
         while ii < len(lines):
             line = lines[ii]
             if line:
@@ -555,22 +558,24 @@ class ControlIo():
         """Look for a high level entry heading for a control attribute."""
         while ii < len(lines):
             line = lines[ii]
-            if line.startswith('## class: '):
-                control.class_ = line.split()[-1]
-            elif line.startswith('## Param: '):
-                ii = self._read_param(ii, lines, line.split()[-1], control.params, 2)
-            elif line.startswith('## Prop: '):
-                tokens = line.split()
-                ii = self._read_prop(ii, lines, tokens[-3], tokens[-1], control.props, 2)
-            elif line.startswith('## link:'):
-                ii = self._read_link(ii, lines, line.split()[-1], control.links, 2)
-            elif line.startswith('## Part: '):
-                ii = self._read_part(ii, lines, line.split()[-1], control.parts, 2)
-            elif line.startswith('## Controls: '):
-                ii = self._read_controls(ii, lines, control_id_list)
-            else:
-                raise TrestleError(f'Error parsing md for control {control.id} line {line}.')
-            return ii + 1
+            ii += 1
+            if line:
+                if line.startswith('## class: '):
+                    control.class_ = line.split()[-1]
+                elif line.startswith('## Param: '):
+                    ii = self._read_param(ii, lines, line.split()[-1], control.params, 2)
+                elif line.startswith('## Prop: '):
+                    tokens = line.split()
+                    ii = self._read_prop(ii, lines, tokens[-3], tokens[-1], control.props, 2)
+                elif line.startswith('## link:'):
+                    ii = self._read_link(ii, lines, line.split()[-1], control.links, 2)
+                elif line.startswith('## Part: '):
+                    ii = self._read_part(ii, lines, line.split()[-1], control.parts, 2)
+                elif line.startswith('## Controls: '):
+                    ii = self._read_controls(ii, lines, control_id_list)
+                else:
+                    raise TrestleError(f'Error parsing md for control {control.id} line {line}.')
+                return ii
         return -1
 
     def read_control_full(self, control_path: pathlib.Path) -> cat.Control:
@@ -584,6 +589,11 @@ class ControlIo():
         with open(control_path, 'r', encoding=const.FILE_ENCODING) as md_file:
             lines = [line.strip() for line in md_file.readlines()]
         ii, control.id, control.title = self._get_id_title(0, lines)
+        self._get_header_level('## test')
+        self._read_param(0, lines, 'test', [], 0)
+        self._read_prop(0, lines, 'test', 'value', [], 0)
+        self._read_link(0, lines, control, [], 0)
+        self._read_part(0, lines, 'test', [], 0)
         while ii > 0:
             ii = self._get_attribute(ii, lines, control, control_id_list)
         return control

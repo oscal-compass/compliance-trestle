@@ -23,7 +23,7 @@ from tests import test_utils
 import trestle.core.generators as gens
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.catalog import CatalogGenerate
-from trestle.core.commands.author.ssp import SSPManager
+from trestle.core.control_io import ControlIo
 from trestle.oscal.catalog import Catalog
 from trestle.oscal.ssp import SystemComponent
 
@@ -43,7 +43,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     control_dir = trestle_dir / markdown_name / control_id.split('-')[0]
     md_file = control_dir / f'{control_id}.md'
 
-    responses = SSPManager.get_all_implementation_prose(md_file)
+    responses = ControlIo.get_all_implementation_prose(md_file)
     if part_label not in responses:
         return False
     prose = '\n'.join(responses[part_label])
@@ -65,5 +65,6 @@ def test_catalog_generate(all_details: bool, tmp_trestle_dir: pathlib.Path) -> N
     catalog_generator.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, all_details)
     assert (markdown_path / 'ac/ac-1.md').exists()
     catalog_interface = CatalogInterface(catalog_data)
-    component = gens.generate_sample_model(SystemComponent)
-    catalog_interface.read_catalog_from_markdown(markdown_path, component)
+    if all_details:
+        component = gens.generate_sample_model(SystemComponent)
+        catalog_interface.read_catalog_from_markdown(markdown_path, component)

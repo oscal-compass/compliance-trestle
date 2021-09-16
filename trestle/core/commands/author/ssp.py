@@ -16,13 +16,11 @@
 import argparse
 import logging
 import pathlib
-from typing import Dict, List, Optional
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
 
 import trestle.core.generators as gens
-import trestle.oscal.profile as prof
 import trestle.oscal.ssp as ossp
 import trestle.utils.fs as fs
 import trestle.utils.log as log
@@ -89,9 +87,13 @@ class SSPGenerate(AuthorCommonCommand):
 
         logger.debug(f'ssp sections: {sections}')
 
-        ssp_manager = SSPManager()
+        profile_resolver = ProfileResolver()
+        resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
+        catalog_interface = CatalogInterface(resolved_catalog)
+        all_details = False
+        catalog_interface.write_catalog_as_markdown(markdown_path, yaml_header, sections, all_details)
 
-        return ssp_manager.generate_ssp(trestle_root, profile_path.resolve(), markdown_path, sections, yaml_header)
+        return 0
 
 
 class SSPAssemble(AuthorCommonCommand):
@@ -110,76 +112,6 @@ class SSPAssemble(AuthorCommonCommand):
     def _run(self, args: argparse.Namespace) -> int:
         log.set_log_level_from_args(args)
 
-        ssp_manager = SSPManager()
-        return ssp_manager.assemble_ssp(args.trestle_root, args.markdown, args.output)
-
-
-class SSPManager():
-    """Manage generation of SSP in markdown format from profile and assembly of edited markdown into json SSP."""
-
-    def __init__(self):
-        """Initialize the class."""
-        self._param_dict: Dict[str, str] = {}
-        self._alters: List[prof.Alter] = []
-        self._sections: Dict[str, str] = {}
-
-    def generate_ssp(
-        self,
-        trestle_root: pathlib.Path,
-        profile_path: pathlib.Path,
-        md_path: pathlib.Path,
-        sections: Optional[Dict[str, str]],
-        yaml_header: dict,
-        all_details: bool = False
-    ) -> int:
-        """
-        Generate a partial ssp in markdown format from a profile and yaml header.
-
-        The catalog contains a list of controls and the profile selects a subset of them
-        in groups.  The profile also specifies parameters for the controls.  The result
-        is a directory of markdown files, one for each control in the profile.  Each control
-        has the yaml header at the top.
-
-        Args:
-            trestle_root: The trestle root directory
-            profile_path: File path for OSCAL profile
-            md_path: The directory into which the markdown controls are written
-            sections: A comma separated list of id:alias separated by colon to specify optional
-                additional sections to be written out.  The id corresponds to the name found
-                in the profile parts for the corresponding section, and the alias is the nicer
-                version to be printed out in the section header of the markdown.
-            yaml_header: The dictionary corresponding to the desired contents of the yaml header at the
-                top of each markdown file.  If the dict is empty no yaml header is included.
-            all_details: Specify writing all control details or just partial.
-        Returns:
-            0 on success, 1 otherwise
-
-        """
-        logging.debug(f'Generate ssp in {md_path} from profile {profile_path}')
-
-        profile_resolver = ProfileResolver()
-        resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
-        catalog_interface = CatalogInterface(resolved_catalog)
-        catalog_interface.write_catalog_as_markdown(md_path, yaml_header, sections, all_details)
-
-        return 0
-
-    def assemble_ssp(self, trestle_root: pathlib.Path, md_name: str, ssp_name: str) -> int:
-        """
-        Assemble the markdown directory into a json ssp model file.
-
-        In normal operation the markdown would have been edited to provide implementation responses.
-        These responses are captured as prose in the ssp json file.
-
-        Args:
-            trestle_root: The trestle root directory
-            md_name: The name of the directory containing the markdown control files for the ssp
-            ssp_name: The output name of the ssp json file to be created from the assembly
-
-        Returns:
-            0 on success, 1 otherwise
-
-        """
         # generate the one dummy component that implementations will refer to in by_components
         component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
         component.description = 'Dummy component created by trestle'
@@ -188,7 +120,9 @@ class SSPManager():
         system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
         system_imp.components = [component]
 
-        md_path = trestle_root / md_name
+        trestle_root = pathlib.Path(args.trestle_root)
+
+        md_path = trestle_root / args.markdown
 
         imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
 
@@ -208,7 +142,7 @@ class SSPManager():
         ssp.import_profile = import_profile
 
         # write out the ssp as json
-        ssp_dir = trestle_root / ('system-security-plans/' + ssp_name)
+        ssp_dir = trestle_root / ('system-security-plans/' + args.output)
         ssp_dir.mkdir(exist_ok=True, parents=True)
         ssp.oscal_write(ssp_dir / 'system-security-plan.json')
 

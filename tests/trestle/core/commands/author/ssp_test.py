@@ -102,7 +102,7 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
 
 
 @pytest.mark.parametrize('import_cat', [False, True])
-def test_ssp_generator(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
+def test_ssp_generate(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator."""
     args, sections, yaml_path = setup_for_ssp(True, False, tmp_trestle_dir, import_cat)
     ssp_cmd = SSPGenerate()
@@ -139,7 +139,7 @@ def test_ssp_generator(import_cat, tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 1
 
 
-def test_ssp_generator_no_header(tmp_trestle_dir: pathlib.Path) -> None:
+def test_ssp_generate_no_header(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator with no yaml header."""
     args, sections, yaml_path = setup_for_ssp(False, False, tmp_trestle_dir)
     ssp_cmd = SSPGenerate()
@@ -188,7 +188,7 @@ def test_ssp_assemble(tmp_trestle_dir: pathlib.Path) -> None:
     assert confirm_control_contains(tmp_trestle_dir, 'ac-1', 'b.', 'This is fun')
 
 
-def test_ssp_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
+def test_ssp_generate_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
     """Test bad output name."""
     args = argparse.Namespace(
         trestle_root=tmp_trestle_dir, profile='my_prof', output='catalogs', verbose=True, yaml_header='dummy.yaml'
@@ -197,7 +197,7 @@ def test_ssp_bad_name(tmp_trestle_dir: pathlib.Path) -> None:
     assert ssp_cmd._run(args) == 1
 
 
-def test_ssp_generator_resolved_profile_catalog(tmp_trestle_dir: pathlib.Path) -> None:
+def test_profile_resolver(tmp_trestle_dir: pathlib.Path) -> None:
     """Test the ssp generator to create a resolved profile catalog."""
     _, _, _ = setup_for_ssp(False, True, tmp_trestle_dir)
     profile_path = tmp_trestle_dir / f'profiles/{prof_name}/profile.json'
