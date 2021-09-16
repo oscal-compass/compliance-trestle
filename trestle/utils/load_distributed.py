@@ -65,7 +65,7 @@ def load_distributed(
     If the model is decomposed/split/distributed,the decomposed models are loaded recursively.
 
     Args:
-        abs_file_path : The path to the file/directory to be loaded.
+        abs_path: The path to the file/directory to be loaded.
         abs_trestle_root: The trestle project root directory.
         collection_type: The type of collection model, if it is a collection model.
             typing.List if the model is a list, typing.Dict if the model is additionalProperty.
