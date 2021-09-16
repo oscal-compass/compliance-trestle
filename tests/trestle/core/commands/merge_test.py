@@ -316,7 +316,7 @@ def test_merge_plan_simple_list(testdata_dir, tmp_trestle_dir):
     assert generated_plan == expected_plan
 
 
-def test_split_merge(testdata_dir, tmp_trestle_dir):
+def test_split_merge(testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path) -> None:
     """Test merging data that has been split using the split command- to ensure symmetry."""
     # trestle split -f catalog.json -e catalog.groups.*.controls.*
 

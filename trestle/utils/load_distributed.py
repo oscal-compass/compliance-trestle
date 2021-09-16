@@ -28,7 +28,6 @@ def _load_list(abs_path: Path, abs_trestle_root: Path) -> Tuple[Type[OscalBaseMo
     """Given path to a directory of list(array) models, load the distributed models."""
     aliases_not_to_be_stripped = []
     instances_to_be_merged: List[OscalBaseModel] = []
-    abs_path = abs_path.resolve()
     collection_model_type, collection_model_alias = fs.get_stripped_model_type(abs_path, abs_trestle_root)
     for path in sorted(Path.iterdir(abs_path)):
 
@@ -56,8 +55,8 @@ def _load_dict(abs_path: Path, abs_trestle_root: Path) -> Tuple[Type[OscalBaseMo
 
 
 def load_distributed(
-    file_path: Path,
-    trestle_root: Path,
+    abs_path: Path,
+    abs_trestle_root: Path,
     collection_type: Optional[Type[Any]] = None
 ) -> Tuple[Type[OscalBaseModel], str, Union[OscalBaseModel, List[OscalBaseModel], Dict[str, OscalBaseModel]]]:
     """
@@ -78,8 +77,6 @@ def load_distributed(
         the decomposed models loaded recursively.
     """
     # if trying to load file that does not exist, load path instead
-    abs_path = file_path.resolve()
-    abs_trestle_root = trestle_root.resolve()
     if not abs_path.exists():
         abs_path = abs_path.with_name(abs_path.stem)
 
