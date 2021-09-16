@@ -23,6 +23,8 @@ import time
 from typing import Tuple
 from unittest.mock import patch
 
+from _pytest.monkeypatch import MonkeyPatch
+
 import pytest
 
 from tests.test_utils import models_are_equivalent
@@ -73,15 +75,18 @@ def test_fetcher_oscal(tmp_trestle_dir: pathlib.Path) -> None:
     assert models_are_equivalent(fetched_data, catalog_data)
 
 
-def test_fetcher_oscal_fails(tmp_trestle_dir: pathlib.Path) -> None:
+def test_fetcher_oscal_fails(tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch) -> None:
     """Test failed read from cache."""
+    logged_error = 'oscal_fail'
+
+    def oscal_read_mock(*args, **kwargs):
+        raise err.TrestleError(logged_error)
+
     fetcher, _ = get_catalog_fetcher(tmp_trestle_dir)
     # mock bad read of oscal model
-    with patch('trestle.oscal.catalog.Catalog.oscal_read') as oscal_read_mock:
-        oscal_read_mock.side_effect = err.TrestleError
-        with pytest.raises(err.TrestleError):
-            fetcher.get_oscal_with_model_type(Catalog)
-        oscal_read_mock.assert_called_once()
+    monkeypatch.setattr(Catalog, 'oscal_read', oscal_read_mock)
+    with pytest.raises(err.TrestleError):
+        fetcher.get_oscal_with_model_type(Catalog)
 
 
 def test_github_fetcher():
