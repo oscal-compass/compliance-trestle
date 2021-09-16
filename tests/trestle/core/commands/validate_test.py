@@ -218,7 +218,7 @@ def test_validate_dup_uuids(sample_component_definition: ComponentDefinition) ->
 def test_validate_distributed(
     testdata_dir: pathlib.Path, tmp_trestle_dir: pathlib.Path, monkeypatch: MonkeyPatch
 ) -> None:
-    """Hello."""
+    """Check that validate will run correctly when exploiting load distributed."""
     test_utils.ensure_trestle_config_dir(tmp_trestle_dir)
     # Clean up.
     test_data_source = testdata_dir / 'split_merge/step0-merged_catalog/catalogs'
