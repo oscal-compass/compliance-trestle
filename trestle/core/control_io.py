@@ -491,7 +491,9 @@ class ControlIo():
             for id_ in control_list:
                 self._md_file.new_line(id_)
 
-    def write_control_full(self, dest_path: pathlib.Path, control: cat.Control, group_title: str) -> None:
+    def write_control_full(
+        self, dest_path: pathlib.Path, control: cat.Control, group_title: str, all_details: bool
+    ) -> None:
         """Write out the full control in markdown format."""
         self._md_file = MDWriter(dest_path)
 
@@ -499,8 +501,7 @@ class ControlIo():
         title = f'Control: {control.id} - {group_title} {control.title}'
         self._md_file.new_header(level=1, title=title)
         self._md_file.set_indent_level(-1)
-        write_full = False
-        if write_full:
+        if all_details:
             if control.class_:
                 self._md_file.new_header(level=2, title=f'class: {control.class_}')
 

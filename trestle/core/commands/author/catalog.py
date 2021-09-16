@@ -54,7 +54,7 @@ class CatalogGenerate(AuthorCommonCommand):
         return self.generate_markdown(trestle_root, catalog_path, markdown_path)
 
     def generate_markdown(
-        self, trestle_root: pathlib.Path, catalog_path: pathlib.Path, markdown_path: pathlib.Path
+        self, trestle_root: pathlib.Path, catalog_path: pathlib.Path, markdown_path: pathlib.Path, all_details: bool
     ) -> int:
         """Generate markdown for the controls in the catalog."""
         _, _, catalog = load_distributed(catalog_path, trestle_root)
@@ -66,7 +66,7 @@ class CatalogGenerate(AuthorCommonCommand):
             if not group_dir.exists():
                 group_dir.mkdir(parents=True, exist_ok=True)
             control_path = group_dir / f'{control.id}.md'
-            control_io.write_control_full(control_path, control, group_title)
+            control_io.write_control_full(control_path, control, group_title, all_details)
 
 
 class CatalogAssemble(AuthorCommonCommand):

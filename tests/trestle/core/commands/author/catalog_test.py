@@ -16,6 +16,8 @@
 import pathlib
 import shutil
 
+import pytest
+
 from tests import test_utils
 
 from trestle.core.commands.author.catalog import CatalogGenerate
@@ -44,7 +46,8 @@ def confirm_control_contains(trestle_dir: pathlib.Path, control_id: str, part_la
     return seek_str in prose
 
 
-def test_catalog_generate(tmp_trestle_dir: pathlib.Path) -> None:
+@pytest.mark.parametrize('all_details', [True, False])
+def test_catalog_generate(all_details: bool, tmp_trestle_dir: pathlib.Path) -> None:
     """Test the catalog markdown generator."""
     nist_catalog_path = test_utils.JSON_NIST_DATA_PATH / test_utils.JSON_NIST_CATALOG_NAME
     catalog_dir = tmp_trestle_dir / 'catalogs/my_cat'
@@ -54,5 +57,5 @@ def test_catalog_generate(tmp_trestle_dir: pathlib.Path) -> None:
     markdown_path = tmp_trestle_dir / 'my_md_prose'
     markdown_path.mkdir(parents=True, exist_ok=True)
     catalog_generator = CatalogGenerate()
-    catalog_generator.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path)
+    catalog_generator.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, all_details)
     assert (markdown_path / 'ac/ac-1.md').exists()

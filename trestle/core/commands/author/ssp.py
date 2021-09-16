@@ -29,7 +29,6 @@ import trestle.utils.log as log
 from trestle.core import const
 from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.common import AuthorCommonCommand
-from trestle.core.control_io import ControlIo
 from trestle.core.profile_resolver import ProfileResolver
 
 logger = logging.getLogger(__name__)
@@ -130,7 +129,8 @@ class SSPManager():
         profile_path: pathlib.Path,
         md_path: pathlib.Path,
         sections: Optional[Dict[str, str]],
-        yaml_header: dict
+        yaml_header: dict,
+        all_details: bool = False
     ) -> int:
         """
         Generate a partial ssp in markdown format from a profile and yaml header.
@@ -150,24 +150,17 @@ class SSPManager():
                 version to be printed out in the section header of the markdown.
             yaml_header: The dictionary corresponding to the desired contents of the yaml header at the
                 top of each markdown file.  If the dict is empty no yaml header is included.
+            all_details: Specify writing all control details or just partial.
         Returns:
             0 on success, 1 otherwise
 
         """
         logging.debug(f'Generate ssp in {md_path} from profile {profile_path}')
-        # create the directory in which to write the control markdown files
-        md_path.mkdir(exist_ok=True, parents=True)
 
         profile_resolver = ProfileResolver()
         resolved_catalog = profile_resolver.get_resolved_profile_catalog(trestle_root, profile_path)
         catalog_interface = CatalogInterface(resolved_catalog)
-        control_io = ControlIo()
-
-        # write out the controls
-        for control in catalog_interface.get_all_controls(True):
-            group_id, group_title, _ = catalog_interface.get_group_info(control.id)
-            out_path = md_path / group_id
-            control_io.write_control(out_path, control, group_title, yaml_header, sections)
+        catalog_interface.write_catalog_as_markdown(md_path, yaml_header, sections, all_details)
 
         return 0
 
@@ -187,13 +180,6 @@ class SSPManager():
             0 on success, 1 otherwise
 
         """
-        # find all groups in the markdown dir
-        group_ids = []
-        md_dir = trestle_root / md_name
-
-        for gdir in md_dir.glob('*/'):
-            group_ids.append(str(gdir.stem))
-
         # generate the one dummy component that implementations will refer to in by_components
         component: ossp.SystemComponent = gens.generate_sample_model(ossp.SystemComponent)
         component.description = 'Dummy component created by trestle'
@@ -202,13 +188,9 @@ class SSPManager():
         system_imp: ossp.SystemImplementation = gens.generate_sample_model(ossp.SystemImplementation)
         system_imp.components = [component]
 
-        # create implementation requirements for each control, linked to the dummy component uuid
-        imp_reqs: List[ossp.ImplementedRequirement] = []
-        control_io = ControlIo()
-        for group_id in group_ids:
-            group_path = md_dir / group_id
-            for control_file in group_path.glob('*.md'):
-                imp_reqs.extend(control_io.get_implementations(control_file, component))
+        md_path = trestle_root / md_name
+
+        imp_reqs = CatalogInterface.read_catalog_imp_reqs(md_path, component)
 
         # create a control implementation to hold the implementation requirements
         control_imp: ossp.ControlImplementation = gens.generate_sample_model(ossp.ControlImplementation)

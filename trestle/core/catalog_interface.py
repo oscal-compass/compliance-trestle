@@ -14,11 +14,14 @@
 """Create resolved catalog from profile."""
 
 import logging
+import pathlib
 from typing import Dict, Iterator, List, Optional, Tuple
 
 from pydantic import BaseModel
 
 import trestle.oscal.catalog as cat
+import trestle.oscal.ssp as ossp
+from trestle.core.control_io import ControlIo
 from trestle.oscal import common
 
 logger = logging.getLogger(__name__)
@@ -219,3 +222,53 @@ class CatalogInterface():
             for part in control.parts:
                 hits.extend(self._find_string_in_part(control.id, part, seek_str))
         return hits
+
+    def write_catalog_as_markdown(
+        self, md_path: pathlib.Path, yaml_header: dict, sections: Optional[Dict[str, str]], all_details: bool
+    ) -> None:
+        """Write out the catalog controls as markdown to the given directory."""
+        control_io = ControlIo()
+
+        # create the directory in which to write the control markdown files
+        md_path.mkdir(exist_ok=True, parents=True)
+        catalog_interface = CatalogInterface(self._catalog)
+        # write out the controls
+        for control in catalog_interface.get_all_controls(True):
+            group_id, group_title, _ = catalog_interface.get_group_info(control.id)
+            out_path = md_path / group_id
+            control_io.write_control(out_path, control, group_title, yaml_header, sections)
+
+    @staticmethod
+    def _get_group_ids(md_path: pathlib.Path) -> List[str]:
+        group_ids: List[str] = []
+
+        for gdir in md_path.glob('*/'):
+            group_ids.append(str(gdir.stem))
+        return group_ids
+
+    def read_catalog_from_markdown(self, md_path: pathlib.Path, component: ossp.SystemComponent) -> None:
+        """Read the catalog controls from the given directory."""
+        # create implementation requirements for each control, linked to the dummy component uuid
+        imp_reqs: List[ossp.ImplementedRequirement]
+        imp_reqs = []
+        control_io = ControlIo()
+        group_ids = self._get_group_ids(md_path)
+        for group_id in group_ids:
+            group_path = md_path / group_id
+            for control_file in group_path.glob('*.md'):
+                imp_reqs.extend(control_io.get_implementations(control_file, component))
+
+    @staticmethod
+    def read_catalog_imp_reqs(md_path: pathlib.Path, component: ossp.SystemComponent) -> None:
+        """Read the full set of control implemented requirements from markdown."""
+        # create implementation requirements for each control, linked to the dummy component uuid
+        # find all groups in the markdown dir
+        group_ids = CatalogInterface._get_group_ids(md_path)
+
+        imp_reqs: List[ossp.ImplementedRequirement] = []
+        control_io = ControlIo()
+        for group_id in group_ids:
+            group_path = md_path / group_id
+            for control_file in group_path.glob('*.md'):
+                imp_reqs.extend(control_io.get_implementations(control_file, component))
+        return imp_reqs
