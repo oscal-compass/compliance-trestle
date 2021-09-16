@@ -20,8 +20,12 @@ import pytest
 
 from tests import test_utils
 
+import trestle.core.generators as gens
+from trestle.core.catalog_interface import CatalogInterface
 from trestle.core.commands.author.catalog import CatalogGenerate
 from trestle.core.commands.author.ssp import SSPManager
+from trestle.oscal.catalog import Catalog
+from trestle.oscal.ssp import SystemComponent
 
 markdown_name = 'my_md'
 
@@ -54,8 +58,12 @@ def test_catalog_generate(all_details: bool, tmp_trestle_dir: pathlib.Path) -> N
     catalog_dir.mkdir(parents=True, exist_ok=True)
     catalog_path = catalog_dir / 'catalog.json'
     shutil.copy(nist_catalog_path, catalog_path)
+    catalog_data = Catalog.oscal_read(catalog_path)
     markdown_path = tmp_trestle_dir / 'my_md_prose'
     markdown_path.mkdir(parents=True, exist_ok=True)
     catalog_generator = CatalogGenerate()
     catalog_generator.generate_markdown(tmp_trestle_dir, catalog_path, markdown_path, all_details)
     assert (markdown_path / 'ac/ac-1.md').exists()
+    catalog_interface = CatalogInterface(catalog_data)
+    component = gens.generate_sample_model(SystemComponent)
+    catalog_interface.read_catalog_from_markdown(markdown_path, component)

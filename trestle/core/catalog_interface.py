@@ -240,6 +240,7 @@ class CatalogInterface():
 
     @staticmethod
     def _get_group_ids(md_path: pathlib.Path) -> List[str]:
+        """Get the list of group ids from the directories in the markdown path."""
         group_ids: List[str] = []
 
         for gdir in md_path.glob('*/'):
@@ -249,14 +250,13 @@ class CatalogInterface():
     def read_catalog_from_markdown(self, md_path: pathlib.Path, component: ossp.SystemComponent) -> None:
         """Read the catalog controls from the given directory."""
         # create implementation requirements for each control, linked to the dummy component uuid
-        imp_reqs: List[ossp.ImplementedRequirement]
-        imp_reqs = []
         control_io = ControlIo()
         group_ids = self._get_group_ids(md_path)
         for group_id in group_ids:
             group_path = md_path / group_id
             for control_file in group_path.glob('*.md'):
-                imp_reqs.extend(control_io.get_implementations(control_file, component))
+                control = control_io.read_control_full(control_file)
+                self.replace_control(control)
 
     @staticmethod
     def read_catalog_imp_reqs(md_path: pathlib.Path, component: ossp.SystemComponent) -> None:
