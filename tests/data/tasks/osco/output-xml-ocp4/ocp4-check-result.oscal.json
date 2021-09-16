@@ -73,7 +73,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_integrity_exists",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -151,7 +151,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_fips_mode_enabled",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -229,7 +229,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_accounts_restrict_service_account_tokens",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -307,7 +307,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_accounts_unique_service_account",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -385,7 +385,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_controller_rotate_kubelet_server_certs",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -463,7 +463,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_controller_terminated_pod_gc_threshhold",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -541,7 +541,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_controller_use_service_account",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -619,7 +619,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_controller_service_account_ca",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -697,7 +697,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_controller_insecure_port_disabled",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -775,7 +775,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_controller_service_account_private_key",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -853,7 +853,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_controller_secure_port",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -931,7 +931,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_tls_cert",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -1009,7 +1009,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_auth_mode_node",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -1087,7 +1087,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NodeRestriction",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -1165,7 +1165,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_kubelet_certificate_authority",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -1243,7 +1243,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_audit_log_forwarding_enabled",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -1321,7 +1321,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_client_ca",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -1399,7 +1399,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_tls_cipher_suites",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -1477,7 +1477,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_service_account_lookup",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -1555,7 +1555,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_anonymous_auth",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -1633,7 +1633,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_SecurityContextDeny",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -1711,7 +1711,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxsize",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -1789,7 +1789,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_ocp_api_server_audit_log_maxbackup",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -1867,7 +1867,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_ocp_api_server_audit_log_maxsize",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -1945,7 +1945,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysAdmit",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -2023,7 +2023,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_insecure_bind_address",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -2101,7 +2101,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_kubelet_client_cert",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -2179,7 +2179,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_bind_address",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -2257,7 +2257,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_etcd_key",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -2335,7 +2335,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_Scc",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -2413,7 +2413,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_api_priority_v1alpha1_flowschema_catch_all",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -2491,7 +2491,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_request_timeout",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -2569,7 +2569,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_ServiceAccount",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -2647,7 +2647,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_encryption_provider_config",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -2725,7 +2725,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_service_account_public_key",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -2803,7 +2803,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_auth_mode_rbac",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -2881,7 +2881,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_oauth_https_serving_cert",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -2959,7 +2959,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_api_priority_gate_enabled",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -3037,7 +3037,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_etcd_cert",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -3115,7 +3115,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_basic_auth",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -3193,7 +3193,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_auth_mode_no_aa",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -3271,7 +3271,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_insecure_port",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -3349,7 +3349,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_api_priority_flowschema_catch_all",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -3427,7 +3427,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_NamespaceLifecycle",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -3505,7 +3505,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_audit_log_path",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -3583,7 +3583,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_profiling_protected_by_rbac",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -3661,7 +3661,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_https_for_kubelet_conn",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -3739,7 +3739,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_tls_private_key",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -3817,7 +3817,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_openshift_https_serving_cert",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -3895,7 +3895,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_etcd_ca",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -3973,7 +3973,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_audit_log_maxbackup",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -4051,7 +4051,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_no_adm_ctrl_plugins_disabled",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -4129,7 +4129,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_admission_control_plugin_AlwaysPullImages",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -4207,7 +4207,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_token_auth",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -4285,7 +4285,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_kubelet_client_key",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -4363,7 +4363,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_api_server_encryption_provider_cipher",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -4441,7 +4441,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_network_namespace",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -4519,7 +4519,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_ipc_namespace",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -4597,7 +4597,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_privilege_escalation",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -4675,7 +4675,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_container_allowed_capabilities",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -4753,7 +4753,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_scc_drop_container_capabilities",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -4831,7 +4831,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_net_raw_capability",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -4909,7 +4909,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_process_id_namespace",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -4987,7 +4987,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_privileged_containers",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -5065,7 +5065,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_scc_limit_root_containers",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -5143,7 +5143,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_openshift_api_server_audit_log_path",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -5221,7 +5221,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_classification_banner",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -5299,7 +5299,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_ocp_allowed_registries_for_import",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -5377,7 +5377,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_ocp_allowed_registries",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -5455,7 +5455,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_secrets_consider_external_storage",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -5533,7 +5533,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_secrets_no_environment_variables",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -5611,7 +5611,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_oauth_inactivity_timeout",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -5689,7 +5689,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_ocp_idp_no_htpasswd",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -5767,7 +5767,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_ocp_no_ldap_insecure",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -5845,7 +5845,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_oauth_or_oauthclient_inactivity_timeout",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -5923,7 +5923,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_idp_is_configured",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -6001,7 +6001,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_oauthclient_inactivity_timeout",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -6079,7 +6079,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_compliancesuite_exists",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -6157,7 +6157,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_audit_profile_set",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -6235,7 +6235,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_scheduler_port_is_zero",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -6313,7 +6313,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_scheduler_no_bind_address",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -6391,7 +6391,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_rbac_limit_cluster_admin",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -6469,7 +6469,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_rbac_debug_role_protects_pprof",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -6547,7 +6547,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_rbac_pod_creation_access",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -6625,7 +6625,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_rbac_limit_secrets_access",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -6703,7 +6703,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_rbac_wildcard_use",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -6781,7 +6781,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_configure_network_policies_namespaces",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -6859,7 +6859,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_routes_protected_by_tls",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -6937,7 +6937,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_configure_network_policies",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -7015,7 +7015,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_etcd_unique_ca",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -7093,7 +7093,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_etcd_peer_cert_file",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -7171,7 +7171,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_etcd_peer_auto_tls",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -7249,7 +7249,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_etcd_cert_file",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -7327,7 +7327,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_etcd_peer_key_file",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -7405,7 +7405,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_etcd_key_file",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -7483,7 +7483,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_etcd_auto_tls",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -7561,7 +7561,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_etcd_peer_client_cert_auth",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -7639,7 +7639,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_etcd_client_cert_auth",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -7717,7 +7717,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_ca",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -7795,7 +7795,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_kubelet_conf",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -7873,7 +7873,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_kubelet_conf",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -7951,7 +7951,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -8029,7 +8029,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_worker_ca",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -8107,7 +8107,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_proxy_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -8185,7 +8185,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_worker_ca",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -8263,7 +8263,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_proxy_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -8341,7 +8341,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kubelet_conf",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -8419,7 +8419,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_proxy_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -8497,7 +8497,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_worker_service",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -8575,7 +8575,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_worker_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -8653,7 +8653,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_worker_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -8731,7 +8731,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_worker_service",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -8809,7 +8809,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_worker_service",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -8887,7 +8887,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_configure_client_ca",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -8965,7 +8965,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_nodefs_inodesfree",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -9043,7 +9043,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_enable_cert_rotation",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -9121,7 +9121,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_enable_protect_kernel_defaults",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -9199,7 +9199,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_memory_available",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -9277,7 +9277,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cipher_suites_kubeapiserver_operator",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -9355,7 +9355,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cipher_suites_openshiftapiserver_operator",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -9433,7 +9433,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_enable_iptables_util_chains",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -9511,7 +9511,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_nodefs_available",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -9589,7 +9589,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_key",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -9667,7 +9667,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_enable_server_cert_rotation",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -9745,7 +9745,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_disable_hostname_override",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -9823,7 +9823,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cert",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -9901,7 +9901,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_disable_readonly_port",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -9979,7 +9979,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_memory_available",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -10057,7 +10057,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_anonymous_auth",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -10135,7 +10135,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_configure_event_creation",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -10213,7 +10213,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_authorization_mode",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -10291,7 +10291,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cipher_suites_ingresscontroller",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -10369,7 +10369,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_imagefs_available",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -10447,7 +10447,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_imagefs_available",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -10525,7 +10525,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_nodefs_available",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -10603,7 +10603,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_nodefs_inodesfree",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -10681,7 +10681,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_enable_client_cert_rotation",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -10759,7 +10759,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_soft_imagefs_inodesfree",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -10837,7 +10837,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_configure_tls_cipher_suites",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -10915,7 +10915,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_eviction_thresholds_set_hard_imagefs_inodesfree",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -10993,7 +10993,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_kubelet_enable_streaming_connections",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -11071,7 +11071,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_general_namespaces_in_use",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -11149,7 +11149,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_general_default_seccomp_profile",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -11227,7 +11227,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_general_default_namespace_use",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -11305,7 +11305,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_general_apply_scc",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -11383,7 +11383,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_general_configure_imagepolicywebhook",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -11461,7 +11461,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_etcd_pki_cert_files",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -11539,7 +11539,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_etcd_data_files",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -11617,7 +11617,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_ovs_conf_db_lock",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -11695,7 +11695,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_etcd_member",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -11773,7 +11773,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_ovs_vswitchd_pid",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -11851,7 +11851,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_openshift_pki_cert_files",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -11929,7 +11929,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_ovs_sys_id_conf",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -12007,7 +12007,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_etcd_member",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -12085,7 +12085,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -12163,7 +12163,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_kube_apiserver",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -12241,7 +12241,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_kube_controller_manager",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -12319,7 +12319,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_kube_scheduler",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -12397,7 +12397,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_master_admin_kubeconfigs",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -12475,7 +12475,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_openvswitch",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -12553,7 +12553,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_ovs_vswitchd_pid",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -12631,7 +12631,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_scheduler_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -12709,7 +12709,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_etcd_data_files",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -12787,7 +12787,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_openshift_pki_cert_files",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -12865,7 +12865,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_scheduler",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -12943,7 +12943,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_kube_scheduler",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -13021,7 +13021,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_etcd_data_dir",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -13099,7 +13099,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_openshift_sdn_cniserver_config",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -13177,7 +13177,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_etcd_data_files",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -13255,7 +13255,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_ovs_conf_db_lock",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -13333,7 +13333,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_ovs_conf_db",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -13411,7 +13411,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_cni_conf",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -13489,7 +13489,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_ovs_conf_db",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -13567,7 +13567,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_perms_openshift_sdn_cniserver_config",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -13645,7 +13645,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -13723,7 +13723,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_var_lib_etcd",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -13801,7 +13801,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_ovs_pid",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -13879,7 +13879,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_apiserver",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -13957,7 +13957,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_scheduler_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -14035,7 +14035,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_master_admin_kubeconfigs",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -14113,7 +14113,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_etcd_data_dir",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -14191,7 +14191,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_openvswitch",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -14269,7 +14269,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_ovs_sys_id_conf",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -14347,7 +14347,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_cni_conf",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -14425,7 +14425,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_openshift_pki_key_files",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -14503,7 +14503,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_ip_allocations",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -14581,7 +14581,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_etcd_pki_cert_files",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -14659,7 +14659,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -14737,7 +14737,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_ovs_conf_db_lock",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -14815,7 +14815,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_kube_controller_manager",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -14893,7 +14893,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_scheduler_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -14971,7 +14971,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_ip_allocations",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -15049,7 +15049,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_multus_conf",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -15127,7 +15127,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_kube_controller_manager",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -15205,7 +15205,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_scheduler",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -15283,7 +15283,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_multus_conf",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -15361,7 +15361,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_ovsdb_server_pid",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -15439,7 +15439,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_var_lib_etcd",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -15517,7 +15517,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_openvswitch",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -15595,7 +15595,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_etcd_data_dir",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -15673,7 +15673,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_ovs_pid",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -15751,7 +15751,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_controller_manager_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -15829,7 +15829,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_ovs_conf_db",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -15907,7 +15907,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_openshift_pki_cert_files",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -15985,7 +15985,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_controller_manager_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -16063,7 +16063,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_etcd_pki_cert_files",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -16141,7 +16141,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_etcd_member",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -16219,7 +16219,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_openshift_pki_key_files",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -16297,7 +16297,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_ovs_vswitchd_pid",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -16375,7 +16375,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_ip_allocations",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -16453,7 +16453,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_multus_conf",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -16531,7 +16531,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_ovs_sys_id_conf",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -16609,7 +16609,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_ovsdb_server_pid",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -16687,7 +16687,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_kube_apiserver",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -16765,7 +16765,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_master_admin_kubeconfigs",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -16843,7 +16843,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_ovsdb_server_pid",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -16921,7 +16921,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_permissions_openshift_pki_key_files",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -16999,7 +16999,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_ovs_pid",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -17077,7 +17077,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_openshift_sdn_cniserver_config",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -17155,7 +17155,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_owner_controller_manager_kubeconfig",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
@@ -17233,7 +17233,7 @@
               "name": "idref",
               "ns": "http://ibm.github.io/compliance-trestle/schemas/oscal/ar/osco",
               "value": "xccdf_org.ssgproject.content_rule_file_groupowner_cni_conf",
-              "class": "scc_check_id_name"
+              "class": "scc_check_name_id"
             },
             {
               "name": "version",
