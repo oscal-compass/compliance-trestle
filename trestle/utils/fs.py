@@ -464,7 +464,7 @@ def relative_resolve(candidate: pathlib.Path, cwd: pathlib.Path) -> pathlib.Path
     candidate = candidate.expanduser()
 
     if not cwd.is_absolute():
-        raise TrestleError('Must provide absolute cwd.')
+        raise TrestleError('Error handling current working directory. CWD is expected to be absolute.')
 
     if not candidate.is_absolute():
         new = pathlib.Path(cwd / candidate).resolve()
