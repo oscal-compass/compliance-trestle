@@ -17,6 +17,7 @@
 import argparse
 import logging
 from pathlib import Path
+from typing import List
 
 from trestle.core import const, utils
 from trestle.core.base_model import OscalBaseModel
@@ -55,14 +56,20 @@ class MergeCmd(CommandPlusDocs):
         element_paths = elements_clean.split(',')
         logger.debug(f'merge _run element paths {element_paths}')
         cwd = Path.cwd()
+        rc = self.perform_all_merges(element_paths, cwd, args.trestle_root)
+        return rc
+
+    @classmethod
+    def perform_all_merges(cls, element_paths: List[str], effective_cwd: Path, trestle_root: Path) -> int:
+        """Run all merges over a list of element paths."""
         try:
             for element_path in element_paths:
                 logger.debug(f'merge {element_path}')
-                plan = self.merge(cwd, ElementPath(element_path), args.trestle_root.resolve())
+                plan = cls.merge(effective_cwd, ElementPath(element_path), trestle_root)
                 plan.simulate()
                 plan.execute()
         except TrestleError as err:
-            logger.warning(f'Merge failed: {err}')
+            logger.error(f'Merge failed: {err}')
             return 1
         return 0
 
