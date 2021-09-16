@@ -21,6 +21,7 @@ from typing import TypeVar
 
 from trestle.core.base_model import OscalBaseModel
 from trestle.core.err import TrestleError
+from trestle.core.models.file_content_type import FileContentType
 from trestle.utils import fs
 from trestle.utils.load_distributed import load_distributed
 
@@ -79,7 +80,10 @@ class Validator(ABC):
         if 'all' in args and args.all:
             model_tups = fs.get_all_models(trestle_root)
             for mt in model_tups:
-                model_path = trestle_root / fs.model_type_to_model_dir(mt[0]) / mt[1]
+
+                model_dir = trestle_root / fs.model_type_to_model_dir(mt[0]) / mt[1]
+                extension_type = fs.get_contextual_file_type(model_dir)
+                model_path = model_dir / f'{mt[0]}{FileContentType.to_file_extension(extension_type)}'
                 _, _, model = load_distributed(model_path, trestle_root)
                 if not self.model_is_valid(model):
                     logger.info(f'INVALID: Model {model_path} did not pass the {self.error_msg()}')

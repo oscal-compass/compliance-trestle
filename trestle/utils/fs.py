@@ -447,3 +447,31 @@ def allowed_task_name(name: str) -> bool:
         logger.error('Task name cannot contain __global__')
         return False
     return True
+
+
+def relative_resolve(candidate: pathlib.Path, cwd: pathlib.Path) -> pathlib.Path:
+    """Resolve a candidate file path relative to a provided cwd.
+
+    This is to circumvent bad behaviour for resolve on windows platforms where the path must exist.
+
+    If a relative dir is passed it presumes the directory is relative to the PROVIDED cwd.
+    If relative expansions exist (e.g. ../) the final result must still be within the cwd.
+
+    If an absolute path is provided it tests whether the path is within the cwd or not.
+
+    """
+    # Expand user first if applicable.
+    candidate = candidate.expanduser()
+
+    if not cwd.is_absolute():
+        raise TrestleError('Error handling current working directory. CWD is expected to be absolute.')
+
+    if not candidate.is_absolute():
+        new = pathlib.Path(cwd / candidate).resolve()
+    else:
+        new = candidate.resolve()
+    try:
+        new.relative_to(cwd)
+    except ValueError:
+        raise TrestleError(f'Provided dir {candidate} is not relative to {cwd}')
+    return new
